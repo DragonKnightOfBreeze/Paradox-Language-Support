@@ -6,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
-import icu.windea.pls.lang.ReferenceLinkService
+import icu.windea.pls.lang.resolve.ReferenceLinkService
 
 // org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
 

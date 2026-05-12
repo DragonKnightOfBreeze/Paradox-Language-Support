@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui.evaluators
+package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.ide.CopyPasteManager
@@ -9,7 +9,8 @@ import com.intellij.ui.EditorTextField
 import com.intellij.ui.TableSpeedSearch
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel

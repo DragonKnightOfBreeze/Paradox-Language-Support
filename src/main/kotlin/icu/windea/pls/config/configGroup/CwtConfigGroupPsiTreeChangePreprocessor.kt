@@ -12,7 +12,7 @@ import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 
 /**
- * 用于监听规则文件的PSI的更改，以便在必要时通知规则分组发生更改。
+ * 用于监听规则文件的 PSI 的更改，以便在必要时通知规则分组发生更改。
  */
 @Optimized
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {

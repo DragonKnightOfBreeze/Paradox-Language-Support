@@ -7,6 +7,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxGameType
 
 object PlsSettingsManager {
@@ -32,13 +33,13 @@ object PlsSettingsManager {
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
 
-        refreshForOpenedFiles(callbackLock)
+        refreshForAllOpenFiles(callbackLock)
     }
 
     fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
-        val files = PlsAnalysisManager.findFilesByFileNames(fileNames)
+        val files = PlsAnalysisManager.findAllFilesByFileNames(fileNames)
         PlsAnalysisManager.reparseFiles(files)
     }
 
@@ -47,7 +48,7 @@ object PlsSettingsManager {
 
         ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
 
-        refreshForOpenedFiles(callbackLock)
+        refreshForAllOpenFiles(callbackLock)
     }
 
     fun refreshForInlineScriptInference(callbackLock: CallbackLock) {
@@ -58,8 +59,8 @@ object PlsSettingsManager {
         ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
-        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsAnalysisManager.reparseFiles(openedFiles)
+        val files = PlsAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
+        PlsAnalysisManager.reparseFiles(files)
     }
 
     fun refreshForScopeContextInference(callbackLock: CallbackLock) {
@@ -67,13 +68,14 @@ object PlsSettingsManager {
 
         ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
-        refreshForOpenedFiles(callbackLock)
+        refreshForAllOpenFiles(callbackLock)
     }
 
-    fun refreshForOpenedFiles(callbackLock: CallbackLock) {
-        if (!callbackLock.check("refreshForOpenedFiles")) return
+    fun refreshForAllOpenFiles(callbackLock: CallbackLock) {
+        if (!callbackLock.check("refreshForAllOpenFiles")) return
 
-        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsAnalysisManager.refreshFiles(openedFiles)
+        // 刷新所有已打开的文件
+        val files = PlsAnalysisManager.findAllOpenFiles()
+        PlsAnalysisManager.refreshFiles(files)
     }
 }

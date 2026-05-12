@@ -1,4 +1,4 @@
-package icu.windea.pls.ep
+package icu.windea.pls.ep.resolve
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.progress.ProgressManager

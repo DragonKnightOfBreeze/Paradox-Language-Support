@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
-import icu.windea.pls.lang.ParadoxNameValidators
+import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch

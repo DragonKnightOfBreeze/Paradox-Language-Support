@@ -65,8 +65,7 @@ object PlsIntegrationsSettingsManager {
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onTigerSettingsChanged")) return
 
-        val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsAnalysisManager.refreshFiles(files, refreshInlayHints = false)
+        refreshForAllOpenFiles(callbackLock)
     }
 
     fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {
@@ -75,5 +74,13 @@ object PlsIntegrationsSettingsManager {
         if (!callbackLock.check("onTigerSettingsChanged.${gameType.id}")) return
 
         TigerLintToolService.getInstance().getModificationTracker(gameType).incModificationCount()
+    }
+
+    fun refreshForAllOpenFiles(callbackLock: CallbackLock) {
+        if (!callbackLock.check("refreshForAllOpenFiles")) return
+
+        // 刷新所有已打开的文件
+        val files = PlsAnalysisManager.findAllOpenFiles()
+        PlsAnalysisManager.refreshFiles(files)
     }
 }

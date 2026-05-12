@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.ReferenceLinkService
+import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.tools.PlsUrlService

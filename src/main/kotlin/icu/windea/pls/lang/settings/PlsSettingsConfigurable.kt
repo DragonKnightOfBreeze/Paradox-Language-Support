@@ -125,7 +125,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     val fileNames = mutableSetOf<String>()
                     fileNames += oldIgnoredFileNameSet
                     fileNames += newIgnoredFileNameSet
-                    // 设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
+                    // 设置中的被忽略文件名被更改时，需要重新解析相关文件
                     PlsSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames)
                 }
         }
@@ -595,14 +595,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             checkBox(PlsBundle.message("settings.inference.injectionForParameterValue"))
                 .bindSelected(settings::injectionForParameterValue)
-                .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
             contextHelp(PlsBundle.message("settings.inference.injectionForParameterValue.tip"))
         }
         // injectionForLocalisationText
         row {
             checkBox(PlsBundle.message("settings.inference.injectionForLocalisationText"))
                 .bindSelected(settings::injectionForLocalisationText)
-                .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
             contextHelp(PlsBundle.message("settings.inference.injectionForLocalisationText.tip"))
         }
         // configContextForParameters
@@ -710,13 +710,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                 .bindSelected(settings::highlightLocalisationColorId)
-                .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
         }
         // renderLocalisationColorfulText
         row {
             checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                 .bindSelected(settings::renderLocalisationColorfulText)
-                .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
         }
     }
 }

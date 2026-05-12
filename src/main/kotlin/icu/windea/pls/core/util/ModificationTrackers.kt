@@ -36,7 +36,7 @@ class ComputedModificationTracker(private val computable: () -> Any?) : SimpleMo
 /**
  * 基于文件路径的修改追踪器。
  */
-class FilePathBasedModificationTracker(val patterns: Set<String>) : SimpleModificationTracker() {
+class FilePathBasedModificationTracker(val patterns: Collection<String>) : SimpleModificationTracker() {
     companion object {
         @JvmField val NEVER_CHANGED = FilePathBasedModificationTracker(emptySet())
     }

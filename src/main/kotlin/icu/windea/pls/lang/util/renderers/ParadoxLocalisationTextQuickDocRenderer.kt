@@ -18,7 +18,7 @@ import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
-import icu.windea.pls.lang.ReferenceLinkService
+import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.resolveLocalisation

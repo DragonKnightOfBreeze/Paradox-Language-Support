@@ -1,11 +1,11 @@
-package icu.windea.pls.ep
+package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.model.ReferenceLinkType
 
 /**
- * 用于将特定的链接（快速文档中的PSI链接，或是html/markdown等文件中的链接）解析为匹配的目标引用（定义、本地化等）。
+ * 用于将特定的链接（快速文档中的 PSI 链接，或是 HTML/Markdown 等文件中的链接）解析为匹配的目标引用（定义、本地化等）。
  *
  * @see ReferenceLinkType
  */

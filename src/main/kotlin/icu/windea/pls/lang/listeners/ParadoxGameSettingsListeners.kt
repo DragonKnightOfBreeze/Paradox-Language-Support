@@ -36,8 +36,8 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
             ParadoxLibraryService.getInstance(project).refreshRootsAsync()
         }
 
-        // 重新解析根目录下已打开的文件（IDE之后会自动请求重新索引）
-        val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true).filter { VfsUtil.isAncestor(root, it, true) }
+        // 重新解析根目录下已打开的文件
+        val files = PlsAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
         PlsAnalysisManager.reparseFiles(files)
     }
 }

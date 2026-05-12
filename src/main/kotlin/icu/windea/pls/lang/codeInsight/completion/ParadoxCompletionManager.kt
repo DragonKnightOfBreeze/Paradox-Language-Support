@@ -40,7 +40,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.ParadoxNameValidators
+import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext

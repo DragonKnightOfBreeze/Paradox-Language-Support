@@ -1,4 +1,6 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.util
+
+import icu.windea.pls.lang.isIdentifier
 
 object ParadoxNameValidators {
     // NOTE 2.1.3 部分 `RenameInputValidator` 是有必要实现的，因为对应的 `name` 也接受额外字符

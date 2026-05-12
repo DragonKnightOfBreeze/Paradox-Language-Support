@@ -115,7 +115,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                     init(configGroups, project)
                 }
                 // 规则数据加载完毕后，重新解析已打开的文件
-                reparseOpenedFiles()
+                reparseAllOpenFiles()
                 // 规则数据加载完毕后，异步刷新外部库
                 refreshRootsForLibraries(project)
             }
@@ -176,7 +176,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 refresh(configGroups, project)
             }
             // 规则数据刷新完毕后，重新解析已打开的文件
-            reparseOpenedFiles()
+            reparseAllOpenFiles()
             // 规则数据加载完毕后，异步刷新外部库
             refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
@@ -186,7 +186,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             } else if (e == null) {
                 updateRefreshStatus()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
-                    reparseFilesInRootFilePaths(configGroups)
+                    reparseAllFilesInRootFilePaths(configGroups)
                     refreshRootsForLibraries(project, force = true)
                 }
                 val title = PlsBundle.message("configGroup.refresh.notification.finished.title")
@@ -196,17 +196,16 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         }
     }
 
-    fun reparseOpenedFiles() {
+    fun reparseAllOpenFiles() {
         if (project.isDefault || project.isDisposed) return
-        // 重新解析并刷新已打开的文件（IDE之后会自动请求重新索引）
-        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        // 重新解析已打开的文件
+        val openedFiles = PlsAnalysisManager.findAllOpenFiles()
         PlsAnalysisManager.reparseFiles(openedFiles)
     }
 
-    fun reparseFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
+    fun reparseAllFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
         if (project.isDefault || project.isDisposed) return
-        // 重新解析并刷新（IDE之后会自动请求重新索引）
-        // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
+        // 重新解析涉及的根路径下的所有文件
         val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
         PlsProfilesSettings.getInstance().state.gameDescriptorSettings.values
@@ -215,7 +214,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         PlsProfilesSettings.getInstance().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
-        val files = PlsAnalysisManager.findFilesByRootFilePaths(rootFilePaths)
+        val files = PlsAnalysisManager.findAllFilesByRootFilePaths(rootFilePaths)
         PlsAnalysisManager.reparseFiles(files)
     }
 

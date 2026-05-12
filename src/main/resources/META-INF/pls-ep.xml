@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.ReferenceLinkProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.resolve.ReferenceLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.ignoredFileProvider" interface="icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.rootMetadataProvider" interface="icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider" dynamic="true"/>
@@ -54,12 +54,12 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <referenceLinkProvider implementation="icu.windea.pls.ep.CwtConfigLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxScriptedVariableLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxDefinitionLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxLocalisationLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxFilePathLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxModifierLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.resolve.CwtConfigLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.resolve.ParadoxScriptedVariableLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.resolve.ParadoxDefinitionLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.resolve.ParadoxLocalisationLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.resolve.ParadoxFilePathLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.resolve.ParadoxModifierLinkProvider"/>
 
     <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxSettingsBasedIgnoredFileProvider"/>
     <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxTopLevelIgnoredFileProvider"/>

@@ -20,7 +20,7 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.ParadoxNameValidators
+import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxTypeService
 

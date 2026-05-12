@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.ParadoxNameValidators
+import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile

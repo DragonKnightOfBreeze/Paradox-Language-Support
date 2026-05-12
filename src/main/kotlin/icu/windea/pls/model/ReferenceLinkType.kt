@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.ep.ReferenceLinkProvider
+import icu.windea.pls.ep.resolve.ReferenceLinkProvider
 
 /**
  * @see ReferenceLinkProvider

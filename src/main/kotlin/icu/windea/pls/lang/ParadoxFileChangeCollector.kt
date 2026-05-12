@@ -27,7 +27,7 @@ class ParadoxFileChangeCollector {
     private val filesToClearLocaleConfig: MutableSet<VirtualFile> = FastSet()
     private val filesToClearSliceInfos: MutableSet<VirtualFile> = FastSet()
 
-    private var reparseOpenedFiles: Boolean = false
+    private var reparseAllOpenFiles: Boolean = false
     private var refreshFilePaths: Boolean = false
     private var refreshInlineScripts: Boolean = false
 
@@ -40,7 +40,7 @@ class ParadoxFileChangeCollector {
 
                     if (shouldRestartAnalysis(fileName)) {
                         rootInfoContextFiles += event.parent
-                        reparseOpenedFiles = true
+                        reparseAllOpenFiles = true
                     }
                     if (shouldRefreshForFilePaths(event.parent)) {
                         refreshFilePaths = true
@@ -56,7 +56,7 @@ class ParadoxFileChangeCollector {
 
                     if (shouldRestartAnalysis(fileName)) {
                         selectRootFile(file.parent)?.let { rootFilesToClearRootInfo += it }
-                        reparseOpenedFiles = true
+                        reparseAllOpenFiles = true
                     }
                     if (shouldRefreshForFilePaths(file.parent)) {
                         refreshFilePaths = true
@@ -67,7 +67,7 @@ class ParadoxFileChangeCollector {
 
                     if (shouldRestartAnalysis(fileName)) {
                         rootInfoContextFiles += event.newParent
-                        reparseOpenedFiles = true
+                        reparseAllOpenFiles = true
                     }
                     if (shouldRefreshForFilePaths(event.newParent)) {
                         refreshFilePaths = true
@@ -84,7 +84,7 @@ class ParadoxFileChangeCollector {
                     if (shouldRestartAnalysis(fileName)) {
                         selectRootFile(event.oldParent)?.let { rootFilesToClearRootInfo += it }
                         rootInfoContextFiles += event.newParent
-                        reparseOpenedFiles = true
+                        reparseAllOpenFiles = true
                     }
                     if (shouldRefreshForFilePaths(file)) {
                         refreshFilePaths = true
@@ -98,6 +98,7 @@ class ParadoxFileChangeCollector {
                     val file = event.file
                     val newFileName = event.newValue.toString()
                     val oldFileName = event.oldValue.toString()
+                    if (newFileName == oldFileName) return@f // fast return & prevent possible SOF (see `FileContentUtilCore.reparseFiles`)
 
                     filesToClearFileInfo += file
                     filesToClearLocaleConfig += file
@@ -106,7 +107,7 @@ class ParadoxFileChangeCollector {
                     if (shouldRestartAnalysis(newFileName) || shouldRestartAnalysis(oldFileName)) {
                         selectRootFile(file)?.let { rootFilesToClearRootInfo += it }
                         rootInfoContextFiles += file
-                        reparseOpenedFiles = true
+                        reparseAllOpenFiles = true
                     }
                     if (shouldRefreshForFilePaths(file)) {
                         refreshFilePaths = true
@@ -124,7 +125,7 @@ class ParadoxFileChangeCollector {
 
                     if (shouldRestartAnalysis(fileName)) {
                         rootInfoContextFiles += file
-                        reparseOpenedFiles = true
+                        reparseAllOpenFiles = true
                     }
                 }
             }
@@ -149,7 +150,7 @@ class ParadoxFileChangeCollector {
             || filesToClearFileInfo.isNotEmpty()
             || filesToClearLocaleConfig.isNotEmpty()
             || filesToClearSliceInfos.isNotEmpty()
-            || reparseOpenedFiles
+            || reparseAllOpenFiles
             || refreshFilePaths
             || refreshInlineScripts
     }
@@ -164,23 +165,31 @@ class ParadoxFileChangeCollector {
             }
         }
         if (rootFilesToClearRootInfo.isNotEmpty()) {
-            rootFilesToClearRootInfo.forEach { rootFile ->
-                with(dataService) { rootFile.cachedRootInfo = null }
+            with(dataService) {
+                rootFilesToClearRootInfo.forEach { rootFile ->
+                    rootFile.cachedRootInfo = null
+                }
             }
         }
         if (filesToClearFileInfo.isNotEmpty()) {
-            filesToClearFileInfo.forEach { file ->
-                with(dataService) { file.cachedFileInfo = null }
+            with(dataService) {
+                filesToClearFileInfo.forEach { file ->
+                    file.cachedFileInfo = null
+                }
             }
         }
         if (filesToClearLocaleConfig.isNotEmpty()) {
-            filesToClearLocaleConfig.forEach { file ->
-                with(dataService) { file.cachedLocaleConfig = null }
+            with(dataService) {
+                filesToClearLocaleConfig.forEach { file ->
+                    file.cachedLocaleConfig = null
+                }
             }
         }
         if (filesToClearSliceInfos.isNotEmpty()) {
-            filesToClearSliceInfos.forEach { file ->
-                with(dataService) { file.sliceInfos = null }
+            with(dataService) {
+                filesToClearSliceInfos.forEach { file ->
+                    file.sliceInfos = null
+                }
             }
         }
 
@@ -192,13 +201,13 @@ class ParadoxFileChangeCollector {
             ParadoxModificationTrackers.ScriptFile.incModificationCount()
             ParadoxModificationTrackers.InlineScripts.incModificationCount()
         }
-        if (reparseOpenedFiles) {
+        if (reparseAllOpenFiles) {
             // 重新解析所有项目的所有已打开的文件
-            val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+            val files = PlsAnalysisManager.findAllOpenFiles()
             PlsAnalysisManager.reparseFiles(files)
         } else if (refreshInlineScripts) {
             // 重新解析所有项目的所有已打开的内联脚本文件
-            val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+            val files = PlsAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
             PlsAnalysisManager.reparseFiles(files)
         }
     }
