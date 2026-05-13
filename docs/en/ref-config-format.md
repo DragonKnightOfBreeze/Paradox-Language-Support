@@ -1454,11 +1454,15 @@ Schema expressions support the following four forms:
 
 ### Summary {#data-types-summary}
 
-Data types are the bridge connecting "config expressions" to "script content". Each data expression, once parsed, yields a specific data type that determines which keys or values in script files that expression can match.
+A data type describes the value form of a config expression (data expression) and determines the matching logic between expressions and config expressions.
 
-For example, the data expression `<event.country>` has a data type of `Definition` with metadata `event.country`, indicating it matches definitions whose type is `event` and whose subtypes include `country`. Similarly, `enum[weight_or_base]` has a data type of `EnumValue` with metadata `weight_or_base`, indicating it matches all possible values declared in that enum.
+For example, the data type of the data expression `<event.country>` is `Definition`, with metadata `event.country`, indicating that it matches definitions of type `event` whose subtype includes `country`.
+As another example, the data type of `enum[weight_or_base]` is `EnumValue`, with metadata `weight_or_base`, indicating that it matches any of the possible values declared in that enum.
 
-Data type resolution is driven by the `CwtDataExpressionResolver` extension point, and matching logic is driven by the `ParadoxScriptExpressionMatcher` extension point. These two cooperate to allow the config system to flexibly support various complex value forms. The plugin iterates through all registered matchers until one returns a non-null match result.
+Related extension points:
+- The resolution logic for data types is driven by the extension point `CwtDataExpressionResolver`.
+- The matching logic between expressions in script files and config expressions is driven by the extension point `ParadoxScriptExpressionMatcher`.
+- The matching logic between expressions in CSV files and config expressions is driven by the extension point `ParadoxCsvExpressionMatcher` (limited support).
 
 ### Base Data Types {#data-types-base}
 

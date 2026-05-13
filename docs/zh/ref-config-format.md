@@ -1470,11 +1470,15 @@ title
 
 ### 概述 {#data-types-summary}
 
-数据类型（Data Type）是连接"规则表达式"与"脚本内容"的桥梁。每条数据表达式在解析后都会得到一个具体的数据类型，该数据类型决定了这条表达式能够匹配脚本文件中的哪些键或值。
+数据类型（Data Type）描述了规则表达式（数据表达式）的取值形态，并决定表达式与规则表达式的匹配逻辑。
 
-例如，数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义。又如，`enum[weight_or_base]` 的数据类型为 `EnumValue`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
+例如，数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义。
+又如，`enum[weight_or_base]` 的数据类型为 `EnumValue`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
 
-数据类型的解析由 `CwtDataExpressionResolver` 扩展点驱动，匹配逻辑由 `ParadoxScriptExpressionMatcher` 扩展点驱动。二者协作，使规则系统能够灵活地支持各种复杂的取值形态。插件会遍历所有已注册的匹配器，直到某个匹配器返回非空的匹配结果。
+相关的扩展点：
+- 数据类型的解析逻辑由扩展点 `CwtDataExpressionResolver` 驱动。
+- 脚本文件中的表达式与规则表达式的匹配逻辑由扩展点 `ParadoxScriptExpressionMatcher` 驱动。
+- CSV 文件中的表达式与规则表达式的匹配逻辑由扩展点 `ParadoxCsvExpressionMatcher` 驱动（有限支持）。
 
 ### 基本数据类型 {#data-types-base}
 

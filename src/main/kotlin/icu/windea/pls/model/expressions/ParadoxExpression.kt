@@ -16,11 +16,15 @@ import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 
 /**
  * 脚本文件、本地化文件或者 CSV 文件中的表达式，
  *
  * @see ParadoxExpressionElement
+ * @see ParadoxScriptExpressionMatcher
+ * @see ParadoxCsvExpressionMatcher
  */
 interface ParadoxExpression {
     val text: String
