@@ -8,36 +8,17 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
-import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
-import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxResolutionManager
 
-// 目前仅提供有限的支持
-
-/**
- * @see CwtDataTypes.Bool
- */
-class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Bool
-    }
-
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addElement(PlsLookupElements.yesLookupElement, context)
-        result.addElement(PlsLookupElements.noLookupElement, context)
-    }
-}
+// Core (limited support)
 
 /**
  * @see CwtDataTypes.Definition
@@ -98,27 +79,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
     }
 
     override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
-        val enumName = config.configExpression.value ?: return null
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        // 尝试解析为简单枚举
-        val enumConfig = configGroup.enums[enumName]
-        if (enumConfig != null) {
-            return ParadoxExpressionManager.resolvePredefinedEnumValue(expressionText, enumName, configGroup)
-        }
-        // 尝试解析为复杂枚举
-        val complexEnumConfig = configGroup.complexEnums[enumName]
-        if (complexEnumConfig != null) {
-            val searchScopeType = complexEnumConfig.searchScopeType
-            val selector = selector(project, element).complexEnumValue()
-                .withSearchScopeType(searchScopeType)
-            val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
-            if (info != null) {
-                val readWriteAccess = ReadWriteAccess.Read // usage
-                return ParadoxComplexEnumValueLightElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
-            }
-        }
-        return null
+        return ParadoxResolutionManager.resolveEnumValue(element, expressionText, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

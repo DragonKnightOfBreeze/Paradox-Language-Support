@@ -16,7 +16,6 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
@@ -32,18 +31,16 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxResolutionManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
@@ -253,7 +250,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBas
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
-        return ParadoxExpressionManager.resolveModifier(element, expressionText, configGroup)
+        return ParadoxResolutionManager.resolveModifier(element, expressionText, configGroup)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -285,27 +282,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val enumName = config.configExpression?.value ?: return null
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        // 尝试解析为简单枚举
-        val enumConfig = configGroup.enums[enumName]
-        if (enumConfig != null) {
-            return ParadoxExpressionManager.resolvePredefinedEnumValue(expressionText, enumName, configGroup)
-        }
-        // 尝试解析为复杂枚举
-        val complexEnumConfig = configGroup.complexEnums[enumName]
-        if (complexEnumConfig != null) {
-            val searchScopeType = complexEnumConfig.searchScopeType
-            val selector = selector(project, element).complexEnumValue()
-                .withSearchScopeType(searchScopeType)
-            val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
-            if (info != null) {
-                val readWriteAccess = ReadWriteAccess.Read // usage
-                return ParadoxComplexEnumValueLightElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
-            }
-        }
-        return null
+        return ParadoxResolutionManager.resolveEnumValue(element, expressionText, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

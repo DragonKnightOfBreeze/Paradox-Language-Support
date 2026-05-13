@@ -20,6 +20,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -28,6 +29,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.resolved
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
@@ -54,6 +56,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
@@ -62,9 +65,11 @@ import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
@@ -418,53 +423,6 @@ object ParadoxExpressionManager {
 
         val result = ParadoxExpressionService.multiResolveCsvExpression(element, rangeInElement, expressionText, config)
         return result
-    }
-
-    fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
-        return ParadoxModifierManager.resolveModifier(name, element, configGroup)
-    }
-
-    @Suppress("unused")
-    fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val systemScopeConfig = configGroup.systemScopes[name] ?: return null
-        val resolved = systemScopeConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
-        val resolved = linkConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
-        val resolved = linkConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    fun resolvePredefinedEnumValue(name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
-        val enumConfig = configGroup.enums[enumName] ?: return null
-        val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
-        val resolved = enumValueConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.localisationLinks[name] ?: return null
-        val resolved = linkConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val commandConfig = configGroup.localisationCommands[name] ?: return null
-        val resolved = commandConfig.resolveElementWithConfig() ?: return null
-        return resolved
     }
 
     // endregion
