@@ -111,7 +111,7 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
     return this
 }
 
-fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): LookupElementBuilder? {
+fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElementBuilder? {
     // check whether scope is matched again here
     if ((!scopeMatched || !context.scopeMatched) && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
 

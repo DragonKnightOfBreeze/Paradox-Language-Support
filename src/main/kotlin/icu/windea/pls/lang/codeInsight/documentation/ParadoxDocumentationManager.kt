@@ -356,7 +356,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueLightElement) {
         val name = element.name
-        val dynamicValueTypes = element.dynamicValueTypes
+        val dynamicValueTypes = element.types
         val gameType = element.gameType
         val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
         definition {

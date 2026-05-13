@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.isStatic
@@ -51,6 +52,14 @@ object ParadoxResolutionManager {
         val info = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() ?: return null
         val readWriteAccess = ReadWriteAccess.Read // usage
         return ParadoxComplexEnumValueLightElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
+    }
+
+    fun resolveDynamicValue(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
+        val dataExpression = config.configExpression ?: return null
+        if (dataExpression.type !in CwtDataTypeSets.DynamicValue) return null
+        val name = expression
+        val configGroup = config.configGroup
+        return ParadoxDynamicValueManager.resolveDynamicValue(element, name, dataExpression, configGroup)
     }
 
     @Suppress("unused")

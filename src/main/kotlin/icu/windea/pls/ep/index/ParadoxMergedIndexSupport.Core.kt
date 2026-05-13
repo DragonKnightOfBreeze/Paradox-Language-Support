@@ -60,7 +60,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
         if (resolved !is ParadoxDynamicValueLightElement) return
-        for (dynamicValueType in resolved.dynamicValueTypes) {
+        for (dynamicValueType in resolved.types) {
             val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
             addToFileData(info, fileData)
         }

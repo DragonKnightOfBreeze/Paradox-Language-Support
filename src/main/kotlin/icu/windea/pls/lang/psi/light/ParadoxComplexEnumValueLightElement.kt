@@ -38,13 +38,7 @@ class ParadoxComplexEnumValueLightElement(
 
     override fun getProject() = project
 
-    override fun setName(name: String): PsiElement? {
-        return null
-    }
-
-    override fun getNameIdentifier(): PsiElement {
-        return this
-    }
+    override fun setName(name: String): PsiElement = this
 
     override fun equals(other: Any?): Boolean {
         return other is ParadoxComplexEnumValueLightElement

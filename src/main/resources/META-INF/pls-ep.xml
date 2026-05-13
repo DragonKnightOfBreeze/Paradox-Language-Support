@@ -224,6 +224,7 @@
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvBoolExpressionSupport"/>
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvDefinitionExpressionSupport"/>
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvEnumValueExpressionSupport"/>
+    <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvDynamicValueExpressionSupport"/>
 
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxIconReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxFilePathReferenceExpressionSupport"/>

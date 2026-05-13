@@ -173,7 +173,7 @@ class ParadoxExtendedDynamicValueHintTextProvider : ParadoxHintTextProviderBase.
     override fun doGetHintText(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
-        for (type in element.dynamicValueTypes) {
+        for (type in element.types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findByPattern(name, element, configGroup) ?: continue
             val hint = config.hint?.orNull()

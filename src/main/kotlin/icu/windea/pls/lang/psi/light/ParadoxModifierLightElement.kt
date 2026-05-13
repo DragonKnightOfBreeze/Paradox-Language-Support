@@ -33,10 +33,6 @@ class ParadoxModifierLightElement(
         return this
     }
 
-    override fun getNameIdentifier(): PsiElement {
-        return this
-    }
-
     override fun equals(other: Any?): Boolean {
         return other is ParadoxModifierLightElement
             && name == other.name

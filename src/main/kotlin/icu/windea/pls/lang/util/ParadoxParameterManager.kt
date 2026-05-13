@@ -42,7 +42,7 @@ import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.argumentNames
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.contextKey
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
@@ -205,7 +205,7 @@ object ParadoxParameterManager {
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
                 .withPatchableIcon(PlsIcons.Nodes.Parameter)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
 
@@ -243,7 +243,7 @@ object ParadoxParameterManager {
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
                     .withPatchableIcon(PlsIcons.Nodes.Parameter)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
             true

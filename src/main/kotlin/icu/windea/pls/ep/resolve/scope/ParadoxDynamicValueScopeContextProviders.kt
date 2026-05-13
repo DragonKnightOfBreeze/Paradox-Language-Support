@@ -12,7 +12,7 @@ class ParadoxBaseDynamicValueScopeContextProvider : ParadoxDynamicValueScopeCont
 
     override fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val name = element.name
-        val types = element.dynamicValueTypes
+        val types = element.types
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         for (type in types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue

@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.unquote
@@ -84,5 +85,29 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         ParadoxCompletionManager.completeEnumValue(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypeSets.DynamicValue
+ */
+class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeSets.DynamicValue
+    }
+
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+        val attributesKey = ParadoxSemanticAttributesKeys.dynamicValue(element.language)
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
+        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+    }
+
+    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
+        return ParadoxResolutionManager.resolveDynamicValue(element, expressionText, config)
+    }
+
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxCompletionManager.completeDynamicValue(context, result)
     }
 }

@@ -14,7 +14,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -88,7 +88,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
         val lookupElement = LookupElementBuilder.create(element, name)
             .withIcon(PlsIcons.Nodes.DefineNamespace)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }
@@ -102,7 +102,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
         val lookupElement = LookupElementBuilder.create(element, name)
             .withIcon(PlsIcons.Nodes.DefineVariable)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }

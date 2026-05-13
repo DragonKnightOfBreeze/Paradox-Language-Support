@@ -62,7 +62,7 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
                 }
             }
             is ParadoxDynamicValueLightElement -> {
-                val dynamicValueType = element.dynamicValueTypes.firstOrNull() ?: return null
+                val dynamicValueType = element.types.firstOrNull() ?: return null
                 when (dynamicValueType) {
                     "variable" -> PlsBundle.message("type.variable")
                     else -> PlsBundle.message("type.dynamicValue")

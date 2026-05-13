@@ -349,7 +349,7 @@ object ParadoxCompletionManager {
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
                 .withPriority(PlsCompletionPriorities.rootKey)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             context.isKey = null
             context.config = null
@@ -382,7 +382,7 @@ object ParadoxCompletionManager {
                 .withPatchableTailText(tailText)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
                 .withPriority(PlsCompletionPriorities.rootKey)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             context.config = null
         }
@@ -457,7 +457,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile.name, typeFile.icon, true)
                 .withPatchableIcon(PlsIcons.Nodes.Localisation)
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -494,7 +494,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile.name, typeFile.icon, true)
                 .withPatchableIcon(PlsIcons.Nodes.Localisation)
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -535,7 +535,7 @@ object ParadoxCompletionManager {
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withDefinitionLocalizedNamesIfNecessary(definition)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -569,7 +569,7 @@ object ParadoxCompletionManager {
                     .withTypeText(file.name, file.icon, true)
                     .withPatchableIcon(PlsIcons.Nodes.PathReference(config.configExpression))
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
                 true
             }
@@ -606,7 +606,7 @@ object ParadoxCompletionManager {
                     .withPriority(PlsCompletionPriorities.enumValue)
                     .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -631,7 +631,7 @@ object ParadoxCompletionManager {
                     .withPriority(PlsCompletionPriorities.complexEnumValue)
                     .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
                 true
             }
@@ -671,7 +671,7 @@ object ParadoxCompletionManager {
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)
-                        .forScriptExpression(context)
+                        .forExpression(context)
                     result.addElement(lookupElement, context)
                 }
             }
@@ -689,7 +689,7 @@ object ParadoxCompletionManager {
                     val lookupElement = LookupElementBuilder.create(element, name)
                         .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)
-                        .forScriptExpression(context)
+                        .forExpression(context)
                     result.addElement(lookupElement, context)
                     true
                 }
@@ -750,7 +750,7 @@ object ParadoxCompletionManager {
             .withPriority(PlsCompletionPriorities.constant)
             .withPatchableIcon(icon)
             .withScopeMatched(context.scopeMatched)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
     }
 
@@ -816,7 +816,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(PlsCompletionPriorities.constant)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -852,7 +852,7 @@ object ParadoxCompletionManager {
                     .withInsertHandler(PlsInsertHandlers.addColon())
                     .withPriority(PlsCompletionPriorities.macro)
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
         } else {
@@ -892,7 +892,7 @@ object ParadoxCompletionManager {
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableTailText(context.expressionTailText)
             .withDefinitionLocalizedNamesIfNecessary(element)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }

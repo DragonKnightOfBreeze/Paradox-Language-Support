@@ -31,7 +31,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.scopeContext
 import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNecessary
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
@@ -124,7 +124,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withModifierLocalizedNamesIfNecessary(name, element)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -202,7 +202,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
                     .withModifierLocalizedNamesIfNecessary(name, element)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
                 true
             }
@@ -409,7 +409,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withPatchableIcon(PlsIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withModifierLocalizedNamesIfNecessary(name, element)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
             true

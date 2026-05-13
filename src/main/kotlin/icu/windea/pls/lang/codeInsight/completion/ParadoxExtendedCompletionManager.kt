@@ -66,7 +66,7 @@ object ParadoxExtendedCompletionManager {
                         .withItemTextUnderlined(true) // used for completions from extended configs
                         .withPatchableIcon(PlsIcons.Configs.ExtendedDefinition)
                         .withPatchableTailText(tailText)
-                        .forScriptExpression(context)
+                        .forExpression(context)
                     result.addElement(lookupElement, context)
                 }
             }
@@ -84,7 +84,7 @@ object ParadoxExtendedCompletionManager {
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(PlsIcons.Configs.ExtendedGameRule)
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -101,7 +101,7 @@ object ParadoxExtendedCompletionManager {
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(PlsIcons.Configs.ExtendedOnAction)
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -127,7 +127,7 @@ object ParadoxExtendedCompletionManager {
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(PlsIcons.Configs.ExtendedParameter)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -152,7 +152,7 @@ object ParadoxExtendedCompletionManager {
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withPatchableIcon(PlsIcons.Configs.ExtendedComplexEnumValue)
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -174,15 +174,15 @@ object ParadoxExtendedCompletionManager {
                 ProgressManager.checkCanceled()
                 val name = config0.name
                 if (checkExtendedConfigName(name)) return@f
-                val type = config0.type
+                val dynamicValueType = config0.type
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.DynamicValue(type))
+                    .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                     .withPatchableTailText(tailText)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -206,7 +206,7 @@ object ParadoxExtendedCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
     }
