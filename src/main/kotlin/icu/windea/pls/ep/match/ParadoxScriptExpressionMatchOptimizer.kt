@@ -13,7 +13,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxMatchPipeline
  * @see ParadoxScriptExpressionElement
  * @see ParadoxExpression
- * @see CwtMemberConfig
  */
 interface ParadoxScriptExpressionMatchOptimizer {
     /**

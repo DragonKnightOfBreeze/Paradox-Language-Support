@@ -13,14 +13,25 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
 object ParadoxExpressionMatchService {
-    // region Script Expression Related
-
     /**
      * @see ParadoxScriptExpressionMatcher.match
      */
     @Optimized
     fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         ParadoxScriptExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
+            ProgressManager.checkCanceled()
+            val r = ep.match(context)
+            if (r != null) return r
+        }
+        return ParadoxMatchResult.NotMatch
+    }
+
+    /**
+     * @see ParadoxCsvExpressionMatcher.match
+     */
+    @Optimized
+    fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        ParadoxCsvExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
             ProgressManager.checkCanceled()
             val r = ep.match(context)
             if (r != null) return r
@@ -59,23 +70,4 @@ object ParadoxExpressionMatchService {
             matchScriptExpression(context).get(options)
         }
     }
-
-    // endregion
-
-    // region Csv Expression Related
-
-    /**
-     * @see ParadoxCsvExpressionMatcher.match
-     */
-    @Optimized
-    fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        ParadoxCsvExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
-            ProgressManager.checkCanceled()
-            val r = ep.match(context)
-            if (r != null) return r
-        }
-        return ParadoxMatchResult.NotMatch
-    }
-
-    // endregion
 }
