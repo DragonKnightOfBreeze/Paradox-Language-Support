@@ -13,9 +13,9 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.ParadoxExpressionType
-import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {

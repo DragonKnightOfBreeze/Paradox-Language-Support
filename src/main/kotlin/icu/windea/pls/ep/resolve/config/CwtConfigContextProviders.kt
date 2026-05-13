@@ -32,8 +32,8 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
+import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**

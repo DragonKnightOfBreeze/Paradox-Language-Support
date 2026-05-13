@@ -14,9 +14,9 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext

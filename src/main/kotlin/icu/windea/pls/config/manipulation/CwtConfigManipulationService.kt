@@ -31,8 +31,8 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.type.CwtExpressionType
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 

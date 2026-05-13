@@ -17,8 +17,8 @@ import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.paths.ParadoxMemberPath
+import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock

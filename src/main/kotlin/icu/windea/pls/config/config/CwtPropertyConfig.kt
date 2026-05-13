@@ -29,11 +29,11 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.type.CwtSeparatorType
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtSeparatorType
 import icu.windea.pls.model.forCwtType
+import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.CwtTypeResolver
 
 /**

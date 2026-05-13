@@ -4,8 +4,8 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.type.CwtExpressionType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

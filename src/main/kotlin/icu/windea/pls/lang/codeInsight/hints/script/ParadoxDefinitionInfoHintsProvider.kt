@@ -9,8 +9,8 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 

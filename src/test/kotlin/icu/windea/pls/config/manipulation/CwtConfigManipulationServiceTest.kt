@@ -11,8 +11,8 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.type.CwtExpressionType
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith

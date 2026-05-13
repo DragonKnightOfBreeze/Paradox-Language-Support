@@ -18,8 +18,8 @@ import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
+import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap

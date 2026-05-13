@@ -34,10 +34,10 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement

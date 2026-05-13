@@ -2,8 +2,8 @@ package icu.windea.pls.model
 
 import icu.windea.pls.core.optimizer.Optimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
-import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtSeparatorType
 
 fun OptimizerFactory.forCwtType() = get(CwtTypeOptimizer)
 fun OptimizerFactory.forCwtSeparatorType() = get(CwtSeparatorTypeOptimizer)
