@@ -118,7 +118,7 @@ private class ParadoxScriptExpressionImpl2(
 ) : ParadoxScriptExpressionBase() {
     override val value: String = text.unquote()
     override val quoted: Boolean = text.isLeftQuoted()
-    override val type: ParadoxExpressionType = ParadoxTypeResolver.resolveType(value)
+    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveType(value)
 }
 
 private class ParadoxScriptExpressionImpl3(
@@ -127,7 +127,7 @@ private class ParadoxScriptExpressionImpl3(
     override val isKey: Boolean?,
 ) : ParadoxScriptExpressionBase() {
     override val text: String = if (quoted) value.quote() else value
-    override val type: ParadoxExpressionType = ParadoxTypeResolver.resolveType(value)
+    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveType(value)
 }
 
 private class ParadoxScriptExpressionImpl4(
@@ -136,7 +136,7 @@ private class ParadoxScriptExpressionImpl4(
     override val text: String = element.text
     override val value: String = element.value
     override val quoted: Boolean = text.isLeftQuoted()
-    override val type: ParadoxExpressionType = ParadoxTypeResolver.resolveType(value)
+    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveType(value)
     override val isKey: Boolean = element is ParadoxScriptPropertyKey
 }
 

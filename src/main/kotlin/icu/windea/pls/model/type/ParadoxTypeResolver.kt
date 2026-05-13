@@ -2,7 +2,7 @@ package icu.windea.pls.model.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import icu.windea.pls.core.orNull
+import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.text.TextMatcher
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -27,47 +27,17 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("unused")
 object ParadoxTypeResolver {
-    private val dateFieldFormatters = ConcurrentHashMap<String, DateTimeFormatter>()
-
-    fun resolveType(value: String): ParadoxExpressionType {
+    fun resolveType(text: String): ParadoxExpressionType {
         return when {
-            value.isEmpty() -> ParadoxExpressionType.String
-            isBoolean(value) -> ParadoxExpressionType.Boolean
-            isInt(value) -> ParadoxExpressionType.Int
-            isFloat(value) -> ParadoxExpressionType.Float
+            text.isEmpty() -> ParadoxExpressionType.String
+            text.isLeftQuoted() -> ParadoxExpressionType.String
+            text == "yes" || text == "no" -> ParadoxExpressionType.Boolean
+            TextMatcher.matchesInt(text) -> ParadoxExpressionType.Int
+            TextMatcher.matchesFloat(text) -> ParadoxExpressionType.Float
             else -> ParadoxExpressionType.String
-        }
-    }
-
-    fun isBoolean(value: String): Boolean {
-        return value == "yes" || value == "no"
-    }
-
-    fun isInt(value: String): Boolean {
-        return TextMatcher.matchesInt(value)
-    }
-
-    fun isFloat(value: String): Boolean {
-        return TextMatcher.matchesFloat(value)
-    }
-
-    fun isPercentageField(value: String): Boolean {
-        return value.length >= 2 && value.last() == '%' && TextMatcher.matchesInt(value, 0, value.length - 1, leadingUnary = false)
-    }
-
-    fun isDateField(expression: String, datePattern: String?): Boolean {
-        return try {
-            val pattern = datePattern?.orNull() ?: "y.M.d"
-            val dateTimeFormatter = dateFieldFormatters.getOrPut(pattern) { DateTimeFormatter.ofPattern(pattern) }
-            dateTimeFormatter.parse(expression)
-            true
-        } catch (_: Exception) {
-            false
         }
     }
 

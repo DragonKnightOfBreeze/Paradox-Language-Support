@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.text.TextMatcher
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
-import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
 
@@ -23,13 +23,13 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchBool(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
-        val r = ParadoxTypeResolver.isBoolean(value)
+        val r = value == "yes" || value == "no"
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchInt(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
-        val r = value.isEmpty() || ParadoxTypeResolver.isInt(value) // empty value is allowed
+        val r = value.isEmpty() || TextMatcher.matchesInt(value) // empty value is allowed
         if (!r) return ParadoxMatchResult.NotMatch
         ParadoxMatchResultProvider.forRangedInt(value, context.configExpression)?.let { return it }
         return ParadoxMatchResult.ExactMatch
@@ -37,7 +37,7 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchFloat(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
-        val r = value.isEmpty() || ParadoxTypeResolver.isFloat(value) // empty value is allowed
+        val r = value.isEmpty() || TextMatcher.matchesFloat(value) // empty value is allowed
         if (!r) return ParadoxMatchResult.NotMatch
         ParadoxMatchResultProvider.forRangedFloat(value, context.configExpression)?.let { return it }
         return ParadoxMatchResult.ExactMatch

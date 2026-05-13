@@ -8,6 +8,7 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.text.TextMatcher
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -62,7 +63,6 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val r = when {
             context.expression.isKey == true -> true // key -> ok
             context.expression.type == ParadoxExpressionType.Boolean -> true // boolean -> sadly, also ok for compatibility
-            context.expression.type.isLenientInt() -> true // number -> ok according to vanilla game files
             context.expression.type.isLenientFloat() -> true // number -> ok according to vanilla game files
             context.expression.type.isLenientString() -> true // unquoted/quoted string -> ok
             else -> false
@@ -119,14 +119,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = ParadoxTypeResolver.isPercentageField(context.expression.value)
+        val r = TextMatcher.matchesPercentageField(context.expression.value, leadingUnary = false)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.value
-        val r = ParadoxTypeResolver.isDateField(context.expression.value, datePattern)
+        val r = TextMatcher.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
