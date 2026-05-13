@@ -27,7 +27,7 @@ sealed interface ParadoxMatchResult {
     }
 
     /** 可容忍的精确匹配。在语义解析阶段会认为不是正确的表达式，因而给出警告或错误。 */
-    data object ToleratedExactMatch : ParadoxMatchResult, DirectMatch {
+    data object LenientExactMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 

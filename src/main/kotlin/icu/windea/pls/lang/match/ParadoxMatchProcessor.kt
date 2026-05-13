@@ -8,7 +8,7 @@ object ParadoxMatchProcessor {
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
         // 步骤：
-        // - 处理精确匹配（`ExactMatch` `ToleratedExactMatch`），如果有结果，则仅使用这些结果，并直接返回
+        // - 处理精确匹配（`ExactMatch` `LenientExactMatch`），如果有结果，则仅使用这些结果，并直接返回
         // - 处理需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
         // - 处理需要检测作用域上下文的匹配（`LazyScopeAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
         // - 处理其余的各种直接匹配，如果有结果，则仅使用这些结果
@@ -25,7 +25,7 @@ object ParadoxMatchProcessor {
     }
 
     private fun process(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
-        processUnchecked(candidates, matched) { it.result is ParadoxMatchResult.ExactMatch || it.result is ParadoxMatchResult.ToleratedExactMatch }
+        processUnchecked(candidates, matched) { it.result is ParadoxMatchResult.ExactMatch || it.result is ParadoxMatchResult.LenientExactMatch }
         if (matched.isNotEmpty()) return
 
         processMain(candidates, matched, options)
