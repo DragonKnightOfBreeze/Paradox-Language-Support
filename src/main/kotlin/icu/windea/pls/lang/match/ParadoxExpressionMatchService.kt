@@ -9,7 +9,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
 object ParadoxExpressionMatchService {
@@ -28,7 +28,7 @@ object ParadoxExpressionMatchService {
         return ParadoxMatchResult.NotMatch
     }
 
-    fun matchesConstant(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
+    fun matchesConstant(expression: ParadoxExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         // 注意这里可能需要在同一循环中同时检查 keyExpression 和 valueExpression，因此这里需要特殊处理
         if (!matchesExpressionRole(expression, configExpression)) return false
 
@@ -40,7 +40,7 @@ object ParadoxExpressionMatchService {
         }
     }
 
-    fun matchesExpressionRole(expression: ParadoxScriptExpression, configExpression: CwtDataExpression): Boolean {
+    fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {
         return when (expression.role) {
             ParadoxExpressionRole.Key -> configExpression.isKey
             ParadoxExpressionRole.Value -> !configExpression.isKey
@@ -48,7 +48,7 @@ object ParadoxExpressionMatchService {
         }
     }
 
-    fun getMatchedAliasKey(element: PsiElement, expression: ParadoxScriptExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
+    fun getMatchedAliasKey(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(expression.value) // 不区分大小写
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null

@@ -15,7 +15,7 @@ import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.ParadoxExpressionType
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
@@ -44,7 +44,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         val filteredGroup = filtered.groupBy { it.key }.values.filter { it.count() > 1 }
         if (filteredGroup.isEmpty()) return null
         val blockElement = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
-        val blockExpression = ParadoxScriptExpression.resolveBlock()
+        val blockExpression = ParadoxExpression.resolveBlock()
         val configsToRemove = FastSet<CwtPropertyConfig>()
         filteredGroup.forEachFast f1@{ filteredConfigs ->
             filteredConfigs.forEachFast f2@{ filteredConfig ->

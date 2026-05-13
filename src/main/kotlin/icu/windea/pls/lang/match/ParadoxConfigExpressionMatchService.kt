@@ -7,7 +7,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.unquote
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 
 object ParadoxConfigExpressionMatchService {
     fun matchesTemplate(
@@ -30,7 +30,7 @@ object ParadoxConfigExpressionMatchService {
             val matchGroup = matchResult.groups.get(i++) ?: return false
             val matchValue = matchGroup.value
             if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
-            val context = ParadoxScriptExpressionMatchContext(element, ParadoxScriptExpression.resolve(matchValue), snippetExpression, null, configGroup, options)
+            val context = ParadoxScriptExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), snippetExpression, null, configGroup, options)
             val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             if (!matched) return false
         }

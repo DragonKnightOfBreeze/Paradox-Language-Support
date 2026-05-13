@@ -60,7 +60,7 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.type.ParadoxMemberRole
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -234,9 +234,9 @@ object ParadoxConfigService {
         val memberPath = context.memberPath ?: return emptyList() // 忽略
         if (memberPath.isEmpty()) return emptyList() // 忽略
         val subPath = memberPath.subPaths.last()
-        val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, role = ParadoxExpressionRole.Key)
+        val expression = ParadoxExpression.resolve(subPath, quoted = false, role = ParadoxExpressionRole.Key)
         val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
-        val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
+        val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
         val configGroup = context.configGroup
         val element = context.element
@@ -321,7 +321,7 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxScriptExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+    private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
             val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
@@ -332,7 +332,7 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxScriptExpression): List<CwtValueConfig>? {
+    private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxExpression): List<CwtValueConfig>? {
         // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
 
         if (element == null) return null
@@ -401,7 +401,7 @@ object ParadoxConfigService {
                 if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
-                val keyExpression = element.propertyKey.let { ParadoxScriptExpression.resolve(it, options) }
+                val keyExpression = element.propertyKey.let { ParadoxExpression.resolve(it, options) }
                 val candidatesForKey = ParadoxMatchPipeline.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
@@ -411,7 +411,7 @@ object ParadoxConfigService {
                 if (resultForKey.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
-                val valueExpression = element.propertyValue?.let { ParadoxScriptExpression.resolve(it, options) }
+                val valueExpression = element.propertyValue?.let { ParadoxExpression.resolve(it, options) }
                 if (valueExpression == null) return resultForKey // 如果无法得到值表达式，则返回所有匹配键的规则
                 val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
@@ -429,8 +429,8 @@ object ParadoxConfigService {
 
                 ProgressManager.checkCanceled()
                 val valueExpression = when (element) {
-                    is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
-                    is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, options)
+                    is ParadoxScriptFile -> ParadoxExpression.resolveBlock()
+                    is ParadoxScriptValue -> ParadoxExpression.resolve(element, options)
                     else -> null
                 }
                 if (valueExpression == null) return configs // 如果无法得到值表达式，则返回所有上下文值规则

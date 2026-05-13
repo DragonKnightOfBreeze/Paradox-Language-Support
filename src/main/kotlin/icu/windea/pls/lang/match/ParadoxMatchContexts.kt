@@ -10,7 +10,7 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
  * 脚本表达式的匹配上下文。
@@ -25,7 +25,7 @@ import icu.windea.pls.model.expressions.ParadoxScriptExpression
  */
 data class ParadoxScriptExpressionMatchContext(
     val element: PsiElement,
-    val expression: ParadoxScriptExpression,
+    val expression: ParadoxExpression,
     val configExpression: CwtDataExpression,
     val config: CwtConfig<*>?,
     val configGroup: CwtConfigGroup,
@@ -46,7 +46,7 @@ data class ParadoxScriptExpressionMatchContext(
  */
 data class ParadoxScriptExpressionMatchOptimizerContext(
     val element: PsiElement,
-    val expression: ParadoxScriptExpression,
+    val expression: ParadoxExpression,
     val configGroup: CwtConfigGroup,
     val options: ParadoxMatchOptions? = null,
 ) {

@@ -17,8 +17,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNod
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.type.ParadoxExpressionType
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 /**
  * 变量字段表达式。

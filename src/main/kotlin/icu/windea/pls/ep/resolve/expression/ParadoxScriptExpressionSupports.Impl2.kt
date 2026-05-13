@@ -44,7 +44,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -330,7 +330,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasName = configExpression?.value ?: return
         val aliasGroup = configGroup.aliasGroups.get(aliasName) ?: return
         val quoted = element.text.isLeftQuoted()
-        val aliasExpression = ParadoxScriptExpression.resolve(expressionText, quoted)
+        val aliasExpression = ParadoxExpression.resolve(expressionText, quoted)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return
         val aliasConfig = aliasGroup[aliasSubName]?.first() ?: return
         ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, holder, aliasConfig)
@@ -342,7 +342,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
         val quoted = element.text.isLeftQuoted()
         val role = if (isKey == true) ParadoxExpressionRole.Key else if (isKey == false) ParadoxExpressionRole.Value else ParadoxExpressionRole.Other
-        val aliasExpression = ParadoxScriptExpression.resolve(expressionText, quoted, role)
+        val aliasExpression = ParadoxExpression.resolve(expressionText, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
         return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey, exact)
@@ -354,7 +354,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptySet()
         val quoted = element.text.isLeftQuoted()
         val role = if (isKey == true) ParadoxExpressionRole.Key else if (isKey == false) ParadoxExpressionRole.Value else ParadoxExpressionRole.Other
-        val aliasExpression = ParadoxScriptExpression.resolve(expressionText, quoted, role)
+        val aliasExpression = ParadoxExpression.resolve(expressionText, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptySet()
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptySet()
         return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey)
