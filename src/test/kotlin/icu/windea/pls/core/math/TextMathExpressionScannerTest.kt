@@ -48,6 +48,18 @@ class TextMathExpressionScannerTest {
     }
 
     @Test
+    fun scan_simpleTest_failed_3() {
+        val source = "2.2 + 3.3 + ."
+        assertScanFailed(IllegalStateException::class.java, source)
+    }
+
+    @Test
+    fun scan_simpleTest_failed_4() {
+        val source = "2.2 + 3.3 + ..."
+        assertScanFailed(IllegalStateException::class.java, source)
+    }
+
+    @Test
     fun scan_complexTest_1() {
         val source = " 1 + 2 * 3 + (10 / 2 % 3 ^ 2) - | 1.0 - 2.0 | " // = 10.0
         val expect = listOf(

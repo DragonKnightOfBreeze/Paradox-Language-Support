@@ -62,18 +62,19 @@ class TextMathExpressionScanner(
     }
 
     private fun scanNumber(expectDot: Boolean = true) {
-        var isDouble = !expectDot
+        var expectDot = expectDot
         while (peek().isExactDigit()) advance()
         if (expectDot && peek() == '.') {
-            isDouble = true
+            expectDot = false
             advance()
             while (peek().isExactDigit()) advance()
         }
-        if (isDouble && peek() == '.') {
-            // e.g., `1.2.3`
-            throw IllegalStateException("Unexpected dot at offset $current")
+        if (!expectDot) {
+            if (current == start + 1) throw IllegalStateException("Unexpected single dot at offset $start")
+            if (peek() == '.') throw IllegalStateException("Unexpected duplicate dot at offset $current")
         }
         val text = source.substring(start, current)
+        val isDouble = !expectDot
         val result = resolveRsult(text, isDouble)
         addOperandToken(result)
     }
