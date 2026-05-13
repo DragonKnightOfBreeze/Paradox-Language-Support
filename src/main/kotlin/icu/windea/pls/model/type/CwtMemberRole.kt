@@ -1,7 +1,5 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.cwt.psi.CwtMember
-
 enum class CwtMemberRole {
     PROPERTY,
     PROPERTY_VALUE,

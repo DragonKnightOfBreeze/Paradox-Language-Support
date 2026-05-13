@@ -10,6 +10,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
 
 object ParadoxExpressionMatchService {
     // region Script Expression Related
@@ -27,16 +28,23 @@ object ParadoxExpressionMatchService {
         return ParadoxMatchResult.NotMatch
     }
 
-    fun isConstantMatch(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
+    fun matchesConstant(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         // 注意这里可能需要在同一循环中同时检查 keyExpression 和 valueExpression，因此这里需要特殊处理
-        if (configExpression.isKey && expression.isKey == false) return false
-        if (!configExpression.isKey && expression.isKey == true) return false
+        if (!matchesExpressionRole(expression, configExpression)) return false
 
         return when (configExpression.type) {
             CwtDataTypes.Constant -> true
             CwtDataTypes.EnumValue -> configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.value) } == true
             CwtDataTypes.Value -> configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.value) } == true
             else -> false
+        }
+    }
+
+    fun matchesExpressionRole(expression: ParadoxScriptExpression, configExpression: CwtDataExpression): Boolean {
+        return when (expression.role) {
+            ParadoxExpressionRole.Key -> configExpression.isKey
+            ParadoxExpressionRole.Value -> !configExpression.isKey
+            else -> true
         }
     }
 

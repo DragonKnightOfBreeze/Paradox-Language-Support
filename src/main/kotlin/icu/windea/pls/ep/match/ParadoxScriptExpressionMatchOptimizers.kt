@@ -25,7 +25,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.size <= 1) return null
         if (context.expression.type != ParadoxExpressionType.String) return null
-        val filtered = configs.filterFast { ParadoxExpressionMatchService.isConstantMatch(context.expression, it.configExpression, context.configGroup) }
+        val filtered = configs.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
         if (filtered.isEmpty()) return null
         return filtered
     }

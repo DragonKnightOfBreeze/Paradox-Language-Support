@@ -61,6 +61,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -233,9 +234,9 @@ object ParadoxConfigService {
         val memberPath = context.memberPath ?: return emptyList() // 忽略
         if (memberPath.isEmpty()) return emptyList() // 忽略
         val subPath = memberPath.subPaths.last()
-        val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
+        val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, role = ParadoxExpressionRole.Key)
         val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
-        val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, isKey = true) }
+        val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
         val configGroup = context.configGroup
         val element = context.element

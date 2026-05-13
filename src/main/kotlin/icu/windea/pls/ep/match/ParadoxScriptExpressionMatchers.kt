@@ -17,8 +17,8 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
-import icu.windea.pls.model.type.ParadoxTypeResolver
 
 class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
@@ -41,27 +41,21 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchInt(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // quoted number (e.g., "1") -> ok according to vanilla game files
-        val value = context.expression.value
-        val type = context.expression.type
-        val r = type.isLenientInt() || ParadoxTypeResolver.resolveType(value).isLenientInt()
-        if (!r) return ParadoxMatchResult.NotMatch
-        ParadoxMatchResultProvider.forRangedInt(value, context.configExpression)?.let { return it }
+        if (!context.expression.matchesInt()) return ParadoxMatchResult.NotMatch
+        ParadoxMatchResultProvider.forRangedInt(context.expression.value, context.configExpression)?.let { return it }
         return ParadoxMatchResult.ExactMatch
     }
 
     private fun matchFloat(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // quoted number (e.g., "1.0") -> ok according to vanilla game files
-        val value = context.expression.value
-        val type = context.expression.type
-        val r = type.isLenientFloat() || ParadoxTypeResolver.resolveType(value).isLenientFloat()
-        if (!r) return ParadoxMatchResult.NotMatch
-        ParadoxMatchResultProvider.forRangedFloat(value, context.configExpression)?.let { return it }
+        if (!context.expression.matchesFloat()) return ParadoxMatchResult.NotMatch
+        ParadoxMatchResultProvider.forRangedFloat(context.expression.value, context.configExpression)?.let { return it }
         return ParadoxMatchResult.ExactMatch
     }
 
     private fun matchScalar(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val r = when {
-            context.expression.isKey == true -> true // key -> ok
+            context.expression.role == ParadoxExpressionRole.Key -> true // key -> ok
             context.expression.type == ParadoxExpressionType.Boolean -> true // boolean -> sadly, also ok for compatibility
             context.expression.type.isLenientFloat() -> true // number -> ok according to vanilla game files
             context.expression.type.isLenientString() -> true // unquoted/quoted string -> ok
@@ -76,7 +70,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchBlock(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        if (context.expression.isKey != false) return ParadoxMatchResult.NotMatch
+        if (context.expression.role != ParadoxExpressionRole.Value) return ParadoxMatchResult.NotMatch
         if (context.expression.type != ParadoxExpressionType.Block) return ParadoxMatchResult.NotMatch
         if (context.config !is CwtMemberConfig) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultProvider.forBlock(context.element, context.config)
@@ -208,13 +202,13 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchValueFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        // 也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
+        // 兼容数字字面量（包括用引号括起的数字字面量）
         val value = context.expression.value
         val type = context.expression.type
         if (context.dataType == CwtDataTypes.ValueField) {
-            if (type.isLenientFloat() || ParadoxTypeResolver.resolveType(value).isLenientFloat()) return ParadoxMatchResult.ExactMatch
+            if (context.expression.matchesFloat()) return ParadoxMatchResult.ExactMatch
         } else if (context.dataType == CwtDataTypes.IntValueField) {
-            if (type.isLenientInt() || ParadoxTypeResolver.resolveType(value).isLenientInt()) return ParadoxMatchResult.ExactMatch
+            if (context.expression.matchesInt()) return ParadoxMatchResult.ExactMatch
         }
         if (!type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -222,13 +216,13 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchVariableFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        // 也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
+        // 兼容数字字面量（包括用引号括起的数字字面量）
         val value = context.expression.value
         val type = context.expression.type
         if (context.dataType == CwtDataTypes.VariableField) {
-            if (type.isLenientFloat() || ParadoxTypeResolver.resolveType(value).isLenientFloat()) return ParadoxMatchResult.ExactMatch
+            if (context.expression.matchesFloat()) return ParadoxMatchResult.ExactMatch
         } else if (context.dataType == CwtDataTypes.IntVariableField) {
-            if (type.isLenientInt() || ParadoxTypeResolver.resolveType(value).isLenientInt()) return ParadoxMatchResult.ExactMatch
+            if (context.expression.matchesInt()) return ParadoxMatchResult.ExactMatch
         }
         if (!type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch

@@ -59,7 +59,7 @@ class ParadoxTemplateSnippetNode(
 
     /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean {
-        val expression = ParadoxScriptExpression.resolve(text, null)
+        val expression = ParadoxScriptExpression.resolve(text)
         val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup)
         return ParadoxExpressionMatchService.matchScriptExpression(matchContext).get()
     }

@@ -16,6 +16,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -43,7 +44,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
-        val expression = ParadoxScriptExpression.resolve(setting.id, quoted = false, isKey = true)
+        val expression = ParadoxScriptExpression.resolve(setting.id, quoted = false, role = ParadoxExpressionRole.Key)
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matched = configsToMatch.find p@{ config ->
             if (config !is CwtPropertyConfig) return@p false

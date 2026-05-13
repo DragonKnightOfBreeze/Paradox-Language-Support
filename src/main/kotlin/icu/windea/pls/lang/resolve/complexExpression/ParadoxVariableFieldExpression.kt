@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.text.TextMatcher
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
@@ -72,7 +73,7 @@ private class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableFieldE
         if (!incomplete && text.isEmpty()) return null
 
         // skip if text is a number
-        if (isNumber(text)) return null
+        if (TextMatcher.matchesFloat(text)) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
@@ -125,10 +126,6 @@ private class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableFieldE
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()
         return expression
-    }
-
-    private fun isNumber(text: String): Boolean {
-        return ParadoxScriptExpression.resolve(text).type.let { it == ParadoxExpressionType.Int || it == ParadoxExpressionType.Float }
     }
 }
 
