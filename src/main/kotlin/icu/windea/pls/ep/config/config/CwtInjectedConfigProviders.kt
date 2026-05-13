@@ -45,12 +45,12 @@ class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConf
 }
 
 class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
-    // 如果 Stellaris 中的脚本表达式至少匹配 `<technology.repeatable>`，则它也可以匹配 `<technology_with_level>`
+    // 如果 Stellaris 中的脚本表达式至少匹配 `<technology.repeatable>`，则它也可以匹配 `$technology_with_level`
     // https://github.com/cwtools/cwtools-vscode/issues/58
 
     private val logger = thisLogger()
     private val expressions = listOf("<technology>", "<technology.repeatable>")
-    private val injectedExpressions = listOf("<technology_with_level>")
+    private val injectedExpressions = listOf("\$technology_with_level")
 
     override fun supports(parentConfig: CwtMemberConfig<*>): Boolean {
         val gameType = parentConfig.configGroup.gameType

@@ -1811,7 +1811,7 @@ Matches technology references with levels (e.g. `some_repeatable_tech@1`), where
 Limited to the Stellaris game type. Lower priority than [Definition](#data-type-definition).
 
 Data expression format:
-- `<technology_with_level>`
+- `$technology_with_level`
 
 ### Alias Data Types {#data-types-alias}
 

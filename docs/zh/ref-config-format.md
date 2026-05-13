@@ -1821,7 +1821,7 @@ title
 仅限 Stellaris 游戏类型，且优先级低于 [Definition](#data-type-definition)。
 
 对应的数据表达式的格式：
-- `<technology_with_level>`
+- `$technology_with_level`
 
 ### 别名数据类型 {#data-types-alias}
 

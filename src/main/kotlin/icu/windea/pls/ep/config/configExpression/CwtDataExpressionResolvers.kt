@@ -141,7 +141,7 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
 
         fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
         fromLiteral(CwtDataTypes.MeshLocator, "\$mesh_locator")
-        fromLiteral(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>")
+        fromLiteral(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
     }
 }
 

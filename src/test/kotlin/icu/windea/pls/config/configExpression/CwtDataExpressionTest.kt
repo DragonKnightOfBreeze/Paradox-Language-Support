@@ -320,7 +320,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             assertEquals(CwtDataTypes.ShaderEffect, CwtDataExpression.resolve("\$shader_effect", false).type)
             assertEquals(CwtDataTypes.MeshLocator, CwtDataExpression.resolve("\$mesh_locator", false).type)
-            assertEquals(CwtDataTypes.TechnologyWithLevel, CwtDataExpression.resolve("<technology_with_level>", false).type)
+            assertEquals(CwtDataTypes.TechnologyWithLevel, CwtDataExpression.resolve("\$technology_with_level", false).type)
         }
     }
 
