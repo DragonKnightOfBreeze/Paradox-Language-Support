@@ -24,7 +24,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -129,7 +129,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     val isKeyElement = contextElement is ParadoxScriptPropertyKey
     val isStringElement = contextElement is ParadoxScriptString
     val isKey = context.isKey
-    val isBlockConfig = targetConfig?.let { it.valueType == CwtType.Block } ?: false
+    val isBlockConfig = targetConfig?.let { it.valueType == CwtExpressionType.Block } ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null

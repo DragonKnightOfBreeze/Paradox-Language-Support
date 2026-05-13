@@ -8,26 +8,16 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtBlock
-import icu.windea.pls.cwt.psi.CwtBoolean
 import icu.windea.pls.cwt.psi.CwtExpressionElement
-import icu.windea.pls.cwt.psi.CwtFloat
-import icu.windea.pls.cwt.psi.CwtInt
-import icu.windea.pls.cwt.psi.CwtPropertyKey
-import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isOptionBlockValue
-import icu.windea.pls.cwt.psi.isOptionValue
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtTypeResolver
 
 object CwtTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
         if (element.language !is CwtLanguage) return false
         return when {
-            element is CwtExpressionElement -> {
-                if (element is CwtValue && (element.isOptionValue() || element.isOptionBlockValue())) return false
-                true
-            }
+            element is CwtExpressionElement -> true
             else -> false
         }
     }
@@ -40,22 +30,27 @@ object CwtTypeManager {
     }
 
     /**
-     * 基本类型 - 基于 PSI 的类型。
+     * 表达式 - 如果 [element] 表示一个表达式则可用。
      */
-    fun getType(element: PsiElement): CwtType {
+    fun getExpression(element: PsiElement): String? {
         return when (element) {
-            is CwtPropertyKey -> CwtType.String
-            is CwtBoolean -> CwtType.Boolean
-            is CwtInt -> CwtType.Int
-            is CwtFloat -> CwtType.Float
-            is CwtString -> CwtType.String
-            is CwtBlock -> CwtType.Block
-            else -> CwtType.Unknown
+            is CwtExpressionElement -> CwtTypeResolver.resolveExpression(element)
+            else -> null
         }
     }
 
     /**
-     * 规则类型 - 当 PSI 表示一个规则时可用，基于规则的位置。
+     * 类型 - 如果 [element] 表示一个表达式则可用。
+     */
+    fun getType(element: PsiElement): String? {
+        return when (element) {
+            is CwtExpressionElement -> CwtTypeResolver.resolveExpressionType(element).id
+            else -> null
+        }
+    }
+
+    /**
+     * 规则类型 - 如果 [element] 表示一个规则则可用。
      */
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if (!isTypedElement(element)) return null

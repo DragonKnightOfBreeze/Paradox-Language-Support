@@ -10,7 +10,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
@@ -72,7 +72,7 @@ object ParadoxMatchOccurrenceService {
                 is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)
                 else -> return@f
             }
-            val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
+            val isParameterized = expression.type == ParadoxExpressionType.String && expression.value.isParameterized()
             // may contain parameter -> can't and should not get occurrences
             if (isParameterized) {
                 occurrences.clear()

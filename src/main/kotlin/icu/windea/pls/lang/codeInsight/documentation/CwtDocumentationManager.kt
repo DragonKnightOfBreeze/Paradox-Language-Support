@@ -37,7 +37,6 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isExpression
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
@@ -182,8 +181,8 @@ object CwtDocumentationManager {
 
         return buildDocumentation {
             val name = element.name
-            val configType = element.configType
             val project = element.project
+            val configType = CwtConfigManager.getConfigType(element)
             val configGroup = getConfigGroup(element, originalElement, project)
             if (!hint) initSections()
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)

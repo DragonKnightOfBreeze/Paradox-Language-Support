@@ -80,6 +80,11 @@ public class CwtPropertyImpl extends ASTWrapperPsiElement implements CwtProperty
   }
 
   @Override
+  public @NotNull String getExpression() {
+    return CwtPsiImplUtil.getExpression(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return CwtPsiImplUtil.getResolveScope(this);
   }

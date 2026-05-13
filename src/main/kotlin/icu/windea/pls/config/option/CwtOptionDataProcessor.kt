@@ -19,7 +19,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 
@@ -187,7 +187,7 @@ object CwtOptionDataProcessor {
         optionConfigs.forEachFast f@{ optionConfig ->
             if (optionConfig !is CwtOptionConfig) return@f
             val k = optionConfig.key
-            val o = optionConfig.separatorType == CwtSeparatorType.EQUAL
+            val o = optionConfig.separatorType == CwtSeparatorType.Equal
             val v = ReversibleValue(optionConfig.value, o)
             r[k] = v
         }
@@ -220,7 +220,7 @@ object CwtOptionDataProcessor {
 
     private fun resolveTypeKeyFilter(config: CwtOptionConfig): ReversibleValue<Set<@CaseInsensitive String>>? {
         val values = config.getOptionValueOrValues() ?: return null
-        val operator = config.separatorType == CwtSeparatorType.EQUAL
+        val operator = config.separatorType == CwtSeparatorType.Equal
         val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val r = ReversibleValue(set.optimized(), operator)
         return r

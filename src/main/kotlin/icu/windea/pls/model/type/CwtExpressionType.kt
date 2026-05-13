@@ -1,6 +1,8 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.type
 
-enum class CwtType(val id: String) {
+import icu.windea.pls.cwt.psi.CwtExpressionElement
+
+enum class CwtExpressionType(val id: String) {
     Unknown("(unknown)"),
     Boolean("boolean"),
     Int("int"),

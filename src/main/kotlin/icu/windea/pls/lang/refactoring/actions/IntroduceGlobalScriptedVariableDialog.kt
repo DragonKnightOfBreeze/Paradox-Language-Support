@@ -20,9 +20,8 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.resolve.ParadoxTypeService
+import icu.windea.pls.lang.util.ParadoxNameValidators
 
 class IntroduceGlobalScriptedVariableDialog(
     private val project: Project,
@@ -76,7 +75,6 @@ class IntroduceGlobalScriptedVariableDialog(
                         .align(Align.FILL)
                         .resizableColumn()
                         .focused()
-                        .validationOnApply { validateScriptedVariableValue() }
                 }
             }
             row {
@@ -122,15 +120,6 @@ class IntroduceGlobalScriptedVariableDialog(
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
         } else if (!ParadoxNameValidators.checkScriptedVariableName(variableName)) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
-        }
-        return null
-    }
-
-    private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
-        if (variableValue.isEmpty()) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
-        } else if (!ParadoxTypeService.isPossibleScriptedVariableValue(ParadoxTypeService.resolve(variableValue))) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
         }
         return null
     }

@@ -8,12 +8,14 @@ import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.util.values.FallbackStrings
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
- * - 基本类型 - 基于 PSI 的类型。
- * - 规则类型 - 当 PSI 表示一个规则时可用，基于规则的位置。
+ * - 表达式 - 如果表示一个表达式则可用。
+ * - 类型 - 如果表示一个表达式则可用。
+ * - 规则类型 - 如果表示一个规则则可用。
  */
 class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     // com.intellij.codeInsight.hint.JavaTypeProvider
@@ -23,7 +25,8 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     }
 
     override fun getInformationHint(element: PsiElement): @NlsContexts.HintText String {
-        return CwtTypeManager.getType(element).id
+        CwtTypeManager.getType(element)?.let { return it }
+        return FallbackStrings.unknown
     }
 
     override fun getErrorHint(): @NlsContexts.HintText String {
@@ -37,7 +40,10 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getAdvancedInformationHint(element: PsiElement): @NlsContexts.HintText String {
         val map = buildMap {
             val type = CwtTypeManager.getType(element)
-            type.let { this[PlsBundle.message("title.cwtType")] = it.id }
+            type?.let { this[PlsBundle.message("title.cwtType")] = it }
+
+            val expression = CwtTypeManager.getExpression(element)
+            expression?.let { this[PlsBundle.message("title.expression")] = it }
 
             val configType = CwtConfigManager.getConfigType(element)
             configType?.let { this[PlsBundle.message("title.cwtConfigType")] = it.id }

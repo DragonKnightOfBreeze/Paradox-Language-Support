@@ -19,6 +19,7 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
@@ -140,6 +141,13 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getMembers(element: CwtProperty): List<CwtMember>? {
         return getMembersRoot(element)?.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getExpression(element: CwtProperty): String {
+        val keyExpression = element.propertyKey.expression
+        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
+        return "$keyExpression = $valueExpression"
     }
 
     // endregion

@@ -90,7 +90,7 @@
       "patterns": [
         {
           "name": "variable.key.quoted.double.paradox.script",
-          "begin": "\"(?=([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
+          "begin": "\"(?=([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?\\s*(?:=|!=|\\?=|<|>|<=|>=))",
           "end": "\"",
           "patterns": [
             { "include": "#parameters" },
@@ -99,7 +99,7 @@
         },
         {
           "name": "variable.key.unquoted.paradox.script",
-          "begin": "(?=[^@#=<>!?{}\\[\\]\\s]+\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
+          "begin": "(?=[^@#=<>!?{}\\[\\]\\s]+\"?\\s*(?:=|!=|\\?=|<|>|<=|>=))",
           "end": "$|(?=[@#=<>!?{}\\[\\]\\s])",
           "patterns": [
             { "include": "#parameters" },
@@ -154,7 +154,7 @@
     },
     "operators": {
       "patterns": [
-        { "name": "keyword.operator.comparison.paradox.script", "match": "==|!=|<=|>=|<|>|\\?=|=" },
+        { "name": "keyword.operator.comparison.paradox.script", "match": "=|==|!=|<>|\\?=|<=|>=|<|>" },
         { "name": "keyword.operator.arithmetic.paradox.script", "match": "[+\\-*/%]" }
       ]
     }

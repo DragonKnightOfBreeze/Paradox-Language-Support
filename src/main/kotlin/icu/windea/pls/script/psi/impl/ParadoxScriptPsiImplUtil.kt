@@ -14,6 +14,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
@@ -192,6 +193,13 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
         return getMembersRoot(element)?.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getExpression(element: ParadoxScriptProperty): String {
+        val keyExpression = element.propertyKey.expression
+        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
+        return "$keyExpression = $valueExpression"
     }
 
     // endregion

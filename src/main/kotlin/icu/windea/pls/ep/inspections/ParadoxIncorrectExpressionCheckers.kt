@@ -20,7 +20,6 @@ import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameType
-import icu.windea.pls.lang.expression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
@@ -32,9 +31,9 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -152,7 +151,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
-        if (resultTriggerConfigs.none { it.config.valueType != CwtType.Block }) {
+        if (resultTriggerConfigs.none { it.config.valueType != CwtExpressionType.Block }) {
             holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression))
         }
     }
@@ -181,7 +180,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         val hasParameters = selectScope { element.parentOfKey()?.parentOfKey()?.properties()?.ofKey("parameters")?.one() } != null
         if (hasParameters) {
-            if (resultTriggerConfigs.none { it.config.valueType == CwtType.Block }) {
+            if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
                 holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression))
             }
         } else {

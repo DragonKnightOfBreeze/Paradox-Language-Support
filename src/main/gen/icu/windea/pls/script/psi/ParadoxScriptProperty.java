@@ -43,6 +43,8 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @Nullable List<@NotNull ParadoxScriptMember> getMembers();
 
+  @NotNull String getExpression();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();

@@ -1,6 +1,7 @@
 package icu.windea.pls.model.constants
 
 object PlsStrings {
+
     const val optionPrefix = "(option)"
     const val optionFlagPrefix = "(option flag)"
     const val complexEnumValuePrefix = "(complex enum value)"
@@ -23,7 +24,7 @@ object PlsStrings {
     const val stringPrefix = "(string)"
     const val localePrefix = "(locale)"
     const val localisationPrefix = "(localisation)"
-    const val localisationSyncedPrefix = "(localisation_synced)"
+    const val localisationSyncedPrefix = "(synced localisation)"
     const val localisationPropertyPrefix = "(localisation property)"
     const val localisationColorPrefix = "(localisation color)"
     const val localisationIconPrefix = "(localisation icon)"

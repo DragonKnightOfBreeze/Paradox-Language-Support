@@ -4,9 +4,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
-import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import icu.windea.pls.model.ParadoxType
 
 object ParadoxCsvAnnotatedManager {
     // region Prefixes
@@ -27,10 +25,7 @@ object ParadoxCsvAnnotatedManager {
     fun getType(element: ParadoxCsvRowElement): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
         val columns = element.columnList.orNull() ?: return null
-        val types = columns.map { column ->
-            val type = column.let { ParadoxTypeManager.getType(it) } ?: ParadoxType.Unknown
-            type.id
-        }
+        val types = columns.map { column -> column.type }
         return types.joinToString(";", "## $typePrefix ")
     }
 

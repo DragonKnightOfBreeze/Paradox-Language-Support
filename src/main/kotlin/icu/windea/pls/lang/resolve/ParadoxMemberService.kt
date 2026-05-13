@@ -17,7 +17,7 @@ import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -203,6 +203,6 @@ object ParadoxMemberService {
      * 判断 [config] 对应的脚本属性是否允许使用比较运算符作为属性分隔符。要求显式使用 `==` 作为属性分隔符（而非常规的 `=`）。
      */
     fun isComparisonOperatorAllowed(config: CwtMemberConfig<*>): Boolean {
-        return config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
+        return config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DoubleEqual
     }
 }

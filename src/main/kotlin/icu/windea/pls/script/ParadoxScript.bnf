@@ -78,6 +78,7 @@ property ::= property_key property_separator property_value {
     getIcon getName setName getNameIdentifier getValue getDepth getBlock
     getIElementType isEquivalentTo
     getMembersRoot getMembers
+    getExpression
   ]
 }
 // can be parameterized

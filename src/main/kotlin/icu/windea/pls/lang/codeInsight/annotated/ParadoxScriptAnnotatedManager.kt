@@ -3,12 +3,12 @@ package icu.windea.pls.lang.codeInsight.annotated
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
+import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.scope.toScopeIdMap
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -37,13 +37,13 @@ object ParadoxScriptAnnotatedManager {
     fun getType(element: ParadoxScriptMember): String? {
         return when (element) {
             is ParadoxScriptProperty -> {
-                val keyType = ParadoxTypeManager.getType(element.propertyKey) ?: ParadoxType.Unknown
-                val valueType = element.propertyValue?.let { ParadoxTypeManager.getType(it) } ?: ParadoxType.Unknown
-                "## $typePrefix ${keyType.id} = ${valueType.id}"
+                val keyType = element.propertyKey.type.id
+                val valueType = element.propertyValue?.type?.id ?: FallbackStrings.unknown
+                "## $typePrefix ${keyType} = ${valueType}"
             }
             is ParadoxScriptValue -> {
-                val type = ParadoxTypeManager.getType(element) ?: ParadoxType.Unknown
-                "## $typePrefix ${type.id}"
+                val type = element.type.id
+                "## $typePrefix ${type}"
             }
             else -> null
         }
@@ -58,7 +58,7 @@ object ParadoxScriptAnnotatedManager {
      */
     fun getDefinitionType(element: ParadoxScriptMember): String? {
         if (element !is ParadoxScriptProperty) return null
-        val definitionType = ParadoxTypeManager.getDefinitionType(element.propertyKey) ?: return null
+        val definitionType = element.definitionCandidateInfo?.typeText ?: return null
         return "## $definitionTypePrefix $definitionType"
     }
 

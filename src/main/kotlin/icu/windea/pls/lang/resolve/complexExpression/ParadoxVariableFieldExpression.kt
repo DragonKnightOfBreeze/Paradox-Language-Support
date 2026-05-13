@@ -16,7 +16,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNod
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 /**
@@ -128,7 +128,7 @@ private class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableFieldE
     }
 
     private fun isNumber(text: String): Boolean {
-        return ParadoxScriptExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
+        return ParadoxScriptExpression.resolve(text).type.let { it == ParadoxExpressionType.Int || it == ParadoxExpressionType.Float }
     }
 }
 

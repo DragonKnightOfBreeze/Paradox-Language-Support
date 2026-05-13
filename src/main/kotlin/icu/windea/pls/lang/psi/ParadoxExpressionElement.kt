@@ -3,6 +3,8 @@ package icu.windea.pls.lang.psi
 import com.intellij.psi.NavigatablePsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.model.type.ParadoxExpressionType
+import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -18,4 +20,8 @@ interface ParadoxExpressionElement : NavigatablePsiElement {
     val value: String
 
     fun setValue(value: String): ParadoxExpressionElement
+
+    val expression: String get() = ParadoxTypeResolver.resolveExpression(this)
+
+    val type: ParadoxExpressionType get() = ParadoxTypeResolver.resolveExpressionType(this)
 }

@@ -57,6 +57,7 @@ property ::= property_key property_separator property_value {
     propertyKey="property_key" propertyValue="value"
     getIcon getName setName getNameIdentifier getValue
     getMembersRoot getMembers
+    getExpression
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {

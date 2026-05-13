@@ -10,8 +10,8 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.model.CwtSeparatorType
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtSeparatorType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,27 +40,27 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         val cQuoted = CwtPropertyConfig.resolve(pQuoted, file, group)!!
         assertEquals("quoted key", cQuoted.key)
         assertEquals("1", cQuoted.value)
-        assertEquals(CwtType.Int, cQuoted.valueType)
-        assertEquals(CwtSeparatorType.EQUAL, cQuoted.separatorType)
+        assertEquals(CwtExpressionType.Int, cQuoted.valueType)
+        assertEquals(CwtSeparatorType.Equal, cQuoted.separatorType)
 
         // not equals variants
         val pNe1 = root.findChild<CwtProperty> { it.name == "not_equal1" }!!
         val cNe1 = CwtPropertyConfig.resolve(pNe1, file, group)!!
-        assertEquals(CwtSeparatorType.NOT_EQUAL, cNe1.separatorType)
+        assertEquals(CwtSeparatorType.NotEqual, cNe1.separatorType)
         assertEquals("2", cNe1.value)
-        assertEquals(CwtType.Int, cNe1.valueType)
+        assertEquals(CwtExpressionType.Int, cNe1.valueType)
 
         val pNe2 = root.findChild<CwtProperty> { it.name == "not_equal2" }!!
         val cNe2 = CwtPropertyConfig.resolve(pNe2, file, group)!!
-        assertEquals(CwtSeparatorType.NOT_EQUAL, cNe2.separatorType)
+        assertEquals(CwtSeparatorType.NotEqual, cNe2.separatorType)
         assertEquals("3", cNe2.value)
-        assertEquals(CwtType.Int, cNe2.valueType)
+        assertEquals(CwtExpressionType.Int, cNe2.valueType)
 
         // string value unquotes
         val pStr = root.findChild<CwtProperty> { it.name == "str_prop" }!!
         val cStr = CwtPropertyConfig.resolve(pStr, file, group)!!
         assertEquals("s v", cStr.value)
-        assertEquals(CwtType.String, cStr.valueType)
+        assertEquals(CwtExpressionType.String, cStr.valueType)
     }
 
     @Test
@@ -69,7 +69,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         val root = file.block!!
         val p = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
-        assertEquals(CwtType.Block, c.valueType)
+        assertEquals(CwtExpressionType.Block, c.valueType)
         assertNotNull(c.configs)
         // block has 2 members: a(property) and val1(value)
         assertEquals(2, c.configs!!.size)
@@ -77,7 +77,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         val v = c.valueConfig
         assertNotNull(v)
         assertSame(c, v!!.propertyConfig)
-        assertEquals(CwtType.Block, v.valueType)
+        assertEquals(CwtExpressionType.Block, v.valueType)
         assertNotNull(v.configs)
         assertEquals(c.configs!!.size, v.configs!!.size)
     }
@@ -104,7 +104,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         run {
             val p = root.findChild<CwtProperty> { it.name == "empty_block_prop" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            assertEquals(CwtType.Block, c.valueType)
+            assertEquals(CwtExpressionType.Block, c.valueType)
             assertNotNull(c.configs)
             assertTrue(c.configs!!.isEmpty())
             val v = c.valueConfig
@@ -117,25 +117,25 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         run {
             val p = root.findChild<CwtProperty> { it.name == "prop_float_no_leading_zero" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            assertEquals(CwtType.Float, c.valueType)
+            assertEquals(CwtExpressionType.Float, c.valueType)
             assertEquals(".5", c.value)
         }
         run {
             val p = root.findChild<CwtProperty> { it.name == "prop_int_leading_zero" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            assertEquals(CwtType.Int, c.valueType)
+            assertEquals(CwtExpressionType.Int, c.valueType)
             assertEquals("007", c.value)
         }
         run {
             val p = root.findChild<CwtProperty> { it.name == "prop_int_negative" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            assertEquals(CwtType.Int, c.valueType)
+            assertEquals(CwtExpressionType.Int, c.valueType)
             assertEquals("-3", c.value)
         }
         run {
             val p = root.findChild<CwtProperty> { it.name == "prop_float_negative" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            assertEquals(CwtType.Float, c.valueType)
+            assertEquals(CwtExpressionType.Float, c.valueType)
             assertEquals("-0.75", c.value)
         }
     }
@@ -163,7 +163,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             )
             assertEquals(baseCfg.key, created.key)
             assertEquals(baseCfg.value, created.value)
-            assertEquals(CwtType.Block, created.valueType)
+            assertEquals(CwtExpressionType.Block, created.valueType)
             assertNotNull(created.configs)
             assertTrue(created.configs!!.isEmpty())
             // userData is not autofilled on create
@@ -177,13 +177,13 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
                 keyExpression = CwtDataExpression.resolveKey(baseCfg.key + "_c"),
                 valueExpression = baseCfg.valueExpression,
                 valueType = baseCfg.valueType,
-                separatorType = CwtSeparatorType.EQUAL,
+                separatorType = CwtSeparatorType.Equal,
                 configs = baseCfg.configs,
             )
             assertEquals(baseCfg.key + "_c", copied.key)
             assertEquals(baseCfg.value, copied.value)
             assertEquals(baseCfg.valueType, copied.valueType)
-            assertEquals(CwtSeparatorType.EQUAL, copied.separatorType)
+            assertEquals(CwtSeparatorType.Equal, copied.separatorType)
             assertEquals(baseCfg.configs?.size, copied.configs?.size)
             assertNull(copied.getUserData(extraKey))
         }
@@ -220,7 +220,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         val root = file.block!!
         val p = root.findChild<CwtProperty> { it.name == "str_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
-        assertEquals(CwtType.String, c.valueType)
+        assertEquals(CwtExpressionType.String, c.valueType)
         val d = c.delegatedWith(key = c.key + "_d", value = "x")
         assertNull(d.parentConfig)
         assertTrue(d.keyExpression.isKey)

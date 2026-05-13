@@ -13,8 +13,8 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -24,7 +24,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
     @Optimized
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.size <= 1) return null
-        if (context.expression.type != ParadoxType.String) return null
+        if (context.expression.type != ParadoxExpressionType.String) return null
         val filtered = configs.filterFast { ParadoxExpressionMatchService.isConstantMatch(context.expression, it.configExpression, context.configGroup) }
         if (filtered.isEmpty()) return null
         return filtered
@@ -39,7 +39,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
     @Optimized
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.isEmpty()) return null
-        val filtered = configs.filterFast { it.valueType == CwtType.Block && it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+        val filtered = configs.filterFast { it.valueType == CwtExpressionType.Block && it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
         if (filtered.isEmpty()) return null
         val filteredGroup = filtered.groupBy { it.key }.values.filter { it.count() > 1 }
         if (filteredGroup.isEmpty()) return null

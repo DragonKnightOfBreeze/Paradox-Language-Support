@@ -7,21 +7,18 @@ import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.model.scope.toScopeMap
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import org.jetbrains.uast.kotlin.orAnonymous
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
- * - 名字 - 如果 PSI 表示一个封装变量、定义、本地化或参数则可用。
- * - 表达式 - 如果 PSI 表示一个表达式则可用。
- * - 基本类型 - 基于 PSI 的类型。
- * - 定义类型 - 如果 PSI 是 [ParadoxScriptPropertyKey] 则可用。
- * - 本地化类型 - 如果 PSI 是 [ParadoxLocalisationProperty] 或 [ParadoxLocalisationParameter] 则可用。
+ * - 表达式 - 如果表示一个表达式、封装变量、封装变量引用、内联数学数字等则可用。
+ * - 类型 - 如果表示一个表达式、封装变量、封装变量引用、内联数学数字等则可用。
+ * - 名字 - 如果表示一个封装变量、封装变量引用、定义、定值变量、本地化等则可用。
+ * - 定义类型 - 如果表示一个定义候选（定义、定义注入、定义模板）则可用。
+ * - 本地化类型 - 如果表示一个本地化属性或本地化参数则可用。
  * - 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
  * - 规则表达式 - 如果存在对应的规则表达式则可用。
  * - 作用域上下文信息 - 如果存在则可用。
@@ -40,8 +37,8 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
         ParadoxTypeManager.getDefinitionType(element)?.let { return it.escapeXml() }
         ParadoxTypeManager.getLocalisationType(element)?.let { return it.id }
         ParadoxTypeManager.getConfigExpression(element)?.let { return it.escapeXml() }
-        ParadoxTypeManager.getType(element)?.let { return it.id }
-        return ParadoxType.Unknown.id
+        ParadoxTypeManager.getType(element)?.let { return it }
+        return FallbackStrings.unknown
     }
 
     override fun getErrorHint(): String {
@@ -54,14 +51,14 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
 
     override fun getAdvancedInformationHint(element: PsiElement): String {
         val map = buildMap {
-            val name = ParadoxTypeManager.getName(element)
-            name?.let { this[PlsBundle.message("title.name")] = it.orAnonymous() }
-
             val expression = ParadoxTypeManager.getExpression(element)
             expression?.let { this[PlsBundle.message("title.expression")] = it }
 
             val type = ParadoxTypeManager.getType(element)
-            type?.let { this[PlsBundle.message("title.type")] = it.id }
+            type?.let { this[PlsBundle.message("title.type")] = it }
+
+            val name = ParadoxTypeManager.getName(element)
+            name?.let { this[PlsBundle.message("title.name")] = it.orAnonymous() }
 
             val definitionType = ParadoxTypeManager.getDefinitionType(element)
             definitionType?.let { this[PlsBundle.message("title.definitionType")] = it }

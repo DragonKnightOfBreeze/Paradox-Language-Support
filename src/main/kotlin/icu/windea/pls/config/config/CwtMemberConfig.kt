@@ -7,7 +7,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 
 /**
  * 成员规则。
@@ -28,7 +28,7 @@ import icu.windea.pls.model.CwtType
  */
 sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T>, CwtOptionDataHolder {
     val value: String
-    val valueType: CwtType
+    val valueType: CwtExpressionType
     override val configs: List<CwtMemberConfig<*>>?
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()

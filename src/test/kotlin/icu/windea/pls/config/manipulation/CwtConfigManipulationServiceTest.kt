@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert.*
 import org.junit.Test
@@ -74,7 +74,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
         // ensure none of results are subtype[...] wrapper keys
         assertFalse(props.any { it.startsWith("subtype[") })
         // basic type sanity
-        list.filterIsInstance<CwtPropertyConfig>().forEach { assertNotEquals(CwtType.Block, it.valueType) }
+        list.filterIsInstance<CwtPropertyConfig>().forEach { assertNotEquals(CwtExpressionType.Block, it.valueType) }
     }
 
     @Test

@@ -21,7 +21,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
-import icu.windea.pls.lang.expression
 import icu.windea.pls.lang.inspections.PlsInspectionService
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement

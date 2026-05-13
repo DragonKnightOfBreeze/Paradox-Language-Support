@@ -9,7 +9,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -29,7 +29,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
 
         // 忽略类似 `event_namespace` 这样的定义的值不是子句的定义
-        if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return
+        if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtExpressionType.Block } == false) return
 
         val typeConfig = definitionInfo.typeConfig
         val subtypeConfigs = definitionInfo.subtypeConfigs

@@ -59,8 +59,9 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.model.ParadoxMemberRole
+import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -135,7 +136,7 @@ object ParadoxConfigService {
         val file = element.containingFile ?: return null
         val gameType = selectGameType(file) ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
-        val memberRole = ParadoxMemberRole.resolve(element)
+        val memberRole = ParadoxTypeResolver.resolveMemberRole(element)
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->

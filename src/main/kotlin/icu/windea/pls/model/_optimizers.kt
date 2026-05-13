@@ -2,6 +2,8 @@ package icu.windea.pls.model
 
 import icu.windea.pls.core.optimizer.Optimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
+import icu.windea.pls.model.type.CwtSeparatorType
+import icu.windea.pls.model.type.CwtExpressionType
 
 fun OptimizerFactory.forCwtType() = get(CwtTypeOptimizer)
 fun OptimizerFactory.forCwtSeparatorType() = get(CwtSeparatorTypeOptimizer)
@@ -9,13 +11,13 @@ fun OptimizerFactory.forParadoxGameType() = get(ParadoxGameTypeOptimizer)
 fun OptimizerFactory.forParadoxDefinitionSource() = get(ParadoxDefinitionSourceOptimizer)
 fun OptimizerFactory.forParadoxLocalisationType() = get(ParadoxLocalisationTypeOptimizer)
 
-private object CwtTypeOptimizer : Optimizer<CwtType, Byte> {
-    override fun optimize(input: CwtType): Byte {
+private object CwtTypeOptimizer : Optimizer<CwtExpressionType, Byte> {
+    override fun optimize(input: CwtExpressionType): Byte {
         return input.ordinal.toByte()
     }
 
-    override fun deoptimize(input: Byte): CwtType {
-        return CwtType.entries[input.toInt()]
+    override fun deoptimize(input: Byte): CwtExpressionType {
+        return CwtExpressionType.entries[input.toInt()]
     }
 }
 

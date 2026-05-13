@@ -31,7 +31,7 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -168,7 +168,7 @@ object CwtConfigManipulationService {
             val c1 = configs.single()
             val c2 = otherConfigs.single()
             if (c1 is CwtValueConfig && c2 is CwtValueConfig) {
-                if (c1.valueType == CwtType.Block && c2.valueType == CwtType.Block) {
+                if (c1.valueType == CwtExpressionType.Block && c2.valueType == CwtExpressionType.Block) {
                     val mergedConfigs = mergeConfigs(c1.configs.orEmpty(), c2.configs.orEmpty())
                     return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
                 }
@@ -354,7 +354,7 @@ object CwtConfigManipulationService {
             },
             valueType = when (inlineMode) {
                 CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueType
-                CwtConfigInlineMode.KEY_TO_VALUE -> CwtType.String
+                CwtConfigInlineMode.KEY_TO_VALUE -> CwtExpressionType.String
                 else -> config.valueType
             },
             configs = when (inlineMode) {
@@ -378,7 +378,7 @@ object CwtConfigManipulationService {
             pointer = emptyPointer(),
             configGroup = configGroup,
             valueExpression = CwtDataExpression.resolveBlock(),
-            valueType = CwtType.Block,
+            valueType = CwtExpressionType.Block,
             configs = configs,
         )
         mergeOptionData(inlined.optionData, config?.optionData) // merge option data

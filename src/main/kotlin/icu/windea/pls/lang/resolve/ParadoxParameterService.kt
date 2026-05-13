@@ -27,7 +27,7 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.expressions.ParadoxParameterConditionExpression
@@ -251,13 +251,13 @@ object ParadoxParameterService {
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.valueType == CwtType.Block }) return PlsBundle.message("complex")
+        if (configs.any { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return PlsBundle.message("complex")
         return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
     }
 
     fun getParameterizedKeyConfigs(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
         val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtType.Block }
+            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }
         if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
     }

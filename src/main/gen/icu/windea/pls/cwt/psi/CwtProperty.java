@@ -32,6 +32,8 @@ public interface CwtProperty extends CwtNamedElement, CwtMemberContainer, CwtMem
 
   @Nullable List<@NotNull CwtMember> getMembers();
 
+  @NotNull String getExpression();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();

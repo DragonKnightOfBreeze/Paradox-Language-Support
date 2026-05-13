@@ -20,7 +20,7 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -46,7 +46,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return emptyList()
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
-            if (resultTriggerConfig.config.valueType == CwtType.Block) continue // not simple trigger, skip
+            if (resultTriggerConfig.config.valueType == CwtExpressionType.Block) continue // not simple trigger, skip
             val inlined = CwtConfigManipulationService.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_KEY) ?: continue
             resultConfigs.add(inlined)
         }
@@ -84,7 +84,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return emptyList()
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
-            if (resultTriggerConfig.config.valueType != CwtType.Block) continue // not complex trigger, skip
+            if (resultTriggerConfig.config.valueType != CwtExpressionType.Block) continue // not complex trigger, skip
             val inlined = CwtConfigManipulationService.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }

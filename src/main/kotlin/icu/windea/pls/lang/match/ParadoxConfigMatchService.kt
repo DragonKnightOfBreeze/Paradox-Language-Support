@@ -34,7 +34,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.model.paths.ParadoxPath
@@ -520,7 +520,7 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesValueForComplexEnum(valueElement: ParadoxScriptValue, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
-        if (config.valueType == CwtType.Block) {
+        if (config.valueType == CwtExpressionType.Block) {
             val blockElement = valueElement.castOrNull<ParadoxScriptBlockElement>() ?: return false
             if (!matchesBlockForComplexEnum(blockElement, complexEnumConfig, config)) return false
             return true
