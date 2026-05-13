@@ -44,6 +44,7 @@ import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
@@ -71,16 +72,16 @@ object ParadoxMatchResultProvider {
         }
     }
 
-    fun forRangedInt(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
+    fun forRangedInt(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val intRange = configExpression.intRange ?: return null
-        val intValue = value.toIntOrNull() ?: return null
+        val intValue = expression.value.toIntOrNull() ?: return null
         val r = intValue in intRange
         return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
 
-    fun forRangedFloat(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
+    fun forRangedFloat(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val floatRange = configExpression.floatRange ?: return null
-        val floatValue = value.toFloatOrNull() ?: return null
+        val floatValue = expression.value.toFloatOrNull() ?: return null
         val r = floatValue in floatRange
         return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
@@ -170,6 +171,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // absolute file path -> treat as wildcard match
+        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) return ParadoxMatchResult.WildcardMatch
+
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 

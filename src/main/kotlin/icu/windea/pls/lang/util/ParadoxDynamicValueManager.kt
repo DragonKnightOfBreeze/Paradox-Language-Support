@@ -15,9 +15,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 @Suppress("unused")
 object ParadoxDynamicValueManager {
-    fun getName(expression: String): String? {
-        return expression.substringBefore('@').orNull()
-    }
 
     fun getReadWriteAccess(configExpression: CwtDataExpression): Access {
         return when (configExpression.type) {

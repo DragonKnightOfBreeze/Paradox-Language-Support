@@ -9,14 +9,12 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.text.TextMatcher
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
-import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 
@@ -41,16 +39,20 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchInt(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // quoted number (e.g., "1") -> ok according to vanilla game files
-        if (!context.expression.matchesInt()) return ParadoxMatchResult.NotMatch
-        ParadoxMatchResultProvider.forRangedInt(context.expression.value, context.configExpression)?.let { return it }
-        return ParadoxMatchResult.ExactMatch
+        if (context.expression.matchesInt()) {
+            ParadoxMatchResultProvider.forRangedInt(context.expression, context.configExpression)?.let { return it }
+            return ParadoxMatchResult.ExactMatch
+        }
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchFloat(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // quoted number (e.g., "1.0") -> ok according to vanilla game files
-        if (!context.expression.matchesFloat()) return ParadoxMatchResult.NotMatch
-        ParadoxMatchResultProvider.forRangedFloat(context.expression.value, context.configExpression)?.let { return it }
-        return ParadoxMatchResult.ExactMatch
+        if (context.expression.matchesFloat()) {
+            ParadoxMatchResultProvider.forRangedFloat(context.expression, context.configExpression)?.let { return it }
+            return ParadoxMatchResult.ExactMatch
+        }
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchScalar(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -86,7 +88,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.Localisation, CwtDataTypes.SuffixAwareLocalisation -> matchLocalisation(context)
             CwtDataTypes.SyncedLocalisation, CwtDataTypes.SuffixAwareSyncedLocalisation -> matchSyncedLocalisation(context)
             CwtDataTypes.InlineLocalisation -> matchInlineLocalisation(context)
-            CwtDataTypes.AbsoluteFilePath -> matchAbsoluteFilePath(context)
             in CwtDataTypeSets.PathReference -> matchPathReference(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
             in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
@@ -125,12 +126,11 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchDefinition(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        val expression = context.expression.value
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
-        if (!expression.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        return ParadoxMatchResultProvider.forDefinition(context.element, context.project, expression, context.configExpression)
+        return ParadoxMatchResultProvider.forDefinition(context.element, context.project, context.expression.value, context.configExpression)
     }
 
     private fun matchLocalisation(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -153,11 +153,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forLocalisation(context.element, context.project, context.expression.value, context.configExpression)
-    }
-
-    private fun matchAbsoluteFilePath(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        return ParadoxMatchResult.WildcardMatch
     }
 
     private fun matchPathReference(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -188,8 +183,8 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchDynamicValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (context.expression.type.isBlockLike()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        val name = ParadoxDynamicValueManager.getName(context.expression.value) ?: return ParadoxMatchResult.NotMatch
-        if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
+        val name = context.expression.value.substringBefore('@')
+        if (!name.isParameterAwareIdentifier(".")) return ParadoxMatchResult.NotMatch
         val dynamicValueType = context.configExpression.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch

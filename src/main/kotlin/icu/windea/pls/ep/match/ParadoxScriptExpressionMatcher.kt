@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  */
 interface ParadoxScriptExpressionMatcher {
     /**
-     * 是否支持将规则表达式作为通配符，然后进行匹配。
+     * 是否支持将规则表达式作为通配符，然后再进行匹配。
      *
      * @see ParadoxPatternMatchService
      */
