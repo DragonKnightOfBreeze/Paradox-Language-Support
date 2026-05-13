@@ -2,7 +2,7 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.core.text.TextMatcher
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult

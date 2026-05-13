@@ -3,7 +3,7 @@ package icu.windea.pls.model.type
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.text.TextMatcher
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

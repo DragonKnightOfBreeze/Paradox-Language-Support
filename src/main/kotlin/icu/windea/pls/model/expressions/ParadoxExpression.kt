@@ -2,7 +2,7 @@ package icu.windea.pls.model.expressions
 
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.text.TextMatcher
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
