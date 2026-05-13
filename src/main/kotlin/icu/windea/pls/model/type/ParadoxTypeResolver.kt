@@ -76,13 +76,13 @@ object ParadoxTypeResolver {
 
     fun resolveSeparatorType(text: String): ParadoxSeparatorType? {
         return when (text) {
-            "=" -> ParadoxSeparatorType.EQUAL
-            "!=", "<>" -> ParadoxSeparatorType.NOT_EQUAL
-            "?=" -> ParadoxSeparatorType.SAFE_EQUAL
-            "<" -> ParadoxSeparatorType.LT
-            ">" -> ParadoxSeparatorType.GT
-            "<=" -> ParadoxSeparatorType.LE
-            ">=" -> ParadoxSeparatorType.GE
+            "=" -> ParadoxSeparatorType.Equal
+            "!=", "<>" -> ParadoxSeparatorType.NotEqual
+            "?=" -> ParadoxSeparatorType.SafeEqual
+            "<" -> ParadoxSeparatorType.Lt
+            ">" -> ParadoxSeparatorType.Gt
+            "<=" -> ParadoxSeparatorType.Le
+            ">=" -> ParadoxSeparatorType.Ge
             else -> null
         }
     }
@@ -90,13 +90,13 @@ object ParadoxTypeResolver {
     fun resolveSeparatorType(element: PsiElement): ParadoxSeparatorType? {
         val elementType = element.elementType
         return when (elementType) {
-            ParadoxScriptElementTypes.EQUAL_SIGN -> ParadoxSeparatorType.EQUAL
-            ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> ParadoxSeparatorType.NOT_EQUAL
-            ParadoxScriptElementTypes.SAFE_EQUAL_SIGN -> ParadoxSeparatorType.SAFE_EQUAL
-            ParadoxScriptElementTypes.LT_SIGN -> ParadoxSeparatorType.LT
-            ParadoxScriptElementTypes.GT_SIGN -> ParadoxSeparatorType.GT
-            ParadoxScriptElementTypes.LE_SIGN -> ParadoxSeparatorType.LE
-            ParadoxScriptElementTypes.GE_SIGN -> ParadoxSeparatorType.GE
+            ParadoxScriptElementTypes.EQUAL_SIGN -> ParadoxSeparatorType.Equal
+            ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> ParadoxSeparatorType.NotEqual
+            ParadoxScriptElementTypes.SAFE_EQUAL_SIGN -> ParadoxSeparatorType.SafeEqual
+            ParadoxScriptElementTypes.LT_SIGN -> ParadoxSeparatorType.Lt
+            ParadoxScriptElementTypes.GT_SIGN -> ParadoxSeparatorType.Gt
+            ParadoxScriptElementTypes.LE_SIGN -> ParadoxSeparatorType.Le
+            ParadoxScriptElementTypes.GE_SIGN -> ParadoxSeparatorType.Ge
             else -> null
         }
     }
@@ -111,15 +111,15 @@ object ParadoxTypeResolver {
 
     fun resolveMemberRole(element: ParadoxScriptMember): ParadoxMemberRole {
         return when (element) {
-            is ParadoxScriptProperty -> ParadoxMemberRole.PROPERTY
+            is ParadoxScriptProperty -> ParadoxMemberRole.Property
             is ParadoxScriptValue -> when (element.parent) {
-                is ParadoxScriptProperty -> ParadoxMemberRole.PROPERTY_VALUE
-                is ParadoxScriptRootBlock -> ParadoxMemberRole.BLOCK_VALUE
-                is ParadoxScriptBlock -> ParadoxMemberRole.BLOCK_VALUE
-                is ParadoxScriptScriptedVariable -> ParadoxMemberRole.SCRIPTED_VARIABLE_VALUE
-                else -> ParadoxMemberRole.OTHER
+                is ParadoxScriptProperty -> ParadoxMemberRole.PropertyValue
+                is ParadoxScriptRootBlock -> ParadoxMemberRole.BlockValue
+                is ParadoxScriptBlock -> ParadoxMemberRole.BlockValue
+                is ParadoxScriptScriptedVariable -> ParadoxMemberRole.ScriptedVariableValue
+                else -> ParadoxMemberRole.Other
             }
-            else -> ParadoxMemberRole.OTHER
+            else -> ParadoxMemberRole.Other
         }
     }
 }

@@ -37,12 +37,12 @@ object ParadoxScriptAnnotatedManager {
     fun getType(element: ParadoxScriptMember): String? {
         return when (element) {
             is ParadoxScriptProperty -> {
-                val keyType = element.propertyKey.type.id
-                val valueType = element.propertyValue?.type?.id ?: FallbackStrings.unknown
+                val keyType = element.propertyKey.type.text
+                val valueType = element.propertyValue?.type?.text ?: FallbackStrings.unknown
                 "## $typePrefix ${keyType} = ${valueType}"
             }
             is ParadoxScriptValue -> {
-                val type = element.type.id
+                val type = element.type.text
                 "## $typePrefix ${type}"
             }
             else -> null

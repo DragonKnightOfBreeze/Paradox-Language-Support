@@ -85,9 +85,9 @@ object ParadoxTypeManager {
     fun getType(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptScriptedVariable -> element.scriptedVariableValue?.let { getType(it) }
-            is ParadoxScriptInlineMathNumber -> ParadoxTypeResolver.resolveType(element.text).id
+            is ParadoxScriptInlineMathNumber -> ParadoxTypeResolver.resolveType(element.text).text
             is ParadoxScriptedVariableReference -> element.reference?.resolve()?.let { getType(it) }
-            is ParadoxExpressionElement -> ParadoxTypeResolver.resolveExpressionType(element).id
+            is ParadoxExpressionElement -> ParadoxTypeResolver.resolveExpressionType(element).text
             is ParadoxLocalisationProperty -> "localisation property"
             is ParadoxParameter -> "parameter"
             is ParadoxConditionParameter -> "condition parameter"

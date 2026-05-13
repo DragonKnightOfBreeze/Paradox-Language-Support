@@ -10,7 +10,6 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtTypeResolver
 
 object CwtTypeManager {
@@ -44,7 +43,7 @@ object CwtTypeManager {
      */
     fun getType(element: PsiElement): String? {
         return when (element) {
-            is CwtExpressionElement -> CwtTypeResolver.resolveExpressionType(element).id
+            is CwtExpressionElement -> CwtTypeResolver.resolveExpressionType(element).text
             else -> null
         }
     }

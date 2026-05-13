@@ -215,7 +215,7 @@ object ParadoxConfigService {
     @Optimized
     fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (rootConfigs.isEmpty()) return emptyList()
-        if (context.memberRole == ParadoxMemberRole.PROPERTY_VALUE) {
+        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
             return rootConfigs.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
         return rootConfigs
@@ -230,7 +230,7 @@ object ParadoxConfigService {
     private fun flattenConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
 
-        if (context.memberRole == ParadoxMemberRole.OTHER) return emptyList() // 忽略
+        if (context.memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
         val memberPath = context.memberPath ?: return emptyList() // 忽略
         if (memberPath.isEmpty()) return emptyList() // 忽略
         val subPath = memberPath.subPaths.last()
@@ -313,7 +313,7 @@ object ParadoxConfigService {
         }
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
-        if (context.memberRole == ParadoxMemberRole.PROPERTY_VALUE) {
+        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
             result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
             result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }

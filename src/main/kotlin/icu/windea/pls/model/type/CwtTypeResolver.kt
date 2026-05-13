@@ -60,23 +60,23 @@ object CwtTypeResolver {
 
     fun resolveExpressionRole(element: CwtExpressionElement): CwtExpressionRole {
         return when (element) {
-            is CwtPropertyKey -> CwtExpressionRole.KEY
-            is CwtValue -> CwtExpressionRole.VALUE
-            else -> CwtExpressionRole.OTHER
+            is CwtPropertyKey -> CwtExpressionRole.Key
+            is CwtValue -> CwtExpressionRole.Value
+            else -> CwtExpressionRole.Other
         }
     }
 
     fun resolveMemberRole(element: CwtMember): CwtMemberRole {
         return when (element) {
-            is CwtProperty -> CwtMemberRole.PROPERTY
+            is CwtProperty -> CwtMemberRole.Property
             is CwtValue -> when (val parent = element.parent) {
-                is CwtOptionComment -> CwtMemberRole.OPTION_VALUE
-                is CwtProperty -> CwtMemberRole.PROPERTY_VALUE
-                is CwtRootBlock -> CwtMemberRole.BLOCK_VALUE
-                is CwtBlock -> if (parent.parent is CwtOption) CwtMemberRole.OPTION_BLOCK_VALUE else CwtMemberRole.BLOCK_VALUE
-                else -> CwtMemberRole.OTHER
+                is CwtOptionComment -> CwtMemberRole.OptionValue
+                is CwtProperty -> CwtMemberRole.PropertyValue
+                is CwtRootBlock -> CwtMemberRole.BlockValue
+                is CwtBlock -> if (parent.parent is CwtOption) CwtMemberRole.OptionBlockValue else CwtMemberRole.BlockValue
+                else -> CwtMemberRole.Other
             }
-            else -> CwtMemberRole.OTHER
+            else -> CwtMemberRole.Other
         }
     }
 }

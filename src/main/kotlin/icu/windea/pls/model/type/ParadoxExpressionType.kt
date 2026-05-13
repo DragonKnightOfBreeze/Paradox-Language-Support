@@ -1,6 +1,6 @@
 package icu.windea.pls.model.type
 
-enum class ParadoxExpressionType(val id: String) {
+enum class ParadoxExpressionType(val text: String) {
     Unknown("(unknown)"),
     Boolean("boolean"),
     Int("int"),
@@ -8,12 +8,12 @@ enum class ParadoxExpressionType(val id: String) {
     String("string"),
     Block("block"),
     Color("color"),
-    InlineMath("inline_math"),
+    InlineMath("inline math"),
     CommandExpression("command expression"),
     DatabaseObjectExpression("database object expression"),
     ;
 
-    override fun toString() = id
+    override fun toString() = text
 
     // region Matchers
 

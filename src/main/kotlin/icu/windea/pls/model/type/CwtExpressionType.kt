@@ -1,8 +1,6 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.cwt.psi.CwtExpressionElement
-
-enum class CwtExpressionType(val id: String) {
+enum class CwtExpressionType(val text: String) {
     Unknown("(unknown)"),
     Boolean("boolean"),
     Int("int"),
@@ -11,5 +9,5 @@ enum class CwtExpressionType(val id: String) {
     Block("block"),
     ;
 
-    override fun toString() = id
+    override fun toString() = text
 }
