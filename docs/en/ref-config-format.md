@@ -1783,15 +1783,27 @@ Data expression format:
 
 #### ShaderEffect {#data-type-shader-effect}
 
-Matches effect declarations in `.shader` files. Currently handled as a general string (fallback match).
+Matches references to shader effects.
+The plugin currently treats these references as dynamic references, even though their declarations actually reside in `.shader` files.
 
-Data expression format:
+"Dynamic reference" means that there is no actual declaration location, only read/write access is distinguished, just like dynamic values.
+
+Corresponding data expression format:
 - `$shader_effect`
+
+#### MeshLocator {#data-type-mesh-locator}
+
+Matches references to mesh locators.
+The plugin currently treats these references as dynamic references, even though their declarations actually reside in `.mesh` files.
+
+"Dynamic reference" means that there is no actual declaration location, only read/write access is distinguished, just like dynamic values.
+
+Corresponding data expression format:
+- `$mesh_locator`
 
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
 Matches technology references with levels (e.g. `some_repeatable_tech@1`), where the technology name and level are separated by `@`.
-
 Limited to the Stellaris game type. Lower priority than [Definition](#data-type-definition).
 
 Data expression format:

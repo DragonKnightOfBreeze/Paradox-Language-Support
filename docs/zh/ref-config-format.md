@@ -1793,16 +1793,28 @@ title
 
 #### ShaderEffect {#data-type-shader-effect}
 
-匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
+匹配对着色器效果（shader effect）的引用。
+插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
+
+“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。
 
 对应的数据表达式的格式：
 - `$shader_effect`
 
+#### MeshLocator {#data-type-mesh-locator}
+
+匹配对网格定位器（mesh locator）的引用。
+插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
+
+“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。
+
+对应的数据表达式的格式：
+- `$mesh_locator`
+
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
 匹配带等级的科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
-
-仅限 Stellaris 游戏类型。优先级低于 [Definition](#data-type-definition)。
+仅限 Stellaris 游戏类型，且优先级低于 [Definition](#data-type-definition)。
 
 对应的数据表达式的格式：
 - `<technology_with_level>`

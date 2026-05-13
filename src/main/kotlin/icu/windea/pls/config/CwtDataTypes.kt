@@ -470,7 +470,7 @@ object CwtDataTypes {
      * 带等级的科技类型。
      *
      * 匹配带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
-     * 仅限 Stellaris 游戏类型。优先级低于 [Definition][CwtDataTypes.Definition]。
+     * 仅限 Stellaris 游戏类型，且优先级低于 [Definition][CwtDataTypes.Definition]。
      *
      * 对应的数据表达式的格式：
      * - `<technology_with_level>`
