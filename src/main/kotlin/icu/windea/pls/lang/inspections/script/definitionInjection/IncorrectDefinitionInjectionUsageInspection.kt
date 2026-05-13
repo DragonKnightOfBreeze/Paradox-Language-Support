@@ -20,7 +20,7 @@ import javax.swing.JComponent
  * - 基于定义注入的模式，定义目标的存在性必须正确。
  */
 class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase() {
-    private var checkForRelaxModes = false
+    private var checkForLenientModes = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
@@ -44,8 +44,8 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         val type = definitionInjectionInfo.type ?: return
         if (DumbService.isDumb(holder.project)) return // skip for dumb mode
         if (definitionInjectionInfo.isTargetExist(holder.file)) return
-        if (definitionInjectionInfo.isRelaxMode()) {
-            if (checkForRelaxModes) {
+        if (definitionInjectionInfo.isLenientMode()) {
+            if (checkForLenientModes) {
                 val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
                 val highlightType = PlsInspectionUtil.getWeakerHighlightType() // use weaker highlight type
                 holder.registerProblem(element.propertyKey, description, highlightType)
@@ -58,11 +58,11 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            // checkForRelaxModes
+            // checkForLenientModes
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForRelaxModes"))
-                    .bindSelected(::checkForRelaxModes.toAtomicProperty())
-                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForRelaxModes.tip"))
+                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes"))
+                    .bindSelected(::checkForLenientModes.toAtomicProperty())
+                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip"))
             }
         }
     }

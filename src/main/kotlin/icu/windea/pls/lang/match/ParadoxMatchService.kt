@@ -16,8 +16,8 @@ object ParadoxMatchService {
         return options.normalized().forDeclarationRoot
     }
 
-    fun relax(options: ParadoxMatchOptions? = null): Boolean {
-        return options.normalized().relax
+    fun lenient(options: ParadoxMatchOptions? = null): Boolean {
+        return options.normalized().lenient
     }
 
     fun skipIndex(options: ParadoxMatchOptions? = null): Boolean {

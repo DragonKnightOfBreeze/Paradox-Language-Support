@@ -891,7 +891,7 @@ macro[inline_script] = filepath[common/inline_scripts/,.txt]
 
 macro[definition_injection] = {
     modes = { INJECT REPLACE TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
-    relax_modes = { TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
+    lenient_modes = { TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
     replace_modes = { REPLACE TRY_REPLACE REPLACE_OR_CREATE }
     create_modes = { REPLACE_OR_CREATE }
 }

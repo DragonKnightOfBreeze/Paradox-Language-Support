@@ -299,7 +299,7 @@ object ParadoxMatchResultProvider {
             complexExpression
         }
         val attributes = ParadoxComplexExpressionAttributesEvaluator.DEFAULT.evaluate(nodeToCheck)
-        if (attributes.relaxDynamicDataInvolved) return ParadoxMatchResult.RelaxWildcardMatch
+        if (attributes.lenientDynamicDataInvolved) return ParadoxMatchResult.LenientWildcardMatch
         if (attributes.dynamicDataInvolved) return ParadoxMatchResult.WildcardMatch
         return ParadoxMatchResult.ExactMatch
     }

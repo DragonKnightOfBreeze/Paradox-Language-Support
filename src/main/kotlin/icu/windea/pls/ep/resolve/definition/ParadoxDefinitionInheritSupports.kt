@@ -89,7 +89,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     private fun getData(definitionInfo: ParadoxDefinitionInfo): StellarisEventData? {
-        return definitionInfo.element?.getDefinitionData<StellarisEventData>(relax = true)
+        return definitionInfo.element?.getDefinitionData<StellarisEventData>(lenient = true)
     }
 
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxDefinitionElement? {

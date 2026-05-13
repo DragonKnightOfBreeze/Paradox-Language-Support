@@ -62,7 +62,7 @@ inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxCom
 
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
-inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(relax: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, relax)
+inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(lenient: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, lenient)
 inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.getDefinitionPresentation(): T? = ParadoxPresentationService.getDefinitionPresentation(this)
 
 // endregion

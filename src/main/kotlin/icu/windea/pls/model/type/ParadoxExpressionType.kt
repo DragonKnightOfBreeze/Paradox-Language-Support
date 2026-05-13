@@ -17,19 +17,19 @@ enum class ParadoxExpressionType(val id: String) {
 
     // region Matchers
 
-    fun isRelaxInt(): Boolean {
+    fun isLenientInt(): Boolean {
         return this == Int || this == InlineMath || this == Unknown
     }
 
-    fun isRelaxFloat(): Boolean {
+    fun isLenientFloat(): Boolean {
         return this == Int || this == Float || this == InlineMath || this == Unknown
     }
 
-    fun isRelaxString(): Boolean {
+    fun isLenientString(): Boolean {
         return this == String || this == Unknown
     }
 
-    fun isNumberOrRelaxString(): Boolean {
+    fun isNumberOrLenientString(): Boolean {
         return this == Int || this == Float || this == String || this == Unknown
     }
 

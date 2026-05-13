@@ -20,7 +20,7 @@ class ParadoxScriptValueArgumentValueNode(
         val type = ParadoxTypeResolver.resolveType(text)
         return when {
             type == ParadoxExpressionType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD
-            type.isRelaxFloat() -> ParadoxScriptAttributesKeys.NUMBER
+            type.isLenientFloat() -> ParadoxScriptAttributesKeys.NUMBER
             text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE
             else -> ParadoxScriptAttributesKeys.STRING
         }

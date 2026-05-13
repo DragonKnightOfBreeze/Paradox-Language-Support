@@ -37,7 +37,7 @@ class CwtCardinalityExpressionTest {
     }
 
     @Test
-    fun resolveRelaxedRanges() {
+    fun resolveLenientRanges() {
         run {
             val s = "~1..10"
             val e = CwtCardinalityExpression.resolve(s)

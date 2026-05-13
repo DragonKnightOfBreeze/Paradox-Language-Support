@@ -352,7 +352,7 @@ object ParadoxConfigMatchService {
         }
         if (!matched) return false
 
-        return occurrences.values.all { it.isValid(relax = true) }
+        return occurrences.values.all { it.isValid(lenient = true) }
     }
 
     private fun matchesValuesForSubtype(context: CwtSubtypeConfigMatchContext, block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>): Boolean {
@@ -374,7 +374,7 @@ object ParadoxConfigMatchService {
         }
         if (!matched) return false
 
-        return occurrences.values.all { it.isValid(relax = true) }
+        return occurrences.values.all { it.isValid(lenient = true) }
     }
 
     private fun matchesSingleAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {

@@ -276,7 +276,7 @@ object ParadoxConfigService {
                     if (configs.isNullOrEmpty()) return@f1
 
                     val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-                    val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+                    val lenientMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
 
                     configs.forEachFast { config ->
                         // 打平后需要首先进行必要的内联
@@ -294,7 +294,7 @@ object ParadoxConfigService {
                                 when (m) {
                                     null -> this += matchedConfig
                                     true -> exactMatchedConfigs += matchedConfig
-                                    false -> relaxMatchedConfigs += matchedConfig
+                                    false -> lenientMatchedConfigs += matchedConfig
                                 }
                             } else {
                                 this += matchedConfig
@@ -304,8 +304,8 @@ object ParadoxConfigService {
 
                     if (exactMatchedConfigs.isNotEmpty()) {
                         addAll(exactMatchedConfigs)
-                    } else if (relaxMatchedConfigs.size == 1) {
-                        this += relaxMatchedConfigs.single()
+                    } else if (lenientMatchedConfigs.size == 1) {
+                        this += lenientMatchedConfigs.single()
                     }
                 }
             }

@@ -58,7 +58,7 @@ class CwtCardinalityExpressionEdgeCasesTest {
     }
 
     @Test
-    fun resolveDoubleLenientMin_parsesAsRelaxAndZero() {
+    fun resolveDoubleLenientMin_parsesAsLenientAndZero() {
         val s = "~~1..2"
         val e = CwtCardinalityExpression.resolve(s)
         assertTrue(e.lenientMin)

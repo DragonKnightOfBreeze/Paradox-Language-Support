@@ -5,13 +5,13 @@ import icu.windea.pls.ep.util.data.ParadoxDefinitionDataProvider
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxDataService {
-    inline fun <reified T : ParadoxDefinitionData> getDefinitionData(element: ParadoxDefinitionElement, relax: Boolean = false): T? {
-        return getDefinitionData(element, T::class.java, relax)
+    inline fun <reified T : ParadoxDefinitionData> getDefinitionData(element: ParadoxDefinitionElement, lenient: Boolean = false): T? {
+        return getDefinitionData(element, T::class.java, lenient)
     }
 
-    fun <T : ParadoxDefinitionData> getDefinitionData(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean = false): T? {
+    fun <T : ParadoxDefinitionData> getDefinitionData(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean = false): T? {
         return ParadoxDefinitionDataProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(element, type, relax)) return@f null
+            if (!ep.supports(element, type, lenient)) return@f null
             ep.get(element, type)
         }
     }

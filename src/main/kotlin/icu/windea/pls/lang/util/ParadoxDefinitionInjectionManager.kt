@@ -168,11 +168,11 @@ object ParadoxDefinitionInjectionManager {
     /**
      * 检查定义注入是否允许目标不存在（此时不会报告为错误）。
      */
-    fun isRelaxMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+    fun isLenientMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
         val config = configGroup.macrosModel.forDefinitionInjections ?: return false
-        return mode in config.relaxModes
+        return mode in config.lenientModes
     }
 
     /**

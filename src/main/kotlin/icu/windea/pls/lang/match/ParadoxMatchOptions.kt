@@ -7,14 +7,14 @@ import kotlin.experimental.or
  *
  * @property fallback 如果无法进一步匹配，则会使用回退后的匹配到的规则。
  * @property forDeclarationRoot 允许匹配声明（定义、定义注入、定值变量）的根对应的脚本属性。
- * @property relax 对于 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。
+ * @property lenient 对于 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。
  * @property skipIndex 对于 [ParadoxMatchResult.LazyIndexAwareMatch]，匹配结果直接返回 `true`。
  * @property skipScope 对于 [ParadoxMatchResult.LazyScopeAwareMatch]，匹配结果直接返回 `true`。
  */
 data class ParadoxMatchOptions(
     val fallback: Boolean = true,
     val forDeclarationRoot: Boolean = false,
-    val relax: Boolean = false,
+    val lenient: Boolean = false,
     val skipIndex: Boolean = false,
     val skipScope: Boolean = false,
 ) {
@@ -41,7 +41,7 @@ fun ParadoxMatchOptions?.toHashString(forMatched: Boolean = true): String {
     var mask: Byte = 0
     if (options.fallback && forMatched) mask = mask or 1
     if (options.forDeclarationRoot && forMatched) mask = mask or 2
-    if (options.relax) mask = mask or 4
+    if (options.lenient) mask = mask or 4
     if (options.skipIndex) mask = mask or 8
     if (options.skipScope) mask = mask or 16
     return mask.toString()

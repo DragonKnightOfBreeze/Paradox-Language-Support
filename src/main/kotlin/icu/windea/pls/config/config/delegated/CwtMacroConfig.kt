@@ -68,8 +68,8 @@ interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     interface DefinitionInjection : CwtMacroConfig {
         @FromMember("modes: string[]")
         val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
-        @FromMember("relax_modes: string[]")
-        val relaxModes: Set<@CaseInsensitive String>
+        @FromMember("lenient_modes: string[]")
+        val lenientModes: Set<@CaseInsensitive String>
         @FromMember("replace_modes: string[]")
         val replaceModes: Set<@CaseInsensitive String>
         @FromMember("create_modes: string[]")
@@ -106,7 +106,7 @@ private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRes
                 val modeConfigs = propGroup.getOne("modes")?.let { prop ->
                     prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
                 }?.optimized().orEmpty()
-                val relaxModes = propGroup.getOne("relax_modes")?.let { prop ->
+                val lenientModes = propGroup.getOne("lenient_modes")?.let { prop ->
                     prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
                 }?.optimized().orEmpty()
                 val replaceModes = propGroup.getOne("replace_modes")?.let { prop ->
@@ -116,7 +116,7 @@ private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRes
                     prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
                 }?.optimized().orEmpty()
                 logger.debug { "Resolved macro config for definition injections (name: $name).".withLocationPrefix(config) }
-                CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, relaxModes, replaceModes, createModes)
+                CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, lenientModes, replaceModes, createModes)
             } else -> {
                 logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
                 CwtMacroConfigImpl(config, name)
@@ -149,7 +149,7 @@ private class CwtDefinitionInjectionMacroConfig(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val modeConfigs: Map<String, CwtValueConfig>,
-    override val relaxModes: Set<String>,
+    override val lenientModes: Set<String>,
     override val replaceModes: Set<String>,
     override val createModes: Set<String>,
 ) : UserDataHolderBase(), CwtMacroConfig.DefinitionInjection {
