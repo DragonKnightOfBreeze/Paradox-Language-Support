@@ -22,18 +22,18 @@ object CwtDataTypeSets {
         CwtDataTypes.ValueField,
         CwtDataTypes.VariableField,
     )
+    /** 本地化引用类型。 */
+    val LocalisationReference = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.InlineLocalisation,
+    )
     /** 路径引用类型]。 */
     val PathReference = arrayOf(
         CwtDataTypes.AbsoluteFilePath,
         CwtDataTypes.FileName,
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
-    )
-    /** 本地化引用类型。 */
-    val LocalisationReference = arrayOf(
-        CwtDataTypes.Localisation,
-        CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.InlineLocalisation,
     )
 
     /** 动态值相关类型。 */

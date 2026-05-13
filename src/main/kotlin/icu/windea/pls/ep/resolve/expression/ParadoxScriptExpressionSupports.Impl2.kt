@@ -236,52 +236,29 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
 }
 
 /**
- * @see CwtDataTypeSets.PathReference
+ * @see CwtDataTypes.Modifier
  */
-class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.PathReference
+        return dataType == CwtDataTypes.Modifier
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE
+        val attributesKey = ParadoxScriptAttributesKeys.MODIFIER
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val configExpression = config.configExpression ?: return null
         val configGroup = config.configGroup
-        val project = configGroup.project
-        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expressionText.toVirtualFile()?.toPsiFile(project)
-        } else {
-            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
-            val pathReference = expressionText.normalizePath()
-            val selector = selector(project, element).file().contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
-        }
-    }
-
-    override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val configExpression = config.configExpression ?: return emptySet()
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expressionText.toVirtualFile()?.toPsiFile(project).to.singletonSetOrEmpty()
-        } else {
-            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
-            val pathReference = expressionText.normalizePath()
-            val selector = selector(project, element).file().contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
-        }
+        return ParadoxExpressionManager.resolveModifier(element, expressionText, configGroup)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
-        ParadoxCompletionManager.completePathReference(context, result)
+        ParadoxCompletionManager.completeModifier(context, result)
     }
 }
 
@@ -334,33 +311,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeEnumValue(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypes.Modifier
- */
-class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Modifier
-    }
-
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.MODIFIER
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
-    }
-
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val configGroup = config.configGroup
-        return ParadoxExpressionManager.resolveModifier(element, expressionText, configGroup)
-    }
-
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-
-        ParadoxCompletionManager.completeModifier(context, result)
     }
 }
 
@@ -468,5 +418,55 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeConstant(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypeSets.PathReference
+ */
+class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeSets.PathReference
+    }
+
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
+        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+    }
+
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        val configExpression = config.configExpression ?: return null
+        val configGroup = config.configGroup
+        val project = configGroup.project
+        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
+            return expressionText.toVirtualFile()?.toPsiFile(project)
+        } else {
+            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
+            val pathReference = expressionText.normalizePath()
+            val selector = selector(project, element).file().contextSensitive()
+            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
+        }
+    }
+
+    override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+        val configExpression = config.configExpression ?: return emptySet()
+        val configGroup = config.configGroup
+        val project = configGroup.project
+        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
+            return expressionText.toVirtualFile()?.toPsiFile(project).to.singletonSetOrEmpty()
+        } else {
+            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
+            val pathReference = expressionText.normalizePath()
+            val selector = selector(project, element).file().contextSensitive()
+            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
+        }
+    }
+
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
+
+        ParadoxCompletionManager.completePathReference(context, result)
     }
 }

@@ -1760,20 +1760,6 @@ Data expression format:
 Data expression example:
 - `name_format[full_names]`
 
-#### ShaderEffect {#data-type-shader-effect}
-
-Matches effect declarations in `.shader` files. Currently handled as a general string (fallback match).
-
-Data expression format:
-- `$shader_effect`
-
-#### TechnologyWithLevel {#data-type-technology-with-level}
-
-Matches technology references with levels (e.g. `some_repeatable_tech@1`), where the technology name and level are separated by `@`. Limited to the Stellaris game type. Lower priority than [Definition](#data-type-definition).
-
-Data expression format:
-- `<technology_with_level>`
-
 #### Parameter {#data-type-parameter}
 
 Matches parameter names. The expression must be a valid identifier. Treated as a match even if the parameter does not exist in the corresponding definition declaration.
@@ -1794,6 +1780,22 @@ Matches localisation parameter names. The expression must be a valid identifier 
 
 Data expression format:
 - `$localisation_parameter`
+
+#### ShaderEffect {#data-type-shader-effect}
+
+Matches effect declarations in `.shader` files. Currently handled as a general string (fallback match).
+
+Data expression format:
+- `$shader_effect`
+
+#### TechnologyWithLevel {#data-type-technology-with-level}
+
+Matches technology references with levels (e.g. `some_repeatable_tech@1`), where the technology name and level are separated by `@`.
+
+Limited to the Stellaris game type. Lower priority than [Definition](#data-type-definition).
+
+Data expression format:
+- `<technology_with_level>`
 
 ### Alias Data Types {#data-types-alias}
 

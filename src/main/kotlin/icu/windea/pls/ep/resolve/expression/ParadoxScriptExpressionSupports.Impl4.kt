@@ -19,7 +19,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-// Parameter
+// Parameters
 
 /**
  * @see CwtDataTypes.Parameter

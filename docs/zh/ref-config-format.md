@@ -1770,20 +1770,6 @@ title
 对应的数据表达式的示例：
 - `name_format[empire]`
 
-#### ShaderEffect {#data-type-shader-effect}
-
-匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
-
-对应的数据表达式的格式：
-- `$shader_effect`
-
-#### TechnologyWithLevel {#data-type-technology-with-level}
-
-匹配带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。仅限 Stellaris 游戏类型。优先级低于 [Definition](#data-type-definition)。
-
-对应的数据表达式的格式：
-- `<technology_with_level>`
-
 #### Parameter {#data-type-parameter}
 
 匹配参数名。表达式须为合法标识符。即使对应的定义声明中不存在该参数名，也视为匹配。
@@ -1804,6 +1790,22 @@ title
 
 对应的数据表达式的格式：
 - `$localisation_parameter`
+
+#### ShaderEffect {#data-type-shader-effect}
+
+匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
+
+对应的数据表达式的格式：
+- `$shader_effect`
+
+#### TechnologyWithLevel {#data-type-technology-with-level}
+
+匹配带等级的科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
+
+仅限 Stellaris 游戏类型。优先级低于 [Definition](#data-type-definition)。
+
+对应的数据表达式的格式：
+- `<technology_with_level>`
 
 ### 别名数据类型 {#data-types-alias}
 
@@ -1837,7 +1839,7 @@ title
 对应的数据表达式的格式：
 - `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
 
-### 路径数据类型 {#data-types-path}
+### 路径引用数据类型 {#data-types-path-reference}
 
 以下数据类型用于匹配文件路径引用，匹配时验证路径引用的文件是否存在。
 

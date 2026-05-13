@@ -194,15 +194,15 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptBlockExpressionSupport"/>
 
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDefinitionExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDefinitionExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptPathReferenceExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptEnumValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptModifierExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptEnumValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptConstantExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptPathReferenceExpressionSupport"/>
 
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTemplateExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDynamicValueExpressionSupport"/>
