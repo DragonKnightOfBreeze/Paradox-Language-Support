@@ -99,13 +99,13 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.AliasKeysField -> matchAliasName(context)
             CwtDataTypes.AliasName -> matchAliasName(context)
             CwtDataTypes.AliasMatchLeft -> ParadoxMatchResult.NotMatch // 不在这里处理
-            CwtDataTypes.Parameter -> matchParameter(context)
-            CwtDataTypes.ParameterValue -> matchParameterValue(context)
-            CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
             CwtDataTypes.Command -> null // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
             CwtDataTypes.DefineReference -> matchDefineReferenceExpression(context)
             CwtDataTypes.DatabaseObject -> matchDatabaseObjectExpression(context)
             CwtDataTypes.NameFormat -> matchNameFormatExpression(context)
+            CwtDataTypes.Parameter -> matchParameter(context)
+            CwtDataTypes.ParameterValue -> matchParameterValue(context)
+            CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
             CwtDataTypes.ShaderEffect -> matchShaderEffect(context)
             CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
             else -> null
