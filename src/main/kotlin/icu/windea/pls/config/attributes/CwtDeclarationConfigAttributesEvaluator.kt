@@ -68,7 +68,7 @@ class CwtDeclarationConfigAttributesEvaluator {
     private fun processSubtypeExpression(config: CwtPropertyConfig) {
         val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]") ?: return
         val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-        resolved.subtypes.forEachFast { (subtype, _) -> involvedSubtypes.add(subtype) }
+        resolved.parts.forEachFast { (subtype, _) -> involvedSubtypes.add(subtype) }
     }
 
     private fun processDataExpression(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {

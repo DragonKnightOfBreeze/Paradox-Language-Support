@@ -1,21 +1,19 @@
 package icu.windea.pls.model.expressions
 
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.resolve.ParadoxTypeService
-import icu.windea.pls.lang.type
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import java.util.*
 
 /**
  * 脚本表达式，
@@ -26,9 +24,10 @@ import java.util.*
  * @see ParadoxScriptExpressionElement
  */
 interface ParadoxScriptExpression {
+    val text: String
     val value: String
-    val type: ParadoxType
     val quoted: Boolean
+    val type: ParadoxType
     val isKey: Boolean?
 
     fun isParameterized(): Boolean
@@ -41,8 +40,9 @@ interface ParadoxScriptExpression {
 
     interface Resolver {
         fun resolveBlock(): ParadoxScriptExpression
-        fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression
+        fun resolveUnknown(): ParadoxScriptExpression
         fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression
+        fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression
         fun resolve(element: ParadoxScriptExpressionElement, options: ParadoxMatchOptions? = null): ParadoxScriptExpression
     }
 
@@ -52,25 +52,30 @@ interface ParadoxScriptExpression {
 // region Implementations
 
 private class ParadoxScriptExpressionResolverImpl : ParadoxScriptExpression.Resolver {
-    private val blockExpression: ParadoxScriptExpression = ParadoxScriptExpressionImpl(PlsStrings.blockFolder, ParadoxType.Block, false, false)
+    private val blockExpression: ParadoxScriptExpression = ParadoxScriptExpressionImpl1("{...}", "{...}", false, ParadoxType.Block, false)
+    private val unknownExpression: ParadoxScriptExpression = ParadoxScriptExpressionImpl1("", "", false, ParadoxType.Unknown, false)
 
     override fun resolveBlock(): ParadoxScriptExpression {
         return blockExpression
     }
 
-    override fun resolve(value: String, quoted: Boolean, isKey: Boolean?): ParadoxScriptExpression {
-        return ParadoxScriptExpressionImpl(value, ParadoxTypeService.resolve(value), quoted, isKey)
+    override fun resolveUnknown(): ParadoxScriptExpression {
+        return unknownExpression
     }
 
     override fun resolve(text: String, isKey: Boolean?): ParadoxScriptExpression {
-        return ParadoxScriptExpressionImpl(text.unquote(), ParadoxTypeService.resolve(text), text.isLeftQuoted(), isKey)
+        return ParadoxScriptExpressionImpl2(text, isKey)
+    }
+
+    override fun resolve(value: String, quoted: Boolean, isKey: Boolean?): ParadoxScriptExpression {
+        return ParadoxScriptExpressionImpl3(value, quoted, isKey)
     }
 
     override fun resolve(element: ParadoxScriptExpressionElement, options: ParadoxMatchOptions?): ParadoxScriptExpression {
         return when (element) {
             is ParadoxScriptBlock -> blockExpression
-            is ParadoxScriptScriptedVariableReference -> ParadoxScriptExpressionLazyImpl(element, options, false)
-            else -> ParadoxScriptExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), element is ParadoxScriptPropertyKey)
+            is ParadoxScriptScriptedVariableReference -> ParadoxScriptExpressionImpl5(element, options)
+            else -> ParadoxScriptExpressionImpl4(element)
         }
     }
 }
@@ -94,32 +99,64 @@ private sealed class ParadoxScriptExpressionBase : ParadoxScriptExpression {
         return value.equals(v, true) // 忽略大小写
     }
 
-    override fun equals(other: Any?) = other is ParadoxScriptExpression && (value == other.value && quoted == other.quoted)
-    override fun hashCode() = Objects.hash(value, type)
-    override fun toString() = value
+    override fun equals(other: Any?) = this === other || other is ParadoxScriptExpression && text == other.text
+    override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }
 
-private class ParadoxScriptExpressionImpl(
+private class ParadoxScriptExpressionImpl1(
+    override val text: String,
     override val value: String,
-    override val type: ParadoxType,
     override val quoted: Boolean,
-    override val isKey: Boolean?
+    override val type: ParadoxType,
+    override val isKey: Boolean?,
 ) : ParadoxScriptExpressionBase()
 
-private class ParadoxScriptExpressionLazyImpl(
-    private val element: ParadoxScriptScriptedVariableReference,
-    private val options: ParadoxMatchOptions?,
-    override val isKey: Boolean?
+private class ParadoxScriptExpressionImpl2(
+    override val text: String,
+    override val isKey: Boolean?,
 ) : ParadoxScriptExpressionBase() {
-    // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
-    val valueElement by lazy {
-        if (ParadoxMatchService.isDumb(options)) return@lazy null
-        element.resolved()
+    override val value: String = text.unquote()
+    override val quoted: Boolean = text.isLeftQuoted()
+    override val type: ParadoxType = ParadoxTypeService.resolve(value)
+}
+
+private class ParadoxScriptExpressionImpl3(
+    override val value: String,
+    override val quoted: Boolean,
+    override val isKey: Boolean?,
+) : ParadoxScriptExpressionBase() {
+    override val text: String = if (quoted) value.quote() else value
+    override val type: ParadoxType = ParadoxTypeService.resolve(value)
+}
+
+private class ParadoxScriptExpressionImpl4(
+    element: ParadoxScriptExpressionElement,
+) : ParadoxScriptExpressionBase() {
+    override val text: String = element.text
+    override val value: String = element.value
+    override val quoted: Boolean = text.isLeftQuoted()
+    override val type: ParadoxType = ParadoxTypeService.resolve(value)
+    override val isKey: Boolean = element is ParadoxScriptPropertyKey
+}
+
+private class ParadoxScriptExpressionImpl5(
+    private val element: ParadoxScriptScriptedVariableReference,
+    private val options: ParadoxMatchOptions?
+) : ParadoxScriptExpressionBase() {
+    private val resolvedExpression by lazy { computeResolvedExpression() }
+
+    private fun computeResolvedExpression(): ParadoxScriptExpression {
+        if (ParadoxMatchService.isDumb(options)) return ParadoxScriptExpression.resolveUnknown()
+        val resolved = element.resolved() ?: return ParadoxScriptExpression.resolveUnknown()
+        return ParadoxScriptExpressionImpl4(resolved)
     }
 
-    override val value: String get() = valueElement?.value.orEmpty()
-    override val type: ParadoxType get() = valueElement?.type ?: ParadoxType.Unknown
-    override val quoted: Boolean get() = valueElement?.text?.isLeftQuoted() ?: false
+    override val text: String get() = resolvedExpression.text
+    override val value: String get() = resolvedExpression.value
+    override val type: ParadoxType get() = resolvedExpression.type
+    override val quoted: Boolean get() = resolvedExpression.quoted
+    override val isKey: Boolean get() = false
 }
 
 // endregion

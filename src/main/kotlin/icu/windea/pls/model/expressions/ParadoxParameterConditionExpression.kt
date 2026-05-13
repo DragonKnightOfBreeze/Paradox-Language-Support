@@ -6,8 +6,10 @@ import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 /**
  * 参数条件表达式。
  *
+ * 其中的标识符为参数名，可以使用 `!` 取反。
+ *
  * 用途：
- * - 在脚本文件中，`[[X]...]` 表示一个参数条件块 ，其中 `X` 即是一个参数条件表达式。
+ * - 在脚本文件中，`[[{x}]...]` 表示一个参数条件块 ，其中 `{x}` 即是一个参数条件表达式。
  *
  * 示例：
  * ```
@@ -19,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
  */
 interface ParadoxParameterConditionExpression {
     val text: String
-    val snippet: ReversibleValue<String>
+    val part: ReversibleValue<String>
 
     fun matches(argumentNames: Set<String>? = null): Boolean
 
@@ -45,10 +47,10 @@ private class ParadoxParameterConditionExpressionResolverImpl : ParadoxParameter
 private class ParadoxParameterConditionExpressionImpl(
     override val text: String
 ) : ParadoxParameterConditionExpression {
-    override val snippet: ReversibleValue<String> = ReversibleValue.from(text)
+    override val part: ReversibleValue<String> = ReversibleValue.from(text)
 
     override fun matches(argumentNames: Set<String>?): Boolean {
-        return snippet.withOperator { argumentNames != null && it in argumentNames }
+        return part.withOperator { argumentNames != null && it in argumentNames }
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxParameterConditionExpression && text == other.text

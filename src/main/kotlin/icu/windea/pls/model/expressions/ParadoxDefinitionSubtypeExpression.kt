@@ -6,19 +6,19 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 /**
  * 定义子类型表达式。
  *
+ * 其中的标识符为定义的子类型，可以使用 `!` 取反，使用 `&` 取交集。
+ *
  * 用途：
- * - 在规则文件中，`subtype[X]` 表示作为其值的子句中的规则仅限匹配此定义子类型表达式的定义。其中 `X` 即是一个定义子类型表达式。
+ * - 在规则文件中，声明规则中的 `subtype[{x}] = {...}` 表示此子句中的规则仅适用于子类型匹配 `{x}` 的定义，其中 `{x}` 即是一个定义子类型表达式。
  *
  * 示例：
- * ```
- * a
- * !b
- * a&!b
- * ```
+ * - `a`
+ * - `!b`
+ * - `a&!b`
  */
 interface ParadoxDefinitionSubtypeExpression {
     val text: String
-    val subtypes: List<ReversibleValue<String>>
+    val parts: List<ReversibleValue<String>>
 
     fun matches(subtypes: Collection<String>): Boolean
     fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean
@@ -45,11 +45,11 @@ private class ParadoxDefinitionSubtypeExpressionResolverImpl : ParadoxDefinition
 private class ParadoxDefinitionSubtypeExpressionImpl(
     override val text: String
 ) : ParadoxDefinitionSubtypeExpression {
-    override val subtypes: List<ReversibleValue<String>> = text.split('&').map { ReversibleValue.from(it) }
+    override val parts: List<ReversibleValue<String>> = text.split('&').map { ReversibleValue.from(it) }
 
     override fun matches(subtypes: Collection<String>): Boolean {
         // 目前仅支持"!"和"&"的组合
-        return this.subtypes.all { t -> t.withOperator { subtypes.contains(it) } }
+        return this.parts.all { t -> t.withOperator { subtypes.contains(it) } }
     }
 
     override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
