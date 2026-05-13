@@ -99,7 +99,6 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromParameterized(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
 
         fromLiteral(CwtDataTypes.Modifier, "<modifier>")
-        fromLiteral(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>")
         fromParameterized(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }
 
         fromParameterized(CwtDataTypes.Value, "value[", "]") { value = it.orNull() }
@@ -141,6 +140,8 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
 
         fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
+        fromLiteral(CwtDataTypes.MeshLocator, "\$mesh_locator")
+        fromLiteral(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>")
     }
 }
 

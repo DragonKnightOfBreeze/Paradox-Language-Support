@@ -107,6 +107,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.ParameterValue -> matchParameterValue(context)
             CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
             CwtDataTypes.ShaderEffect -> matchShaderEffect(context)
+            CwtDataTypes.MeshLocator -> matchMeshLocator(context)
             CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
             else -> null
         }
@@ -282,7 +283,12 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchShaderEffect(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        // TODO 1.2.2+ 暂时作为一般的字符串处理
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        return ParadoxMatchResult.FallbackMatch
+    }
+
+    private fun matchMeshLocator(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResult.FallbackMatch
@@ -291,7 +297,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchTechnologyWithLevel(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.value.length > 1 && context.expression.value.indexOf('@') >= 1) return ParadoxMatchResult.WildcardMatch
-        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResult.NotMatch
     }
 }
