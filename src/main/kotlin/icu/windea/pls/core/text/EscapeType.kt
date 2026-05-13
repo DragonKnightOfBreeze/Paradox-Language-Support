@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util.text
+package icu.windea.pls.core.text
 
 /**
  * 转义类型。

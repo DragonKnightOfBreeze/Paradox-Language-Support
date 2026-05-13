@@ -7,7 +7,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.text.TextPattern
+import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar

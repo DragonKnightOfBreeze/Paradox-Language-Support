@@ -13,7 +13,7 @@ import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
-import icu.windea.pls.core.util.text.EscapeType
+import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or

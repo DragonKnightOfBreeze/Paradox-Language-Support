@@ -4,7 +4,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.util.text.TextPattern
+import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 
@@ -39,7 +39,7 @@ object CwtConfigExpressionService {
             ep.processTextPatterns(consumer)
         }
     }
-    
+
     fun collectLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
         val dataType = configExpression.type
         when (dataType) {

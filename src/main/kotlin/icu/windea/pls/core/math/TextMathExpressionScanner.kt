@@ -32,7 +32,7 @@ class TextMathExpressionScanner(
     }
 
     private fun scanTokens() {
-        while (!end()) {
+        while (!isEnd()) {
             start = current
             scanToken()
         }
@@ -71,7 +71,7 @@ class TextMathExpressionScanner(
         }
         if (isDouble && peek() == '.') {
             // e.g., `1.2.3`
-            throw IllegalStateException("Unexpected character '.' at offset $current")
+            throw IllegalStateException("Unexpected dot at offset $current")
         }
         val text = source.substring(start, current)
         val result = resolveRsult(text, isDouble)
@@ -86,7 +86,7 @@ class TextMathExpressionScanner(
         return result
     }
 
-    private fun end(): Boolean {
+    private fun isEnd(): Boolean {
         return current >= source.length
     }
 

@@ -18,10 +18,10 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.core.util.text.TextPattern
-import icu.windea.pls.core.util.text.TextPatternBasedBuilder
-import icu.windea.pls.core.util.text.TextPatternBasedProvider
-import icu.windea.pls.core.util.text.TextPatternMatchResult
+import icu.windea.pls.core.text.TextPattern
+import icu.windea.pls.core.text.TextPatternBasedBuilder
+import icu.windea.pls.core.text.TextPatternBasedProvider
+import icu.windea.pls.core.text.TextPatternMatchResult
 
 abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionResolver {
     protected data class Match(

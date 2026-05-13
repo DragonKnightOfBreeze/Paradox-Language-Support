@@ -3,7 +3,7 @@ package icu.windea.pls.ep.config.configExpression
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.util.Processor
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.util.text.TextPattern
+import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 
 /**

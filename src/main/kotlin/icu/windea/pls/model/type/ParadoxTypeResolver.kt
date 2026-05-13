@@ -2,8 +2,8 @@ package icu.windea.pls.model.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.text.TextMatcher
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("unused")
 object ParadoxTypeResolver {
-    private val percentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()
     private val dateFieldFormatters = ConcurrentHashMap<String, DateTimeFormatter>()
 
     fun resolveType(value: String): ParadoxExpressionType {
@@ -50,58 +49,15 @@ object ParadoxTypeResolver {
     }
 
     fun isInt(value: String): Boolean {
-        // return expression.toIntOrNull() != null
-
-        // use handwrite implementation to optimize performance and restrict validation
-        // can be: 0, 1, 01, -1
-        var isFirst = true
-        var containsDigit = false
-        value.forEach f@{ c ->
-            if (isFirst) {
-                isFirst = false
-                if (c == '+' || c == '-') return@f
-            }
-            if (c.isExactDigit()) {
-                if (!containsDigit) {
-                    containsDigit = true
-                }
-                return@f
-            }
-            return false
-        }
-        return containsDigit
+        return TextMatcher.matchesInt(value)
     }
 
     fun isFloat(value: String): Boolean {
-        // return expression.toFloatOrNull() != null
-
-        // use handwrite implementation to optimize performance and restrict validation
-        // can be: 0, 1, 01, -1, 0.0, 1.0, 01.0, .0
-        var isFirst = true
-        var containsDot = false
-        var containsDigit = false
-        value.forEach f@{ c ->
-            if (isFirst) {
-                isFirst = false
-                if (c == '+' || c == '-') return@f
-            }
-            if (c == '.') {
-                if (containsDot) return false else containsDot = true
-                return@f
-            }
-            if (c.isExactDigit()) {
-                if (!containsDigit) {
-                    containsDigit = true
-                }
-                return@f
-            }
-            return false
-        }
-        return containsDigit
+        return TextMatcher.matchesFloat(value)
     }
 
     fun isPercentageField(value: String): Boolean {
-        return value.matches(percentageFieldRegex)
+        return value.length >= 2 && value.last() == '%' && TextMatcher.matchesInt(value, 0, value.length - 1, leadingUnary = false)
     }
 
     fun isDateField(expression: String, datePattern: String?): Boolean {

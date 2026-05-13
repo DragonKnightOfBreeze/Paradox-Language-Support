@@ -75,16 +75,14 @@ object ParadoxMatchResultProvider {
         val intRange = configExpression.intRange ?: return null
         val intValue = value.toIntOrNull() ?: return null
         val r = intValue in intRange
-        // 即使数值不在范围之内，也不会直接认为不匹配
-        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.LenientExactMatch
+        return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
 
     fun forRangedFloat(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val floatRange = configExpression.floatRange ?: return null
         val floatValue = value.toFloatOrNull() ?: return null
         val r = floatValue in floatRange
-        // 即使数值不在范围之内，也不会直接认为不匹配
-        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.LenientExactMatch
+        return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
 
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {

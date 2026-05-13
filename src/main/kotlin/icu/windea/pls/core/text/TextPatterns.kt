@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.util.text
+package icu.windea.pls.core.text
 
 import icu.windea.pls.core.removeSurroundingOrNull
 
