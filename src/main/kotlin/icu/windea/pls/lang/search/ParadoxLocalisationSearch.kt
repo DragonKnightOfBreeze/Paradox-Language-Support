@@ -15,9 +15,12 @@ import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher
 
 /**
  * 本地化的查询。
+ *
+ * @see ParadoxLocalisationSearcher
  */
 class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProperty, ParadoxLocalisationSearch.Parameters>(EP_NAME) {
     /**

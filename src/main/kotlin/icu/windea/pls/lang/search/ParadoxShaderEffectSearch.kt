@@ -14,9 +14,12 @@ import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
+import icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher
 
 /**
  * 着色器效果（shader effect）的查询。
+ *
+ * @see ParadoxShaderEffectSearcher
  */
 class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectIndexInfo, Parameters>(EP_NAME) {
     /**

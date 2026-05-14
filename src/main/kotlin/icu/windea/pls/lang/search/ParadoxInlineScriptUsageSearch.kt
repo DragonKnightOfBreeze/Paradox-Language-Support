@@ -9,9 +9,12 @@ import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher
 
 /**
  * 内联脚本用法的查询。
+ *
+ * @see ParadoxInlineScriptUsageSearcher
  */
 class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.Parameters>(EP_NAME) {
     /**

@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.searchers.ParadoxDynamicValueSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
@@ -15,6 +16,8 @@ import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
  * 动态值的查询。
  *
  * 不涉及规则文件中预定义的值。
+ *
+ * @see ParadoxDynamicValueSearcher
  */
 class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>(EP_NAME) {
     /**

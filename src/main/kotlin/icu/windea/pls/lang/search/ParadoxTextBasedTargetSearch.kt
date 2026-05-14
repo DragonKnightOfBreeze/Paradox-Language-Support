@@ -8,11 +8,13 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.lang.search.searchers.ParadoxTargetFromTextSearcher
 
 /**
  * 基于本地化文本片段的目标的查询。
@@ -21,6 +23,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [ParadoxScriptScriptedVariable]
  * - 定义 - [ParadoxSearchTargetType.Definition] - [ParadoxDefinitionElement]
  * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
+ *
+ * @see ParadoxTargetFromTextSearcher
  */
 class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElement, ParadoxTextBasedTargetSearch.Parameters>(EP_NAME) {
     data class Parameters(

@@ -23,7 +23,7 @@ import icu.windea.pls.lang.search.ParadoxTextBasedTargetSearch
 import icu.windea.pls.lang.settings.PlsSettings
 
 /**
- * 提供基于本地化文本片段的随处搜索（Search Everywhere）。
+ * 提供来自本地化文本片段的随处搜索（Search Everywhere）。
  *
  * 设计要点：
  * - 直接复用 [ParadoxTextBasedTargetSearch] 提供的查询逻辑，避免重复实现。

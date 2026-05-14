@@ -13,9 +13,12 @@ import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
+import icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher
 
 /**
  * 网格定位器（mesh locator）的查询。
+ *
+ * @see ParadoxMeshLocatorSearcher
  */
 class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexInfo, ParadoxMeshLocatorSearch.Parameters>(EP_NAME) {
     /**

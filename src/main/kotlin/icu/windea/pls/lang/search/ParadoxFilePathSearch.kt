@@ -13,9 +13,12 @@ import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
 
 /**
  * 文件路径的查询。
+ *
+ * @see ParadoxFilePathSearcher
  */
 class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePathSearch.Parameters>(EP_NAME) {
     /**

@@ -11,9 +11,12 @@ import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.lang.search.searchers.ParadoxScriptedVariableSearcher
 
 /**
  * 封装变量的查询。
+ *
+ * @see ParadoxScriptedVariableSearcher
  */
 class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScriptedVariable, ParadoxScriptedVariableSearch.Parameters>(EP_NAME) {
     /**

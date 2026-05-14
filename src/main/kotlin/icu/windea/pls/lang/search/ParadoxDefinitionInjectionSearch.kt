@@ -12,9 +12,12 @@ import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.search.util.withTransform
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher
 
 /**
  * 定义注入的查询。
+ *
+ * @see ParadoxDefinitionInjectionSearcher
  */
 class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitionInjectionIndexInfo, ParadoxDefinitionInjectionSearch.Parameters>(EP_NAME) {
     /**

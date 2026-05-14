@@ -10,9 +10,12 @@ import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
+import icu.windea.pls.lang.search.searchers.ParadoxParameterSearcher
 
 /**
  * 参数的查询。
+ *
+ * @see ParadoxParameterSearcher
  */
 class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterIndexInfo, ParadoxParameterSearch.Parameters>(EP_NAME) {
     /**

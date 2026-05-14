@@ -16,9 +16,12 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.lang.search.searchers.ParadoxDefinitionSearcher
 
 /**
  * 定义的查询。
+ *
+ * @see ParadoxDefinitionSearcher
  */
 class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.Parameters>(EP_NAME) {
     /**

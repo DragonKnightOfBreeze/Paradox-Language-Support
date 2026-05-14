@@ -11,9 +11,12 @@ import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.lang.search.searchers.ParadoxDefineNamespaceSearcher
 
 /**
  * 定值命名空间的查询。
+ *
+ * @see ParadoxDefineNamespaceSearcher
  */
 class ParadoxDefineNamespaceSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineNamespaceSearch.Parameters>(EP_NAME) {
     /**
