@@ -42,7 +42,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
-        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.getAny().resolveNext(pushScope)
+        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.resolveAny().resolveNext(pushScope)
     }
 
     object Constants {
@@ -86,7 +86,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
-        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.getAny().resolveNext(pushScope)
+        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.resolveAny().resolveNext(pushScope)
     }
 
     object Constants {

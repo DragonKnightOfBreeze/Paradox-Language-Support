@@ -63,7 +63,7 @@ import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRendere
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -376,7 +376,7 @@ object CwtDocumentationManager {
                     val inputScopes = linkConfig.inputScopes
                     sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeId.anyScopeId
+                    val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
                     sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
@@ -386,7 +386,7 @@ object CwtDocumentationManager {
                     val inputScopes = linkConfig.inputScopes
                     sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeId.anyScopeId
+                    val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
                     sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }

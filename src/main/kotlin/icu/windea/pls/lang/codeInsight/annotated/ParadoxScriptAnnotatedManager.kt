@@ -10,7 +10,6 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.scope.toScopeIdMap
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -114,9 +113,8 @@ object ParadoxScriptAnnotatedManager {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return null
         val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return null
         if (!unchanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return null
-        val map = scopeContext.toScopeIdMap(showPrev = detailed)
-        if (map.isEmpty()) return null
-        return map.entries.joinToString(" ", "## $scopeContextPrefix ") { (k, v) -> "${k.quoteIfNecessary()} = ${v.quoteIfNecessary()}" }
+        val presentableString = scopeContext.toPresentableString(showPrev = detailed)
+        return "## $scopeContextPrefix $presentableString"
     }
 
     // endregion

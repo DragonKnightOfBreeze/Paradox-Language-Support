@@ -32,7 +32,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
@@ -339,7 +339,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
 
                                 if (scopeContextOfScopesElement == null) {
-                                    map.put(n, ParadoxScopeId.anyScopeId)
+                                    map.put(n, ParadoxScopeConstants.anyScope)
                                     return@f
                                 }
 
@@ -443,8 +443,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         // optimize search scope
         val searchScope = runSmartReadAction { ParadoxSearchScope.fromElement(definition) } ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
-        scopeContextMap.put("this", ParadoxScopeId.anyScopeId)
-        scopeContextMap.put("root", ParadoxScopeId.anyScopeId)
+        scopeContextMap.put("this", ParadoxScopeConstants.anyScope)
+        scopeContextMap.put("root", ParadoxScopeConstants.anyScope)
         var hasConflict = false
         val r = processQuery(thisOnActionName, searchScope, scopeContextMap, configGroup)
         if (!r) hasConflict = true
@@ -492,7 +492,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
 
                                 if (scopeContextOfScopesElement == null) {
-                                    map.put(n, ParadoxScopeId.anyScopeId)
+                                    map.put(n, ParadoxScopeConstants.anyScope)
                                     return@f
                                 }
 

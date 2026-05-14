@@ -19,8 +19,8 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.type.CwtSeparatorType
 
 object CwtOptionDataProcessor {
@@ -160,8 +160,8 @@ object CwtOptionDataProcessor {
         run {
             val replaceScopes = optionData.replaceScopes
             val pushScope = optionData.pushScope
-            val scopeContext = replaceScopes?.let { ParadoxScopeContext.get(it) }?.resolveNext(pushScope)
-                ?: pushScope?.let { ParadoxScopeContext.get(it, it) }
+            val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }?.resolveNext(pushScope)
+                ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
             if (scopeContext == null) return@run
             optionData.scopeContext = scopeContext
         }
@@ -202,19 +202,19 @@ object CwtOptionDataProcessor {
             if (optionConfig !is CwtOptionConfig) return@f
             // ignore case for both system scopes and scopes (to lowercase)
             val k = optionConfig.key.lowercase()
-            val v = optionConfig.getOptionValue()?.let { ParadoxScopeId.getId(it) } ?: return@f
+            val v = optionConfig.getOptionValue()?.let { ParadoxScope.getId(it) } ?: return@f
             r[k] = v
         }
         return r.optimized()
     }
 
     private fun resolvePushScope(config: CwtOptionConfig): String? {
-        return config.getOptionValue()?.let { ParadoxScopeId.getId(it) }
+        return config.getOptionValue()?.let { ParadoxScope.getId(it) }
     }
 
     private fun resolveSupportedScopes(config: CwtOptionConfig): Set<String>? {
         val values = config.getOptionValueOrValues()?.orNull() ?: return null
-        val r = values.mapTo(FastSet()) { ParadoxScopeId.getId(it) }
+        val r = values.mapTo(FastSet()) { ParadoxScope.getId(it) }
         return r.optimized()
     }
 

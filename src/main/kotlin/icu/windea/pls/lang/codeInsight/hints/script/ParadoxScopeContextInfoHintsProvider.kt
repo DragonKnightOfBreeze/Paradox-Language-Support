@@ -21,8 +21,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.scope.ParadoxScopeId
-import icu.windea.pls.model.scope.toScopeMap
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -71,9 +70,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
                 if (m.mark()) text(" ")
                 text(systemScope.optimized(), configGroup.systemScopes[systemScope]?.pointer)
                 text(" = ")
-                when {
-                    ParadoxScopeId.isUnsure(scope.id) -> text(scope.id)
-                    else -> text(scope.id, configGroup.scopeAliasMap[scope.id]?.pointer)
+                if (scope.isUnsure()) {
+                    text(scope.id)
+                } else {
+                    text(scope.id, configGroup.scopeAliasMap[scope.id]?.pointer)
                 }
             }
         }

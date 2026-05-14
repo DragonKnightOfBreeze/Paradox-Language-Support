@@ -26,7 +26,7 @@ import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -122,7 +122,7 @@ object ParadoxScopeManager {
         val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
         val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
         if (replaceScopes != null) {
-            return ParadoxScopeContext.get(replaceScopes)
+            return ParadoxScopeContext.resolve(replaceScopes)
         } else if (pushScope != null) {
             return inputScopeContext.resolveNext(pushScope)
         }
@@ -132,8 +132,8 @@ object ParadoxScopeManager {
     fun getSupportedScopes(modifierCategories: Map<String, CwtModifierCategoryConfig>): Set<String> {
         val categoryConfigs = modifierCategories.values
         return when {
-            categoryConfigs.isEmpty() -> ParadoxScopeId.anyScopeIdSet
-            categoryConfigs.any { it.supportedScopes == ParadoxScopeId.anyScopeIdSet } -> ParadoxScopeId.anyScopeIdSet
+            categoryConfigs.isEmpty() -> ParadoxScopeConstants.anyScopes
+            categoryConfigs.any { it.supportedScopes == ParadoxScopeConstants.anyScopes } -> ParadoxScopeConstants.anyScopes
             else -> categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
         }
     }

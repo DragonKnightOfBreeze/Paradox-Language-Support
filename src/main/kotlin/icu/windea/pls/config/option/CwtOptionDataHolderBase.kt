@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
     object Keys : KeyRegistry() {
@@ -26,7 +26,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val pushScope by registerKey<String?>(this)
         val replaceScopes by registerKey<Map<String, String>?>(this)
         val scopeContext by registerKey<ParadoxScopeContext?>(this)
-        val supportedScopes by registerKey(this, ParadoxScopeId.anyScopeIdSet)
+        val supportedScopes by registerKey(this, ParadoxScopeConstants.anyScopes)
         val type by registerKey<String?>(this)
         val hint by registerKey<String?>(this)
         val eventType by registerKey<String?>(this)

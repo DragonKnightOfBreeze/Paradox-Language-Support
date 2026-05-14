@@ -8,7 +8,6 @@ import com.intellij.ui.Gray
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.model.scope.toScopeMap
 import org.jetbrains.uast.kotlin.orAnonymous
 
 /**
