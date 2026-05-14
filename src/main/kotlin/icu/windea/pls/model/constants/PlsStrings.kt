@@ -39,8 +39,8 @@ object PlsStrings {
     const val commentFolder = "# ..."
     const val quotedFolder = "\"...\""
     const val blockFolder = "{...}"
-    val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val inlineMathFolder = "@[...]"
+    val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val commandFolder = "[...]"
     const val conceptCommandFolder = "['...']"
     const val conceptCommandWithTextFolder = "['...', ...]"

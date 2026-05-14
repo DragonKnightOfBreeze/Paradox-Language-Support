@@ -1,9 +1,11 @@
 package icu.windea.pls.model.expressions
 
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.quote
 import icu.windea.pls.core.match.TextMatcher
+import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
+import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -11,13 +13,13 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 脚本文件、本地化文件或者 CSV 文件中的表达式，
@@ -58,7 +60,7 @@ interface ParadoxExpression {
 // region Implementations
 
 private class ParadoxScriptExpressionResolverImpl : ParadoxExpression.Resolver {
-    private val blockExpression: ParadoxExpression = ParadoxExpressionImpl("{...}", "{...}", false, ParadoxExpressionType.Block, ParadoxExpressionRole.Value)
+    private val blockExpression: ParadoxExpression = ParadoxExpressionImpl(PlsStrings.blockFolder, PlsStrings.blockFolder, false, ParadoxExpressionType.Block, ParadoxExpressionRole.Value)
     private val unknownExpression: ParadoxExpression = ParadoxExpressionImpl("", "", false, ParadoxExpressionType.Unknown, ParadoxExpressionRole.Other)
 
     override fun resolveBlock(): ParadoxExpression {
@@ -160,8 +162,8 @@ private class ParadoxPsiBasedExpression(
 ) : ParadoxExpressionBase() {
     override val text: String = element.text
     override val value: String = element.value
-    override val quoted: Boolean = text.isLeftQuoted()
-    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveExpressionType(value)
+    override val quoted: Boolean = if (element is ParadoxScriptStringExpressionElement) text.isLeftQuoted() else false
+    override val type: ParadoxExpressionType = ParadoxTypeResolver.resolveExpressionType(element)
     override val role: ParadoxExpressionRole = ParadoxTypeResolver.resolveExpressionRole(element)
 }
 
