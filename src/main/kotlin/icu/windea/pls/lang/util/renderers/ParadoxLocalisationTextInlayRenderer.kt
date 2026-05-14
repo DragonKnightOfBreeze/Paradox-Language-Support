@@ -21,6 +21,7 @@ import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.PlsHintsUtil
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxEscapeManager
@@ -108,7 +109,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         if (truncated) return
         if (color == null) return action()
 
-        val textAttributesKey = ParadoxLocalisationAttributesKeys.getColorOnlyKey(color)
+        val textAttributesKey = ParadoxSemanticAttributesKeys.colorOnly(color)
         val oldBuilder = builder
         builder = mutableListOf()
         withColor(colorStack, color) {

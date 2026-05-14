@@ -1,14 +1,43 @@
 package icu.windea.pls.lang.editor
 
 import com.intellij.lang.Language
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.colors.TextAttributesKey.*
+import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.ui.ColorUtil
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeys
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import java.awt.Color
 
 object ParadoxSemanticAttributesKeys {
+    @Suppress("DEPRECATION")
+    private val colorKeyCache = CacheBuilder().build { color: Color ->
+        val hex = ColorUtil.toHex(color).uppercase()
+        val externalName = "PARADOX_LOCALISATION.COLOR_$hex"
+        val defaultAttributes = DefaultLanguageHighlighterColors.IDENTIFIER.defaultAttributes.clone().apply { foregroundColor = color }
+        createTextAttributesKey(externalName, defaultAttributes)
+    }
+    @Suppress("DEPRECATION")
+    private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
+        val hex = ColorUtil.toHex(color).uppercase()
+        val externalName = "PARADOX_LOCALISATION.COLOR_ONLY_$hex"
+        val defaultAttributes = TextAttributes().apply { foregroundColor = color }
+        createTextAttributesKey(externalName, defaultAttributes)
+    }
+
+    fun color(color: Color): TextAttributesKey {
+        return colorKeyCache.get(color)
+    }
+
+    fun colorOnly(color: Color): TextAttributesKey {
+        return colorOnlyKeyCache.get(color)
+    }
+
     fun operator(language: Language? = null): TextAttributesKey {
         return when (language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_OPERATOR
