@@ -29,11 +29,11 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @NotNull String getValue();
 
+  @NotNull String getExpression();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();
-
-  @NotNull String getExpression();
 
   @NotNull ParadoxScriptBlock getMembersRoot();
 

@@ -64,7 +64,10 @@ property_key ::= PROPERTY_KEY_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
-  methods=[getIcon getName getValue setValue getExpression getReference getReferences]
+  methods=[
+    getIcon getName getValue setValue getExpression
+    getReference getReferences
+  ]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private property_value ::= value
@@ -103,7 +106,10 @@ string ::= STRING_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
-  methods=[getIcon getName setName getNameIdentifier getValue setValue getReference getReferences]
+  methods=[
+    getIcon getName setName getNameIdentifier getValue setValue
+    getReference getReferences
+  ]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
@@ -113,7 +119,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
   ]
   methods=[
-    getIcon getName getValue setValue getExpression
+    getIcon getValue getExpression
     getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }

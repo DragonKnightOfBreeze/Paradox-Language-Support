@@ -68,6 +68,11 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
+  public @NotNull String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
@@ -75,11 +80,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
-  }
-
-  @Override
-  public @NotNull String getExpression() {
-    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override

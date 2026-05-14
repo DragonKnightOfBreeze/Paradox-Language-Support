@@ -9,6 +9,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement;
 import javax.swing.Icon;
 
 public interface ParadoxCsvColumn extends ParadoxCsvExpressionElement, ParadoxCsvLiteralValue {
@@ -20,6 +21,8 @@ public interface ParadoxCsvColumn extends ParadoxCsvExpressionElement, ParadoxCs
   @NotNull String getValue();
 
   @NotNull ParadoxCsvColumn setValue(@NotNull String value);
+
+  @NotNull String getExpression();
 
   @Nullable PsiReference getReference();
 

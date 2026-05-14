@@ -25,6 +25,7 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
@@ -36,6 +37,7 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -160,13 +162,8 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: CwtPropertyKey): String {
-        return element.value
-    }
-
-    @JvmStatic
     fun getValue(element: CwtPropertyKey): String {
-        return element.findChild { it.elementType == PROPERTY_KEY_TOKEN }!!.text.unquote()
+        return element.text.unquote()
     }
 
     @JvmStatic
@@ -174,11 +171,6 @@ object CwtPsiImplUtil {
         val newValue = value.quoteIfNecessary()
         val newElement = CwtElementFactory.createPropertyKey(element.project, newValue)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getExpression(element: CwtPropertyKey): String {
-        return element.text
     }
 
     // endregion
@@ -191,25 +183,10 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: CwtValue): String {
-        return element.value
-    }
-
-    @JvmStatic
-    fun getValue(element: CwtValue): String {
-        return element.text
-    }
-
-    @JvmStatic
     fun setValue(element: CwtValue, value: String): CwtValue {
         if (element is CwtString) return setValue(element, value)
         val newElement = CwtElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getExpression(element: CwtValue): String {
-        return element.text
     }
 
     // endregion
@@ -250,11 +227,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Block
-    }
-
-    @JvmStatic
-    fun getName(element: CwtBlock): String {
-        return element.value
     }
 
     @JvmStatic
@@ -315,12 +287,28 @@ object CwtPsiImplUtil {
     // endregion
 
     @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { isComponent(it) }
+    fun getName(element: CwtExpressionElement): String {
+        return element.value
     }
 
-    private fun isComponent(element: PsiElement): Boolean {
-        return element is CwtMember
+    @JvmStatic
+    fun getValue(element: CwtExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: CwtExpressionElement, value: String): CwtExpressionElement {
+        throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getExpression(element: CwtExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun getComponents(element: PsiElement): List<PsiElement> {
+        return element.findChildren { it is CwtMember }
     }
 
     @JvmStatic

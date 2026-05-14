@@ -11,8 +11,6 @@ import java.awt.Color;
 
 public interface ParadoxScriptColor extends ParadoxScriptValue, ParadoxScriptLiteralValue {
 
-  @NotNull String getValue();
-
   @NotNull String getColorType();
 
   @NotNull List<@NotNull String> getColorArgs();

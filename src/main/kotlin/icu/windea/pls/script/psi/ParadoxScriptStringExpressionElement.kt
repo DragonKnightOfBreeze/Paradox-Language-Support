@@ -10,12 +10,6 @@ import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
  * @see ParadoxScriptString
  */
 interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ParadoxScriptLiteralValue, ParadoxLanguageInjectionHost {
-    override fun getName(): String
-
-    override val value: String
-
-    override fun setValue(value: String): ParadoxScriptStringExpressionElement
-
     override fun isValidHost(): Boolean {
         return true
     }

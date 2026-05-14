@@ -22,8 +22,6 @@ public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement, Parad
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull String getValue();
-
   @NotNull ParadoxScriptRootBlock getMembersRoot();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();

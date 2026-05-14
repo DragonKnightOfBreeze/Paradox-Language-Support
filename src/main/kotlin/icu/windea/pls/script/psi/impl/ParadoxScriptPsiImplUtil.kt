@@ -30,17 +30,15 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptRootBlock
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptRootBlock): String {
-        return PlsStrings.blockFolder
-    }
 
     @JvmStatic
     fun getMembersRoot(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
@@ -203,11 +201,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptPropertyKey): String {
-        return element.value
-    }
-
-    @JvmStatic
     fun getValue(element: ParadoxScriptPropertyKey): String {
         return element.text.unquote()
     }
@@ -217,11 +210,6 @@ object ParadoxScriptPsiImplUtil {
         val newValue = value.quoteIfNecessary()
         val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newValue)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptPropertyKey): String {
-        return element.text
     }
 
     // endregion
@@ -234,25 +222,10 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptValue): String {
-        return element.value
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptValue): String {
-        return element.text
-    }
-
-    @JvmStatic
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
         if (element is ParadoxScriptString) return setValue(element, value)
         val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptValue): String {
-        return element.text
     }
 
     // endregion
@@ -285,11 +258,6 @@ object ParadoxScriptPsiImplUtil {
     // endregion
 
     // region ParadoxScriptColor
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptColor): String {
-        return element.text
-    }
 
     @JvmStatic
     fun getColorType(element: ParadoxScriptColor): String {
@@ -487,6 +455,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getExpression(element: ParadoxScriptInlineMath): String {
+        return PlsStrings.inlineMathFolder
+    }
+
+    @JvmStatic
     fun getInlineMathExpression(element: ParadoxScriptInlineMath): String {
         return element.tokenElement?.text?.trim().orEmpty()
     }
@@ -525,17 +498,17 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getValue(element: ParadoxScriptScriptedVariableReference): String {
-        // remove leading `@` & can be parameterized & optimized to optimize memory
-        return element.text.removePrefix("@").optimized()
-    }
-
-    @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptScriptedVariableReference): String {
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
     }
 
     // endregion
@@ -674,13 +647,31 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
+    // region Common Methods
+
     @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { isComponent(it) }
+    fun getName(element: ParadoxScriptExpressionElement): String {
+        return element.value
     }
 
-    private fun isComponent(element: PsiElement): Boolean {
-        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptMember || element is ParadoxScriptParameterCondition
+    @JvmStatic
+    fun getValue(element: ParadoxScriptExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxScriptExpressionElement, value: String): ParadoxScriptExpressionElement {
+        throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getExpression(element: ParadoxScriptExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun getComponents(element: PsiElement): List<PsiElement> {
+        return element.findChildren { it is ParadoxScriptScriptedVariable || it is ParadoxScriptMember || it is ParadoxScriptParameterCondition }
     }
 
     @JvmStatic
@@ -717,4 +708,6 @@ object ParadoxScriptPsiImplUtil {
     fun toString(element: PsiElement): String {
         return PsiService.toPresentableString(element)
     }
+
+    // endregion
 }

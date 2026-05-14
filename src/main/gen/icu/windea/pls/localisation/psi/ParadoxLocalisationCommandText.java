@@ -9,6 +9,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement;
 
 public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, ParadoxLocalisationExpressionElement, ParadoxLocalisationParameterAwareElement {
 
@@ -19,6 +20,8 @@ public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, P
   @NotNull String getValue();
 
   @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value);
+
+  @NotNull String getExpression();
 
   @Nullable PsiReference getReference();
 

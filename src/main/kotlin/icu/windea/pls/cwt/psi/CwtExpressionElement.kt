@@ -1,9 +1,6 @@
 package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.NavigatablePsiElement
-import icu.windea.pls.model.type.CwtExpressionRole
-import icu.windea.pls.model.type.CwtExpressionType
-import icu.windea.pls.model.type.CwtTypeResolver
 
 /**
  * @see CwtPropertyKey

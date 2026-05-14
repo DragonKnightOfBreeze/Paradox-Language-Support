@@ -24,6 +24,7 @@ import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -300,16 +301,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxLocalisationCommandText): String {
-        return element.text
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxLocalisationCommandText): String {
-        return element.text
-    }
-
-    @JvmStatic
     fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
         val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, value)
         return element.replace(newElement).cast()
@@ -412,16 +403,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxLocalisationConceptName): String {
-        return element.text
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxLocalisationConceptName): String {
-        return element.text
-    }
-
-    @JvmStatic
     fun setValue(element: ParadoxLocalisationConceptName, value: String): ParadoxLocalisationConceptName {
         val newElement = ParadoxLocalisationElementFactory.createConceptName(element.project, value)
         return element.replace(newElement).cast()
@@ -489,6 +470,28 @@ object ParadoxLocalisationPsiImplUtil {
 
     // endregion
 
+    // region Common Methods
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationExpressionElement): String {
+        return element.value
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxLocalisationExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxLocalisationExpressionElement, value: String): ParadoxScriptExpressionElement {
+        throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getExpression(element: ParadoxLocalisationExpressionElement): String {
+        return element.text
+    }
+
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {
         return element.references.singleOrNull()
@@ -523,4 +526,6 @@ object ParadoxLocalisationPsiImplUtil {
     fun toString(element: PsiElement): String {
         return PsiService.toPresentableString(element)
     }
+
+    // endregion
 }
