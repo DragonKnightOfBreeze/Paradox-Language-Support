@@ -70,7 +70,7 @@ import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiFileService
-import icu.windea.pls.core.psi.PsiReferencesAware
+import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
@@ -415,9 +415,9 @@ fun PsiReference.resolveFirst(): PsiElement? {
     }
 }
 
-/** 收集该引用及其子引用（若实现了 [PsiReferencesAware]）。 */
+/** 收集该引用及其子引用（若实现了 [PsiCompositeReference]）。 */
 fun PsiReference.collectReferences(): Array<out PsiReference> {
-    if (this is PsiReferencesAware) {
+    if (this is PsiCompositeReference) {
         val result = mutableListOf<PsiReference>()
         doCollectReferences(this, result)
         if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
@@ -427,7 +427,7 @@ fun PsiReference.collectReferences(): Array<out PsiReference> {
 }
 
 private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
-    if (sourceReference is PsiReferencesAware) {
+    if (sourceReference is PsiCompositeReference) {
         val references = sourceReference.getReferences()
         if (references.isNotNullOrEmpty()) { // 为空数组 / 为 `null` 在这里是等价的
             references.forEach { reference ->

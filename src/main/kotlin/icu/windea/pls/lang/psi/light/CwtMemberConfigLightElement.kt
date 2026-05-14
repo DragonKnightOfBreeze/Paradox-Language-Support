@@ -40,6 +40,6 @@ class CwtMemberConfigLightElement(
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(config, project, gameType)
+        return Objects.hash(config, gameType, project)
     }
 }

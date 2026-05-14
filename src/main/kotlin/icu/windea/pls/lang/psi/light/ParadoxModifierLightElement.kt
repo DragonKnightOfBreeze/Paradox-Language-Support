@@ -5,11 +5,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.CwtDataTypes.Parameter
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 
 /**
+ * @see CwtDataTypes.Modifier
  * @see ParadoxModifierSupport
  */
 class ParadoxModifierLightElement(
@@ -41,6 +44,6 @@ class ParadoxModifierLightElement(
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, project, gameType)
+        return Objects.hash(name, gameType, project)
     }
 }

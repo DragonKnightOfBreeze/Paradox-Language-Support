@@ -16,8 +16,10 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -42,11 +44,13 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
                 definitionInfo.name.or.anonymous()
             }
             is ParadoxLocalisationProperty -> element.type?.let { element.name }
-            is ParadoxDynamicValueLightElement -> element.name
             is ParadoxComplexEnumValueLightElement -> element.name
+            is ParadoxDynamicValueLightElement -> element.name
             is ParadoxParameterLightElement -> element.name
             is ParadoxLocalisationParameterLightElement -> element.name
             is ParadoxModifierLightElement -> element.name
+            is ParadoxShaderEffectLightElement -> element.name
+            is ParadoxMeshLocatorLightElement -> element.name
             else -> null
         }
     }
@@ -72,6 +76,8 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
             is ParadoxParameterLightElement -> PlsBundle.message("type.parameter")
             is ParadoxLocalisationParameterLightElement -> PlsBundle.message("type.localisationParameter")
             is ParadoxModifierLightElement -> PlsBundle.message("type.modifier")
+            is ParadoxShaderEffectLightElement -> PlsBundle.message("type.shaderEffect")
+            is ParadoxMeshLocatorLightElement -> PlsBundle.message("type.meshLocator")
             else -> null
         }
     }

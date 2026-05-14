@@ -1,7 +1,6 @@
 package icu.windea.pls.model.constants
 
 object PlsStrings {
-
     const val optionPrefix = "(option)"
     const val optionFlagPrefix = "(option flag)"
     const val complexEnumValuePrefix = "(complex enum value)"
@@ -31,6 +30,8 @@ object PlsStrings {
     const val inlineScriptPrefix = "(inline script)"
     const val definitionInjectionPrefix = "(definition injection)"
     const val definitionInjectionTargetPrefix = "(definition injection target)"
+    const val shaderEffectPrefix = "(shader effect)"
+    const val meshLocatorPrefix = "(mesh locator)"
 
     const val headerMarker = "<header>"
     const val rowMarker = "<row>"
