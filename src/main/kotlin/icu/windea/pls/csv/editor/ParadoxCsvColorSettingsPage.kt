@@ -21,18 +21,23 @@ class ParadoxCsvColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("csv.displayName.invalidEscape"), ParadoxCsvAttributesKeys.INVALID_ESCAPE),
         AttributesDescriptor(PlsBundle.message("csv.displayName.badCharacter"), ParadoxCsvAttributesKeys.BAD_CHARACTER),
 
-        AttributesDescriptor(PlsBundle.message("csv.displayName.definitionReference"), ParadoxCsvAttributesKeys.DEFINITION_REFERENCE),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.enumValue"), ParadoxCsvAttributesKeys.ENUM_VALUE),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.complexEnumValue"), ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.definitionReference"), ParadoxCsvAttributesKeys.DEFINITION_REFERENCE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.enumValue"), ParadoxCsvAttributesKeys.ENUM_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.complexEnumValue"), ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.dynamicValue"), ParadoxCsvAttributesKeys.DYNAMIC_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.variable"), ParadoxCsvAttributesKeys.VARIABLE),
     )
 
     private val _tagToDescriptorMap = mapOf(
         "KEYWORD" to ParadoxCsvAttributesKeys.KEYWORD,
         "HEADER" to ParadoxCsvAttributesKeys.HEADER,
         "NUMBER" to ParadoxCsvAttributesKeys.NUMBER,
-        "DR" to ParadoxCsvAttributesKeys.DEFINITION_REFERENCE,
-        "EV" to ParadoxCsvAttributesKeys.ENUM_VALUE,
-        "CEV" to ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE,
+
+        "DEFINITION_REFERENCE" to ParadoxCsvAttributesKeys.DEFINITION_REFERENCE,
+        "ENUM_VALUE" to ParadoxCsvAttributesKeys.ENUM_VALUE,
+        "COMPLEX_ENUM_VALUE" to ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE,
+        "DYNAMIC_VALUE" to ParadoxCsvAttributesKeys.DYNAMIC_VALUE,
+        "VARIABLE" to ParadoxCsvAttributesKeys.VARIABLE,
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxCsvLanguage, null, null)

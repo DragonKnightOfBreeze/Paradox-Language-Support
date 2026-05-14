@@ -1,11 +1,16 @@
 <?xml version='1.0'?>
 <list>
+  <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
+    <value>
+      <option name="FOREGROUND" value="4A86E8"/>
+    </value>
+  </option>
   <option name="PARADOX_SCRIPT.ARGUMENT">
     <value>
       <option name="FOREGROUND" value="4A86E8"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
+  <option name="PARADOX_SCRIPT.SEMANTIC_ARGUMENT">
     <value>
       <option name="FOREGROUND" value="4A86E8"/>
     </value>
@@ -25,21 +30,21 @@
   <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
     <value>
       <option name="FOREGROUND" value="871094"/>
-      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_COLOR" value="808080"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.LOCALISATION_REFERENCE">
     <value>
       <option name="FOREGROUND" value="0033B3"/>
-      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_COLOR" value="808080"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.COMPLEX_ENUM_VALUE">
     <value>
       <option name="FOREGROUND" value="871094"/>
-      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_COLOR" value="808080"/>
       <option name="EFFECT_TYPE" value="5"/>
       <option name="FONT_TYPE" value="2"/>
     </value>

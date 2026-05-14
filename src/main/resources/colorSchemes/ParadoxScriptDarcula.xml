@@ -1,18 +1,18 @@
 <?xml version='1.0'?>
 <list>
-  <option name="PARADOX_SCRIPT.ARGUMENT">
-    <value>
-      <option name="FOREGROUND" value="467CDA"/>
-    </value>
-  </option>
   <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
     <value>
       <option name="FOREGROUND" value="467CDA"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.COLOR">
+  <option name="PARADOX_SCRIPT.ARGUMENT">
     <value>
-      <option name="FOREGROUND" value="E8BF6A"/>
+      <option name="FOREGROUND" value="467CDA"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.SEMANTIC_ARGUMENT">
+    <value>
+      <option name="FOREGROUND" value="467CDA"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION">

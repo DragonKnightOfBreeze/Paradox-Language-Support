@@ -18,18 +18,23 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField val PROPERTY_KEY = create("PARADOX_LOCALISATION.PROPERTY_KEY", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val AT_SIGN = create("PARADOX_LOCALISATION.AT_SIGN", ParadoxScriptAttributesKeys.AT_SIGN)
     @JvmField val SCRIPTED_VARIABLE_REFERENCE = create("PARADOX_LOCALISATION.SCRIPTED_VARIABLE_REFERENCE", ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE)
-    @JvmField val COLOR = create("PARADOX_LOCALISATION.COLOR", DefaultLanguageHighlighterColors.IDENTIFIER)
     @JvmField val PARAMETER = create("PARADOX_LOCALISATION.PARAMETER", DefaultLanguageHighlighterColors.KEYWORD)
-    @JvmField val ARGUMENT = create("PARADOX_LOCALISATION.ARGUMENT_TOKEN", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val ARGUMENT = create("PARADOX_LOCALISATION.ARGUMENT") // KOTLIN_NAMED_ARGUMENT
+    @JvmField val TEXT = create("PARADOX_LOCALISATION.TEXT", DefaultLanguageHighlighterColors.STRING)
+    @JvmField val COLOR = create("PARADOX_LOCALISATION.COLOR", DefaultLanguageHighlighterColors.IDENTIFIER)
     @JvmField val ICON = create("PARADOX_LOCALISATION.ICON", DefaultLanguageHighlighterColors.IDENTIFIER) // #5C8AE6
     @JvmField val COMMAND = create("PARADOX_LOCALISATION.COMMAND", DefaultLanguageHighlighterColors.IDENTIFIER)
     @JvmField val CONCEPT = create("PARADOX_LOCALISATION.CONCEPT", DefaultLanguageHighlighterColors.IDENTIFIER) // #008080
     @JvmField val TEXT_ICON = create("PARADOX_LOCALISATION.TEXT_ICON", DefaultLanguageHighlighterColors.IDENTIFIER)
     @JvmField val TEXT_FORMAT = create("PARADOX_LOCALISATION.TEXT_FORMAT", DefaultLanguageHighlighterColors.IDENTIFIER)
-    @JvmField val TEXT = create("PARADOX_LOCALISATION.TEXT", DefaultLanguageHighlighterColors.STRING)
     @JvmField val VALID_ESCAPE = create("PARADOX_LOCALISATION.VALID_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
     @JvmField val INVALID_ESCAPE = create("PARADOX_LOCALISATION.INVALID_ESCAPE", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
     @JvmField val BAD_CHARACTER = create("PARADOX_LOCALISATION.BAD_CHARACTER", com.intellij.openapi.editor.HighlighterColors.BAD_CHARACTER)
+
+    @JvmField val SEMANTIC_OPERATOR = create("PARADOX_LOCALISATION.SEMANTIC_OPERATOR", ParadoxScriptAttributesKeys.SEMANTIC_OPERATOR)
+    @JvmField val SEMANTIC_MARKER = create("PARADOX_LOCALISATION.SEMANTIC_MARKER", ParadoxScriptAttributesKeys.SEMANTIC_MARKER)
+    @JvmField val SEMANTIC_KEYWORD = create("PARADOX_LOCALISATION.SEMANTIC_KEYWORD", ParadoxScriptAttributesKeys.SEMANTIC_KEYWORD)
+    @JvmField val SEMANTIC_STRING = create("PARADOX_LOCALISATION.SEMANTIC_STRING", ParadoxScriptAttributesKeys.SEMANTIC_STRING)
 
     @JvmField val DEFINITION_REFERENCE = create("PARADOX_LOCALISATION.DEFINITION_REFERENCE", ParadoxScriptAttributesKeys.DEFINITION_REFERENCE)
     @JvmField val LOCALISATION_REFERENCE = create("PARADOX_LOCALISATION.LOCALISATION_REFERENCE", ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE)

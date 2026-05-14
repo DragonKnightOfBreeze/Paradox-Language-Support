@@ -19,15 +19,21 @@ object ParadoxScriptAttributesKeys {
     @JvmField val SCRIPTED_VARIABLE_NAME = create("PARADOX_SCRIPT.SCRIPTED_VARIABLE_NAME", DefaultLanguageHighlighterColors.STATIC_FIELD)
     @JvmField val SCRIPTED_VARIABLE_REFERENCE = create("PARADOX_SCRIPT.SCRIPTED_VARIABLE_REFERENCE", DefaultLanguageHighlighterColors.STATIC_FIELD)
     @JvmField val PARAMETER = create("PARADOX_SCRIPT.PARAMETER", DefaultLanguageHighlighterColors.KEYWORD)
-    @JvmField val CONDITION_PARAMETER = create("PARADOX_SCRIPT.CONDITION_PARAMETER", DefaultLanguageHighlighterColors.KEYWORD)  // KOTLIN_NAMED_ARGUMENT
-    @JvmField val ARGUMENT = create("PARADOX_SCRIPT.ARGUMENT", DefaultLanguageHighlighterColors.KEYWORD) // KOTLIN_NAMED_ARGUMENT
+    @JvmField val CONDITION_PARAMETER = create("PARADOX_SCRIPT.CONDITION_PARAMETER", DefaultLanguageHighlighterColors.KEYWORD) // KOTLIN_NAMED_ARGUMENT
+    @JvmField val ARGUMENT = create("PARADOX_SCRIPT.ARGUMENT") // KOTLIN_NAMED_ARGUMENT
     @JvmField val PROPERTY_KEY = create("PARADOX_SCRIPT.PROPERTY_KEY", DefaultLanguageHighlighterColors.INSTANCE_FIELD)
     @JvmField val NUMBER = create("PARADOX_SCRIPT.NUMBER", DefaultLanguageHighlighterColors.NUMBER)
     @JvmField val STRING = create("PARADOX_SCRIPT.STRING", DefaultLanguageHighlighterColors.STRING)
-    @JvmField val COLOR = create("PARADOX_SCRIPT.COLOR", DefaultLanguageHighlighterColors.KEYWORD) // HTML_TAG_NAME
+    @JvmField val COLOR = create("PARADOX_SCRIPT.COLOR", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
     @JvmField val VALID_ESCAPE = create("PARADOX_SCRIPT.VALID_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
     @JvmField val INVALID_ESCAPE = create("PARADOX_SCRIPT.INVALID_ESCAPE", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
     @JvmField val BAD_CHARACTER = create("PARADOX_SCRIPT.BAD_CHARACTER", com.intellij.openapi.editor.HighlighterColors.BAD_CHARACTER)
+
+    @JvmField val SEMANTIC_OPERATOR = create("PARADOX_SCRIPT.SEMANTIC_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
+    @JvmField val SEMANTIC_MARKER = create("PARADOX_SCRIPT.SEMANTIC_MARKER", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val SEMANTIC_KEYWORD = create("PARADOX_SCRIPT.SEMANTIC_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val SEMANTIC_ARGUMENT = create("PARADOX_SCRIPT.SEMANTIC_ARGUMENT") // KOTLIN_NAMED_ARGUMENT
+    @JvmField val SEMANTIC_STRING = create("PARADOX_SCRIPT.SEMANTIC_STRING", DefaultLanguageHighlighterColors.STRING)
 
     @JvmField val DEFINITION = create("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY) // underscored
     @JvmField val DEFINITION_NAME = create("PARADOX_SCRIPT.DEFINITION_NAME") // background #223C23
@@ -59,6 +65,8 @@ object ParadoxScriptAttributesKeys {
     @JvmField val TAG = create("PARADOX_SCRIPT.TAG", DefaultLanguageHighlighterColors.METADATA)
     @JvmField val MACRO = create("PARADOX_SCRIPT.MACRO", DefaultLanguageHighlighterColors.KEYWORD) // org.rust.MACRO
     @JvmField val PATH_REFERENCE = create("PARADOX_SCRIPT.PATH_REFERENCE", CodeInsightColors.INACTIVE_HYPERLINK_ATTRIBUTES)
+    @JvmField val SHADER_EFFECT_REFERENCE = create("PARADOX_SCRIPT.SHADER_EFFECT_REFERENCE", DefaultLanguageHighlighterColors.FUNCTION_CALL)
+    @JvmField val MESH_LOCATOR_REFERENCE = create("PARADOX_SCRIPT.MESH_LOCATOR_REFERENCE", DefaultLanguageHighlighterColors.FUNCTION_CALL)
 
     private fun create(name: String, fallback: TextAttributesKey? = null): TextAttributesKey {
         if (fallback == null) return TextAttributesKey.createTextAttributesKey(name)

@@ -17,6 +17,7 @@ object ParadoxScriptAttributesKeySets {
     @JvmField val SCRIPTED_VARIABLE_REFERENCE = arrayOf(K.SCRIPTED_VARIABLE_REFERENCE)
     @JvmField val PARAMETER = arrayOf(K.PARAMETER)
     @JvmField val CONDITION_PARAMETER = arrayOf(K.CONDITION_PARAMETER)
+    @JvmField val ARGUMENT = arrayOf(K.ARGUMENT)
     @JvmField val PROPERTY_KEY = arrayOf(K.PROPERTY_KEY)
     @JvmField val COLOR = arrayOf(K.COLOR)
     @JvmField val NUMBER = arrayOf(K.NUMBER)

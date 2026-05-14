@@ -68,3 +68,6 @@ complex_expressions = {
 
 path = <PATH_REFERENCE>some/image.dds</PATH_REFERENCE>
 path = <PATH_REFERENCE>some/icon</PATH_REFERENCE>
+
+shader_effect = <SHADER_EFFECT_REFERENCE>some_effect</SHADER_EFFECT_REFERENCE>
+mesh_locator = <MESH_LOCATOR_REFERENCE>some_mesh_locator</MESH_LOCATOR_REFERENCE>

@@ -9,17 +9,17 @@ import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 object ParadoxSemanticAttributesKeys {
-    fun marker(language: Language? = null): TextAttributesKey {
-        return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER
-            else -> ParadoxScriptAttributesKeys.MARKER
-        }
-    }
-
     fun operator(language: Language? = null): TextAttributesKey {
         return when (language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.OPERATOR
             else -> ParadoxScriptAttributesKeys.OPERATOR
+        }
+    }
+
+    fun marker(language: Language? = null): TextAttributesKey {
+        return when (language) {
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER
+            else -> ParadoxScriptAttributesKeys.MARKER
         }
     }
 

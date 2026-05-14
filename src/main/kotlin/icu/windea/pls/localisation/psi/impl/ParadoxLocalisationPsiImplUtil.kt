@@ -277,48 +277,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     // endregion
 
-    // region ParadoxLocalisationCommand
-
-    @JvmStatic
-    fun getArgumentElement(element: ParadoxLocalisationCommand): ParadoxLocalisationCommandArgument? {
-        return element.findChild<_>(forward = false)
-    }
-
-    @JvmStatic
-    fun getIcon(element: ParadoxLocalisationCommand, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationCommand
-    }
-
-    // endregion
-
-    // region ParadoxLocalisationCommandText
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
-        val idElement = element.findChild { it.elementType == COMMAND_TEXT_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
-        return idElement
-    }
-
-    @JvmStatic
-    fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
-        val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, value)
-        return element.replace(newElement).cast()
-    }
-
-    // endregion
-
-    // region ParadoxLocalisationCommandArgument
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
-        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
-        return idElement
-    }
-
-    // endregion
-
     // region ParadoxLocalisationIcon
 
     @JvmStatic
@@ -364,6 +322,48 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
+        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        return idElement
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationCommand
+
+    @JvmStatic
+    fun getArgumentElement(element: ParadoxLocalisationCommand): ParadoxLocalisationCommandArgument? {
+        return element.findChild<_>(forward = false)
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxLocalisationCommand, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.LocalisationCommand
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationCommandText
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
+        val idElement = element.findChild { it.elementType == COMMAND_TEXT_TOKEN }
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        return idElement
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
+        val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, value)
+        return element.replace(newElement).cast()
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationCommandArgument
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
         val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
         if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement

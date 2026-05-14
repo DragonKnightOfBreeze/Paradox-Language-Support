@@ -19,6 +19,8 @@ object ParadoxCsvAttributesKeys {
     @JvmField val DEFINITION_REFERENCE = create("PARADOX_CSV.DEFINITION_REFERENCE_KEY", ParadoxScriptAttributesKeys.DEFINITION_REFERENCE)
     @JvmField val ENUM_VALUE = create("PARADOX_CSV.ENUM_VALUE_KEY", ParadoxScriptAttributesKeys.ENUM_VALUE)
     @JvmField val COMPLEX_ENUM_VALUE = create("PARADOX_CSV.COMPLEX_ENUM_KEY", ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE)
+    @JvmField val DYNAMIC_VALUE = create("PARADOX_CSV.DYNAMIC_VALUE", ParadoxScriptAttributesKeys.DYNAMIC_VALUE)
+    @JvmField val VARIABLE = create("PARADOX_CSV.VARIABLE", ParadoxScriptAttributesKeys.VARIABLE)
 
     private fun create(name: String, fallback: TextAttributesKey? = null): TextAttributesKey {
         if (fallback == null) return TextAttributesKey.createTextAttributesKey(name)

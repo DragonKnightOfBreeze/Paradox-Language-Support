@@ -64,16 +64,16 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
+    fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
+        return createPropertyValue(project, "£$name£").tokenElement
+            ?.findChild<ParadoxLocalisationIcon>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
     fun createCommandText(project: Project, text: String): ParadoxLocalisationCommandText {
         return createPropertyValue(project, "[$text]").tokenElement
             ?.findChild<ParadoxLocalisationCommand>()
             ?.findChild<ParadoxLocalisationCommandText>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
-        return createPropertyValue(project, "£$name£").tokenElement
-            ?.findChild<ParadoxLocalisationIcon>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
