@@ -19,17 +19,17 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.navigation.NavigationElement
 import icu.windea.pls.core.process
-import icu.windea.pls.lang.search.ParadoxTextBasedTargetSearch
+import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 import icu.windea.pls.lang.settings.PlsSettings
 
 /**
  * 提供来自本地化文本片段的随处搜索（Search Everywhere）。
  *
  * 设计要点：
- * - 直接复用 [ParadoxTextBasedTargetSearch] 提供的查询逻辑，避免重复实现。
+ * - 直接复用 [ParadoxTargetByTextSearch] 提供的查询逻辑，避免重复实现。
  * - 渐进式输出，支持取消，保证体验与性能。
  */
-class ParadoxTargetFromTextSearchContributor(val event: AnActionEvent) : WeightedSearchEverywhereContributor<PsiElement>,
+class ParadoxTargetByTextSearchContributor(val event: AnActionEvent) : WeightedSearchEverywhereContributor<PsiElement>,
     PossibleSlowContributor,
     SearchEverywhereExtendedInfoProvider,
     SearchEverywherePreviewProvider {
@@ -47,7 +47,7 @@ class ParadoxTargetFromTextSearchContributor(val event: AnActionEvent) : Weighte
 
     override fun getSearchProviderId(): String = PROVIDER_ID
 
-    override fun getGroupName(): String = PlsBundle.message("se.group.textBased.groupName")
+    override fun getGroupName(): String = PlsBundle.message("se.group.targetByText.groupName")
 
     override fun getSortWeight(): Int = 2000 // symbol=300 action=400 text=1500
 
@@ -55,7 +55,7 @@ class ParadoxTargetFromTextSearchContributor(val event: AnActionEvent) : Weighte
 
     override fun isShownInSeparateTab() = true
 
-    override fun getAdvertisement() = PlsBundle.message("se.group.textBased.ad")
+    override fun getAdvertisement() = PlsBundle.message("se.group.targetByText.ad")
 
     override fun fetchWeightedElements(pattern: String, progressIndicator: ProgressIndicator, consumer: Processor<in FoundItemDescriptor<PsiElement>>) {
         val project = event.project ?: return
@@ -63,7 +63,7 @@ class ParadoxTargetFromTextSearchContributor(val event: AnActionEvent) : Weighte
         if (queryText.isEmpty()) return
 
         val scope = GlobalSearchScope.projectScope(project)
-        ParadoxTextBasedTargetSearch.search(queryText, project, scope).process p@{ element ->
+        ParadoxTargetByTextSearch.search(queryText, project, scope).process p@{ element ->
             consumer.process(FoundItemDescriptor(NavigationElement(element, element), 0))
         }
     }
@@ -86,14 +86,14 @@ class ParadoxTargetFromTextSearchContributor(val event: AnActionEvent) : Weighte
     override fun createExtendedInfo() = createPsiExtendedInfo(null, null) { it.castOrNull<PsiElement>() }
 
     companion object {
-        const val PROVIDER_ID: String = "Pls.TextBasedTargetSearch"
+        const val PROVIDER_ID: String = "Pls.TargetByTextSearch"
     }
 
     class Factory : SearchEverywhereContributorFactory<PsiElement> {
-        override fun isAvailable(project: Project?) = PlsSettings.getInstance().state.navigation.seForTextBasedTargets
+        override fun isAvailable(project: Project?) = PlsSettings.getInstance().state.navigation.seForTargetByTexts
 
-        override fun createContributor(initEvent: AnActionEvent): ParadoxTargetFromTextSearchContributor {
-            return ParadoxTargetFromTextSearchContributor(initEvent)
+        override fun createContributor(initEvent: AnActionEvent): ParadoxTargetByTextSearchContributor {
+            return ParadoxTargetByTextSearchContributor(initEvent)
         }
     }
 }

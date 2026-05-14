@@ -10,7 +10,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.search.ParadoxTextBasedTargetSearch
+import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 基于本地化文本片段的目标的查询器的基类。
+ * 各种目标（根据本地化文本）的查询器的基类。
  *
  * 目前支持的目标类型：
  * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [ParadoxScriptScriptedVariable]
@@ -31,13 +31,10 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * 流程：输入的文本片段 → 用于查询的文本片段 → 所属的本地 → 相关的封装变量和定义
  */
-abstract class ParadoxTargetFromTextSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTextBasedTargetSearch.Parameters>() {
-    override fun processQuery(
-        queryParameters: ParadoxTextBasedTargetSearch.Parameters,
-        consumer: Processor<in NavigatablePsiElement>
-    ) {
+abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>() {
+    override fun processQuery(queryParameters: ParadoxTargetByTextSearch.Parameters, consumer: Processor<in NavigatablePsiElement>) {
         // 检查是否启用
-        if (!PlsSettings.getInstance().state.navigation.seForTextBasedTargets) return
+        if (!PlsSettings.getInstance().state.navigation.seForTargetByTexts) return
 
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (PlsStates.resolveForMergedIndex.get() == true) return
@@ -96,7 +93,7 @@ abstract class ParadoxTargetFromTextSearcher : QueryExecutorBase<NavigatablePsiE
     }
 
     class Context(
-        val queryParameters: ParadoxTextBasedTargetSearch.Parameters,
+        val queryParameters: ParadoxTargetByTextSearch.Parameters,
     ) {
         // 使用并发集合，避免在 IntelliJ 并发检索过程中发生非线程安全的 rehash 异常
         val processedLocalisations: MutableSet<ParadoxLocalisationProperty> = ConcurrentHashMap.newKeySet()

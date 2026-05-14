@@ -17,7 +17,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationParameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.shaderEffectSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.meshLocatorSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.search.textBasedTargetSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.targetByTextSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -264,7 +264,7 @@
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxLocalisationChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxSyncedLocalisationChooseByNameContributor"/>
 
-    <searchEverywhereContributor implementation="icu.windea.pls.lang.navigation.ParadoxTargetFromTextSearchContributor$Factory"/>
+    <searchEverywhereContributor implementation="icu.windea.pls.lang.navigation.ParadoxTargetByTextSearchContributor$Factory"/>
 
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>
@@ -398,7 +398,7 @@
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationParameterSearcher"/>
     <shaderEffectSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher"/>
     <meshLocatorSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher"/>
-    <textBasedTargetSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxTargetFromSubstringTextSearcher"/>
+    <targetByTextSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxTargetFromSubstringTextSearcher"/>
   </extensions>
 
   <projectListeners>

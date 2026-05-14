@@ -8,25 +8,24 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.lang.search.searchers.ParadoxTargetFromTextSearcher
+import icu.windea.pls.lang.search.searchers.ParadoxTargetByTextSearcher
 
 /**
- * 基于本地化文本片段的目标的查询。
+ * 各种目标（根据本地化文本）的查询。
  *
  * 目前支持的目标类型：
  * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [ParadoxScriptScriptedVariable]
  * - 定义 - [ParadoxSearchTargetType.Definition] - [ParadoxDefinitionElement]
  * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  *
- * @see ParadoxTargetFromTextSearcher
+ * @see ParadoxTargetByTextSearcher
  */
-class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElement, ParadoxTextBasedTargetSearch.Parameters>(EP_NAME) {
+class ParadoxTargetByTextSearch : ExtensibleQueryFactory<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>(EP_NAME) {
     data class Parameters(
         val text: String,
         val types: Set<ParadoxSearchTargetType>?,
@@ -38,16 +37,16 @@ class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElemen
     }
 
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<NavigatablePsiElement, Parameters>>("icu.windea.pls.search.textBasedTargetSearch")
-        @JvmField val INSTANCE = ParadoxTextBasedTargetSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<NavigatablePsiElement, Parameters>>("icu.windea.pls.search.targetByTextSearch")
+        @JvmField val INSTANCE = ParadoxTargetByTextSearch()
 
-        /** @see ParadoxTextBasedTargetSearch.Parameters */
+        /** @see ParadoxTargetByTextSearch.Parameters */
         @JvmStatic
         fun search(text: String, project: Project, scope: GlobalSearchScope): Query<NavigatablePsiElement> {
             return INSTANCE.createQuery(Parameters(text, null, project, scope))
         }
 
-        /** @see ParadoxTextBasedTargetSearch.Parameters */
+        /** @see ParadoxTargetByTextSearch.Parameters */
         @JvmStatic
         fun search(text: String, project: Project, types: Set<ParadoxSearchTargetType>?, scope: GlobalSearchScope): Query<NavigatablePsiElement> {
             return INSTANCE.createQuery(Parameters(text, types, project, scope))

@@ -8,9 +8,9 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.splitByBlank
 
 /**
- * 基于本地化文本片段的目标的查询器 - 子字符串搜索。
+ * 来自本地化文本片段的目标的查询器 - 子字符串搜索。
  */
-class ParadoxTargetFromSubstringTextSearcher : ParadoxTargetFromTextSearcher() {
+class ParadoxTargetFromSubstringTextSearcher : ParadoxTargetByTextSearcher() {
     override fun process(context: Context, consumer: Processor<in NavigatablePsiElement>) {
         val input = context.queryParameters.text.trim()
         if (input.isEmpty()) return // 预先过滤

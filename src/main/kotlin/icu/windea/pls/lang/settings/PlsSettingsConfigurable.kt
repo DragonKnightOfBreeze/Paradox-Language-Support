@@ -564,9 +564,9 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         }
         indent {
             row {
-                checkBox(PlsBundle.message("settings.navigation.seForTextBasedTargets"))
-                    .bindSelected(settings::seForTextBasedTargets)
-                contextHelp(PlsBundle.message("settings.navigation.seForTextBasedTargets.tip"))
+                checkBox(PlsBundle.message("settings.navigation.seForTargetByText"))
+                    .bindSelected(settings::seForTargetByTexts)
+                contextHelp(PlsBundle.message("settings.navigation.seForTargetByText.tip"))
             }
         }
 
