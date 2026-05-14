@@ -2,16 +2,19 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher
+import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher
 
 /**
  * 定值变量的查询。
@@ -29,7 +32,17 @@ class ParadoxDefineVariableSearch : ExtensibleQueryFactory<ParadoxScriptProperty
         val namespace: String?,
         val variable: String?,
         override val selector: Selector,
-    ) : ParadoxSearchParameters<ParadoxScriptProperty>
+    ) : ParadoxSearchParameters<ParadoxScriptProperty> {
+        fun createContext(scope: GlobalSearchScope = this.scope) = Context(namespace, variable, gameType, project, scope)
+    }
+
+    data class Context(
+        val namespace: String?,
+        val variable: String?,
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+        override val scope: GlobalSearchScope,
+    ) : ParadoxSearchContext
 
     class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context) {
         fun distinct() = distinctBy { ParadoxDefineManager.getExpression(it) }

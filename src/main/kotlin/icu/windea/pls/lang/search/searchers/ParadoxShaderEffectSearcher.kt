@@ -18,10 +18,10 @@ class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexIn
         ProgressManager.checkCanceled()
         val context = queryParameters.createContext()
         if (!context.isValid()) return
-        processInternal(context, consumer)
+        processQuery(context, consumer)
     }
 
-    private fun processInternal(context: Context, consumer: Processor<in ParadoxShaderEffectIndexInfo>) {
+    private fun processQuery(context: Context, consumer: Processor<in ParadoxShaderEffectIndexInfo>) {
         val indexInfoType = ParadoxIndexInfoTypes.ShaderEffect
         PlsIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
             infos.process { info -> processInfo(context, file, info, consumer) }
