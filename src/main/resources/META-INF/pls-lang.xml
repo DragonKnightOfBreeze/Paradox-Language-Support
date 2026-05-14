@@ -631,11 +631,11 @@
       <add-to-group group-id="Pls.LocalisationGenerationContextMenuGroup"/>
     </group>
 
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenSettingsActions$Game" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenGameSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.settings.OpenSettingsActions$Mod" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.settings.OpenModSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
     </action>

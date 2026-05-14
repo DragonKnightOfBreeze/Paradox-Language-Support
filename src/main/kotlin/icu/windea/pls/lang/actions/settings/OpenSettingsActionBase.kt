@@ -17,7 +17,7 @@ import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
-abstract class OpenSettingsAction : DumbAwareAction() {
+sealed class OpenSettingsActionBase : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
