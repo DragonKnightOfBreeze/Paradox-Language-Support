@@ -216,6 +216,9 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptParameterExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>
 
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxShaderEffectExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxMeshLocatorExpressionSupport"/>
+
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTechnologyWithLevelExpressionSupport"/>
 
     <localisationExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxLocalisationCommandExpressionSupport"/>

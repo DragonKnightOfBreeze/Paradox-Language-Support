@@ -44,7 +44,6 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-
         ParadoxCompletionManager.completeArgument(context, result)
     }
 }

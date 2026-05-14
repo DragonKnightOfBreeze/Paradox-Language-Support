@@ -42,6 +42,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
@@ -699,13 +700,14 @@ object ParadoxCompletionManager {
         ParadoxExtendedCompletionManager.completeExtendedDynamicValue(context, result)
     }
 
-    fun completeAliasName(context: ProcessingContext, result: CompletionResultSet, aliasName: String) {
+    fun completeAliasName(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val configGroup = context.configGroup ?: return
         val config = context.config ?: return
         val configs = context.configs
 
+        val aliasName = config.configExpression?.value ?: return
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
         for (aliasConfigs in aliasGroup.values) {
             if (context.isKey == true) {

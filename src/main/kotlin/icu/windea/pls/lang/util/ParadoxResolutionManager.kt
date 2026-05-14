@@ -10,17 +10,14 @@ import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
+import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxResolutionManager {
-    fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
-        return ParadoxModifierManager.resolveModifier(name, element, configGroup)
-    }
-
     fun resolveEnumValue(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
         resolveStaticEnumValue(expression, config)?.let { return it }
         resolveComplexEnumValue(element, expression, config)?.let { return it }
@@ -60,6 +57,21 @@ object ParadoxResolutionManager {
         val name = expression
         val configGroup = config.configGroup
         return ParadoxDynamicValueManager.resolveDynamicValue(element, name, dataExpression, configGroup)
+    }
+
+    fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
+        if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
+        return ParadoxModifierManager.resolveModifier(name, element, configGroup)
+    }
+
+    fun resolveShaderEffect(element: ParadoxExpressionElement, expression: String, configGroup: CwtConfigGroup): PsiElement {
+        val name = expression
+        return ParadoxShaderEffectLightElement(element, name, configGroup.gameType, configGroup.project)
+    }
+
+    fun resolveMeshLocator(element: ParadoxExpressionElement, expression: String, configGroup: CwtConfigGroup): PsiElement {
+        val name = expression
+        return ParadoxMeshLocatorLightElement(element, name, configGroup.gameType, configGroup.project)
     }
 
     @Suppress("unused")
