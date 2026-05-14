@@ -43,10 +43,10 @@ import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxImageManager

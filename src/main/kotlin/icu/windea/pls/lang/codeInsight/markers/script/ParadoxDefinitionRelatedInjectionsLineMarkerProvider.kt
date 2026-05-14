@@ -15,8 +15,8 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.constants.PlsStrings

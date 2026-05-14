@@ -28,7 +28,7 @@ import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxGameType

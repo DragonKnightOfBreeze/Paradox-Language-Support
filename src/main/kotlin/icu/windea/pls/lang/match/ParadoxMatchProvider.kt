@@ -16,8 +16,8 @@ import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock

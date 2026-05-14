@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search.selector
+package icu.windea.pls.lang.search.util
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile

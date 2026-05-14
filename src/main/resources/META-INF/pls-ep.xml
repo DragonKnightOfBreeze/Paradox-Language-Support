@@ -140,6 +140,9 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport"/>
 
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport"/>
+
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedIntChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedFloatChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxColorFieldChecker"/>

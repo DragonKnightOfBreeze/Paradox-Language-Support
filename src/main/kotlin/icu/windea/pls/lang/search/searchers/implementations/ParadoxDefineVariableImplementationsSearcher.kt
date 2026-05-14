@@ -9,8 +9,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**

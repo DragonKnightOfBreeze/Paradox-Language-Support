@@ -22,8 +22,8 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.locale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.locale
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager

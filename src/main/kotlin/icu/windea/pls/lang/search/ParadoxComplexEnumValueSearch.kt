@@ -3,11 +3,12 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher
 
 /**
  * 复杂枚举的查询。
@@ -19,7 +20,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
      * @property name 名字。
      * @property enumName 枚举的名字。
      */
-    class Parameters(
+    data class Parameters(
         val name: String?,
         val enumName: String,
         override val selector: ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>

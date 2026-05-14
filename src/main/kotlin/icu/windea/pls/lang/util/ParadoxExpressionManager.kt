@@ -61,8 +61,8 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression

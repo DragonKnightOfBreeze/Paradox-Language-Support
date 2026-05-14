@@ -28,8 +28,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo

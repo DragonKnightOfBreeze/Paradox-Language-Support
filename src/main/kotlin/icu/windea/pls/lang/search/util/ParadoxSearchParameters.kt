@@ -2,7 +2,6 @@ package icu.windea.pls.lang.search.util
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.ParadoxGameType
 
 /**

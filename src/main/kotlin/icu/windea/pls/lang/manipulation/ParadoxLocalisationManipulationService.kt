@@ -14,9 +14,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.locale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.locale
+import icu.windea.pls.lang.search.util.selector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine

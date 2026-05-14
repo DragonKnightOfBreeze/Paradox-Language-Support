@@ -18,7 +18,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

@@ -9,4 +9,7 @@ object ParadoxIndexInfoTypes {
     val EventInOnAction = ParadoxIndexInfoType("EventInOnAction", 6, ParadoxEventInOnActionIndexInfo::class.java)
     val EventInEvent = ParadoxIndexInfoType("EventInEvent", 7, ParadoxEventInEventIndexInfo::class.java)
     val OnActionInEvent = ParadoxIndexInfoType("OnActionInEvent", 8, ParadoxOnActionInEventIndexInfo::class.java)
+
+    val ShaderEffect = ParadoxIndexInfoType("ShaderEffect", 9, ParadoxShaderEffectIndexInfo::class.java)
+    val MeshLocator = ParadoxIndexInfoType("MeshLocator", 10, ParadoxMeshLocatorIndexInfo::class.java)
 }

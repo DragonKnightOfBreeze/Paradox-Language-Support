@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.core.cast
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.search.searchers.CwtConfigSearcher
 
 /**
  * 规则的查询。

@@ -18,9 +18,9 @@ import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedN
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.distinctByName
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**

@@ -19,10 +19,10 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxModifierManager

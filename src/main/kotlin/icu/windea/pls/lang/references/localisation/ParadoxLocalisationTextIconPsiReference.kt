@@ -9,9 +9,9 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes

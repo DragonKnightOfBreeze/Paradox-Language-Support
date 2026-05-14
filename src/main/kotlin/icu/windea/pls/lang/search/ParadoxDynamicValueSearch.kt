@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -21,7 +21,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
      * @property name 动态值的名字。
      * @property types 动态值的类型。
      */
-    class Parameters(
+    data class Parameters(
         val name: String?,
         val types: Set<String>,
         override val selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>

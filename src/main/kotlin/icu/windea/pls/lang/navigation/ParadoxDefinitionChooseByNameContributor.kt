@@ -12,9 +12,9 @@ import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withGameType
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.lang.settings.PlsSettings
 
 /**

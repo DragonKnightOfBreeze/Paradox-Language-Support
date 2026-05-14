@@ -31,10 +31,10 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.distinctByName
+import icu.windea.pls.lang.search.util.filterBy
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings

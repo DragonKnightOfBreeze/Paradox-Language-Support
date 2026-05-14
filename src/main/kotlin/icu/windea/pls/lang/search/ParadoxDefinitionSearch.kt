@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxQuery
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
@@ -25,7 +25,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
      * @property name 定义的名字。
      * @property typeExpression 定义的类型表达式。参见 [ParadoxDefinitionTypeExpression]。
      */
-    class Parameters(
+    data class Parameters(
         val name: String?,
         val typeExpression: String?,
         override val selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,

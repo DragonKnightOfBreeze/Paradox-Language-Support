@@ -10,7 +10,7 @@ import icu.windea.pls.core.process
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class AutomaticScriptedVariablesRenamerFactory : AutomaticRenamerFactory {

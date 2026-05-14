@@ -12,8 +12,8 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withSearchScope
 
 /**
  * 文件的实现的查询器。加入所有作用域内的同路径的文件。

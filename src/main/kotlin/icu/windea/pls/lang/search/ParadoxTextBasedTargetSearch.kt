@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  */
 class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElement, ParadoxTextBasedTargetSearch.Parameters>(EP_NAME) {
-    class Parameters(
+    data class Parameters(
         val text: String,
         val types: Set<ParadoxSearchTargetType>?,
         val project: Project,

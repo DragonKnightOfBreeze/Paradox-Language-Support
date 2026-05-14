@@ -15,8 +15,8 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager

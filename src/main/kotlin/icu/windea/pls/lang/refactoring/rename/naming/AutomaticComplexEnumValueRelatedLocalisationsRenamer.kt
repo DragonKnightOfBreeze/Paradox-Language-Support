@@ -8,8 +8,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
 
 /**
  * 用于在重命名复杂枚举值时，自动重命名相关本地化（如果存在且需要）。

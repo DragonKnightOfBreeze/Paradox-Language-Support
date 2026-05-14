@@ -13,8 +13,8 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
 
 class GotoFilesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {

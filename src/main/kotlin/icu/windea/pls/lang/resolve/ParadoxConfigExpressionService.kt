@@ -20,10 +20,10 @@ import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager

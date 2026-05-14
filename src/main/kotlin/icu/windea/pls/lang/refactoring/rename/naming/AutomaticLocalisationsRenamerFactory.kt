@@ -10,7 +10,7 @@ import icu.windea.pls.core.process
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class AutomaticLocalisationsRenamerFactory : AutomaticRenamerFactory {

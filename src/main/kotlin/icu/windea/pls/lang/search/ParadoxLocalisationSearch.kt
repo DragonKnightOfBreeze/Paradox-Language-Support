@@ -7,7 +7,7 @@ import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -24,7 +24,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
      * @property name 本地化的名字。
      * @property type 本地化的类型（所有/普通/同步）。
      */
-    class Parameters(
+    data class Parameters(
         val name: String?,
         val type: ParadoxLocalisationType,
         override val selector: ParadoxSearchSelector<ParadoxLocalisationProperty>

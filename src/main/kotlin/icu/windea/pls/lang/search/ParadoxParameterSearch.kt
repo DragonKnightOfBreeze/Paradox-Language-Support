@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -19,7 +19,7 @@ class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterIndexInfo,
      * @property name 参数的名字。
      * @property contextKey 上下文键（如 `scripted_trigger@x`、`inline_script@x`）。
      */
-    class Parameters(
+    data class Parameters(
         val name: String?,
         val contextKey: String,
         override val selector: ParadoxSearchSelector<ParadoxParameterIndexInfo>

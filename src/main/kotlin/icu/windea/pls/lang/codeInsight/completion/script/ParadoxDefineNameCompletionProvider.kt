@@ -18,10 +18,10 @@ import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefineExpression
-import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.distinctByDefineExpression
+import icu.windea.pls.lang.search.util.filterBy
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock

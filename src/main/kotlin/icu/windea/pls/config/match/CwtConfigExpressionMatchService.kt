@@ -36,4 +36,16 @@ object CwtConfigExpressionMatchService {
         val definitionType = dataExpression.value?.substringBefore('.') ?: return false
         return definitionType == ParadoxDefinitionTypes.event
     }
+
+    fun matchesExternalReference(dataExpression: CwtDataExpression) : Boolean {
+        return matchesShaderEffect(dataExpression) || matchesMeshLocator(dataExpression)
+    }
+
+    fun matchesShaderEffect(dataExpression: CwtDataExpression): Boolean {
+        return dataExpression.type == CwtDataTypes.ShaderEffect
+    }
+
+    fun matchesMeshLocator(dataExpression: CwtDataExpression): Boolean {
+        return dataExpression.type == CwtDataTypes.MeshLocator
+    }
 }

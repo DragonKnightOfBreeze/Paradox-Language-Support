@@ -5,8 +5,8 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest

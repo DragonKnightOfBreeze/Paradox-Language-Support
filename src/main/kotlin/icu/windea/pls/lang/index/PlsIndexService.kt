@@ -16,7 +16,7 @@ import com.intellij.util.indexing.FileBasedIndexExtension.*
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo

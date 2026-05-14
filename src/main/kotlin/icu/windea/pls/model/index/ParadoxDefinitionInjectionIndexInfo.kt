@@ -16,8 +16,4 @@ data class ParadoxDefinitionInjectionIndexInfo(
 ) : ParadoxIndexInfo() {
     val element: ParadoxScriptProperty?
         get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, elementOffset) }
-            // ?.takeIf { it.parent is ParadoxScriptRootBlock }
-            // ?.takeIf { it.propertyValue is ParadoxScriptBlock }
-            // ?.takeIf { ParadoxDefinitionInjectionManager.getModeFromExpression(it.name)?.equals(mode, true) == true }
-            // ?.takeIf { ParadoxDefinitionInjectionManager.getTargetFromExpression(it.name) == target }
 }

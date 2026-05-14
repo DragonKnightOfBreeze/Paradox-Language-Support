@@ -15,6 +15,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.definitionInjectionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.parameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationParameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.shaderEffectSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.meshLocatorSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.textBasedTargetSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
   </extensionPoints>
 
@@ -394,6 +396,8 @@
     <definitionInjectionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher"/>
     <parameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationParameterSearcher"/>
+    <shaderEffectSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher"/>
+    <meshLocatorSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher"/>
     <textBasedTargetSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxTargetFromSubstringTextSearcher"/>
   </extensions>
 

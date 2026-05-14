@@ -17,10 +17,10 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.distinctByName
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText

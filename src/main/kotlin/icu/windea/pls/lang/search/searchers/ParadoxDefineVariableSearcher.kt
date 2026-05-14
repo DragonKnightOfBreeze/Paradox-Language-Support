@@ -55,7 +55,6 @@ class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, P
         }
     }
 
-
     private fun createContext(p: ParadoxDefineVariableSearch.Parameters, scope: GlobalSearchScope = p.scope): Context {
         return Context(p.namespace, p.variable, p.gameType, p.project, scope)
     }

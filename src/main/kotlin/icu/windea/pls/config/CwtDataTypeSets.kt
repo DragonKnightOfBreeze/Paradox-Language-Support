@@ -120,4 +120,9 @@ object CwtDataTypeSets {
     val LocalisationParameterInvolved = arrayOf(
         CwtDataTypes.LocalisationParameter
     )
+    /** 所有涉及（目前作为动态引用处理的）外部引用的类型。 */
+    val ExternalReferenceInvolved = arrayOf(
+        CwtDataTypes.ShaderEffect,
+        CwtDataTypes.MeshLocator,
+    )
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -23,7 +23,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
      * @param ignoreLocale 使用指定的完整文件路径进行查找本地化文件时，是否忽略文件名中的本地化语言环境。
      * @param selector 查询选择器。用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
      */
-    class Parameters(
+    data class Parameters(
         val filePath: String?,
         val configExpression: CwtDataExpression?,
         val ignoreLocale: Boolean,

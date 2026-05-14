@@ -3,9 +3,9 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxQuery
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.search.util.withTransform
@@ -23,7 +23,7 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitio
      * @property target 目标定义的名字。
      * @property type 目标定义的类型。
      */
-    class Parameters(
+    data class Parameters(
         val mode: String?,
         val target: String?,
         val type: String?,

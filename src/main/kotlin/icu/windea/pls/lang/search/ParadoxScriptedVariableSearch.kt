@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -20,7 +20,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
      * @property name 封装变量的名字（不以 `@` 开始）。
      * @property type 封装变量的类型（所有/本地/全局）。
      */
-    class Parameters(
+    data class Parameters(
         val name: String?,
         val type: ParadoxScriptedVariableType? = null,
         override val selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>

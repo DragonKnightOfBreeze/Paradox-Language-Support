@@ -13,8 +13,8 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class GotoDefineVariablesHandler : GotoTargetHandler() {

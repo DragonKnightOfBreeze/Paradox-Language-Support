@@ -1,6 +1,5 @@
-package icu.windea.pls.lang.search.selector
+package icu.windea.pls.lang.search.util
 
-import icu.windea.pls.lang.search.util.ParadoxQuery
 import java.util.function.Function
 
 /**

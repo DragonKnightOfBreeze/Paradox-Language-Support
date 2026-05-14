@@ -8,8 +8,8 @@ import com.intellij.util.QueryExecutor
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.selector
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**

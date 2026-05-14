@@ -7,8 +7,8 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class AutomaticDefinitionsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {

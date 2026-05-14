@@ -3,7 +3,8 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.searchers.ParadoxDefineNamespaceSearcher
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -18,7 +19,7 @@ class ParadoxDefineNamespaceSearch : ExtensibleQueryFactory<ParadoxScriptPropert
      *
      * @property namespace 命名空间。
      */
-    class Parameters(
+    data class Parameters(
         val namespace: String?,
         override val selector: ParadoxSearchSelector<ParadoxScriptProperty>,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>

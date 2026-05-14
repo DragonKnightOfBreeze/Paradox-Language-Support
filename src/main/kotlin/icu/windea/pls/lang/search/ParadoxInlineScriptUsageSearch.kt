@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
@@ -18,7 +18,7 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
      *
      * @property expression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
-    class Parameters(
+    data class Parameters(
         val expression: String?,
         override val selector: ParadoxSearchSelector<ParadoxScriptProperty>
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
