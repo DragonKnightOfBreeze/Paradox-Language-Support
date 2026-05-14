@@ -27,7 +27,7 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxLocalisationParameterIndexInfo>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -35,7 +35,11 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxLocalisationParameterIndexInfo, Parameters>>("icu.windea.pls.search.localisationParameterSearch")
         @JvmField val INSTANCE = ParadoxLocalisationParameterSearch()
 
-        /** @see ParadoxLocalisationParameterSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, localisationName: String, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationParameterIndexInfo> {
             return INSTANCE.search(Parameters(name, localisationName, selector))

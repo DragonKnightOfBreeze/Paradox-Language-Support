@@ -33,7 +33,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         override val selector: Selector,
     ) : ParadoxSearchParameters<VirtualFile>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<VirtualFile>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<VirtualFile>(project, context) {
         fun distinct() = distinctBy { it.fileInfo?.path }
     }
 
@@ -43,19 +43,23 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<VirtualFile, Parameters>>("icu.windea.pls.search.filePathSearch")
         @JvmField val INSTANCE = ParadoxFilePathSearch()
 
-        /** @see ParadoxFilePathSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(filePath: String?, configExpression: CwtDataExpression? = null, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
             return INSTANCE.search(Parameters(filePath, configExpression, ignoreLocale, selector))
         }
 
-        /** @see ParadoxFilePathSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchIcon(filePath: String?, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
             return search(filePath, iconExpression, selector, ignoreLocale)
         }
 
-        /** @see ParadoxFilePathSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchInlineScript(expression: String, selector: Selector): ParadoxUnaryQuery<VirtualFile> {
             return search(ParadoxInlineScriptManager.getInlineScriptFilePath(expression), null, selector)

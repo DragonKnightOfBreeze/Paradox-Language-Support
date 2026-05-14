@@ -15,7 +15,7 @@ class ParadoxGameElement(
 ) : RootsProvider {
     override fun getRoots(): Collection<VirtualFile> {
         val directories = mutableListOf<VirtualFile>()
-        val selector = ParadoxFilePathSearch.Selector(project, preferredRootFile).withGameType(gameType)
+        val selector = ParadoxFilePathSearch.selector(project, preferredRootFile).withGameType(gameType)
         val files = ParadoxFilePathSearch.search("", null, selector).findAll()
         files.forEach { file ->
             if (file.isDirectory) {

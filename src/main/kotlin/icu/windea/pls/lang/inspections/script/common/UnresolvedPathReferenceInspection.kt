@@ -90,7 +90,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                         if (fileNames.isNullOrEmpty()) return@run
                         if (fileNames.any { fileName -> fileName.matchesPatterns(ignoredFileNames, ignoreCase = true) }) return // 忽略
                     }
-                    val selector = ParadoxFilePathSearch.Selector(project, file) // use file as context
+                    val selector = ParadoxFilePathSearch.selector(project, file) // use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                     val description = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)

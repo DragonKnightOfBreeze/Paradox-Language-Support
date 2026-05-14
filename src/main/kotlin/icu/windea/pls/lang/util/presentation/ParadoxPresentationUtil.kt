@@ -75,7 +75,7 @@ object ParadoxPresentationUtil {
     }
 
     fun getText(localisationKey: String, project: Project, contextElement: PsiElement? = null): String? {
-        val selector = ParadoxLocalisationSearch.Selector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val localisation = ParadoxLocalisationSearch.searchNormal(localisationKey, selector).find() ?: return null
         return ParadoxLocalisationTextHtmlRenderer().render(localisation)
     }

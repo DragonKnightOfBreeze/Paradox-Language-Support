@@ -36,7 +36,7 @@ class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : Auto
         val name = element.name.orNull() ?: return
         val type = element.type ?: return
         ProgressManager.checkCanceled()
-        val selector = ParadoxLocalisationSearch.Selector(element.project, element).contextSensitive()
+        val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
         val targets = ParadoxLocalisationSearch.search(name, type, selector).findAll()
         for (target in targets) {
             ProgressManager.checkCanceled()

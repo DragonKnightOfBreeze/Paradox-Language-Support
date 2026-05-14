@@ -77,13 +77,13 @@ class ParadoxDefineNamespaceNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val selector = ParadoxDefineNamespaceSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val selector = ParadoxDefineNamespaceSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).findAll()
             return resolved.createResults()
         }

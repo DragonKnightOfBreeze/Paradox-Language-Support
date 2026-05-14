@@ -46,7 +46,7 @@ class ParadoxGameElementNode(
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if (value == null) return emptySet()
-        val selector = ParadoxFilePathSearch.Selector(project, value.preferredRootFile).withGameType(value.gameType)
+        val selector = ParadoxFilePathSearch.selector(project, value.preferredRootFile).withGameType(value.gameType)
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, null, selector).process p@{ file ->

@@ -41,7 +41,7 @@ class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProv
         val tooltip = "$prefix <b>${defineVariableInfo.namespace.escapeXml()}.${defineVariableInfo.variable.escapeXml()}</b>"
         val targets by lazy {
             val project = element.project
-            val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
             val targets0 = ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll()
             targets0.optimized()
         }

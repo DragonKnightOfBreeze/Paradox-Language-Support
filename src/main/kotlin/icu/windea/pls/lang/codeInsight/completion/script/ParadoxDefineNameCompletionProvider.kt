@@ -54,7 +54,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
                 // property value must be null or a block
                 if (memberElement is ParadoxScriptProperty && memberElement.propertyValue.let { it != null && it !is ParadoxScriptBlock }) return
 
-                val selector = ParadoxDefineNamespaceSearch.Selector(project, element).contextSensitive()
+                val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
                     .filterBy { it.name != keyword } // skip if name = input
                     .distinctByDefineExpression()
                 ParadoxDefineNamespaceSearch.search(null, selector).processAsync {
@@ -68,7 +68,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
                 if (parentPropertyElement.parent !is ParadoxScriptRootBlock) return
 
                 val namespace = parentPropertyElement.name
-                val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
+                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
                     .filterBy { it.name != keyword } // skip if name = input
                     .distinctByDefineExpression()
                 ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync {

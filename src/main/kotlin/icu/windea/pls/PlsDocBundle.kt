@@ -72,7 +72,7 @@ object PlsDocBundle {
     @Nls
     fun technologyArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
-            val selector = ParadoxLocalisationSearch.Selector(project, context).contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, context).contextSensitive()
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             val localisation = ParadoxLocalisationSearch.searchNormal(name.uppercase(), selector).find() ?: return@run
@@ -89,7 +89,7 @@ object PlsDocBundle {
     @Nls
     fun technologyCategory(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
-            val selector = ParadoxDefinitionSearch.Selector(project, context).contextSensitive().withGameType(gameType)
+            val selector = ParadoxDefinitionSearch.selector(project, context).contextSensitive().withGameType(gameType)
             val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
             val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run

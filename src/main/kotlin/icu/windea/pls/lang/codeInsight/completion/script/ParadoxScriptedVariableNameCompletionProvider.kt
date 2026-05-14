@@ -46,7 +46,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
-        val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
             .filterBy { it.name != keyword } // skip if name = input
             .distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync {

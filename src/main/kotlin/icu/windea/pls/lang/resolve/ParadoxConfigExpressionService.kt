@@ -83,12 +83,12 @@ object ParadoxConfigExpressionService {
     ): CwtLocalisationLocationResolveResult.Static {
         return CwtLocalisationLocationResolveResult.Static(name, {
             val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
-            val selector = ParadoxLocalisationSearch.Selector(project, definition).contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
                 .withConstraint(constraint)
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).find()
         }, {
-            val selector = ParadoxLocalisationSearch.Selector(project, definition).contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         })
@@ -129,7 +129,7 @@ object ParadoxConfigExpressionService {
                 val spriteName = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
                 if (spriteName.isNullOrEmpty()) return null
                 if (toFile) {
-                    val definitionSelector = ParadoxDefinitionSearch.Selector(project, definition).contextSensitive()
+                    val definitionSelector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
                     val resolved = ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
@@ -205,10 +205,10 @@ object ParadoxConfigExpressionService {
         project: Project
     ): CwtImageLocationResolveResult.Static {
         return CwtImageLocationResolveResult.Static(spriteName, frameInfo, {
-            val selector = ParadoxDefinitionSearch.Selector(project, definition).contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
             ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
-            val selector = ParadoxDefinitionSearch.Selector(project, definition).contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
             ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
         })
     }
@@ -220,10 +220,10 @@ object ParadoxConfigExpressionService {
         project: Project
     ): CwtImageLocationResolveResult.Static {
         return CwtImageLocationResolveResult.Static(filePath, frameInfo, {
-            val selector = ParadoxFilePathSearch.Selector(project, definition).contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
             ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
         }, {
-            val selector = ParadoxFilePathSearch.Selector(project, definition).contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
             ParadoxFilePathSearch.search(filePath, null, selector).findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
         })
     }

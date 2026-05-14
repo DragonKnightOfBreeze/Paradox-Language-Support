@@ -36,27 +36,27 @@ object ParadoxMatchProvider {
     }
 
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
-        val selector = ParadoxDefinitionSearch.Selector(project, element)
+        val selector = ParadoxDefinitionSearch.selector(project, element)
         return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).findFirst() != null
     }
 
     fun matchesLocalisation(element: PsiElement, project: Project, name: String): Boolean {
-        val selector = ParadoxLocalisationSearch.Selector(project, element)
+        val selector = ParadoxLocalisationSearch.selector(project, element)
         return ParadoxLocalisationSearch.searchNormal(name, selector).findFirst() != null
     }
 
     fun matchesSyncedLocalisation(element: PsiElement, project: Project, name: String): Boolean {
-        val selector = ParadoxLocalisationSearch.Selector(project, element)
+        val selector = ParadoxLocalisationSearch.selector(project, element)
         return ParadoxLocalisationSearch.searchSynced(name, selector).findFirst() != null
     }
 
     fun matchesPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): Boolean {
-        val selector = ParadoxFilePathSearch.Selector(project, element)
+        val selector = ParadoxFilePathSearch.selector(project, element)
         return ParadoxFilePathSearch.search(expression, configExpression, selector).findFirst() != null
     }
 
     fun matchesComplexEnumValue(element: PsiElement, project: Project, name: String, enumName: String, searchScopeType: String? = null): Boolean {
-        val selector = ParadoxComplexEnumValueSearch.Selector(project, element).withSearchScopeType(searchScopeType)
+        val selector = ParadoxComplexEnumValueSearch.selector(project, element).withSearchScopeType(searchScopeType)
         return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
     }
 

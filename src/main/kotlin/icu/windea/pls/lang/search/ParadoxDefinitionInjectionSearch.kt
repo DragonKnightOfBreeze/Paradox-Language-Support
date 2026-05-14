@@ -31,19 +31,23 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitio
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxDefinitionInjectionIndexInfo>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>(project, context)
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>(project, context)
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionInjectionIndexInfo, Parameters>>("icu.windea.pls.search.definitionInjectionSearch")
         @JvmField val INSTANCE = ParadoxDefinitionInjectionSearch()
 
-        /** @see ParadoxDefinitionInjectionSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(mode: String?, target: String?, type: String?, selector: Selector): ParadoxUnaryQuery<ParadoxDefinitionInjectionIndexInfo> {
             return INSTANCE.search(Parameters(mode, target, type, selector))
         }
 
-        /** @see ParadoxDefinitionInjectionSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchElement(mode: String?, target: String?, type: String?, selector: Selector): ParadoxQuery<ParadoxDefinitionInjectionIndexInfo, ParadoxScriptProperty> {
             return INSTANCE.search(Parameters(mode, target, type, selector)).withTransform { it.element }

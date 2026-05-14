@@ -5,7 +5,6 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxGameType
@@ -53,7 +52,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
         configureScriptFile("common/drives/00_drives.txt", "features/index/common/drives/00_drives.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
@@ -77,7 +76,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionSearch.search("explorer", null, selector).findFirst()
@@ -95,7 +94,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionSearch.search("nonexistent_ship", null, selector).findFirst()
@@ -114,7 +113,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
         configureScriptFile("common/drives/00_drives.txt", "features/index/common/drives/00_drives.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, "starship", selector).findAll()
@@ -130,7 +129,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/drives/00_drives.txt", "features/index/common/drives/00_drives.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, "ftl_drive", selector).findAll()
@@ -149,7 +148,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionSearch.search("battlecruiser", "starship", selector).findFirst()
@@ -166,7 +165,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 名字存在但类型不匹配
         val result = ParadoxDefinitionSearch.search("explorer", "ftl_drive", selector).findFirst()
@@ -184,7 +183,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val elements = ParadoxDefinitionSearch.searchElement("explorer", "starship", selector).findAll()
@@ -199,7 +198,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val elements = ParadoxDefinitionSearch.searchElement("ocean_world", "planet_class", selector).findAll()
@@ -215,7 +214,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/alien_species/00_species.txt", "features/index/common/alien_species/00_species.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用 name_field 的值搜索
         val elements = ParadoxDefinitionSearch.searchElement("zephyr_folk", "alien_species", selector).findAll()
@@ -238,7 +237,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/drives/00_drives.txt", "features/index/common/drives/00_drives.txt")
 
         val fileScope = GlobalSearchScope.fileScope(project, starshipsFile)
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(fileScope)
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(fileScope)
 
         // Act: 仅搜索 starships 文件
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
@@ -257,7 +256,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/space_stations/00_stations.txt", "features/index/common/space_stations/00_stations.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, "space_station", selector).findAll()
@@ -276,7 +275,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/star_systems/00_systems.txt", "features/index/common/star_systems/00_systems.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 按类型搜索匿名定义
         val results = ParadoxDefinitionSearch.search(null, "star_system", selector).findAll()
@@ -292,7 +291,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/star_systems/00_systems.txt", "features/index/common/star_systems/00_systems.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用属性键名搜索不应返回匿名定义
         val result = ParadoxDefinitionSearch.search("sol", "star_system", selector).findFirst()
@@ -310,7 +309,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用去除前缀后的名称搜索
         val result = ParadoxDefinitionSearch.search("city", "district", selector).findFirst()
@@ -328,7 +327,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, "district", selector).findAll()
@@ -347,7 +346,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/fleets/00_fleets.txt", "features/index/common/fleets/00_fleets.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, "fleet_template", selector).findAll()
@@ -362,7 +361,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/fleets/00_fleets.txt", "features/index/common/fleets/00_fleets.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 不匹配正则的属性名搜索不到结果
         val result = ParadoxDefinitionSearch.search("solo_corvette", "fleet_template", selector).findFirst()
@@ -380,7 +379,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/garrisons/00_garrisons.txt", "features/index/common/garrisons/00_garrisons.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, "garrison", selector).findAll()
@@ -399,7 +398,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用属性值（name_field = "-"）搜索
         val result = ParadoxDefinitionSearch.search("alien_signal", "anomaly", selector).findFirst()
@@ -416,7 +415,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用属性键搜索应返回空（因为 name 取自属性值）
         val result = ParadoxDefinitionSearch.search("anomaly_1", "anomaly", selector).findFirst()
@@ -434,7 +433,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val files = ParadoxDefinitionSearch.searchFile("ocean_world", "planet_class", selector).findAll()
@@ -449,7 +448,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 属性级定义通过 searchFile 应返回空
         val files = ParadoxDefinitionSearch.searchFile("explorer", "starship", selector).findAll()
@@ -463,7 +462,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val properties = ParadoxDefinitionSearch.searchProperty("explorer", "starship", selector).findAll()
@@ -478,7 +477,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 文件级定义通过 searchProperty 应返回空
         val properties = ParadoxDefinitionSearch.searchProperty("ocean_world", "planet_class", selector).findAll()
@@ -506,7 +505,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/garrisons/00_garrisons.txt", "features/index/common/garrisons/00_garrisons.txt")
         configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
@@ -538,7 +537,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
         configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
@@ -564,7 +563,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
 
         // Act: 仅搜索 starships + districts 两个文件
         val unionScope = GlobalSearchScope.filesScope(project, listOf(starshipsFile, districtsFile))
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(unionScope)
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(unionScope)
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
 
         // Assert: 3 starship + 3 district = 6（排除 anomaly）
@@ -581,7 +580,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange: 文件仅含注释
         configureScriptFile("common/starships/02_empty.txt", "features/index/common/starships/02_empty.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
@@ -595,7 +594,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用去前缀的 name 搜索 element
         val elements = ParadoxDefinitionSearch.searchElement("city", "district", selector).findAll()
@@ -610,7 +609,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 用属性值（name_field="-"的 name）搜索 element
         val elements = ParadoxDefinitionSearch.searchElement("alien_signal", "anomaly", selector).findAll()
@@ -627,7 +626,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/drives/00_drives.txt", "features/index/common/drives/00_drives.txt")
         configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 仅按名称搜索，不指定类型
         val result = ParadoxDefinitionSearch.search("warp_drive", null, selector).findFirst()
@@ -650,7 +649,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
 
         // Assert: 应有 1 个来自 REPLACE_OR_CREATE 的定义
@@ -672,7 +671,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
         val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
 
         // Assert: INJECT:tome_of_flames 不应被索引
@@ -697,7 +696,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange: 加载事件测试数据
         configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 按 country 子类型搜索（使用类型表达式格式 "type.subtype"）
         val results = ParadoxDefinitionSearch.search(null, "event.country", selector).findAll()
@@ -712,7 +711,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange: 加载事件测试数据
         configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 按 triggered 子类型搜索（使用类型表达式格式 "type.subtype"）
         // parent_event 有 is_triggered_only = yes，所以有 triggered 子类型
@@ -730,7 +729,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange: 加载事件测试数据
         configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: simple_event 没有 triggered 子类型
         // child_simple_event 继承自 simple_event，也不应该有 triggered 子类型
@@ -746,7 +745,7 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         // Arrange: 加载事件测试数据
         configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
 
-        val selector = ParadoxDefinitionSearch.Selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 按 country + triggered 两个子类型搜索（使用类型表达式格式 "type.subtype1.subtype2"）
         val results = ParadoxDefinitionSearch.search(null, "event.country.triggered", selector).findAll()

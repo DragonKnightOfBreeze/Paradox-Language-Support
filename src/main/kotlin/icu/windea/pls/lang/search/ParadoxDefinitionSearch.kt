@@ -37,7 +37,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         val subtypes = _typeExpression?.subtypes
     }
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxDefinitionIndexInfo>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxDefinitionIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -45,25 +45,29 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionIndexInfo, Parameters>>("icu.windea.pls.search.definitionSearch")
         @JvmField val INSTANCE = ParadoxDefinitionSearch()
 
-        /** @see ParadoxDefinitionSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, typeExpression: String?, selector: Selector): ParadoxUnaryQuery<ParadoxDefinitionIndexInfo> {
             return INSTANCE.search(Parameters(name, typeExpression, selector))
         }
 
-        /** @see ParadoxDefinitionSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchElement(name: String?, typeExpression: String?, selector: Selector): ParadoxQuery<ParadoxDefinitionIndexInfo, ParadoxDefinitionElement> {
             return search(name, typeExpression, selector).withTransform { it.element }
         }
 
-        /** @see ParadoxDefinitionSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchFile(name: String?, typeExpression: String?, selector: Selector): ParadoxQuery<ParadoxDefinitionIndexInfo, PsiFile> {
             return search(name, typeExpression, selector).withTransform { it.fileElement }
         }
 
-        /** @see ParadoxDefinitionSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchProperty(name: String?, typeExpression: String?, selector: Selector): ParadoxQuery<ParadoxDefinitionIndexInfo, ParadoxScriptProperty> {
             return search(name, typeExpression, selector).withTransform { it.propertyElement }

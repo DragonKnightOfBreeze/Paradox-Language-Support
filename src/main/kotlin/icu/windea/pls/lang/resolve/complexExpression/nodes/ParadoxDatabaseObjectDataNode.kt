@@ -163,12 +163,12 @@ class ParadoxDatabaseObjectDataNode(
             if (node.config.localisation != null) {
                 if (!node.isBase) return null
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-                val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(preferredLocale)
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).find()
                     ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
             }
 
-            val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
                 ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
         }
@@ -183,13 +183,13 @@ class ParadoxDatabaseObjectDataNode(
             if (node.config.localisation != null) {
                 if (!node.isBase) return ResolveResult.EMPTY_ARRAY
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-                val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(preferredLocale)
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
                     .filter { node.isValidDatabaseObject(it, typeToSearch) }
                     .createResults()
             }
 
-            val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .createResults()

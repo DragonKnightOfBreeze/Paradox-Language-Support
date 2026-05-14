@@ -24,11 +24,11 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
      */
     data class Parameters(
         val name: String?,
-        val type: ParadoxScriptedVariableType? = null,
+        val type: ParadoxScriptedVariableType?,
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxScriptScriptedVariable>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxScriptScriptedVariable>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxScriptScriptedVariable>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -36,19 +36,23 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptScriptedVariable, Parameters>>("icu.windea.pls.search.scriptedVariableSearch")
         @JvmField val INSTANCE = ParadoxScriptedVariableSearch()
 
-        /** @see ParadoxScriptedVariableSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, type: ParadoxScriptedVariableType?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return INSTANCE.search(Parameters(name, type, selector))
         }
 
-        /** @see ParadoxScriptedVariableSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchLocal(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return search(name, ParadoxScriptedVariableType.Local, selector)
         }
 
-        /** @see ParadoxScriptedVariableSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchGlobal(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return search(name, ParadoxScriptedVariableType.Global, selector)

@@ -32,7 +32,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxLocalisationProperty>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -40,19 +40,23 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxLocalisationProperty, Parameters>>("icu.windea.pls.search.localisationSearch")
         @JvmField val INSTANCE = ParadoxLocalisationSearch()
 
-        /** @see ParadoxLocalisationSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, type: ParadoxLocalisationType, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return INSTANCE.search(Parameters(name, type, selector))
         }
 
-        /** @see ParadoxLocalisationSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchNormal(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return search(name, ParadoxLocalisationType.Normal, selector)
         }
 
-        /** @see ParadoxLocalisationSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun searchSynced(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return search(name, ParadoxLocalisationType.Synced, selector)

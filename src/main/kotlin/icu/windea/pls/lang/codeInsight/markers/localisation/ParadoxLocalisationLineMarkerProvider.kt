@@ -42,7 +42,7 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
         val tooltip = "($type) <b>$name</b>"
         val targets by lazy {
             val project = element.project
-            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             ParadoxLocalisationSearch.search(name, type, selector).findAll().optimized()
         }
         val locationElement = element.propertyKey.idElement

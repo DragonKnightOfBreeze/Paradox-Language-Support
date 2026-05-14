@@ -202,7 +202,7 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         val project = config.configGroup.project
         val text = element.text
         val separatorIndex = text.indexOf('@')
-        if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", ParadoxDefinitionSearch.Selector(project, element)).findFirst() == null) {
+        if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", ParadoxDefinitionSearch.selector(project, element)).findFirst() == null) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
             val description = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
             holder.registerProblem(element, description, ProblemHighlightType.ERROR, range)

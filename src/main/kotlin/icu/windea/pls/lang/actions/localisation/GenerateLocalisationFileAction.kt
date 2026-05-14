@@ -132,7 +132,7 @@ class GenerateLocalisationFileAction : AnAction() {
                                         }
                                         PlsSettingsStrategies.LocalisationGeneration.FromLocale -> {
                                             // 使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
-                                            val selector = ParadoxLocalisationSearch.Selector(project, baseFile).contextSensitive().locale(fromLocale)
+                                            val selector = ParadoxLocalisationSearch.selector(project, baseFile).contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.searchNormal(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())
                                         }

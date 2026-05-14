@@ -29,7 +29,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxDynamicValueIndexInfo>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -37,13 +37,17 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDynamicValueIndexInfo, Parameters>>("icu.windea.pls.search.dynamicValueSearch")
         @JvmField val INSTANCE = ParadoxDynamicValueSearch()
 
-        /** @see ParadoxDynamicValueSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, type: String, selector: Selector): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
             return INSTANCE.search(Parameters(name, setOf(type), selector))
         }
 
-        /** @see ParadoxDynamicValueSearch.Parameters */
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, types: Set<String>, selector: Selector): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
             return INSTANCE.search(Parameters(name, types, selector))

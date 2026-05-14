@@ -19,7 +19,7 @@ import java.util.function.Function
  * 用于获取需要的查询上下文信息（例如游戏类型、查询作用域），
  * 以及对查询目标的最终的选择逻辑（例如是否上下文敏感、是否去重）。
  */
-open class ParadoxSearchSelector<T>(val project: Project, val context: Any? = null) : ParadoxSelector<T> {
+abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?) : ParadoxSelector<T> {
     val selectors = mutableListOf<ParadoxSelector<T>>()
 
     val file = selectFile(context)

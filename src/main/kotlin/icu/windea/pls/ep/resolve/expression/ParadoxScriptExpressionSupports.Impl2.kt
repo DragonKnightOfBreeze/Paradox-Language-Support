@@ -75,7 +75,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         val project = configGroup.project
         val typeExpression = config.configExpression?.value ?: return null
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive(exact)
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive(exact)
         return ParadoxDefinitionSearch.searchElement(name, type, selector).find()
     }
 
@@ -86,7 +86,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         val typeExpression = config.configExpression?.value ?: return emptySet()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         return fullNames.flatMap { fullName ->
-            val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             ParadoxDefinitionSearch.searchElement(fullName, type, selector).findAll()
         }
     }
@@ -123,7 +123,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
+        val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
 
@@ -132,7 +132,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val configGroup = config.configGroup
         val project = configGroup.project
         return fullNames.flatMap { fullName ->
-            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             ParadoxLocalisationSearch.searchNormal(fullName, selector).findAll()
         }
     }
@@ -169,7 +169,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
+        val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
         return ParadoxLocalisationSearch.searchSynced(name, selector).find()
     }
 
@@ -178,7 +178,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val configGroup = config.configGroup
         val project = configGroup.project
         return fullNames.flatMap { fullName ->
-            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             return ParadoxLocalisationSearch.searchSynced(fullName, selector).findAll()
         }
     }
@@ -209,7 +209,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if (element.text.isLeftQuoted()) return null // inline string
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
+        val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
         return ParadoxLocalisationSearch.searchNormal(expressionText, selector).find()
     }
 
@@ -217,7 +217,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if (element.text.isLeftQuoted()) return emptySet() // specific expression
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         return ParadoxLocalisationSearch.searchNormal(expressionText, selector).findAll()
     }
 
@@ -417,7 +417,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         } else {
             // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()
-            val selector = ParadoxFilePathSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
         }
     }
@@ -431,7 +431,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         } else {
             // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()
-            val selector = ParadoxFilePathSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
         }
     }

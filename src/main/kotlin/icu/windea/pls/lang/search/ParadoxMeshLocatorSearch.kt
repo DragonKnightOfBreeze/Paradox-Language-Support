@@ -37,7 +37,7 @@ class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexI
         override val scope: GlobalSearchScope,
     ) : ParadoxSearchContext
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -45,9 +45,11 @@ class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexI
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxMeshLocatorIndexInfo, Parameters>>("icu.windea.pls.search.meshLocatorSearch")
         @JvmField val INSTANCE = ParadoxMeshLocatorSearch()
 
-        /**
-         * @see Parameters
-         */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxMeshLocatorIndexInfo> {
             return INSTANCE.search(Parameters(name, selector))

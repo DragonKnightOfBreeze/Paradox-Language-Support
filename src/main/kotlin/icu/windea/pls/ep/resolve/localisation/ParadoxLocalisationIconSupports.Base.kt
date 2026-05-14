@@ -69,7 +69,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
     override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return null
-        val definitionSelector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val definition = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).find()
         return definition
     }
@@ -77,7 +77,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
     override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return emptySet()
-        val definitionSelector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val definitions = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).findAll()
         return definitions
     }
@@ -86,7 +86,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val definitionSelector = ParadoxDefinitionSearch.Selector(project, originalFile).contextSensitive().distinctByName()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, originalFile).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -111,13 +111,13 @@ class ParadoxImageFileBasedLocalisationIconSupport(
     val pathExpression = CwtDataExpression.resolve(pathExpressionString, false)
 
     override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
-        val fileSelector = ParadoxFilePathSearch.Selector(project, element).contextSensitive()
+        val fileSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
         val file = ParadoxFilePathSearch.search(name, pathExpression, fileSelector).find()
         return file?.toPsiFile(project)
     }
 
     override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
-        val fileSelector = ParadoxFilePathSearch.Selector(project, element).contextSensitive()
+        val fileSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
         val files = ParadoxFilePathSearch.search(name, pathExpression, fileSelector).findAll()
         return files.mapNotNull { it.toPsiFile(project) }
     }
@@ -127,7 +127,7 @@ class ParadoxImageFileBasedLocalisationIconSupport(
         val tailText = " from image file"
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val fileSelector = ParadoxFilePathSearch.Selector(project, originalFile).contextSensitive()
+        val fileSelector = ParadoxFilePathSearch.selector(project, originalFile).contextSensitive()
             .distinctByFilePath()
         ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
             ProgressManager.checkCanceled()

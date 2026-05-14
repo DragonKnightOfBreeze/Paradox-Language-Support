@@ -38,7 +38,7 @@ class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectInde
         override val scope: GlobalSearchScope,
     ) : ParadoxSearchContext
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxShaderEffectIndexInfo>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxShaderEffectIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
     }
 
@@ -46,9 +46,11 @@ class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectInde
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxShaderEffectIndexInfo, Parameters>>("icu.windea.pls.search.shaderEffectSearch")
         @JvmField val INSTANCE = ParadoxShaderEffectSearch()
 
-        /**
-         * @see Parameters
-         */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxShaderEffectIndexInfo> {
             return INSTANCE.search(Parameters(name, selector))

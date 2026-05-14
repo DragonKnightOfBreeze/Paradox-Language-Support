@@ -168,7 +168,7 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val name = remain
         val project = contextElement.project
-        val selector = ParadoxScriptedVariableSearch.Selector(project, contextElement).contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() // global scripted variable only
     }
@@ -201,7 +201,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
         val name = if (tokens.size == 2) tokens.getOrNull(1) else tokens.getOrNull(0)
         if (name == null) return null
         val project = contextElement.project
-        val selector = ParadoxDefinitionSearch.Selector(project, contextElement).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).find()
     }
@@ -233,7 +233,7 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val name = remain
         val project = contextElement.project
-        val selector = ParadoxLocalisationSearch.Selector(project, contextElement).contextSensitive().preferLocale(selectLocale(contextElement))
+        val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(selectLocale(contextElement))
             .withGameType(gameType)
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
@@ -265,7 +265,7 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val filePath = remain
         val project = contextElement.project
-        val selector = ParadoxFilePathSearch.Selector(project, contextElement).contextSensitive()
+        val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFileSystemItem(project)
     }

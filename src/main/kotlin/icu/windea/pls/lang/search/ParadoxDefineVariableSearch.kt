@@ -28,7 +28,7 @@ class ParadoxDefineVariableSearch : ExtensibleQueryFactory<ParadoxScriptProperty
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context) {
         fun distinct() = distinctBy { ParadoxDefineManager.getExpression(it) }
     }
 
@@ -36,7 +36,11 @@ class ParadoxDefineVariableSearch : ExtensibleQueryFactory<ParadoxScriptProperty
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, Parameters>>("icu.windea.pls.search.defineVariableSearch")
         @JvmField val INSTANCE = ParadoxDefineVariableSearch()
 
-        /** @see ParadoxDefineVariableSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(namespace: String?, variable: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.search(Parameters(namespace, variable, selector))

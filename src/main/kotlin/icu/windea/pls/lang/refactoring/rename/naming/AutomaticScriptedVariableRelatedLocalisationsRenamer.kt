@@ -38,7 +38,7 @@ class AutomaticScriptedVariableRelatedLocalisationsRenamer(element: PsiElement, 
         if (element !is ParadoxScriptScriptedVariable) return
         val name = element.name?.orNull() ?: return
         ProgressManager.checkCanceled()
-        val selector = ParadoxLocalisationSearch.Selector(element.project, element).contextSensitive()
+        val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
         val targets = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         for (target in targets) {
             ProgressManager.checkCanceled()

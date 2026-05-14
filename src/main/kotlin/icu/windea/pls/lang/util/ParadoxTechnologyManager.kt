@@ -67,7 +67,7 @@ object ParadoxTechnologyManager {
         private val gameType = ParadoxGameType.Stellaris
 
         fun getAllTiers(project: Project, context: Any?): Set<ParadoxScriptProperty> {
-            val selector = ParadoxDefinitionSearch.Selector(project, context).withGameType(gameType).contextSensitive().distinctByName()
+            val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.searchProperty(null, "technology_tier", selector).findAll()
         }
 
@@ -80,7 +80,7 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptProperty> {
-            val selector = ParadoxDefinitionSearch.Selector(project, context).withGameType(gameType).contextSensitive().distinctByName()
+            val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.technologyCategory, selector).findAll()
         }
 

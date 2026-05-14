@@ -30,7 +30,7 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.defineVariables.search", defineVariableInfo.expression)) {
             // need read actions here if necessary
             readAction {
-                val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
+                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
                 val resolved = ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll()
                 targets.addAll(resolved)
             }

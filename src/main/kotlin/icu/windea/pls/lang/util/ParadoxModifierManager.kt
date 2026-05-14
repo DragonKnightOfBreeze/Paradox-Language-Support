@@ -114,7 +114,7 @@ object ParadoxModifierManager {
             }
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = ParadoxDefinitionSearch.Selector(project, contextElement).contextSensitive()
+                val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
                     .distinctByName()
                 ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
@@ -143,7 +143,7 @@ object ParadoxModifierManager {
                 if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScopeType = complexEnumConfig.searchScopeType
-                    val selector = ParadoxComplexEnumValueSearch.Selector(project, contextElement)
+                    val selector = ParadoxComplexEnumValueSearch.selector(project, contextElement)
                         .withSearchScopeType(searchScopeType)
                         .contextSensitive()
                         .distinctByName()
@@ -166,7 +166,7 @@ object ParadoxModifierManager {
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = ParadoxDynamicValueSearch.Selector(project, contextElement).distinctByName()
+                val selector = ParadoxDynamicValueSearch.selector(project, contextElement).distinctByName()
                 ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     // 去除后面的作用域信息
@@ -248,7 +248,7 @@ object ParadoxModifierManager {
         ProgressManager.checkCanceled()
         val keys = getModifierNameKeys(name, element)
         return keys.firstNotNullOfOrNull { key ->
-            val selector = ParadoxLocalisationSearch.Selector(project, element)
+            val selector = ParadoxLocalisationSearch.selector(project, element)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()

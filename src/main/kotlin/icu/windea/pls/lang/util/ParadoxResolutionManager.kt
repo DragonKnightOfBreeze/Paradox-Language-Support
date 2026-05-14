@@ -49,7 +49,7 @@ object ParadoxResolutionManager {
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return null
         val project = configGroup.project
         val searchScopeType = complexEnumConfig.searchScopeType
-        val selector = ParadoxComplexEnumValueSearch.Selector(project, element).withSearchScopeType(searchScopeType)
+        val selector = ParadoxComplexEnumValueSearch.selector(project, element).withSearchScopeType(searchScopeType)
         val info = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() ?: return null
         val readWriteAccess = ReadWriteAccess.Read // usage
         return ParadoxComplexEnumValueLightElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)

@@ -65,19 +65,19 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
             when {
                 prefix == "@" -> {
                     if (!ParadoxNameValidators.checkScriptedVariableName(name)) return emptySet()
-                    val selector = ParadoxScriptedVariableSearch.Selector(element.project, element).contextSensitive()
+                    val selector = ParadoxScriptedVariableSearch.selector(element.project, element).contextSensitive()
                     val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptySet()
                     return result.asSymbol().to.singletonSet()
                 }
                 prefix.isEmpty() -> {
                     run {
-                        val selector = ParadoxDefinitionSearch.Selector(element.project, element).contextSensitive()
+                        val selector = ParadoxDefinitionSearch.selector(element.project, element).contextSensitive()
                         val result = ParadoxDefinitionSearch.searchElement(name, null, selector).find() ?: return@run
                         return result.asSymbol().to.singletonSet()
                     }
                     run {
                         if (!ParadoxNameValidators.checkLocalisationName(name)) return@run
-                        val selector = ParadoxLocalisationSearch.Selector(element.project, element).contextSensitive()
+                        val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run
                         return result.asSymbol().to.singletonSet()

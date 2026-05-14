@@ -40,7 +40,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return null
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).find()
     }
 
@@ -49,7 +49,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return emptySet()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).findAll()
     }
 

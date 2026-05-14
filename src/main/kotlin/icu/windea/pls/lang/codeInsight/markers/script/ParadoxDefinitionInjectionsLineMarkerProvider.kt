@@ -46,7 +46,7 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.typeText}"
         val targets by lazy {
             val project = element.project
-            val selector = ParadoxDefinitionInjectionSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefinitionInjectionSearch.selector(project, element).contextSensitive()
             val targets0 = ParadoxDefinitionInjectionSearch.searchElement(null, info.target, info.type, selector).findAll()
             targets0.optimized()
         }

@@ -16,7 +16,7 @@ class AutomaticScriptedVariablesRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxScriptScriptedVariable) return false
         val name = element.name?.orNull() ?: return false
-        val selector = ParadoxScriptedVariableSearch.Selector(element.project, element)
+        val selector = ParadoxScriptedVariableSearch.selector(element.project, element)
         val processor = Processors.duplicate<ParadoxScriptScriptedVariable>()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).process(processor)
         if (!processor.duplicated) {

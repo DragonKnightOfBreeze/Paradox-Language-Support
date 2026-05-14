@@ -32,7 +32,7 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.localisations.search", element.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 ParadoxLocalisationSearch.search(element.name, type, selector).findAll()
                 val resolved = ParadoxLocalisationSearch.search(element.name, type, selector).findAll()
                 targets.addAll(resolved)

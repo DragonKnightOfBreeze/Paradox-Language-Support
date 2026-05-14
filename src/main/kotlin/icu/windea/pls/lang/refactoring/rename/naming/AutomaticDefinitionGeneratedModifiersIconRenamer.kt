@@ -51,7 +51,7 @@ class AutomaticDefinitionGeneratedModifiersIconRenamer(element: PsiElement, newN
                 val iconPath = ParadoxModifierManager.getModifierIconPaths(modifierName, element).firstOrNull() ?: return@run
                 val newIconPath = ParadoxModifierManager.getModifierIconPaths(newModifierName, element).firstOrNull() ?: return@run
                 val newIconName = newIconPath.substringAfterLast('/')
-                val iconSelector = ParadoxFilePathSearch.Selector(project, element)
+                val iconSelector = ParadoxFilePathSearch.selector(project, element)
                 val result = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findAll()
                 result.mapNotNull { it.toPsiFile(project) }.forEach { allRenames[it] = newIconName + "." + it.name.substringAfterLast('.') }
             }

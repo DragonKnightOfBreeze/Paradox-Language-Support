@@ -208,7 +208,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
         }
         val element = elementPointer.element
         val searchScopeType = getHierarchySettings().scopeType
-        val selector = ParadoxDefinitionSearch.Selector(project, element).withSearchScopeType(searchScopeType)
+        val selector = ParadoxDefinitionSearch.selector(project, element).withSearchScopeType(searchScopeType)
         val definitions = ParadoxDefinitionSearch.searchElement(null, typeName, selector).findAll()
         if (definitions.isEmpty()) return
         val groupingRules = getGroupingRules(descriptor)
@@ -266,7 +266,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
         val definitionInfo = definition.definitionInfo ?: return
         if (!type.predicate(definitionInfo)) return
         val searchScopeType = getHierarchySettings().scopeType
-        val selector = ParadoxDefinitionSearch.Selector(project, definition).withSearchScopeType(searchScopeType)
+        val selector = ParadoxDefinitionSearch.selector(project, definition).withSearchScopeType(searchScopeType)
         val nestedDefinitions = when (type) {
             Type.EventTreeInvoker -> ParadoxEventManager.getInvokerEvents(definition, selector)
             Type.EventTreeInvoked -> ParadoxEventManager.getInvokedEvents(definition, selector)

@@ -24,13 +24,17 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, Parameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
         @JvmField val INSTANCE = ParadoxInlineScriptUsageSearch()
 
-        /** @see ParadoxInlineScriptUsageSearch.Parameters */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(expression: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.search(Parameters(expression, selector))

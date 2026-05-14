@@ -138,7 +138,7 @@ object ParadoxInlineScriptService {
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
-        val selector = ParadoxInlineScriptUsageSearch.Selector(project, contextElement)
+        val selector = ParadoxInlineScriptUsageSearch.selector(project, contextElement)
         ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
             if (!ParadoxInlineScriptManager.isMatched(p.name)) return@p true // 再次确认
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true

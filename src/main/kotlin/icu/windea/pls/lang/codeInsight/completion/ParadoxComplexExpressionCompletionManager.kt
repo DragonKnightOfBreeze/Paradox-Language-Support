@@ -1438,7 +1438,7 @@ object ParadoxComplexExpressionCompletionManager {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
         val tailText = " from define namespaces"
-        val selector = ParadoxDefineNamespaceSearch.Selector(project, contextElement)
+        val selector = ParadoxDefineNamespaceSearch.selector(project, contextElement)
             .distinctByDefineExpression()
         ParadoxDefineNamespaceSearch.search(null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
@@ -1460,7 +1460,7 @@ object ParadoxComplexExpressionCompletionManager {
         val namespaceNode = node.expression.namespaceNode ?: return
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"
-        val selector = ParadoxDefineVariableSearch.Selector(project, contextElement)
+        val selector = ParadoxDefineVariableSearch.selector(project, contextElement)
             .distinctByDefineExpression()
         ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
@@ -1536,7 +1536,7 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val project = configGroup.project
         val contextElement = context.contextElement
-        val selector = ParadoxDefinitionSearch.Selector(project, contextElement).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
             .distinctByName()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)

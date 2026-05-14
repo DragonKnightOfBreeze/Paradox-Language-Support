@@ -25,7 +25,7 @@ object ParadoxLocalisationService {
         val project = element.project
         val gameType = selectGameType(element)
         if (gameType == null) return emptyList()
-        val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
         ProgressManager.checkCanceled()
         // search for all scripted variable with same name
         val result = ParadoxScriptedVariableSearch.search(name, null, selector).findAll().toList()
@@ -43,7 +43,7 @@ object ParadoxLocalisationService {
             name.removeSurroundingOrNull(prefix, suffix)?.let { namesToSearch += it }
         }
         if (namesToSearch.isEmpty()) return emptyList()
-        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val result = mutableListOf<ParadoxDefinitionElement>()
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()

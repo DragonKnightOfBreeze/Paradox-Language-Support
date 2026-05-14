@@ -28,7 +28,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         if (!isEnabled()) return
         val project = scope.project ?: getCurrentProject() ?: return
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
-        val selector = ParadoxDefinitionSearch.Selector(project).withSearchScope(scope).withGameType(gameType)
+        val selector = ParadoxDefinitionSearch.selector(project).withSearchScope(scope).withGameType(gameType)
         ParadoxDefinitionSearch.search(null, null, selector).process p@{
             val name = it.name
             processor.process(name)
@@ -41,7 +41,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         val project = parameters.project
         val scope = GlobalSearchScopeUtil.toGlobalSearchScope(parameters.searchScope, project)
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
-        val selector = ParadoxDefinitionSearch.Selector(project).withSearchScope(scope).withGameType(gameType)
+        val selector = ParadoxDefinitionSearch.selector(project).withSearchScope(scope).withGameType(gameType)
         ParadoxDefinitionSearch.search(name, null, selector).process p@{
             val element = it.element ?: return@p true
             val definitionInfo = element.definitionInfo ?: return@p true

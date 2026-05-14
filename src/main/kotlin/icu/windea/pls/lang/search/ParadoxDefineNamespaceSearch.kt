@@ -26,7 +26,7 @@ class ParadoxDefineNamespaceSearch : ExtensibleQueryFactory<ParadoxScriptPropert
         override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
-    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context) {
+    class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context) {
         fun distinct() = distinctBy { ParadoxDefineManager.getExpression(it) }
     }
 
@@ -34,9 +34,11 @@ class ParadoxDefineNamespaceSearch : ExtensibleQueryFactory<ParadoxScriptPropert
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, Parameters>>("icu.windea.pls.search.defineNamespaceSearch")
         @JvmField val INSTANCE = ParadoxDefineNamespaceSearch()
 
-        /**
-         *  @see ParadoxDefineNamespaceSearch.Parameters
-         */
+        /** @see Selector */
+        @JvmStatic
+        fun selector(project: Project, context: Any? = null) = Selector(project, context)
+
+        /** @see Parameters */
         @JvmStatic
         fun search(namespace: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.search(Parameters(namespace, selector))

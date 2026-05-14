@@ -80,14 +80,14 @@ class ParadoxDefineVariableNode(
 
         private fun doResolve(): PsiElement? {
             if (namespace == null) return null
-            val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineVariableSearch.search(namespace, variableName, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             if (namespace == null) return ResolveResult.EMPTY_ARRAY
-            val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
+            val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineVariableSearch.search(namespace, variableName, selector).findAll()
             return resolved.createResults()
         }

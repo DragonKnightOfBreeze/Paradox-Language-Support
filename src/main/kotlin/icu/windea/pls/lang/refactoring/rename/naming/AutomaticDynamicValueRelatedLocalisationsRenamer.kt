@@ -38,7 +38,7 @@ class AutomaticDynamicValueRelatedLocalisationsRenamer(element: PsiElement, newN
         if (element !is ParadoxDynamicValueLightElement) return
         val name = element.name.orNull() ?: return
         ProgressManager.checkCanceled()
-        val selector = ParadoxLocalisationSearch.Selector(element.project, element).contextSensitive()
+        val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
         val targets = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         for (target in targets) {
             ProgressManager.checkCanceled()

@@ -36,7 +36,7 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target)) {
             // need read actions here if necessary
             readAction {
-                val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+                val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
                 val resolved = ParadoxDefinitionSearch.searchElement(info.target, info.type, selector).findAll()
                 targets.addAll(resolved)
             }

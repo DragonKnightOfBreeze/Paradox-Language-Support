@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
@@ -36,7 +35,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
         markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
-        val selector = ParadoxLocalisationSearch.Selector(project, myFixture.file)
+        val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchNormal("UI_OK", selector).process { p ->
             results += p.name
@@ -50,7 +49,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
         markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
-        val selector = ParadoxLocalisationSearch.Selector(project, myFixture.file)
+        val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchNormal("NOT_EXISTS", selector).process { p ->
             results += p.name
@@ -68,7 +67,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
         markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project
-        val selector = ParadoxLocalisationSearch.Selector(project, myFixture.file)
+        val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).process { p ->
             results += p.name
@@ -82,7 +81,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
         markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project
-        val selector = ParadoxLocalisationSearch.Selector(project, myFixture.file)
+        val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchSynced("NOT_EXISTS", selector).process { p ->
             results += p.name

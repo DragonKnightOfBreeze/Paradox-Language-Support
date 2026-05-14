@@ -35,7 +35,7 @@ class AutomaticScriptedVariablesRenamer(element: PsiElement, newName: String) : 
         if (element !is ParadoxScriptScriptedVariable) return
         val name = element.name?.orNull() ?: return
         ProgressManager.checkCanceled()
-        val selector = ParadoxScriptedVariableSearch.Selector(element.project, element).contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(element.project, element).contextSensitive()
         val targets = mutableSetOf<ParadoxScriptScriptedVariable>()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets.addAll(it) }
         ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }

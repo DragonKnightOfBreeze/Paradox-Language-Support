@@ -24,14 +24,14 @@ class ParadoxDefinitionInjectionTargetPsiReference(
 
     override fun resolve(): PsiElement? {
         if (info.target.isNullOrEmpty() || info.type.isNullOrEmpty()) return null
-        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val resolved = ParadoxDefinitionSearch.searchElement(info.target, info.type, selector).find()
         return resolved
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         if (info.target.isNullOrEmpty() || info.type.isNullOrEmpty()) return ResolveResult.EMPTY_ARRAY
-        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val resolved = ParadoxDefinitionSearch.searchElement(info.target, info.type, selector).findAll()
         return resolved.createResults()
     }
