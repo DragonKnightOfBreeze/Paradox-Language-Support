@@ -77,10 +77,13 @@ object PlsIcons {
         @JvmField val DatabaseObjectType = getIcon("/icons/nodes/semantic/databaseObjectType.svg")
         @JvmField val Tag = getIcon("/icons/nodes/semantic/tag.svg")
         @JvmField val Macro = getIcon("/icons/nodes/semantic/macro.svg")
-        @JvmField val PathReference = AllIcons.FileTypes.Any_type
 
         @JvmField val EventNamespace = getIcon("/icons/nodes/semantic/eventNamespace.svg")
         @JvmField val Event = getIcon("/icons/nodes/semantic/event.svg")
+
+        @JvmField val PathReference = AllIcons.FileTypes.Any_type
+        @JvmField val ShaderEffect = getIcon("icons/nodes/semantic/shaderEffect.svg")
+        @JvmField val MeshLocator = getIcon("icons/nodes/semantic/meshLocator.svg")
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {
