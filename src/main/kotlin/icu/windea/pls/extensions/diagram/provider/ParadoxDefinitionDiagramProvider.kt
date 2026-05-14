@@ -72,7 +72,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
                 originalFile is ParadoxScriptFile -> ParadoxSearchScopeTypes.File.id
                 else -> null
             }
-            val selector = selector(project, originalFile).definition()
+            val selector = ParadoxDefinitionSearch.Selector(project, originalFile)
                 .withGameType(gameType)
                 .withSearchScope(searchScope)
                 .withSearchScopeType(finalSearchScopeType)

@@ -29,7 +29,7 @@ class GotoFilesHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.files.search", file.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, file).file().contextSensitive()
+                val selector = ParadoxFilePathSearch.Selector(project, file).contextSensitive()
                 val resolved = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 targets.addAll(resolved.mapNotNull { it.toPsiFile(project) })
             }

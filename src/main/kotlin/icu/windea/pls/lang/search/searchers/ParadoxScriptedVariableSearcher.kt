@@ -144,7 +144,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (inlineScriptExpression.isParameterized()) return true // skip if inlineScriptExpression is parameterized
         val name = queryParameters.name
         val project = queryParameters.project
-        val selector = selector(project, file).inlineScriptUsage()
+        val selector = ParadoxInlineScriptUsageSearch.Selector(project, file)
         val uFile2StartOffsetMap = mutableMapOf<VirtualFile, Int>()
         ProgressManager.checkCanceled()
         ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).process p@{ p ->

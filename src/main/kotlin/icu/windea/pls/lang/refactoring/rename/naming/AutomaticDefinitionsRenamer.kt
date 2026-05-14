@@ -39,7 +39,7 @@ class AutomaticDefinitionsRenamer(element: PsiElement, newName: String) : Automa
         val type = definitionInfo.type
         if (name.isEmpty()) return
         ProgressManager.checkCanceled()
-        val selector = selector(element.project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.Selector(element.project, element).contextSensitive()
         val targets = ParadoxDefinitionSearch.searchElement(name, type, selector).findAll()
         for (target in targets) {
             ProgressManager.checkCanceled()

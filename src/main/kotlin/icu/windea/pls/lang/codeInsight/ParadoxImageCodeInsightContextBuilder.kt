@@ -140,7 +140,7 @@ object ParadoxImageCodeInsightContextBuilder {
     }
 
     private fun isMissing(iconPath: String, project: Project, context: PsiElement): Boolean {
-        val iconSelector = selector(project, context).file()
+        val iconSelector = ParadoxFilePathSearch.Selector(project, context)
         val missing = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findFirst() == null
         return missing
     }

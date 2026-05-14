@@ -27,7 +27,7 @@ class ParadoxDefinitionImplementationsSearcher : QueryExecutor<PsiElement, Defin
             val name = definitionInfo.name.orNull() ?: return@action true
             val type = definitionInfo.type.orNull() ?: return@action true
             // 这里不进行排序
-            val selector = selector(project, sourceElement).definition()
+            val selector = ParadoxDefinitionSearch.Selector(project, sourceElement)
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxDefinitionSearch.searchElement(name, type, selector).forEach(consumer)
         }

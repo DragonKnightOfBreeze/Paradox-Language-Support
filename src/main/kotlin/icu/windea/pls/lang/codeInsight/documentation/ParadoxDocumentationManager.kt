@@ -449,7 +449,7 @@ object ParadoxDocumentationManager {
         val nameLocalisation = run {
             val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, element).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -458,7 +458,7 @@ object ParadoxDocumentationManager {
         val descLocalisation = run {
             val keys = ParadoxModifierManager.getModifierDescKeys(name, element)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, element).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -502,7 +502,7 @@ object ParadoxDocumentationManager {
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             paths.firstNotNullOfOrNull { path ->
-                val iconSelector = selector(project, element).file().contextSensitive()
+                val iconSelector = ParadoxFilePathSearch.Selector(project, element).contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }
@@ -948,7 +948,7 @@ object ParadoxDocumentationManager {
         val usedElement = when {
             usedLocale == locale -> element
             else -> {
-                val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(usedLocale)
+                val selector = ParadoxLocalisationSearch.Selector(element.project, element).contextSensitive().preferLocale(usedLocale)
                 val type = element.type
                 val found = type?.let { type -> ParadoxLocalisationSearch.search(element.name, type, selector).find() }
                 found ?: element

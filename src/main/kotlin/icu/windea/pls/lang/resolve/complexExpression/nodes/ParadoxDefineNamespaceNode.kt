@@ -18,7 +18,6 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxDefineNamespaceNode(
@@ -78,13 +77,13 @@ class ParadoxDefineNamespaceNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val selector = selector(project, element).define().contextSensitive()
+            val selector = ParadoxDefineNamespaceSearch.Selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val selector = selector(project, element).define().contextSensitive()
+            val selector = ParadoxDefineNamespaceSearch.Selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).findAll()
             return resolved.createResults()
         }

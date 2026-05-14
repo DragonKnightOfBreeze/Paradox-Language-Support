@@ -44,7 +44,7 @@ class ParadoxScriptedVariablePsiReference(
         // 首先尝试从当前文件中查找引用（在同文件中适用后续覆盖），然后从全局范围中查找引用
         val element = element
         val name = element.name ?: return null
-        val selector = selector(project, element).scriptedVariable().contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it }
         ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it }
         return null
@@ -55,7 +55,7 @@ class ParadoxScriptedVariablePsiReference(
         val element = element
         val name = element.name ?: return ResolveResult.EMPTY_ARRAY
         val resolved = mutableListOf<ParadoxScriptScriptedVariable>()
-        val selector = selector(project, element).scriptedVariable().contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { resolved += it }
         ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { resolved += it }
         return resolved.createResults()

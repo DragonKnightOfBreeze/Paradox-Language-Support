@@ -39,7 +39,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
         val definitionType = snippetNode.configExpression.value ?: return
         if (definitionType.substringBefore('.') !in ParadoxDefinitionTypeSets.job) return
         val configGroup = modifierConfig.config.configGroup
-        val selector = selector(configGroup.project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.Selector(configGroup.project, element).contextSensitive()
         ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).process p@{ definition ->
             ProgressManager.checkCanceled()
             val property = selectScope { definition.properties(inline = true).ofKey("icon").one() } ?: return@p true

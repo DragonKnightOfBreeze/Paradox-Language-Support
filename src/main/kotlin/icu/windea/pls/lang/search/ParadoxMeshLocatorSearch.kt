@@ -9,6 +9,7 @@ import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
@@ -24,7 +25,7 @@ class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexI
      */
     data class Parameters(
         val name: String?,
-        override val selector: ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>
+        override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxMeshLocatorIndexInfo> {
         fun createContext(scope: GlobalSearchScope = this.scope) = Context(name, gameType, project, scope)
     }
@@ -36,18 +37,19 @@ class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexI
         override val scope: GlobalSearchScope,
     ) : ParadoxSearchContext
 
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>(project, context) {
+        fun distinct() = distinctBy { it.name }
+    }
+
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxMeshLocatorIndexInfo, Parameters>>("icu.windea.pls.search.meshLocatorSearch")
         @JvmField val INSTANCE = ParadoxMeshLocatorSearch()
-
-        @JvmStatic
-        fun selector(project: Project, context: Any? = null) = ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>(project, context)
 
         /**
          * @see Parameters
          */
         @JvmStatic
-        fun search(name: String?, selector: ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>): ParadoxUnaryQuery<ParadoxMeshLocatorIndexInfo> {
+        fun search(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxMeshLocatorIndexInfo> {
             return INSTANCE.search(Parameters(name, selector))
         }
     }

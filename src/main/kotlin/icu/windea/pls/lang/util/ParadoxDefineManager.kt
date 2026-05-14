@@ -84,13 +84,13 @@ object ParadoxDefineManager {
     @Suppress("unused")
     fun findDefineNamespaceElement(namespace: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
         if (namespace.isEmpty()) return null
-        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        val defineSelector = ParadoxDefineNamespaceSearch.Selector(project, contextElement).contextSensitive()
         return ParadoxDefineNamespaceSearch.search(namespace, defineSelector).find()
     }
 
     fun findDefineVariableElement(namespace: String, variable: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
         if (namespace.isEmpty() || variable.isEmpty()) return null
-        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        val defineSelector = ParadoxDefineVariableSearch.Selector(project, contextElement).contextSensitive()
         return ParadoxDefineVariableSearch.search(namespace, variable, defineSelector).find()
     }
 

@@ -90,7 +90,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     readAction {
                         val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
-                            val selector = selector(project, element).localisation().contextSensitive()
+                            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive()
                                 .preferLocale(preferredLocale)
                                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                             ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
@@ -100,7 +100,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     readAction {
                         val keys = ParadoxModifierManager.getModifierDescKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
-                            val selector = selector(project, element).localisation().contextSensitive()
+                            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive()
                                 .preferLocale(preferredLocale)
                                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                             ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()

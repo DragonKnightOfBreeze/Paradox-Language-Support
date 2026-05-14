@@ -66,7 +66,7 @@ object ParadoxDefinitionInjectionService {
         val type = definitionInjectionInfo.type?.orNull() ?: return emptyList()
         val typeConfig = definitionInjectionInfo.typeConfig ?: return emptyList()
         if (typeConfig.subtypes.isEmpty()) return emptyList()
-        val selector = selector(definitionInjectionInfo.project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.Selector(definitionInjectionInfo.project, element).contextSensitive()
         val targetDefinition = ParadoxDefinitionSearch.searchProperty(target, type, selector).find() ?: return emptyList()
         val targetInfo = targetDefinition.definitionInfo ?: return emptyList()
         return targetInfo.getSubtypeConfigs(options)

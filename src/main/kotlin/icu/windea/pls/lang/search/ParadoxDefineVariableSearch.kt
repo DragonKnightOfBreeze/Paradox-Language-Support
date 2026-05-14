@@ -1,13 +1,17 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch.Selector
 import icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
+import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -23,22 +27,20 @@ class ParadoxDefineVariableSearch : ExtensibleQueryFactory<ParadoxScriptProperty
     data class Parameters(
         val namespace: String?,
         val variable: String?,
-        override val selector: ParadoxSearchSelector<ParadoxScriptProperty>,
+        override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
+
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context) {
+        fun distinct() = distinctBy { ParadoxDefineManager.getExpression(it) }
+    }
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, Parameters>>("icu.windea.pls.search.defineVariableSearch")
         @JvmField val INSTANCE = ParadoxDefineVariableSearch()
 
-        /**
-         *  @see ParadoxDefineVariableSearch.Parameters
-         */
+        /** @see ParadoxDefineVariableSearch.Parameters */
         @JvmStatic
-        fun search(
-            namespace: String?,
-            variable: String?,
-            selector: ParadoxSearchSelector<ParadoxScriptProperty>,
-        ): ParadoxUnaryQuery<ParadoxScriptProperty> {
+        fun search(namespace: String?, variable: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.search(Parameters(namespace, variable, selector))
         }
     }

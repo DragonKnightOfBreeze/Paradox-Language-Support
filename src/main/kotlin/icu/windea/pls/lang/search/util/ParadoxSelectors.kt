@@ -152,4 +152,3 @@ class ParadoxPreferLocaleSelector(
         return complexCompareBy({ selectLocale(it) }, { it.id }, { locale == it }) // 同时也按照localeId来进行排序
     }
 }
-

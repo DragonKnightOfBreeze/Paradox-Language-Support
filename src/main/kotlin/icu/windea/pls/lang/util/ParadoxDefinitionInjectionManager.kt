@@ -209,7 +209,7 @@ object ParadoxDefinitionInjectionManager {
         if (definitionInjectionInfo.typeConfig == null) return false
         val name = definitionInjectionInfo.target
         val typeExpression = definitionInjectionInfo.type
-        val selector = selector(definitionInjectionInfo.project, context).definition()
+        val selector = ParadoxDefinitionSearch.Selector(definitionInjectionInfo.project, context)
         return ParadoxDefinitionSearch.searchProperty(name, typeExpression, selector).findFirst() != null
     }
 

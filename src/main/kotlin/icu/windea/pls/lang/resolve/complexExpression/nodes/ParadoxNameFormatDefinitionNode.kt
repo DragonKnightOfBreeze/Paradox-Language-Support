@@ -80,13 +80,13 @@ class ParadoxNameFormatDefinitionNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val selector = selector(project, element).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
             val resolved = ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val selector = selector(project, element).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
             val resolved = ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
             return resolved.createResults()
         }

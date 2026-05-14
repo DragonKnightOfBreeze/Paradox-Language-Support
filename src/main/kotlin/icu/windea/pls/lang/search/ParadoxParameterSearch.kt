@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 
@@ -22,22 +24,20 @@ class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterIndexInfo,
     data class Parameters(
         val name: String?,
         val contextKey: String,
-        override val selector: ParadoxSearchSelector<ParadoxParameterIndexInfo>
+        override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxParameterIndexInfo>
+
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxParameterIndexInfo>(project, context) {
+        fun distinct() = distinctBy { it.name }
+    }
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxParameterIndexInfo, Parameters>>("icu.windea.pls.search.parameterSearch")
         @JvmField val INSTANCE = ParadoxParameterSearch()
 
-        /**
-         * @see ParadoxParameterSearch.Parameters
-         */
+        /** @see ParadoxParameterSearch.Parameters */
         @JvmStatic
-        fun search(
-            name: String?,
-            contextKey: String,
-            selector: ParadoxSearchSelector<ParadoxParameterIndexInfo>,
-        ): ParadoxUnaryQuery<ParadoxParameterIndexInfo> {
+        fun search(name: String?, contextKey: String, selector: Selector): ParadoxUnaryQuery<ParadoxParameterIndexInfo> {
             return INSTANCE.search(Parameters(name, contextKey, selector))
         }
     }

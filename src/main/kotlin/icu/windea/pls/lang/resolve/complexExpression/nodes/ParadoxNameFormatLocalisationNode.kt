@@ -78,14 +78,14 @@ class ParadoxNameFormatLocalisationNode(
 
         private fun doResolve(): PsiElement? {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
+            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(preferredLocale)
             val resolved = ParadoxLocalisationSearch.searchNormal(name, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
+            val selector = ParadoxLocalisationSearch.Selector(project, element).contextSensitive().preferLocale(preferredLocale)
             val resolved = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
             return resolved.createResults()
         }

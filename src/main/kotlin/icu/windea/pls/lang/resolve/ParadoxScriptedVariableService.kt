@@ -11,12 +11,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 object ParadoxScriptedVariableService {
     fun resolveNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
+        val selector = ParadoxLocalisationSearch.Selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
 
     fun resolveNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
+        val selector = ParadoxLocalisationSearch.Selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
     }
 }

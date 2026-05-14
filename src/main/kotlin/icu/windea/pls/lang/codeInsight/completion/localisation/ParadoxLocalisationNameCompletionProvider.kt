@@ -47,7 +47,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         result.restartCompletionOnAnyPrefixChange()
 
         // 提示 `localisation` 或者 `synced_localisation`
-        val selector = selector(project, file).localisation()
+        val selector = ParadoxLocalisationSearch.Selector(project, file)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .filterBy { it.name != keyword } // skip if name = input

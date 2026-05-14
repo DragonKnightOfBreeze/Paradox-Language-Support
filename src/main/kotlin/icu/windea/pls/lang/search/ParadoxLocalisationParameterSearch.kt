@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 
@@ -22,22 +24,20 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
     data class Parameters(
         val name: String?,
         val localisationName: String,
-        override val selector: ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>
+        override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxLocalisationParameterIndexInfo>
+
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>(project, context) {
+        fun distinct() = distinctBy { it.name }
+    }
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxLocalisationParameterIndexInfo, Parameters>>("icu.windea.pls.search.localisationParameterSearch")
         @JvmField val INSTANCE = ParadoxLocalisationParameterSearch()
 
-        /**
-         * @see ParadoxLocalisationParameterSearch.Parameters
-         */
+        /** @see ParadoxLocalisationParameterSearch.Parameters */
         @JvmStatic
-        fun search(
-            name: String?,
-            localisationName: String,
-            selector: ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>,
-        ): ParadoxUnaryQuery<ParadoxLocalisationParameterIndexInfo> {
+        fun search(name: String?, localisationName: String, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationParameterIndexInfo> {
             return INSTANCE.search(Parameters(name, localisationName, selector))
         }
     }

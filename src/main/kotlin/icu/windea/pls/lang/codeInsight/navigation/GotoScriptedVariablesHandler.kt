@@ -33,11 +33,11 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.scriptedVariables.search", name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, element).scriptedVariable().contextSensitive()
+                val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
                 ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets.addAll(it) }
             }
             readAction {
-                val selector = selector(project, element).scriptedVariable().contextSensitive()
+                val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
                 ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }
             }
         }

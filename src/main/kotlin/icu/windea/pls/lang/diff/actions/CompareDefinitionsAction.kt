@@ -123,7 +123,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val definitions = mutableListOf<ParadoxDefinitionElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {
             readAction {
-                val selector = selector(project, file).definition()
+                val selector = ParadoxDefinitionSearch.Selector(project, file)
                 // pass main type only
                 val result = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll()
                 definitions.addAll(result)

@@ -121,7 +121,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val localisations = mutableListOf<ParadoxLocalisationProperty>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.localisations.collect.title")) {
             readAction {
-                val selector = selector(project, file).localisation()
+                val selector = ParadoxLocalisationSearch.Selector(project, file)
                 val result = ParadoxLocalisationSearch.searchNormal(localisationName, selector).findAll()
                 localisations.addAll(result)
             }

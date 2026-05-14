@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.core.cast
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.lang.search.searchers.CwtConfigSearcher
 
 /**
  * 规则的查询。
@@ -44,33 +43,25 @@ class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Par
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfig<*>, Parameters>>("icu.windea.pls.search.configSearch")
         @JvmField val INSTANCE = CwtConfigSearch()
 
-        /**
-         * @see CwtConfigSearch.Parameters.ById
-         */
+        /** @see CwtConfigSearch.Parameters.ById */
         @JvmStatic
         inline fun <reified T : CwtIdMatchableConfig<*>> searchById(id: String?, gameType: ParadoxGameType?, project: Project): Query<T> {
             return searchById(id, T::class.java, gameType, project)
         }
 
-        /**
-         * @see CwtConfigSearch.Parameters.ById
-         */
+        /** @see CwtConfigSearch.Parameters.ById */
         @JvmStatic
         fun <T : CwtIdMatchableConfig<*>> searchById(id: String?, type: Class<T>, gameType: ParadoxGameType?, project: Project): Query<T> {
             return INSTANCE.createQuery(Parameters.ById(id, type, gameType, project)).cast()
         }
 
-        /**
-         * @see CwtConfigSearch.Parameters.ByFilePath
-         */
+        /** @see CwtConfigSearch.Parameters.ByFilePath */
         @JvmStatic
         inline fun <reified T : CwtFilePathMatchableConfig<*>> searchByFilePath(filePath: String?, gameType: ParadoxGameType?, project: Project): Query<T> {
             return searchByFilePath(filePath, T::class.java, gameType, project)
         }
 
-        /**
-         * @see CwtConfigSearch.Parameters.ByFilePath
-         */
+        /** @see CwtConfigSearch.Parameters.ByFilePath */
         @JvmStatic
         fun <T : CwtFilePathMatchableConfig<*>> searchByFilePath(filePath: String?, type: Class<T>, gameType: ParadoxGameType?, project: Project): Query<T> {
             return INSTANCE.createQuery(Parameters.ByFilePath(filePath, type, gameType, project)).cast()

@@ -15,7 +15,6 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxResolutionManager
 
@@ -41,7 +40,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return null
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = selector(project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).find()
     }
 
@@ -50,7 +49,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return emptySet()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = selector(project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).findAll()
     }
 

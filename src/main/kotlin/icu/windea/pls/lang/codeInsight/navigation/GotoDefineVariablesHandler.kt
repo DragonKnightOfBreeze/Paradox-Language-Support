@@ -14,7 +14,6 @@ import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class GotoDefineVariablesHandler : GotoTargetHandler() {
@@ -31,7 +30,7 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.defineVariables.search", defineVariableInfo.expression)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, element).define().contextSensitive()
+                val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
                 val resolved = ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll()
                 targets.addAll(resolved)
             }

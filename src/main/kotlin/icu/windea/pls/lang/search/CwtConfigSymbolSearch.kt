@@ -6,10 +6,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.searchers.CwtConfigSearcher
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
-import icu.windea.pls.lang.search.searchers.CwtConfigSymbolSearcher
 
 /**
  * 规则符号的查询。
@@ -30,17 +28,13 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfigSymbolIndexInfo, Parameters>>("icu.windea.pls.search.configSymbolSearch")
         @JvmField val INSTANCE = CwtConfigSymbolSearch()
 
-        /**
-         * @see CwtConfigSymbolSearch.Parameters
-         */
+        /** @see CwtConfigSymbolSearch.Parameters */
         @JvmStatic
         fun search(name: String?, type: String, gameType: ParadoxGameType?, project: Project, scope: GlobalSearchScope): Query<CwtConfigSymbolIndexInfo> {
             return INSTANCE.createQuery(Parameters(name, setOf(type), gameType, project, scope))
         }
 
-        /**
-         * @see CwtConfigSymbolSearch.Parameters
-         */
+        /** @see CwtConfigSymbolSearch.Parameters*/
         @JvmStatic
         fun search(name: String?, types: Collection<String>, gameType: ParadoxGameType?, project: Project, scope: GlobalSearchScope): Query<CwtConfigSymbolIndexInfo> {
             return INSTANCE.createQuery(Parameters(name, types, gameType, project, scope))

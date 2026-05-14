@@ -81,7 +81,7 @@ object ParadoxOverrideService {
         if (!ParadoxFileManager.canOverrideFile(file, fileInfo.group)) return null
         val path = fileInfo.path.path
         val project = file.project
-        val selector = selector(project, file).file()
+        val selector = ParadoxFilePathSearch.Selector(project, file)
         val results = ParadoxFilePathSearch.search(path, null, selector).findAll().mapNotNull { it.toPsiFile(project) }
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(path, file, results, overrideStrategy)
@@ -98,7 +98,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(element) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
-        val selector = selector(project, file).scriptedVariable()
+        val selector = ParadoxScriptedVariableSearch.Selector(project, file)
         val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().toList()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
@@ -117,7 +117,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(element) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
-        val selector = selector(project, file).definition()
+        val selector = ParadoxDefinitionSearch.Selector(project, file)
         val results = ParadoxDefinitionSearch.searchElement(name, type, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
@@ -134,7 +134,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(element) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
-        val selector = selector(project, file).define()
+        val selector = ParadoxDefineVariableSearch.Selector(project, file)
         val results = ParadoxDefineVariableSearch.search(namespace, variable, selector).findAll().toList()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(defineVariableInfo.expression, element, results, overrideStrategy)

@@ -16,27 +16,7 @@ class ParadoxSearchSelectorBuilder(
     val project: Project,
     val context: Any? = null
 ) {
-    fun scriptedVariable() = ParadoxSearchSelector<ParadoxScriptScriptedVariable>(project, context)
-
     fun define() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
-
-    fun inlineScriptUsage() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
-
-    fun localisation() = ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context)
-
-    fun file() = ParadoxSearchSelector<VirtualFile>(project, context)
-
-    fun definition() = ParadoxSearchSelector<ParadoxDefinitionIndexInfo>(project, context)
-
-    fun definitionInjection() = ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>(project, context)
-
-    fun complexEnumValue() = ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
-
-    fun dynamicValue() = ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context)
-
-    fun parameter() = ParadoxSearchSelector<ParadoxParameterIndexInfo>(project, context)
-
-    fun localisationParameter() = ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>(project, context)
 }
 
 fun selector(project: Project, context: Any? = null) = ParadoxSearchSelectorBuilder(project, context)

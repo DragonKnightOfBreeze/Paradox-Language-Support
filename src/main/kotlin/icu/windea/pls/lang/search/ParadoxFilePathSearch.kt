@@ -1,13 +1,16 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.lang.search.util.ParadoxSearchSelector
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
@@ -27,48 +30,34 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         val filePath: String?,
         val configExpression: CwtDataExpression?,
         val ignoreLocale: Boolean,
-        override val selector: ParadoxSearchSelector<VirtualFile>
+        override val selector: Selector,
     ) : ParadoxSearchParameters<VirtualFile>
 
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<VirtualFile>(project, context) {
+        fun distinct() = distinctBy { it.fileInfo?.path }
+    }
+
     companion object {
+        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
+
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<VirtualFile, Parameters>>("icu.windea.pls.search.filePathSearch")
         @JvmField val INSTANCE = ParadoxFilePathSearch()
 
-        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
-
-        /**
-         * @see ParadoxFilePathSearch.Parameters
-         */
+        /** @see ParadoxFilePathSearch.Parameters */
         @JvmStatic
-        fun search(
-            filePath: String?,
-            configExpression: CwtDataExpression? = null,
-            selector: ParadoxSearchSelector<VirtualFile>,
-            ignoreLocale: Boolean = false,
-        ): ParadoxUnaryQuery<VirtualFile> {
+        fun search(filePath: String?, configExpression: CwtDataExpression? = null, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
             return INSTANCE.search(Parameters(filePath, configExpression, ignoreLocale, selector))
         }
 
-        /**
-         * @see ParadoxFilePathSearch.Parameters
-         */
+        /** @see ParadoxFilePathSearch.Parameters */
         @JvmStatic
-        fun searchIcon(
-            filePath: String?,
-            selector: ParadoxSearchSelector<VirtualFile>,
-            ignoreLocale: Boolean = false,
-        ): ParadoxUnaryQuery<VirtualFile> {
+        fun searchIcon(filePath: String?, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
             return search(filePath, iconExpression, selector, ignoreLocale)
         }
 
-        /**
-         * @see ParadoxFilePathSearch.Parameters
-         */
+        /** @see ParadoxFilePathSearch.Parameters */
         @JvmStatic
-        fun searchInlineScript(
-            expression: String,
-            selector: ParadoxSearchSelector<VirtualFile>,
-        ): ParadoxUnaryQuery<VirtualFile> {
+        fun searchInlineScript(expression: String, selector: Selector): ParadoxUnaryQuery<VirtualFile> {
             return search(ParadoxInlineScriptManager.getInlineScriptFilePath(expression), null, selector)
         }
     }

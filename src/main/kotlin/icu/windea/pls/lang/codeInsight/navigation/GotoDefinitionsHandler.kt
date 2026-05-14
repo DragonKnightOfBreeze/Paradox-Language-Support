@@ -39,7 +39,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitions.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, definition).definition().contextSensitive()
+                val selector = ParadoxDefinitionSearch.Selector(project, definition).contextSensitive()
                 val resolved = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll()
                 targets.addAll(resolved)
             }

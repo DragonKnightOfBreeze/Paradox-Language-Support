@@ -1,10 +1,11 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -20,21 +21,18 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
      */
     data class Parameters(
         val expression: String?,
-        override val selector: ParadoxSearchSelector<ParadoxScriptProperty>
+        override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
+
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, Parameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
         @JvmField val INSTANCE = ParadoxInlineScriptUsageSearch()
 
-        /**
-         * @see ParadoxInlineScriptUsageSearch.Parameters
-         */
+        /** @see ParadoxInlineScriptUsageSearch.Parameters */
         @JvmStatic
-        fun search(
-            expression: String?,
-            selector: ParadoxSearchSelector<ParadoxScriptProperty>,
-        ): ParadoxUnaryQuery<ParadoxScriptProperty> {
+        fun search(expression: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.search(Parameters(expression, selector))
         }
     }

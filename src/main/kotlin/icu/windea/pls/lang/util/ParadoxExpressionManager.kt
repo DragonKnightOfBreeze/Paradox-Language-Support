@@ -209,7 +209,7 @@ object ParadoxExpressionManager {
         // 非常神秘，但这个方法在某些情况下是必要的（例如：`value:a|b|@c|`）
         run {
             val name = text.removePrefixOrNull("@")?.orNull() ?: return@run
-            val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
+            val selector = ParadoxScriptedVariableSearch.Selector(project, contextElement).contextSensitive()
             ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it.value }
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it.value }
         }

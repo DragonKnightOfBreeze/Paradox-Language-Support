@@ -65,7 +65,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.distinctByDefineExpression
 import icu.windea.pls.lang.search.util.distinctByName
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -1439,7 +1438,7 @@ object ParadoxComplexExpressionCompletionManager {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
         val tailText = " from define namespaces"
-        val selector = selector(project, contextElement).define()
+        val selector = ParadoxDefineNamespaceSearch.Selector(project, contextElement)
             .distinctByDefineExpression()
         ParadoxDefineNamespaceSearch.search(null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
@@ -1461,7 +1460,7 @@ object ParadoxComplexExpressionCompletionManager {
         val namespaceNode = node.expression.namespaceNode ?: return
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"
-        val selector = selector(project, contextElement).define()
+        val selector = ParadoxDefineVariableSearch.Selector(project, contextElement)
             .distinctByDefineExpression()
         ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
@@ -1537,7 +1536,7 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val project = configGroup.project
         val contextElement = context.contextElement
-        val selector = selector(project, contextElement).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.Selector(project, contextElement).contextSensitive()
             .distinctByName()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)

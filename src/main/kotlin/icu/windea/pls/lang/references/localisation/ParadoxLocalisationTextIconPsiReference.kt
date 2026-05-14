@@ -55,7 +55,7 @@ class ParadoxLocalisationTextIconPsiReference(
         val element = element
         val definitionName = element.name?.orNull() ?: return null
         val definitionType = ParadoxDefinitionTypes.textIcon
-        val definitionSelector = selector(project, element).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
             .withConstraint(ParadoxDefinitionIndexConstraint.TextIcon)
         val resolved = ParadoxDefinitionSearch.searchProperty(definitionName, definitionType, definitionSelector).find()
         return resolved
@@ -65,7 +65,7 @@ class ParadoxLocalisationTextIconPsiReference(
         val element = element
         val definitionName = element.name?.orNull() ?: return ResolveResult.EMPTY_ARRAY
         val definitionType = ParadoxDefinitionTypes.textIcon
-        val definitionSelector = selector(project, element).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.Selector(project, element).contextSensitive()
             .withConstraint(ParadoxDefinitionIndexConstraint.TextIcon)
         val resolved = ParadoxDefinitionSearch.searchProperty(definitionName, definitionType, definitionSelector).findAll()
         return resolved.createResults()

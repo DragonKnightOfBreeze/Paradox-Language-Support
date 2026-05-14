@@ -16,7 +16,6 @@ import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvi
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -42,7 +41,7 @@ class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProv
         val tooltip = "$prefix <b>${defineVariableInfo.namespace.escapeXml()}.${defineVariableInfo.variable.escapeXml()}</b>"
         val targets by lazy {
             val project = element.project
-            val selector = selector(project, element).define().contextSensitive()
+            val selector = ParadoxDefineVariableSearch.Selector(project, element).contextSensitive()
             val targets0 = ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll()
             targets0.optimized()
         }

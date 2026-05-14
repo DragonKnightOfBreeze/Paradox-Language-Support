@@ -17,7 +17,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -65,7 +64,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = selector(project, file).dynamicValue().withSearchScope(searchScope) // use file as context
+                        val selector = ParadoxDynamicValueSearch.Selector(project, file).withSearchScope(searchScope) // use file as context
                         val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.types, selector).processAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Write) {

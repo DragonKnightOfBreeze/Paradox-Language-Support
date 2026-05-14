@@ -82,7 +82,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val virtualFiles = mutableListOf<VirtualFile>()
         runWithModalProgressBlocking<Unit>(project, PlsBundle.message("diff.compare.files.collect.title")) {
             readAction {
-                val selector = selector(project, file).file()
+                val selector = ParadoxFilePathSearch.Selector(project, file)
                 val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 virtualFiles.addAll(result)
             }

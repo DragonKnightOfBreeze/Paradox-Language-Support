@@ -279,7 +279,7 @@ object CwtDocumentationManager {
         val nameLocalisation = run {
             val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, contextElement).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.Selector(project, contextElement).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -288,7 +288,7 @@ object CwtDocumentationManager {
         val descLocalisation = run {
             val keys = ParadoxModifierManager.getModifierDescKeys(name, contextElement)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, contextElement).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.Selector(project, contextElement).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -334,7 +334,7 @@ object CwtDocumentationManager {
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, contextElement)
             paths.firstNotNullOfOrNull { path ->
-                val iconSelector = selector(project, element).file().contextSensitive()
+                val iconSelector = ParadoxFilePathSearch.Selector(project, element).contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }

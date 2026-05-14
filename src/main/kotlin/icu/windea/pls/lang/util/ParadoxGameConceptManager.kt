@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.propertyValue
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {
     fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptProperty? {
-        val definitionSelector = selector(project, contextElement).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.Selector(project, contextElement).contextSensitive()
         val fromName = ParadoxDefinitionSearch.searchProperty(nameOrAlias, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
         if (fromName != null) return fromName
         val all = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).findAll()

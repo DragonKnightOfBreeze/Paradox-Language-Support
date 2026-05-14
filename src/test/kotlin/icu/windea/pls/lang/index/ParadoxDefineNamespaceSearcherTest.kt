@@ -5,7 +5,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
@@ -47,7 +46,7 @@ class ParadoxDefineNamespaceSearcherTest : BasePlatformTestCase() {
     fun byNamespaceOnly() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineNamespaceSearch.Selector(project, myFixture.file)
         val results = ParadoxDefineNamespaceSearch.search("NGameplay", selector).findAll()
             .mapNotNull { it.defineNamespaceInfo }
 
@@ -60,7 +59,7 @@ class ParadoxDefineNamespaceSearcherTest : BasePlatformTestCase() {
     fun allNamespaces() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineNamespaceSearch.Selector(project, myFixture.file)
         val results = ParadoxDefineNamespaceSearch.search(null, selector).findAll()
             .mapNotNull { it.defineNamespaceInfo }
             .sortedBy { it.namespace }
@@ -77,7 +76,7 @@ class ParadoxDefineNamespaceSearcherTest : BasePlatformTestCase() {
     fun edge_allNamespaces() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineNamespaceSearch.Selector(project, myFixture.file)
         val elements = ParadoxDefineNamespaceSearch.search(null, selector).findAll()
 
         val infos = elements.mapNotNull { it.defineNamespaceInfo }.sortedBy { it.expression }
@@ -89,7 +88,7 @@ class ParadoxDefineNamespaceSearcherTest : BasePlatformTestCase() {
     fun edge_notBlockValueNamespace() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineNamespaceSearch.Selector(project, myFixture.file)
         val elements = ParadoxDefineNamespaceSearch.search("N_NOT_BLOCK", selector).findAll()
         assertNoDefineNamespaceInfo(elements)
     }

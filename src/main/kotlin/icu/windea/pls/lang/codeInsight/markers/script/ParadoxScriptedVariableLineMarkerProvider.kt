@@ -40,7 +40,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         // 目标：同名封装变量
         val targets by lazy {
             val project = element.project
-            val selector = selector(project, element).scriptedVariable().contextSensitive()
+            val selector = ParadoxScriptedVariableSearch.Selector(project, element).contextSensitive()
             val targets0 = mutableSetOf<ParadoxScriptScriptedVariable>()
             // 这里一般来说只会带上当前封装变量自身
             ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets0.addAll(it) }

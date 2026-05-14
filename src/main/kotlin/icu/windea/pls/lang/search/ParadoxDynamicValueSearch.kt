@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.distinctBy
 import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 
@@ -24,34 +26,26 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
     data class Parameters(
         val name: String?,
         val types: Set<String>,
-        override val selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>
+        override val selector: Selector,
     ) : ParadoxSearchParameters<ParadoxDynamicValueIndexInfo>
+
+    class Selector(project: Project, context: Any? = null) : ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context) {
+        fun distinct() = distinctBy { it.name }
+    }
 
     companion object {
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDynamicValueIndexInfo, Parameters>>("icu.windea.pls.search.dynamicValueSearch")
         @JvmField val INSTANCE = ParadoxDynamicValueSearch()
 
-        /**
-         * @see ParadoxDynamicValueSearch.Parameters
-         */
+        /** @see ParadoxDynamicValueSearch.Parameters */
         @JvmStatic
-        fun search(
-            name: String?,
-            type: String,
-            selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>,
-        ): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
+        fun search(name: String?, type: String, selector: Selector): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
             return INSTANCE.search(Parameters(name, setOf(type), selector))
         }
 
-        /**
-         * @see ParadoxDynamicValueSearch.Parameters
-         */
+        /** @see ParadoxDynamicValueSearch.Parameters */
         @JvmStatic
-        fun search(
-            name: String?,
-            types: Set<String>,
-            selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>,
-        ): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
+        fun search(name: String?, types: Set<String>, selector: Selector): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
             return INSTANCE.search(Parameters(name, types, selector))
         }
     }

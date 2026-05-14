@@ -34,7 +34,7 @@ class ParadoxLocalisationTextIconCompletionProvider : CompletionProvider<Complet
         val tailText = " from <$definitionType>"
         val originalFile = parameters.originalFile
         val project = originalFile.project
-        val definitionSelector = selector(project, originalFile).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.Selector(project, originalFile).contextSensitive()
             .distinctByName()
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()

@@ -27,7 +27,7 @@ class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElemen
         val text: String,
         val types: Set<ParadoxSearchTargetType>?,
         val project: Project,
-        val scope: GlobalSearchScope
+        val scope: GlobalSearchScope,
     ) {
         // 限制查询作用域：必须是本地化文件
         val restrictedScope by lazy { scope.withFileTypes(ParadoxLocalisationFileType) }
@@ -37,17 +37,13 @@ class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElemen
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<NavigatablePsiElement, Parameters>>("icu.windea.pls.search.textBasedTargetSearch")
         @JvmField val INSTANCE = ParadoxTextBasedTargetSearch()
 
-        /**
-         * @see ParadoxTextBasedTargetSearch.Parameters
-         */
+        /** @see ParadoxTextBasedTargetSearch.Parameters */
         @JvmStatic
         fun search(text: String, project: Project, scope: GlobalSearchScope): Query<NavigatablePsiElement> {
             return INSTANCE.createQuery(Parameters(text, null, project, scope))
         }
 
-        /**
-         * @see ParadoxTextBasedTargetSearch.Parameters
-         */
+        /** @see ParadoxTextBasedTargetSearch.Parameters */
         @JvmStatic
         fun search(text: String, project: Project, types: Set<ParadoxSearchTargetType>?, scope: GlobalSearchScope): Query<NavigatablePsiElement> {
             return INSTANCE.createQuery(Parameters(text, types, project, scope))
