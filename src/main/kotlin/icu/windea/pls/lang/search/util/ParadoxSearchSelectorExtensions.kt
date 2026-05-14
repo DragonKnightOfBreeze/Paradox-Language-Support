@@ -15,7 +15,9 @@ import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -84,6 +86,8 @@ fun <S : ParadoxSearchSelector<T>, T : ParadoxIndexInfo> S.distinctByName(): S {
             is ParadoxDynamicValueIndexInfo -> it.name
             is ParadoxParameterIndexInfo -> it.name
             is ParadoxLocalisationParameterIndexInfo -> it.name
+            is ParadoxShaderEffectIndexInfo -> it.name
+            is ParadoxMeshLocatorIndexInfo -> it.name
             else -> null
         }
     }
