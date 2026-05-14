@@ -69,8 +69,8 @@ import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.psi.PsiCompositeReference
+import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty

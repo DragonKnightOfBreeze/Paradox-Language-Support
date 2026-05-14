@@ -19,7 +19,6 @@ import icu.windea.pls.lang.resolve.ParadoxDefineService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo

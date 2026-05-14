@@ -14,7 +14,6 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.distinctByName
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**

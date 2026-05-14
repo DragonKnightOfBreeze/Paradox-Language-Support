@@ -15,7 +15,6 @@ import com.intellij.util.concurrency.annotations.RequiresBackgroundThread
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withGameType
 import javax.swing.tree.DefaultTreeModel
 

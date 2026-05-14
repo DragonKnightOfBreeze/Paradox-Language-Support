@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.CwtDataTypes.Parameter
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport

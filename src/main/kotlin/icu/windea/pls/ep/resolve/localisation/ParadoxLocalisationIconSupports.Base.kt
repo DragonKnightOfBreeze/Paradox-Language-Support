@@ -21,7 +21,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.distinctByFilePath
 import icu.windea.pls.lang.search.util.distinctByName
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 @Suppress("SameParameterValue")

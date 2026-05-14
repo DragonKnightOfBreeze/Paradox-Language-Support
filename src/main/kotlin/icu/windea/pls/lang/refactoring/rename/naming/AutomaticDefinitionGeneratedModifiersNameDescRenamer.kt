@@ -10,7 +10,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager

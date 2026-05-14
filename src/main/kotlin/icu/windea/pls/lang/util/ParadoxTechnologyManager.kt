@@ -26,7 +26,6 @@ import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.distinctByName
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver

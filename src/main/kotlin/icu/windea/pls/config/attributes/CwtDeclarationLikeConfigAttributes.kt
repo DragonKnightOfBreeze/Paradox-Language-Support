@@ -1,7 +1,6 @@
 package icu.windea.pls.config.attributes
 
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtDefinitionTypesModel
 
 /**

@@ -16,7 +16,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxConditionParameter

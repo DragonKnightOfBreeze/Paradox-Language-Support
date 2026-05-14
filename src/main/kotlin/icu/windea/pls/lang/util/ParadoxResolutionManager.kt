@@ -13,7 +13,6 @@ import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 

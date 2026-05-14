@@ -20,7 +20,6 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withGameType
 
 @Suppress("UnstableApiUsage")

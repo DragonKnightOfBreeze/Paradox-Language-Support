@@ -19,7 +19,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.distinctByName
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.lang.search.util.withSearchScopeType

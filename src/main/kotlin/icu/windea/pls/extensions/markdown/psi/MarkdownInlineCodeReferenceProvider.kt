@@ -12,14 +12,13 @@ import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
-import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.search.util.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxNameValidators
 
 /**
  * 用于在 Markdown 文件中，尝试将内联代码解析为匹配的目标引用（定义、本地化等）。

@@ -5,14 +5,10 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.core.ReadWriteAccess
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
-import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
-import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 
 /**
  * 在查找用法中，区分规则符号的读写使用。
