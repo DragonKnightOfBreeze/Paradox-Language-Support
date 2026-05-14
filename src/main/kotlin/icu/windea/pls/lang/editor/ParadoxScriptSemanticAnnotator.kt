@@ -144,7 +144,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         val modeRange = TextRange.from(offset, mode.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptAttributesKeys.MACRO).create()
         val markerRange = TextRange.from(offset + mode.length, 1)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptAttributesKeys.MARKER).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptAttributesKeys.SEMANTIC_MARKER).create()
 
         val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
         if (target.isNullOrEmpty()) return true

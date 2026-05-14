@@ -196,7 +196,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         val inspectionState = if (fromInspection) checkForLocalisations(element) else true
         if (!inspectionState) return null
 
-        val contextType = ParadoxLocalisationCodeInsightContext.Type.Localisation
+        val contextType = Type.Localisation
         val type = ParadoxLocalisationCodeInsightInfo.Type.Primary
         val name = element.name
         if (name.isEmpty()) return null
@@ -280,9 +280,9 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         if (!inspectionState) return null
 
         val contextType = when {
-            config.configExpression.type == CwtDataTypes.Localisation -> ParadoxLocalisationCodeInsightContext.Type.LocalisationReference
-            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> ParadoxLocalisationCodeInsightContext.Type.SyncedLocalisationReference
-            config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> ParadoxLocalisationCodeInsightContext.Type.LocalisationReference
+            config.configExpression.type == CwtDataTypes.Localisation -> Type.LocalisationReference
+            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
+            config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
             else -> null
         }
         if (contextType == null) return null

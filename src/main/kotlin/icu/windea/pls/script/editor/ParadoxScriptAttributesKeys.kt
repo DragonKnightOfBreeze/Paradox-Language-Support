@@ -39,7 +39,6 @@ object ParadoxScriptAttributesKeys {
     @JvmField val DEFINITION_NAME = create("PARADOX_SCRIPT.DEFINITION_NAME") // background #223C23
     @JvmField val DEFINITION_REFERENCE = create("PARADOX_SCRIPT.DEFINITION_REFERENCE", DefaultLanguageHighlighterColors.INSTANCE_FIELD)  // dotted line #707D95
     @JvmField val LOCALISATION_REFERENCE = create("PARADOX_SCRIPT.LOCALISATION_REFERENCE", DefaultLanguageHighlighterColors.KEYWORD)
-    @JvmField val SYNCED_LOCALISATION_REFERENCE = create("PARADOX_SCRIPT.SYNCED_LOCALISATION_REFERENCE", LOCALISATION_REFERENCE)
     @JvmField val DEFINE_NAMESPACE = create("PARADOX_SCRIPT.DEFINE_NAMESPACE", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
     @JvmField val DEFINE_VARIABLE = create("PARADOX_SCRIPT.DEFINE_VARIABLE", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE)
     @JvmField val ENUM_VALUE = create("PARADOX_SCRIPT.ENUM_VALUE", DefaultLanguageHighlighterColors.STATIC_FIELD)

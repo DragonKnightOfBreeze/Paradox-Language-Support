@@ -8,7 +8,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.model.constants.PlsPreviewTexts
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -54,10 +53,10 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     )
 
     private val _tagToDescriptorMap = mapOf(
-        "OPERATOR" to ParadoxScriptAttributesKeys.SEMANTIC_OPERATOR,
-        "MARKER" to ParadoxScriptAttributesKeys.SEMANTIC_MARKER,
-        "KEYWORD" to ParadoxScriptAttributesKeys.SEMANTIC_KEYWORD,
-        "STRING" to ParadoxScriptAttributesKeys.SEMANTIC_STRING,
+        "OPERATOR" to ParadoxLocalisationAttributesKeys.SEMANTIC_OPERATOR,
+        "MARKER" to ParadoxLocalisationAttributesKeys.SEMANTIC_MARKER,
+        "KEYWORD" to ParadoxLocalisationAttributesKeys.SEMANTIC_KEYWORD,
+        "STRING" to ParadoxLocalisationAttributesKeys.SEMANTIC_STRING,
 
         "DEFINITION_REFERENCE" to ParadoxLocalisationAttributesKeys.DEFINITION_REFERENCE,
         "LOCALISATION_REFERENCE" to ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE,

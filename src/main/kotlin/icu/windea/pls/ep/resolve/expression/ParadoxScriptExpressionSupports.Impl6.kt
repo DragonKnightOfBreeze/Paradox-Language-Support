@@ -55,7 +55,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         }
         run {
             val offset = separatorIndex
-            val attributesKey = ParadoxScriptAttributesKeys.MARKER
+            val attributesKey = ParadoxScriptAttributesKeys.SEMANTIC_MARKER
             val range2 = range.let { TextRange.create(it.startOffset + offset, it.startOffset + offset + 1) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
         }

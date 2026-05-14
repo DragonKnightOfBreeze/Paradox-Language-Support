@@ -11,29 +11,33 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 object ParadoxSemanticAttributesKeys {
     fun operator(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.OPERATOR
-            else -> ParadoxScriptAttributesKeys.OPERATOR
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_OPERATOR
+            else -> ParadoxScriptAttributesKeys.SEMANTIC_OPERATOR
         }
     }
 
     fun marker(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER
-            else -> ParadoxScriptAttributesKeys.MARKER
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_MARKER
+            else -> ParadoxScriptAttributesKeys.SEMANTIC_MARKER
         }
     }
 
     fun keyword(language: Language? = null): TextAttributesKey {
         return when(language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.KEYWORD
-            else ->ParadoxScriptAttributesKeys.KEYWORD
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_KEYWORD
+            else ->ParadoxScriptAttributesKeys.SEMANTIC_KEYWORD
         }
     }
 
-    fun text(language: Language? = null): TextAttributesKey {
+    fun argument(): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.SEMANTIC_ARGUMENT
+    }
+
+    fun string(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.TEXT
-            else -> ParadoxScriptAttributesKeys.STRING
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_STRING
+            else -> ParadoxScriptAttributesKeys.SEMANTIC_STRING
         }
     }
 
@@ -50,11 +54,6 @@ object ParadoxSemanticAttributesKeys {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE
             else -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
         }
-    }
-
-    @Suppress("unused")
-    fun syncedLocalisationReference(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE
     }
 
     fun defineNamespace(): TextAttributesKey {

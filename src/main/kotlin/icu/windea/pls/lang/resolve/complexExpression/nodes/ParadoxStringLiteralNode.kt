@@ -15,6 +15,6 @@ class ParadoxStringLiteralNode(
     override val configGroup: CwtConfigGroup,
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.text(element.language)
+        return ParadoxSemanticAttributesKeys.string(element.language)
     }
 }
