@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
@@ -30,8 +30,8 @@ class ParadoxDynamicValueNode(
         val expression = configs.first().configExpression ?: return null // first is ok
         val dynamicValueType = expression.value ?: return null
         return when (dynamicValueType) {
-            "variable" -> ParadoxSemanticAttributesKeys.variable(element.language)
-            else -> ParadoxSemanticAttributesKeys.dynamicValue(element.language)
+            "variable" -> ParadoxSemanticHighlighterColors.variable(element.language)
+            else -> ParadoxSemanticHighlighterColors.dynamicValue(element.language)
         }
     }
 

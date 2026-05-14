@@ -11,33 +11,33 @@ import icu.windea.pls.model.constants.PlsPreviewTexts
 
 class ParadoxCsvColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
-        AttributesDescriptor(PlsBundle.message("csv.displayName.separator"), ParadoxCsvAttributesKeys.SEPARATOR),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.keyword"), ParadoxCsvAttributesKeys.KEYWORD),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.comment"), ParadoxCsvAttributesKeys.COMMENT),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.header"), ParadoxCsvAttributesKeys.HEADER),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.number"), ParadoxCsvAttributesKeys.NUMBER),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.string"), ParadoxCsvAttributesKeys.STRING),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.validEscape"), ParadoxCsvAttributesKeys.VALID_ESCAPE),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.invalidEscape"), ParadoxCsvAttributesKeys.INVALID_ESCAPE),
-        AttributesDescriptor(PlsBundle.message("csv.displayName.badCharacter"), ParadoxCsvAttributesKeys.BAD_CHARACTER),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.separator"), ParadoxCsvHighlighterColors.SEPARATOR),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.keyword"), ParadoxCsvHighlighterColors.KEYWORD),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.comment"), ParadoxCsvHighlighterColors.COMMENT),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.header"), ParadoxCsvHighlighterColors.HEADER),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.number"), ParadoxCsvHighlighterColors.NUMBER),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.string"), ParadoxCsvHighlighterColors.STRING),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.validEscape"), ParadoxCsvHighlighterColors.VALID_ESCAPE),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.invalidEscape"), ParadoxCsvHighlighterColors.INVALID_ESCAPE),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.badCharacter"), ParadoxCsvHighlighterColors.BAD_CHARACTER),
 
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.definitionReference"), ParadoxCsvAttributesKeys.DEFINITION_REFERENCE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.enumValue"), ParadoxCsvAttributesKeys.ENUM_VALUE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.complexEnumValue"), ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.dynamicValue"), ParadoxCsvAttributesKeys.DYNAMIC_VALUE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.variable"), ParadoxCsvAttributesKeys.VARIABLE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.definitionReference"), ParadoxCsvHighlighterColors.DEFINITION_REFERENCE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.enumValue"), ParadoxCsvHighlighterColors.ENUM_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.complexEnumValue"), ParadoxCsvHighlighterColors.COMPLEX_ENUM_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.dynamicValue"), ParadoxCsvHighlighterColors.DYNAMIC_VALUE),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.variable"), ParadoxCsvHighlighterColors.VARIABLE),
     )
 
     private val _tagToDescriptorMap = mapOf(
-        "KEYWORD" to ParadoxCsvAttributesKeys.KEYWORD,
-        "HEADER" to ParadoxCsvAttributesKeys.HEADER,
-        "NUMBER" to ParadoxCsvAttributesKeys.NUMBER,
+        "KEYWORD" to ParadoxCsvHighlighterColors.KEYWORD,
+        "HEADER" to ParadoxCsvHighlighterColors.HEADER,
+        "NUMBER" to ParadoxCsvHighlighterColors.NUMBER,
 
-        "DEFINITION_REFERENCE" to ParadoxCsvAttributesKeys.DEFINITION_REFERENCE,
-        "ENUM_VALUE" to ParadoxCsvAttributesKeys.ENUM_VALUE,
-        "COMPLEX_ENUM_VALUE" to ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE,
-        "DYNAMIC_VALUE" to ParadoxCsvAttributesKeys.DYNAMIC_VALUE,
-        "VARIABLE" to ParadoxCsvAttributesKeys.VARIABLE,
+        "DEFINITION_REFERENCE" to ParadoxCsvHighlighterColors.DEFINITION_REFERENCE,
+        "ENUM_VALUE" to ParadoxCsvHighlighterColors.ENUM_VALUE,
+        "COMPLEX_ENUM_VALUE" to ParadoxCsvHighlighterColors.COMPLEX_ENUM_VALUE,
+        "DYNAMIC_VALUE" to ParadoxCsvHighlighterColors.DYNAMIC_VALUE,
+        "VARIABLE" to ParadoxCsvHighlighterColors.VARIABLE,
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxCsvLanguage, null, null)

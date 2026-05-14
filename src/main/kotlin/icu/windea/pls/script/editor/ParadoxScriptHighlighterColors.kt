@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.CodeInsightColors
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 
-object ParadoxScriptAttributesKeys {
+object ParadoxScriptHighlighterColors {
     @JvmField val BRACES = createTextAttributesKey("PARADOX_SCRIPT.BRACES", DefaultLanguageHighlighterColors.BRACES)
     @JvmField val OPERATOR = createTextAttributesKey("PARADOX_SCRIPT.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val MARKER = createTextAttributesKey("PARADOX_SCRIPT.MARKER", DefaultLanguageHighlighterColors.KEYWORD)

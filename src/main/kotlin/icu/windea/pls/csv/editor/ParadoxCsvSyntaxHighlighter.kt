@@ -9,19 +9,19 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeySets as KA
+import icu.windea.pls.csv.editor.ParadoxCsvHighlighterColorSets as ColorSets
 
 class ParadoxCsvSyntaxHighlighter(
     private val project: Project?
 ) : SyntaxHighlighter {
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
-            SEPARATOR -> KA.SEPARATOR
-            COMMENT -> KA.COMMENT
-            COLUMN_TOKEN -> KA.STRING
-            VALID_STRING_ESCAPE_TOKEN -> KA.VALID_ESCAPE
-            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> KA.INVALID_ESCAPE
-            BAD_CHARACTER -> KA.BAD_CHARACTER
+            SEPARATOR -> ColorSets.SEPARATOR
+            COMMENT -> ColorSets.COMMENT
+            COLUMN_TOKEN -> ColorSets.STRING
+            VALID_STRING_ESCAPE_TOKEN -> ColorSets.VALID_ESCAPE
+            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> ColorSets.INVALID_ESCAPE
+            BAD_CHARACTER -> ColorSets.BAD_CHARACTER
             else -> TextAttributesKey.EMPTY_ARRAY
         }
     }

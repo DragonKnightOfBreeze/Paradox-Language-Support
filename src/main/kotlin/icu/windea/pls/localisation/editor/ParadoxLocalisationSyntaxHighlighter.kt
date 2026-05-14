@@ -11,7 +11,7 @@ import com.intellij.psi.tree.IElementType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeySets as KA
+import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColorSets as ColorSets
 
 class ParadoxLocalisationSyntaxHighlighter(
     private val project: Project?,
@@ -19,32 +19,32 @@ class ParadoxLocalisationSyntaxHighlighter(
 ) : SyntaxHighlighter {
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
-            COLON -> KA.OPERATOR
-            PIPE, COMMA -> KA.MARKER
-            COLORFUL_TEXT_START, COLORFUL_TEXT_END -> KA.MARKER
-            PARAMETER_START, PARAMETER_END -> KA.MARKER
-            LEFT_BRACKET, RIGHT_BRACKET -> KA.MARKER
-            ICON_START, ICON_END -> KA.MARKER
-            TEXT_FORMAT_START, TEXT_FORMAT_END -> KA.MARKER
-            TEXT_ICON_START, TEXT_ICON_END -> KA.MARKER
-            COMMENT -> KA.COMMENT
-            PROPERTY_NUMBER -> KA.NUMBER
-            LOCALE_TOKEN -> KA.LOCALE
-            PROPERTY_KEY_TOKEN -> KA.PROPERTY_KEY
-            ARGUMENT_TOKEN -> KA.ARGUMENT
-            COLOR_TOKEN -> KA.COLOR
-            PARAMETER_TOKEN -> KA.PARAMETER
-            AT -> KA.AT_SIGN
-            SCRIPTED_VARIABLE_REFERENCE_TOKEN -> KA.SCRIPTED_VARIABLE_REFERENCE
-            ICON_TOKEN -> KA.ICON
-            COMMAND_TEXT_TOKEN -> KA.COMMAND
-            CONCEPT_NAME_TOKEN -> KA.CONCEPT
-            TEXT_ICON_TOKEN -> KA.TEXT_ICON
-            TEXT_FORMAT_TOKEN -> KA.TEXT_FORMAT
-            TEXT_TOKEN, LEFT_QUOTE, RIGHT_QUOTE, LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE -> KA.TEXT
-            VALID_STRING_ESCAPE_TOKEN -> KA.VALID_ESCAPE
-            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> KA.INVALID_ESCAPE
-            BAD_CHARACTER -> KA.BAD_CHARACTER
+            COLON -> ColorSets.OPERATOR
+            PIPE, COMMA -> ColorSets.MARKER
+            COLORFUL_TEXT_START, COLORFUL_TEXT_END -> ColorSets.MARKER
+            PARAMETER_START, PARAMETER_END -> ColorSets.MARKER
+            LEFT_BRACKET, RIGHT_BRACKET -> ColorSets.MARKER
+            ICON_START, ICON_END -> ColorSets.MARKER
+            TEXT_FORMAT_START, TEXT_FORMAT_END -> ColorSets.MARKER
+            TEXT_ICON_START, TEXT_ICON_END -> ColorSets.MARKER
+            COMMENT -> ColorSets.COMMENT
+            PROPERTY_NUMBER -> ColorSets.NUMBER
+            LOCALE_TOKEN -> ColorSets.LOCALE
+            PROPERTY_KEY_TOKEN -> ColorSets.PROPERTY_KEY
+            ARGUMENT_TOKEN -> ColorSets.ARGUMENT
+            COLOR_TOKEN -> ColorSets.COLOR
+            PARAMETER_TOKEN -> ColorSets.PARAMETER
+            AT -> ColorSets.AT_SIGN
+            SCRIPTED_VARIABLE_REFERENCE_TOKEN -> ColorSets.SCRIPTED_VARIABLE_REFERENCE
+            ICON_TOKEN -> ColorSets.ICON
+            COMMAND_TEXT_TOKEN -> ColorSets.COMMAND
+            CONCEPT_NAME_TOKEN -> ColorSets.CONCEPT
+            TEXT_ICON_TOKEN -> ColorSets.TEXT_ICON
+            TEXT_FORMAT_TOKEN -> ColorSets.TEXT_FORMAT
+            TEXT_TOKEN, LEFT_QUOTE, RIGHT_QUOTE, LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE -> ColorSets.TEXT
+            VALID_STRING_ESCAPE_TOKEN -> ColorSets.VALID_ESCAPE
+            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> ColorSets.INVALID_ESCAPE
+            BAD_CHARACTER -> ColorSets.BAD_CHARACTER
             else -> TextAttributesKey.EMPTY_ARRAY
         }
     }

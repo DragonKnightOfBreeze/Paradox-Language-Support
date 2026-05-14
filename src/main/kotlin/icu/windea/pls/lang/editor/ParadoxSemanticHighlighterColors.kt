@@ -8,13 +8,13 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeys
+import icu.windea.pls.csv.editor.ParadoxCsvHighlighterColors
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import java.awt.Color
 
-object ParadoxSemanticAttributesKeys {
+object ParadoxSemanticHighlighterColors {
     @Suppress("DEPRECATION")
     private val colorKeyCache = CacheBuilder().build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
@@ -40,153 +40,153 @@ object ParadoxSemanticAttributesKeys {
 
     fun operator(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_OPERATOR
-            else -> ParadoxScriptAttributesKeys.SEMANTIC_OPERATOR
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SEMANTIC_OPERATOR
+            else -> ParadoxScriptHighlighterColors.SEMANTIC_OPERATOR
         }
     }
 
     fun marker(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_MARKER
-            else -> ParadoxScriptAttributesKeys.SEMANTIC_MARKER
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SEMANTIC_MARKER
+            else -> ParadoxScriptHighlighterColors.SEMANTIC_MARKER
         }
     }
 
     fun keyword(language: Language? = null): TextAttributesKey {
         return when(language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_KEYWORD
-            else ->ParadoxScriptAttributesKeys.SEMANTIC_KEYWORD
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SEMANTIC_KEYWORD
+            else ->ParadoxScriptHighlighterColors.SEMANTIC_KEYWORD
         }
     }
 
     fun argument(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SEMANTIC_ARGUMENT
+        return ParadoxScriptHighlighterColors.SEMANTIC_ARGUMENT
     }
 
     fun string(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SEMANTIC_STRING
-            else -> ParadoxScriptAttributesKeys.SEMANTIC_STRING
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SEMANTIC_STRING
+            else -> ParadoxScriptHighlighterColors.SEMANTIC_STRING
         }
     }
 
     fun definitionReference(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DEFINITION_REFERENCE
-            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.DEFINITION_REFERENCE
-            else -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE
+            ParadoxCsvLanguage -> ParadoxCsvHighlighterColors.DEFINITION_REFERENCE
+            else -> ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
         }
     }
 
     fun localisationReference(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE
-            else -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE
+            else -> ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         }
     }
 
     fun defineNamespace(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_NAMESPACE
+        return ParadoxScriptHighlighterColors.DEFINE_NAMESPACE
     }
 
     fun defineVariable(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_VARIABLE
+        return ParadoxScriptHighlighterColors.DEFINE_VARIABLE
     }
 
     fun enumValue(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.ENUM_VALUE
-            else -> ParadoxScriptAttributesKeys.ENUM_VALUE
+            ParadoxCsvLanguage -> ParadoxCsvHighlighterColors.ENUM_VALUE
+            else -> ParadoxScriptHighlighterColors.ENUM_VALUE
         }
     }
 
     fun complexEnumValue(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE
-            else -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE
+            ParadoxCsvLanguage -> ParadoxCsvHighlighterColors.COMPLEX_ENUM_VALUE
+            else -> ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE
         }
     }
 
     fun dynamicValue(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE
-            else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DYNAMIC_VALUE
+            else -> ParadoxScriptHighlighterColors.DYNAMIC_VALUE
         }
     }
 
     fun variable(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.VARIABLE
-            else -> ParadoxScriptAttributesKeys.VARIABLE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.VARIABLE
+            else -> ParadoxScriptHighlighterColors.VARIABLE
         }
     }
 
     fun systemScope(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SYSTEM_SCOPE
+        return ParadoxScriptHighlighterColors.SYSTEM_SCOPE
     }
 
     fun scope(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SCOPE
+        return ParadoxScriptHighlighterColors.SCOPE
     }
 
     fun scopePrefix(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SCOPE_PREFIX
+        return ParadoxScriptHighlighterColors.SCOPE_PREFIX
     }
 
     fun valueField(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD
+        return ParadoxScriptHighlighterColors.VALUE_FIELD
     }
 
     fun valueFieldPrefix(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX
+        return ParadoxScriptHighlighterColors.VALUE_FIELD_PREFIX
     }
 
     fun systemCommandScope(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE
-            else -> ParadoxScriptAttributesKeys.SYSTEM_COMMAND_SCOPE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SYSTEM_COMMAND_SCOPE
+            else -> ParadoxScriptHighlighterColors.SYSTEM_COMMAND_SCOPE
         }
     }
 
     fun commandScope(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_SCOPE
-            else -> ParadoxScriptAttributesKeys.COMMAND_SCOPE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.COMMAND_SCOPE
+            else -> ParadoxScriptHighlighterColors.COMMAND_SCOPE
         }
     }
 
     fun commandScopePrefix(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_PREFIX
-            else -> ParadoxScriptAttributesKeys.COMMAND_SCOPE_PREFIX
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.COMMAND_SCOPE_PREFIX
+            else -> ParadoxScriptHighlighterColors.COMMAND_SCOPE_PREFIX
         }
     }
 
     fun commandField(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_FIELD
-            else -> ParadoxScriptAttributesKeys.COMMAND_FIELD
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.COMMAND_FIELD
+            else -> ParadoxScriptHighlighterColors.COMMAND_FIELD
         }
     }
 
     fun commandFieldPrefix(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX
-            else -> ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.COMMAND_FIELD_PREFIX
+            else -> ParadoxScriptHighlighterColors.COMMAND_FIELD_PREFIX
         }
     }
 
     fun databaseObjectType(language: Language? = null): TextAttributesKey {
         return when (language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE
-            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DATABASE_OBJECT_TYPE
+            else -> ParadoxScriptHighlighterColors.DATABASE_OBJECT_TYPE
         }
     }
 
     fun databaseObject(language: Language? = null): TextAttributesKey {
         return when (language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT
-            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DATABASE_OBJECT
+            else -> ParadoxScriptHighlighterColors.DATABASE_OBJECT
         }
     }
 }

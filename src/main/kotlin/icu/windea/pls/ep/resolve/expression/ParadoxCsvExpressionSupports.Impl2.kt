@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -30,7 +30,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
     }
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
-        val attributesKey = ParadoxSemanticAttributesKeys.definitionReference(element.language)
+        val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -71,8 +71,8 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         val configGroup = config.configGroup
         val enumName = config.configExpression.value ?: return
         val attributesKey = when {
-            configGroup.complexEnums[enumName] != null -> ParadoxSemanticAttributesKeys.complexEnumValue(element.language)
-            else -> ParadoxSemanticAttributesKeys.enumValue(element.language)
+            configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
+            else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -97,7 +97,7 @@ class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase(
     }
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
-        val attributesKey = ParadoxSemanticAttributesKeys.dynamicValue(element.language)
+        val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)

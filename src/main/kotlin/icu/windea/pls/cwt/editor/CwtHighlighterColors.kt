@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 
-object CwtAttributesKeys {
+object CwtHighlighterColors {
     @JvmField val BRACES = createTextAttributesKey("CWT.BRACES", DefaultLanguageHighlighterColors.BRACES)
     @JvmField val OPERATOR = createTextAttributesKey("CWT.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val COMMENT = createTextAttributesKey("CWT.COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)

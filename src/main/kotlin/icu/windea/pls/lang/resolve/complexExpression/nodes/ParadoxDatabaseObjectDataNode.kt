@@ -11,7 +11,7 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
@@ -46,8 +46,8 @@ class ParadoxDatabaseObjectDataNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         return when {
             config == null -> null
-            config.type != null -> ParadoxSemanticAttributesKeys.definitionReference(element.language)
-            config.localisation != null -> ParadoxSemanticAttributesKeys.localisationReference(element.language)
+            config.type != null -> ParadoxSemanticHighlighterColors.definitionReference(element.language)
+            config.localisation != null -> ParadoxSemanticHighlighterColors.localisationReference(element.language)
             else -> null
         }
     }

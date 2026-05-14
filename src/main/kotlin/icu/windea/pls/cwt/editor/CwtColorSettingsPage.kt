@@ -11,19 +11,19 @@ import icu.windea.pls.model.constants.PlsPreviewTexts
 
 class CwtColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.braces"), CwtAttributesKeys.BRACES),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.operator"), CwtAttributesKeys.OPERATOR),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.comment"), CwtAttributesKeys.COMMENT),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.optionComment"), CwtAttributesKeys.OPTION_COMMENT),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.documentationComment"), CwtAttributesKeys.DOC_COMMENT),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.keyword"), CwtAttributesKeys.KEYWORD),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.propertyKey"), CwtAttributesKeys.PROPERTY_KEY),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.optionKey"), CwtAttributesKeys.OPTION_KEY),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.number"), CwtAttributesKeys.NUMBER),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.string"), CwtAttributesKeys.STRING),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.validEscape"), CwtAttributesKeys.VALID_ESCAPE),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.invalidEscape"), CwtAttributesKeys.INVALID_ESCAPE),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.badCharacter"), CwtAttributesKeys.BAD_CHARACTER)
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.braces"), CwtHighlighterColors.BRACES),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.operator"), CwtHighlighterColors.OPERATOR),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.comment"), CwtHighlighterColors.COMMENT),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.optionComment"), CwtHighlighterColors.OPTION_COMMENT),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.documentationComment"), CwtHighlighterColors.DOC_COMMENT),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.keyword"), CwtHighlighterColors.KEYWORD),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.propertyKey"), CwtHighlighterColors.PROPERTY_KEY),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.optionKey"), CwtHighlighterColors.OPTION_KEY),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.number"), CwtHighlighterColors.NUMBER),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.string"), CwtHighlighterColors.STRING),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.validEscape"), CwtHighlighterColors.VALID_ESCAPE),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.invalidEscape"), CwtHighlighterColors.INVALID_ESCAPE),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.badCharacter"), CwtHighlighterColors.BAD_CHARACTER)
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage, null, null)

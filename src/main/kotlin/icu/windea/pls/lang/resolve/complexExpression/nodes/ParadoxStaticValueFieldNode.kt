@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
@@ -21,7 +21,7 @@ class ParadoxStaticValueFieldNode(
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode, ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.valueField()
+        return ParadoxSemanticHighlighterColors.valueField()
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

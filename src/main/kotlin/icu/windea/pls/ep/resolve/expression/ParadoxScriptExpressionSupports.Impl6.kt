@@ -22,7 +22,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Game Type Specific
@@ -49,13 +49,13 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         run {
             val offset = separatorIndex
             if (offset <= 0) return@run
-            val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
+            val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
             val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
             ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range1, attributesKey, holder)
         }
         run {
             val offset = separatorIndex
-            val attributesKey = ParadoxScriptAttributesKeys.SEMANTIC_MARKER
+            val attributesKey = ParadoxScriptHighlighterColors.SEMANTIC_MARKER
             val range2 = range.let { TextRange.create(it.startOffset + offset, it.startOffset + offset + 1) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
         }
@@ -64,7 +64,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             if (offset <= 0) return@run
             // annotate only if snippet after '@' is number like
             if (!expressionText.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
-            val attributesKey = ParadoxScriptAttributesKeys.NUMBER
+            val attributesKey = ParadoxScriptHighlighterColors.NUMBER
             val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range3).textAttributes(attributesKey).create()
         }

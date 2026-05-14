@@ -6,7 +6,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
 class ParadoxScriptValueArgumentValueNode(
     override val text: String,
@@ -19,10 +19,10 @@ class ParadoxScriptValueArgumentValueNode(
         // 为参数值提供基础代码高亮
         val type = ParadoxTypeResolver.resolveExpressionType(text)
         return when {
-            type == ParadoxExpressionType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD
-            type.isLenientFloat() -> ParadoxScriptAttributesKeys.NUMBER
-            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE
-            else -> ParadoxScriptAttributesKeys.STRING
+            type == ParadoxExpressionType.Boolean -> ParadoxScriptHighlighterColors.KEYWORD
+            type.isLenientFloat() -> ParadoxScriptHighlighterColors.NUMBER
+            text.startsWith('@') -> ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_REFERENCE
+            else -> ParadoxScriptHighlighterColors.STRING
         }
     }
 
