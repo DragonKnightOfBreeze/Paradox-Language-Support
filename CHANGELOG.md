@@ -10,9 +10,9 @@
   - 写：`required_flags ="flag1,not(flag2)"`
 - [ ] P3 支持复杂表达式 `ParadoxArrayDefineReferenceExpression`
   - 格式：`array_define:Namespace|Variabe|Index`
-- [ ] P3 增强对数据类型 `ShaderEffect` 的支持（将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中）
+- [x] P3 增强对数据类型 `ShaderEffect` 的支持（将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中）
   - 对应的数据表达式：`$shader_effect`
-- [ ] P3 增强对数据类型 `MeshLocator` 的支持（将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中）
+- [x] P3 增强对数据类型 `MeshLocator` 的支持（将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中）
   - 对应的数据表达式：`$mesh_locator`
 - [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
 - [ ] P4 对查询和查询器的重构（改为传递专门的、只读的上下文对象）
@@ -24,8 +24,8 @@
 - [x] 修复游戏类型发生变更时，分析数据可能未被正确刷新的问题 / Fixed an issue that analysis data may not be refreshed when game type is changed ([#326](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/326))
 - [x] 支持在类型展示规则中使用嵌套的 `subtype[x] = {...}` / Supported nested `subtype[x] = {...}` in type presentation configs ([#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324))
 - [x] 支持在 CSV 文件中使用动态值（匹配与解析） / Supported to use dynamic values in CSV files (match and resolution)
-- [ ] 增强对数据类型 `ShaderEffect` （数据表达式：`$shader_effect`）的支持，视为动态引用 / Enhanced support for data type `ShaderEffect` (data expression: `$shader_effect`), treats as dynamic references
-- [ ] 增强对数据类型 `MeshLocator` （数据表达式：`$mesh_locator`）的支持，视为动态引用 / Enhanced support for data type `MeshLocator` (data expression: `$mesh_locator`), treats as dynamic references
+- [x] 增强对数据类型 `ShaderEffect` （数据表达式：`$shader_effect`）的支持，视为动态引用 / Enhanced support for data type `ShaderEffect` (data expression: `$shader_effect`), treats as dynamic references
+- [x] 增强对数据类型 `MeshLocator` （数据表达式：`$mesh_locator`）的支持，视为动态引用 / Enhanced support for data type `MeshLocator` (data expression: `$mesh_locator`), treats as dynamic references
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.8 - 2026-05-10
