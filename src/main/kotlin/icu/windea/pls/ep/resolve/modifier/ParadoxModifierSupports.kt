@@ -43,7 +43,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -342,7 +341,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
         val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
@@ -359,7 +358,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
         val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
@@ -383,7 +382,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 
-        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 

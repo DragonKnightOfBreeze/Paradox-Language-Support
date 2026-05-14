@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxTargetByTextSearch.Parameters, consumer: Processor<in NavigatablePsiElement>) {
         // 检查是否启用
-        if (!PlsSettings.getInstance().state.navigation.seForTargetByTexts) return
+        if (!PlsSettings.getInstance().state.navigation.seForTargetsByText) return
 
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (PlsStates.resolveForMergedIndex.get() == true) return

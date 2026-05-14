@@ -18,7 +18,6 @@ import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
@@ -105,7 +104,7 @@ object ParadoxTextColorManager {
     }
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
-        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()

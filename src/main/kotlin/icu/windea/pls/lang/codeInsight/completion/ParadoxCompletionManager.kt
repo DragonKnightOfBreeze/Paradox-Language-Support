@@ -65,8 +65,6 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxMeshLocatorSearch
 import icu.windea.pls.lang.search.ParadoxShaderEffectSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByFilePath
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withFileExtensions
 import icu.windea.pls.lang.search.util.withSearchScopeType
@@ -516,8 +514,7 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
-            .distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -561,9 +558,8 @@ object ParadoxCompletionManager {
                 else -> emptySet()
             }
             // 仅提示匹配 `file_extensions` 选项指定的扩展名的，如果存在
-            val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive().distinct()
                 .withFileExtensions(fileExtensions)
-                .distinctByFilePath()
             ParadoxFilePathSearch.search(null, configExpression, selector).processAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile(project) ?: return@p true
@@ -629,10 +625,8 @@ object ParadoxCompletionManager {
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
         val searchScopeType = complexEnumConfig.searchScopeType
-        val selector = ParadoxComplexEnumValueSearch.selector(configGroup.project, contextElement)
+        val selector = ParadoxComplexEnumValueSearch.selector(configGroup.project, contextElement).contextSensitive().distinct()
             .withSearchScopeType(searchScopeType)
-            .contextSensitive()
-            .distinctByName()
         ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync { info ->
             ProgressManager.checkCanceled()
             val name = info.name
@@ -692,7 +686,7 @@ object ParadoxCompletionManager {
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.value ?: return
         val tailText = " by $configExpression"
-        val selector = ParadoxDynamicValueSearch.selector(configGroup.project, contextElement).distinctByName()
+        val selector = ParadoxDynamicValueSearch.selector(configGroup.project, contextElement).distinct()
         ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
@@ -814,7 +808,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement!!
         val configExpression = config.configExpression ?: return
         val tailText = " by $configExpression"
-        val selector = ParadoxShaderEffectSearch.selector(configGroup.project, contextElement).distinctByName()
+        val selector = ParadoxShaderEffectSearch.selector(configGroup.project, contextElement).distinct()
         ParadoxShaderEffectSearch.search(null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
@@ -841,7 +835,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement!!
         val configExpression = config.configExpression ?: return
         val tailText = " by $configExpression"
-        val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, contextElement).distinctByName()
+        val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, contextElement).distinct()
         ParadoxMeshLocatorSearch.search(null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
@@ -908,8 +902,7 @@ object ParadoxCompletionManager {
             context.expressionTailText = ""
             context.keyword = keywordToUse
             val project = configGroup.project
-            val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive()
-                .distinctByName()
+            val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
             ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                 processDefinition(context, resultToUse, it)
             }

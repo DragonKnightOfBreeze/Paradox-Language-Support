@@ -37,7 +37,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.search.util.withSearchScopeType
@@ -114,8 +113,7 @@ object ParadoxModifierManager {
             }
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
-                    .distinctByName()
+                val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
                 ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
                     val name = definition.definitionInfo?.name
@@ -143,10 +141,8 @@ object ParadoxModifierManager {
                 if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScopeType = complexEnumConfig.searchScopeType
-                    val selector = ParadoxComplexEnumValueSearch.selector(project, contextElement)
+                    val selector = ParadoxComplexEnumValueSearch.selector(project, contextElement).contextSensitive().distinct()
                         .withSearchScopeType(searchScopeType)
-                        .contextSensitive()
-                        .distinctByName()
                     ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync p@{ info ->
                         ProgressManager.checkCanceled()
                         val name = info.name
@@ -166,7 +162,7 @@ object ParadoxModifierManager {
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = ParadoxDynamicValueSearch.selector(project, contextElement).distinctByName()
+                val selector = ParadoxDynamicValueSearch.selector(project, contextElement).distinct()
                 ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     // 去除后面的作用域信息

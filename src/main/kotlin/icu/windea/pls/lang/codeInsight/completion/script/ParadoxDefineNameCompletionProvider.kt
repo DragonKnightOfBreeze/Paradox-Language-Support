@@ -19,7 +19,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByDefineExpression
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
@@ -54,9 +53,8 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
                 // property value must be null or a block
                 if (memberElement is ParadoxScriptProperty && memberElement.propertyValue.let { it != null && it !is ParadoxScriptBlock }) return
 
-                val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
+                val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive().distinct()
                     .filterBy { it.name != keyword } // skip if name = input
-                    .distinctByDefineExpression()
                 ParadoxDefineNamespaceSearch.search(null, selector).processAsync {
                     processDefineNamespace(context, result, it)
                 }
@@ -68,9 +66,8 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
                 if (parentPropertyElement.parent !is ParadoxScriptRootBlock) return
 
                 val namespace = parentPropertyElement.name
-                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
+                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive().distinct()
                     .filterBy { it.name != keyword } // skip if name = input
-                    .distinctByDefineExpression()
                 ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync {
                     processDefineVariable(context, result, it)
                 }

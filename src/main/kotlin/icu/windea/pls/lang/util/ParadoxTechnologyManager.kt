@@ -25,7 +25,6 @@ import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
@@ -67,7 +66,7 @@ object ParadoxTechnologyManager {
         private val gameType = ParadoxGameType.Stellaris
 
         fun getAllTiers(project: Project, context: Any?): Set<ParadoxScriptProperty> {
-            val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinctByName()
+            val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinct()
             return ParadoxDefinitionSearch.searchProperty(null, "technology_tier", selector).findAll()
         }
 
@@ -80,7 +79,7 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptProperty> {
-            val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinctByName()
+            val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinct()
             return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.technologyCategory, selector).findAll()
         }
 

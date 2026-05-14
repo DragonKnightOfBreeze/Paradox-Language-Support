@@ -32,7 +32,6 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
@@ -96,9 +95,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.isKey = true
                     context.expressionTailText = ""
                     // 仅限作为属性的定义
-                    val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive()
+                    val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
                         .filterBy { it.name != keyword } // skip if name = input
-                        .distinctByName()
                     ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
@@ -120,9 +118,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.expressionTailText = ""
                     // 排除与正在输入的同名的定义
                     // 仅限作为属性的定义
-                    val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive()
+                    val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
                         .filterBy { it.name != keyword } // skip if name = input
-                        .distinctByName()
                     ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }

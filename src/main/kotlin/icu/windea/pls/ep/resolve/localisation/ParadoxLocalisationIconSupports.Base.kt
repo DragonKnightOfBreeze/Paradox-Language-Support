@@ -19,8 +19,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.distinctByFilePath
-import icu.windea.pls.lang.search.util.distinctByName
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 @Suppress("SameParameterValue")
@@ -86,7 +84,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val definitionSelector = ParadoxDefinitionSearch.selector(project, originalFile).contextSensitive().distinctByName()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, originalFile).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -127,8 +125,7 @@ class ParadoxImageFileBasedLocalisationIconSupport(
         val tailText = " from image file"
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val fileSelector = ParadoxFilePathSearch.selector(project, originalFile).contextSensitive()
-            .distinctByFilePath()
+        val fileSelector = ParadoxFilePathSearch.selector(project, originalFile).contextSensitive().distinct()
         ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
             ProgressManager.checkCanceled()
             val name = file.nameWithoutExtension

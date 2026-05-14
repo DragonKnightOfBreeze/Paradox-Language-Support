@@ -273,14 +273,14 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      * @property seForComplexEnumConfigs 是否可在随处搜索中搜索复杂枚举规则（作为符号）。
      * @property seForTriggerConfigs 是否可在随处搜索中搜索触发器规则（作为符号）。
      * @property seForEffectConfigs 是否可在随处搜索中搜索效果规则（作为符号）。
-     * @property seForTargetByTexts 是否可在随处搜索中基于本地化片段搜索各种目标（作为符号）。
+     * @property seForTargetsByText 是否可在随处搜索中基于本地化片段搜索各种目标（作为符号）。
      */
     class NavigationState : BaseState() {
         var seForScriptedVariables by property(true)
         var seForDefinitions by property(true)
         var seForLocalisations by property(true)
         var seForSyncedLocalisations by property(true)
-        var seForTargetByTexts by property(true)
+        var seForTargetsByText by property(true)
 
         var seForTypeConfigs by property(false)
         var seForComplexEnumConfigs by property(false)
