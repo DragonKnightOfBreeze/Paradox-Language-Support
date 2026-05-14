@@ -31,7 +31,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @Nullable String getValue();
 
-  int getDepth();
+  @NotNull String getExpression();
 
   @Nullable ParadoxScriptBlock getBlock();
 
@@ -42,8 +42,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable ParadoxScriptBlock getMembersRoot();
 
   @Nullable List<@NotNull ParadoxScriptMember> getMembers();
-
-  @NotNull String getExpression();
 
   @NotNull GlobalSearchScope getResolveScope();
 

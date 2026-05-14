@@ -14,13 +14,13 @@ import org.jetbrains.uast.kotlin.orAnonymous
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
- * - 表达式 - 如果表示一个表达式、封装变量、封装变量引用、内联数学数字等则可用。
  * - 类型 - 如果表示一个表达式、封装变量、封装变量引用、内联数学数字等则可用。
  * - 名字 - 如果表示一个封装变量、封装变量引用、定义、定值变量、本地化等则可用。
  * - 定义类型 - 如果表示一个定义候选（定义、定义注入、定义模板）则可用。
  * - 本地化类型 - 如果表示一个本地化属性或本地化参数则可用。
- * - 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
+ * - 表达式 - 如果表示一个表达式则可用。
  * - 规则表达式 - 如果存在对应的规则表达式则可用。
+ * - 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
  * - 作用域上下文信息 - 如果存在则可用。
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
@@ -37,7 +37,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
         ParadoxTypeManager.getDefinitionType(element)?.let { return it.escapeXml() }
         ParadoxTypeManager.getLocalisationType(element)?.let { return it.id }
         ParadoxTypeManager.getConfigExpression(element)?.let { return it.escapeXml() }
-        ParadoxTypeManager.getType(element)?.let { return it }
+        ParadoxTypeManager.getType(element)?.let { return it.id }
         return FallbackStrings.unknown
     }
 
@@ -51,11 +51,8 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
 
     override fun getAdvancedInformationHint(element: PsiElement): String {
         val map = buildMap {
-            val expression = ParadoxTypeManager.getExpression(element)
-            expression?.let { this[PlsBundle.message("title.expression")] = it }
-
             val type = ParadoxTypeManager.getType(element)
-            type?.let { this[PlsBundle.message("title.type")] = it }
+            type?.let { this[PlsBundle.message("title.type")] = it.id }
 
             val name = ParadoxTypeManager.getName(element)
             name?.let { this[PlsBundle.message("title.name")] = it.orAnonymous() }
@@ -66,11 +63,14 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
             val localisationType = ParadoxTypeManager.getLocalisationType(element)
             localisationType?.let { this[PlsBundle.message("title.localisationType")] = it.id }
 
-            val priority = ParadoxTypeManager.getOverrideStrategy(element)
-            priority?.let { this[PlsBundle.message("title.overrideStrategy")] = it.toString() }
+            val expression = ParadoxTypeManager.getExpression(element)
+            expression?.let { this[PlsBundle.message("title.expression")] = it }
 
             val configExpression = ParadoxTypeManager.getConfigExpression(element)
             configExpression?.let { this[PlsBundle.message("title.configExpression")] = it }
+
+            val priority = ParadoxTypeManager.getOverrideStrategy(element)
+            priority?.let { this[PlsBundle.message("title.overrideStrategy")] = it.toString() }
 
             val scopeContext = ParadoxTypeManager.getScopeContext(element)
             val scopeContextString = scopeContext?.toScopeMap()?.entries?.joinToString("\n") { (key, value) -> "$key = $value" }

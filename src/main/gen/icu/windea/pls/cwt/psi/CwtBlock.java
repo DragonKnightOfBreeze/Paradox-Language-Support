@@ -35,6 +35,8 @@ public interface CwtBlock extends CwtValue, CwtBlockElement, CwtBoundMemberConta
 
   @NotNull CwtValue setValue(@NotNull String value);
 
+  @NotNull String getExpression();
+
   @NotNull CwtBlock getMembersRoot();
 
   @NotNull List<@NotNull CwtMember> getMembers();

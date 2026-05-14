@@ -32,7 +32,7 @@ class ParadoxCsvAnnotator : Annotator {
         if (element.firstChild == null) return null
         if (element.isHeaderColumn()) return ParadoxCsvAttributesKeys.HEADER
 
-        val resolvedType = ParadoxTypeResolver.resolveType(element.value)
+        val resolvedType = ParadoxTypeResolver.resolveExpressionType(element.value)
         val attributesKeys = when (resolvedType) {
             ParadoxExpressionType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD
             ParadoxExpressionType.Int -> ParadoxCsvAttributesKeys.NUMBER

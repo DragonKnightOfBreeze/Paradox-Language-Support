@@ -22,7 +22,7 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptSt
 
   @NotNull String getValue();
 
-  @NotNull ParadoxScriptString setValue(@NotNull String value);
+  @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
   @Nullable PsiReference getReference();
 

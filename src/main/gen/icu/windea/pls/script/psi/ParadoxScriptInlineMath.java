@@ -12,7 +12,7 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
   @NotNull String getValue();
 
-  @NotNull String getExpression();
+  @NotNull String getInlineMathExpression();
 
   @Nullable PsiElement getTokenElement();
 

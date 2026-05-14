@@ -21,6 +21,8 @@ public interface CwtPropertyKey extends CwtStringExpressionElement, CwtLiteralVa
 
   @NotNull CwtPropertyKey setValue(@NotNull String value);
 
+  @NotNull String getExpression();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

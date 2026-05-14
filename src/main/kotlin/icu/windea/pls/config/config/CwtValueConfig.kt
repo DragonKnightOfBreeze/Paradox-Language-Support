@@ -25,6 +25,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtTypeResolver
 
 /**
  * 值规则（值型成员规则）。
@@ -107,7 +108,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         val pointer = if (configGroup.project.isDefault) emptyPointer() else element.createPointer(file)
         val configs = CwtConfigResolverManager.getConfigs(element, file, configGroup)
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(element.value) else CwtDataExpression.resolveBlock()
-        val valueType = element.type
+        val valueType = CwtTypeResolver.resolveExpressionType(element)
         val config = create(pointer, configGroup, valueExpression, valueType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data

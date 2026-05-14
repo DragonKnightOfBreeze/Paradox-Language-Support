@@ -10,6 +10,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.model.type.CwtType
 import icu.windea.pls.model.type.CwtTypeResolver
 
 object CwtTypeManager {
@@ -21,39 +22,10 @@ object CwtTypeManager {
         }
     }
 
-    fun findTypedElements(elementAt: PsiElement): List<PsiElement> {
-        if (elementAt.language !is CwtLanguage) return emptyList()
-        val element = elementAt.parents(withSelf = true).find { isTypedElement(it) }
-        if (element == null) return emptyList()
-        return listOf(element)
-    }
-
-    /**
-     * 表达式 - 如果 [element] 表示一个表达式则可用。
-     */
-    fun getExpression(element: PsiElement): String? {
-        return when (element) {
-            is CwtExpressionElement -> CwtTypeResolver.resolveExpression(element)
-            else -> null
-        }
-    }
-
-    /**
-     * 类型 - 如果 [element] 表示一个表达式则可用。
-     */
-    fun getType(element: PsiElement): String? {
-        return when (element) {
-            is CwtExpressionElement -> CwtTypeResolver.resolveExpressionType(element).text
-            else -> null
-        }
-    }
-
-    /**
-     * 规则类型 - 如果 [element] 表示一个规则则可用。
-     */
-    fun getConfigType(element: PsiElement): CwtConfigType? {
-        if (!isTypedElement(element)) return null
-        return CwtConfigManager.getConfigType(element)
+    fun findTypedElements(element: PsiElement): List<PsiElement> {
+        if (element.language !is CwtLanguage) return emptyList()
+        val typedElement = element.parents(withSelf = true).find { isTypedElement(it) }
+        return typedElement.to.singletonListOrEmpty()
     }
 
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
@@ -67,6 +39,31 @@ object CwtTypeManager {
                 }
             }
             else -> emptyList()
+        }
+    }
+
+    /**
+     * 类型 - 如果 [element] 表示一个表达式则可用。
+     */
+    fun getType(element: PsiElement): CwtType? {
+        return CwtTypeResolver.resolveType(element)
+    }
+
+    /**
+     * 规则类型 - 如果 [element] 表示一个规则则可用。
+     */
+    fun getConfigType(element: PsiElement): CwtConfigType? {
+        if (!isTypedElement(element)) return null
+        return CwtConfigManager.getConfigType(element)
+    }
+
+    /**
+     * 表达式 - 如果 [element] 表示一个表达式则可用。
+     */
+    fun getExpression(element: PsiElement): String? {
+        return when (element) {
+            is CwtExpressionElement -> element.expression
+            else -> null
         }
     }
 }

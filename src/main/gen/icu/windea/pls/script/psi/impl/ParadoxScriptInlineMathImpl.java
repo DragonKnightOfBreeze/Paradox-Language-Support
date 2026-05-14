@@ -36,8 +36,8 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   }
 
   @Override
-  public @NotNull String getExpression() {
-    return ParadoxScriptPsiImplUtil.getExpression(this);
+  public @NotNull String getInlineMathExpression() {
+    return ParadoxScriptPsiImplUtil.getInlineMathExpression(this);
   }
 
   @Override

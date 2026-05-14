@@ -17,7 +17,7 @@ class ParadoxScriptValueArgumentValueNode(
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         // 为参数值提供基础代码高亮
-        val type = ParadoxTypeResolver.resolveType(text)
+        val type = ParadoxTypeResolver.resolveExpressionType(text)
         return when {
             type == ParadoxExpressionType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD
             type.isLenientFloat() -> ParadoxScriptAttributesKeys.NUMBER

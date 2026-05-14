@@ -80,8 +80,8 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  public int getDepth() {
-    return ParadoxScriptPsiImplUtil.getDepth(this);
+  public @NotNull String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override
@@ -107,11 +107,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Override
   public @Nullable List<@NotNull ParadoxScriptMember> getMembers() {
     return ParadoxScriptPsiImplUtil.getMembers(this);
-  }
-
-  @Override
-  public @NotNull String getExpression() {
-    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override

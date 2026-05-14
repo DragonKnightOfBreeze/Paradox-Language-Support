@@ -134,7 +134,7 @@ private class ParadoxTextBasedExpression(
 ) : ParadoxExpressionBase() {
     override val value: String = text.unquote()
     override val quoted: Boolean = text.isLeftQuoted()
-    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveType(value)
+    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveExpressionType(value)
 }
 
 private class ParadoxQuotedValueBasedExpression(
@@ -152,7 +152,7 @@ private class ParadoxUnquotedValueBasedExpression(
 ) : ParadoxExpressionBase() {
     override val text: String get() = value
     override val quoted: Boolean get() = false
-    override val type: ParadoxExpressionType = ParadoxTypeResolver.resolveType(value)
+    override val type: ParadoxExpressionType = ParadoxTypeResolver.resolveExpressionType(value)
 }
 
 private class ParadoxPsiBasedExpression(
@@ -161,7 +161,7 @@ private class ParadoxPsiBasedExpression(
     override val text: String = element.text
     override val value: String = element.value
     override val quoted: Boolean = text.isLeftQuoted()
-    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveType(value)
+    override val type: ParadoxExpressionType = if (quoted) ParadoxExpressionType.String else ParadoxTypeResolver.resolveExpressionType(value)
     override val role: ParadoxExpressionRole = ParadoxTypeResolver.resolveExpressionRole(element)
 }
 
@@ -179,8 +179,8 @@ private class ParadoxScriptedVariableReferenceBasedExpression(
 
     override val text: String get() = resolvedExpression.text
     override val value: String get() = resolvedExpression.value
-    override val type: ParadoxExpressionType get() = resolvedExpression.type
     override val quoted: Boolean get() = resolvedExpression.quoted
+    override val type: ParadoxExpressionType get() = resolvedExpression.type
     override val role: ParadoxExpressionRole get() = ParadoxExpressionRole.Value
 }
 

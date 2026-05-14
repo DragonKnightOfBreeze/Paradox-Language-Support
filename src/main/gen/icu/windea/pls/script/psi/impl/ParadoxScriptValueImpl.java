@@ -53,6 +53,11 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
+  public @NotNull String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }

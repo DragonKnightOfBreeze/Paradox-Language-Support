@@ -134,6 +134,13 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
+    fun getExpression(element: CwtProperty): String {
+        val keyExpression = element.propertyKey.expression
+        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
+        return "$keyExpression = $valueExpression"
+    }
+
+    @JvmStatic
     fun getMembersRoot(element: CwtProperty): CwtBlock? {
         return element.propertyValue?.castOrNull<CwtBlock>()
     }
@@ -141,13 +148,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getMembers(element: CwtProperty): List<CwtMember>? {
         return getMembersRoot(element)?.findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getExpression(element: CwtProperty): String {
-        val keyExpression = element.propertyKey.expression
-        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
-        return "$keyExpression = $valueExpression"
     }
 
     // endregion
@@ -176,6 +176,11 @@ object CwtPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
+    @JvmStatic
+    fun getExpression(element: CwtPropertyKey): String {
+        return element.text
+    }
+
     // endregion
 
     // region CwtValue
@@ -200,6 +205,11 @@ object CwtPsiImplUtil {
         if (element is CwtString) return setValue(element, value)
         val newElement = CwtElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun getExpression(element: CwtValue): String {
+        return element.text
     }
 
     // endregion
@@ -249,6 +259,11 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtBlock): String {
+        return PlsStrings.blockFolder
+    }
+
+    @JvmStatic
+    fun getExpression(element: CwtBlock): String {
         return PlsStrings.blockFolder
     }
 

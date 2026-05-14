@@ -150,7 +150,7 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
         val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
         val keyExpression = CwtDataExpression.resolveKey(keyElement.value)
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(valueElement.value) else CwtDataExpression.resolveBlock()
-        val valueType = valueElement.type
+        val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data

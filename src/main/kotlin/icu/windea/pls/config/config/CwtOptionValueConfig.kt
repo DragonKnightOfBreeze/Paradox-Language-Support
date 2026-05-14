@@ -14,6 +14,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtTypeResolver
 import java.util.*
 
 /**
@@ -49,7 +50,7 @@ private class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, 
 
     override fun resolve(element: CwtValue): CwtOptionValueConfig {
         val value = element.value
-        val valueType = element.type
+        val valueType = CwtTypeResolver.resolveExpressionType(element)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element)
         return create(value, valueType, optionConfigs)
     }

@@ -96,7 +96,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
 
         val key = keyElement.value
         val value = valueElement.value
-        val valueType = valueElement.type
+        val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(valueElement)
         return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
     }

@@ -75,10 +75,10 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     property_key="property_key" property_value="value"
-    getIcon getName setName getNameIdentifier getValue getDepth getBlock
+    getIcon getName setName getNameIdentifier getValue getExpression getBlock
     getIElementType isEquivalentTo
     getMembersRoot getMembers
-    getExpression
+
   ]
 }
 // can be parameterized
@@ -90,7 +90,7 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue setValue
+    getIcon getName getValue setValue getExpression
     getReference getReferences
   ]
 }
@@ -106,7 +106,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
   ]
-  methods=[getIcon getName getValue setValue]
+  methods=[getIcon getName getValue setValue getExpression]
 }
 // can be parameterized
 scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
@@ -171,7 +171,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
-    getIcon getValue getReference getReferences
+    getIcon getValue getReference getReferences getExpression
     getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }
@@ -280,7 +280,7 @@ private inline_parameter_condition_item_part ::= ARGUMENT_TOKEN | parameter | in
 inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END { // lazy-parsing INLINE_MATH_TOKEN
   pin=1
   extends=value
-  methods=[getValue getExpression getTokenElement]
+  methods=[getValue getInlineMathExpression getTokenElement]
 }
 
 // ------

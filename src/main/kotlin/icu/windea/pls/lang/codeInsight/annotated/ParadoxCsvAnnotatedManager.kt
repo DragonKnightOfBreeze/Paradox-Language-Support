@@ -5,6 +5,7 @@ import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.model.type.ParadoxTypeResolver
 
 object ParadoxCsvAnnotatedManager {
     // region Prefixes
@@ -22,10 +23,10 @@ object ParadoxCsvAnnotatedManager {
      * 格式：
      * - `## @type type_1;type_2`
      */
-    fun getType(element: ParadoxCsvRowElement): String? {
+    fun getTypeAnnotation(element: ParadoxCsvRowElement): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
         val columns = element.columnList.orNull() ?: return null
-        val types = columns.map { column -> column.type }
+        val types = columns.map { column -> ParadoxTypeResolver.resolveExpressionType(column).id }
         return types.joinToString(";", "## $typePrefix ")
     }
 
@@ -35,7 +36,7 @@ object ParadoxCsvAnnotatedManager {
      * 格式：
      * - `## @type expression_1;expression_2`
      */
-    fun getConfigExpression(element: ParadoxCsvRowElement): String? {
+    fun getConfigExpressionAnnotation(element: ParadoxCsvRowElement): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
         val rowConfig = ParadoxCsvManager.getRowConfig(element) ?: return null
         val columns = element.columnList.orNull() ?: return null

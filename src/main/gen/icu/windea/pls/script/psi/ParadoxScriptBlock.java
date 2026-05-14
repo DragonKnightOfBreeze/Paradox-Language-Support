@@ -33,6 +33,8 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @NotNull PsiReference @NotNull [] getReferences();
 
+  @NotNull String getExpression();
+
   @NotNull ParadoxScriptBlock getMembersRoot();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();

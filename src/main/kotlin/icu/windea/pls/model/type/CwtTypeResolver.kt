@@ -16,14 +16,19 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
 
 @Suppress("unused")
 object CwtTypeResolver {
-    fun resolveExpression(element: CwtExpressionElement): String {
+    fun resolveType(element: PsiElement): CwtType? {
         return when (element) {
-            is CwtBlock -> PlsStrings.blockFolder
-            else -> element.text
+            is CwtPropertyKey -> CwtType.String
+            is CwtBoolean -> CwtType.Boolean
+            is CwtInt -> CwtType.Int
+            is CwtFloat -> CwtType.Float
+            is CwtString -> CwtType.String
+            is CwtBlock -> CwtType.Block
+            is CwtExpressionElement -> CwtType.Unknown
+            else -> null
         }
     }
 

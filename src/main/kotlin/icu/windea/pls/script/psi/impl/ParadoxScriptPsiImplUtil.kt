@@ -152,17 +152,10 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getDepth(element: ParadoxScriptProperty): Int {
-        // 得到相对于 rootBlock 的深度，最大为1（element.parent is ParadoxScriptRootBlock）
-        var current: PsiElement? = element
-        var depth = 0
-        while (true) {
-            current = current?.parent ?: break
-            if (current is PsiFile) break
-            if (current is ParadoxScriptBlock) depth++
-            if (current is ParadoxScriptRootBlock) break
-        }
-        return depth
+    fun getExpression(element: ParadoxScriptProperty): String {
+        val keyExpression = element.propertyKey.expression
+        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
+        return "$keyExpression = $valueExpression"
     }
 
     @JvmStatic
@@ -193,13 +186,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
         return getMembersRoot(element)?.findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptProperty): String {
-        val keyExpression = element.propertyKey.expression
-        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
-        return "$keyExpression = $valueExpression"
     }
 
     // endregion
@@ -233,37 +219,40 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
+    @JvmStatic
+    fun getExpression(element: ParadoxScriptPropertyKey): String {
+        return element.text
+    }
+
     // endregion
 
-    // region ParadoxScriptScriptedVariableReference
+    // region ParadoxScriptValue
 
     @JvmStatic
-    fun getIdElement(element: ParadoxScriptScriptedVariableReference): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+    fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.Value
     }
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariableReference): String {
+    fun getName(element: ParadoxScriptValue): String {
         return element.value
     }
 
     @JvmStatic
-    fun getValue(element: ParadoxScriptScriptedVariableReference): String {
-        // remove leading `@` & can be parameterized & optimized to optimize memory
-        return element.text.removePrefix("@").optimized()
+    fun getValue(element: ParadoxScriptValue): String {
+        return element.text
     }
 
     @JvmStatic
-    fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
-        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
-        idElement.replace(newIdElement)
-        return element
+    fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
+        if (element is ParadoxScriptString) return setValue(element, value)
+        val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
+        return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun getExpression(element: ParadoxScriptValue): String {
+        return element.text
     }
 
     // endregion
@@ -337,6 +326,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getExpression(element: ParadoxScriptBlock): String {
+        return PlsStrings.blockFolder
+    }
+
+    @JvmStatic
     fun getMembersRoot(element: ParadoxScriptBlock): ParadoxScriptBlock {
         return element
     }
@@ -354,32 +348,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getRightBound(element: ParadoxScriptBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
-    }
-
-    // endregion
-
-    // region ParadoxScriptValue
-
-    @JvmStatic
-    fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxScriptValue): String {
-        return element.value
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptValue): String {
-        return element.text
-    }
-
-    @JvmStatic
-    fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
-        if (element is ParadoxScriptString) return setValue(element, value)
-        val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
-        return element.replace(newElement).cast()
     }
 
     // endregion
@@ -519,7 +487,7 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: ParadoxScriptInlineMath): String {
+    fun getInlineMathExpression(element: ParadoxScriptInlineMath): String {
         return element.tokenElement?.text?.trim().orEmpty()
     }
 
@@ -535,6 +503,39 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMathNumber): String {
         return element.text
+    }
+
+    // endregion
+
+    // region ParadoxScriptScriptedVariableReference
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptScriptedVariableReference): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.ScriptedVariable
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxScriptScriptedVariableReference): String {
+        return element.value
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptScriptedVariableReference): String {
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
     }
 
     // endregion
