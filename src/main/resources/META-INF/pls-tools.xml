@@ -32,12 +32,12 @@
         <reference ref="Pls.LaunchGame"/>
       </group>
 
-      <group id="Pls.Tools.OpenPathOrUrl" popup="true">
+      <group id="Pls.Tools.PathAndUrl" popup="true">
+        <reference ref="Pls.BrowsePaths"/>
         <reference ref="Pls.OpenPath"/>
-        <reference ref="Pls.OpenUrl"/>
-      </group>
-      <group id="Pls.Tools.CopyPathOrUrl" popup="true">
         <reference ref="Pls.CopyPath"/>
+        <reference ref="Pls.BrowseUrls"/>
+        <reference ref="Pls.OpenUrl"/>
         <reference ref="Pls.CopyUrl"/>
       </group>
 

@@ -641,34 +641,35 @@
     </action>
 
     <group id="Pls.OpenPath">
-      <action id="Pls.OpenPath.Steam" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$Steam"/>
-      <action id="Pls.OpenPath.SteamGame" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$SteamGame"/>
-      <action id="Pls.OpenPath.SteamWorkshop" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$SteamWorkshop"/>
-      <action id="Pls.OpenPath.GameData" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$GameData"/>
-      <action id="Pls.OpenPath.Game" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$Game"/>
-      <action id="Pls.OpenPath.Mod" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$Mod"/>
+      <action id="Pls.OpenPath.Steam" class="icu.windea.pls.lang.actions.OpenPathActions$Steam"/>
+      <action id="Pls.OpenPath.SteamGame" class="icu.windea.pls.lang.actions.OpenPathActions$SteamGame"/>
+      <action id="Pls.OpenPath.SteamWorkshop" class="icu.windea.pls.lang.actions.OpenPathActions$SteamWorkshop"/>
+      <action id="Pls.OpenPath.GameData" class="icu.windea.pls.lang.actions.OpenPathActions$GameData"/>
+      <action id="Pls.OpenPath.Game" class="icu.windea.pls.lang.actions.OpenPathActions$Game"/>
+      <action id="Pls.OpenPath.Mod" class="icu.windea.pls.lang.actions.OpenPathActions$Mod"/>
     </group>
     <group id="Pls.OpenUrl">
-      <action id="Pls.OpenUrl.GameStorePageInSteam" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$GameStorePageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.GameWorkshopPageInSteam" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$GameWorkshopPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.ModPageInSteam" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$ModPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.GameStorePage" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$GameStorePage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.GameWorkshopPage" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.ModPage" class="icu.windea.pls.lang.actions.OpenPathOrUrlActions$ModPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameStorePageInSteam" class="icu.windea.pls.lang.actions.OpenUrlActions$GameStorePageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameWorkshopPageInSteam" class="icu.windea.pls.lang.actions.OpenUrlActions$GameWorkshopPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.ModPageInSteam" class="icu.windea.pls.lang.actions.OpenUrlActions$ModPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameStorePage" class="icu.windea.pls.lang.actions.OpenUrlActions$GameStorePage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameWorkshopPage" class="icu.windea.pls.lang.actions.OpenUrlActions$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.ModPage" class="icu.windea.pls.lang.actions.OpenUrlActions$ModPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
     </group>
     <group id="Pls.CopyPath">
-      <action id="Pls.CopyPath.Steam" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$Steam"/>
-      <action id="Pls.CopyPath.SteamGame" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$SteamGame"/>
-      <action id="Pls.CopyPath.SteamWorkshop" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$SteamWorkshop"/>
-      <action id="Pls.CopyPath.GameData" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$GameData"/>
-      <action id="Pls.CopyPath.Game" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$Game"/>
-      <action id="Pls.CopyPath.Mod" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$Mod"/>
+      <action id="Pls.CopyPath.Steam" class="icu.windea.pls.lang.actions.CopyPathActions$Steam"/>
+      <action id="Pls.CopyPath.SteamGame" class="icu.windea.pls.lang.actions.CopyPathActions$SteamGame"/>
+      <action id="Pls.CopyPath.SteamWorkshop" class="icu.windea.pls.lang.actions.CopyPathActions$SteamWorkshop"/>
+      <action id="Pls.CopyPath.GameData" class="icu.windea.pls.lang.actions.CopyPathActions$GameData"/>
+      <action id="Pls.CopyPath.Game" class="icu.windea.pls.lang.actions.CopyPathActions$Game"/>
+      <action id="Pls.CopyPath.Mod" class="icu.windea.pls.lang.actions.CopyPathActions$Mod"/>
     </group>
     <group id="Pls.CopyUrl">
-      <action id="Pls.CopyUrl.GameStorePage" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$GameStorePage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.CopyUrl.GameWorkshopPage" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.CopyUrl.ModPage" class="icu.windea.pls.lang.actions.CopyPathOrUrlActions$ModPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.CopyUrl.GameStorePage" class="icu.windea.pls.lang.actions.CopyUrlActions$GameStorePage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.CopyUrl.GameWorkshopPage" class="icu.windea.pls.lang.actions.CopyUrlActions$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.CopyUrl.ModPage" class="icu.windea.pls.lang.actions.CopyUrlActions$ModPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
     </group>
+
     <group id="Pls.GotoPath">
       <separator/>
       <action id="Pls.GotoPath.Steam" class="icu.windea.pls.lang.actions.GoToPathActions$Steam" icon="AllIcons.Nodes.Module"/>
