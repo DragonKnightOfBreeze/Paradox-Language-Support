@@ -155,6 +155,7 @@ class TextMatcherTest {
         Assert.assertTrue(TextMatcher.matchesPercentageField("0%"))
         Assert.assertTrue(TextMatcher.matchesPercentageField("+50%"))
         Assert.assertTrue(TextMatcher.matchesPercentageField("-25%"))
+        Assert.assertTrue(TextMatcher.matchesPercentageField("12.5%"))
     }
 
     @Test
@@ -162,7 +163,6 @@ class TextMatcherTest {
         Assert.assertFalse(TextMatcher.matchesPercentageField("abc%"))
         Assert.assertFalse(TextMatcher.matchesPercentageField("%"))
         Assert.assertFalse(TextMatcher.matchesPercentageField("100"))
-        Assert.assertFalse(TextMatcher.matchesPercentageField("12.5%"))
         Assert.assertFalse(TextMatcher.matchesPercentageField("")) // 长度不足
     }
 

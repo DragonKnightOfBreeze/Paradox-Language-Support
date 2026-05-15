@@ -1,7 +1,6 @@
 package icu.windea.pls.core.match
 
 import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.core.match.TextMatcher.matchesInt
 import icu.windea.pls.core.orNull
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
@@ -73,16 +72,12 @@ object TextMatcher {
     }
 
     /**
-     * 检查 [value] 是否匹配一个百分数字段（形如 `"123%"`）。
+     * 检查 [text] 是否匹配一个百分数字段（形如 `"123%"`）。
      *
-     * 百分比符号 `%` 之前的部分按 [matchesInt] 规则进行匹配。
+     * 百分号 `%` 之前的部分需要为一个浮点数。
      */
-    fun matchesPercentageField(value: String, leadingUnary: Boolean = true): Boolean {
-        return doMatchPercentageField(value, leadingUnary)
-    }
-
-    private fun doMatchPercentageField(text: String, leadingUnary: Boolean): Boolean {
-        return text.length >= 2 && text.last() == '%' && doMatchInt(text, 0, text.length - 1, leadingUnary)
+    fun matchesPercentageField(text: String, leadingUnary: Boolean = true, lenientDot: Boolean = true): Boolean {
+        return text.length >= 2 && text.last() == '%' && doMatchFloat(text, 0, text.length - 1, leadingUnary, lenientDot)
     }
 
     /**
@@ -93,13 +88,9 @@ object TextMatcher {
      */
     fun matchesDateField(text: String, pattern: String? = null): Boolean {
         val pattern = pattern?.orNull() ?: "y.M.d"
-        return doMatchDateField(text, pattern)
-    }
-
-    private fun doMatchDateField(expression: String, pattern: String): Boolean {
         return try {
             val formatter = dateFieldFormatters.getOrPut(pattern) { DateTimeFormatter.ofPattern(pattern) }
-            formatter.parse(expression)
+            formatter.parse(text)
             true
         } catch (_: Exception) {
             false

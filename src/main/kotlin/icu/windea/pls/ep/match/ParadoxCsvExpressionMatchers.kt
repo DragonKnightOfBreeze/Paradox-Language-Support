@@ -67,7 +67,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesPercentageField(context.expression.value, leadingUnary = false)
+        val r = TextMatcher.matchesPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
