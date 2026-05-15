@@ -3,6 +3,7 @@ package icu.windea.pls.lang.overrides
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
@@ -154,21 +155,17 @@ object ParadoxOverrideService {
         when (overrideStrategy) {
             ParadoxOverrideStrategy.FIOS, ParadoxOverrideStrategy.LIOS -> {
                 // require same file path VS first result (injected roots are ignored)
-                val fileInfo = selectFile(target)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.MetadataBased }
+                val fileInfo = selectFile(target)?.fileInfo?.takeIf { isValid(it) }
                 if (fileInfo == null) return true
-                val firstFileInfo = results.firstNotNullOfOrNull { r ->
-                    selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.MetadataBased }
-                }
+                val firstFileInfo = results.firstNotNullOfOrNull { r -> selectFile(r)?.fileInfo?.takeIf { isValid(it) } }
                 if (firstFileInfo == null) return true
                 return isSameFilePath(fileInfo, firstFileInfo) && isSameRootDirectory(fileInfo, firstFileInfo)
             }
             ParadoxOverrideStrategy.DUPL -> {
                 // require same file path VS vanilla result (injected roots are ignored)
-                val fileInfo = selectFile(overrideResult.target)?.fileInfo
+                val fileInfo = selectFile(overrideResult.target)?.fileInfo?.takeIf { isValid(it) }
                 if (fileInfo == null) return true
-                val vanillaFileInfo = results.firstNotNullOfOrNull { r ->
-                    selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.Game }
-                }
+                val vanillaFileInfo = results.firstNotNullOfOrNull { r -> selectFile(r)?.fileInfo?.takeIf { isVanilla(it) } }
                 if (vanillaFileInfo == null) return true
                 return isSameFilePath(fileInfo, vanillaFileInfo)
             }
@@ -179,13 +176,21 @@ object ParadoxOverrideService {
         }
     }
 
-    private fun isSameRootDirectory(fileInfo1: ParadoxFileInfo, fileInfo2: ParadoxFileInfo): Boolean {
-        val rootInfo1 = fileInfo1.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
-        val rootInfo2 = fileInfo2.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
-        return rootInfo1.rootFile == rootInfo2.rootFile
+    private fun isValid(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxRootInfo.MetadataBased || PlsFacade.isUnitTestMode()
     }
 
-    private fun isSameFilePath(fileInfo1: ParadoxFileInfo, fileInfo2: ParadoxFileInfo): Boolean {
-        return fileInfo1.path == fileInfo2.path
+    private fun isVanilla(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxRootInfo.Game
+    }
+
+    private fun isSameFilePath(fileInfo: ParadoxFileInfo, otherFileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.path == otherFileInfo.path
+    }
+
+    private fun isSameRootDirectory(fileInfo: ParadoxFileInfo, otherFileInfo: ParadoxFileInfo): Boolean {
+        val rootInfo1 = fileInfo.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
+        val rootInfo2 = otherFileInfo.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
+        return rootInfo1.rootFile == rootInfo2.rootFile
     }
 }

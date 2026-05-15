@@ -1,0 +1,2 @@
+# expect fios, actual lios - vanilla declaration is in `01_scripted_variables.txt`
+@var = 1
