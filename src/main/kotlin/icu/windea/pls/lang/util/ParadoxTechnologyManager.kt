@@ -45,7 +45,7 @@ object ParadoxTechnologyManager {
         val technologyAttributes by registerKey<Set<String>>(Keys)
     }
 
-    fun getTechnologies(selector: ParadoxDefinitionSearch.Selector): Set<ParadoxScriptProperty> {
+    fun getTechnologies(selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.technology, selector).findAll()
     }
 
@@ -65,7 +65,7 @@ object ParadoxTechnologyManager {
     object Stellaris {
         private val gameType = ParadoxGameType.Stellaris
 
-        fun getAllTiers(project: Project, context: Any?): Set<ParadoxScriptProperty> {
+        fun getAllTiers(project: Project, context: Any?): List<ParadoxScriptProperty> {
             val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinct()
             return ParadoxDefinitionSearch.searchProperty(null, "technology_tier", selector).findAll()
         }
@@ -78,7 +78,7 @@ object ParadoxTechnologyManager {
             return PlsFacade.getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
         }
 
-        fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptProperty> {
+        fun getAllCategories(project: Project, context: Any?): List<ParadoxScriptProperty> {
             val selector = ParadoxDefinitionSearch.selector(project, context).withGameType(gameType).contextSensitive().distinct()
             return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.technologyCategory, selector).findAll()
         }

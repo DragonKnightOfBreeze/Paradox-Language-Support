@@ -60,7 +60,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         file: VirtualFile?,
         override val provider: ParadoxDefinitionDiagramProvider,
     ) : ParadoxDiagramDataModel(project, file, provider) {
-        protected fun getDefinitions(typeExpression: String): Set<ParadoxDefinitionElement> {
+        protected fun getDefinitions(typeExpression: String): List<ParadoxDefinitionElement> {
             val originalFile = originalFile
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
             val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType?.orNull()

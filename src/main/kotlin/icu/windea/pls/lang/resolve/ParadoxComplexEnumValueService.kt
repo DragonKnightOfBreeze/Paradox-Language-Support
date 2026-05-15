@@ -38,7 +38,7 @@ object ParadoxComplexEnumValueService {
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
 
-    fun resolveNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
+    fun resolveNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
         val selector = ParadoxLocalisationSearch.selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
     }

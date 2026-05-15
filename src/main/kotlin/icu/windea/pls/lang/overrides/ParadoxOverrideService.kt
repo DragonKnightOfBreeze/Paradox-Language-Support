@@ -53,13 +53,6 @@ object ParadoxOverrideService {
     }
 
     /**
-     * 得到基于覆盖顺序的目标的排序器。
-     */
-    fun <T> getOverrideComparator(searchParameters: ParadoxSearchParameters<T>): ParadoxOverrideComparator<T> {
-        return ParadoxOverrideComparator(searchParameters)
-    }
-
-    /**
      * 得到根目录路径 [rootPath] 在当前上下文中的顺序。
      */
     fun getOrderInContext(rootPath: String, settings: ParadoxGameOrModSettingsState): Int {

@@ -66,7 +66,7 @@ object ParadoxDynamicValueManager {
         return ParadoxDynamicValueService.resolveNameLocalisation(name, contextElement, locale)
     }
 
-    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
         return ParadoxDynamicValueService.resolveNameLocalisations(name, contextElement, locale)
     }
 }

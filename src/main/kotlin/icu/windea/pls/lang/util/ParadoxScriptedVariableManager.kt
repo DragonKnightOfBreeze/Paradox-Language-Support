@@ -30,7 +30,7 @@ object ParadoxScriptedVariableManager {
         return ParadoxScriptedVariableService.resolveNameLocalisation(name, contextElement, locale)
     }
 
-    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
         return ParadoxScriptedVariableService.resolveNameLocalisations(name, contextElement, locale)
     }
 }

@@ -75,7 +75,7 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
-    fun getEvents(selector: ParadoxDefinitionSearch.Selector): Set<ParadoxScriptProperty> {
+    fun getEvents(selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
