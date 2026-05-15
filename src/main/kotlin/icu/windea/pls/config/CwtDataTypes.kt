@@ -125,13 +125,24 @@ object CwtDataTypes {
     /**
      * 百分比字段类型。
      *
-     * 匹配百分比值字符串（如 `50%`）。
+     * 匹配数字部分为浮点数的百分比值字符串（如 `50.0%`）。
      *
      * 对应的数据表达式的格式：
      * - `percentage_field`
      */
     val PercentageField = CwtDataType.builder("PercentageField").build {
-        withPriority(90.0)
+        withPriority(90.0) // very high
+    }
+    /**
+     * 整数百分比字段类型。
+     *
+     * 匹配数字部分为整数的百分比值字符串（如 `50%`）。
+     *
+     * 对应的数据表达式的格式：
+     * - `int_percentage_field`
+     */
+    val IntPercentageField = CwtDataType.builder("IntPercentageField").build {
+        withPriority(90.0) // very high
     }
     /**
      * 日期字段类型。

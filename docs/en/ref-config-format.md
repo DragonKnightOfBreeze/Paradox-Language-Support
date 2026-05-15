@@ -1542,10 +1542,17 @@ Matches blocks (`{ ... }`). For internal representation only; does not correspon
 
 #### PercentageField {#data-type-percentage-field}
 
-Matches percentage value strings (e.g. `50%`).
+Matches percentage value strings whose numeric part is a floating point number (e.g. `50.0%`).
 
 Data expression format:
 - `percentage_field`
+
+#### IntPercentageField {#data-type-int-percentage-field}
+
+Matches percentage value strings whose numeric part is a integer number (e.g. `50%`).
+
+Data expression format:
+- `int_percentage_field`
 
 #### DateField {#data-type-date-field}
 

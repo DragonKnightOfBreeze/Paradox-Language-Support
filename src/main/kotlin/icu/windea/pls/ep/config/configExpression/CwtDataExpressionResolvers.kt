@@ -83,6 +83,7 @@ class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
 class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
     init {
         fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
+        fromLiteral(CwtDataTypes.IntPercentageField, "int_percentage_field")
         fromLiteral(CwtDataTypes.DateField, "date_field")
         fromParameterized(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() }
 

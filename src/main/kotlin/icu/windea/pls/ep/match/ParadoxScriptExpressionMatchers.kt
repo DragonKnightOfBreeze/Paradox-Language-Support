@@ -6,9 +6,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
-import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
@@ -83,6 +83,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)
+            CwtDataTypes.IntPercentageField -> matchIntPercentageField(context)
             CwtDataTypes.DateField -> matchDataField(context)
             CwtDataTypes.Definition, CwtDataTypes.SuffixAwareDefinition -> matchDefinition(context)
             CwtDataTypes.Localisation, CwtDataTypes.SuffixAwareLocalisation -> matchLocalisation(context)
@@ -116,6 +117,12 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         val r = TextMatcher.matchesPercentageField(context.expression.value)
+        return ParadoxMatchResult.exactOrNot(r)
+    }
+
+    private fun matchIntPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        val r = TextMatcher.matchesIntPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 

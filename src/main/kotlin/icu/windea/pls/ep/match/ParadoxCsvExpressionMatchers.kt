@@ -57,6 +57,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)
+            CwtDataTypes.IntPercentageField -> matchIntPercentageField(context)
             CwtDataTypes.DateField -> matchDataField(context)
             CwtDataTypes.Definition -> matchDefinition(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
@@ -68,6 +69,12 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     private fun matchPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         val r = TextMatcher.matchesPercentageField(context.expression.value)
+        return ParadoxMatchResult.exactOrNot(r)
+    }
+
+    private fun matchIntPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        val r = TextMatcher.matchesIntPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 

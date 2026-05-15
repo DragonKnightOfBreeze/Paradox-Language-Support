@@ -154,6 +154,11 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             val e = CwtDataExpression.resolve("percentage_field", false)
             assertEquals(CwtDataTypes.PercentageField, e.type)
         }
+        // int percentage field
+        run {
+            val e = CwtDataExpression.resolve("int_percentage_field", false)
+            assertEquals(CwtDataTypes.IntPercentageField, e.type)
+        }
         // date field
         run {
             val e = CwtDataExpression.resolve("date_field", false)

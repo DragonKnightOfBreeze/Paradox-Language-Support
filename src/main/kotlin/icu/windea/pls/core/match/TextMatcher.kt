@@ -72,12 +72,17 @@ object TextMatcher {
     }
 
     /**
-     * 检查 [text] 是否匹配一个百分数字段（形如 `"123%"`）。
-     *
-     * 百分号 `%` 之前的部分需要为一个浮点数。
+     * 检查 [text] 是否匹配一个数字部分为浮点数的百分比值字符串（如 `50.0%`）。
      */
     fun matchesPercentageField(text: String, leadingUnary: Boolean = true, lenientDot: Boolean = true): Boolean {
         return text.length >= 2 && text.last() == '%' && doMatchFloat(text, 0, text.length - 1, leadingUnary, lenientDot)
+    }
+
+    /**
+     * 检查 [text] 是否匹配一个数字部分为整数的百分比值字符串（如 `50%`）。
+     */
+    fun matchesIntPercentageField(text: String, leadingUnary: Boolean = true): Boolean {
+        return text.length >= 2 && text.last() == '%' && doMatchInt(text, 0, text.length - 1, leadingUnary)
     }
 
     /**

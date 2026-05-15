@@ -1558,10 +1558,17 @@ title
 
 #### PercentageField {#data-type-percentage-field}
 
-匹配百分比值字符串（如 `50%`）。
+匹配数字部分为浮点数的百分比值字符串（如 `50.0%`）。
 
 对应的数据表达式的格式：
 - `percentage_field`
+
+#### IntPercentageField {#data-type-int-percentage-field}
+
+匹配数字部分为整数的百分比值字符串（如 `50%`）。
+
+对应的数据表达式的格式：
+- `int_percentage_field`
 
 #### DateField {#data-type-date-field}
 
