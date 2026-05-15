@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.inspections.overrides
 
-import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
@@ -95,7 +94,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), InspectionTe
         val tag = description.toWeakWarningTag()
 
         markFileInfo(gameType, "common/armies/01_defense_armies.txt")
-        val file1 = myFixture.configureByText("01_defense_armies.txt", """
+        myFixture.configureByText("01_defense_armies.txt", """
             defense_army = {
 	            defensive = yes
                 # ...
@@ -103,7 +102,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), InspectionTe
         """.trimIndent())
 
         markFileInfo(gameType, "common/armies/01_defense_armies.txt")
-        val file2 = myFixture.configureByText("01_defense_armies.copy.txt", """
+        myFixture.configureByText("01_defense_armies.copy.txt", """
             ${tag.start}defense_army${tag.end} = {
 	            defensive = yes
                 # ...

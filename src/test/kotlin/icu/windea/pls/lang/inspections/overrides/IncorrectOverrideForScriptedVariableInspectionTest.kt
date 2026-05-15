@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.inspections.overrides
 
-import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
@@ -8,6 +7,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.InspectionTestScope
 import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class IncorrectOverrideForScriptedVariableInspectionTest  : BasePlatformTestCase(), InspectionTestScope {
+class IncorrectOverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), InspectionTestScope {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
@@ -29,6 +29,7 @@ class IncorrectOverrideForScriptedVariableInspectionTest  : BasePlatformTestCase
     @Before
     fun doSetUp() {
         markIntegrationTest()
+        initConfigGroups(project, gameType)
         myFixture.enableInspections(IncorrectOverrideForScriptedVariableInspection::class.java)
     }
 
@@ -37,11 +38,6 @@ class IncorrectOverrideForScriptedVariableInspectionTest  : BasePlatformTestCase
 
     @Test
     fun simple_fios() {
-        val key = "var"
-        val overrideStrategy = ParadoxOverrideStrategy.FIOS
-        val description = PlsBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy)
-        val tag = description.toWarningTag()
-
         markFileInfo(gameType, "common/scripted_variables/99_scripted_variables.txt")
         myFixture.configureByText("99_scripted_variables.txt", """
             @var = 1
@@ -49,7 +45,7 @@ class IncorrectOverrideForScriptedVariableInspectionTest  : BasePlatformTestCase
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """
-            ${tag.start}@var${tag.end} = 1
+            @var = 1
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
@@ -58,6 +54,11 @@ class IncorrectOverrideForScriptedVariableInspectionTest  : BasePlatformTestCase
 
     @Test
     fun simple_lios() {
+        val key = "var"
+        val overrideStrategy = ParadoxOverrideStrategy.FIOS
+        val description = PlsBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy)
+        val tag = description.toWarningTag()
+
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """
             @var = 1
@@ -65,7 +66,7 @@ class IncorrectOverrideForScriptedVariableInspectionTest  : BasePlatformTestCase
 
         markFileInfo(gameType, "common/scripted_variables/99_scripted_variables.txt")
         myFixture.configureByText("99_scripted_variables.txt", """
-            @var = 1
+            ${tag.start}@var${tag.end} = 1
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary

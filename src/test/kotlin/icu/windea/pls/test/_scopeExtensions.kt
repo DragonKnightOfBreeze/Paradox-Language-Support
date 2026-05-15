@@ -92,7 +92,7 @@ fun VirtualFile.injectFileInfo(gameType: ParadoxGameType, path: String, entry: S
 interface InspectionTestScope {
     data class Tag(val start: String, val end: String)
 
-    fun String.toTag(level: String) = Tag("<$level descr=\"${this}\">", "</$level>")
+    fun String.toTag(level: String) = Tag("<$level descr=\"${this.replace("\"", "\\\\\"")}\">", "</$level>")
 
     fun String.toErrorTag() = toTag("error")
 

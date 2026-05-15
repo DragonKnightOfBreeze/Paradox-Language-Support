@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.inspections.overrides
 
-import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.InspectionTestScope
 import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -28,6 +28,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Inspec
     @Before
     fun doSetUp() {
         markIntegrationTest()
+        initConfigGroups(project, gameType)
         myFixture.enableInspections(OverrideForScriptedVariableInspection::class.java)
     }
 

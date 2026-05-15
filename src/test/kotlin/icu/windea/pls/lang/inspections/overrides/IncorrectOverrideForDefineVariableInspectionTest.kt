@@ -7,6 +7,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.InspectionTestScope
 import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -28,6 +29,7 @@ class IncorrectOverrideForDefineVariableInspectionTest  : BasePlatformTestCase()
     @Before
     fun doSetUp() {
         markIntegrationTest()
+        initConfigGroups(project, gameType)
         myFixture.enableInspections(IncorrectOverrideForDefineVariableInspection::class.java)
     }
 
