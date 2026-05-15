@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsUrlService
@@ -12,7 +11,8 @@ interface OpenUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
@@ -23,7 +23,8 @@ interface OpenUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameWorkshopUrlInSteam(steamId)
@@ -32,16 +33,16 @@ interface OpenUrlActions {
 
     class ModPageInSteam : HandleUrlActionBase() {
         override fun isVisible(e: AnActionEvent): Boolean {
-            val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-            val fileInfo = file.fileInfo ?: return false
+            val contextFile = getContextFile(e) ?: return   false
+            val fileInfo = contextFile.fileInfo ?: return false
             return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
-            val fileInfo = file.fileInfo ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
             return PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
@@ -52,7 +53,8 @@ interface OpenUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
@@ -63,7 +65,8 @@ interface OpenUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameWorkshopUrl(steamId)
@@ -72,18 +75,19 @@ interface OpenUrlActions {
 
     class ModPage : HandleUrlActionBase() {
         override fun isVisible(e: AnActionEvent): Boolean {
-            val fileInfo = getFileInfo(e) ?: return false
+            val contextFile = getContextFile(e) ?: return false
+            val fileInfo = contextFile.fileInfo ?: return false
             return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
             return PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
         }
     }
 }
-

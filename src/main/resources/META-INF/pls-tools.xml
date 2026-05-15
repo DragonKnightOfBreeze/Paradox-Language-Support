@@ -34,11 +34,11 @@
 
       <group id="Pls.Tools.PathAndUrl" popup="true">
         <reference ref="Pls.BrowsePaths"/>
-        <reference ref="Pls.OpenPath"/>
         <reference ref="Pls.CopyPath"/>
+        <reference ref="Pls.OpenPath"/>
         <reference ref="Pls.BrowseUrls"/>
-        <reference ref="Pls.OpenUrl"/>
         <reference ref="Pls.CopyUrl"/>
+        <reference ref="Pls.OpenUrl"/>
       </group>
 
       <group id="Pls.Tools.Compare" popup="true">

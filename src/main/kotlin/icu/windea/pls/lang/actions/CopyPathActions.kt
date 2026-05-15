@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
@@ -18,7 +19,8 @@ interface CopyPathActions {
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             return PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         }
@@ -28,7 +30,8 @@ interface CopyPathActions {
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             return PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         }
@@ -38,7 +41,8 @@ interface CopyPathActions {
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             return PlsPathService.getInstance().getGameDataPath(gameType)
         }
@@ -46,14 +50,16 @@ interface CopyPathActions {
 
     class Game : HandlePathActionBase() {
         override fun isVisible(e: AnActionEvent): Boolean {
-            val fileInfo = getFileInfo(e) ?: return false
+            val contextFile = getContextFile(e) ?: return false
+            val fileInfo = contextFile.fileInfo ?: return false
             return fileInfo.rootInfo is ParadoxRootInfo.Game
         }
 
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             return fileInfo.rootInfo.rootFile.toNioPath()
         }
@@ -61,14 +67,16 @@ interface CopyPathActions {
 
     class Mod : HandlePathActionBase() {
         override fun isVisible(e: AnActionEvent): Boolean {
-            val fileInfo = getFileInfo(e) ?: return false
+            val contextFile = getContextFile(e) ?: return false
+            val fileInfo = contextFile.fileInfo ?: return false
             return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
+            val contextFile = getContextFile(e) ?: return null
+            val fileInfo = contextFile.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             return fileInfo.rootInfo.rootFile.toNioPath()
         }

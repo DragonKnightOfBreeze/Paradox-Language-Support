@@ -4,10 +4,10 @@ import com.intellij.ide.lightEdit.LightEditCompatible
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.ParadoxFileInfo
 import java.nio.file.Path
 import javax.swing.Icon
 
@@ -37,10 +37,9 @@ abstract class HandlePathActionBase(
 
     protected abstract fun getTargetPath(e: AnActionEvent): Path?
 
-    protected fun getFileInfo(e: AnActionEvent): ParadoxFileInfo? {
+    protected fun getContextFile(e: AnActionEvent): VirtualFile? {
         val files = VirtualFileService.findFiles(e)
-        val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
-        return fileInfo
+        return files.find { it.fileInfo != null }
     }
 
     protected fun openPath(e: AnActionEvent) {

@@ -4,10 +4,10 @@ import com.intellij.ide.lightEdit.LightEditCompatible
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsUrlService
-import icu.windea.pls.model.ParadoxFileInfo
 import javax.swing.Icon
 
 @Suppress("UnstableApiUsage")
@@ -36,11 +36,11 @@ abstract class HandleUrlActionBase(
 
     protected abstract fun getTargetUrl(e: AnActionEvent): String?
 
-    protected fun getFileInfo(e: AnActionEvent): ParadoxFileInfo? {
+    protected fun getContextFile(e: AnActionEvent): VirtualFile? {
         val files = VirtualFileService.findFiles(e)
-        val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
-        return fileInfo
+        return files.find { it.fileInfo != null }
     }
+
 
     protected fun copyUrl(e: AnActionEvent) {
         val targetUrl = getTargetUrl(e) ?: return
