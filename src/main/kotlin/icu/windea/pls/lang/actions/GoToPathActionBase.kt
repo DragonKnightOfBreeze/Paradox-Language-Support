@@ -10,7 +10,6 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 
@@ -69,19 +68,16 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
 
     protected open fun shouldExpand(fileChooser: FileSystemTree, e: AnActionEvent): Boolean = false
 
-    protected fun getFileInfo(e: AnActionEvent): ParadoxFileInfo? {
-        val files = VirtualFileService.findFiles(e)
-        val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
-        return fileInfo
-    }
-
     protected fun getGameType(e: AnActionEvent): ParadoxGameType? {
         // NOTE 2.1.2 首先需要尝试从绑定的属性获取游戏类型
         val fromData = PlsDataKeys.gameTypeProperty.getData(e.dataContext)
         if (fromData != null) return fromData.get()
 
-        val fileInfo = getFileInfo(e)
+        // 尝试从上下文文件获取游戏类型
+        val files = VirtualFileService.findFiles(e)
+        val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
         if (fileInfo != null) return fileInfo.rootInfo.gameType
+
         return null
     }
 }
