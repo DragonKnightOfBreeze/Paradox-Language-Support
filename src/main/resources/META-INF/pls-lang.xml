@@ -374,8 +374,8 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsPathService" serviceImplementation="icu.windea.pls.lang.tools.PlsPathServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsUrlService" serviceImplementation="icu.windea.pls.lang.tools.PlsUrlServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.SpecialPathService" serviceImplementation="icu.windea.pls.lang.tools.SpecialPathServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.SpecialUrlService" serviceImplementation="icu.windea.pls.lang.tools.SpecialUrlServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsDataPathService" serviceImplementation="icu.windea.pls.lang.tools.PlsDataPathServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsGitService" serviceImplementation="icu.windea.pls.lang.tools.PlsGitServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsSqliteService" serviceImplementation="icu.windea.pls.lang.tools.PlsSqliteServiceImpl"/>

@@ -19,6 +19,9 @@ import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModSetInfo
 import kotlinx.coroutines.CancellationException
 
+/**
+ * @see ParadoxModExporter
+ */
 class ParadoxModDependenciesExportPopup(
     private val project: Project,
     private val table: ParadoxModDependenciesTable,

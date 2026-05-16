@@ -8,8 +8,8 @@ import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.tools.PlsSqliteService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -46,13 +46,13 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
     fun doSetUp() {
         AssumePredicates.includeLocalEnv()
         addAdditionalAllowedRoots(
-            PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
-            PlsPathService.getInstance().getGameDataPath(gameType),
+            SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
+            SpecialPathService.getInstance().getGameDataPath(gameType),
         )
     }
 
     private fun buildModSetInfoFromWorkshop(): ParadoxModSetInfo {
-        val workshop = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
+        val workshop = SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
             ?: throw AssertionError("Steam workshop path not found for ${gameType.title}")
         val mods = remoteIds.mapNotNull f@{ id ->
             val dir = ParadoxMetadataUtil.getModDirectoryFromSteamId(id, workshop) ?: return@f null

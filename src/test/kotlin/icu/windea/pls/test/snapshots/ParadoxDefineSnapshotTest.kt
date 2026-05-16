@@ -10,7 +10,7 @@ import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
@@ -52,7 +52,7 @@ class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
 
     @Suppress("SameParameterValue")
     private fun checkFilePaths(gameType: ParadoxGameType) {
-        val rootPath = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+        val rootPath = SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
         rootPath!!
         println("Root path for ${gameType.title}: ${rootPath}")
@@ -90,7 +90,7 @@ class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
 
     @Suppress("SameParameterValue")
     private fun checkScriptFiles(gameType: ParadoxGameType) {
-        val rootPath = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+        val rootPath = SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
         rootPath!!
 

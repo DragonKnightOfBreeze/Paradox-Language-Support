@@ -11,7 +11,7 @@ import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
@@ -20,7 +20,7 @@ import kotlin.io.path.notExists
 
 object ParadoxGameManager {
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+        val path = SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         if (path == null || path.notExists()) return null
         return path.toString()
     }

@@ -8,7 +8,7 @@ import icu.windea.pls.model.ParadoxGameType
  * 使用 SQLite 数据库文件作为数据文件的模组导出器。
  */
 abstract class ParadoxDbBasedModExporter : ParadoxModExporter {
-    override val icon = AllIcons.Providers.Sqlite
+    override val icon get() = AllIcons.Providers.Sqlite
 
     override fun isAvailable(gameType: ParadoxGameType) = PlsCapacities.includeSqlite()
 }

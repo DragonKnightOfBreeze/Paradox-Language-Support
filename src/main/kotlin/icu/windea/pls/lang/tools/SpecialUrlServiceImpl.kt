@@ -15,7 +15,7 @@ import icu.windea.pls.PlsFacade
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 
-class PlsUrlServiceImpl : PlsUrlService {
+class SpecialUrlServiceImpl : SpecialUrlService {
     private val logger = thisLogger()
 
     override fun getSteamGameStoreUrl(steamId: String): String {

@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import javax.swing.Icon
 
 @Suppress("UnstableApiUsage")
@@ -44,11 +44,11 @@ abstract class HandleUrlActionBase(
 
     protected fun copyUrl(e: AnActionEvent) {
         val targetUrl = getTargetUrl(e) ?: return
-        PlsUrlService.getInstance().copyUrl(targetUrl)
+        SpecialUrlService.getInstance().copyUrl(targetUrl)
     }
 
     protected fun openUrl(e: AnActionEvent) {
         val targetUrl = getTargetUrl(e) ?: return
-        PlsUrlService.getInstance().openUrl(targetUrl)
+        SpecialUrlService.getInstance().openUrl(targetUrl)
     }
 }

@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.analysis
 
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 import kotlin.io.path.name
@@ -17,7 +17,7 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
         val gameDataPath = modPath.parent ?: return null
         val gameName = gameDataPath.name
         val gameType = gameTypeMap[gameName] ?: return null
-        if (gameDataPath != PlsPathService.getInstance().getGameDataPath(gameType)) return null
+        if (gameDataPath != SpecialPathService.getInstance().getGameDataPath(gameType)) return null
         return gameType
     }
 }
@@ -33,7 +33,7 @@ class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameType
         val steamWorkshopPath = parentPath
         val steamId = steamWorkshopPath.name
         val gameType = gameTypeMap[steamId] ?: return null
-        if (steamWorkshopPath != PlsPathService.getInstance().getSteamGameWorkshopPath(steamId)) return null
+        if (steamWorkshopPath != SpecialPathService.getInstance().getSteamGameWorkshopPath(steamId)) return null
         return gameType
     }
 }

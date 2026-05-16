@@ -2,7 +2,7 @@ package icu.windea.pls.lang.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
 
@@ -11,7 +11,7 @@ interface CopyPathActions {
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            return PlsPathService.getInstance().getSteamPath()
+            return SpecialPathService.getInstance().getSteamPath()
         }
     }
 
@@ -22,7 +22,7 @@ interface CopyPathActions {
             val contextFile = getContextFile(e) ?: return null
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
-            return PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+            return SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
 
@@ -33,7 +33,7 @@ interface CopyPathActions {
             val contextFile = getContextFile(e) ?: return null
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
-            return PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
+            return SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         }
     }
 
@@ -44,7 +44,7 @@ interface CopyPathActions {
             val contextFile = getContextFile(e) ?: return null
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
-            return PlsPathService.getInstance().getGameDataPath(gameType)
+            return SpecialPathService.getInstance().getGameDataPath(gameType)
         }
     }
 

@@ -12,7 +12,7 @@ import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsModEntity
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -38,7 +38,7 @@ import kotlin.io.path.exists
  * 参见：[ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
  */
 open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
-    override val text: String = PlsBundle.message("mod.exporter.launcher")
+    override val text get() = PlsBundle.message("mod.exporter.launcher")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         // 仅导出启用的模组
@@ -125,7 +125,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
         // 游戏数据目录
-        return PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() }
+        return SpecialPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() }
     }
 
     override fun getSavedFileName(gameType: ParadoxGameType): String? {

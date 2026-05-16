@@ -2,7 +2,7 @@ package icu.windea.pls.lang.tools
 
 import com.intellij.openapi.components.serviceOrNull
 
-interface PlsUrlService {
+interface SpecialUrlService {
     /**
      * 得到 [steamId] 对应的 Steam 游戏的商店页面链接。
      */
@@ -75,6 +75,6 @@ interface PlsUrlService {
 
     companion object {
         @JvmStatic
-        fun getInstance(): PlsUrlService = serviceOrNull() ?: PlsUrlServiceImpl()
+        fun getInstance(): SpecialUrlService = serviceOrNull() ?: SpecialUrlServiceImpl()
     }
 }

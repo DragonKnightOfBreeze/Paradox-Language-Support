@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
@@ -36,7 +36,7 @@ object CwtConfigGeneratorUtil {
         } else {
             // TODO 2.0.6+ 需要确定对于群星以外的游戏，这里的相对路径是否固定是 `logs/script_documentation`
             val fileName = generator.getDefaultInputName()
-            val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)
+            val gameDataPath = SpecialPathService.getInstance().getGameDataPath(gameType)
             gameDataPath?.resolve("logs/script_documentation")?.resolve(fileName)?.formatted()
         }
         return resultPath?.takeIf { it.exists() }

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.actions
 import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxRootInfo
 
 interface OpenUrlActions {
@@ -15,7 +15,7 @@ interface OpenUrlActions {
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
-            return PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
+            return SpecialUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
         }
     }
 
@@ -27,7 +27,7 @@ interface OpenUrlActions {
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
-            return PlsUrlService.getInstance().getSteamGameWorkshopUrlInSteam(steamId)
+            return SpecialUrlService.getInstance().getSteamGameWorkshopUrlInSteam(steamId)
         }
     }
 
@@ -45,7 +45,7 @@ interface OpenUrlActions {
             val fileInfo = contextFile.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
-            return PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
+            return SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 
@@ -57,7 +57,7 @@ interface OpenUrlActions {
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
-            return PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
+            return SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
         }
     }
 
@@ -69,7 +69,7 @@ interface OpenUrlActions {
             val fileInfo = contextFile.fileInfo ?: return null
             val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
-            return PlsUrlService.getInstance().getSteamGameWorkshopUrl(steamId)
+            return SpecialUrlService.getInstance().getSteamGameWorkshopUrl(steamId)
         }
     }
 
@@ -87,7 +87,7 @@ interface OpenUrlActions {
             val fileInfo = contextFile.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
-            return PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+            return SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
         }
     }
 }

@@ -5,8 +5,8 @@ import icu.windea.pls.test.AssumePredicates
 import org.junit.Before
 import org.junit.Test
 
-class PlsPathServiceTest {
-    private val service = PlsPathServiceImpl()
+class SpecialPathServiceTest {
+    private val service = SpecialPathServiceImpl()
 
     @Before
     fun doSetUp() = AssumePredicates.includeLocalEnv()

@@ -8,7 +8,7 @@ import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -28,11 +28,11 @@ import kotlin.io.path.notExists
  * 参见：[ParadoxLauncherImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporter.cs)
  */
 class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
-    override val text: String = PlsBundle.message("mod.importer.launcherJson")
+    override val text get() = PlsBundle.message("mod.importer.launcherJson")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
-        val workshopDirPath = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
+        val workshopDirPath = SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         if (workshopDirPath == null) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
         }
@@ -113,7 +113,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 游戏数据目录中的 playlists/playlist.json，或者 playlists 目录
         val jsonFileName = getJsonFileName()
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = SpecialPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val playlistPath = gameDataPath.resolve(Constants.playlistsName).takeIf { it.exists() } ?: return null
         val playlistJsonPath = playlistPath.resolve(jsonFileName).takeIf { it.exists() }
         if (playlistJsonPath != null) return playlistJsonPath

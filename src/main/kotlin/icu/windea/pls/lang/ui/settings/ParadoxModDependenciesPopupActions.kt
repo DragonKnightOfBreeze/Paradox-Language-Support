@@ -8,7 +8,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.actions.HandlePathActionBase
 import icu.windea.pls.lang.actions.HandleUrlActionBase
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import java.nio.file.Path
 
 interface ParadoxModDependenciesPopupActions {
@@ -41,7 +41,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
+            return SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 
@@ -58,7 +58,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+            return SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
         }
     }
 
@@ -91,7 +91,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
+            return SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 }

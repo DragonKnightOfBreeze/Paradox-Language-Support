@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import java.nio.file.Path
 import javax.swing.Icon
 
@@ -44,11 +44,11 @@ abstract class HandlePathActionBase(
 
     protected fun openPath(e: AnActionEvent) {
         val targetPath = getTargetPath(e) ?: return
-        PlsPathService.getInstance().openPath(targetPath)
+        SpecialPathService.getInstance().openPath(targetPath)
     }
 
     protected fun copyPath(e: AnActionEvent) {
         val targetPath = getTargetPath(e) ?: return
-        PlsPathService.getInstance().copyPath(targetPath)
+        SpecialPathService.getInstance().copyPath(targetPath)
     }
 }

@@ -17,7 +17,7 @@ import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ReferenceLinkType
@@ -68,15 +68,15 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         if (steamId != null) {
             append(" | ")
             val workshopUrlInSteam = when (rootInfo) {
-                is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
-                is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
+                is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
+                is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
             }
             appendLink(workshopUrlInSteam, PlsBundle.message("linkLabel.steam")) // 自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
-                is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
-                is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+                is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
+                is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
             }
             appendLink(workshopUrl, PlsBundle.message("linkLabel.steamWebsite")) // 自带外部链接图标
         }

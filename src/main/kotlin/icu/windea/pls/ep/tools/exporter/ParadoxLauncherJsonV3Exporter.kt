@@ -7,7 +7,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -24,7 +24,7 @@ import kotlin.io.path.exists
  * 参见：[ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
 class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
-    override val text: String = PlsBundle.message("mod.exporter.launcherJson.v3")
+    override val text get() = PlsBundle.message("mod.exporter.launcherJson.v3")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         // 仅导出启用的模组
@@ -76,7 +76,7 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = SpecialPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val playlistsDir = gameDataPath.resolve(Constants.playlistsName)
         return playlistsDir.takeIf { it.exists() } ?: gameDataPath
     }

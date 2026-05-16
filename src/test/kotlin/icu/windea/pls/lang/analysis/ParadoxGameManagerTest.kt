@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.analysis
 
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert
 import org.junit.Assume
@@ -42,7 +42,7 @@ class ParadoxGameManagerTest {
 
         @Test
         fun getExecutablePath() {
-            val service = PlsPathService.getInstance()
+            val service = SpecialPathService.getInstance()
 
             val rootPath = service.getSteamGamePath(gameType.steamId, gameType.title)
             Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
@@ -57,7 +57,7 @@ class ParadoxGameManagerTest {
 
         @Test
         fun getBranchPath() {
-            val service = PlsPathService.getInstance()
+            val service = SpecialPathService.getInstance()
 
             val rootPath = service.getSteamGamePath(gameType.steamId, gameType.title)
             Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())

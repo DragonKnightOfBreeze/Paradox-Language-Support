@@ -8,7 +8,7 @@ import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
@@ -24,11 +24,11 @@ import kotlin.io.path.exists
  * 参见：[JsonExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/JsonExporter.cs)
  */
 class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
-    override val text: String = PlsBundle.message("mod.exporter.game")
+    override val text get() = PlsBundle.message("mod.exporter.game")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         val gameType = modSetInfo.gameType
-        val gameDataDirPath = PlsPathService.getInstance().getGameDataPath(gameType)
+        val gameDataDirPath = SpecialPathService.getInstance().getGameDataPath(gameType)
             ?: throw IllegalStateException(PlsBundle.message("mod.importer.error.gameDataDir0"))
 
         val enabledMods = modSetInfo.mods.filter { it.enabled }
@@ -73,7 +73,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
         // 游戏数据目录
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = SpecialPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         return gameDataPath
     }
 

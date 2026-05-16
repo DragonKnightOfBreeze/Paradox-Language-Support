@@ -4,7 +4,7 @@ import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 
-interface PlsPathService {
+interface SpecialPathService {
     fun initAsync()
 
     /**
@@ -39,6 +39,6 @@ interface PlsPathService {
 
     companion object {
         @JvmStatic
-        fun getInstance(): PlsPathService = serviceOrNull() ?: PlsPathServiceImpl()
+        fun getInstance(): SpecialPathService = serviceOrNull() ?: SpecialPathServiceImpl()
     }
 }

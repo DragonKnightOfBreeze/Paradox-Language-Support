@@ -11,7 +11,7 @@ import icu.windea.pls.ep.tools.model.PlaysetEntity
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -36,13 +36,13 @@ import kotlin.io.path.notExists
  * 参见：[ParadoxLauncherImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporter.cs)
  */
 open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
-    override val text: String = PlsBundle.message("mod.importer.launcher")
+    override val text get() = PlsBundle.message("mod.importer.launcher")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
 
         // 校验 Steam 创意工坊目录
-        val workshopDirPath = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
+        val workshopDirPath = SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
             ?: throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
         if (workshopDirPath.notExists()) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath))
@@ -94,7 +94,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 默认选择游戏数据目录下的数据库文件，否则回退到游戏数据目录
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = SpecialPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val dbPath = gameDataPath.resolve(getDbFileName())
         return if (dbPath.exists()) dbPath else gameDataPath
     }

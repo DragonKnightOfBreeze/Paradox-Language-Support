@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -32,7 +32,7 @@ class OpenInSteamWebsiteAction : DumbAwareAction() {
         val virtualFile = getFile(e) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
         val targetUrl = getTargetUrl(fileInfo) ?: return // ignore
-        PlsUrlService.getInstance().openUrl(targetUrl)
+        SpecialUrlService.getInstance().openUrl(targetUrl)
     }
 
     private fun getFile(e: AnActionEvent): VirtualFile? {
@@ -50,8 +50,8 @@ class OpenInSteamWebsiteAction : DumbAwareAction() {
         val rootInfo = fileInfo.rootInfo
         val steamId = rootInfo.steamId ?: return null
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
-            is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+            is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
+            is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
             else -> null
         }
     }

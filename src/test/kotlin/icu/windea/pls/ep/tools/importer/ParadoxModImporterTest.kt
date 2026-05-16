@@ -2,8 +2,8 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.tools.PlsSqliteService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.AssumePredicates
@@ -31,8 +31,8 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     fun doSetUp() {
         AssumePredicates.includeLocalEnv()
         addAdditionalAllowedRoots(
-            PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
-            PlsPathService.getInstance().getGameDataPath(gameType),
+            SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
+            SpecialPathService.getInstance().getGameDataPath(gameType),
         )
     }
 
