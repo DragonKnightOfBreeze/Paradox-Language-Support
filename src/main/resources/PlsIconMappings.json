@@ -53,6 +53,8 @@
           "databaseObjectType.svg": "icons/nodes/semantic/databaseObjectType.svg",
           "tag.svg": "icons/nodes/semantic/tag.svg",
           "macro.svg": "icons/nodes/semantic/macro.svg",
+          "gameRule.svg": "icons/nodes/semantic/gameRule.svg",
+          "onAction.svg": "icons/nodes/semantic/onAction.svg",
           "eventNamespace.svg": "icons/nodes/semantic/eventNamespace.svg",
           "event.svg": "icons/nodes/semantic/event.svg",
           "shaderEffect.svg": "icons/nodes/semantic/shaderEffect.svg",
@@ -86,6 +88,8 @@
         "extended": {
           "extendedScriptedVariable.svg": "icons/configs/extendedScriptedVariable.svg",
           "extendedDefinition.svg": "icons/configs/extendedDefinition.svg",
+          "extendedGameRule.svg": "icons/configs/extendedGameRule.svg",
+          "extendedOnAction.svg": "icons/configs/extendedOnAction.svg",
           "extendedParameter.svg": "icons/configs/extendedParameter.svg",
           "extendedEnumValue.svg": "icons/configs/extendedEnumValue.svg",
           "extendedDynamicValue.svg": "icons/configs/extendedDynamicValue.svg",

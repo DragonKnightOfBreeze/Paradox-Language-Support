@@ -78,6 +78,8 @@ object PlsIcons {
         @JvmField val Tag = getIcon("/icons/nodes/semantic/tag.svg")
         @JvmField val Macro = getIcon("/icons/nodes/semantic/macro.svg")
 
+        @JvmField val GameRule = getIcon("/icons/nodes/semantic/gameRule.svg")
+        @JvmField val OnAction = getIcon("/icons/nodes/semantic/onAction.svg")
         @JvmField val EventNamespace = getIcon("/icons/nodes/semantic/eventNamespace.svg")
         @JvmField val Event = getIcon("/icons/nodes/semantic/event.svg")
 
@@ -87,6 +89,8 @@ object PlsIcons {
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {
+            ParadoxDefinitionTypes.gameRule -> GameRule
+            ParadoxDefinitionTypes.onAction -> OnAction
             ParadoxDefinitionTypes.eventNamespace -> EventNamespace
             ParadoxDefinitionTypes.event -> Event
             else -> Definition
@@ -135,8 +139,8 @@ object PlsIcons {
 
         @JvmField val ExtendedScriptedVariable = getIcon("/icons/configs/extended/extendedScriptedVariable.svg")
         @JvmField val ExtendedDefinition = getIcon("/icons/configs/extended/extendedDefinition.svg")
-        @JvmField val ExtendedGameRule = ExtendedDefinition
-        @JvmField val ExtendedOnAction = ExtendedDefinition
+        @JvmField val ExtendedGameRule = getIcon("/icons/configs/extended/extendedGameRule.svg")
+        @JvmField val ExtendedOnAction = getIcon("/icons/configs/extended/extendedOnAction.svg")
         @JvmField val ExtendedParameter = getIcon("/icons/configs/extended/extendedParameter.svg")
         @JvmField val ExtendedComplexEnumValue = getIcon("/icons/configs/extended/extendedEnumValue.svg")
         @JvmField val ExtendedDynamicValue = getIcon("/icons/configs/extended/extendedDynamicValue.svg")
