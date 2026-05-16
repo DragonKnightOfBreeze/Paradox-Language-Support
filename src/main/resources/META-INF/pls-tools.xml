@@ -33,12 +33,7 @@
       </group>
 
       <group id="Pls.Tools.PathAndUrl" popup="true">
-        <reference ref="Pls.BrowseSpecialPaths"/>
-        <reference ref="Pls.CopyPath"/>
-        <reference ref="Pls.OpenPath"/>
-        <reference ref="Pls.BrowseSpecialUrls"/>
-        <reference ref="Pls.CopyUrl"/>
-        <reference ref="Pls.OpenUrl"/>
+        <reference ref="Pls.PathAndUrl"/>
       </group>
 
       <group id="Pls.Tools.Compare" popup="true">

@@ -649,11 +649,13 @@
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
-    <action id="Pls.BrowseSpecialPaths" class="icu.windea.pls.lang.actions.tools.BrowseSpecialPathsAction"/>
-    <action id="Pls.CopySpecialPath" class="icu.windea.pls.lang.actions.tools.CopySpecialPathAction"/>
-    <action id="Pls.OpenSpecialPath" class="icu.windea.pls.lang.actions.tools.OpenSpecialPathAction"/>
-    <action id="Pls.BrowseSpecialUrls" class="icu.windea.pls.lang.actions.tools.BrowseSpecialUrlsAction"/>
-    <action id="Pls.CopySpecialUrl" class="icu.windea.pls.lang.actions.tools.CopySpecialUrlAction"/>
-    <action id="Pls.OpenSpecialUrl" class="icu.windea.pls.lang.actions.tools.OpenSpecialUrlAction"/>
+    <group id="Pls.PathAndUrl">
+      <action id="Pls.BrowseSpecialPaths" class="icu.windea.pls.lang.actions.tools.BrowseSpecialPathsAction"/>
+      <action id="Pls.CopySpecialPath" class="icu.windea.pls.lang.actions.tools.CopySpecialPathAction"/>
+      <action id="Pls.OpenSpecialPath" class="icu.windea.pls.lang.actions.tools.OpenSpecialPathAction"/>
+      <action id="Pls.BrowseSpecialUrls" class="icu.windea.pls.lang.actions.tools.BrowseSpecialUrlsAction"/>
+      <action id="Pls.CopySpecialUrl" class="icu.windea.pls.lang.actions.tools.CopySpecialUrlAction"/>
+      <action id="Pls.OpenSpecialUrl" class="icu.windea.pls.lang.actions.tools.OpenSpecialUrlAction"/>
+    </group>
   </actions>
 </idea-plugin>
