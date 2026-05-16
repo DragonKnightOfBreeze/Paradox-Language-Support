@@ -52,9 +52,5 @@ interface ParadoxModImporter {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxModImporter>("icu.windea.pls.modImporter")
-
-        fun getAll(gameType: ParadoxGameType): List<ParadoxModImporter> {
-            return EP_NAME.extensionList.filter { it.isAvailable(gameType) }
-        }
     }
 }

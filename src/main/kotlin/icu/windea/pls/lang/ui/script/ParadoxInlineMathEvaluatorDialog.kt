@@ -29,7 +29,7 @@ import javax.swing.table.TableCellEditor
 class ParadoxInlineMathEvaluatorDialog(
     val project: Project,
     val element: ParadoxScriptInlineMath
-) : DialogWrapper(project, false, IdeModalityType.MODELESS) {
+) : DialogWrapper(project, false, IdeModalityType.MODELESS) { // NOTE modeless dialog
     private val evaluator = ParadoxInlineMathEvaluator()
     private val argumentList = evaluator.resolveArguments(element).values.toMutableList()
     private var initialized = false

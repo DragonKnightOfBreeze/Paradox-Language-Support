@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.tools
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -7,11 +7,15 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.JComponent
 
-class BrowseUrlsDialog(val contextFile: VirtualFile?, val project: Project?): DialogWrapper(project) {
+class BrowseSpecialUrlsDialog(
+    val project: Project?,
+    val file: VirtualFile? = null,
+    val gameType: ParadoxGameType? = null,
+) : DialogWrapper(project, false, IdeModalityType.MODELESS) { // NOTE modeless dialog
     // com.intellij.diagnostic.specialPaths.BrowseSpecialPathsDialog
 
     init {
-        title = PlsBundle.message("dialog.title.browseUrls")
+        title = PlsBundle.message("dialog.title.browseSpecialUrls")
         init()
         pack()
     }

@@ -27,12 +27,12 @@ import kotlinx.coroutines.CancellationException
 class ParadoxModDependenciesImportPopup(
     private val project: Project,
     private val table: ParadoxModDependenciesTable,
-    modImporters: List<ParadoxModImporter> = ParadoxModImporter.getAll(table.model.settings.finalGameType),
-) : BaseListPopupStep<ParadoxModImporter>(getTitle(), modImporters) {
-    companion object {
-        private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
-
-        private val logger = logger<ParadoxModDependenciesImportPopup>()
+) : BaseListPopupStep<ParadoxModImporter>() {
+    init {
+        val title = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
+        val gameType = table.model.settings.finalGameType
+        val importers = ParadoxModImporter.EP_NAME.extensionList.filter { it.isAvailable(gameType) }
+        init(title, importers, null)
     }
 
     override fun getIconFor(value: ParadoxModImporter) = value.icon
@@ -90,5 +90,9 @@ class ParadoxModDependenciesImportPopup(
         }
         val content = PlsBundle.message("mod.dependencies.import.info", from, result.actualTotal)
         PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
+    }
+
+    companion object {
+        private val logger = logger<ParadoxModDependenciesImportPopup>()
     }
 }
