@@ -176,11 +176,11 @@ class ParadoxModDependenciesTable(
             actionGroup.addAction(importButton)
             actionGroup.addAction(exportButton)
             actionGroup.addSeparator()
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(table))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPageUrlAction(table))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(table))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamAction(table))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamWebsiteAction(table))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(table))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPageUrlAction(table))
             PopupHandler.installPopupMenu(table, actionGroup, PlsActionPlaces.MOD_DEPENDENCIES_POPUP)
             return panel
         }
