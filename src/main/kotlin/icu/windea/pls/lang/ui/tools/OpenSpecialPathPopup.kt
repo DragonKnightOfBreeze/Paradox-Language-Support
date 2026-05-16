@@ -8,6 +8,9 @@ import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import kotlin.io.path.exists
 
+/**
+ * @see SpecialPathProvider
+ */
 class OpenSpecialPathPopup(
     private val file: VirtualFile? = null,
     private val gameType: ParadoxGameType? = null,

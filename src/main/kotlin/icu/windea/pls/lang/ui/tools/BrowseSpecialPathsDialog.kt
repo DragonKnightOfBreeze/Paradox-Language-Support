@@ -4,9 +4,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.ep.tools.SpecialPathProvider
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.JComponent
 
+/**
+ * @see SpecialPathProvider
+ */
 class BrowseSpecialPathsDialog(
     val project: Project?,
     val file: VirtualFile? = null,

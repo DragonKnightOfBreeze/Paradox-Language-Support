@@ -7,6 +7,9 @@ import icu.windea.pls.ep.tools.SpecialUrlProvider
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxGameType
 
+/**
+ * @see SpecialUrlProvider
+ */
 class CopySpecialUrlPopup(
     private val file: VirtualFile? = null,
     private val gameType: ParadoxGameType? = null,

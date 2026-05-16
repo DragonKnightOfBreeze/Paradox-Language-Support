@@ -7,6 +7,9 @@ import icu.windea.pls.ep.tools.SpecialPathProvider
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 
+/**
+ * @see SpecialPathProvider
+ */
 class CopySpecialPathPopup(
     private val file: VirtualFile? = null,
     private val gameType: ParadoxGameType? = null,
