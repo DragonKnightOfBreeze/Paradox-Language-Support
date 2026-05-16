@@ -48,7 +48,7 @@ interface SpecialPathProviders {
         override val text get() = PlsBundle.message("special.path.game")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
-            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file)
+            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
             if (rootInfo !is ParadoxRootInfo.Game) return null
             return rootInfo.metadata.rootPath
         }
@@ -58,7 +58,7 @@ interface SpecialPathProviders {
         override val text get() = PlsBundle.message("special.path.mod")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
-            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file)
+            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
             if (rootInfo !is ParadoxRootInfo.Mod) return null
             return rootInfo.metadata.rootPath
         }

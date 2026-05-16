@@ -332,14 +332,16 @@ object ParadoxAnalysisManager {
         return null
     }
 
-    fun getSelectedGameType(file: VirtualFile?, gameType: ParadoxGameType?): ParadoxGameType {
-        file?.let { selectGameType(it) }?.takeIf { it != ParadoxGameType.Core }?.let { return it }
+    fun getSelectedGameType(file: VirtualFile? = null, gameType: ParadoxGameType? = null): ParadoxGameType {
         gameType?.takeIf { it != ParadoxGameType.Core }?.let { return it }
+        file?.let { selectGameType(it) }?.takeIf { it != ParadoxGameType.Core }?.let { return it }
         return PlsSettings.getInstance().state.defaultGameType
     }
 
-    fun getSelectedRootInfo(file: VirtualFile?): ParadoxRootInfo? {
-        return file?.fileInfo?.rootInfo
+    fun getSelectedRootInfo(file: VirtualFile? = null, gameType: ParadoxGameType? = null): ParadoxRootInfo? {
+        val rootInfo = file?.fileInfo?.rootInfo ?: return null
+        if (gameType != null && gameType != ParadoxGameType.Core && gameType != rootInfo.gameType) return null
+        return rootInfo
     }
 
     // endregion

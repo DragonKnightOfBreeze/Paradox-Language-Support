@@ -85,7 +85,7 @@ class IntroduceGlobalScriptedVariableDialog(
                     .withRoots(scriptedVariablesFile)
                     .withTreeRootVisible(true)
                 val fileField = fileField.apply {
-                    setTextFieldPreferredWidth(PREFERRED_PATH_WIDTH)
+                    setTextFieldPreferredWidth(preferredPathWidth)
                     val recentEntries = getFilePathHistories()
                     if (recentEntries.isNotEmpty()) childComponent.history = recentEntries
                     childComponent.text = recentEntries.firstOrNull() ?: filePath
@@ -101,7 +101,7 @@ class IntroduceGlobalScriptedVariableDialog(
                 val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
                 comment(message("path.completion.shortcut", shortcutText))
             }
-        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+        }.withPreferredWidth(preferredDialogWidth)
     }
 
     override fun doOKAction() {
@@ -143,7 +143,7 @@ class IntroduceGlobalScriptedVariableDialog(
     }
 
     companion object {
-        private const val PREFERRED_DIALOG_WIDTH = 600
-        private const val PREFERRED_PATH_WIDTH = 70
+        private const val preferredDialogWidth = 600
+        private const val preferredPathWidth = 70
     }
 }

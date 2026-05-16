@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
@@ -17,16 +18,20 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.registerDoubleClickListener
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.ep.tools.SpecialUrlProvider
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.Dimension
 import java.awt.datatransfer.StringSelection
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
+import javax.swing.Action
+import javax.swing.ListSelectionModel
 
 /**
  * @see SpecialUrlProvider
@@ -38,8 +43,12 @@ class BrowseSpecialUrlsDialog(
 ) : DialogWrapper(project, false, IdeModalityType.MODELESS) { // NOTE modeless dialog
     // com.intellij.diagnostic.specialPaths.BrowseSpecialPathsDialog
 
-    private val selectedFile = file
-    private var selectedGameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
+    private val defaultSelectedFile = file
+    private val selectedFile get() = defaultSelectedFile
+
+    private val defaultSelectedGameType = ParadoxAnalysisManager.getSelectedGameType(defaultSelectedFile, gameType)
+    private val selectedGameTypeProperty = AtomicProperty(defaultSelectedGameType)
+    private val selectedGameType get() = selectedGameTypeProperty.get()
 
     private val providers = SpecialUrlProvider.EP_NAME.extensionList
 
@@ -49,19 +58,23 @@ class BrowseSpecialUrlsDialog(
                 override fun valueOf(item: SpecialUrlProvider) = item.text
             },
             object : ColumnInfo<SpecialUrlProvider, String>(PlsBundle.message("dialog.table.column.url")) {
-                override fun valueOf(item: SpecialUrlProvider) = item.getUrl(selectedFile, selectedGameType) ?: ""
+                override fun valueOf(item: SpecialUrlProvider) = item.getUrl(file, selectedGameType) ?: ""
             },
         ),
         providers
     )
     private val table = JBTable(tableModel).apply {
-        setShowGrid(false)
         rowSelectionAllowed = true
         columnSelectionAllowed = false
         intercellSpacing = Dimension(0, 0)
-        autoResizeMode = javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN
-        val visibleRowCount = providers.size.coerceIn(1, PREFERRED_VISIBLE_ROW_COUNT)
+        val visibleRowCount = providers.size.coerceIn(1, preferredVisibleRowCount)
         preferredScrollableViewportSize = Dimension(0, rowHeight * visibleRowCount)
+        selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
+
+        // 调整列宽
+        for ((i, width) in columnPreferredWidths.withIndex()) {
+            columnModel.getColumn(i).preferredWidth = JBUI.scale(width)
+        }
 
         // 快速搜索
         TableSpeedSearch.installOn(this).apply { comparator = SpeedSearchComparator(false) }
@@ -69,8 +82,8 @@ class BrowseSpecialUrlsDialog(
         // 右键打开提示菜单
         PopupHandler.installPopupMenu(this, createPopupActions(), POPUP_PLACE)
 
-        // 双击打开路径
-        registerDoubleClickListener { copy() }
+        // 双击打开
+        registerDoubleClickListener { open() }
     }
 
     init {
@@ -85,20 +98,35 @@ class BrowseSpecialUrlsDialog(
         return panel {
             row(PlsBundle.message("dialog.field.selectedGameType")) {
                 comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
-                    .bindItem(::selectedGameType.toAtomicProperty())
+                    .bindItem(selectedGameTypeProperty)
                     .applyToComponent { addActionListener { tableModel.fireTableDataChanged() } }
+                button(PlsBundle.message("reset")) { selectedGameTypeProperty.set(defaultSelectedGameType) }
+                    .align(AlignX.RIGHT)
             }
 
             row {
                 val scrollPane = JBScrollPane(table)
                 cell(scrollPane).align(Align.FILL)
             }.resizableRow()
+        }.withPreferredSize(preferredDialogWidth, preferredDialogHeight)
+    }
+
+    override fun createActions(): Array<out Action?> {
+        // copyAll + copy + open + close
+        val copyAction = object : AbstractAction(PlsBundle.message("action.copy")) {
+            override fun actionPerformed(e: ActionEvent?) {
+                copy()
+            }
         }
+        val openAction = object : AbstractAction(PlsBundle.message("action.open")) {
+            override fun actionPerformed(e: ActionEvent?) {
+                open()
+            }
+        }
+        return arrayOf(okAction, copyAction, openAction, cancelAction)
     }
 
     override fun doOKAction() = copyAll()
-
-    override fun getDimensionServiceKey() = "Pls.BrowseSpecialUrlsDialog"
 
     private fun getProvider(): SpecialUrlProvider? {
         val selectedRow = table.selectedRow
@@ -108,27 +136,17 @@ class BrowseSpecialUrlsDialog(
 
     private fun createPopupActions(): ActionGroup {
         val actionGroup = DefaultActionGroup()
-        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.copyUrl")) {
+        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.CopyUrl.text")) {
             override fun actionPerformed(e: AnActionEvent) {
-                val provider = getProvider() ?: return
-                val url = provider.getUrl(selectedFile, selectedGameType) ?: return
-                SpecialUrlService.getInstance().copyUrl(url)
+                copy()
             }
         })
-        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.openUrl")) {
+        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.OpenUrl.text")) {
             override fun actionPerformed(e: AnActionEvent) {
-                val provider = getProvider() ?: return
-                val url = provider.getUrl(selectedFile, selectedGameType) ?: return
-                SpecialUrlService.getInstance().openUrl(url)
+                open()
             }
         })
         return actionGroup
-    }
-
-    private fun copy() {
-        val provider = getProvider() ?: return
-        val url = provider.getUrl(selectedFile, selectedGameType) ?: return
-        SpecialUrlService.getInstance().openUrl(url)
     }
 
     private fun copyAll() {
@@ -147,8 +165,23 @@ class BrowseSpecialUrlsDialog(
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
 
+    private fun copy() {
+        val provider = getProvider() ?: return
+        val url = provider.getUrl(selectedFile, selectedGameType) ?: return
+        SpecialUrlService.getInstance().copyUrl(url)
+    }
+
+    private fun open() {
+        val provider = getProvider() ?: return
+        val url = provider.getUrl(selectedFile, selectedGameType) ?: return
+        SpecialUrlService.getInstance().openUrl(url)
+    }
+
     companion object {
         private const val POPUP_PLACE = "BrowseSpecialUrlsDialogPopup"
-        private const val PREFERRED_VISIBLE_ROW_COUNT = 10
+        private const val preferredVisibleRowCount = 10
+        private val columnPreferredWidths = intArrayOf(270, 530) // fit, verified
+        private val preferredDialogWidth = columnPreferredWidths.sum()
+        private const val preferredDialogHeight = 400 // larger, just okay
     }
 }

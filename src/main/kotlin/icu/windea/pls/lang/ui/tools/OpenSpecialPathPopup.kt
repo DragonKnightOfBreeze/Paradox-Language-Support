@@ -23,7 +23,7 @@ class OpenSpecialPathPopup(
 
     override fun getIconFor(value: SpecialPathProvider) = value.icon
 
-    override fun getTextFor(value: SpecialPathProvider) = value.text
+    override fun getTextFor(value: SpecialPathProvider) = value.text + " - " + value.getPath(file, gameType)
 
     override fun isSpeedSearchEnabled() = true
 

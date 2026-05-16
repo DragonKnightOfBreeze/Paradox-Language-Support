@@ -13,6 +13,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.PlsBundle
@@ -35,8 +36,8 @@ class ParadoxInlineMathEvaluatorDialog(
     private var currentOutputText = ""
     private val resultTextArea by lazy {
         JTextArea().apply {
-            minimumSize = Dimension(PREFERRED_TEXT_WIDTH, minimumSize.height)
-            preferredSize = Dimension(PREFERRED_TEXT_WIDTH, preferredSize.height)
+            minimumSize = Dimension(preferredTextWidth, minimumSize.height)
+            preferredSize = Dimension(preferredTextWidth, preferredSize.height)
             lineWrap = true
             wrapStyleWord = true
             isEditable = false
@@ -46,16 +47,16 @@ class ParadoxInlineMathEvaluatorDialog(
 
     private val expressionField = run {
         val expressionText = getExpressionText(element)
-        val inlineMathText = INLINE_MATH_PREFIX + expressionText + INLINE_MATH_SUFFIX
+        val inlineMathText = inlineMathPrefix + expressionText + inlineMathSuffix
         val expressionDocument = EditorFactory.getInstance().createDocument(inlineMathText)
         EditorTextField(expressionDocument, project, ParadoxScriptFileType, true, true).apply {
-            setPreferredWidth(PREFERRED_TEXT_WIDTH)
+            setPreferredWidth(preferredTextWidth)
             addSettingsProvider { editor ->
                 // 折叠前后缀，不显示
                 editor.foldingModel.runBatchFoldingOperation {
                     editor.foldingModel.clearFoldRegions()
-                    editor.foldingModel.addFoldRegion(0, INLINE_MATH_PREFIX.length, "")?.apply { isExpanded = false }
-                    editor.foldingModel.addFoldRegion(inlineMathText.length - INLINE_MATH_SUFFIX.length, inlineMathText.length, "")?.apply { isExpanded = false }
+                    editor.foldingModel.addFoldRegion(0, inlineMathPrefix.length, "")?.apply { isExpanded = false }
+                    editor.foldingModel.addFoldRegion(inlineMathText.length - inlineMathSuffix.length, inlineMathText.length, "")?.apply { isExpanded = false }
                 }
             }
         }
@@ -85,11 +86,10 @@ class ParadoxInlineMathEvaluatorDialog(
         argumentList
     )
     private val table = JBTable(tableModel).apply {
-        setShowGrid(false)
         rowSelectionAllowed = false
         columnSelectionAllowed = false
         intercellSpacing = Dimension(0, 0)
-        val visibleRowCount = argumentList.size.coerceIn(1, PREFERRED_ARGUMENT_SIZE)
+        val visibleRowCount = argumentList.size.coerceIn(1, preferredArgumentSize)
         preferredScrollableViewportSize = Dimension(0, rowHeight * visibleRowCount)
 
         // 快速搜索
@@ -124,7 +124,7 @@ class ParadoxInlineMathEvaluatorDialog(
                 val scrollPane = JBScrollPane().apply { setViewportView(resultTextArea) }
                 cell(scrollPane).align(Align.FILL)
             }
-        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+        }.withPreferredWidth(preferredDialogWidth)
 
         // 实时求值
         tableModel.addTableModelListener { updateResultText() }
@@ -135,7 +135,7 @@ class ParadoxInlineMathEvaluatorDialog(
 
     override fun doOKAction() = copyResultText()
 
-    override fun getPreferredFocusedComponent() = resultTextArea
+    override fun getPreferredFocusedComponent() = table
 
     override fun getDimensionServiceKey() = "Pls.ParadoxInlineMathEvaluatorDialog"
 
@@ -183,10 +183,10 @@ class ParadoxInlineMathEvaluatorDialog(
     }
 
     companion object {
-        private const val INLINE_MATH_PREFIX = "@[ "
-        private const val INLINE_MATH_SUFFIX = " ]"
-        private const val PREFERRED_DIALOG_WIDTH = 600
-        private const val PREFERRED_TEXT_WIDTH = 200
-        private const val PREFERRED_ARGUMENT_SIZE = 5
+        private const val inlineMathPrefix = "@[ "
+        private const val inlineMathSuffix = " ]"
+        private const val preferredArgumentSize = 5
+        private val preferredDialogWidth = JBUI.scale(600)
+        private val preferredTextWidth = JBUI.scale(200)
     }
 }

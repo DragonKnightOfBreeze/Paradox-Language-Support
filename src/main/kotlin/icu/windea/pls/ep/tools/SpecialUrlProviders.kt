@@ -30,7 +30,7 @@ interface SpecialUrlProviders {
         override val text get() = PlsBundle.message("special.url.mod")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
-            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file)
+            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
             if (rootInfo !is ParadoxRootInfo.Mod) return null
             val steamId = rootInfo.steamId ?: return null
             return SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
@@ -59,7 +59,7 @@ interface SpecialUrlProviders {
         override val text get() = PlsBundle.message("special.url.mod.inSteam")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
-            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file)
+            val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
             if (rootInfo !is ParadoxRootInfo.Mod) return null
             val steamId = rootInfo.steamId ?: return null
             return SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)

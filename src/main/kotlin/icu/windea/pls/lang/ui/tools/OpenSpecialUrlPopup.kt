@@ -22,7 +22,7 @@ class OpenSpecialUrlPopup(
 
     override fun getIconFor(value: SpecialUrlProvider) = value.icon
 
-    override fun getTextFor(value: SpecialUrlProvider) = value.text
+    override fun getTextFor(value: SpecialUrlProvider) = value.text + " - " + value.getUrl(file, gameType)
 
     override fun isSpeedSearchEnabled() = true
 
