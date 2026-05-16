@@ -154,6 +154,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
     }
 
     override fun getGameDataPath(gameType: ParadoxGameType): Path? {
+        if (gameType == ParadoxGameType.Core) throw UnsupportedOperationException()
         return resolveGameDataPath(gameType)
     }
 

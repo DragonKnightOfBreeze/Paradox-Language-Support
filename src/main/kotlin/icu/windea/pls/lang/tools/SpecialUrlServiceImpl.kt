@@ -12,6 +12,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 
@@ -44,6 +45,16 @@ class SpecialUrlServiceImpl : SpecialUrlService {
 
     override fun getSteamGameLaunchUrl(steamId: String): String {
         return "steam://launch/$steamId"
+    }
+
+    override fun getGameWikiUrl(gameType: ParadoxGameType): String {
+        // e.g.,
+        // - https://stellaris.paradoxwikis.com
+        // - https://stellaris.paradoxwikis.com/Stellaris_Wiki
+
+        if (gameType == ParadoxGameType.Core) throw UnsupportedOperationException()
+        val id = if (gameType == ParadoxGameType.Ir) "imperator" else gameType.id
+        return "https://${id}.paradoxwikis.com"
     }
 
     override fun isSteamUrl(url: String): Boolean {

@@ -74,4 +74,13 @@ interface SpecialUrlProviders {
             return SpecialUrlService.getInstance().getSteamGameLaunchUrl(gameType.steamId)
         }
     }
+
+    class GameWiki : SpecialUrlProvider {
+        override val text get() = PlsBundle.message("special.url.gameWiki")
+
+        override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
+            val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
+            return SpecialUrlService.getInstance().getGameWikiUrl(gameType)
+        }
+    }
 }

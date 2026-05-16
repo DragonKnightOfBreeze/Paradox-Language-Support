@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.tools
 
 import com.intellij.openapi.components.serviceOrNull
+import icu.windea.pls.model.ParadoxGameType
 
 interface SpecialUrlService {
     /**
@@ -45,6 +46,11 @@ interface SpecialUrlService {
      * 参见：[Steam browser protocol - Valve Developer Community](https://developer.valvesoftware.com/wiki/Steam_browser_protocol)
      */
     fun getSteamGameLaunchUrl(steamId: String): String
+
+    /**
+     * 得到 [gameType] 对应的游戏维基页面的路径。
+     */
+    fun getGameWikiUrl(gameType: ParadoxGameType): String
 
     /**
      * 是否是使用 Steam 超链接协议的链接。
