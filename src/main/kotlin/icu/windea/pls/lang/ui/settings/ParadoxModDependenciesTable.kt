@@ -6,21 +6,20 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
-import com.intellij.ui.DoubleClickListener
 import com.intellij.ui.PopupHandler
+import com.intellij.ui.SpeedSearchComparator
 import com.intellij.ui.TableSpeedSearch
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.registerClickListener
+import icu.windea.pls.core.registerDoubleClickListener
 import icu.windea.pls.lang.actions.PlsActionPlaces
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import java.awt.event.MouseEvent
 import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(
@@ -87,7 +86,6 @@ class ParadoxModDependenciesTable(
             table.setShowGrid(false)
 
             // 配置每一列
-
             val fontMetrics = table.getFontMetrics(table.font)
             val headerGap = JBUIScale.scale(20)
 
@@ -125,18 +123,15 @@ class ParadoxModDependenciesTable(
                 val modDirectory = element.modDirectory.orEmpty()
                 val modDescriptorSettings = PlsProfilesSettings.getInstance().state.modDescriptorSettings.getValue(modDirectory)
                 modDescriptorSettings.name.orEmpty()
-            }
+            }.apply { comparator = SpeedSearchComparator(false) }
 
             // 双击打开模组依赖信息对话框
-            table.registerClickListener(object : DoubleClickListener() {
-                override fun onDoubleClick(event: MouseEvent): Boolean {
-                    if (table.selectedRowCount != 1) return true
-                    val selectedRow = table.selectedRow
-                    val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
-                    ParadoxModDependencySettingsDialog(project, item, table).show()
-                    return true
-                }
-            })
+            table.registerDoubleClickListener action@{
+                if (table.selectedRowCount != 1) return@action
+                val selectedRow = table.selectedRow
+                val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+                ParadoxModDependencySettingsDialog(project, item, table).show()
+            }
 
             // 创建工具栏
 

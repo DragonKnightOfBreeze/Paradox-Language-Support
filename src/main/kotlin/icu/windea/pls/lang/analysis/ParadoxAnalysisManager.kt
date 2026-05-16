@@ -23,11 +23,13 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -320,14 +322,24 @@ object ParadoxAnalysisManager {
 
     // endregion
 
-    // region Misc Methods
+    // region Get Selected Methods
 
-    fun getInferredCurrentGameType(project: Project): ParadoxGameType? {
+    fun getSelectedGameType(project: Project): ParadoxGameType? {
         val fileEditorManager = FileEditorManager.getInstance(project)
         fileEditorManager.selectedEditor?.let { selectGameType(it.file) }?.let { return it }
         fileEditorManager.selectedEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
         fileEditorManager.allEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
         return null
+    }
+
+    fun getSelectedGameType(file: VirtualFile?, gameType: ParadoxGameType?): ParadoxGameType {
+        file?.let { selectGameType(it) }?.takeIf { it != ParadoxGameType.Core }?.let { return it }
+        gameType?.takeIf { it != ParadoxGameType.Core }?.let { return it }
+        return PlsSettings.getInstance().state.defaultGameType
+    }
+
+    fun getSelectedRootInfo(file: VirtualFile?): ParadoxRootInfo? {
+        return file?.fileInfo?.rootInfo
     }
 
     // endregion

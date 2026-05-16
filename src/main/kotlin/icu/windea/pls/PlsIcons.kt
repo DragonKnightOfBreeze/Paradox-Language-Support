@@ -14,7 +14,7 @@ object PlsIcons {
 
     object General {
         @JvmField val GameDirectory = AllIcons.Nodes.Module
-        @JvmField val ModDirectory = AllIcons.Modules.SourceRoot
+        @JvmField val ModDirectory = AllIcons.Nodes.Module
         @JvmField val EntryDirectory = AllIcons.Modules.SourceRoot
         @JvmField val ConfigGroupDirectory = AllIcons.Modules.EditFolder
         @JvmField val Library = AllIcons.Nodes.PpLibFolder

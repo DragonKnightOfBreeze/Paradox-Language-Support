@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- [ ] P2 提供工具动作，弹出对话框，以便快速复制与打开各种路径与链接。
+- [x] P2 提供工具动作，弹出对话框，以便快速复制与打开各种路径与链接。
 - [ ] P3 #314 表头列的列名（也就是 columnKey）可以重复，因此在解析规则数据和语义匹配时应基于列索引，而非列名。
 - [ ] P3 #314 为 rowConfig 添加一个属性，从而允许忽略解析文件中最后一行
 - [ ] P2 重构复杂表达式的API（改为基于手写的 scanner 和 resolver，进行递归向下解析）
@@ -27,6 +27,7 @@
 - [x] 支持在 CSV 文件中使用动态值（匹配与解析） / Supported to use dynamic values in CSV files (match and resolution)
 - [x] 增强对数据类型 `ShaderEffect` （数据表达式：`$shader_effect`）的支持，视为动态引用 / Enhanced support for data type `ShaderEffect` (data expression: `$shader_effect`), treats as dynamic references
 - [x] 增强对数据类型 `MeshLocator` （数据表达式：`$mesh_locator`）的支持，视为动态引用 / Enhanced support for data type `MeshLocator` (data expression: `$mesh_locator`), treats as dynamic references
+- [x] 重新设计浏览、复制与打开各种特殊路径与地址的动作 / Redesigned actions to browse, copy and open various special paths and urls
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.8 - 2026-05-10

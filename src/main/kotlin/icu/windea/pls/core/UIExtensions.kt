@@ -8,6 +8,7 @@ import com.intellij.openapi.observable.properties.GraphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ClickListener
+import com.intellij.ui.DoubleClickListener
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.IconUtil
@@ -16,6 +17,7 @@ import com.intellij.util.ui.UIUtil
 import icu.windea.pls.PlsFacade
 import java.awt.Color
 import java.awt.Image
+import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import java.net.URL
 import javax.swing.Icon
@@ -101,9 +103,24 @@ fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
     return this
 }
 
-/** 为组件注册点击监听器。 */
-fun <T : JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
-    clickListener.installOn(this, allowDragWhileClicking)
+inline fun <T : JComponent> T.registerSingleClickListener(allowDragWhileClicking: Boolean = false, crossinline action: (event: MouseEvent) -> Unit) {
+    val listener = object : ClickListener() {
+        override fun onClick(event: MouseEvent, clickCount: Int): Boolean {
+            action(event)
+            return true
+        }
+    }
+    listener.installOn(this, allowDragWhileClicking)
+}
+
+inline fun <T : JComponent> T.registerDoubleClickListener(allowDragWhileClicking: Boolean = false, crossinline action: (event: MouseEvent) -> Unit) {
+    val listener = object : DoubleClickListener() {
+        override fun onDoubleClick(event: MouseEvent): Boolean {
+            action(event)
+            return true
+        }
+    }
+    listener.installOn(this, allowDragWhileClicking)
 }
 
 // endregion
