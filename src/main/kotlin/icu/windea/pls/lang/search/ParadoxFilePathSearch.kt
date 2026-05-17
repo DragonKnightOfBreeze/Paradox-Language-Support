@@ -7,13 +7,13 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
 
 /**
  * 文件路径的查询。
@@ -53,7 +53,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         /** @see Parameters */
         @JvmStatic
         fun search(filePath: String?, configExpression: CwtDataExpression? = null, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
-            return INSTANCE.search(Parameters(filePath, configExpression, ignoreLocale, selector))
+            return INSTANCE.createParadoxQuery(Parameters(filePath, configExpression, ignoreLocale, selector))
         }
 
         /** @see Parameters */

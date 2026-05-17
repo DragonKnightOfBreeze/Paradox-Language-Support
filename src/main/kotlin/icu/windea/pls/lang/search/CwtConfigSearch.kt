@@ -2,6 +2,7 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
@@ -10,6 +11,7 @@ import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.core.cast
 import icu.windea.pls.lang.search.searchers.CwtConfigSearcher
+import icu.windea.pls.lang.search.util.CwtConfigSearchParameters
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -24,9 +26,11 @@ class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Par
      * 规则的查询参数。
      */
     sealed class Parameters(
-        val gameType: ParadoxGameType?,
-        val project: Project,
-    ) {
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+    ) : CwtConfigSearchParameters {
+        override val scope: GlobalSearchScope get() = GlobalSearchScope.allScope(project)
+
         class ById<T : CwtIdMatchableConfig<*>>(
             val id: String?,
             val type: Class<T>,

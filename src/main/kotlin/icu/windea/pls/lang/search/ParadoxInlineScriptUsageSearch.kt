@@ -4,12 +4,12 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
-import icu.windea.pls.lang.search.util.search
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher
 
 /**
  * 内联脚本用法的查询。
@@ -40,7 +40,7 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
         /** @see Parameters */
         @JvmStatic
         fun search(expression: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptProperty> {
-            return INSTANCE.search(Parameters(expression, selector))
+            return INSTANCE.createParadoxQuery(Parameters(expression, selector))
         }
     }
 }

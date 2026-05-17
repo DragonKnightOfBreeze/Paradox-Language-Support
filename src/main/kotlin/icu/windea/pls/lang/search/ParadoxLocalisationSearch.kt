@@ -8,14 +8,14 @@ import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher
 
 /**
  * 本地化的查询。
@@ -50,7 +50,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, type: ParadoxLocalisationType, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
-            return INSTANCE.search(Parameters(name, type, selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, type, selector))
         }
 
         /** @see Parameters */

@@ -8,8 +8,8 @@ import icu.windea.pls.lang.search.searchers.ParadoxDynamicValueSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 
 /**
@@ -47,13 +47,13 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, type: String, selector: Selector): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
-            return INSTANCE.search(Parameters(name, setOf(type), selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, setOf(type), selector))
         }
 
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, types: Set<String>, selector: Selector): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
-            return INSTANCE.search(Parameters(name, types, selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, types, selector))
         }
     }
 }

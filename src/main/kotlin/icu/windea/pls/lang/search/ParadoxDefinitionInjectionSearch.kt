@@ -4,15 +4,15 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher
 import icu.windea.pls.lang.search.util.ParadoxQuery
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
-import icu.windea.pls.lang.search.util.search
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.withTransform
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher
 
 /**
  * 定义注入的查询。
@@ -47,13 +47,13 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitio
         /** @see Parameters */
         @JvmStatic
         fun search(mode: String?, target: String?, type: String?, selector: Selector): ParadoxUnaryQuery<ParadoxDefinitionInjectionIndexInfo> {
-            return INSTANCE.search(Parameters(mode, target, type, selector))
+            return INSTANCE.createParadoxQuery(Parameters(mode, target, type, selector))
         }
 
         /** @see Parameters */
         @JvmStatic
         fun searchElement(mode: String?, target: String?, type: String?, selector: Selector): ParadoxQuery<ParadoxDefinitionInjectionIndexInfo, ParadoxScriptProperty> {
-            return INSTANCE.search(Parameters(mode, target, type, selector)).withTransform { it.element }
+            return INSTANCE.createParadoxQuery(Parameters(mode, target, type, selector)).withTransform { it.element }
         }
     }
 }

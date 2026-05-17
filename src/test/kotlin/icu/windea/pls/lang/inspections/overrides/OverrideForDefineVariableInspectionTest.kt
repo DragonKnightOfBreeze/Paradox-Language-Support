@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.inspections.overrides
 
-import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle

@@ -29,7 +29,7 @@ interface ParadoxQuery<T, R : Any> : Query<R> {
 
 typealias ParadoxUnaryQuery<T> = ParadoxQuery<T, T>
 
-fun <R : Any, P : ParadoxSearchParameters<R>> QueryFactory<R, P>.search(parameters: P): ParadoxQuery<R, R> {
+fun <R : Any, P : ParadoxSearchParameters<R>> QueryFactory<R, P>.createParadoxQuery(parameters: P): ParadoxQuery<R, R> {
     return ParadoxQueryImpl(createQuery(parameters), parameters)
 }
 

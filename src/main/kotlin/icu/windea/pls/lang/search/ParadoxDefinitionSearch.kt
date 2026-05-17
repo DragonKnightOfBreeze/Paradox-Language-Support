@@ -5,18 +5,18 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.searchers.ParadoxDefinitionSearcher
 import icu.windea.pls.lang.search.util.ParadoxQuery
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.lang.search.util.withTransform
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.search.searchers.ParadoxDefinitionSearcher
 
 /**
  * 定义的查询。
@@ -34,11 +34,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         val name: String?,
         val typeExpression: String?,
         override val selector: Selector,
-    ) : ParadoxSearchParameters<ParadoxDefinitionIndexInfo> {
-        private val _typeExpression = typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
-        val type = _typeExpression?.type
-        val subtypes = _typeExpression?.subtypes
-    }
+    ) : ParadoxSearchParameters<ParadoxDefinitionIndexInfo>
 
     class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxDefinitionIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
@@ -55,7 +51,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, typeExpression: String?, selector: Selector): ParadoxUnaryQuery<ParadoxDefinitionIndexInfo> {
-            return INSTANCE.search(Parameters(name, typeExpression, selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, typeExpression, selector))
         }
 
         /** @see Parameters */

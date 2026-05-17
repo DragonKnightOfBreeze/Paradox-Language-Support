@@ -2,8 +2,9 @@ package icu.windea.pls.lang.search.searchers
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.search.SearchScope
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.CwtFileType
@@ -11,6 +12,8 @@ import icu.windea.pls.lang.index.CwtConfigSymbolIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.lang.search.util.CwtConfigSearchContext
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 /**
@@ -19,34 +22,42 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.Parameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {
         ProgressManager.checkCanceled()
-        val project = queryParameters.project
-        if (project.isDefault) return
         val scope = queryParameters.scope.withFileTypes(CwtFileType)
-        if (SearchScope.isEmptyScope(scope)) return
+        val context = queryParameters.createContext(scope)
+        processQuery(context, consumer)
+    }
 
-        val keys = queryParameters.types
-        PlsIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, project, scope, queryParameters.gameType) { file, fileData ->
-            queryParameters.types.process { type ->
+    private fun processQuery(context: Context, consumer: Processor<in CwtConfigSymbolIndexInfo>): Boolean {
+        if (!context.isValid()) return true
+        val keys = context.types
+        return PlsIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+            context.types.process { type ->
                 val infos = fileData[type].orEmpty()
-                infos.process { info -> processInfo(queryParameters, file, info, consumer) }
+                infos.process { info -> processInfo(context, file, info, consumer) }
             }
         }
     }
 
-    private fun processInfo(
-        queryParameters: CwtConfigSymbolSearch.Parameters,
-        file: VirtualFile,
-        info: CwtConfigSymbolIndexInfo?,
-        consumer: Processor<in CwtConfigSymbolIndexInfo>
-    ): Boolean {
-        if (info == null) return true
-        if (!matchesName(queryParameters, info)) return true
-        info.bind(file, queryParameters.project)
+    private fun processInfo(context: Context, file: VirtualFile, info: CwtConfigSymbolIndexInfo, consumer: Processor<in CwtConfigSymbolIndexInfo>): Boolean {
+        if (!matchesName(context, info)) return true
+        info.bind(file, context.project)
         return consumer.process(info)
     }
 
-    private fun matchesName(queryParameters: CwtConfigSymbolSearch.Parameters, info: CwtConfigSymbolIndexInfo): Boolean {
-        if (queryParameters.name == null) return true
-        return queryParameters.name == info.name
+    private fun matchesName(context: Context, info: CwtConfigSymbolIndexInfo): Boolean {
+        if (context.name == null) return true
+        return context.name == info.name
     }
+
+    private fun CwtConfigSymbolSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+        return Context(name, types, gameType, project, scope)
+    }
+
+    private data class Context(
+        val name: String?,
+        val types: Collection<String>,
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+        override val scope: GlobalSearchScope,
+    ) : CwtConfigSearchContext
 }

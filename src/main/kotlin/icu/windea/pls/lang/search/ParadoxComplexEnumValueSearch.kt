@@ -8,8 +8,8 @@ import icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 
 /**
@@ -45,7 +45,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, enumName: String, selector: Selector): ParadoxUnaryQuery<ParadoxComplexEnumValueIndexInfo> {
-            return INSTANCE.search(Parameters(name, enumName, selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, enumName, selector))
         }
     }
 }

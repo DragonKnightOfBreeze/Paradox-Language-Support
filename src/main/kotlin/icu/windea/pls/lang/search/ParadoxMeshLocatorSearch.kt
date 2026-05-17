@@ -2,18 +2,15 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.util.ParadoxSearchContext
+import icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
-import icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher
 
 /**
  * 网格定位器（mesh locator）的查询。
@@ -29,16 +26,8 @@ class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexI
     data class Parameters(
         val name: String?,
         override val selector: Selector,
-    ) : ParadoxSearchParameters<ParadoxMeshLocatorIndexInfo> {
-        fun createContext(scope: GlobalSearchScope = this.scope) = Context(name, gameType, project, scope)
-    }
+    ) : ParadoxSearchParameters<ParadoxMeshLocatorIndexInfo>
 
-    data class Context(
-        val name: String?,
-        override val gameType: ParadoxGameType?,
-        override val project: Project,
-        override val scope: GlobalSearchScope,
-    ) : ParadoxSearchContext
 
     class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxMeshLocatorIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
@@ -55,7 +44,7 @@ class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexI
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxMeshLocatorIndexInfo> {
-            return INSTANCE.search(Parameters(name, selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, selector))
         }
     }
 }

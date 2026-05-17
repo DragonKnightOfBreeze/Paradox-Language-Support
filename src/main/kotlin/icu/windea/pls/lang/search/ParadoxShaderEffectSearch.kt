@@ -2,19 +2,16 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.ParadoxShaderEffectSearch.*
-import icu.windea.pls.lang.search.util.ParadoxSearchContext
+import icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
-import icu.windea.pls.lang.search.util.search
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
-import icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher
 
 /**
  * 着色器效果（shader effect）的查询。
@@ -30,16 +27,7 @@ class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectInde
     data class Parameters(
         val name: String?,
         override val selector: Selector,
-    ) : ParadoxSearchParameters<ParadoxShaderEffectIndexInfo> {
-        fun createContext(scope: GlobalSearchScope = this.scope) = Context(name, gameType, project, scope)
-    }
-
-    data class Context(
-        val name: String?,
-        override val gameType: ParadoxGameType?,
-        override val project: Project,
-        override val scope: GlobalSearchScope,
-    ) : ParadoxSearchContext
+    ) : ParadoxSearchParameters<ParadoxShaderEffectIndexInfo>
 
     class Selector(project: Project, context: Any?) : ParadoxSearchSelector<ParadoxShaderEffectIndexInfo>(project, context) {
         fun distinct() = distinctBy { it.name }
@@ -56,7 +44,7 @@ class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectInde
         /** @see Parameters */
         @JvmStatic
         fun search(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxShaderEffectIndexInfo> {
-            return INSTANCE.search(Parameters(name, selector))
+            return INSTANCE.createParadoxQuery(Parameters(name, selector))
         }
     }
 }

@@ -2,28 +2,32 @@ package icu.windea.pls.lang.search.searchers
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.search.ParadoxShaderEffectSearch.*
+import icu.windea.pls.lang.search.ParadoxShaderEffectSearch
+import icu.windea.pls.lang.search.util.ParadoxSearchContext
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
 
 /**
  * 着色器效果（shader effect）的查询器。
  */
-class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexInfo, Parameters>() {
-    override fun processQuery(queryParameters: Parameters, consumer: Processor<in ParadoxShaderEffectIndexInfo>) {
+class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexInfo, ParadoxShaderEffectSearch.Parameters>() {
+    override fun processQuery(queryParameters: ParadoxShaderEffectSearch.Parameters, consumer: Processor<in ParadoxShaderEffectIndexInfo>) {
         ProgressManager.checkCanceled()
         val context = queryParameters.createContext()
-        if (!context.isValid()) return
         processQuery(context, consumer)
     }
 
-    private fun processQuery(context: Context, consumer: Processor<in ParadoxShaderEffectIndexInfo>) {
+    private fun processQuery(context: Context, consumer: Processor<in ParadoxShaderEffectIndexInfo>): Boolean {
+        if (!context.isValid()) return true
         val indexInfoType = ParadoxIndexInfoTypes.ShaderEffect
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        return PlsIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
             infos.process { info -> processInfo(context, file, info, consumer) }
         }
     }
@@ -38,4 +42,15 @@ class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexIn
         if (context.name == null) return true
         return context.name == info.name
     }
+
+    private fun ParadoxShaderEffectSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+        return Context(name, gameType, project, scope)
+    }
+
+    private data class Context(
+        val name: String?,
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+        override val scope: GlobalSearchScope,
+    ) : ParadoxSearchContext
 }
