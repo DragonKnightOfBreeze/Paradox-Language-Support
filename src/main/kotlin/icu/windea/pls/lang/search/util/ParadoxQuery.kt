@@ -151,7 +151,7 @@ private class ParadoxTransformingQuery<T, R : Any, R1 : Any>(
     }
 
     override fun findFirst(): R1? {
-        return original.find()?.let { transform(it) }
+        return original.findFirst()?.let { transform(it) }
     }
 
     override fun findAll(): List<R1> {
