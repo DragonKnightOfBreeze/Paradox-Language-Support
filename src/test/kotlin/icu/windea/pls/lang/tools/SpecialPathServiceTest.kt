@@ -1,15 +1,11 @@
 package icu.windea.pls.lang.tools
 
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.AssumePredicates
-import org.junit.Before
 import org.junit.Test
 
 class SpecialPathServiceTest {
     private val service = SpecialPathServiceImpl()
-
-    @Before
-    fun doSetUp() = AssumePredicates.includeLocalEnv()
+    private val gameTypes = ParadoxGameType.getAll()
 
     @Test
     fun getSteamPath() {
@@ -19,7 +15,7 @@ class SpecialPathServiceTest {
 
     @Test
     fun getSteamGamePath() {
-        for (gameType in ParadoxGameType.getAll()) {
+        for (gameType in gameTypes) {
             val path = service.getSteamGamePath(gameType.steamId, gameType.title)
             println("Steam game path [${gameType.id}]: $path")
         }
@@ -27,7 +23,7 @@ class SpecialPathServiceTest {
 
     @Test
     fun getSteamGameWorkshopPath() {
-        for (gameType in ParadoxGameType.getAll()) {
+        for (gameType in gameTypes) {
             val path = service.getSteamGameWorkshopPath(gameType.steamId)
             println("Steam workshop path [${gameType.id}]: $path")
         }
@@ -35,7 +31,7 @@ class SpecialPathServiceTest {
 
     @Test
     fun getGameDataPath() {
-        for (gameType in ParadoxGameType.getAll()) {
+        for (gameType in gameTypes) {
             val path = service.getGameDataPath(gameType)
             println("Game data path [${gameType.id}]: $path")
         }
