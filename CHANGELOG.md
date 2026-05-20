@@ -3,10 +3,19 @@
 ## Unreleased
 
 - [x] P2 提供工具动作，弹出对话框，以便快速复制与打开各种路径与链接。
+- [ ] ~~P3 #314 表头列的列名（也就是 columnKey）可以重复，因此在解析规则数据和语义匹配时应基于列索引，而非列名。~~ - 计划延期到 2.2.0
+- [ ] ~~P3 #314 为 rowConfig 添加一个属性，从而允许忽略解析文件中最后一行~~ - 计划搁置到 2.2.0
+- [ ] ~~P2 重构复杂表达式的API（改为基于手写的 scanner 和 resolver，进行递归向下解析）~~ - 计划延期到 3.0.0
+- [ ] ~~P3 #163 支持复杂表达式 `ParadoxDynamicValueSetExpression`~~
+  - 读：`set_flags = "flag1,flag2"`
+  - 写：`required_flags ="flag1,not(flag2)"`
+- [ ] ~~P3 支持复杂表达式 `ParadoxArrayDefineReferenceExpression`~~ - 计划延期到 3.0.0
+  - 格式：`array_define:Namespace|Variabe|Index`
 - [x] P3 增强对数据类型 `ShaderEffect` 的支持（将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中）
   - 对应的数据表达式：`$shader_effect`
 - [x] P3 增强对数据类型 `MeshLocator` 的支持（将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中）
   - 对应的数据表达式：`$mesh_locator`
+- [ ] ~~P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）~~ - 搁置
 - [x] P4 对查询和查询器的重构（改为传递专门的、只读的上下文对象）
 - [x] #324 Nested Subtypes in types localisation
 - [x] #326 切换游戏类型问题
