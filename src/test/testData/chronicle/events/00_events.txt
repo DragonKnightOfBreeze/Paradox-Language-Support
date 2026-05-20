@@ -1,9 +1,11 @@
-event_namespace = hello_world
+namespace = hello_world
 
 event = {
     id = hello_world.1
     title = hello_world.1.title
     desc = hello_world.1.desc
+
+    is_triggered_only = yes
 
     immediate = {
         say_hello_world = yes
@@ -14,6 +16,8 @@ event = {
     id = hello_world.2
     title = hello_world.2.title
     desc = hello_world.2.desc
+
+    is_triggered_only = yes
 
     immediate = {
         hidden_effect = {

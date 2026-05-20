@@ -1,3 +1,0 @@
-unknown = {
-    name = species_unknown
-}

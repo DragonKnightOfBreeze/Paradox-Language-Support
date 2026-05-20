@@ -1,5 +1,5 @@
 ## @type string = string
-event_namespace = hello_world
+namespace = hello_world
 ## @type string = block
 ## @definition_type event, scopeless
 ## @config_expression event = {...}
@@ -15,6 +15,9 @@ event = {
     ## @type string = string
     ## @config_expression desc = localisation
     desc = hello_world.1.desc
+    ## @type string = boolean
+    ## @config_expression is_triggered_only = bool
+    is_triggered_only = yes
     ## @type string = block
     ## @config_expression immediate = {...}
     ## @scope_context this = any root = any
@@ -40,6 +43,9 @@ event = {
     ## @type string = string
     ## @config_expression desc = localisation
     desc = hello_world.2.desc
+    ## @type string = boolean
+    ## @config_expression is_triggered_only = bool
+    is_triggered_only = yes
     ## @type string = block
     ## @config_expression immediate = {...}
     ## @scope_context this = any root = any

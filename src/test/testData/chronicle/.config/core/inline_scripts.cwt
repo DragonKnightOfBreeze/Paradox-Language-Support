@@ -1,0 +1,8 @@
+macro[inline_script] = filepath[common/inline_scripts/,.txt]
+
+macro[inline_script] = {
+    ## cardinality = 1..1
+    script = filepath[common/inline_scripts/,.txt]
+    ## cardinality = 0..inf
+    $parameter = $parameter_value # accept several statements
+}
