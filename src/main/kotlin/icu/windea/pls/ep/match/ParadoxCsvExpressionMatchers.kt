@@ -12,6 +12,7 @@ import icu.windea.pls.model.type.ParadoxExpressionType
 class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
+            CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
             CwtDataTypes.Bool -> matchBool(context)
             CwtDataTypes.Int -> matchInt(context)
             CwtDataTypes.Float -> matchFloat(context)
