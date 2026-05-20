@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
@@ -90,7 +91,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
 
         val type = storage.readUTFFast()
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
-        return MutableList(size) {
+        return ImmutableList(size) {
             val name = storage.readUTFFast()
             val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
             val offset = storage.readIntFast()

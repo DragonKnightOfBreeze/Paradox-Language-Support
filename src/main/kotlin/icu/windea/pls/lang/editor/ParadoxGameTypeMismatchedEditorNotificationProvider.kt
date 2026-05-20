@@ -27,8 +27,8 @@ class ParadoxGameTypeMismatchedEditorNotificationProvider : EditorNotificationPr
         val rootFile = rootInfo.rootFile
         if (!rootFile.isValid) return null
 
+        val gameType = rootInfo.gameType
         val metadata = rootInfo.metadata
-        val gameType = metadata.gameType
         val message = when (metadata) {
             is ParadoxDescriptorModBasedModMetadata -> {
                 when {

@@ -21,10 +21,9 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -90,7 +89,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     readAction {
                         val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
-                            val selector = selector(project, element).localisation().contextSensitive()
+                            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                                 .preferLocale(preferredLocale)
                                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                             ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
@@ -100,7 +99,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     readAction {
                         val keys = ParadoxModifierManager.getModifierDescKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
-                            val selector = selector(project, element).localisation().contextSensitive()
+                            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                                 .preferLocale(preferredLocale)
                                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                             ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()

@@ -94,10 +94,10 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val aliasKeysGroupNoConst by registerKey<FastMap<String, FastSet<String>>, UserDataHolder>(this) { FastMap() }
         val aliasNamesSupportScope by registerKey<FastSet<String>, UserDataHolder>(this) { FastSet() }
         val relatedLocalisationPatterns by registerKey<FastSet<Tuple2<String, String>>, UserDataHolder>(this) { FastSet() }
+        val typesModel by registerKey<CwtTypesModelBase, UserDataHolder>(this) { CwtTypesModelBase() }
         val linksModel by registerKey<CwtLinksModelBase, UserDataHolder>(this) { CwtLinksModelBase() }
         val localisationLinksModel by registerKey<CwtLinksModelBase, UserDataHolder>(this) { CwtLinksModelBase() }
         val macrosModel by registerKey<CwtMacrosModelBase, UserDataHolder>(this) { CwtMacrosModelBase() }
-        val definitionTypesModel by registerKey<CwtDefinitionTypesModelBase, UserDataHolder>(this) { CwtDefinitionTypesModelBase() }
         val filePathExpressions by registerKey<FastSet<CwtDataExpression>, UserDataHolder>(this) { FastSet() }
         val parameterConfigs by registerKey<FastSet<CwtMemberConfig<*>>, UserDataHolder>(this) { FastSet() }
         val singleAliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
@@ -149,10 +149,10 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val aliasKeysGroupNoConst by Keys.aliasKeysGroupNoConst
     final override val aliasNamesSupportScope by Keys.aliasNamesSupportScope
     final override val relatedLocalisationPatterns by Keys.relatedLocalisationPatterns
+    final override val typesModel by Keys.typesModel
     final override val linksModel by Keys.linksModel
     final override val localisationLinksModel by Keys.localisationLinksModel
     final override val macrosModel by Keys.macrosModel
-    final override val definitionTypesModel by Keys.definitionTypesModel
     final override val filePathExpressions by Keys.filePathExpressions
     final override val parameterConfigs by Keys.parameterConfigs
     final override val singleAliasAttributes by Keys.singleAliasAttributes
@@ -220,9 +220,31 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         linksModel.trim()
         localisationLinksModel.trim()
         this@CwtConfigGroupDataHolderBase.macrosModel.trim()
-        definitionTypesModel.trim()
+        typesModel.trim()
         filePathExpressions.trim()
         parameterConfigs.trim()
+    }
+}
+
+class CwtTypesModelBase : CwtTypesModel {
+    override val base2Swapped: FastMap<String, String> = FastMap()
+    override val swapped2Base: FastMap<String, String> = FastMap()
+    override val supportScope: FastSet<String> = FastSet()
+    override val indirectSupportScope: FastSet<String> = FastSet()
+    override val skipCheckSystemScope: FastSet<String> = FastSet()
+    override val supportParameters: FastSet<String> = FastSet()
+    override val supportScopeContextInference: FastSet<String> = FastSet()
+    override val typeKeyPrefixAware: FastSet<String> = FastSet()
+
+    override fun trim() {
+        base2Swapped.trim()
+        swapped2Base.trim()
+        supportScope.trim()
+        indirectSupportScope.trim()
+        skipCheckSystemScope.trim()
+        supportParameters.trim()
+        supportScopeContextInference.trim()
+        typeKeyPrefixAware.trim()
     }
 }
 
@@ -262,23 +284,5 @@ class CwtMacrosModelBase : CwtMacrosModel {
 
     override fun trim() {
         forInlineScripts.trim()
-    }
-}
-
-class CwtDefinitionTypesModelBase : CwtDefinitionTypesModel {
-    override val supportScope: FastSet<String> = FastSet()
-    override val indirectSupportScope: FastSet<String> = FastSet()
-    override val skipCheckSystemScope: FastSet<String> = FastSet()
-    override val supportParameters: FastSet<String> = FastSet()
-    override val supportScopeContextInference: FastSet<String> = FastSet()
-    override val typeKeyPrefixAware: FastSet<String> = FastSet()
-
-    override fun trim() {
-        supportScope.trim()
-        indirectSupportScope.trim()
-        skipCheckSystemScope.trim()
-        supportParameters.trim()
-        supportScopeContextInference.trim()
-        typeKeyPrefixAware.trim()
     }
 }

@@ -22,10 +22,10 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.type
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
+import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtTypeResolver
 
 /**
  * 值规则（值型成员规则）。
@@ -73,7 +73,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
             valueExpression: CwtDataExpression,
-            valueType: CwtType = CwtType.String,
+            valueType: CwtExpressionType = CwtExpressionType.String,
             configs: List<CwtMemberConfig<*>>? = null,
             propertyConfig: CwtPropertyConfig? = null,
             injectable: Boolean = false,
@@ -87,7 +87,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             sourceConfig: CwtValueConfig,
             pointer: SmartPsiElementPointer<out CwtValue> = sourceConfig.pointer,
             valueExpression: CwtDataExpression = sourceConfig.valueExpression,
-            valueType: CwtType = sourceConfig.valueType,
+            valueType: CwtExpressionType = sourceConfig.valueType,
             configs: List<CwtMemberConfig<*>>? = sourceConfig.configs,
             propertyConfig: CwtPropertyConfig? = sourceConfig.propertyConfig,
         ): CwtValueConfig
@@ -108,7 +108,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         val pointer = if (configGroup.project.isDefault) emptyPointer() else element.createPointer(file)
         val configs = CwtConfigResolverManager.getConfigs(element, file, configGroup)
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(element.value) else CwtDataExpression.resolveBlock()
-        val valueType = element.type
+        val valueType = CwtTypeResolver.resolveExpressionType(element)
         val config = create(pointer, configGroup, valueExpression, valueType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
@@ -133,7 +133,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         pointer: SmartPsiElementPointer<out CwtValue>,
         configGroup: CwtConfigGroup,
         valueExpression: CwtDataExpression,
-        valueType: CwtType,
+        valueType: CwtExpressionType,
         configs: List<CwtMemberConfig<*>>?,
         propertyConfig: CwtPropertyConfig?,
         injectable: Boolean,
@@ -155,7 +155,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         sourceConfig: CwtValueConfig,
         pointer: SmartPsiElementPointer<out CwtValue>,
         valueExpression: CwtDataExpression,
-        valueType: CwtType,
+        valueType: CwtExpressionType,
         configs: List<CwtMemberConfig<*>>?,
         propertyConfig: CwtPropertyConfig?,
     ): CwtValueConfig {
@@ -165,7 +165,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
 }
 
 private const val blockValue = PlsStrings.blockFolder
-private val blockValueTypeId = CwtType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24
 private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueConfig {
@@ -218,13 +218,13 @@ private open class CwtValueConfigImpl(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     override val valueExpression: CwtDataExpression, // as constructor argument and field directly
-    valueType: CwtType,
+    valueType: CwtExpressionType,
     propertyConfig: CwtPropertyConfig?,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
     private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 
@@ -235,7 +235,7 @@ private open class CwtValueConfigImplWithConfigs(
     propertyConfig: CwtPropertyConfig?,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
     override val value: String get() = blockValue
-    override val valueType: CwtType get() = CwtType.Block
+    override val valueType: CwtExpressionType get() = CwtExpressionType.Block
 
     @Volatile override var configs: List<CwtMemberConfig<*>> = emptyList()
     @Volatile private var membersType: CwtMembersType = CwtMembersType.MIXED
@@ -283,7 +283,7 @@ private class CwtValueConfigMock(
     override val propertyConfig: CwtPropertyConfig? get() = null
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtType get() = CwtType.String
+    override val valueType: CwtExpressionType get() = CwtExpressionType.String
     override val configs: List<CwtMemberConfig<*>>? get() = null
 }
 
@@ -294,7 +294,7 @@ private open class CwtValueConfigDelegate(
     override val pointer: SmartPsiElementPointer<out CwtValue> get() = delegate.pointer
     override val configGroup: CwtConfigGroup get() = delegate.configGroup
     override val value: String get() = delegate.value
-    override val valueType: CwtType get() = delegate.valueType
+    override val valueType: CwtExpressionType get() = delegate.valueType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
     override val optionData: CwtOptionDataHolder get() = delegate.optionData
     override val propertyConfig: CwtPropertyConfig? get() = delegate.propertyConfig
@@ -310,7 +310,7 @@ private class CwtValueConfigDelegateWithConfigs(
     delegate: CwtValueConfig
 ) : CwtValueConfigDelegate(delegate) {
     override val value: String get() = blockValue
-    override val valueType: CwtType get() = CwtType.Block
+    override val valueType: CwtExpressionType get() = CwtExpressionType.Block
 
     @Volatile override var configs: List<CwtMemberConfig<*>> = emptyList()
     @Volatile private var membersType: CwtMembersType = CwtMembersType.MIXED
@@ -358,7 +358,7 @@ private class CwtValueConfigFromPropertyConfig(
 ) : CwtValueConfigBase() {
     override val configGroup: CwtConfigGroup get() = propertyConfig.configGroup
     override val value: String get() = propertyConfig.value
-    override val valueType: CwtType get() = propertyConfig.valueType
+    override val valueType: CwtExpressionType get() = propertyConfig.valueType
     override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
 
     override val valueExpression: CwtDataExpression get() = propertyConfig.valueExpression

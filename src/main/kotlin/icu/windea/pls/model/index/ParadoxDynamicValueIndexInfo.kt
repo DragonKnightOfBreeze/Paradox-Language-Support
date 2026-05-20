@@ -4,6 +4,7 @@ import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.model.ParadoxGameType
 
 /**
+ * @see icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
  * @see icu.windea.pls.lang.index.ParadoxMergedIndex
  * @see icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport
  */

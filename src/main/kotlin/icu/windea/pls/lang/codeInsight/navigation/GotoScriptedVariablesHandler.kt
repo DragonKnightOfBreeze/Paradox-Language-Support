@@ -13,8 +13,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.ParadoxTargetInfo
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -33,11 +32,11 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.scriptedVariables.search", name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, element).scriptedVariable().contextSensitive()
+                val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
                 ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets.addAll(it) }
             }
             readAction {
-                val selector = selector(project, element).scriptedVariable().contextSensitive()
+                val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
                 ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }
             }
         }

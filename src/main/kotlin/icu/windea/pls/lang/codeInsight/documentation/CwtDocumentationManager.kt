@@ -37,17 +37,15 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isExpression
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -64,7 +62,7 @@ import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRendere
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -182,8 +180,8 @@ object CwtDocumentationManager {
 
         return buildDocumentation {
             val name = element.name
-            val configType = element.configType
             val project = element.project
+            val configType = CwtConfigManager.getConfigType(element)
             val configGroup = getConfigGroup(element, originalElement, project)
             if (!hint) initSections()
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
@@ -214,9 +212,8 @@ object CwtDocumentationManager {
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
             val referenceElement = PsiService.getReferenceElement(originalElement)
 
-            val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
-            val byName = if (shortName == name) null else name.orNull()
-            val prefix = when {
+            val semanticName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
+            val semanticProperty = when {
                 referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
                 referenceElement is ParadoxScriptPropertyKey -> PlsStrings.definitionPropertyPrefix
@@ -225,17 +222,17 @@ object CwtDocumentationManager {
                 element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> PlsStrings.definitionValuePrefix
                 else -> configType?.prefix
             }
-            val finalPrefix = when {
-                prefix != null -> prefix
+
+            val prefix = when {
+                semanticProperty != null -> semanticProperty
                 element is CwtProperty -> PlsStrings.propertyPrefix
                 element is CwtString -> PlsStrings.stringPrefix
                 else -> null
             }
-
-            if (finalPrefix != null) {
-                append(finalPrefix).append(" ")
+            if (prefix != null) {
+                append(prefix).append(" ")
             }
-            append("<b>").append(shortName.escapeXml().or.anonymous()).append("</b>")
+            append("<b>").append(semanticName.escapeXml().or.anonymous()).append("</b>")
             if (configType?.category != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
@@ -250,9 +247,17 @@ object CwtDocumentationManager {
                     }
                 }
             }
-            if (byName != null) {
-                appendBr().appendIndent() // 2.1.1 文本可能过长，因此这里换行并缩进
-                grayed { append("by ").append(byName.escapeXml()) }
+
+            val sourceName = if (semanticName == name) null else name.orNull()
+            if (sourceName != null) {
+                val sourcePrefix = when {
+                    element is CwtProperty -> PlsStrings.sourcePropertyPrefix
+                    element is CwtString -> PlsStrings.sourceStringPrefix
+                    else -> PlsStrings.sourcePrefix
+                }
+                grayed {
+                    append(sourcePrefix).append(" ").append(sourceName.escapeXml())
+                }
             }
 
             if (configGroup != null) {
@@ -280,7 +285,7 @@ object CwtDocumentationManager {
         val nameLocalisation = run {
             val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, contextElement).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -289,7 +294,7 @@ object CwtDocumentationManager {
         val descLocalisation = run {
             val keys = ParadoxModifierManager.getModifierDescKeys(name, contextElement)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, contextElement).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -335,7 +340,7 @@ object CwtDocumentationManager {
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, contextElement)
             paths.firstNotNullOfOrNull { path ->
-                val iconSelector = selector(project, element).file().contextSensitive()
+                val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }
@@ -377,7 +382,7 @@ object CwtDocumentationManager {
                     val inputScopes = linkConfig.inputScopes
                     sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeId.anyScopeId
+                    val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
                     sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
@@ -387,7 +392,7 @@ object CwtDocumentationManager {
                     val inputScopes = linkConfig.inputScopes
                     sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeId.anyScopeId
+                    val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
                     sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }

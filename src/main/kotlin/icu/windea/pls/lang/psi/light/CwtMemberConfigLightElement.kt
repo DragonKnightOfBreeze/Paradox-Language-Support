@@ -10,6 +10,9 @@ import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
 
+/**
+ * @see CwtMemberConfig
+ */
 class CwtMemberConfigLightElement(
     parent: PsiElement,
     val config: CwtMemberConfig<*>,
@@ -37,6 +40,6 @@ class CwtMemberConfigLightElement(
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(config, project, gameType)
+        return Objects.hash(config, gameType, project)
     }
 }

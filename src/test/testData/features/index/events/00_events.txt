@@ -1,4 +1,4 @@
-event_namespace = test
+namespace = test
 
 # 基础事件 - 有 triggered 子类型
 country_event = {

@@ -67,12 +67,12 @@ private class CwtDefineNamespaceConfigResolverImpl : CwtDefineNamespaceConfig.Re
     override fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig? {
         // NOTE 2.1.8 a define namespace config can have no within define variable configs
         val namespace = config.key
-        val propElements = config.properties
-        if (propElements == null) {
+        val propConfigs = config.properties
+        if (propConfigs == null) {
             logger.warn("Skipped invalid define namespace config (namespace: $namespace): Null properties".withLocationPrefix(config))
             return null
         }
-        val variables = propElements.mapNotNull { CwtDefineVariableConfig.resolve(it, namespace) }.associateBy { it.name }.optimized()
+        val variables = propConfigs.mapNotNull { CwtDefineVariableConfig.resolve(it, namespace) }.associateBy { it.name }.optimized()
         logger.debug { "Resolved define namespace config (namespace: $namespace)".withLocationPrefix(config) }
         return CwtDefineNamespaceConfigImpl(config, namespace, variables)
     }

@@ -12,14 +12,13 @@ examples = {
     color = rgb { 142 188 241 }
     parameter = $PARAM$
     [[!PARAM] parameter_condition = $PARAM$ ]
-    inline_math = @[ var + ($NUM$ * 2) ]
+    inline_math = @[ var + ($NUM|1$ * 2) ]
 }
 
 <DEFINITION>some_definition</DEFINITION> = {
     key = <DEFINITION_NAME>some_definition_name</DEFINITION_NAME>
     key = <DEFINITION_REFERENCE>some_definition_reference</DEFINITION_REFERENCE>
     key = <LOCALISATION_REFERENCE>some_localisation_reference</LOCALISATION_REFERENCE>
-    key = <SYNCED_LOCALISATION_REFERENCE>some_synced_localisation_reference</SYNCED_LOCALISATION_REFERENCE>
     key = <ENUM_VALUE>some_enum_value</ENUM_VALUE>
     key = <COMPLEX_ENUM_VALUE>some_complex_enum_value</COMPLEX_ENUM_VALUE>
 
@@ -68,3 +67,6 @@ complex_expressions = {
 
 path = <PATH_REFERENCE>some/image.dds</PATH_REFERENCE>
 path = <PATH_REFERENCE>some/icon</PATH_REFERENCE>
+
+shader_effect = <SHADER_EFFECT_REFERENCE>some_effect</SHADER_EFFECT_REFERENCE>
+mesh_locator = <MESH_LOCATOR_REFERENCE>some_mesh_locator</MESH_LOCATOR_REFERENCE>

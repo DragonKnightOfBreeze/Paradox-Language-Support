@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.manipulation.CwtConfigCopyService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
@@ -39,10 +39,10 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.configForDeclaration
-        val configs = CwtConfigCopyService.createListForDeepCopy(rootConfig.configs)
+        val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigCopyService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }
@@ -71,10 +71,10 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = context.gameRuleConfig?.configForDeclaration ?: declarationConfig.configForDeclaration
-        val configs = CwtConfigCopyService.createListForDeepCopy(rootConfig.configs)
+        val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigCopyService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }
@@ -103,10 +103,10 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.configForDeclaration
-        val configs = CwtConfigCopyService.createListForDeepCopy(rootConfig.configs)
+        val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigCopyService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }

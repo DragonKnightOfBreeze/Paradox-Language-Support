@@ -13,8 +13,7 @@ import icu.windea.pls.core.process
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.withGameType
 
 class ParadoxGameElementNode(
     project: Project,
@@ -47,7 +46,7 @@ class ParadoxGameElementNode(
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if (value == null) return emptySet()
-        val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
+        val selector = ParadoxFilePathSearch.selector(project, value.preferredRootFile).withGameType(value.gameType)
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, null, selector).process p@{ file ->

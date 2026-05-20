@@ -8,8 +8,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -89,14 +88,14 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     private fun getData(definitionInfo: ParadoxDefinitionInfo): StellarisEventData? {
-        return definitionInfo.element?.getDefinitionData<StellarisEventData>(relax = true)
+        return definitionInfo.element?.getDefinitionData<StellarisEventData>(lenient = true)
     }
 
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseName) a@{
                 val element = definitionInfo.element ?: return@a null
-                val selector = selector(definitionInfo.project, element).definition().contextSensitive()
+                val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
                 val superDefinition = ParadoxDefinitionSearch.searchElement(baseName, T.event, selector).find() ?: return@a null
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
 

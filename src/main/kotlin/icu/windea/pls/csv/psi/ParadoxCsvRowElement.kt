@@ -9,6 +9,4 @@ import com.intellij.psi.PsiListLikeElement
  */
 interface ParadoxCsvRowElement : NavigatablePsiElement, PsiListLikeElement {
     val columnList: List<ParadoxCsvColumn>
-
-    override fun getComponents(): List<ParadoxCsvColumn> = columnList
 }

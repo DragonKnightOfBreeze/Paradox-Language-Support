@@ -10,7 +10,7 @@ line metrics: total, min, max, avg, blank, comment, and code lines.
 
 Key design decisions (synced from plugin Kotlin sources):
   - Game types, entry info, and path detection logic mirror
-    ParadoxGameType, ParadoxGameTypeMetadata, and PlsPathServiceImpl.
+    ParadoxGameType, ParadoxGameTypeMetadata, and SpecialPathServiceImpl.
   - File extensions mirror PlsConstants.
   - Only files *indirectly* under entry directories are counted
     (files directly in an entry dir, like license.txt, are excluded).
@@ -124,7 +124,7 @@ def file_category(ext: str) -> str | None:
     return None
 
 # ===========================================================================
-# Path detection (synced from PlsPathServiceImpl)
+# Path detection (synced from SpecialPathServiceImpl)
 # ===========================================================================
 
 _steam_path_cache: dict[str, str | None] = {}

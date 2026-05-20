@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.analysis
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxPath
 import org.junit.Assert
@@ -58,7 +58,7 @@ class ParadoxAnalysisServiceTest : BasePlatformTestCase() {
 
         @Test
         fun getRootMetadata() {
-            val service = PlsPathService.getInstance()
+            val service = SpecialPathService.getInstance()
 
             val rootPath = service.getSteamGamePath(gameType.steamId, gameType.title)
             Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())

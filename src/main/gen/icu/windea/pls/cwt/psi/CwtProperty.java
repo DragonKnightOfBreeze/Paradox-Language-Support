@@ -28,6 +28,8 @@ public interface CwtProperty extends CwtNamedElement, CwtMemberContainer, CwtMem
 
   @Nullable String getValue();
 
+  @NotNull String getExpression();
+
   @Nullable CwtBlock getMembersRoot();
 
   @Nullable List<@NotNull CwtMember> getMembers();

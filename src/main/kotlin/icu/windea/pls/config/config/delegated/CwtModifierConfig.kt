@@ -18,9 +18,9 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 /**
  * 修正规则。
  *
- * 用于提供修正（modifier）的相关信息（快速文档、命名、分类）。
+ * 用于提供修正的相关信息（快速文档、命名、分类）。
  *
- * **修正（modifier）**是模组编程中一种常见的**谓语**，用于调整游戏数值。
+ * 修正（modifier）是一种常见的谓语，用于调整游戏数值。
  * 其名字是预定义的，也可能是动态生成的。
  * 其允许的作用域类型则来自所属的分类。
  * 可参见：`modifiers.log`。
@@ -101,7 +101,7 @@ private class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtCon
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.debug { "Skipped invalid modifier config (name: $name): Null categories".withLocationPrefix(config) }
+            logger.warn("Skipped invalid modifier config (name: $name): Null categories".withLocationPrefix(config))
             return null
         }
         logger.debug { "Resolved modifier config (name: $name).".withLocationPrefix(config) }
@@ -116,7 +116,7 @@ private class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtCon
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.debug { "Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config) }
+            logger.debug("Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config))
             return null
         }
         val modifierName = name.replace("$", "<$typeExpression>").optimized()

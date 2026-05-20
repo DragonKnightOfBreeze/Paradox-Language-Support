@@ -13,14 +13,12 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedNamesIfNecessary
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -37,8 +35,7 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 需要同时查找当前文件中的和全局的
-        val selector = selector(project, element).scriptedVariable().contextSensitive()
-            .distinctByName()
+        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive().distinct()
         ParadoxScriptedVariableSearch.searchLocal(null, selector).processAsync { processScriptedVariable(context, result, it) }
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(context, result, it) }
 
@@ -56,7 +53,7 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withScriptedVariableLocalizedNamesIfNecessary(element)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }

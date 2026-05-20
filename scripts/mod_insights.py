@@ -87,7 +87,7 @@ GAME_TYPES: list[GameType] = [
 ]
 
 # ===========================================================================
-# Steam path detection (mirrored from PlsPathServiceImpl + game_file_stats.py)
+# Steam path detection (mirrored from SpecialPathServiceImpl + game_file_stats.py)
 # ===========================================================================
 
 _steam_path_cache: dict[str, str | None] = {}

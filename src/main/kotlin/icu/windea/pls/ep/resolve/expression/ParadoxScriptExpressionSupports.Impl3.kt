@@ -19,7 +19,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 
-// Complex Expression
+// Complex Expressions
 
 /**
  * @see CwtDataTypes.TemplateExpression

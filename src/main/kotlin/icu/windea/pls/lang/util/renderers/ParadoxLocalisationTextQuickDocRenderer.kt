@@ -9,27 +9,27 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
-import icu.windea.pls.core.util.text.EscapeType
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
-import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
+import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -221,7 +221,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
     }
 
     override fun renderConceptCommand(element: ParadoxLocalisationConceptCommand) {
-        val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT
+        val conceptAttributesKey = ParadoxLocalisationHighlighterColors.CONCEPT
         val editorColorsManager = EditorColorsManager.getInstance()
         val schema = editorColorsManager.schemeForCurrentUITheme
         val conceptColor = schema.getAttributes(conceptAttributesKey).foregroundColor

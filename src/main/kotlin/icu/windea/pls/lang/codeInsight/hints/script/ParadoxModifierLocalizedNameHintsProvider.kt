@@ -12,10 +12,9 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -53,7 +52,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
         val project = configGroup.project
         val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
         val localisation = keys.firstNotNullOfOrNull { key ->
-            val selector = selector(project, element).localisation().contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             ParadoxLocalisationSearch.searchNormal(key, selector).find()

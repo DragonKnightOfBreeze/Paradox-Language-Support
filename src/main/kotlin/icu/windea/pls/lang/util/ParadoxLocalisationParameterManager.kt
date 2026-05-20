@@ -25,7 +25,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -55,7 +54,7 @@ object ParadoxLocalisationParameterManager {
     private fun resolveParameters(element: ParadoxLocalisationProperty): Set<String> {
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
-        val selector = selector(element.project, element).localisationParameter()
+        val selector = ParadoxLocalisationParameterSearch.selector(element.project, element)
         ParadoxLocalisationParameterSearch.search(null, targetLocalisationName, selector).processAsync p@{ info ->
             result.add(info.name)
             true

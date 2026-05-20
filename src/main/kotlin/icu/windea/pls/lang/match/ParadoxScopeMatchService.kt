@@ -2,16 +2,16 @@ package icu.windea.pls.lang.match
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.promotions
 
 object ParadoxScopeMatchService {
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if (thisScope == null) return true
-        if (scopeToMatch == ParadoxScopeId.anyScopeId) return true
-        if (thisScope == ParadoxScopeId.anyScopeId) return true
-        if (thisScope == ParadoxScopeId.unknownScopeId) return true
+        if (scopeToMatch == ParadoxScopeConstants.anyScope) return true
+        if (thisScope == ParadoxScopeConstants.anyScope) return true
+        if (thisScope == ParadoxScopeConstants.unknownScope) return true
         if (thisScope == scopeToMatch) return true
         val scopeConfig = configGroup.scopeAliasMap[thisScope]
         if (scopeConfig != null && scopeConfig.aliases.any { it == scopeToMatch }) return true
@@ -30,9 +30,9 @@ object ParadoxScopeMatchService {
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if (thisScope == null) return true
-        if (scopesToMatch.isNullOrEmpty() || scopesToMatch == ParadoxScopeId.anyScopeIdSet) return true
-        if (thisScope == ParadoxScopeId.anyScopeId) return true
-        if (thisScope == ParadoxScopeId.unknownScopeId) return true
+        if (scopesToMatch.isNullOrEmpty() || scopesToMatch == ParadoxScopeConstants.anyScopes) return true
+        if (thisScope == ParadoxScopeConstants.anyScope) return true
+        if (thisScope == ParadoxScopeConstants.unknownScope) return true
         if (thisScope in scopesToMatch) return true
         val scopeConfig = configGroup.scopeAliasMap[thisScope]
         if (scopeConfig != null) return scopeConfig.aliases.any { it in scopesToMatch }
@@ -51,8 +51,8 @@ object ParadoxScopeMatchService {
     fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if (thisScope == null) return true
-        if (thisScope == ParadoxScopeId.anyScopeId) return true
-        if (thisScope == ParadoxScopeId.unknownScopeId) return true
+        if (thisScope == ParadoxScopeConstants.anyScope) return true
+        if (thisScope == ParadoxScopeConstants.unknownScope) return true
         val scopeGroupConfig = configGroup.scopeGroups[scopeGroupToMatch] ?: return false
         for (scopeToMatch in scopeGroupConfig.values) {
             if (thisScope == scopeToMatch) return true

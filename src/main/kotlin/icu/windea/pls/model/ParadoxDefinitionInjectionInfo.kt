@@ -48,8 +48,8 @@ data class ParadoxDefinitionInjectionInfo(
     /** @see ParadoxDefinitionInjectionManager.getDeclaration */
     override fun getDeclaration(options: ParadoxMatchOptions?): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, options)
 
-    /** @see ParadoxDefinitionInjectionManager.isRelaxMode */
-    fun isRelaxMode(): Boolean = ParadoxDefinitionInjectionManager.isRelaxMode(this)
+    /** @see ParadoxDefinitionInjectionManager.isLenientMode */
+    fun isLenientMode(): Boolean = ParadoxDefinitionInjectionManager.isLenientMode(this)
 
     /** @see ParadoxDefinitionInjectionManager.isReplaceMode */
     fun isReplaceMode(): Boolean = ParadoxDefinitionInjectionManager.isReplaceMode(this)

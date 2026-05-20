@@ -20,9 +20,8 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.resolve.ParadoxTypeService
+import icu.windea.pls.lang.util.ParadoxNameValidators
 
 class IntroduceGlobalScriptedVariableDialog(
     private val project: Project,
@@ -76,7 +75,6 @@ class IntroduceGlobalScriptedVariableDialog(
                         .align(Align.FILL)
                         .resizableColumn()
                         .focused()
-                        .validationOnApply { validateScriptedVariableValue() }
                 }
             }
             row {
@@ -87,7 +85,7 @@ class IntroduceGlobalScriptedVariableDialog(
                     .withRoots(scriptedVariablesFile)
                     .withTreeRootVisible(true)
                 val fileField = fileField.apply {
-                    setTextFieldPreferredWidth(PREFERRED_PATH_WIDTH)
+                    setTextFieldPreferredWidth(preferredPathWidth)
                     val recentEntries = getFilePathHistories()
                     if (recentEntries.isNotEmpty()) childComponent.history = recentEntries
                     childComponent.text = recentEntries.firstOrNull() ?: filePath
@@ -103,7 +101,7 @@ class IntroduceGlobalScriptedVariableDialog(
                 val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
                 comment(message("path.completion.shortcut", shortcutText))
             }
-        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+        }.withPreferredWidth(preferredDialogWidth)
     }
 
     override fun doOKAction() {
@@ -122,15 +120,6 @@ class IntroduceGlobalScriptedVariableDialog(
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
         } else if (!ParadoxNameValidators.checkScriptedVariableName(variableName)) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
-        }
-        return null
-    }
-
-    private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
-        if (variableValue.isEmpty()) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
-        } else if (!ParadoxTypeService.isPossibleScriptedVariableValue(ParadoxTypeService.resolve(variableValue))) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
         }
         return null
     }
@@ -154,7 +143,7 @@ class IntroduceGlobalScriptedVariableDialog(
     }
 
     companion object {
-        private const val PREFERRED_DIALOG_WIDTH = 600
-        private const val PREFERRED_PATH_WIDTH = 70
+        private const val preferredDialogWidth = 600
+        private const val preferredPathWidth = 70
     }
 }

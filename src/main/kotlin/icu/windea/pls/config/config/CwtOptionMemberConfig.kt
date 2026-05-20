@@ -3,7 +3,7 @@ package icu.windea.pls.config.config
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionMember
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 
 /**
  * 选项成员规则。
@@ -22,7 +22,7 @@ import icu.windea.pls.model.CwtType
  */
 sealed interface CwtOptionMemberConfig<out T : CwtOptionMember> : CwtDetachedConfig {
     val value: String
-    val valueType: CwtType
+    val valueType: CwtExpressionType
     val optionConfigs: List<CwtOptionMemberConfig<*>>?
 
     override fun equals(other: Any?): Boolean

@@ -32,7 +32,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.tools.PlsDataPathService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -145,7 +144,8 @@ object ParadoxImageManager {
     }
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
-        val file = ParadoxFilePathSearch.search(filePath, null, selector(project).file()).find() ?: return null
+        val selector = ParadoxFilePathSearch.selector(project)
+        val file = ParadoxFilePathSearch.search(filePath, null, selector).find() ?: return null
         return doResolveUrl(file, project, frameInfo)
     }
 

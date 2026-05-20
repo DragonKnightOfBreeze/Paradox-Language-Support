@@ -13,8 +13,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 
 class GotoFilesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -29,7 +28,7 @@ class GotoFilesHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.files.search", file.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, file).file().contextSensitive()
+                val selector = ParadoxFilePathSearch.selector(project, file).contextSensitive()
                 val resolved = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 targets.addAll(resolved.mapNotNull { it.toPsiFile(project) })
             }

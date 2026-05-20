@@ -35,7 +35,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val types = getTypes()
         if (types.isEmpty()) return
         val project = scope.project ?: getCurrentProject() ?: return
-        val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
+        val gameType = ParadoxAnalysisManager.getSelectedGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
             if (it.readWriteAccess != ReadWriteAccess.Write) return@p true // declarations only
             val name = it.name
@@ -48,7 +48,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         if (types.isEmpty()) return
         val project = parameters.project
         val scope = parameters.searchScope
-        val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
+        val gameType = ParadoxAnalysisManager.getSelectedGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
             if (it.readWriteAccess != ReadWriteAccess.Write) return@p true // declarations only
             val name = it.name

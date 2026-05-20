@@ -169,8 +169,8 @@ A **property** still has the structure `<key> <sep> <value>`, but the available 
 
 - `=` assignment
 - `!=` or `<>` not-equals
-- `<`, `>`, `<=`, `>=` comparison operators
 - `?=` safe assignment (CK3/VIC3/EU5 only)
+- `<`, `>`, `<=`, `>=` comparison operators
 
 The `?=` operator means "assign only if the target does not exist". For example, in a trigger context, `owner ?= { ... }` is equivalent to first checking `exists = owner` and then executing `owner = { ... }`.
 
@@ -239,7 +239,7 @@ examples = {
     color = rgb { 142 188 241 }
     parameter = $PARAM$
     [[!PARAM] parameter_condition = $PARAM$ ]
-    inline_math = @[ var + ($NUM$ * 2) ]
+    inline_math = @[ var + ($NUM|1$ * 2) ]
 }
 ```
 

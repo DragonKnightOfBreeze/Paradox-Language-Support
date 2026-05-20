@@ -14,8 +14,6 @@ import javax.swing.Icon
  *
  * @property icon 用于 UI 展示的图标。
  * @property text 用于 UI 展示的文本。
- *
- * @see icu.windea.pls.lang.ui.settings.ParadoxModDependenciesImportPopup
  */
 interface ParadoxModImporter {
     val icon: Icon? get() = null
@@ -54,9 +52,5 @@ interface ParadoxModImporter {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxModImporter>("icu.windea.pls.modImporter")
-
-        fun getAll(gameType: ParadoxGameType): List<ParadoxModImporter> {
-            return EP_NAME.extensionList.filter { it.isAvailable(gameType) }
-        }
     }
 }

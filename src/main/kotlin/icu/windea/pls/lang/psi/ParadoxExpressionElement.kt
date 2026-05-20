@@ -1,8 +1,13 @@
 package icu.windea.pls.lang.psi
 
 import com.intellij.psi.NavigatablePsiElement
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.model.type.ParadoxExpressionRole
+import icu.windea.pls.model.type.ParadoxExpressionType
+import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -18,4 +23,6 @@ interface ParadoxExpressionElement : NavigatablePsiElement {
     val value: String
 
     fun setValue(value: String): ParadoxExpressionElement
+
+    val expression: String
 }

@@ -14,8 +14,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -37,7 +36,7 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, element).definition().contextSensitive()
+                val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
                 val resolved = ParadoxDefinitionSearch.searchElement(info.target, info.type, selector).findAll()
                 targets.addAll(resolved)
             }

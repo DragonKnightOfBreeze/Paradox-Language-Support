@@ -13,10 +13,9 @@ import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.filterBy
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -47,7 +46,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         result.restartCompletionOnAnyPrefixChange()
 
         // 提示 `localisation` 或者 `synced_localisation`
-        val selector = selector(project, file).localisation()
+        val selector = ParadoxLocalisationSearch.selector(project, file)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .filterBy { it.name != keyword } // skip if name = input

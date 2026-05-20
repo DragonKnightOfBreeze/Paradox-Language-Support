@@ -55,7 +55,7 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
-  public @NotNull ParadoxScriptString setValue(@NotNull String value) {
+  public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
   }
 

@@ -87,7 +87,7 @@ sealed class ParadoxTargetInfo {
                 }
                 is ParadoxDynamicValueLightElement -> {
                     val name = element.name.orNull() ?: return null
-                    val types = element.dynamicValueTypes.orNull() ?: return null
+                    val types = element.types.orNull() ?: return null
                     DynamicValue(name, types)
                 }
                 is ParadoxParameterLightElement -> {

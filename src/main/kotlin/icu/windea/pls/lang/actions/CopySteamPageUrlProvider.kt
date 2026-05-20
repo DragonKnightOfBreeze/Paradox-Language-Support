@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -24,8 +24,8 @@ class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
         val rootInfo = fileInfo.rootInfo
         val steamId = rootInfo.steamId ?: return null
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
-            is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+            is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
+            is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
             else -> null
         }
     }

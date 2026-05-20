@@ -3,13 +3,14 @@ package icu.windea.pls.lang.codeInsight.annotated
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
+import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.scope.toScopeIdMap
+import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -34,16 +35,16 @@ object ParadoxScriptAnnotatedManager {
      * - `## @type key_type = value_type`
      * - `## @type value_type`
      */
-    fun getType(element: ParadoxScriptMember): String? {
+    fun getTypeAnnotation(element: ParadoxScriptMember): String? {
         return when (element) {
             is ParadoxScriptProperty -> {
-                val keyType = ParadoxTypeManager.getType(element.propertyKey) ?: ParadoxType.Unknown
-                val valueType = element.propertyValue?.let { ParadoxTypeManager.getType(it) } ?: ParadoxType.Unknown
-                "## $typePrefix ${keyType.id} = ${valueType.id}"
+                val keyType = element.propertyKey.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.id ?: FallbackStrings.unknown
+                val valueType = element.propertyValue?.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.id ?: FallbackStrings.unknown
+                "## $typePrefix ${keyType} = ${valueType}"
             }
             is ParadoxScriptValue -> {
-                val type = ParadoxTypeManager.getType(element) ?: ParadoxType.Unknown
-                "## $typePrefix ${type.id}"
+                val valueType = element.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.id ?: FallbackStrings.unknown
+                "## $typePrefix ${valueType}"
             }
             else -> null
         }
@@ -56,10 +57,10 @@ object ParadoxScriptAnnotatedManager {
      * - `## @definition_type = type`
      * - `## @definition_type = type, subtype_1, subtype_2`
      */
-    fun getDefinitionType(element: ParadoxScriptMember): String? {
+    fun getDefinitionTypeAnnotation(element: ParadoxScriptMember): String? {
         if (element !is ParadoxScriptProperty) return null
-        val definitionType = ParadoxTypeManager.getDefinitionType(element.propertyKey) ?: return null
-        return "## $definitionTypePrefix $definitionType"
+        val definitionType = element.definitionCandidateInfo?.typeText ?: return null
+        return "## $definitionTypePrefix ${definitionType}"
     }
 
     /**
@@ -69,20 +70,20 @@ object ParadoxScriptAnnotatedManager {
      * - `## @config_expression key_expression = value_expression`
      * - `## @config_expression value_expression`
      */
-    fun getConfigExpression(element: ParadoxScriptMember): String? {
+    fun getConfigExpressionAnnotation(element: ParadoxScriptMember): String? {
         val options = ParadoxMatchOptions(forDeclarationRoot = true)
         val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
         return when (element) {
             is ParadoxScriptProperty -> {
                 if (config !is CwtPropertyConfig) return null
-                val keyExpression = config.key.quoteIfNecessary()
-                val valueExpression = config.value.quoteIfNecessary()
-                "## $configExpressionPrefix $keyExpression = $valueExpression"
+                val key = config.key
+                val value = config.value
+                "## $configExpressionPrefix ${key.quoteIfNecessary()} = ${value.quoteIfNecessary()}"
             }
             is ParadoxScriptValue -> {
                 if (config !is CwtValueConfig) return null
-                val valueExpression = config.value.quoteIfNecessary()
-                "## $configExpressionPrefix $valueExpression"
+                val value = config.value
+                "## $configExpressionPrefix ${value.quoteIfNecessary()}"
             }
             else -> null
         }
@@ -94,7 +95,7 @@ object ParadoxScriptAnnotatedManager {
      * 格式：
      * - `## @override_strategy = STRATEGY`
      */
-    fun getOverrideStrategy(element: ParadoxScriptMember): String? {
+    fun getOverrideStrategyAnnotation(element: ParadoxScriptMember): String? {
         val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return null
         return "## $overrideStrategyPrefix ${overrideStrategy.id}"
     }
@@ -108,13 +109,12 @@ object ParadoxScriptAnnotatedManager {
      * @param unchanged 是否包含未发生更改的作用域上下文信息。
      * @param detailed 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
      */
-    fun getScopeContext(element: ParadoxScriptMember, unchanged: Boolean = false, detailed: Boolean = false): String? {
+    fun getScopeContextAnnotation(element: ParadoxScriptMember, unchanged: Boolean = false, detailed: Boolean = false): String? {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return null
         val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return null
         if (!unchanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return null
-        val map = scopeContext.toScopeIdMap(showPrev = detailed)
-        if (map.isEmpty()) return null
-        return map.entries.joinToString(" ", "## $scopeContextPrefix ") { "${it.key.quoteIfNecessary()} = ${it.value.quoteIfNecessary()}" }
+        val presentableString = scopeContext.toPresentableString(showPrev = detailed)
+        return "## $scopeContextPrefix $presentableString"
     }
 
     // endregion

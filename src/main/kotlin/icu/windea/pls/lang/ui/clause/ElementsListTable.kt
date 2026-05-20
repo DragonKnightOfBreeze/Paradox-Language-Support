@@ -11,7 +11,7 @@ import com.intellij.util.ui.table.JBTableRowEditor
 import com.intellij.util.ui.table.JBTableRowRenderer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.model.ParadoxSeparatorType
+import icu.windea.pls.model.type.ParadoxSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import javax.swing.BoxLayout
 import javax.swing.JComponent

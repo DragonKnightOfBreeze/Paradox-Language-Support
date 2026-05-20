@@ -50,7 +50,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * ```
  *
  * @property name 规则名称。
- * @property columns 各列名到对应列规则的映射。
+ * @property columns 每一列的列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  */
 interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
@@ -78,13 +78,13 @@ private class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolve
 
     private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
         val name = config.key.removeSurroundingOrNull("row[", "]")?.orNull() ?: return null
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
+        val propConfigs = config.properties
+        if (propConfigs.isNullOrEmpty()) {
             logger.warn("Skipped invalid row config (name: $name): Empty properties.".withLocationPrefix(config))
             return null
         }
 
-        val propGroup = propElements.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
         val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()

@@ -9,9 +9,8 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -55,7 +54,7 @@ class ParadoxLocalisationTextFormatPsiReference(
         val element = element
         val definitionName = element.name?.orNull() ?: return null
         val definitionType = ParadoxDefinitionTypes.textFormat
-        val definitionSelector = selector(project, element).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val resolved = ParadoxDefinitionSearch.searchProperty(definitionName, definitionType, definitionSelector).find()
         return resolved
     }
@@ -64,7 +63,7 @@ class ParadoxLocalisationTextFormatPsiReference(
         val element = element
         val definitionName = element.name?.orNull() ?: return ResolveResult.EMPTY_ARRAY
         val definitionType = ParadoxDefinitionTypes.textFormat
-        val definitionSelector = selector(project, element).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             .withConstraint(ParadoxDefinitionIndexConstraint.TextFormat)
         val resolved = ParadoxDefinitionSearch.searchProperty(definitionName, definitionType, definitionSelector).findAll()
         return resolved.createResults()

@@ -26,8 +26,8 @@ sealed interface ParadoxMatchResult {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    /** 可容忍的精确匹配。在语义解析阶段会认为不是正确的表达式，因而给出警告或错误。 */
-    data object ToleratedExactMatch : ParadoxMatchResult, DirectMatch {
+    /** 宽松的精确匹配。在语义解析阶段会认为不是正确的表达式，因而给出警告或错误。 */
+    data object LenientExactMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
@@ -37,7 +37,7 @@ sealed interface ParadoxMatchResult {
     }
 
     /** 更宽松的通配符匹配。这意味着存在另一种更精确的格式。 */
-    data object RelaxWildcardMatch : ParadoxMatchResult, DeferredMatch {
+    data object LenientWildcardMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
@@ -71,7 +71,7 @@ sealed interface ParadoxMatchResult {
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazyBlockAwareMatch -> ParadoxMatchService.relax(options)
+                this is LazyBlockAwareMatch -> ParadoxMatchService.lenient(options)
                 this is LazyIndexAwareMatch -> ParadoxMatchService.skipIndex(options)
                 this is LazyScopeAwareMatch -> ParadoxMatchService.skipScope(options)
                 else -> false
@@ -101,6 +101,8 @@ sealed interface ParadoxMatchResult {
     class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
     companion object {
+        fun exactOrLenientExact(value: Boolean) = if (value) ExactMatch else LenientExactMatch
+
         fun exactOrNot(value: Boolean) = if (value) ExactMatch else NotMatch
 
         fun fallbackOrNot(value: Boolean) = if (value) FallbackMatch else NotMatch

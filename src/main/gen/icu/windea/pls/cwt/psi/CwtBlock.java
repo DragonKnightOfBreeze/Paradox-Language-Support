@@ -29,11 +29,9 @@ public interface CwtBlock extends CwtValue, CwtBlockElement, CwtBoundMemberConta
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
-
   @NotNull String getValue();
 
-  @NotNull CwtValue setValue(@NotNull String value);
+  @NotNull String getExpression();
 
   @NotNull CwtBlock getMembersRoot();
 

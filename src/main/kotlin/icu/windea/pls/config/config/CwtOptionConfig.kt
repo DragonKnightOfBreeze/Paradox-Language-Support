@@ -15,12 +15,12 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.type
-import icu.windea.pls.model.CwtSeparatorType
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtSeparatorType
 import icu.windea.pls.model.forCwtType
+import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtSeparatorType
+import icu.windea.pls.model.type.CwtTypeResolver
 import java.util.*
 
 /**
@@ -43,7 +43,7 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     val key: String
     val separatorType: CwtSeparatorType
     override val value: String
-    override val valueType: CwtType
+    override val valueType: CwtExpressionType
 
     interface Resolver {
         fun resolve(element: CwtOption): CwtOptionConfig?
@@ -51,8 +51,8 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
         fun create(
             key: String,
             value: String,
-            valueType: CwtType = CwtType.String,
-            separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
+            valueType: CwtExpressionType = CwtExpressionType.String,
+            separatorType: CwtSeparatorType = CwtSeparatorType.Equal,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
         ): CwtOptionConfig
     }
@@ -77,7 +77,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
             when {
                 e is CwtOptionKey -> keyElement = e
                 e is CwtValue -> valueElement = e
-                separatorType == null -> separatorType = CwtSeparatorType.resolve(e)
+                separatorType == null -> separatorType = CwtTypeResolver.resolveSeparatorType(e)
             }
         }
 
@@ -96,7 +96,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
 
         val key = keyElement.value
         val value = valueElement.value
-        val valueType = valueElement.type
+        val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(valueElement)
         return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
     }
@@ -104,7 +104,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
     override fun create(
         key: String,
         value: String,
-        valueType: CwtType,
+        valueType: CwtExpressionType,
         separatorType: CwtSeparatorType,
         optionConfigs: List<CwtOptionMemberConfig<*>>?,
     ): CwtOptionConfig {
@@ -121,7 +121,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
 }
 
 private const val blockValue = PlsStrings.blockFolder
-private val blockValueTypeId = CwtType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 private sealed class CwtOptionConfigBase : CwtOptionConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionConfig
@@ -147,13 +147,13 @@ private sealed class CwtOptionConfigImplBase(
 private class CwtOptionConfigImpl(
     key: String,
     value: String,
-    valueType: CwtType,
+    valueType: CwtExpressionType,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigImplBase(key, separatorType) {
     private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 
@@ -164,7 +164,7 @@ private class CwtOptionConfigImplNested(
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?,
 ) : CwtOptionConfigImplBase(key, separatorType) {
     override val value: String get() = blockValue
-    override val valueType: CwtType get() = CwtType.Block
+    override val valueType: CwtExpressionType get() = CwtExpressionType.Block
 }
 
 // endregion

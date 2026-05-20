@@ -19,15 +19,18 @@ import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModSetInfo
 import kotlinx.coroutines.CancellationException
 
+/**
+ * @see ParadoxModExporter
+ */
 class ParadoxModDependenciesExportPopup(
     private val project: Project,
     private val table: ParadoxModDependenciesTable,
-    modExporters: List<ParadoxModExporter> = ParadoxModExporter.getAll(table.model.settings.finalGameType),
-) : BaseListPopupStep<ParadoxModExporter>(getTitle(), modExporters) {
-    companion object {
-        private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
-
-        private val logger = logger<ParadoxModDependenciesExportPopup>()
+) : BaseListPopupStep<ParadoxModExporter>() {
+    init {
+        val title = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
+        val gameType = table.model.settings.finalGameType
+        val exporters = ParadoxModExporter.EP_NAME.extensionList.filter { it.isAvailable(gameType) }
+        init(title, exporters, null)
     }
 
     override fun getIconFor(value: ParadoxModExporter) = value.icon
@@ -36,9 +39,7 @@ class ParadoxModDependenciesExportPopup(
 
     override fun isSpeedSearchEnabled() = true
 
-    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean) = doFinalStep {
-        execute(selectedValue)
-    }
+    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean) = doFinalStep { execute(selectedValue) }
 
     private fun execute(modExporter: ParadoxModExporter) {
         val settings = table.model.settings
@@ -83,5 +84,9 @@ class ParadoxModDependenciesExportPopup(
         }
         val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal)
         PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
+    }
+
+    companion object {
+        private val logger = logger<ParadoxModDependenciesExportPopup>()
     }
 }

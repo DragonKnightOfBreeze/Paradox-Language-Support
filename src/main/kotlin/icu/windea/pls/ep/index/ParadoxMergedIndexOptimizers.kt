@@ -72,13 +72,16 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         if (attributes === CwtDeclarationConfigAttributes.EMPTY) return false
         return when {
             // see: icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport
-            attributes.dynamicValueInvolved -> true
+            attributes.involvesDynamicValue -> true
             // see: icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport
-            attributes.parameterInvolved -> true
+            attributes.involvesParameter -> true
             // see: icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport
-            attributes.localisationParameterInvolved -> true
+            attributes.involvesLocalisationParameter -> true
             // see: icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport
-            attributes.inferredScopeContextAwareDefinitionReferenceInvolved -> true
+            attributes.involvesInferredScopeContextAwareDefinitionReference -> true
+            // see: icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport
+            // see: icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport
+            attributes.involvesExternalReference -> true
             else -> false
         }
     }

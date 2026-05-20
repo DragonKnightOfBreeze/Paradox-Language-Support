@@ -20,8 +20,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.manipulation.CwtConfigMergeService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
@@ -60,8 +59,10 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.model.ParadoxMemberRole
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
+import icu.windea.pls.model.type.ParadoxMemberRole
+import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -136,7 +137,7 @@ object ParadoxConfigService {
         val file = element.containingFile ?: return null
         val gameType = selectGameType(file) ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
-        val memberRole = ParadoxMemberRole.resolve(element)
+        val memberRole = ParadoxTypeResolver.resolveMemberRole(element)
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
@@ -214,7 +215,7 @@ object ParadoxConfigService {
     @Optimized
     fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (rootConfigs.isEmpty()) return emptyList()
-        if (context.memberRole == ParadoxMemberRole.PROPERTY_VALUE) {
+        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
             return rootConfigs.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
         return rootConfigs
@@ -229,13 +230,13 @@ object ParadoxConfigService {
     private fun flattenConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
 
-        if (context.memberRole == ParadoxMemberRole.OTHER) return emptyList() // 忽略
+        if (context.memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
         val memberPath = context.memberPath ?: return emptyList() // 忽略
         if (memberPath.isEmpty()) return emptyList() // 忽略
         val subPath = memberPath.subPaths.last()
-        val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
+        val expression = ParadoxExpression.resolve(subPath, quoted = false, role = ParadoxExpressionRole.Key)
         val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
-        val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, isKey = true) }
+        val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
         val configGroup = context.configGroup
         val element = context.element
@@ -276,7 +277,7 @@ object ParadoxConfigService {
                     if (configs.isNullOrEmpty()) return@f1
 
                     val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-                    val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+                    val lenientMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
 
                     configs.forEachFast { config ->
                         // 打平后需要首先进行必要的内联
@@ -294,7 +295,7 @@ object ParadoxConfigService {
                                 when (m) {
                                     null -> this += matchedConfig
                                     true -> exactMatchedConfigs += matchedConfig
-                                    false -> relaxMatchedConfigs += matchedConfig
+                                    false -> lenientMatchedConfigs += matchedConfig
                                 }
                             } else {
                                 this += matchedConfig
@@ -304,15 +305,15 @@ object ParadoxConfigService {
 
                     if (exactMatchedConfigs.isNotEmpty()) {
                         addAll(exactMatchedConfigs)
-                    } else if (relaxMatchedConfigs.size == 1) {
-                        this += relaxMatchedConfigs.single()
+                    } else if (lenientMatchedConfigs.size == 1) {
+                        this += lenientMatchedConfigs.single()
                     }
                 }
             }
         }
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
-        if (context.memberRole == ParadoxMemberRole.PROPERTY_VALUE) {
+        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
             result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
             result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
@@ -320,7 +321,7 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxScriptExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+    private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
             val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
@@ -331,7 +332,7 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxScriptExpression): List<CwtValueConfig>? {
+    private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxExpression): List<CwtValueConfig>? {
         // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
 
         if (element == null) return null
@@ -347,7 +348,7 @@ object ParadoxConfigService {
 
         if (configs == null) return null // 不是作为参数的键，不作特殊处理
         if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
-        return CwtConfigMergeService.mergeAndMatchValueConfig(configs, configExpression)
+        return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
     }
 
     private fun inlineConfigForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
@@ -356,11 +357,11 @@ object ParadoxConfigService {
         val valueExpression = config.valueExpression
         val result = when (valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
-                val inlined = CwtConfigInlineService.inlineSingleAlias(config)
+                val inlined = CwtConfigManipulationService.inlineSingleAlias(config)
                 inlined?.to?.singletonList()
             }
             CwtDataTypes.AliasMatchLeft -> {
-                val inlined = CwtConfigInlineService.inlineAlias(config, key)
+                val inlined = CwtConfigManipulationService.inlineAlias(config, key)
                 inlined
             }
             else -> null
@@ -400,7 +401,7 @@ object ParadoxConfigService {
                 if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
-                val keyExpression = element.propertyKey.let { ParadoxScriptExpression.resolve(it, options) }
+                val keyExpression = element.propertyKey.let { ParadoxExpression.resolve(it, options) }
                 val candidatesForKey = ParadoxMatchPipeline.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
@@ -410,7 +411,7 @@ object ParadoxConfigService {
                 if (resultForKey.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
-                val valueExpression = element.propertyValue?.let { ParadoxScriptExpression.resolve(it, options) }
+                val valueExpression = element.propertyValue?.let { ParadoxExpression.resolve(it, options) }
                 if (valueExpression == null) return resultForKey // 如果无法得到值表达式，则返回所有匹配键的规则
                 val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
@@ -428,8 +429,8 @@ object ParadoxConfigService {
 
                 ProgressManager.checkCanceled()
                 val valueExpression = when (element) {
-                    is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
-                    is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, options)
+                    is ParadoxScriptFile -> ParadoxExpression.resolveBlock()
+                    is ParadoxScriptValue -> ParadoxExpression.resolve(element, options)
                     else -> null
                 }
                 if (valueExpression == null) return configs // 如果无法得到值表达式，则返回所有上下文值规则

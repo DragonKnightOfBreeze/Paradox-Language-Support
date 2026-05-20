@@ -20,6 +20,8 @@ public interface CwtValue extends CwtExpressionElement, CwtMemberContainer, CwtM
 
   @NotNull CwtValue setValue(@NotNull String value);
 
+  @NotNull String getExpression();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();

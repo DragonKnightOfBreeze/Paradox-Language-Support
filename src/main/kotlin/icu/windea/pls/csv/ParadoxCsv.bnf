@@ -29,7 +29,7 @@ header ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
   ]
-  methods=[getIcon]
+  methods=[getIcon getComponents]
 }
 // EOL is recognized by a dedicated lexer token
 row ::= column_items {
@@ -48,5 +48,5 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
   ]
-  methods=[getIcon getName getValue setValue getReference getReferences]
+  methods=[getIcon getName getValue setValue getExpression getReference getReferences]
 }

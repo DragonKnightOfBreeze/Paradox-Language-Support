@@ -16,7 +16,8 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScope
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 
 /**
  * 本地化命令规则。
@@ -78,9 +79,9 @@ private class CwtLocalisationCommandConfigResolverImpl : CwtLocalisationCommandC
     private fun doResolve(config: CwtPropertyConfig): CwtLocalisationCommandConfig {
         val name = config.key
         val supportedScopes = buildSet {
-            config.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
-            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
-        }.optimized().orNull() ?: ParadoxScopeId.anyScopeIdSet
+            config.stringValue?.let { v -> add(ParadoxScope.getId(v)) }
+            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }
+        }.optimized().orNull() ?: ParadoxScopeConstants.anyScopes
         logger.debug { "Resolved localisation command config (name: $name).".withLocationPrefix(config) }
         return CwtLocalisationCommandConfigImpl(config, name, supportedScopes)
     }

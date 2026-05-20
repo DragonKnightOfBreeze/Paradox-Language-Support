@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <!-- diamond -->
+  <rect fill="#F98B9E" fill-opacity=".6" fill-rule="evenodd" width="10.4" height="10.4" x="2.8" y="2.8" rx="1" transform="rotate(45 8 8)"/>
+  <!-- L -->
+  <polygon fill="#231F20" fill-opacity=".7" fill-rule="evenodd" points="6 5 7 5 7 10 10 10 10 11 7 11 6 11"/>
+</svg>

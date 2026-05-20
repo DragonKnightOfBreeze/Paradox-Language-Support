@@ -22,7 +22,6 @@ import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
@@ -261,8 +260,7 @@ object CwtConfigManager {
         val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
         val result = mutableSetOf<String>()
         for (config in configs) {
-            val configExpression = config.configExpression
-            CwtConfigExpressionService.findLiterals(configExpression, configGroup, result)
+            CwtConfigService.collectLiterals(config, configGroup, result)
         }
         return result
     }

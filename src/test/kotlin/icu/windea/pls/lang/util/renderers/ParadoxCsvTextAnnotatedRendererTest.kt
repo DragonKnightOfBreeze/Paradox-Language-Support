@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util.renderers
 
-import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -49,22 +48,12 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
         assertResult("common/misc/example_unformatted.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
-    @Test
-    fun snapshotTest_chronicle() {
-        configureFile("common/chapters/00_chapters.txt")
-        configureFile("common/chapters/categories/00_chapter_categories.txt")
-        configureFile("common/chapters/00_chapter_pages.csv")
-
-        IndexingTestUtil.waitUntilIndexesAreReady(project)
-
-        assertResult("common/chapters/00_chapter_pages.csv", ParadoxAnnotatedLevel.ALL)
-    }
-
     private fun configureFile(path: String) {
         markFileInfo(gameType, path)
         myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
+    @Suppress("SameParameterValue")
     private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxCsvFile

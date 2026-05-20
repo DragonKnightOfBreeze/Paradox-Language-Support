@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
 
 class ParadoxCommandSuffixNode(
     override val text: String,
@@ -12,7 +12,7 @@ class ParadoxCommandSuffixNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.TEXT
+        return ParadoxLocalisationHighlighterColors.TEXT
     }
 
     open class Resolver {

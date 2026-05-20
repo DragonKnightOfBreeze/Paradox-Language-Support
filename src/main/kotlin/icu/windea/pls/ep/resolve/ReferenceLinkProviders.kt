@@ -19,10 +19,9 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -169,7 +168,7 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val name = remain
         val project = contextElement.project
-        val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() // global scripted variable only
     }
@@ -202,7 +201,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
         val name = if (tokens.size == 2) tokens.getOrNull(1) else tokens.getOrNull(0)
         if (name == null) return null
         val project = contextElement.project
-        val selector = selector(project, contextElement).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).find()
     }
@@ -234,7 +233,7 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val name = remain
         val project = contextElement.project
-        val selector = selector(project, contextElement).localisation().contextSensitive().preferLocale(selectLocale(contextElement))
+        val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(selectLocale(contextElement))
             .withGameType(gameType)
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
@@ -266,7 +265,7 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val filePath = remain
         val project = contextElement.project
-        val selector = selector(project, contextElement).file().contextSensitive()
+        val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFileSystemItem(project)
     }

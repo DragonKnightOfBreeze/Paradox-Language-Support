@@ -19,7 +19,7 @@ localisation (.yml), and CSV (.csv) files — the same set tracked by the
 plugin.  Only files *indirectly* under entry directories are counted.
 
 Game metadata, entry info, and path detection logic are synced from the
-plugin's Kotlin sources (ParadoxGameType, ParadoxGameTypeMetadata, PlsPathServiceImpl,
+plugin's Kotlin sources (ParadoxGameType, ParadoxGameTypeMetadata, SpecialPathServiceImpl,
 PlsConstants).
 
 Auto-generated files are detected and reported separately:
@@ -130,7 +130,7 @@ def file_category(ext: str) -> str | None:
     return None
 
 # ===========================================================================
-# Path detection (synced from PlsPathServiceImpl)
+# Path detection (synced from SpecialPathServiceImpl)
 # ===========================================================================
 
 _steam_path_cache: dict[str, str | None] = {}

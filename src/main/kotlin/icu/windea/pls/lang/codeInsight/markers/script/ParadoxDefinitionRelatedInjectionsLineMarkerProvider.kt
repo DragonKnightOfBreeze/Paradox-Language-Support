@@ -15,8 +15,7 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.constants.PlsStrings
@@ -45,7 +44,7 @@ class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemL
         val prefix = PlsStrings.definitionInjectionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
         val project = element.project
-        val selector = selector(project, element).definitionInjection().contextSensitive()
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, element).contextSensitive()
         val targets0 = ParadoxDefinitionInjectionSearch.searchElement(null, definitionInfo.name, definitionInfo.type, selector).findAll()
         if (targets0.isEmpty()) return
         val targets = targets0.optimized()

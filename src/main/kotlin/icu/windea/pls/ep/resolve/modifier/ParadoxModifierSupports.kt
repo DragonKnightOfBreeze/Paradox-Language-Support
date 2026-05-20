@@ -31,7 +31,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.scopeContext
 import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNecessary
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
@@ -42,9 +42,7 @@ import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -124,7 +122,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withModifierLocalizedNamesIfNecessary(name, element)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -202,7 +200,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
                     .withModifierLocalizedNamesIfNecessary(name, element)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
                 true
             }
@@ -321,7 +319,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             append(PlsStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
-            // 2.1.8 文本可能过长，因此目前改为不显示
+            // 2.1.8 文本可能过长，因此这里目前改为不显示
             // append(" ")
             // grayed {
             //     append(PlsBundle.message("fromTemplate"))
@@ -343,7 +341,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project
-        val selector = selector(project, element).definition().contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
         val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
@@ -360,7 +358,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val selector = selector(project, element).definition().contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
         val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
@@ -384,7 +382,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 
-        val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
@@ -409,7 +407,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withPatchableIcon(PlsIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withModifierLocalizedNamesIfNecessary(name, element)
-                    .forScriptExpression(context)
+                    .forExpression(context)
                 result.addElement(lookupElement, context)
             }
             true
@@ -458,7 +456,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
-        val selector = selector(project, definition).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
         val economicCategory = ParadoxDefinitionSearch.searchProperty(definitionInfo.name, ParadoxDefinitionTypes.economicCategory, selector).find() ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         val gameType = definitionInfo.gameType

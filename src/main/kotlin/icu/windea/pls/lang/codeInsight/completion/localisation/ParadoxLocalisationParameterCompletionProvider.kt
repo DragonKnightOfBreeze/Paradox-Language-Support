@@ -12,9 +12,8 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -40,7 +39,7 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
         result.restartCompletionOnAnyPrefixChange()
 
         // 提示localisation或者synced_localisation
-        val selector = selector(project, file).localisation()
+        val selector = ParadoxLocalisationSearch.selector(project, file)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {

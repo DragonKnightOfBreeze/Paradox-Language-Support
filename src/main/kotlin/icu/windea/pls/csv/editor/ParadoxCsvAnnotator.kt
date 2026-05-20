@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.resolve.ParadoxTypeService
-import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.type.ParadoxExpressionType
+import icu.windea.pls.model.type.ParadoxTypeResolver
 
 /**
  * 用于在 CSV 文件中提供额外的代码高亮。
@@ -30,13 +30,13 @@ class ParadoxCsvAnnotator : Annotator {
 
     private fun getAttributesKey(element: ParadoxCsvColumn): TextAttributesKey? {
         if (element.firstChild == null) return null
-        if (element.isHeaderColumn()) return ParadoxCsvAttributesKeys.HEADER
+        if (element.isHeaderColumn()) return ParadoxCsvHighlighterColors.HEADER
 
-        val resolvedType = ParadoxTypeService.resolve(element.value)
+        val resolvedType = ParadoxTypeResolver.resolveExpressionType(element.value)
         val attributesKeys = when (resolvedType) {
-            ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD
-            ParadoxType.Int -> ParadoxCsvAttributesKeys.NUMBER
-            ParadoxType.Float -> ParadoxCsvAttributesKeys.NUMBER
+            ParadoxExpressionType.Boolean -> ParadoxCsvHighlighterColors.KEYWORD
+            ParadoxExpressionType.Int -> ParadoxCsvHighlighterColors.NUMBER
+            ParadoxExpressionType.Float -> ParadoxCsvHighlighterColors.NUMBER
             // ParadoxType.String -> ParadoxCsvAttributesKeys.STRING_KEY
             else -> null
         }

@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager.Keys
 import icu.windea.pls.config.util.CwtConfigManager.getConfigPath
@@ -359,5 +360,10 @@ object CwtConfigService {
             result += pathPatterns.map { it.substringBefore("/**", "").orNull() ?: it.substringBeforeLast("/") }
         }
         return result
+    }
+
+    fun collectLiterals(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup, result: MutableSet<String>) {
+        val configExpression = config.configExpression
+        CwtConfigExpressionService.collectLiterals(configExpression, configGroup, result)
     }
 }

@@ -17,8 +17,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -55,7 +54,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
 
         val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         val iconFile = paths.firstNotNullOfOrNull { path ->
-            val iconSelector = selector(project, element).file().contextSensitive()
+            val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
             ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
         }
         val iconUrl = when {

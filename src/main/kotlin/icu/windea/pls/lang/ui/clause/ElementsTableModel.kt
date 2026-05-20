@@ -6,7 +6,7 @@ import com.intellij.util.ui.EditableModel
 import com.intellij.util.ui.ListTableModel
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
-import icu.windea.pls.model.ParadoxSeparatorType
+import icu.windea.pls.model.type.ParadoxSeparatorType
 import javax.swing.table.TableCellEditor
 import javax.swing.table.TableCellRenderer
 

@@ -1,0 +1,52 @@
+types = {
+    type[weapon] = {
+        subtype[blade_weapon] = {}
+        subtype[strike_weapon] = {}
+        subtype[ranged_weapon] = {}
+
+        subtype[sword] = {}
+        subtype[spear] = {}
+        subtype[axe] = {}
+        subtype[whip] = {}
+        subtype[hammer] = {}
+        subtype[bow] = {}
+        subtype[crossbow] = {}
+
+        localisation = {
+            ## required
+            name = $
+            desc = $_desc
+
+            subtype[blade_weapon] = {
+                blade_attack_desc = $_blade_attack_desc
+
+                subtype[sword] = {
+                    ## required
+                    sword_size = $_sword_size
+                }
+
+                subtype[spear] = {
+                    ## required
+                    spear_size = $_spear_size
+                }
+            }
+
+            subtype[strike_weapon] = {
+                strike_attack_desc = $_strike_attack_desc
+
+                subtype[hammer] = {
+                    ## required
+                    strike_power = $_strike_power
+                }
+            }
+
+            subtype[ranged_weapon] = {
+                default_arrow = $_default_arrow
+
+                subtype[!crossbow] = {
+                    bonus_desc = $_bonus_desc
+                }
+            }
+        }
+    }
+}

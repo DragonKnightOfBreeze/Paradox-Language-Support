@@ -2,20 +2,20 @@ package icu.windea.pls.lang.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileChooser.FileSystemTree
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import java.nio.file.Path
 
 interface GoToPathActions {
     class Steam : GoToPathActionBase() {
         override fun getTargetPath(e: AnActionEvent): Path? {
-            return PlsPathService.getInstance().getSteamPath()
+            return SpecialPathService.getInstance().getSteamPath()
         }
     }
 
     class SteamGame : GoToPathActionBase() {
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+            return SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
 
@@ -26,7 +26,7 @@ interface GoToPathActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
+            return SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         }
     }
 
@@ -37,7 +37,7 @@ interface GoToPathActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getInstance().getGameDataPath(gameType)
+            return SpecialPathService.getInstance().getGameDataPath(gameType)
         }
     }
 }

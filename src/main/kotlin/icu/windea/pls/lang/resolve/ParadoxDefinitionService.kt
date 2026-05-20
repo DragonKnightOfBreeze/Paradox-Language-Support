@@ -12,6 +12,7 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -27,7 +28,7 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.stringValue
-import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -184,9 +185,9 @@ object ParadoxDefinitionService {
     }
 
     fun resolveRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
-        val mergedConfigs = definitionInfo.typeConfig.localisation?.getConfigs(definitionInfo.subtypes) ?: return emptyList()
-        val result = buildList(mergedConfigs.size) {
-            for (config in mergedConfigs) {
+        val locationConfigs = definitionInfo.typeConfig.localisation?.getLocationConfigs(definitionInfo.subtypes)?.orNull() ?: return emptyList()
+        val result = buildList(locationConfigs.size) {
+            for (config in locationConfigs) {
                 val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
                 val info = ParadoxDefinitionInfo.RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
                 this += info
@@ -196,9 +197,9 @@ object ParadoxDefinitionService {
     }
 
     fun resolveRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
-        val mergedConfigs = definitionInfo.typeConfig.images?.getConfigs(definitionInfo.subtypes) ?: return emptyList()
-        val result = buildList(mergedConfigs.size) {
-            for (config in mergedConfigs) {
+        val locationConfigs = definitionInfo.typeConfig.images?.getLocationConfigs(definitionInfo.subtypes)?.orNull() ?: return emptyList()
+        val result = buildList(locationConfigs.size) {
+            for (config in locationConfigs) {
                 val locationExpression = CwtImageLocationExpression.resolve(config.value)
                 val info = ParadoxDefinitionInfo.RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
                 this += info

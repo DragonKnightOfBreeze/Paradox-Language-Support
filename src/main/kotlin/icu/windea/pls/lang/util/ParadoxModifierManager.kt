@@ -36,12 +36,10 @@ import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
-import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
+import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxModifierInfo
@@ -115,8 +113,7 @@ object ParadoxModifierManager {
             }
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = selector(project, contextElement).definition().contextSensitive()
-                    .distinctByName()
+                val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
                 ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
                     val name = definition.definitionInfo?.name
@@ -144,10 +141,8 @@ object ParadoxModifierManager {
                 if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScopeType = complexEnumConfig.searchScopeType
-                    val selector = selector(project, contextElement).complexEnumValue()
+                    val selector = ParadoxComplexEnumValueSearch.selector(project, contextElement).contextSensitive().distinct()
                         .withSearchScopeType(searchScopeType)
-                        .contextSensitive()
-                        .distinctByName()
                     ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync p@{ info ->
                         ProgressManager.checkCanceled()
                         val name = info.name
@@ -167,7 +162,7 @@ object ParadoxModifierManager {
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = selector(project, contextElement).dynamicValue().distinctByName()
+                val selector = ParadoxDynamicValueSearch.selector(project, contextElement).distinct()
                 ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     // 去除后面的作用域信息
@@ -249,7 +244,7 @@ object ParadoxModifierManager {
         ProgressManager.checkCanceled()
         val keys = getModifierNameKeys(name, element)
         return keys.firstNotNullOfOrNull { key ->
-            val selector = selector(project, element).localisation()
+            val selector = ParadoxLocalisationSearch.selector(project, element)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()

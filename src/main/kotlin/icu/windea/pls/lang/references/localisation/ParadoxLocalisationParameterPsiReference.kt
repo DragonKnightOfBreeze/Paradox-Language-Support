@@ -9,9 +9,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
@@ -62,7 +61,7 @@ class ParadoxLocalisationParameterPsiReference(
         val name = element.name
 
         // 尝试解析成 localisation 或 synced_localisation
-        val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
+        val selector = ParadoxLocalisationSearch.selector(project, file).contextSensitive().preferLocale(locale)
         val resolved = ParadoxLocalisationSearch.search(name, type, selector).find()
         if (resolved != null) return resolved
 
@@ -81,7 +80,7 @@ class ParadoxLocalisationParameterPsiReference(
         val name = element.name
 
         // 尝试解析成 localisation 或 synced_localisation
-        val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
+        val selector = ParadoxLocalisationSearch.selector(project, file).contextSensitive().preferLocale(locale)
         // 查找所有语言环境的
         val resolved = ParadoxLocalisationSearch.search(name, type, selector).findAll()
         if (resolved.isNotEmpty()) return resolved.createResults()

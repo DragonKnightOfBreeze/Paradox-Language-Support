@@ -13,23 +13,23 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 /**
  * 作用域上下文。
  *
- * **作用域上下文（scope context）** 是模组编程中 **谓语**（如触发器、效果、修正等）的结构中，某处的当前状态，
- * 保存了 **系统作用域** 到 **作用域** 信息的映射。
- * 以便进行取值、回溯、入栈、替换等操作。
+ * 作用域上下文（scope context）是各种谓语（如触发器、效果、修正等）的结构中，某处的当前状态。
+ * 它会在内部维护系统作用域到作用域信息的映射，以及上一步作用域的上下文栈。
  *
- * 注意：求值得到的作用域上下文，一般是指切换后的上下文。即，进入脚本成员的子块后，或者进入链接节点后的上下文。
+ * 注意：评估得到的作用域上下文，一般是指切换后的上下文。例如，进入脚本成员的子块后的上下文，或者进入链接节点后的上下文。
  *
  * @property scope 当前作用域（即 `this`）。
- * @property root 根作用域（即 `root`）。
- * @property from 来源作用域（即 `from`）。等同于调用者事件的根作用域，或者由游戏预定义（硬编码）。
- * @property fromFrom 堆叠1次后的来源作用域（即 `fromFrom`）。
- * @property fromFromFrom 堆叠2次后的来源作用域（即 `fromFromFrom`）。
- * @property fromFromFromFrom 堆叠3次后的来源作用域（即 `fromFromFromFrom`）。
- * @property prevStack 上一步作用域的上下文的栈。
- * @property prev 上一步作用域（即 `prev`）的上下文。等同于切换前的那个作用域。
- * @property prevPrev 堆叠1次后的上一步作用域（即 `prevPrev`）的上下文。
- * @property prevPrevPrev 堆叠2次后的上一步作用域（即 `prevPrevPrev`）的上下文。
- * @property prevPrevPrevPrev 堆叠3次后的上一步作用域（即 `prevPrevPrevPrev`）的上下文。
+ * @property root 根作用域（即 `root`）。此作用域等同于当前事件的根作用域，或者由系统预定义（硬编码）。
+ * @property from 来源作用域（即 `from`）的上下文。此作用域等同于调用者事件的根作用域，或者由游戏预定义（硬编码）。
+ * @property from2 堆叠1次后的来源作用域（即 `fromfrom`）的上下文。
+ * @property from3 堆叠2次后的来源作用域（即 `fromfromfrom`）的上下文。
+ * @property from4 堆叠3次后的来源作用域（即 `fromfromfromfrom`）的上下文。
+ * @property prevStack 上一步作用域的上下文栈。
+ * @property prev 上一步作用域（即 `prev`）的上下文。此作用域等同于切换前的那个作用域。
+ * @property prev2 堆叠1次后的上一步作用域（即 `prevprev`）的上下文。
+ * @property prev3 堆叠2次后的上一步作用域（即 `prevprevprev`）的上下文。
+ * @property prev4 堆叠3次后的上一步作用域（即 `prevprevprevprev`）的上下文。
+ * @property links 对应的表达式为 [ParadoxScopeFieldExpression] 时，其中的各个 [ParadoxScopeNode] 以及对应的作用域上下文的列表。
  *
  * @see ParadoxScope
  * @see CwtScopeConfig
@@ -39,108 +39,114 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 sealed interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope
     val root: ParadoxScopeContext?
+
     val from: ParadoxScopeContext?
-    val fromFrom: ParadoxScopeContext?
-    val fromFromFrom: ParadoxScopeContext?
-    val fromFromFromFrom: ParadoxScopeContext?
+    val from2: ParadoxScopeContext?
+    val from3: ParadoxScopeContext?
+    val from4: ParadoxScopeContext?
 
     val prevStack: List<ParadoxScopeContext>
     val prev: ParadoxScopeContext? get() = prevStack.getOrNull(0)
-    val prevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(1)
-    val prevPrevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(2)
-    val prevPrevPrevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(3)
+    val prev2: ParadoxScopeContext? get() = prevStack.getOrNull(1)
+    val prev3: ParadoxScopeContext? get() = prevStack.getOrNull(2)
+    val prev4: ParadoxScopeContext? get() = prevStack.getOrNull(3)
 
-    /** 对应的表达式为 [ParadoxScopeFieldExpression] 时，其中的各个 [ParadoxScopeNode] 以及对应的作用域上下文的列表。 */
     val links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>
 
     fun resolveNext(pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
-        return ParadoxScopeContextResolver.resolveNext(this, pushScope, isFrom)
+        return ParadoxScopeResolver.resolveNextScopeContext(this, pushScope, isFrom)
     }
 
     fun resolveNext(next: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
-        return ParadoxScopeContextResolver.resolveNext(this, next, isFrom)
+        return ParadoxScopeResolver.resolveNextScopeContext(this, next, isFrom)
     }
 
     fun resolveNext(links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>): ParadoxScopeContext {
-        return ParadoxScopeContextResolver.resolveNext(this, links)
+        return ParadoxScopeResolver.resolveNextScopeContext(this, links)
+    }
+
+    fun toScopeMap(showFrom: Boolean = true, showPrev: Boolean = true): Map<String, ParadoxScope> {
+        return ParadoxScopeResolver.toScopeMap(this, showFrom, showPrev)
+    }
+
+    fun toScopeIdMap(showFrom: Boolean = true, showPrev: Boolean = true): Map<String, String> {
+        return ParadoxScopeResolver.toScopeIdMap(this, showFrom, showPrev)
+    }
+
+    fun toPresentableString(separator: String = " ", showFrom: Boolean = true, showPrev: Boolean = true): String {
+        return ParadoxScopeResolver.toPresentableString(this, separator, showFrom, showPrev)
     }
 
     class Simple(
-        override val scope: ParadoxScope
+        override val scope: ParadoxScope,
+        override val root: ParadoxScopeContext? = null,
     ) : UserDataHolderBase(), ParadoxScopeContext {
-        override val root: ParadoxScopeContext? get() = null
         override val from: ParadoxScopeContext? get() = null
-        override val fromFrom: ParadoxScopeContext? get() = null
-        override val fromFromFrom: ParadoxScopeContext? get() = null
-        override val fromFromFromFrom: ParadoxScopeContext? get() = null
+        override val from2: ParadoxScopeContext? get() = null
+        override val from3: ParadoxScopeContext? get() = null
+        override val from4: ParadoxScopeContext? get() = null
         override val prevStack: List<ParadoxScopeContext> get() = emptyList()
         override val links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>> get() = emptyList()
 
-        override fun toString(): String {
-            return "SimpleParadoxScopeContext: " + toScopeIdMap().toString()
-        }
+        override fun toString() = toPresentableString()
     }
 
-    class Default(
+    class Complex(
         override val scope: ParadoxScope,
         override val root: ParadoxScopeContext? = null,
         override val from: ParadoxScopeContext? = null,
-        override val fromFrom: ParadoxScopeContext? = null,
-        override val fromFromFrom: ParadoxScopeContext? = null,
-        override val fromFromFromFrom: ParadoxScopeContext? = null,
-        override val prevStack: List<ParadoxScopeContext> = emptyList()
+        override val from2: ParadoxScopeContext? = null,
+        override val from3: ParadoxScopeContext? = null,
+        override val from4: ParadoxScopeContext? = null,
+        override val prevStack: List<ParadoxScopeContext> = emptyList(),
     ) : UserDataHolderBase(), ParadoxScopeContext {
         override val links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>> get() = emptyList()
 
-        override fun toString(): String {
-            return "DefaultParadoxScopeContext: " + toScopeIdMap().toString()
-        }
+        override fun toString() = toPresentableString()
     }
 
     class Linked(
         override val links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>,
-        override val prevStack: List<ParadoxScopeContext> = emptyList()
+        override val prevStack: List<ParadoxScopeContext> = emptyList(),
     ) : UserDataHolderBase(), ParadoxScopeContext {
         private val last = links.lastOrNull()?.second ?: throw IllegalArgumentException()
 
         override val scope: ParadoxScope get() = last.scope
         override val root: ParadoxScopeContext? get() = last.root
         override val from: ParadoxScopeContext? get() = last.from
-        override val fromFrom: ParadoxScopeContext? get() = last.fromFrom
-        override val fromFromFrom: ParadoxScopeContext? get() = last.fromFromFrom
-        override val fromFromFromFrom: ParadoxScopeContext? get() = last.fromFromFromFrom
+        override val from2: ParadoxScopeContext? get() = last.from2
+        override val from3: ParadoxScopeContext? get() = last.from3
+        override val from4: ParadoxScopeContext? get() = last.from4
 
-        override fun toString(): String {
-            return "LinkedParadoxScopeContext: " + toScopeIdMap().toString()
-        }
+        override fun toString() = toPresentableString()
     }
 
     object Keys : KeyRegistry()
 
     companion object {
         @JvmStatic
-        fun getAny(): ParadoxScopeContext {
-            return ParadoxScopeContextResolver.getAny()
+        fun resolveAny(): ParadoxScopeContext {
+            return ParadoxScopeResolver.resolveAnyScopeContext()
         }
 
         @JvmStatic
-        fun getUnknown(input: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
-            return ParadoxScopeContextResolver.getUnknown(input, isFrom)
+        fun resolveUnknown(input: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
+            return ParadoxScopeResolver.resolveUnknownScopeContext(input, isFrom)
         }
 
         @JvmStatic
-        fun get(thisScope: String): ParadoxScopeContext {
-            return ParadoxScopeContextResolver.get(thisScope)
+        fun resolve(thisScope: String): ParadoxScopeContext {
+            return ParadoxScopeResolver.resolveScopeContext(thisScope)
         }
 
         @JvmStatic
-        fun get(thisScope: String, rootScope: String?): ParadoxScopeContext {
-            return ParadoxScopeContextResolver.get(thisScope, rootScope)
+        fun resolve(thisScope: String, rootScope: String?): ParadoxScopeContext {
+            return ParadoxScopeResolver.resolveScopeContext(thisScope, rootScope)
         }
 
         @JvmStatic
-        fun get(map: Map<String, String>): ParadoxScopeContext? {
-            return ParadoxScopeContextResolver.get(map)
+        fun resolve(map: Map<String, String>): ParadoxScopeContext? {
+            return ParadoxScopeResolver.resolveScopeContext(map)
         }
     }
 }

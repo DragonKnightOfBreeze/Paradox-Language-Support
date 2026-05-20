@@ -12,11 +12,14 @@ import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.config.CwtDataType
 
 /**
  * 提供对CSV表达式（列）的支持。
  *
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
+ *
+ * 注意：相比 [ParadoxScriptExpressionSupport]，仅支持有限的 [CwtDataType]。
  *
  * @see ParadoxCsvExpressionElement
  */

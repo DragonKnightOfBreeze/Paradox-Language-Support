@@ -9,8 +9,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
@@ -27,7 +26,7 @@ class ParadoxDefinitionImplementationsSearcher : QueryExecutor<PsiElement, Defin
             val name = definitionInfo.name.orNull() ?: return@action true
             val type = definitionInfo.type.orNull() ?: return@action true
             // 这里不进行排序
-            val selector = selector(project, sourceElement).definition()
+            val selector = ParadoxDefinitionSearch.selector(project, sourceElement)
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxDefinitionSearch.searchElement(name, type, selector).forEach(consumer)
         }

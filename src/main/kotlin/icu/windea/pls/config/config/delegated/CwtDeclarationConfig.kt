@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
@@ -21,7 +21,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * 用于描述定义声明的结构，从而在定义声明中提供代码补全、代码检查等功能。
  *
  * 说明：
- * - 可在其中通过子类型表达式（[ParadoxDefinitionSubtypeExpression]）限定定义声明的结构。
+ * - 可在其中通过 `subtype[{expression}] = {...}` 指定需要匹配的子类型。其中 `{expression}` 为子类型表达式（[ParadoxDefinitionSubtypeExpression]）。支持嵌套使用。
  * - 可在其中引用别名规则（[CwtAliasConfig]）与单别名规则（[CwtSingleAliasConfig]），从而简化声明规则的编写。
  * - 切换类型（swapped type）的声明规则可以直接嵌套在对应的基础类型（base type）的声明规则中。
  *
@@ -95,7 +95,7 @@ private class CwtDeclarationConfigImpl(
     override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
 
     private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
+        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtDeclarationConfigImpl(name='$name')"

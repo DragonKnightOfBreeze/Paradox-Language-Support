@@ -70,6 +70,11 @@ public class CwtPropertyImpl extends ASTWrapperPsiElement implements CwtProperty
   }
 
   @Override
+  public @NotNull String getExpression() {
+    return CwtPsiImplUtil.getExpression(this);
+  }
+
+  @Override
   public @Nullable CwtBlock getMembersRoot() {
     return CwtPsiImplUtil.getMembersRoot(this);
   }

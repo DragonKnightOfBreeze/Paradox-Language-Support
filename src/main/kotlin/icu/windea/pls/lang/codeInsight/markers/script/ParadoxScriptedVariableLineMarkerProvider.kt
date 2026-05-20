@@ -17,8 +17,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -40,7 +39,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         // 目标：同名封装变量
         val targets by lazy {
             val project = element.project
-            val selector = selector(project, element).scriptedVariable().contextSensitive()
+            val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
             val targets0 = mutableSetOf<ParadoxScriptScriptedVariable>()
             // 这里一般来说只会带上当前封装变量自身
             ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets0.addAll(it) }

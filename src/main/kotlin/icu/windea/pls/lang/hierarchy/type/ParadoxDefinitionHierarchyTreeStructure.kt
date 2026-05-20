@@ -15,8 +15,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -209,7 +208,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
         }
         val element = elementPointer.element
         val searchScopeType = getHierarchySettings().scopeType
-        val selector = selector(project, element).definition().withSearchScopeType(searchScopeType)
+        val selector = ParadoxDefinitionSearch.selector(project, element).withSearchScopeType(searchScopeType)
         val definitions = ParadoxDefinitionSearch.searchElement(null, typeName, selector).findAll()
         if (definitions.isEmpty()) return
         val groupingRules = getGroupingRules(descriptor)
@@ -267,7 +266,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
         val definitionInfo = definition.definitionInfo ?: return
         if (!type.predicate(definitionInfo)) return
         val searchScopeType = getHierarchySettings().scopeType
-        val selector = selector(project, definition).definition().withSearchScopeType(searchScopeType)
+        val selector = ParadoxDefinitionSearch.selector(project, definition).withSearchScopeType(searchScopeType)
         val nestedDefinitions = when (type) {
             Type.EventTreeInvoker -> ParadoxEventManager.getInvokerEvents(definition, selector)
             Type.EventTreeInvoked -> ParadoxEventManager.getInvokedEvents(definition, selector)

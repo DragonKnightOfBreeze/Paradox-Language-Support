@@ -8,6 +8,7 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
@@ -161,7 +162,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         var previousInfo: ParadoxComplexEnumValueIndexInfo? = null
-        return MutableList(size) {
+        return ImmutableList(size) {
             val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
             val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
             val definitionElementOffset = storage.readIntFast()

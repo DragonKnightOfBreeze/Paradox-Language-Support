@@ -23,7 +23,6 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
@@ -168,11 +167,11 @@ object ParadoxDefinitionInjectionManager {
     /**
      * 检查定义注入是否允许目标不存在（此时不会报告为错误）。
      */
-    fun isRelaxMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+    fun isLenientMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
         val config = configGroup.macrosModel.forDefinitionInjections ?: return false
-        return mode in config.relaxModes
+        return mode in config.lenientModes
     }
 
     /**
@@ -209,7 +208,7 @@ object ParadoxDefinitionInjectionManager {
         if (definitionInjectionInfo.typeConfig == null) return false
         val name = definitionInjectionInfo.target
         val typeExpression = definitionInjectionInfo.type
-        val selector = selector(definitionInjectionInfo.project, context).definition()
+        val selector = ParadoxDefinitionSearch.selector(definitionInjectionInfo.project, context)
         return ParadoxDefinitionSearch.searchProperty(name, typeExpression, selector).findFirst() != null
     }
 

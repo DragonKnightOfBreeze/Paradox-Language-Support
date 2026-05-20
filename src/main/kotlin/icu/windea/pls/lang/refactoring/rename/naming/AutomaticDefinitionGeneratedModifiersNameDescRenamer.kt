@@ -9,9 +9,8 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
@@ -54,7 +53,7 @@ class AutomaticDefinitionGeneratedModifiersNameDescRenamer(element: PsiElement, 
                 // use first key only -> $_name
                 val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
                 val newKey = ParadoxModifierManager.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
-                val selector = selector(project, element).localisation()
+                val selector = ParadoxLocalisationSearch.selector(project, element)
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 val result = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
@@ -64,7 +63,7 @@ class AutomaticDefinitionGeneratedModifiersNameDescRenamer(element: PsiElement, 
                 // use first key only -> $_desc
                 val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
                 val newKey = ParadoxModifierManager.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
-                val selector = selector(project, element).localisation()
+                val selector = ParadoxLocalisationSearch.selector(project, element)
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 val result = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()

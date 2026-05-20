@@ -17,12 +17,10 @@ import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
-import icu.windea.pls.lang.search.selector.withSearchScope
-import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withGameType
+import icu.windea.pls.lang.search.util.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -62,7 +60,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         file: VirtualFile?,
         override val provider: ParadoxDefinitionDiagramProvider,
     ) : ParadoxDiagramDataModel(project, file, provider) {
-        protected fun getDefinitions(typeExpression: String): Set<ParadoxDefinitionElement> {
+        protected fun getDefinitions(typeExpression: String): List<ParadoxDefinitionElement> {
             val originalFile = originalFile
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
             val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
@@ -72,12 +70,12 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
                 originalFile is ParadoxScriptFile -> ParadoxSearchScopeTypes.File.id
                 else -> null
             }
-            val selector = selector(project, originalFile).definition()
+            val selector = ParadoxDefinitionSearch.selector(project, originalFile)
                 .withGameType(gameType)
                 .withSearchScope(searchScope)
                 .withSearchScopeType(finalSearchScopeType)
                 .contextSensitive()
-                .distinctByName()
+                .distinct()
             return ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).findAll()
         }
 

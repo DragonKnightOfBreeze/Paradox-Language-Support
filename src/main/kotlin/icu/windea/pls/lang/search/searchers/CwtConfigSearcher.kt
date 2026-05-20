@@ -16,7 +16,6 @@ import icu.windea.pls.lang.search.CwtConfigSearch
 class CwtConfigSearcher : QueryExecutorBase<CwtConfig<*>, CwtConfigSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSearch.Parameters, consumer: Processor<in CwtConfig<*>>) {
         ProgressManager.checkCanceled()
-
         val configGroup = PlsFacade.getConfigGroup(queryParameters.project, queryParameters.gameType)
         when (queryParameters) {
             is CwtConfigSearch.Parameters.ById<*> -> {

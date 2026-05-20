@@ -44,10 +44,10 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         return object : ParadoxCsvVisitor() {
             override fun visitColumn(element: ParadoxCsvColumn) {
                 ProgressManager.checkCanceled()
-                if (element.isEmptyColumn()) return // skip empty columns
                 if (element.isHeaderColumn()) return // skip header columns
+                if (element.isEmptyColumn()) return // skip empty columns
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
-                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+                if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
                 // 开始检查

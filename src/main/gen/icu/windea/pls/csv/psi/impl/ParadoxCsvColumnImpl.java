@@ -15,6 +15,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement;
 import javax.swing.Icon;
 
 public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements ParadoxCsvColumn {
@@ -51,6 +52,11 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   @Override
   public @NotNull ParadoxCsvColumn setValue(@NotNull String value) {
     return ParadoxCsvPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  public @NotNull String getExpression() {
+    return ParadoxCsvPsiImplUtil.getExpression(this);
   }
 
   @Override

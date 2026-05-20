@@ -21,15 +21,20 @@ object PlsStrings {
     const val defineVariablePrefix = "(define variable)"
     const val propertyPrefix = "(property)"
     const val stringPrefix = "(string)"
+    const val sourcePropertyPrefix = "(source property)"
+    const val sourceStringPrefix = "(source string)"
+    const val sourcePrefix = "(source)"
     const val localePrefix = "(locale)"
     const val localisationPrefix = "(localisation)"
-    const val localisationSyncedPrefix = "(localisation_synced)"
+    const val localisationSyncedPrefix = "(synced localisation)"
     const val localisationPropertyPrefix = "(localisation property)"
     const val localisationColorPrefix = "(localisation color)"
     const val localisationIconPrefix = "(localisation icon)"
     const val inlineScriptPrefix = "(inline script)"
     const val definitionInjectionPrefix = "(definition injection)"
     const val definitionInjectionTargetPrefix = "(definition injection target)"
+    const val shaderEffectPrefix = "(shader effect)"
+    const val meshLocatorPrefix = "(mesh locator)"
 
     const val headerMarker = "<header>"
     const val rowMarker = "<row>"
@@ -38,11 +43,9 @@ object PlsStrings {
     const val commentFolder = "# ..."
     const val quotedFolder = "\"...\""
     const val blockFolder = "{...}"
-    val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val inlineMathFolder = "@[...]"
+    val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val commandFolder = "[...]"
     const val conceptCommandFolder = "['...']"
     const val conceptCommandWithTextFolder = "['...', ...]"
-
-    const val suppressInspectionsTagName = "noinspection"
 }

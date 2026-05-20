@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -13,7 +14,6 @@ import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptValueArgumentNode(
@@ -22,8 +22,8 @@ class ParadoxScriptValueArgumentNode(
     override val configGroup: CwtConfigGroup,
     val valueNode: ParadoxScriptValueNode?
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
-    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        return ParadoxScriptAttributesKeys.ARGUMENT
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
+        return ParadoxSemanticHighlighterColors.argument()
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

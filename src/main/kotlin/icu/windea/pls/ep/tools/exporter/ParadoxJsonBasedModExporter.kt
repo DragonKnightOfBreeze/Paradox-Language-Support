@@ -12,7 +12,7 @@ import java.nio.file.Path
  * 使用 JSON 文件作为数据文件的模组导出器。
  */
 abstract class ParadoxJsonBasedModExporter : ParadoxModExporter {
-    override val icon = AllIcons.FileTypes.Json
+    override val icon get() = AllIcons.FileTypes.Json
 
     override fun isAvailable(gameType: ParadoxGameType) = true
 

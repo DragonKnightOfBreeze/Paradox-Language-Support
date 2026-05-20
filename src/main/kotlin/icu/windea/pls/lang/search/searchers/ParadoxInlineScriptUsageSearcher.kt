@@ -4,7 +4,6 @@ import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
@@ -12,6 +11,8 @@ import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.lang.search.util.ParadoxSearchContext
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -24,30 +25,34 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         if (PlsStates.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val project = queryParameters.project
-        if (project.isDefault) return
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        if (SearchScope.isEmptyScope(scope)) return
-
-        val expression = queryParameters.expression
-        processQueryForInlineScriptUsages(expression, project, scope) { element -> consumer.process(element) }
+        val context = queryParameters.createContext(scope)
+        processQuery(context, consumer)
     }
 
-    private fun processQueryForInlineScriptUsages(
-        expression: String?,
-        project: Project,
-        scope: GlobalSearchScope,
-        processor: Processor<ParadoxScriptProperty>
-    ): Boolean {
+    private fun processQuery(context: Context, processor: Processor<in ParadoxScriptProperty>): Boolean {
+        if (!context.isValid()) return true
+        val expression = context.expression
         if (expression == null) {
-            return PlsIndexService.processElementsByKeys(PlsIndexKeys.InlineScriptUsage, project, scope) { _, element ->
+            return PlsIndexService.processElementsByKeys(PlsIndexKeys.InlineScriptUsage, context.project, context.scope) { _, element ->
                 processor.process(element)
             }
         } else {
             if (expression.isEmpty() || expression.isParameterized()) return true // 排除为空或者带参数的情况
-            return PlsIndexService.processElements(PlsIndexKeys.InlineScriptUsage, expression, project, scope) { element ->
+            return PlsIndexService.processElements(PlsIndexKeys.InlineScriptUsage, expression, context.project, context.scope) { element ->
                 processor.process(element)
             }
         }
     }
+
+    private fun ParadoxInlineScriptUsageSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+        return Context(expression, gameType, project, scope)
+    }
+
+    private data class Context(
+        val expression: String?,
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+        override val scope: GlobalSearchScope,
+    ) : ParadoxSearchContext
 }

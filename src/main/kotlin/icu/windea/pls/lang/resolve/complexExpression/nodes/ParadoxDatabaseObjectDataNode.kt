@@ -11,7 +11,7 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
@@ -23,9 +23,8 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.valueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -46,8 +45,8 @@ class ParadoxDatabaseObjectDataNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         return when {
             config == null -> null
-            config.type != null -> ParadoxSemanticAttributesKeys.definitionReference(element.language)
-            config.localisation != null -> ParadoxSemanticAttributesKeys.localisationReference(element.language)
+            config.type != null -> ParadoxSemanticHighlighterColors.definitionReference(element.language)
+            config.localisation != null -> ParadoxSemanticHighlighterColors.localisationReference(element.language)
             else -> null
         }
     }
@@ -164,12 +163,12 @@ class ParadoxDatabaseObjectDataNode(
             if (node.config.localisation != null) {
                 if (!node.isBase) return null
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-                val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).find()
                     ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
             }
 
-            val selector = selector(project, element).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
                 ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
         }
@@ -184,13 +183,13 @@ class ParadoxDatabaseObjectDataNode(
             if (node.config.localisation != null) {
                 if (!node.isBase) return ResolveResult.EMPTY_ARRAY
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-                val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
                     .filter { node.isValidDatabaseObject(it, typeToSearch) }
                     .createResults()
             }
 
-            val selector = selector(project, element).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .createResults()

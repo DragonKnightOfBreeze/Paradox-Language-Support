@@ -131,7 +131,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         for (fileConfig in internalFileConfigs.values) {
             checkCanceled()
-            readAction { processInternalFile(fileConfig) }
+            readAction { processQueryFile(fileConfig) }
         }
         for (fileConfig in fileConfigs.values) {
             checkCanceled()
@@ -152,7 +152,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
         return fileConfig
     }
 
-    private fun processInternalFile(fileConfig: CwtFileConfig) {
+    private fun processQueryFile(fileConfig: CwtFileConfig) {
         when (fileConfig.path) {
             "internal/schema.cwt" -> CwtSchemaConfig.resolveInFile(fileConfig)
             "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig)

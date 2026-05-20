@@ -22,6 +22,10 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
 
+        // 刷新分析数据
+        val rootFiles = PlsAnalysisManager.findRootFilesByRootFilePaths(modDirectories)
+        PlsAnalysisManager.refreshAnalysisData(rootFiles)
+
         // 重新解析文件
         val files = PlsAnalysisManager.findAllFilesByRootFilePaths(modDirectories)
         PlsAnalysisManager.reparseFiles(files)

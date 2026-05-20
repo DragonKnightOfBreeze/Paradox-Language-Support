@@ -17,7 +17,6 @@ import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.expression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher

@@ -1,5 +1,10 @@
 <?xml version='1.0'?>
 <list>
+  <option name="PARADOX_LOCALISATION.ARGUMENT">
+    <value>
+      <option name="FOREGROUND" value="4A86E8"/>
+    </value>
+  </option>
   <option name="PARADOX_LOCALISATION.ICON">
     <value>
       <option name="FOREGROUND" value="5C8AE6"/>

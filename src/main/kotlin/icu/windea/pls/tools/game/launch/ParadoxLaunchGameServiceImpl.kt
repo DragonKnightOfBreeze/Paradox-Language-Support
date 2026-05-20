@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.tools.PlsToolsBundle
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +18,8 @@ class ParadoxLaunchGameServiceImpl : ParadoxLaunchGameService {
         // MVP，基于 Steam 超链接协议
         val gameType = rootInfo.gameType
         val steamId = gameType.steamId
-        val url = PlsUrlService.getInstance().getSteamGameLaunchUrl(steamId)
-        PlsUrlService.getInstance().openUrl(url)
+        val url = SpecialUrlService.getInstance().getSteamGameLaunchUrl(steamId)
+        SpecialUrlService.getInstance().openUrl(url)
     }
 
     override fun showNotification(rootInfo: ParadoxRootInfo, project: Project) {

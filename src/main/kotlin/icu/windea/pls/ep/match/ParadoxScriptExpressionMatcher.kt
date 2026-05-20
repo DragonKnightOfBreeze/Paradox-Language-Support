@@ -6,7 +6,7 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxPatternMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -14,12 +14,12 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * @see ParadoxMatchService
  * @see ParadoxScriptExpressionElement
- * @see ParadoxScriptExpression
+ * @see ParadoxExpression
  * @see CwtDataExpression
  */
 interface ParadoxScriptExpressionMatcher {
     /**
-     * 是否支持将规则表达式作为通配符，然后进行匹配。
+     * 是否支持将规则表达式作为通配符，然后再进行匹配。
      *
      * @see ParadoxPatternMatchService
      */

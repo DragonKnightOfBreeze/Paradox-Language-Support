@@ -154,6 +154,11 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             val e = CwtDataExpression.resolve("percentage_field", false)
             assertEquals(CwtDataTypes.PercentageField, e.type)
         }
+        // int percentage field
+        run {
+            val e = CwtDataExpression.resolve("int_percentage_field", false)
+            assertEquals(CwtDataTypes.IntPercentageField, e.type)
+        }
         // date field
         run {
             val e = CwtDataExpression.resolve("date_field", false)
@@ -307,9 +312,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.LocalisationParameter, CwtDataExpression.resolve("\$localisation_parameter", false).type)
         }
         run {
-            assertEquals(CwtDataTypes.ShaderEffect, CwtDataExpression.resolve("\$shader_effect", false).type)
-        }
-        run {
             assertEquals(CwtDataTypes.DefineReference, CwtDataExpression.resolve("\$define_reference", false).type)
         }
         run {
@@ -319,6 +321,11 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             val e = CwtDataExpression.resolve("name_format[format_x]", false)
             assertEquals(CwtDataTypes.NameFormat, e.type)
             assertEquals("format_x", e.value)
+        }
+        run {
+            assertEquals(CwtDataTypes.ShaderEffect, CwtDataExpression.resolve("\$shader_effect", false).type)
+            assertEquals(CwtDataTypes.MeshLocator, CwtDataExpression.resolve("\$mesh_locator", false).type)
+            assertEquals(CwtDataTypes.TechnologyWithLevel, CwtDataExpression.resolve("\$technology_with_level", false).type)
         }
     }
 

@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * 用于得到定义的图形展示。
  */
 interface ParadoxDefinitionPresentationProvider {
-    fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean = false): Boolean
+    fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean = false): Boolean
 
     fun <T : ParadoxDefinitionPresentation> get(element: ParadoxDefinitionElement, type: Class<T>): T?
 

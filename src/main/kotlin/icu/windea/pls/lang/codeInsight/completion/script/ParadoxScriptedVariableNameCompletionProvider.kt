@@ -16,14 +16,12 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedNamesIfNecessary
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
@@ -47,9 +45,8 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
-        val selector = selector(project, element).scriptedVariable().contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive().distinct()
             .filterBy { it.name != keyword } // skip if name = input
-            .distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync {
             processScriptedVariable(context, result, it)
         }
@@ -69,7 +66,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withScriptedVariableLocalizedNamesIfNecessary(element)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }

@@ -34,10 +34,10 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
@@ -196,7 +196,7 @@ object ParadoxConfigMatchService {
         }
 
         // 如果属性 type_key_prefix 存在，且有必要校验，则要求其与 typeKeyPrefix 必须一致（忽略大小写）
-        if (context.typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesModel.typeKeyPrefixAware) {
+        if (context.typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
             val result = typeConfig.typeKeyPrefix.equals(context.typeKeyPrefix.value, ignoreCase = true)
             if (!result) return false
         }
@@ -304,7 +304,7 @@ object ParadoxConfigMatchService {
             }
             // 匹配值
             propertyConfig.stringValue != null -> {
-                val expression = ParadoxScriptExpression.resolve(propValue, context.options)
+                val expression = ParadoxExpression.resolve(propValue, context.options)
                 val configExpression = propertyConfig.valueExpression
                 val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, context.options)
                 return ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
@@ -336,7 +336,7 @@ object ParadoxConfigMatchService {
         val configGroup = propertyConfigs.first().configGroup
         val matched = definition.properties(context.inline).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
-            val expression = ParadoxScriptExpression.resolve(keyElement, context.options)
+            val expression = ParadoxExpression.resolve(keyElement, context.options)
             val propConfigs = propertyConfigs.filter { config ->
                 val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, context.options)
                 ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
@@ -352,7 +352,7 @@ object ParadoxConfigMatchService {
         }
         if (!matched) return false
 
-        return occurrences.values.all { it.isValid(relax = true) }
+        return occurrences.values.all { it.isValid(lenient = true) }
     }
 
     private fun matchesValuesForSubtype(context: CwtSubtypeConfigMatchContext, block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>): Boolean {
@@ -362,7 +362,7 @@ object ParadoxConfigMatchService {
         val occurrences = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(block, it) })
         val configGroup = valueConfigs.first().configGroup
         val matched = block.values(context.inline).process p@{ valueElement ->
-            val expression = ParadoxScriptExpression.resolve(valueElement, context.options)
+            val expression = ParadoxExpression.resolve(valueElement, context.options)
             val matched = valueConfigs.any { config ->
                 val configExpression = config.valueExpression
                 val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, context.options)
@@ -374,7 +374,7 @@ object ParadoxConfigMatchService {
         }
         if (!matched) return false
 
-        return occurrences.values.all { it.isValid(relax = true) }
+        return occurrences.values.all { it.isValid(lenient = true) }
     }
 
     private fun matchesSingleAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {
@@ -389,7 +389,7 @@ object ParadoxConfigMatchService {
         val configGroup = propertyConfig.configGroup
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val propertyKey = property.propertyKey
-        val aliasExpression = ParadoxScriptExpression.resolve(propertyKey, context.options)
+        val aliasExpression = ParadoxExpression.resolve(propertyKey, context.options)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, context.options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
@@ -520,7 +520,7 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesValueForComplexEnum(valueElement: ParadoxScriptValue, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
-        if (config.valueType == CwtType.Block) {
+        if (config.valueType == CwtExpressionType.Block) {
             val blockElement = valueElement.castOrNull<ParadoxScriptBlockElement>() ?: return false
             if (!matchesBlockForComplexEnum(blockElement, complexEnumConfig, config)) return false
             return true

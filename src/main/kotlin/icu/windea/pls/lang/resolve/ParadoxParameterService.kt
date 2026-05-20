@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.wildcard
-import icu.windea.pls.config.manipulation.CwtConfigMergeService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
@@ -27,10 +27,10 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.expressions.ParadoxParameterConditionExpression
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -220,7 +220,7 @@ object ParadoxParameterService {
             val contextInfo = getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo, fast).orNull()
             // merge
-            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigMergeService.mergeConfigs(v1, v2) }
+            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }
             if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()
@@ -234,7 +234,7 @@ object ParadoxParameterService {
             ProgressManager.checkCanceled()
             val contextConfigs = getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             // merge
-            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigMergeService.mergeConfigs(v1, v2) }
+            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }
             if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()
@@ -251,13 +251,13 @@ object ParadoxParameterService {
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.valueType == CwtType.Block }) return PlsBundle.message("complex")
+        if (configs.any { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return PlsBundle.message("complex")
         return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
     }
 
     fun getParameterizedKeyConfigs(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
         val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtType.Block }
+            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }
         if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
     }

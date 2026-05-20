@@ -8,8 +8,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
@@ -23,7 +22,7 @@ import icu.windea.pls.script.psi.propertyValue
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {
     fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptProperty? {
-        val definitionSelector = selector(project, contextElement).definition().contextSensitive()
+        val definitionSelector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive()
         val fromName = ParadoxDefinitionSearch.searchProperty(nameOrAlias, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
         if (fromName != null) return fromName
         val all = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).findAll()

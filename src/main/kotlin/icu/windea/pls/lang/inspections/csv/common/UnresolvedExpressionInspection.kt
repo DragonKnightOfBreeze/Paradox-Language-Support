@@ -52,7 +52,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return object : ParadoxCsvVisitor() {
             override fun visitColumn(element: ParadoxCsvColumn) {
                 ProgressManager.checkCanceled()
-                if (element.isHeaderColumn()) return
+                if (element.isHeaderColumn()) return // skip header columns
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return

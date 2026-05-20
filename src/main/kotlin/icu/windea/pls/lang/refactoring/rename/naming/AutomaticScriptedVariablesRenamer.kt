@@ -7,8 +7,7 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class AutomaticScriptedVariablesRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
@@ -36,7 +35,7 @@ class AutomaticScriptedVariablesRenamer(element: PsiElement, newName: String) : 
         if (element !is ParadoxScriptScriptedVariable) return
         val name = element.name?.orNull() ?: return
         ProgressManager.checkCanceled()
-        val selector = selector(element.project, element).scriptedVariable().contextSensitive()
+        val selector = ParadoxScriptedVariableSearch.selector(element.project, element).contextSensitive()
         val targets = mutableSetOf<ParadoxScriptScriptedVariable>()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets.addAll(it) }
         ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }

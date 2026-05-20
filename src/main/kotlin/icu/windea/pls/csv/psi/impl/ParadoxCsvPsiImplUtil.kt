@@ -8,6 +8,7 @@ import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
@@ -23,6 +24,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -53,11 +55,6 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxCsvColumn): String {
-        return element.value
-    }
-
-    @JvmStatic
     fun getValue(element: ParadoxCsvColumn): String {
         return element.text.unquote()
     }
@@ -72,13 +69,31 @@ object ParadoxCsvPsiImplUtil {
 
     // endregion
 
+    // region Common Methods
+
     @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { isComponent(it) }
+    fun getName(element: ParadoxCsvExpressionElement): String {
+        return element.value
     }
 
-    private fun isComponent(element: PsiElement): Boolean {
-        return element is ParadoxCsvColumn
+    @JvmStatic
+    fun getValue(element: ParadoxCsvExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxCsvExpressionElement, value: String): ParadoxScriptExpressionElement {
+        throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getExpression(element: ParadoxCsvExpressionElement): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun getComponents(element: PsiElement): List<PsiElement> {
+        return element.findChildren { it is ParadoxCsvColumn }
     }
 
     @JvmStatic
@@ -115,4 +130,6 @@ object ParadoxCsvPsiImplUtil {
     fun toString(element: PsiElement): String {
         return PsiService.toPresentableString(element)
     }
+
+    // endregion
 }

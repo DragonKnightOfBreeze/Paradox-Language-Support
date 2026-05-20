@@ -3,6 +3,7 @@ package icu.windea.pls.lang.overrides
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
@@ -15,7 +16,6 @@ import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -53,13 +53,6 @@ object ParadoxOverrideService {
     }
 
     /**
-     * 得到基于覆盖顺序的目标的排序器。
-     */
-    fun <T> getOverrideComparator(searchParameters: ParadoxSearchParameters<T>): ParadoxOverrideComparator<T> {
-        return ParadoxOverrideComparator(searchParameters)
-    }
-
-    /**
      * 得到根目录路径 [rootPath] 在当前上下文中的顺序。
      */
     fun getOrderInContext(rootPath: String, settings: ParadoxGameOrModSettingsState): Int {
@@ -81,7 +74,7 @@ object ParadoxOverrideService {
         if (!ParadoxFileManager.canOverrideFile(file, fileInfo.group)) return null
         val path = fileInfo.path.path
         val project = file.project
-        val selector = selector(project, file).file()
+        val selector = ParadoxFilePathSearch.selector(project, file)
         val results = ParadoxFilePathSearch.search(path, null, selector).findAll().mapNotNull { it.toPsiFile(project) }
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(path, file, results, overrideStrategy)
@@ -98,7 +91,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(element) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
-        val selector = selector(project, file).scriptedVariable()
+        val selector = ParadoxScriptedVariableSearch.selector(project, file)
         val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().toList()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
@@ -117,7 +110,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(element) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
-        val selector = selector(project, file).definition()
+        val selector = ParadoxDefinitionSearch.selector(project, file)
         val results = ParadoxDefinitionSearch.searchElement(name, type, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
@@ -134,7 +127,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(element) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
-        val selector = selector(project, file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, file)
         val results = ParadoxDefineVariableSearch.search(namespace, variable, selector).findAll().toList()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(defineVariableInfo.expression, element, results, overrideStrategy)
@@ -155,21 +148,17 @@ object ParadoxOverrideService {
         when (overrideStrategy) {
             ParadoxOverrideStrategy.FIOS, ParadoxOverrideStrategy.LIOS -> {
                 // require same file path VS first result (injected roots are ignored)
-                val fileInfo = selectFile(target)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.MetadataBased }
+                val fileInfo = selectFile(target)?.fileInfo?.takeIf { isValid(it) }
                 if (fileInfo == null) return true
-                val firstFileInfo = results.firstNotNullOfOrNull { r ->
-                    selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.MetadataBased }
-                }
+                val firstFileInfo = results.firstNotNullOfOrNull { r -> selectFile(r)?.fileInfo?.takeIf { isValid(it) } }
                 if (firstFileInfo == null) return true
                 return isSameFilePath(fileInfo, firstFileInfo) && isSameRootDirectory(fileInfo, firstFileInfo)
             }
             ParadoxOverrideStrategy.DUPL -> {
                 // require same file path VS vanilla result (injected roots are ignored)
-                val fileInfo = selectFile(overrideResult.target)?.fileInfo
+                val fileInfo = selectFile(overrideResult.target)?.fileInfo?.takeIf { isValid(it) }
                 if (fileInfo == null) return true
-                val vanillaFileInfo = results.firstNotNullOfOrNull { r ->
-                    selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.Game }
-                }
+                val vanillaFileInfo = results.firstNotNullOfOrNull { r -> selectFile(r)?.fileInfo?.takeIf { isVanilla(it) } }
                 if (vanillaFileInfo == null) return true
                 return isSameFilePath(fileInfo, vanillaFileInfo)
             }
@@ -180,13 +169,21 @@ object ParadoxOverrideService {
         }
     }
 
-    private fun isSameRootDirectory(fileInfo1: ParadoxFileInfo, fileInfo2: ParadoxFileInfo): Boolean {
-        val rootInfo1 = fileInfo1.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
-        val rootInfo2 = fileInfo2.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
-        return rootInfo1.rootFile == rootInfo2.rootFile
+    private fun isValid(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxRootInfo.MetadataBased || PlsFacade.isUnitTestMode()
     }
 
-    private fun isSameFilePath(fileInfo1: ParadoxFileInfo, fileInfo2: ParadoxFileInfo): Boolean {
-        return fileInfo1.path == fileInfo2.path
+    private fun isVanilla(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxRootInfo.Game
+    }
+
+    private fun isSameFilePath(fileInfo: ParadoxFileInfo, otherFileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.path == otherFileInfo.path
+    }
+
+    private fun isSameRootDirectory(fileInfo: ParadoxFileInfo, otherFileInfo: ParadoxFileInfo): Boolean {
+        val rootInfo1 = fileInfo.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
+        val rootInfo2 = otherFileInfo.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
+        return rootInfo1.rootFile == rootInfo2.rootFile
     }
 }

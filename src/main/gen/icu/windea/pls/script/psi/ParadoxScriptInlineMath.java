@@ -14,6 +14,8 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
   @NotNull String getExpression();
 
+  @NotNull String getInlineMathExpression();
+
   @Nullable PsiElement getTokenElement();
 
   @NotNull GlobalSearchScope getResolveScope();

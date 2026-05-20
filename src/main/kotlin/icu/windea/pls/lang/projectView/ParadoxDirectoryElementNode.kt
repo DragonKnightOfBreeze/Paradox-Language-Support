@@ -20,8 +20,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.withGameType
 
 @Suppress("UnstableApiUsage")
 class ParadoxDirectoryElementNode(
@@ -55,7 +54,7 @@ class ParadoxDirectoryElementNode(
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if (value == null) return emptySet()
-        val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
+        val selector = ParadoxFilePathSearch.selector(project, value.preferredRootFile).withGameType(value.gameType)
         val query = ParadoxFilePathSearch.search(null, null, selector)
         val comparator = query.overrideComparator then Comparator { o1, o2 -> if (o1 == o2) 0 else 1 }
         val files = sortedSetOf(comparator).synced() // 按覆盖顺序进行排序
@@ -89,7 +88,7 @@ class ParadoxDirectoryElementNode(
 
     override fun isValid(): Boolean {
         if (value == null) return false
-        val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
+        val selector = ParadoxFilePathSearch.selector(project, value.preferredRootFile).withGameType(value.gameType)
         return ParadoxFilePathSearch.search(value.path.path, null, selector).findFirst() != null
     }
 

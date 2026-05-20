@@ -15,13 +15,13 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.text.TextPattern
+import icu.windea.pls.core.text.TextPatternBasedBuilder
+import icu.windea.pls.core.text.TextPatternBasedProvider
+import icu.windea.pls.core.text.TextPatternMatchResult
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.core.util.text.TextPattern
-import icu.windea.pls.core.util.text.TextPatternBasedBuilder
-import icu.windea.pls.core.util.text.TextPatternBasedProvider
-import icu.windea.pls.core.util.text.TextPatternMatchResult
 
 abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionResolver {
     protected data class Match(
@@ -83,6 +83,7 @@ class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
 class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
     init {
         fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
+        fromLiteral(CwtDataTypes.IntPercentageField, "int_percentage_field")
         fromLiteral(CwtDataTypes.DateField, "date_field")
         fromParameterized(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() }
 
@@ -99,7 +100,6 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromParameterized(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
 
         fromLiteral(CwtDataTypes.Modifier, "<modifier>")
-        fromLiteral(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>")
         fromParameterized(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }
 
         fromParameterized(CwtDataTypes.Value, "value[", "]") { value = it.orNull() }
@@ -141,6 +141,8 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
 
         fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
+        fromLiteral(CwtDataTypes.MeshLocator, "\$mesh_locator")
+        fromLiteral(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
     }
 }
 

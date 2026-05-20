@@ -8,15 +8,14 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
@@ -32,7 +31,7 @@ class ParadoxNameFormatDefinitionNode(
     val definitionType: String?,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.definitionReference(element.language)
+        return ParadoxSemanticHighlighterColors.definitionReference(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -80,13 +79,13 @@ class ParadoxNameFormatDefinitionNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val selector = selector(project, element).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val selector = selector(project, element).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
             return resolved.createResults()
         }

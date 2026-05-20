@@ -72,18 +72,18 @@ private class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver, Cw
 
     private fun doResolve(config: CwtPropertyConfig): CwtScopeGroupConfig? {
         val name = config.key
-        val valueElements = config.values
-        if (valueElements == null) {
+        val valueConfigs = config.values
+        if (valueConfigs == null) {
             logger.warn("Skipped invalid scope group config (name: $name): Null values.".withLocationPrefix(config))
             return null
         }
-        if (valueElements.isEmpty()) {
+        if (valueConfigs.isEmpty()) {
             logger.debug { "Resolved scope group config with empty values (name: $name).".withLocationPrefix(config) }
             return CwtScopeGroupConfigImpl(config, name, emptySet(), emptyMap())
         }
         val values = caseInsensitiveStringSet() // ignore case
         val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // ignore case
-        for (valueElement in valueElements) {
+        for (valueElement in valueConfigs) {
             values.add(valueElement.value)
             valueConfigMap.put(valueElement.value, valueElement)
         }

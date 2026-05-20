@@ -8,9 +8,12 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
-import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection
+import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
+import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
+import icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
@@ -44,15 +47,36 @@ class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("snapshots")
-        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
+        enableInspections()
     }
 
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    @Test
+    fun checkFilePaths_stellaris() {
+        checkFilePaths(ParadoxGameType.Stellaris)
+    }
+
+    @Test
+    fun checkScriptFiles_stellaris() {
+        checkScriptFiles(ParadoxGameType.Stellaris)
+    }
+
+    private fun enableInspections() {
+        val inspectionTypes = arrayOf(
+            UnresolvedExpressionInspection::class.java,
+            ConflictingResolvedExpressionInspection::class.java,
+            MissingExpressionInspection::class.java,
+            TooManyExpressionInspection::class.java,
+            IncorrectExpressionInspection::class.java,
+        )
+        myFixture.enableInspections(*inspectionTypes)
+    }
+
     @Suppress("SameParameterValue")
     private fun checkFilePaths(gameType: ParadoxGameType) {
-        val rootPath = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+        val rootPath = SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
         rootPath!!
         println("Root path for ${gameType.title}: ${rootPath}")
@@ -90,7 +114,7 @@ class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
 
     @Suppress("SameParameterValue")
     private fun checkScriptFiles(gameType: ParadoxGameType) {
-        val rootPath = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+        val rootPath = SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
         rootPath!!
 
@@ -103,8 +127,6 @@ class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
             true
         }
         Assume.assumeTrue("Define file paths for ${gameType.title}: (empty)", filePathMap.isNotEmpty())
-
-        myFixture.enableInspections(*PlsInspectionUtil.getExpressionInspectionTypesForScriptFiles())
 
         myFixture.testDataPath = rootPath.toString()
         val sourceAndTargetPaths = mutableMapOf<String, String>()
@@ -130,15 +152,5 @@ class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
     private fun getConfigFileKey(path: Path, rootPath: Path): String {
         val relPathToRoot = path.relativeTo(rootPath).toString().normalizePath()
         return relPathToRoot
-    }
-
-    @Test
-    fun checkFilePaths_stellaris() {
-        checkFilePaths(ParadoxGameType.Stellaris)
-    }
-
-    @Test
-    fun checkScriptFiles_stellaris() {
-        checkScriptFiles(ParadoxGameType.Stellaris)
     }
 }

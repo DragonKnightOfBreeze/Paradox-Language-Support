@@ -12,9 +12,8 @@ import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.withGameType
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.lang.settings.PlsSettings
 
 /**
@@ -28,8 +27,8 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return
         val project = scope.project ?: getCurrentProject() ?: return
-        val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
-        val selector = selector(project).definition().withSearchScope(scope).withGameType(gameType)
+        val gameType = ParadoxAnalysisManager.getSelectedGameType(project)
+        val selector = ParadoxDefinitionSearch.selector(project).withSearchScope(scope).withGameType(gameType)
         ParadoxDefinitionSearch.search(null, null, selector).process p@{
             val name = it.name
             processor.process(name)
@@ -41,8 +40,8 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         val name = PlsChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = GlobalSearchScopeUtil.toGlobalSearchScope(parameters.searchScope, project)
-        val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
-        val selector = selector(project).definition().withSearchScope(scope).withGameType(gameType)
+        val gameType = ParadoxAnalysisManager.getSelectedGameType(project)
+        val selector = ParadoxDefinitionSearch.selector(project).withSearchScope(scope).withGameType(gameType)
         ParadoxDefinitionSearch.search(name, null, selector).process p@{
             val element = it.element ?: return@p true
             val definitionInfo = element.definitionInfo ?: return@p true

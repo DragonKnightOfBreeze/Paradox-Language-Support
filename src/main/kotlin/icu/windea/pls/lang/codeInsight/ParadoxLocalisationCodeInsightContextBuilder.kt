@@ -22,8 +22,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.locale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -196,7 +195,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         val inspectionState = if (fromInspection) checkForLocalisations(element) else true
         if (!inspectionState) return null
 
-        val contextType = ParadoxLocalisationCodeInsightContext.Type.Localisation
+        val contextType = Type.Localisation
         val type = ParadoxLocalisationCodeInsightInfo.Type.Primary
         val name = element.name
         if (name.isEmpty()) return null
@@ -280,9 +279,9 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         if (!inspectionState) return null
 
         val contextType = when {
-            config.configExpression.type == CwtDataTypes.Localisation -> ParadoxLocalisationCodeInsightContext.Type.LocalisationReference
-            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> ParadoxLocalisationCodeInsightContext.Type.SyncedLocalisationReference
-            config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> ParadoxLocalisationCodeInsightContext.Type.LocalisationReference
+            config.configExpression.type == CwtDataTypes.Localisation -> Type.LocalisationReference
+            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
+            config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
             else -> null
         }
         if (contextType == null) return null
@@ -301,7 +300,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
     }
 
     private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocaleConfig): Boolean {
-        val selector = selector(project, context).localisation().locale(locale)
+        val selector = ParadoxLocalisationSearch.selector(project, context).locale(locale)
         val missing = ParadoxLocalisationSearch.searchNormal(name, selector).findFirst() == null
         return missing
     }

@@ -11,15 +11,15 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-// Parameter
+// Parameters
 
 /**
  * @see CwtDataTypes.Parameter
@@ -31,7 +31,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
-        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT
+        val attributesKey = ParadoxSemanticHighlighterColors.argument()
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -44,7 +44,6 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-
         ParadoxCompletionManager.completeArgument(context, result)
     }
 }
@@ -59,7 +58,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
-        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT
+        val attributesKey = ParadoxSemanticHighlighterColors.argument()
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.core.util.text.TextPattern
+import icu.windea.pls.core.text.TextPattern
 
 @Suppress("unused")
 object CwtConfigTextPatterns {

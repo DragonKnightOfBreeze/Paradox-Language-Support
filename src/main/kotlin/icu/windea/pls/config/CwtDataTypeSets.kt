@@ -22,18 +22,18 @@ object CwtDataTypeSets {
         CwtDataTypes.ValueField,
         CwtDataTypes.VariableField,
     )
+    /** 本地化引用类型。 */
+    val LocalisationReference = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.InlineLocalisation,
+    )
     /** 路径引用类型]。 */
     val PathReference = arrayOf(
         CwtDataTypes.AbsoluteFilePath,
         CwtDataTypes.FileName,
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
-    )
-    /** 本地化引用类型。 */
-    val LocalisationReference = arrayOf(
-        CwtDataTypes.Localisation,
-        CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.InlineLocalisation,
     )
 
     /** 动态值相关类型。 */
@@ -119,5 +119,10 @@ object CwtDataTypeSets {
     /** 所有涉及本地化参数的类型。 */
     val LocalisationParameterInvolved = arrayOf(
         CwtDataTypes.LocalisationParameter
+    )
+    /** 所有涉及（目前作为动态引用处理的）外部引用的类型。 */
+    val ExternalReferenceInvolved = arrayOf(
+        CwtDataTypes.ShaderEffect,
+        CwtDataTypes.MeshLocator,
     )
 }

@@ -7,9 +7,8 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.locale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -90,7 +89,7 @@ object ParadoxLocalisationGenerationService {
             LocalisationGenerationStrategy.FromLocale -> {
                 // 使用对应语言环境的文本，如果不存在，以及其他任何意外，直接使用空字符串
                 val locale = ParadoxLocaleManager.getResolvedLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
-                val selector = selector(context.project, context.context).localisation().contextSensitive().locale(locale)
+                val selector = ParadoxLocalisationSearch.selector(context.project, context.context).contextSensitive().locale(locale)
                 val localisation = ParadoxLocalisationSearch.searchNormal(info.name, selector).find()
                 localisation?.propertyValue?.text.orEmpty()
             }

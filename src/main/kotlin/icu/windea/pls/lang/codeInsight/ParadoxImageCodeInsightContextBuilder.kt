@@ -18,7 +18,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -140,7 +139,7 @@ object ParadoxImageCodeInsightContextBuilder {
     }
 
     private fun isMissing(iconPath: String, project: Project, context: PsiElement): Boolean {
-        val iconSelector = selector(project, context).file()
+        val iconSelector = ParadoxFilePathSearch.selector(project, context)
         val missing = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findFirst() == null
         return missing
     }

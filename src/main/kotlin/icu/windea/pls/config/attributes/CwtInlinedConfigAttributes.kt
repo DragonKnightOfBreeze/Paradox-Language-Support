@@ -14,14 +14,14 @@ import icu.windea.pls.lang.index.ParadoxMergedIndex
  * @see CwtInlinedConfigAttributesEvaluator
  */
 data class CwtInlinedConfigAttributes(
-    override val dynamicValueInvolved: Boolean = false,
-    override val parameterInvolved: Boolean = false,
-    override val localisationParameterInvolved: Boolean = false,
-    override val inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
+    override val involvesDynamicValue: Boolean = false,
+    override val involvesParameter: Boolean = false,
+    override val involvesLocalisationParameter: Boolean = false,
+    override val involvesInferredScopeContextAwareDefinitionReference: Boolean = false,
+    override val involvesExternalReference: Boolean = false,
 ) : CwtDeclarationLikeConfigAttributes {
     companion object {
         @JvmField val EMPTY = CwtInlinedConfigAttributes()
-        @JvmField val ALL = CwtInlinedConfigAttributes(true, true, true, true)
     }
 }
 

@@ -39,8 +39,8 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         }
 
         // 重新解析根目录下已打开的文件
-        val openedFiles = PlsAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
-        PlsAnalysisManager.reparseFiles(openedFiles)
+        val allOpenFiles = PlsAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
+        PlsAnalysisManager.reparseFiles(allOpenFiles)
     }
 }
 

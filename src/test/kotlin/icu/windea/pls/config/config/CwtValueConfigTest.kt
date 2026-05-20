@@ -11,8 +11,8 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.type.CwtExpressionType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -41,28 +41,28 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val yes = root.findChild<CwtValue> { it.value == "yes" }!!
         val yesC = CwtValueConfig.resolve(yes, file, group)
         assertEquals("yes", yesC.value)
-        assertEquals(CwtType.Boolean, yesC.valueType)
+        assertEquals(CwtExpressionType.Boolean, yesC.valueType)
         assertTrue(yesC.optionData.tag)
 
         // 42 int
         val i = root.findChild<CwtValue> { it.value == "42" }!!
         val iC = CwtValueConfig.resolve(i, file, group)
-        assertEquals(CwtType.Int, iC.valueType)
+        assertEquals(CwtExpressionType.Int, iC.valueType)
 
         // 3.14 float
         val f = root.findChild<CwtValue> { it.value == "3.14" }!!
         val fC = CwtValueConfig.resolve(f, file, group)
-        assertEquals(CwtType.Float, fC.valueType)
+        assertEquals(CwtExpressionType.Float, fC.valueType)
 
         // quoted string -> unquoted value
         val s = root.findChild<CwtValue> { it.value == "sv" }!!
         val sC = CwtValueConfig.resolve(s, file, group)
-        assertEquals(CwtType.String, sC.valueType)
+        assertEquals(CwtExpressionType.String, sC.valueType)
 
         // identifier string
         val ident = root.findChild<CwtValue> { it.value == "ident" }!!
         val identC = CwtValueConfig.resolve(ident, file, group)
-        assertEquals(CwtType.String, identC.valueType)
+        assertEquals(CwtExpressionType.String, identC.valueType)
     }
 
     @Test
@@ -71,7 +71,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val root = file.block!!
         val block = root.findChild<CwtValue> { it.value == "{...}" }!!
         val c = CwtValueConfig.resolve(block, file, group)
-        assertEquals(CwtType.Block, c.valueType)
+        assertEquals(CwtExpressionType.Block, c.valueType)
         assertNotNull(c.configs)
         // a(property) and val1(value)
         assertEquals(2, c.configs!!.size)
@@ -88,34 +88,34 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         run {
             val v = root.findChild<CwtValue> { it.value == "-7" }!!
             val c = CwtValueConfig.resolve(v, file, group)
-            assertEquals(CwtType.Int, c.valueType)
+            assertEquals(CwtExpressionType.Int, c.valueType)
         }
         run {
             val v = root.findChild<CwtValue> { it.value == "-.25" }!!
             val c = CwtValueConfig.resolve(v, file, group)
-            assertEquals(CwtType.Float, c.valueType)
+            assertEquals(CwtExpressionType.Float, c.valueType)
         }
         run {
             val v = root.findChild<CwtValue> { it.value == ".5" }!!
             val c = CwtValueConfig.resolve(v, file, group)
-            assertEquals(CwtType.Float, c.valueType)
+            assertEquals(CwtExpressionType.Float, c.valueType)
         }
         run {
             val v = root.findChild<CwtValue> { it.value == "007" }!!
             val c = CwtValueConfig.resolve(v, file, group)
-            assertEquals(CwtType.Int, c.valueType)
+            assertEquals(CwtExpressionType.Int, c.valueType)
         }
         run {
             val v = root.findChild<CwtValue> { it.value == " spaced " }!!
             val c = CwtValueConfig.resolve(v, file, group)
-            assertEquals(CwtType.String, c.valueType)
+            assertEquals(CwtExpressionType.String, c.valueType)
         }
 
         // empty block value
         run {
             val v1 = root.findChild<CwtValue> { it.value == "{...}" }!!
             val c = CwtValueConfig.resolve(v1, file, group)
-            assertEquals(CwtType.Block, c.valueType)
+            assertEquals(CwtExpressionType.Block, c.valueType)
             assertNotNull(c.configs)
             assertTrue(c.configs!!.isEmpty())
         }
@@ -145,7 +145,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
                 null,
             )
             assertEquals(baseCfg.value, created.value)
-            assertEquals(CwtType.Block, created.valueType)
+            assertEquals(CwtExpressionType.Block, created.valueType)
             assertNotNull(created.configs)
             assertTrue(created.configs!!.isEmpty())
             // userData is not autofilled on create
@@ -225,7 +225,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         // pick non-block value: 42
         val v = root.findChild<CwtValue> { it.value == "42" }!!
         val c = CwtValueConfig.resolve(v, file, group)
-        assertEquals(CwtType.Int, c.valueType)
+        assertEquals(CwtExpressionType.Int, c.valueType)
         val d = c.delegatedWith(value = "100")
         assertNull(d.parentConfig)
         assertEquals("100", d.value)

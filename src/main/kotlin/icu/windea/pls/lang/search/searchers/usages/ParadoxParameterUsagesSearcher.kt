@@ -35,4 +35,3 @@ class ParadoxParameterUsagesSearcher : QueryExecutorBase<PsiReference, Reference
         return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Parameter)
     }
 }
-

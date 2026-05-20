@@ -9,26 +9,26 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.cwt.lexer.CwtLexerFactory
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.cwt.editor.CwtAttributesKeySets as KA
+import icu.windea.pls.cwt.editor.CwtHighlighterColorSets as ColorSets
 
 class CwtSyntaxHighlighter(
     private val project: Project?
 ) : SyntaxHighlighter {
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
-            LEFT_BRACE, RIGHT_BRACE -> KA.BRACES
-            EQUAL_SIGN, NOT_EQUAL_SIGN, DOUBLE_EQUAL_SIGN -> KA.OPERATOR
-            DOC_COMMENT_TOKEN -> KA.DOC_COMMENT
-            OPTION_COMMENT_START -> KA.OPTION_COMMENT
-            COMMENT -> KA.COMMENT
-            PROPERTY_KEY_TOKEN -> KA.PROPERTY_KEY
-            OPTION_KEY_TOKEN -> KA.OPTION_KEY
-            BOOLEAN_TOKEN -> KA.KEYWORD
-            INT_TOKEN, FLOAT_TOKEN -> KA.NUMBER
-            STRING_TOKEN -> KA.STRING
-            VALID_STRING_ESCAPE_TOKEN -> KA.VALID_ESCAPE
-            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> KA.INVALID_ESCAPE
-            BAD_CHARACTER -> KA.BAD_CHARACTER
+            LEFT_BRACE, RIGHT_BRACE -> ColorSets.BRACES
+            EQUAL_SIGN, NOT_EQUAL_SIGN, DOUBLE_EQUAL_SIGN -> ColorSets.OPERATOR
+            DOC_COMMENT_TOKEN -> ColorSets.DOC_COMMENT
+            OPTION_COMMENT_START -> ColorSets.OPTION_COMMENT
+            COMMENT -> ColorSets.COMMENT
+            PROPERTY_KEY_TOKEN -> ColorSets.PROPERTY_KEY
+            OPTION_KEY_TOKEN -> ColorSets.OPTION_KEY
+            BOOLEAN_TOKEN -> ColorSets.KEYWORD
+            INT_TOKEN, FLOAT_TOKEN -> ColorSets.NUMBER
+            STRING_TOKEN -> ColorSets.STRING
+            VALID_STRING_ESCAPE_TOKEN -> ColorSets.VALID_ESCAPE
+            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> ColorSets.INVALID_ESCAPE
+            BAD_CHARACTER -> ColorSets.BAD_CHARACTER
             else -> TextAttributesKey.EMPTY_ARRAY
         }
     }

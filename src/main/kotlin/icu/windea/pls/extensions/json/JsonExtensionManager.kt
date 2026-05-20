@@ -9,13 +9,13 @@ object JsonExtensionManager {
     // region launcher-settings.json
 
     fun isLauncherSettingsJson(file: VirtualFile): Boolean {
-        // 2.1.8 relax check
+        // 2.1.8 lenient check
         if (file.fileType !is JsonFileType) return false
         if (file.name != "launcher-settings.json") return false
         val fileInfo = file.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.Game) return false
-        return true // relax check
+        return true // lenient check
     }
 
     fun getLauncherSettingsJsonSchemaPath(): String {
@@ -27,7 +27,7 @@ object JsonExtensionManager {
     // region metadata.json
 
     fun isMetadataJson(file: VirtualFile): Boolean {
-        // 2.1.8 relax check
+        // 2.1.8 lenient check
         if (file.fileType !is JsonFileType) return false
         if (file.name != "metadata.json") return false
         val fileInfo = file.fileInfo ?: return false

@@ -10,15 +10,14 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxDefineNamespaceNode(
@@ -28,7 +27,7 @@ class ParadoxDefineNamespaceNode(
     val expression: ParadoxDefineReferenceExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.defineNamespace()
+        return ParadoxSemanticHighlighterColors.defineNamespace()
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -78,13 +77,13 @@ class ParadoxDefineNamespaceNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val selector = selector(project, element).define().contextSensitive()
+            val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val selector = selector(project, element).define().contextSensitive()
+            val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).findAll()
             return resolved.createResults()
         }

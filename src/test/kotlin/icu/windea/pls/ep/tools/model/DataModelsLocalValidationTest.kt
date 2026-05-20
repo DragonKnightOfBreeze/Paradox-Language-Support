@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assume
 import org.junit.Test
@@ -24,7 +24,7 @@ import kotlin.io.path.isRegularFile
  *   -Dpls.test.include.local.env=true
  */
 class DataModelsLocalValidationTest {
-    private val gameDataDir = PlsPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris)
+    private val gameDataDir = SpecialPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris)
 
     // 不需要
     // @Before

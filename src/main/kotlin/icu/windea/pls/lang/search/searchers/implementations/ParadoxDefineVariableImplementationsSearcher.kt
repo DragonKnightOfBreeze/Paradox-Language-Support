@@ -9,8 +9,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -27,7 +26,7 @@ class ParadoxDefineVariableImplementationsSearcher : QueryExecutor<PsiElement, D
             val namespace = defineVariableInfo.namespace.orNull() ?: return@action true
             val variable = defineVariableInfo.variable.orNull() ?: return@action true
             // 这里不进行排序
-            val selector = selector(project, sourceElement).define()
+            val selector = ParadoxDefineVariableSearch.selector(project, sourceElement)
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxDefineVariableSearch.search(namespace, variable, selector).forEach(consumer)
         }

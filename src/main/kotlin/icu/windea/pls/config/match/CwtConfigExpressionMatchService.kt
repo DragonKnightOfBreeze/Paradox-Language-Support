@@ -22,7 +22,7 @@ object CwtConfigExpressionMatchService {
     fun matchesInferredScopeContextAwareDefinitionReference(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         if (dataExpression.type != CwtDataTypes.Definition) return false
         val definitionType = dataExpression.value?.substringBefore('.') ?: return false
-        return definitionType in configGroup.definitionTypesModel.supportScopeContextInference
+        return definitionType in configGroup.typesModel.supportScopeContextInference
     }
 
     fun matchesOnActionReference(dataExpression: CwtDataExpression): Boolean {
@@ -35,5 +35,17 @@ object CwtConfigExpressionMatchService {
         if (dataExpression.type != CwtDataTypes.Definition) return false
         val definitionType = dataExpression.value?.substringBefore('.') ?: return false
         return definitionType == ParadoxDefinitionTypes.event
+    }
+
+    fun matchesExternalReference(dataExpression: CwtDataExpression) : Boolean {
+        return matchesShaderEffect(dataExpression) || matchesMeshLocator(dataExpression)
+    }
+
+    fun matchesShaderEffect(dataExpression: CwtDataExpression): Boolean {
+        return dataExpression.type == CwtDataTypes.ShaderEffect
+    }
+
+    fun matchesMeshLocator(dataExpression: CwtDataExpression): Boolean {
+        return dataExpression.type == CwtDataTypes.MeshLocator
     }
 }

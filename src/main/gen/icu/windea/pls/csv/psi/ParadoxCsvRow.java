@@ -17,6 +17,8 @@ public interface ParadoxCsvRow extends ParadoxCsvRowElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
+  @NotNull List<@NotNull PsiElement> getComponents();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();

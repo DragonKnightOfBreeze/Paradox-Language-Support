@@ -12,11 +12,11 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedLevel]。
  *
  * 支持的注解：
- * - 类型信息。参见 [ParadoxScriptAnnotatedManager.getType]。
- * - 定义类型信息。参见 [ParadoxScriptAnnotatedManager.getDefinitionType]。
- * - 规则表达式信息。参见 [ParadoxScriptAnnotatedManager.getConfigExpression]。
- * - 覆盖方式信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategy]。
- * - 作用域上下文信息。参见 [ParadoxScriptAnnotatedManager.getScopeContext]。
+ * - 类型信息。参见 [ParadoxScriptAnnotatedManager.getTypeAnnotation]。
+ * - 定义类型信息。参见 [ParadoxScriptAnnotatedManager.getDefinitionTypeAnnotation]。
+ * - 规则表达式信息。参见 [ParadoxScriptAnnotatedManager.getConfigExpressionAnnotation]。
+ * - 覆盖方式信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategyAnnotation]。
+ * - 作用域上下文信息。参见 [ParadoxScriptAnnotatedManager.getScopeContextAnnotation]。
  */
 class ParadoxScriptTextAnnotatedRenderer : ParadoxScriptTextRenderer<String, ParadoxScriptTextAnnotatedRenderContext, ParadoxScriptTextAnnotatedRenderSettings>() {
     override val settings = ParadoxScriptTextAnnotatedRenderSettings()
@@ -47,21 +47,21 @@ class ParadoxScriptTextAnnotatedRenderContext(
     fun getAnnotations(element: ParadoxScriptMember): List<String> {
         return buildList {
             if (settings.level.includeType) {
-                ParadoxScriptAnnotatedManager.getType(element)?.let { add(it) }
+                ParadoxScriptAnnotatedManager.getTypeAnnotation(element)?.let { add(it) }
             }
             if (settings.level.includeDefinitionType) {
-                ParadoxScriptAnnotatedManager.getDefinitionType(element)?.let { add(it) }
+                ParadoxScriptAnnotatedManager.getDefinitionTypeAnnotation(element)?.let { add(it) }
             }
             if (settings.level.includeConfigExpression) {
-                ParadoxScriptAnnotatedManager.getConfigExpression(element)?.let { add(it) }
+                ParadoxScriptAnnotatedManager.getConfigExpressionAnnotation(element)?.let { add(it) }
             }
             if (settings.level.includeOverrideStrategy) {
-                ParadoxScriptAnnotatedManager.getOverrideStrategy(element)?.let { add(it) }
+                ParadoxScriptAnnotatedManager.getOverrideStrategyAnnotation(element)?.let { add(it) }
             }
             if (settings.level.includeScopeContext) {
                 val unchanged = settings.level.includeUnchancedScopeContext
                 val detailed = settings.level.includeDetailedScopeContext
-                ParadoxScriptAnnotatedManager.getScopeContext(element, unchanged, detailed)?.let { add(it) }
+                ParadoxScriptAnnotatedManager.getScopeContextAnnotation(element, unchanged, detailed)?.let { add(it) }
             }
         }
     }

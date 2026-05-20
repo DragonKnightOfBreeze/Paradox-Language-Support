@@ -39,7 +39,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
     }
 
     private fun checkExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup) {
-        var inputScopeContext = ParadoxScopeContext.getAny()
+        var inputScopeContext = ParadoxScopeContext.resolveAny()
         when (complexExpression) {
             is ParadoxCommandExpression -> {
                 for (node in complexExpression.nodes) {

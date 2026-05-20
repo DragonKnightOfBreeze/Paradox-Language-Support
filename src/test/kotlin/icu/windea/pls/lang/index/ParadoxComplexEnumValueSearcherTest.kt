@@ -5,9 +5,8 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
-import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.search.util.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -51,7 +50,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     fun testComplexEnumValueSearcher_ByEnumName() {
         // Arrange
         configureScriptFile("common/spell_schools/00_spell_schools.txt", "features/index/common/spell_schools/00_spell_schools.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxComplexEnumValueSearch.search(null, "spell_school", selector).findAll().toList()
@@ -64,7 +63,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     fun testComplexEnumValueSearcher_ByName_CaseInsensitive() {
         // Arrange
         configureScriptFile("common/whispered_words/00_words.txt", "features/index/common/whispered_words/00_words.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxComplexEnumValueSearch.search("hush", "whispered_word", selector).findAll().toList()
@@ -82,7 +81,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     fun testComplexEnumValueSearcher_NestedMatch() {
         // Arrange
         configureScriptFile("common/arcane_tomes/03_complex_enum.txt", "features/index/common/arcane_tomes/03_complex_enum.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxComplexEnumValueSearch.search("fire", "tome_tag", selector).findFirst()
@@ -102,7 +101,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue(alphaIndex >= 0)
         val contextElement = myFixture.file.findElementAt(alphaIndex + 1)!!
 
-        val selector = selector(project, contextElement).complexEnumValue()
+        val selector = ParadoxComplexEnumValueSearch.selector(project, contextElement)
             .withSearchScope(GlobalSearchScope.projectScope(project))
             .withSearchScopeType("definition")
 
@@ -120,7 +119,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     fun testComplexEnumValueSearcher_PerDefinition_AllDefinitions() {
         // Arrange
         configureScriptFile("common/arcane_tomes/04_per_definition.txt", "features/index/common/arcane_tomes/04_per_definition.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxComplexEnumValueSearch.search("alpha", "ritual_phrase", selector).findAll().toList()
@@ -138,7 +137,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_StartFromRootNo_ValueInBlockOnly() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("list_enum_entry", "list_enum", selector).findAll().toList()
 
@@ -150,7 +149,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_EnumNameAsPropertyKey() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("key_enum_entry", "key_enum", selector).findAll().toList()
 
@@ -166,7 +165,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_DeepEnum_MultiLevelBlockAndFilterProperty() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("deep_enum_value", "deep_enum", selector).findAll().toList()
 
@@ -178,7 +177,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_EnumNameAsPropertyValue() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("prop_value_enum_value", "prop_value_enum", selector).findAll().toList()
 
@@ -190,7 +189,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_SiblingEnum_MultiPropertyConstraints() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("sibling_enum_value", "sibling_enum", selector).findAll().toList()
 
@@ -202,7 +201,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_KeyBlockEnum_PropertyKeyWithBlockConstraint() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("key_block_enum_value", "key_block_enum", selector).findAll().toList()
 
@@ -214,7 +213,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_MixEnum_MixedKeyValueBlock() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("mix_key", "mix_enum", selector).findAll().toList()
 
@@ -226,7 +225,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_TypeComboEnum_TypedConstraints() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("type_combo_value", "type_combo_enum", selector).findAll().toList()
 
@@ -238,7 +237,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_MultiEnum_MultipleEnumNameConfigs() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("multi_first", "multi_enum", selector).findAll().toList()
 
@@ -250,7 +249,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_ValueMixEnum_ValueEnumNameAndTypedConstraints() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("value_mix_entry", "value_mix_enum", selector).findAll().toList()
 
@@ -266,7 +265,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_CaseInsensitiveEnum_ComplexStructure() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("ci_entry", "case_insensitive_enum", selector)
             .findAll().toList()
@@ -279,7 +278,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_MultiLevelEnum_MultipleLevels() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("outer_entry", "multi_level_enum", selector).findAll().toList()
 
@@ -291,7 +290,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_CrossLevelMixEnum_CrossLevelConstraints() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("cross_outer", "cross_level_mix_enum", selector).findAll().toList()
 
@@ -303,7 +302,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_CaseInsensitiveMultiEnum_ComplexAndTyped() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("ci_multi_outer", "case_insensitive_multi_enum", selector)
             .findAll().toList()
@@ -316,7 +315,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_MultiLevelMultiEnum_MultipleLevels() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("level_a_entry", "multi_level_multi_enum", selector)
             .findAll().toList()
@@ -329,7 +328,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_CrossPvbEnum_CrossLevelPropertyValueBlock() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("pvb_key", "cross_pvb_enum", selector).findAll().toList()
 
@@ -341,7 +340,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_CaseInsensitiveDeepEnum_MultipleLevels() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("ci_deep_outer", "case_insensitive_deep_enum", selector)
             .findAll().toList()
@@ -354,7 +353,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueSearcher_RepeatTypedEnum_RepeatedEnumNameAndTypedConstraints() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
-        val selector = selector(project, myFixture.file).complexEnumValue().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("repeat_first", "repeat_typed_enum", selector)
             .findAll().toList()

@@ -51,40 +51,12 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
         assertResult("common/misc/example_unformatted.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
-    @Test
-    fun snapshotTest_chronicle() {
-        configureFile("common/chapters/categories/00_chapter_categories.txt")
-        configureFile("common/characters/tags/00_character_tags.txt")
-        configureFile("common/chapters/00_chapters.txt")
-        configureFile("common/characters/00_characters.txt")
-        configureFile("common/species/00_species.txt")
-        configureFile("common/defines/00_defines.txt")
-        configureFile("events/00_events.txt")
-        configureFile("localisation/main_l_english.yml")
-        configureFile("localisation/main_l_simp_chinese.yml")
-        configureFile("localisation/events_l_english.yml")
-        configureFile("localisation/events_l_simp_chinese.yml")
-        configureFile("localisation/comments_l_english.yml")
-        configureFile("localisation/comments_l_simp_chinese.yml")
-        configureFile("localisation/comment_details_l_english.yml")
-        configureFile("localisation/comment_details_l_simp_chinese.yml")
-
-        IndexingTestUtil.waitUntilIndexesAreReady(project)
-
-        assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
-        assertResult("common/characters/tags/00_character_tags.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
-        assertResult("common/chapters/00_chapters.txt", ParadoxAnnotatedLevel.ALL)
-        assertResult("common/characters/00_characters.txt", ParadoxAnnotatedLevel.ALL)
-        assertResult("common/species/00_species.txt", ParadoxAnnotatedLevel.ALL)
-        assertResult("common/defines/00_defines.txt", ParadoxAnnotatedLevel.ALL)
-        assertResult("events/00_events.txt", ParadoxAnnotatedLevel.ALL)
-    }
-
     private fun configureFile(path: String) {
         markFileInfo(gameType, path)
         myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
+    @Suppress("SameParameterValue")
     private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxScriptFile

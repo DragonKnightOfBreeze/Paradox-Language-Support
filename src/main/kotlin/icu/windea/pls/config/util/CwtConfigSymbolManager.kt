@@ -41,13 +41,14 @@ object CwtConfigSymbolManager {
     // NOTE 相比 Symbol API，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（且区分读写访问）
 
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
-        if (!element.isExpression()) return emptyList()
         ProgressManager.checkCanceled()
+        if (!element.isExpression()) return emptyList()
         val infos = getInfoFromCache(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
         if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
         val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY

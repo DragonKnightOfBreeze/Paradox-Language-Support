@@ -87,7 +87,7 @@ class ConvertImageFormatDialog(
                 val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
                 comment(message("path.completion.shortcut", shortcutText))
             }
-        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+        }.withPreferredWidth(preferredDialogWidth)
     }
 
     private fun initNewFileNameField(): EditorTextField {
@@ -108,7 +108,7 @@ class ConvertImageFormatDialog(
 
     private fun initTargetDirectoryField(): TextFieldWithHistoryWithBrowseButton {
         val targetDirectoryField = TextFieldWithHistoryWithBrowseButton().also { this.targetDirectoryField = it }
-        targetDirectoryField.setTextFieldPreferredWidth(PREFERRED_PATH_WIDTH)
+        targetDirectoryField.setTextFieldPreferredWidth(preferredPathWidth)
         val recentEntries = RecentsManager.getInstance(project).getRecentEntries(recentKeys)
         val targetDirectoryComponent = targetDirectoryField.childComponent
         val targetPath = defaultTargetDirectory?.virtualFile?.presentableUrl
@@ -122,7 +122,7 @@ class ConvertImageFormatDialog(
     }
 
     private fun shortenPath(file: VirtualFile): String {
-        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, PREFERRED_PATH_WIDTH)
+        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, preferredPathWidth)
     }
 
     override fun doOKAction() {
@@ -165,7 +165,7 @@ class ConvertImageFormatDialog(
     }
 
     companion object {
-        private const val PREFERRED_DIALOG_WIDTH = 600
-        private const val PREFERRED_PATH_WIDTH = 70
+        private const val preferredDialogWidth = 600
+        private const val preferredPathWidth = 70
     }
 }

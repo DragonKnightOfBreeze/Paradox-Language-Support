@@ -49,7 +49,7 @@ object ParadoxComplexEnumValueManager {
         return ParadoxComplexEnumValueService.resolveNameLocalisation(name, contextElement, locale)
     }
 
-    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
         return ParadoxComplexEnumValueService.resolveNameLocalisations(name, contextElement, locale)
     }
 }

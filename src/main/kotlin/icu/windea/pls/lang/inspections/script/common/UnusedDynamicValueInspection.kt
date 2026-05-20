@@ -17,8 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -65,8 +64,8 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = selector(project, file).dynamicValue().withSearchScope(searchScope) // use file as context
-                        val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.dynamicValueTypes, selector).processAsync p@{
+                        val selector = ParadoxDynamicValueSearch.selector(project, file).withSearchScope(searchScope) // use file as context
+                        val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.types, selector).processAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Read) {
                                 statusMap[resolved] = true
@@ -86,7 +85,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
                         cachedStatus
                     }
                     if (!status) {
-                        registerProblem(element, resolved.name, resolved.dynamicValueTypes.joinToString(), reference.rangeInElement)
+                        registerProblem(element, resolved.name, resolved.types.joinToString(), reference.rangeInElement)
                     }
                 }
             }

@@ -26,8 +26,10 @@ import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
@@ -37,10 +39,9 @@ import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
@@ -94,11 +95,13 @@ object ParadoxDocumentationManager {
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
         return when (element) {
-            is ParadoxParameterLightElement -> getParameterDoc(element, originalElement, hint)
-            is ParadoxLocalisationParameterLightElement -> getLocalisationParameterDoc(element, originalElement, hint)
             is ParadoxComplexEnumValueLightElement -> getComplexEnumValueDoc(element, originalElement, hint)
             is ParadoxDynamicValueLightElement -> getDynamicValueDoc(element, originalElement, hint)
+            is ParadoxParameterLightElement -> getParameterDoc(element, originalElement, hint)
+            is ParadoxLocalisationParameterLightElement -> getLocalisationParameterDoc(element, originalElement, hint)
             is ParadoxModifierLightElement -> getModifierDoc(element, originalElement, hint)
+            is ParadoxShaderEffectLightElement -> getShaderEffectDoc(element, originalElement, hint)
+            is ParadoxMeshLocatorLightElement -> getMeshLocatorDoc(element, originalElement, hint)
             is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element, originalElement, hint)
             is ParadoxScriptProperty -> getPropertyDoc(element, originalElement, hint)
             is ParadoxScriptFile -> getScriptFileDoc(element, originalElement, hint)
@@ -109,20 +112,6 @@ object ParadoxDocumentationManager {
             is ParadoxLocalisationColorfulText -> getLocalisationColorDoc(element, originalElement, hint)
             is ParadoxLocalisationArgument -> getLocalisationArgumentDoc(element, originalElement, hint)
             else -> null
-        }
-    }
-
-    private fun getParameterDoc(element: ParadoxParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            buildParameterDefinition(element)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-        }
-    }
-
-    private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            buildLocalisationParameterDefinition(element)
         }
     }
 
@@ -146,12 +135,38 @@ object ParadoxDocumentationManager {
         }
     }
 
+    private fun getParameterDoc(element: ParadoxParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            buildParameterDefinition(element)
+            if (hint) return@buildDocumentation
+            buildDocumentationContent(element)
+        }
+    }
+
+    private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            buildLocalisationParameterDefinition(element)
+        }
+    }
+
     private fun getModifierDoc(element: ParadoxModifierLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             if (!hint) initSections()
             buildModifierDefinition(element)
             if (hint) return@buildDocumentation
             buildSections()
+        }
+    }
+
+    private fun getShaderEffectDoc(element: ParadoxShaderEffectLightElement, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            buildShaderEffectDefinition(element)
+        }
+    }
+
+    private fun getMeshLocatorDoc(element: ParadoxMeshLocatorLightElement, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            buildMeshLocatorDefinition(element)
         }
     }
 
@@ -284,28 +299,6 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterLightElement) {
-        val name = element.name
-        definition {
-            val r = ParadoxParameterService.getDocumentationDefinition(element, this)
-            if (!r) {
-                // 显示默认的快速文档
-                append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-            }
-        }
-    }
-
-    private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterLightElement) {
-        val name = element.name
-        definition {
-            val r = ParadoxLocalisationParameterService.getDocumentationDefinition(element, this)
-            if (!r) {
-                // 显示默认的快速文档
-                append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-            }
-        }
-    }
-
     private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueLightElement) {
         definition {
             val name = element.name
@@ -356,7 +349,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueLightElement) {
         val name = element.name
-        val dynamicValueTypes = element.dynamicValueTypes
+        val dynamicValueTypes = element.types
         val gameType = element.gameType
         val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
         definition {
@@ -407,6 +400,28 @@ object ParadoxDocumentationManager {
         }
     }
 
+    private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterLightElement) {
+        val name = element.name
+        definition {
+            val r = ParadoxParameterService.getDocumentationDefinition(element, this)
+            if (!r) {
+                // 显示默认的快速文档
+                append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            }
+        }
+    }
+
+    private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterLightElement) {
+        val name = element.name
+        definition {
+            val r = ParadoxLocalisationParameterService.getDocumentationDefinition(element, this)
+            if (!r) {
+                // 显示默认的快速文档
+                append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            }
+        }
+    }
+
     private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierLightElement) {
         val name = element.name
         definition {
@@ -433,7 +448,7 @@ object ParadoxDocumentationManager {
         val nameLocalisation = run {
             val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, element).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -442,7 +457,7 @@ object ParadoxDocumentationManager {
         val descLocalisation = run {
             val keys = ParadoxModifierManager.getModifierDescKeys(name, element)
             keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, element).localisation().contextSensitive()
+                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
@@ -486,7 +501,7 @@ object ParadoxDocumentationManager {
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             paths.firstNotNullOfOrNull { path ->
-                val iconSelector = selector(project, element).file().contextSensitive()
+                val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }
@@ -525,6 +540,18 @@ object ParadoxDocumentationManager {
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
         sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+    }
+
+    private fun DocumentationBuilder.buildShaderEffectDefinition(element: ParadoxShaderEffectLightElement) {
+        definition {
+            append(PlsStrings.shaderEffectPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
+        }
+    }
+
+    private fun DocumentationBuilder.buildMeshLocatorDefinition(element: ParadoxMeshLocatorLightElement) {
+        definition {
+            append(PlsStrings.meshLocatorPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
+        }
     }
 
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup) {
@@ -920,7 +947,7 @@ object ParadoxDocumentationManager {
         val usedElement = when {
             usedLocale == locale -> element
             else -> {
-                val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(usedLocale)
+                val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive().preferLocale(usedLocale)
                 val type = element.type
                 val found = type?.let { type -> ParadoxLocalisationSearch.search(element.name, type, selector).find() }
                 found ?: element

@@ -5,8 +5,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -44,7 +43,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("script/syntax/example.test.txt")
 
         val project = project
-        val selector = selector(project, myFixture.file).file()
+        val selector = ParadoxFilePathSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxFilePathSearch.search(relPath, selector = selector).process { vf ->
             results += vf.path
@@ -60,7 +59,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val project = project
-        val selector = selector(project, myFixture.file).file()
+        val selector = ParadoxFilePathSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).process { vf ->
             results += vf.path
@@ -80,7 +79,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val project = project
-        val selector = selector(project, myFixture.file).file().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxFilePathSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
         val asked = "localisation/ui/ui_l_french.test.yml"
 
         // Act
@@ -108,7 +107,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
 
         val project = project
-        val selector = selector(project, myFixture.file).file().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxFilePathSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
         val asked = "localisation/ui/ui_l_english.test.yml"
 
         // Act

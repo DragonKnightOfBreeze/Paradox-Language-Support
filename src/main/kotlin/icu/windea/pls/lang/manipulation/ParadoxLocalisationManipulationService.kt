@@ -14,9 +14,8 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.locale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -27,7 +26,7 @@ object ParadoxLocalisationManipulationService {
     suspend fun searchTextFromLocale(context: ParadoxLocalisationManipulationContext, project: Project, locale: CwtLocaleConfig) {
         val newText = readAction {
             val type = context.element?.type ?: return@readAction null
-            val selector = selector(project, context.element).localisation().contextSensitive().locale(locale)
+            val selector = ParadoxLocalisationSearch.selector(project, context.element).contextSensitive().locale(locale)
             val e = ParadoxLocalisationSearch.search(context.key, type, selector).find()
             e?.value
         }

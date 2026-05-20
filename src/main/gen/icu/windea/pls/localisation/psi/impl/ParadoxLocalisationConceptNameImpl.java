@@ -14,6 +14,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement;
 
 public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptName {
 
@@ -49,6 +50,11 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
   @Override
   public @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  public @NotNull String getExpression() {
+    return ParadoxLocalisationPsiImplUtil.getExpression(this);
   }
 
   @Override

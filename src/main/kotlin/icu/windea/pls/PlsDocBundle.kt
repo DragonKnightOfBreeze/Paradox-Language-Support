@@ -4,10 +4,9 @@ import com.intellij.DynamicBundle
 import com.intellij.openapi.project.Project
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
@@ -73,7 +72,7 @@ object PlsDocBundle {
     @Nls
     fun technologyArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
-            val selector = selector(project, context).localisation().contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, context).contextSensitive()
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             val localisation = ParadoxLocalisationSearch.searchNormal(name.uppercase(), selector).find() ?: return@run
@@ -90,7 +89,7 @@ object PlsDocBundle {
     @Nls
     fun technologyCategory(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
-            val selector = selector(project, context).definition().contextSensitive().withGameType(gameType)
+            val selector = ParadoxDefinitionSearch.selector(project, context).contextSensitive().withGameType(gameType)
             val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
             val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run

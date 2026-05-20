@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
@@ -20,8 +21,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 /**
  * 值字段表达式。
@@ -91,7 +90,7 @@ private class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpress
         if (!incomplete && text.isEmpty()) return null
 
         // skip if text is a number
-        if (isNumber(text)) return null
+        if (TextMatcher.matchesFloat(text)) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
@@ -144,10 +143,6 @@ private class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpress
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()
         return expression
-    }
-
-    private fun isNumber(text: String): Boolean {
-        return ParadoxScriptExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
     }
 }
 

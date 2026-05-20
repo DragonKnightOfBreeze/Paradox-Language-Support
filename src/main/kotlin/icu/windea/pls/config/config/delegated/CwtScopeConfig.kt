@@ -70,12 +70,12 @@ private class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigRes
 
     private fun doResolve(config: CwtPropertyConfig): CwtScopeConfig? {
         val name = config.key
-        val propElements = config.properties
-        if (propElements == null) {
+        val propConfigs = config.properties
+        if (propConfigs == null) {
             logger.warn("Skipped invalid scope config (name: $name): Null properties.".withLocationPrefix(config))
             return null
         }
-        val propGroup = propElements.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val aliases = propGroup.getOne("aliases")?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
         }?.optimized().orEmpty()

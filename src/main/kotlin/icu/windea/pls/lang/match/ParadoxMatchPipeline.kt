@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.dynamic
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 
 object ParadoxMatchPipeline {
     /**
@@ -41,7 +41,7 @@ object ParadoxMatchPipeline {
      * 对输入的一组已处理过的成员规则 [configs] 进行后续优化。基于 [ParadoxScriptExpressionMatchOptimizer]。
      */
     @Optimized
-    fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxScriptExpression, options: ParadoxMatchOptions? = null): List<T> {
+    fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxExpression, options: ParadoxMatchOptions? = null): List<T> {
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         var result = configs

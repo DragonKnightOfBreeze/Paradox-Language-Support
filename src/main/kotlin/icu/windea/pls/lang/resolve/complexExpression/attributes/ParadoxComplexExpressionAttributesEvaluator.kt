@@ -20,15 +20,15 @@ class ParadoxComplexExpressionAttributesEvaluator {
      */
     fun evaluate(node: ParadoxComplexExpressionNode): ParadoxComplexExpressionAttributes {
         var dynamicDataAware = false
-        var relaxDynamicDataAware = false
+        var lenientDynamicDataAware = false
 
         node.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (!dynamicDataAware && isDynamicDataInvolved(node)) {
                     dynamicDataAware = true
                 }
-                if (!relaxDynamicDataAware && isRelaxDynamicDataInvolved(node)) {
-                    relaxDynamicDataAware = true
+                if (!lenientDynamicDataAware && isLenientDynamicDataInvolved(node)) {
+                    lenientDynamicDataAware = true
                 }
                 return super.visit(node)
             }
@@ -36,7 +36,7 @@ class ParadoxComplexExpressionAttributesEvaluator {
 
         var value = 0
         if (dynamicDataAware) value = value or ParadoxComplexExpressionAttributes.Flags.DYNAMIC_DATA_INVOLVED
-        if (relaxDynamicDataAware) value = value or ParadoxComplexExpressionAttributes.Flags.RELAX_DYNAMIC_DATA_INVOLVED
+        if (lenientDynamicDataAware) value = value or ParadoxComplexExpressionAttributes.Flags.LENIENT_DYNAMIC_DATA_INVOLVED
         return ParadoxComplexExpressionAttributes(value)
     }
 
@@ -46,7 +46,7 @@ class ParadoxComplexExpressionAttributesEvaluator {
         return node is ParadoxDynamicDataNode
     }
 
-    private fun isRelaxDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
+    private fun isLenientDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
         // node -> `ParadoxDynamicDataNode`
         // -parent -> `ParadoxLinkValueNode` (single child node)
         // --parent -> `ParadoxLinkNode` (last one)

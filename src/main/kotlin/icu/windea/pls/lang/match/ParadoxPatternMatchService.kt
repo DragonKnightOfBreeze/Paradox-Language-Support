@@ -7,7 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 
 object ParadoxPatternMatchService {
     /**
@@ -37,7 +37,7 @@ object ParadoxPatternMatchService {
         val pattern0 = text.substring(fromIndex)
         val configExpression = CwtDataExpression.resolve(pattern0, true)
         if (configExpression.expressionString.isEmpty()) return false
-        val expression = ParadoxScriptExpression.resolve(key)
+        val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
         val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ep.isPatternAware(matchContext)) return@f null

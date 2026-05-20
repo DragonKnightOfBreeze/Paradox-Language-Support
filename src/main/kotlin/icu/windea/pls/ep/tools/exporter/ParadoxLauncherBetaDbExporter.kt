@@ -13,7 +13,7 @@ import icu.windea.pls.ep.tools.model.Constants
  * 参见：[ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
 class ParadoxLauncherBetaDbExporter : ParadoxLauncherDbExporter() {
-    override val text: String = PlsBundle.message("mod.exporter.launcherBeta")
+    override val text get() = PlsBundle.message("mod.exporter.launcherBeta")
 
     override fun getDbFileName() = Constants.launcherDbBetaPath
 }

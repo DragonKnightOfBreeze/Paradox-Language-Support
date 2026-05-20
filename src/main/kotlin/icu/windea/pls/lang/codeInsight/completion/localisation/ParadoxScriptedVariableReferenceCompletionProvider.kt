@@ -12,9 +12,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -35,8 +33,7 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position
         val project = parameters.originalFile.project
-        val selector = selector(project, element).scriptedVariable().contextSensitive()
-            .distinctByName()
+        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive().distinct()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(it, result) }
     }
 

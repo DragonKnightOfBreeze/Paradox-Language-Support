@@ -20,10 +20,11 @@ import icu.windea.pls.core.annotations.Optimized
  */
 @Optimized
 class CwtInlinedConfigAttributesEvaluator {
-    private var dynamicValueInvolved = false
-    private var parameterInvolved = false
-    private var localisationParameterInvolved = false
-    private var inferredScopeContextAwareDefinitionReferenceInvolved = false
+    private var involvesDynamicValue = false
+    private var involvesParameter = false
+    private var involvesLocalisationParameter = false
+    private var involvesInferredScopeContextAwareDefinitionReference = false
+    private var involvesExternalReference = false
 
     fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
         val visitor = buildVisitor(configGroup)
@@ -63,41 +64,46 @@ class CwtInlinedConfigAttributesEvaluator {
     }
 
     private fun processDataExpression(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
-        if (!dynamicValueInvolved) {
+        if (!involvesDynamicValue) {
             val r = CwtConfigExpressionMatchService.matchesDynamicValue(dataExpression)
-            if (r) dynamicValueInvolved = true
+            if (r) involvesDynamicValue = true
         }
-        if (!parameterInvolved) {
+        if (!involvesParameter) {
             val r = CwtConfigExpressionMatchService.matchesParameter(dataExpression)
-            if (r) parameterInvolved = true
+            if (r) involvesParameter = true
         }
-        if (!localisationParameterInvolved) {
+        if (!involvesLocalisationParameter) {
             val r = CwtConfigExpressionMatchService.matchesLocalisationParameter(dataExpression)
-            if (r) localisationParameterInvolved = true
+            if (r) involvesLocalisationParameter = true
         }
-        if (!inferredScopeContextAwareDefinitionReferenceInvolved) {
+        if (!involvesInferredScopeContextAwareDefinitionReference) {
             val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
-            if (r) inferredScopeContextAwareDefinitionReferenceInvolved = true
+            if (r) involvesInferredScopeContextAwareDefinitionReference = true
+        }
+        if (!involvesExternalReference) {
+            val r = CwtConfigExpressionMatchService.matchesMeshLocator(dataExpression)
+            if (r) involvesExternalReference = true
         }
     }
 
     private fun handleContext(attributes: CwtInlinedConfigAttributes): Boolean {
-        if (attributes.dynamicValueInvolved) dynamicValueInvolved = true
-        if (attributes.parameterInvolved) parameterInvolved = true
-        if (attributes.localisationParameterInvolved) localisationParameterInvolved = true
-        if (attributes.inferredScopeContextAwareDefinitionReferenceInvolved) inferredScopeContextAwareDefinitionReferenceInvolved = true
+        if (attributes.involvesDynamicValue) involvesDynamicValue = true
+        if (attributes.involvesParameter) involvesParameter = true
+        if (attributes.involvesLocalisationParameter) involvesLocalisationParameter = true
+        if (attributes.involvesInferredScopeContextAwareDefinitionReference) involvesInferredScopeContextAwareDefinitionReference = true
+        if (attributes.involvesExternalReference) involvesExternalReference = true
         return true
     }
 
     private fun buildAttributes(): CwtInlinedConfigAttributes {
         val result = CwtInlinedConfigAttributes(
-            dynamicValueInvolved,
-            parameterInvolved,
-            localisationParameterInvolved,
-            inferredScopeContextAwareDefinitionReferenceInvolved,
+            involvesDynamicValue,
+            involvesParameter,
+            involvesLocalisationParameter,
+            involvesInferredScopeContextAwareDefinitionReference,
+            involvesExternalReference,
         )
         if (result == CwtInlinedConfigAttributes.EMPTY) return CwtInlinedConfigAttributes.EMPTY
-        if (result == CwtInlinedConfigAttributes.ALL) return CwtInlinedConfigAttributes.ALL
         return result
     }
 }

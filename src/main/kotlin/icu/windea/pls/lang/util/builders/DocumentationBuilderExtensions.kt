@@ -14,16 +14,15 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.ParadoxScopeId
-import icu.windea.pls.model.scope.toScopeMap
 
 fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
     DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
@@ -69,15 +68,15 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         if (steamId != null) {
             append(" | ")
             val workshopUrlInSteam = when (rootInfo) {
-                is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
-                is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
+                is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
+                is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
             }
             appendLink(workshopUrlInSteam, PlsBundle.message("linkLabel.steam")) // 自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
-                is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
-                is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+                is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
+                is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
             }
             appendLink(workshopUrl, PlsBundle.message("linkLabel.steamWebsite")) // 自带外部链接图标
         }
@@ -130,13 +129,12 @@ fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): Docume
 }
 
 fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
-    when {
-        ParadoxScopeId.isUnsure(scopeId) -> append(scopeId)
-        else -> {
-            val category = ReferenceLinkType.CwtConfig.Categories.scopes
-            val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
-            appendPsiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
-        }
+    if (ParadoxScope.resolve(scopeId).isUnsure()) {
+        append(scopeId)
+    } else {
+        val category = ReferenceLinkType.CwtConfig.Categories.scopes
+        val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
+        appendPsiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
     }
     return this
 }
@@ -149,8 +147,8 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
         val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
         appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")
-        if (ParadoxScopeId.isUnsure(scope.id)) {
-            append(scope)
+        if (scope.isUnsure()) {
+            append(scope.id)
         } else {
             val scopeLink = ReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)
             appendPsiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)

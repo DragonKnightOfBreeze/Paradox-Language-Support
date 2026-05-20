@@ -14,20 +14,21 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.core.util.text.EscapeType
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.PlsHintsUtil
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -108,7 +109,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         if (truncated) return
         if (color == null) return action()
 
-        val textAttributesKey = ParadoxLocalisationAttributesKeys.getColorOnlyKey(color)
+        val textAttributesKey = ParadoxSemanticHighlighterColors.colorOnly(color)
         val oldBuilder = builder
         builder = mutableListOf()
         withColor(colorStack, color) {
@@ -296,7 +297,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         // NOTE 2.1.2 `WithAttributesPresentation` 需要作为 `psiSingleReference` 的子节点，从而正确提供配色
         val basePresentation = presentation
             .letIf(referenceElement != null) { factory.psiSingleReference(it) { referenceElement } }
-        val attributesKey = ParadoxLocalisationAttributesKeys.CONCEPT
+        val attributesKey = ParadoxLocalisationHighlighterColors.CONCEPT
         val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
         val finalPresentation = WithAttributesPresentation(basePresentation, attributesKey, editor, attributesFlags)
             .let { factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }

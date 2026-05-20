@@ -14,7 +14,7 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
@@ -34,7 +34,7 @@ class ParadoxScriptValueNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        return ParadoxSemanticAttributesKeys.definitionReference(element.language)
+        return ParadoxSemanticHighlighterColors.definitionReference(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

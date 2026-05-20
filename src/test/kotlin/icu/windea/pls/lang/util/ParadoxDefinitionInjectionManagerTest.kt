@@ -156,27 +156,27 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region Relax Mode
+    // region Lenient Mode
 
     @Test
-    fun testIsRelaxMode() {
+    fun testIsLenientMode() {
         configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
         val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
 
-        // INJECT 不是 relax mode
+        // INJECT 不是 lenient mode
         val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
         val injectInfo = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
-        Assert.assertFalse(injectInfo.isRelaxMode())
+        Assert.assertFalse(injectInfo.isLenientMode())
 
-        // REPLACE 不是 relax mode
+        // REPLACE 不是 lenient mode
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
         val replaceInfo = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
-        Assert.assertFalse(replaceInfo.isRelaxMode())
+        Assert.assertFalse(replaceInfo.isLenientMode())
 
-        // REPLACE_OR_CREATE 是 relax mode
+        // REPLACE_OR_CREATE 是 lenient mode
         val replaceOrCreateProperty = selectScope { injectFile.properties().ofKey("REPLACE_OR_CREATE:new_mech").one() } as ParadoxScriptProperty
         val replaceOrCreateInfo = ParadoxDefinitionInjectionManager.getInfo(replaceOrCreateProperty)!!
-        Assert.assertTrue(replaceOrCreateInfo.isRelaxMode())
+        Assert.assertTrue(replaceOrCreateInfo.isLenientMode())
     }
 
     // endregion

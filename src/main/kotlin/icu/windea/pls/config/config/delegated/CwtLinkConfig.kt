@@ -24,7 +24,8 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScope
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 
 
 /**
@@ -146,12 +147,13 @@ private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResol
 
     private fun doResolve(config: CwtPropertyConfig, isLocalisationLink: Boolean = false): CwtLinkConfig? {
         val name = config.key
-        val props = config.properties ?: run {
-            logger.warn("Skipped invalid link config (name: $name): Missing properties.".withLocationPrefix(config))
+        val propConfigs = config.properties
+        if (propConfigs == null) {
+            logger.warn("Skipped invalid link config (name: $name): Null properties.".withLocationPrefix(config))
             return null
         }
 
-        val propGroup = props.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val type = propGroup.getOne("type")?.stringValue.let { CwtLinkType.resolve(it) }
         val fromData = propGroup.getOne("from_data")?.booleanValue ?: false
         val fromArgument = propGroup.getOne("from_argument")?.booleanValue ?: false
@@ -161,15 +163,15 @@ private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResol
         val inputScopes = buildSet {
             // both input_scopes and input_scope are supported
             propGroup.getAll("input_scopes").forEach { p ->
-                p.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
-                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
+                p.stringValue?.let { v -> add(ParadoxScope.getId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }
             }
             propGroup.getAll("input_scope").forEach { p ->
-                p.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
-                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
+                p.stringValue?.let { v -> add(ParadoxScope.getId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }
             }
-        }.optimized().orNull() ?: ParadoxScopeId.anyScopeIdSet
-        val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScopeId.getId(v) }
+        }.optimized().orNull() ?: ParadoxScopeConstants.anyScopes
+        val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScope.getId(v) }
         val forDefinitionType = propGroup.getOne("for_definition_type")?.stringValue
 
         // when from data or from argument, data sources must not be empty

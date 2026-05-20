@@ -67,9 +67,9 @@ import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.cwt.psi.isOptionBlockValue
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.cwt.psi.isPropertyValue
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.paths.CwtConfigPath
+import icu.windea.pls.model.type.CwtExpressionType
 
 object CwtConfigCompletionManager {
     object Keys : KeyRegistry()
@@ -233,8 +233,8 @@ object CwtConfigCompletionManager {
         contextConfigsGroup.forEach { (id, configs) ->
             val filteredConfigs = mutableListOf<CwtMemberConfig<*>>()
             configs.find { it is CwtValueConfig }?.also { filteredConfigs += it }
-            configs.find { it is CwtPropertyConfig && it.valueType != CwtType.Block }?.also { filteredConfigs += it }
-            configs.find { it is CwtPropertyConfig && it.valueType == CwtType.Block }?.also { filteredConfigs += it }
+            configs.find { it is CwtPropertyConfig && it.valueType != CwtExpressionType.Block }?.also { filteredConfigs += it }
+            configs.find { it is CwtPropertyConfig && it.valueType == CwtExpressionType.Block }?.also { filteredConfigs += it }
             filteredConfigs.forEach f@{ config ->
                 if (context.inOption) {
                     // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
@@ -256,7 +256,7 @@ object CwtConfigCompletionManager {
                 } else if (context.isPropertyValue) {
                     // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.keyToMatch != config.key && !config.key.contains('$')) return
-                    if (config.valueType != CwtType.Block) {
+                    if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
@@ -266,7 +266,7 @@ object CwtConfigCompletionManager {
             }
             is CwtValueConfig -> {
                 if (context.isBlockValue) {
-                    if (config.valueType != CwtType.Block) {
+                    if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
@@ -289,8 +289,8 @@ object CwtConfigCompletionManager {
         optionConfigsGroup.forEach { (_, configs) ->
             val filteredConfigs = mutableListOf<CwtOptionMemberConfig<*>>()
             configs.find { it is CwtOptionValueConfig }?.also { filteredConfigs += it }
-            configs.find { it is CwtOptionConfig && it.valueType != CwtType.Block }?.also { filteredConfigs += it }
-            configs.find { it is CwtOptionConfig && it.valueType == CwtType.Block }?.also { filteredConfigs += it }
+            configs.find { it is CwtOptionConfig && it.valueType != CwtExpressionType.Block }?.also { filteredConfigs += it }
+            configs.find { it is CwtOptionConfig && it.valueType == CwtExpressionType.Block }?.also { filteredConfigs += it }
             filteredConfigs.forEach { config ->
                 completeByOptionConfig(schema, config, context, result)
             }
@@ -306,7 +306,7 @@ object CwtConfigCompletionManager {
                 } else if (context.isOptionValue) {
                     // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.keyToMatch != config.key && !config.key.contains('$')) return
-                    if (config.valueType != CwtType.Block) {
+                    if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
@@ -316,7 +316,7 @@ object CwtConfigCompletionManager {
             }
             is CwtOptionValueConfig -> {
                 if (context.isOptionBlockValue) {
-                    if (config.valueType != CwtType.Block) {
+                    if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
@@ -606,8 +606,8 @@ object CwtConfigCompletionManager {
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
         val insertCurlyBraces = when {
-            config is CwtOptionMemberConfig<*> -> config.valueType == CwtType.Block
-            config is CwtMemberConfig<*> -> config.valueType == CwtType.Block
+            config is CwtOptionMemberConfig<*> -> config.valueType == CwtExpressionType.Block
+            config is CwtMemberConfig<*> -> config.valueType == CwtExpressionType.Block
             else -> return null
         }
         val valueText = when {

@@ -62,10 +62,7 @@ import icu.windea.pls.lang.resolve.complexExpression.valueNode
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefineExpression
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -93,7 +90,7 @@ object ParadoxComplexExpressionCompletionManager {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val expression = markIncomplete { ParadoxTemplateExpression.resolve(keyword, textRange, configGroup, finalConfig) } ?: return
 
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.scopeContext = null // skip check scope context here
         context.isKey = null
@@ -154,7 +151,7 @@ object ParadoxComplexExpressionCompletionManager {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, finalConfigs) } ?: return
 
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.config = expression.configs.first()
         context.configs = expression.configs
@@ -208,7 +205,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -252,7 +249,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxScriptValueExpression.resolve(keyword, textRange, configGroup, config) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.scopeContext = null // skip check scope context here
         context.isKey = null
@@ -320,7 +317,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -372,7 +369,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -424,7 +421,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxCommandExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -697,7 +694,7 @@ object ParadoxComplexExpressionCompletionManager {
         val keywordOffset = context.keywordOffset
         val oldArgIndex = context.argumentIndex
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val dynamicScopeNode = node.castOrNull<ParadoxDynamicScopeNode>()
         val prefixNode = dynamicScopeNode?.prefixNode
         val valueNode = dynamicScopeNode?.valueNode
@@ -814,7 +811,7 @@ object ParadoxComplexExpressionCompletionManager {
         val keywordOffset = context.keywordOffset
         val oldArgIndex = context.argumentIndex
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
-        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
         val dynamicScopeNode = node.castOrNull<ParadoxDynamicCommandScopeNode>()
         val prefixNode = dynamicScopeNode?.prefixNode
         val valueNode = dynamicScopeNode?.valueNode
@@ -1439,8 +1436,7 @@ object ParadoxComplexExpressionCompletionManager {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
         val tailText = " from define namespaces"
-        val selector = selector(project, contextElement).define()
-            .distinctByDefineExpression()
+        val selector = ParadoxDefineNamespaceSearch.selector(project, contextElement).distinct()
         ParadoxDefineNamespaceSearch.search(null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
             val defineInfo = element.defineNamespaceInfo ?: return@p true
@@ -1448,7 +1444,7 @@ object ParadoxComplexExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, namespace)
                 .withPatchableIcon(PlsIcons.Nodes.DefineNamespace)
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -1461,8 +1457,7 @@ object ParadoxComplexExpressionCompletionManager {
         val namespaceNode = node.expression.namespaceNode ?: return
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"
-        val selector = selector(project, contextElement).define()
-            .distinctByDefineExpression()
+        val selector = ParadoxDefineVariableSearch.selector(project, contextElement).distinct()
         ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
             val defineInfo = element.defineVariableInfo ?: return@p true
@@ -1470,7 +1465,7 @@ object ParadoxComplexExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, variable)
                 .withPatchableIcon(PlsIcons.Nodes.DefineVariable)
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -1491,7 +1486,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(PlsCompletionPriorities.prefix)
                 .withPatchableTailText(tailText)
-                .forScriptExpression(context)
+                .forExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -1537,8 +1532,7 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val project = configGroup.project
         val contextElement = context.contextElement
-        val selector = selector(project, contextElement).definition().contextSensitive()
-            .distinctByName()
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)
         }

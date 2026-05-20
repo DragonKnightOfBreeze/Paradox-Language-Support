@@ -18,8 +18,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
@@ -129,7 +128,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInlineScriptFile(expression: String, project: Project, context: Any?): ParadoxScriptFile? {
-        val selector = selector(project, context).file().contextSensitive()
+        val selector = ParadoxFilePathSearch.selector(project, context).contextSensitive()
         return ParadoxFilePathSearch.searchInlineScript(expression, selector).find()?.toPsiFile(project)?.castOrNull()
     }
 
@@ -139,7 +138,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInlineScriptFiles(expression: String, project: Project, context: Any?): List<ParadoxScriptFile> {
-        val selector = selector(project, context).file().contextSensitive()
+        val selector = ParadoxFilePathSearch.selector(project, context).contextSensitive()
         return ParadoxFilePathSearch.searchInlineScript(expression, selector).findAll().mapNotNull { it.toPsiFile(project)?.castOrNull() }
     }
 
@@ -149,7 +148,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun processInlineScriptFile(expression: String, project: Project, context: Any?, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
-        val selector = selector(project, context).file().contextSensitive()
+        val selector = ParadoxFilePathSearch.selector(project, context).contextSensitive()
         return ParadoxFilePathSearch.searchInlineScript(expression, selector).onlyMostRelevant(onlyMostRelevant).processAsync p@{
             val file = it.toPsiFile(project)?.castOrNull<ParadoxScriptFile>() ?: return@p true
             processor(file)

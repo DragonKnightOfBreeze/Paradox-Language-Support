@@ -18,7 +18,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
@@ -49,7 +49,7 @@ object ParadoxFileManager {
      * 将输入路径视为相对于游戏的主要入口目录的路径，得到规范化后的绝对路径。
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
-        val gamePath = PlsPathService.getInstance().getSteamGamePath(gameType.id, gameType.title) ?: return null
+        val gamePath = SpecialPathService.getInstance().getSteamGamePath(gameType.id, gameType.title) ?: return null
         val mainEntry = gameType.metadata.gameMainEntries.firstOrNull()
         val mainEntryPath = if (mainEntry != null) gamePath.resolve(mainEntry) else gamePath
         val resultPath = mainEntryPath.resolve(path)

@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors as Colors
 
 /**
  * 用于在脚本文件中提供额外的代码高亮。
@@ -111,11 +111,11 @@ class ParadoxScriptAnnotator : Annotator {
         val parameterElement = element.parent?.parent as? ParadoxParameter ?: return
         val templateElement = parameterElement.parent ?: return
         when {
-            element.text.startsWith('@') -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE)
-            templateElement is ParadoxScriptPropertyKey -> annotateRange(holder, element, Keys.PROPERTY_KEY)
-            templateElement is ParadoxScriptString -> annotateRange(holder, element, Keys.STRING)
-            templateElement is ParadoxScriptScriptedVariableName -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_NAME)
-            templateElement is ParadoxScriptScriptedVariableReference -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE)
+            element.text.startsWith('@') -> annotateRangeWithAtSign(holder, element, Colors.SCRIPTED_VARIABLE_REFERENCE)
+            templateElement is ParadoxScriptPropertyKey -> annotateRange(holder, element, Colors.PROPERTY_KEY)
+            templateElement is ParadoxScriptString -> annotateRange(holder, element, Colors.STRING)
+            templateElement is ParadoxScriptScriptedVariableName -> annotateRangeWithAtSign(holder, element, Colors.SCRIPTED_VARIABLE_NAME)
+            templateElement is ParadoxScriptScriptedVariableReference -> annotateRangeWithAtSign(holder, element, Colors.SCRIPTED_VARIABLE_REFERENCE)
         }
     }
 
@@ -126,7 +126,7 @@ class ParadoxScriptAnnotator : Annotator {
     private fun annotateRangeWithAtSign(holder: AnnotationHolder, element: PsiElement, attributesKey: TextAttributesKey) {
         val range = element.textRange
         val rangeForAtSign = TextRange.from(range.startOffset, 1)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForAtSign).textAttributes(Keys.AT_SIGN).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForAtSign).textAttributes(Colors.AT_SIGN).create()
         val rangeForRemain = TextRange.create(range.startOffset + 1, range.endOffset)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForRemain).textAttributes(attributesKey).create()
     }

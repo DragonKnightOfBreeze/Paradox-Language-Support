@@ -20,8 +20,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -71,7 +70,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                     readAction {
                         val paths = ParadoxModifierManager.getModifierIconPaths(modifierElement.name, modifierElement)
                         val iconFiles = paths.firstNotNullOfOrNull { path ->
-                            val iconSelector = selector(project, element).file().contextSensitive()
+                            val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
                             ParadoxFilePathSearch.searchIcon(path, iconSelector).findAll().orNull()
                         }
                         if (iconFiles != null) targets.addAll(targets)

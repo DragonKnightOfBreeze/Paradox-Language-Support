@@ -11,7 +11,7 @@ import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
@@ -20,7 +20,7 @@ import kotlin.io.path.notExists
 
 object ParadoxGameManager {
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
+        val path = SpecialPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         if (path == null || path.notExists()) return null
         return path.toString()
     }
@@ -30,19 +30,22 @@ object ParadoxGameManager {
         // - 路径合法
         // - 路径对应的目录存在
         // - 路径是游戏目录
-        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
-        val path = gameDirectory0.toPathOrNull()
+        val gameDirectory = gameDirectory?.normalizePath()?.orNull()
+        if (gameDirectory == null) return null
+        val path = gameDirectory.toPathOrNull()
         if (path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
+        if (path.notExists()) return builder.error(PlsBundle.message("gameDirectory.error.2"))
         val rootFile = path.toVirtualFile(refreshIfNeed = true)?.takeIf { it.exists() }
         if (rootFile == null) return builder.error(PlsBundle.message("gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))
+        if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3"))
+        if (rootInfo.gameType != gameType) return builder.error(PlsBundle.message("gameDirectory.error.4", gameType.title))
         return null
     }
 
     fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
-        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
-        val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
+        val gameDirectory = gameDirectory?.normalizePath()?.orNull() ?: return null
+        val rootFile = gameDirectory.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if (rootInfo !is ParadoxRootInfo.Game) return null
         return rootInfo.version

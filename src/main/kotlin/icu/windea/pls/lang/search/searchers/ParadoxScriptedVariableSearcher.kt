@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
 import icu.windea.pls.core.castOrNull
@@ -25,9 +24,10 @@ import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -45,108 +45,93 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (PlsStates.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val project = queryParameters.project
-        if (project.isDefault) return
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        if (SearchScope.isEmptyScope(scope)) return
+        val context = queryParameters.createContext(scope)
+        processQuery(context, consumer)
+    }
 
-        when (queryParameters.type) {
+    private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptScriptedVariable>): Boolean {
+        if (!context.isValid()) return true
+        when (context.type) {
             ParadoxScriptedVariableType.Local -> {
-                val file = queryParameters.selector.file ?: return
+                val file = context.selectorFile ?: return true
                 val fileInfo = file.fileInfo // NOTE fileInfo can be null here (e.g., injected files)
-                if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return // skip global scripted variables
-                val startOffset = queryParameters.selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
-                val fileScope = GlobalSearchScope.fileScope(project, file)
-                processQueryForScriptVariables(queryParameters.name, project, fileScope) p@{ element ->
+                if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return true // skip global scripted variables
+                val startOffset = context.selectorContext?.castOrNull<PsiElement>()?.startOffset ?: -1
+                val fileScope = GlobalSearchScope.fileScope(context.project, file) // limit to current file
+                processScriptVariables(context.copy(scope = fileScope)) p@{ element ->
                     if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current position
                     consumer.process(element)
-                }.let { if (!it) return }
+                }.let { if (!it) return false }
 
                 val processedFiles = mutableSetOf(file)
-                processQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
+                processInlineScripts(context, file, processedFiles, consumer).let { if (!it) return false }
+
+                return true
             }
             ParadoxScriptedVariableType.Global -> {
-                val globalScope = queryParameters.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
-                if (SearchScope.isEmptyScope(globalScope)) return
-                processQueryForScriptVariables(queryParameters.name, project, globalScope) { element -> consumer.process(element) }
+                val globalScope = context.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variable files
+                return processScriptVariables(context.copy(scope = globalScope)) { element -> consumer.process(element) }
             }
             null -> {
-                processQueryForScriptVariables(queryParameters.name, project, scope) { element -> consumer.process(element) }
+                return processScriptVariables(context) { element -> consumer.process(element) }
             }
         }
     }
 
-    private fun processQueryForInlineScripts(
-        queryParameters: ParadoxScriptedVariableSearch.Parameters,
-        file: VirtualFile,
-        processedFiles: MutableSet<VirtualFile>,
-        consumer: Processor<in ParadoxScriptScriptedVariable>
-    ): Boolean {
+    private fun processInlineScripts(context: Context, file: VirtualFile, processedFiles: MutableSet<VirtualFile>, consumer: Processor<in ParadoxScriptScriptedVariable>): Boolean {
         // #93 in inline script files -> invoker file (SUPPORTED)
         // #151 in inline script arguments -> invoked inline script file (SUPPORTED)
         // #153 in passed inline script arguments -> outer invoked inline script file (UNSUPPORTED, but unresolved references can be suppressed)
 
         ProgressManager.checkCanceled()
-
-        val psiFile = file.toPsiFile(queryParameters.project) ?: return true
+        val psiFile = file.toPsiFile(context.project) ?: return true
 
         if (VirtualFileService.isInjectedFile(file)) {
             run {
                 // input file is an injected file (from argument value)
                 val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
                 val parameterElement = injectionInfo.parameterElement ?: return@run
-                if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run // must be argument value, rather than parameter default value
+                if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run // must be an argument value, rather than a parameter default value
                 val inlineScriptExpression = parameterElement.contextKey.removePrefixOrNull("inline_script@")?.orNull() ?: return@run
-                return processQueryForInlineScriptFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+                return processInlineScriptFiles(context, file, processedFiles, inlineScriptExpression, consumer)
             }
             return true
         }
 
-        if (VirtualFileService.isLightFile(file)) return true // skip for other in-memory files
+        if (VirtualFileService.isLightFile(file)) {
+            // skip for other in-memory files
+            return true
+        }
 
         // input file is an inline script file
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true
-        return processQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+        return processInlineScriptUsageFiles(context, file, processedFiles, inlineScriptExpression, consumer)
     }
 
-    private fun processQueryForInlineScriptFiles(
-        queryParameters: ParadoxScriptedVariableSearch.Parameters,
-        file: VirtualFile,
-        inlineScriptExpression: String,
-        processedFiles: MutableSet<VirtualFile>,
-        consumer: Processor<in ParadoxScriptScriptedVariable>
-    ): Boolean {
+    private fun processInlineScriptFiles(context: Context, file: VirtualFile, processedFiles: MutableSet<VirtualFile>, inlineScriptExpression: String, consumer: Processor<in ParadoxScriptScriptedVariable>): Boolean {
         if (inlineScriptExpression.isParameterized()) return true // skip if is inlineScriptExpression parameterized
-        val name = queryParameters.name
-        val project = queryParameters.project
-        val context = queryParameters.selector.context
         ProgressManager.checkCanceled()
-        ParadoxInlineScriptManager.processInlineScriptFile(inlineScriptExpression, project, context) p@{ inlineScriptFile ->
+
+        ParadoxInlineScriptManager.processInlineScriptFile(inlineScriptExpression, context.project, context.selectorContext) p@{ inlineScriptFile ->
             ProgressManager.checkCanceled()
-            val fileScope = GlobalSearchScope.fileScope(project, inlineScriptFile.virtualFile)
-            processQueryForScriptVariables(name, project, fileScope) p@{ element ->
+            val fileScope = GlobalSearchScope.fileScope(context.project, inlineScriptFile.virtualFile) // limit to current file
+            processScriptVariables(context.copy(scope = fileScope)) p@{ element ->
                 // do not skip scripted variables after related parameter, do not check that currently
                 consumer.process(element)
             }.let { if (!it) return@p false }
             true
         }
 
-        return processQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+        return processInlineScriptUsageFiles(context, file, processedFiles, inlineScriptExpression, consumer)
     }
 
-    private fun processQueryForInlineScriptUsageFiles(
-        queryParameters: ParadoxScriptedVariableSearch.Parameters,
-        file: VirtualFile,
-        inlineScriptExpression: String,
-        processedFiles: MutableSet<VirtualFile>,
-        consumer: Processor<in ParadoxScriptScriptedVariable>
-    ): Boolean {
+    private fun processInlineScriptUsageFiles(context: Context, file: VirtualFile, processedFiles: MutableSet<VirtualFile>, inlineScriptExpression: String, consumer: Processor<in ParadoxScriptScriptedVariable>): Boolean {
         if (inlineScriptExpression.isParameterized()) return true // skip if inlineScriptExpression is parameterized
-        val name = queryParameters.name
-        val project = queryParameters.project
-        val selector = selector(project, file).inlineScriptUsage()
-        val uFile2StartOffsetMap = mutableMapOf<VirtualFile, Int>()
         ProgressManager.checkCanceled()
+
+        val uFile2StartOffsetMap = mutableMapOf<VirtualFile, Int>()
+        val selector = ParadoxInlineScriptUsageSearch.selector(context.project, file)
         ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).process p@{ p ->
             ProgressManager.checkCanceled()
             val uFile = p.containingFile?.virtualFile ?: return@p true
@@ -158,27 +143,36 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (uFile2StartOffsetMap.isEmpty()) return true
         return uFile2StartOffsetMap.process p@{ (uFile, startOffset) ->
             ProgressManager.checkCanceled()
-            val fileScope = GlobalSearchScope.fileScope(project, uFile)
-            processQueryForScriptVariables(name, project, fileScope) p@{ element ->
+            val fileScope = GlobalSearchScope.fileScope(context.project, uFile) // limit to current file
+            processScriptVariables(context.copy(scope = fileScope)) p@{ element ->
                 if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current inline script usage
                 consumer.process(element)
             }.let { if (!it) return@p false }
 
-            processQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) // inline script usage can be recursive
+            processInlineScripts(context, uFile, processedFiles, consumer) // inline script usage can be recursive
         }
     }
 
-    private fun processQueryForScriptVariables(
-        name: String?,
-        project: Project,
-        scope: GlobalSearchScope,
-        processor: Processor<ParadoxScriptScriptedVariable>
-    ): Boolean {
+    private fun processScriptVariables(context: Context, processor: Processor<ParadoxScriptScriptedVariable>): Boolean {
         val indexKey = PlsIndexKeys.ScriptedVariableName
-        return if (name == null) {
-            PlsIndexService.processElementsByKeys(indexKey, project, scope) { _, element -> processor.process(element) }
+        return if (context.name == null) {
+            PlsIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
         } else {
-            PlsIndexService.processElements(indexKey, name, project, scope) { element -> processor.process(element) }
+            PlsIndexService.processElements(indexKey, context.name, context.project, context.scope) { element -> processor.process(element) }
         }
     }
+
+    private fun ParadoxScriptedVariableSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+        return Context(name, type, selector.file, selector.context, gameType, project, scope)
+    }
+
+    private data class Context(
+        val name: String?,
+        val type: ParadoxScriptedVariableType?,
+        val selectorFile: VirtualFile?,
+        val selectorContext: Any?,
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+        override val scope: GlobalSearchScope,
+    ) : ParadoxSearchContext
 }

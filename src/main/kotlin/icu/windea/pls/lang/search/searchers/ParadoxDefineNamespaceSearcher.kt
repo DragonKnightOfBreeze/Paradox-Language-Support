@@ -26,28 +26,26 @@ class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, 
 
         ProgressManager.checkCanceled()
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
-        val context = createContext(queryParameters, scope)
-        if (!context.isValid()) return
-        processInternal(context, consumer)
+        val context = queryParameters.createContext(scope)
+        processQuery(context, consumer)
     }
 
-    private fun processInternal(context: Context, consumer: Processor<in ParadoxScriptProperty>) {
-        val project = context.project
-        val scope = context.scope
+    private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptProperty>): Boolean {
+        if (!context.isValid()) return true
         if (context.namespace == null) {
-            PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, project, scope) { _, element ->
+            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         } else {
-            if (context.namespace.isEmpty()) return
-            PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, context.namespace, project, scope) { element ->
+            if (context.namespace.isEmpty()) return true
+            return PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, context.namespace, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         }
     }
 
-    private fun createContext(p: ParadoxDefineNamespaceSearch.Parameters, scope: GlobalSearchScope = p.scope): Context {
-        return Context(p.namespace, p.gameType, p.project, scope)
+    private fun ParadoxDefineNamespaceSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+        return Context(namespace, gameType, project, scope)
     }
 
     private data class Context(

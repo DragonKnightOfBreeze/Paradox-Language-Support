@@ -28,15 +28,13 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
-import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
-import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
@@ -77,7 +75,7 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
-    fun getEvents(selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): Set<ParadoxScriptProperty> {
+    fun getEvents(selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
@@ -148,12 +146,12 @@ object ParadoxEventManager {
     }
 
     fun getScope(element: ParadoxDefinitionElement): String {
-        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeId.anyScopeId
+        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeConstants.anyScope
     }
 
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventScope) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeId.anyScopeId
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeConstants.anyScope
         }
     }
 
@@ -210,7 +208,7 @@ object ParadoxEventManager {
     /**
      * 得到作为调用者的事件列表。
      */
-    fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): List<ParadoxScriptProperty> {
+    fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -239,7 +237,7 @@ object ParadoxEventManager {
     /**
      * 得到调用的事件列表。
      */
-    fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): List<ParadoxScriptProperty> {
+    fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         // NOTE 1. 目前不兼容封装变量引用
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 

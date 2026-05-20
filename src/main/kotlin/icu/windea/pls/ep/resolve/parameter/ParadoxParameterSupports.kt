@@ -44,8 +44,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nestedScriptValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -77,7 +76,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (element !is ParadoxScriptProperty) return false
         val definitionInfo = element.definitionInfo ?: return false
         // NOTE 简单判断 - 目前不需要兼容子类型
-        return definitionInfo.type in definitionInfo.configGroup.definitionTypesModel.supportParameters
+        return definitionInfo.type in definitionInfo.configGroup.typesModel.supportParameters
     }
 
     override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
@@ -244,7 +243,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return false // skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = parameterElement.project
-        val selector = selector(project, parameterElement).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, parameterElement).contextSensitive()
         ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
     }
@@ -255,7 +254,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return false // skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
-        val selector = selector(project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
     }

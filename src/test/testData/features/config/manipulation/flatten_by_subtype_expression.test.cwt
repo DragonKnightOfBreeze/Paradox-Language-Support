@@ -1,0 +1,17 @@
+k1 = {
+    k2 = v
+    subtype[t1] = v
+    subtype[t2] = {
+        k3 = v
+        subtype[t3] = v
+        subtype[t4] = {
+            k4 = v
+            subtype[t5] = {
+                k5 = v
+            }
+            subtype[t6] = {
+                k6 = v
+            }
+        }
+    }
+}

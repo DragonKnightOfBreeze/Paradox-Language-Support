@@ -6,7 +6,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
@@ -49,7 +48,7 @@ class ParadoxDefineVariableSearcherTest : BasePlatformTestCase() {
         configureDefineFile("features/index/common/defines/defines_basic_stellaris.test.txt")
 
         // act
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
         val results = mutableListOf<ParadoxScriptProperty>()
         ParadoxDefineVariableSearch.search("NGameplay", "MARINE", selector).process { element ->
             results += element
@@ -73,7 +72,7 @@ class ParadoxDefineVariableSearcherTest : BasePlatformTestCase() {
     fun byNamespace_AllVariables() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
         val results = ParadoxDefineVariableSearch.search("NGameplay", null, selector).findAll()
             .mapNotNull { it.defineVariableInfo }
             .sortedBy { it.expression }
@@ -90,7 +89,7 @@ class ParadoxDefineVariableSearcherTest : BasePlatformTestCase() {
     fun byVariableAcrossNamespaces() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
         val results = ParadoxDefineVariableSearch.search(null, "MARINE", selector).findAll()
             .mapNotNull { it.defineVariableInfo }
             .sortedBy { it.namespace }
@@ -107,7 +106,7 @@ class ParadoxDefineVariableSearcherTest : BasePlatformTestCase() {
     fun edge_ByNamespace_AllVariables() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
         val elements = ParadoxDefineVariableSearch.search("NGameplay", null, selector).findAll()
         val infos = elements.mapNotNull { it.defineVariableInfo }.sortedBy { it.expression }
 
@@ -119,7 +118,7 @@ class ParadoxDefineVariableSearcherTest : BasePlatformTestCase() {
     fun edge_byNamespaceAndVariable_parameterizedVariable() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
         val elements = ParadoxDefineVariableSearch.search("NGameplay", "A_\$PARAM\$_B", selector).findAll()
         assertNoDefineVariableInfo(elements)
     }
@@ -128,7 +127,7 @@ class ParadoxDefineVariableSearcherTest : BasePlatformTestCase() {
     fun edge_byNamespaceAndVariable_NestedVariable() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
-        val selector = selector(project, myFixture.file).define()
+        val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
         val elements = ParadoxDefineVariableSearch.search("NGameplay", "INSIDE", selector).findAll()
         assertNoDefineVariableInfo(elements)
     }

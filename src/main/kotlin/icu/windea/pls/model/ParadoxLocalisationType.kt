@@ -11,7 +11,7 @@ import icu.windea.pls.model.paths.ParadoxPath
 
 enum class ParadoxLocalisationType(val id: String) {
     Normal("localisation"),
-    Synced("localisation_synced"),
+    Synced("synced localisation"),
     ;
 
     override fun toString() = id

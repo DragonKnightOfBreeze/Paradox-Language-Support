@@ -8,16 +8,15 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -32,7 +31,7 @@ class ParadoxNameFormatLocalisationNode(
     override val configGroup: CwtConfigGroup,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.localisationReference(element.language)
+        return ParadoxSemanticHighlighterColors.localisationReference(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -78,14 +77,14 @@ class ParadoxNameFormatLocalisationNode(
 
         private fun doResolve(): PsiElement? {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
+            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
             val resolved = ParadoxLocalisationSearch.searchNormal(name, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
+            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
             val resolved = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
             return resolved.createResults()
         }

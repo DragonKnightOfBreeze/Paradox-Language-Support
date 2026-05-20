@@ -1,0 +1,4 @@
+# expect lios, actual fios - vanilla declaration is in `01_defines.txt`
+Namespace = {
+    Variable = 1
+}

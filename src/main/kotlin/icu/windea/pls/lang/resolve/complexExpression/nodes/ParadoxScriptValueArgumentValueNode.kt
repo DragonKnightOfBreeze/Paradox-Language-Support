@@ -4,9 +4,9 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.ParadoxTypeService
-import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.model.type.ParadoxExpressionType
+import icu.windea.pls.model.type.ParadoxTypeResolver
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
 class ParadoxScriptValueArgumentValueNode(
     override val text: String,
@@ -17,12 +17,12 @@ class ParadoxScriptValueArgumentValueNode(
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         // 为参数值提供基础代码高亮
-        val type = ParadoxTypeService.resolve(text)
+        val type = ParadoxTypeResolver.resolveExpressionType(text)
         return when {
-            type == ParadoxType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD
-            ParadoxTypeService.isRelaxFloat(type) -> ParadoxScriptAttributesKeys.NUMBER
-            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE
-            else -> ParadoxScriptAttributesKeys.STRING
+            type == ParadoxExpressionType.Boolean -> ParadoxScriptHighlighterColors.KEYWORD
+            type.isLenientFloat() -> ParadoxScriptHighlighterColors.NUMBER
+            text.startsWith('@') -> ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_REFERENCE
+            else -> ParadoxScriptHighlighterColors.STRING
         }
     }
 

@@ -10,7 +10,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
@@ -52,7 +51,7 @@ class AutomaticDefinitionGeneratedModifiersIconRenamer(element: PsiElement, newN
                 val iconPath = ParadoxModifierManager.getModifierIconPaths(modifierName, element).firstOrNull() ?: return@run
                 val newIconPath = ParadoxModifierManager.getModifierIconPaths(newModifierName, element).firstOrNull() ?: return@run
                 val newIconName = newIconPath.substringAfterLast('/')
-                val iconSelector = selector(project, element).file()
+                val iconSelector = ParadoxFilePathSearch.selector(project, element)
                 val result = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findAll()
                 result.mapNotNull { it.toPsiFile(project) }.forEach { allRenames[it] = newIconName + "." + it.name.substringAfterLast('.') }
             }

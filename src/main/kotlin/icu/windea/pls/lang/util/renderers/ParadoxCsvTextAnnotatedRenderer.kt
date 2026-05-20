@@ -11,8 +11,8 @@ import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
  * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedLevel]。
  *
  * 支持的注解：
- * - 类型信息。参见 [ParadoxCsvAnnotatedManager.getType]。
- * - 规则表达式信息。参见 [ParadoxCsvAnnotatedManager.getConfigExpression]。
+ * - 类型信息。参见 [ParadoxCsvAnnotatedManager.getTypeAnnotation]。
+ * - 规则表达式信息。参见 [ParadoxCsvAnnotatedManager.getConfigExpressionAnnotation]。
  */
 class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<String, ParadoxCsvTextAnnotatedRenderSettings, ParadoxCsvTextAnnotatedRenderContext>() {
     override val settings = ParadoxCsvTextAnnotatedRenderSettings()
@@ -40,10 +40,10 @@ class ParadoxCsvTextAnnotatedRenderContext(
     fun getAnnotations(element: ParadoxCsvRowElement): List<String> {
         return buildList {
             if (settings.level.includeType) {
-                ParadoxCsvAnnotatedManager.getType(element)?.let { add(it) }
+                ParadoxCsvAnnotatedManager.getTypeAnnotation(element)?.let { add(it) }
             }
             if (settings.level.includeConfigExpression) {
-                ParadoxCsvAnnotatedManager.getConfigExpression(element)?.let { add(it) }
+                ParadoxCsvAnnotatedManager.getConfigExpressionAnnotation(element)?.let { add(it) }
             }
         }
     }

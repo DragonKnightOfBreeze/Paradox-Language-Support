@@ -9,6 +9,7 @@ import com.intellij.util.gist.VirtualFileGist
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
@@ -273,7 +274,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val gameType = firstInfo.gameType
         storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
         var previousInfo: ParadoxIndexInfo? = null
-        value.forEach { info ->
+        value.forEachFast { info ->
             support.saveData(storage, info, previousInfo, gameType)
             previousInfo = info
         }
@@ -288,7 +289,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val support = getSupportOrUnsupported(supports, key)
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         var previousInfo: ParadoxIndexInfo? = null
-        return MutableList(size) {
+        return ImmutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }
         }
     }

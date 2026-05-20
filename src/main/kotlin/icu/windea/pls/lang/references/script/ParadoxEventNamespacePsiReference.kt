@@ -8,8 +8,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -34,7 +33,7 @@ class ParadoxEventNamespacePsiReference(
         if (preferredEventNamespace != null) return preferredEventNamespace
 
         val name = element.value.substringBefore('.')
-        val selector = selector(project, event).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, event).contextSensitive()
         val eventNamespace = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.eventNamespace, selector).find()
         return eventNamespace
     }
@@ -48,7 +47,7 @@ class ParadoxEventNamespacePsiReference(
         if (preferredEventNamespace != null) result.add(preferredEventNamespace)
 
         val name = element.value.substringBefore('.')
-        val selector = selector(project, event).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(project, event).contextSensitive()
         val eventNamespaces = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.eventNamespace, selector).findAll()
         result.addAll(eventNamespaces)
         return result.createResults()

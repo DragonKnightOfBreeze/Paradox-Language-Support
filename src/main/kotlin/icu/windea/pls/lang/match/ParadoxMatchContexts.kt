@@ -10,7 +10,7 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.expressions.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
  * 脚本表达式的匹配上下文。
@@ -25,7 +25,7 @@ import icu.windea.pls.model.expressions.ParadoxScriptExpression
  */
 data class ParadoxScriptExpressionMatchContext(
     val element: PsiElement,
-    val expression: ParadoxScriptExpression,
+    val expression: ParadoxExpression,
     val configExpression: CwtDataExpression,
     val config: CwtConfig<*>?,
     val configGroup: CwtConfigGroup,
@@ -35,6 +35,7 @@ data class ParadoxScriptExpressionMatchContext(
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
 }
+
 /**
  * 脚本表达式的优化上下文。
  *
@@ -46,7 +47,7 @@ data class ParadoxScriptExpressionMatchContext(
  */
 data class ParadoxScriptExpressionMatchOptimizerContext(
     val element: PsiElement,
-    val expression: ParadoxScriptExpression,
+    val expression: ParadoxExpression,
     val configGroup: CwtConfigGroup,
     val options: ParadoxMatchOptions? = null,
 ) {
@@ -58,7 +59,7 @@ data class ParadoxScriptExpressionMatchOptimizerContext(
  * CSV 表达式的匹配上下文。
  *
  * @property element 上下文 PSI 元素。
- * @property expressionText 表达式文本。
+ * @property expression CSV 表达式。
  * @property configExpression 规则表达式。
  * @property configGroup 规则分组。
  *
@@ -66,7 +67,7 @@ data class ParadoxScriptExpressionMatchOptimizerContext(
  */
 data class ParadoxCsvExpressionMatchContext(
     val element: PsiElement,
-    val expressionText: String,
+    val expression: ParadoxExpression,
     val configExpression: CwtDataExpression,
     val configGroup: CwtConfigGroup,
 ) {

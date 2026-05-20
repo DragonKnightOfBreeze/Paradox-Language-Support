@@ -20,10 +20,9 @@ import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.util.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -84,12 +83,12 @@ object ParadoxConfigExpressionService {
     ): CwtLocalisationLocationResolveResult.Static {
         return CwtLocalisationLocationResolveResult.Static(name, {
             val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
-            val selector = selector(project, definition).localisation().contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
                 .withConstraint(constraint)
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).find()
         }, {
-            val selector = selector(project, definition).localisation().contextSensitive()
+            val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         })
@@ -130,7 +129,7 @@ object ParadoxConfigExpressionService {
                 val spriteName = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
                 if (spriteName.isNullOrEmpty()) return null
                 if (toFile) {
-                    val definitionSelector = selector(project, definition).definition().contextSensitive()
+                    val definitionSelector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
                     val resolved = ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
@@ -206,10 +205,10 @@ object ParadoxConfigExpressionService {
         project: Project
     ): CwtImageLocationResolveResult.Static {
         return CwtImageLocationResolveResult.Static(spriteName, frameInfo, {
-            val selector = selector(project, definition).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
             ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
-            val selector = selector(project, definition).definition().contextSensitive()
+            val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
             ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
         })
     }
@@ -221,10 +220,10 @@ object ParadoxConfigExpressionService {
         project: Project
     ): CwtImageLocationResolveResult.Static {
         return CwtImageLocationResolveResult.Static(filePath, frameInfo, {
-            val selector = selector(project, definition).file().contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
             ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
         }, {
-            val selector = selector(project, definition).file().contextSensitive()
+            val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
             ParadoxFilePathSearch.search(filePath, null, selector).findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
         })
     }

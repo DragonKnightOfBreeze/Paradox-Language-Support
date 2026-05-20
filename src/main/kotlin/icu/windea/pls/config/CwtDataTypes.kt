@@ -125,13 +125,24 @@ object CwtDataTypes {
     /**
      * 百分比字段类型。
      *
-     * 匹配百分比值字符串（如 `50%`）。
+     * 匹配数字部分为浮点数的百分比值字符串（如 `50.0%`）。
      *
      * 对应的数据表达式的格式：
      * - `percentage_field`
      */
     val PercentageField = CwtDataType.builder("PercentageField").build {
-        withPriority(90.0)
+        withPriority(90.0) // very high
+    }
+    /**
+     * 整数百分比字段类型。
+     *
+     * 匹配数字部分为整数的百分比值字符串（如 `50%`）。
+     *
+     * 对应的数据表达式的格式：
+     * - `int_percentage_field`
+     */
+    val IntPercentageField = CwtDataType.builder("IntPercentageField").build {
+        withPriority(90.0) // very high
     }
     /**
      * 日期字段类型。
@@ -149,7 +160,7 @@ object CwtDataTypes {
     /**
      * 定义引用类型。
      *
-     * 匹配脚本中对指定类型定义的引用。表达式须为合法标识符（允许 `.` 和 `-`），
+     * 匹配对指定类型定义的引用。表达式须为合法标识符（允许 `.` 和 `-`），
      * 可以是整数或浮点数（如 `<technology_tier>` 的情况）。匹配时验证引用的定义是否存在。
      *
      * 对应的数据表达式的格式：
@@ -162,7 +173,7 @@ object CwtDataTypes {
     /**
      * 本地化引用类型。
      *
-     * 匹配脚本中对本地化键的引用。表达式须为合法标识符（允许 `.`、`-`、`'`）。
+     * 匹配对本地化键的引用。表达式须为合法标识符（允许 `.`、`-`、`'`）。
      * 匹配时验证引用的本地化是否存在。
      *
      * 对应的数据表达式的格式：
@@ -196,7 +207,7 @@ object CwtDataTypes {
     /**
      * 修正引用类型。
      *
-     * 匹配脚本中对修正（modifier）的引用。表达式须为合法标识符。
+     * 匹配对修正（modifier）的引用。表达式须为合法标识符。
      * 匹配时验证引用的修正是否在规则组中存在。优先级高于 [Definition][CwtDataTypes.Definition]。
      *
      * 对应的数据表达式的格式：
@@ -209,7 +220,7 @@ object CwtDataTypes {
     /**
      * 枚举值类型。
      *
-     * 匹配脚本中对枚举值的引用。
+     * 匹配对枚举值的引用。
      * 匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
      *
      * 对应的数据表达式的格式：
@@ -219,7 +230,7 @@ object CwtDataTypes {
         withPriority { configExpression, configGroup ->
             val enumName = configExpression.value ?: return@withPriority 0.0 // unexpected
             if (configGroup.enums.containsKey(enumName)) return@withPriority 80.0
-            if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 45.0
+            if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 50.0
             0.0 // unexpected
         }
     }
@@ -429,7 +440,7 @@ object CwtDataTypes {
     /**
      * 命名格式表达式类型。
      *
-     * 匹配命名格式表达式。仅限 Stellaris 游戏类型。
+     * 匹配命名格式表达式。
      *
      * 对应的数据表达式的格式：
      * - `name_format[{type}]`
@@ -443,23 +454,37 @@ object CwtDataTypes {
     /**
      * 着色器效果类型。
      *
-     * 匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
+     * 匹配对着色器效果（shader effect）的引用。
+     * 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
      *
      * 对应的数据表达式的格式：
      * - `$shader_effect`
      */
     val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/).build {
-        withPriority(85.0)
-    } // effects in .shader files
+        withPriority(30.0)
+    }
+
+    /**
+     * 网格定位器类型。
+     *
+     * 匹配对网格定位器（mesh locator）的引用。
+     * 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
+     *
+     * 对应的数据表达式的格式：
+     * - `$mesh_locator`
+     */
+    val MeshLocator = CwtDataType.builder("MeshLocator"/*).reference(*/).build {
+        withPriority(30.0)
+    }
 
     /**
      * 带等级的科技类型。
      *
      * 匹配带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
-     * 仅限 Stellaris 游戏类型。优先级低于 [Definition][CwtDataTypes.Definition]。
+     * 仅限 Stellaris 游戏类型，且优先级低于 [Definition][CwtDataTypes.Definition]。
      *
      * 对应的数据表达式的格式：
-     * - `<technology_with_level>`
+     * - `$technology_with_level`
      */
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build {
@@ -555,7 +580,7 @@ object CwtDataTypes {
     /**
      * 图标路径类型。
      *
-     * 匹配脚本中对图标文件的路径引用。匹配时验证路径引用的文件是否存在。
+     * 匹配对图标文件的路径引用。匹配时验证路径引用的文件是否存在。
      *
      * 对应的数据表达式的格式：
      * - `icon[{path}]` - 其中 `{path}` 匹配路径模式。
@@ -566,7 +591,7 @@ object CwtDataTypes {
     /**
      * 文件路径类型。
      *
-     * 匹配脚本中对文件的路径引用。匹配时验证路径引用的文件是否存在。
+     * 匹配对文件的路径引用。匹配时验证路径引用的文件是否存在。
      *
      * 对应的数据表达式的格式：
      * - `filepath`
@@ -579,7 +604,7 @@ object CwtDataTypes {
     /**
      * 文件名类型。
      *
-     * 匹配脚本中对文件名的引用。匹配时验证路径引用的文件是否存在。
+     * 匹配对文件名的引用。匹配时验证路径引用的文件是否存在。
      *
      * 对应的数据表达式的格式：
      * - `filename`
@@ -594,7 +619,7 @@ object CwtDataTypes {
     /**
      * 常量类型。解析为此类型时，表达式字符串即为常量值本身。
      *
-     * 匹配脚本中与常量值完全相同的表达式。作为值时，常量`yes`/`no`不匹配用引号括起的表达式。
+     * 匹配与常量值完全相同的表达式。作为值时，常量`yes`/`no`不匹配用引号括起的表达式。
      * 不含特殊字符（`:.@[]<>`）的表达式字符串解析为此类型。
      */
     val Constant = CwtDataType.builder("Constant").patternAware().build {
@@ -614,7 +639,7 @@ object CwtDataTypes {
     /**
      * Ant路径模式类型（模式感知）。
      *
-     * 匹配脚本中符合Ant路径模式的表达式。支持通配符`?`（单字符）、`*`（单段）和`**`（多段，不常用）。
+     * 匹配符合Ant路径模式的表达式。支持通配符`?`（单字符）、`*`（单段）和`**`（多段，不常用）。
      *
      * 对应的数据表达式的格式：
      * - `ant:{pattern}` - 其中 `{pattern}` 匹配模式。
@@ -627,7 +652,7 @@ object CwtDataTypes {
     /**
      * 正则表达式模式类型（模式感知）。
      *
-     * 匹配脚本中符合正则表达式的表达式。
+     * 匹配符合正则表达式的表达式。
      *
      * 对应的数据表达式的格式：
      * - `re:{pattern}` - 其中 `{pattern}` 匹配模式。

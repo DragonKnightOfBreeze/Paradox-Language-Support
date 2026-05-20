@@ -23,10 +23,8 @@ import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
@@ -63,12 +61,11 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -211,7 +208,7 @@ object ParadoxExpressionManager {
         // 非常神秘，但这个方法在某些情况下是必要的（例如：`value:a|b|@c|`）
         run {
             val name = text.removePrefixOrNull("@")?.orNull() ?: return@run
-            val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
+            val selector = ParadoxScriptedVariableSearch.selector(project, contextElement).contextSensitive()
             ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it.value }
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it.value }
         }
@@ -297,7 +294,7 @@ object ParadoxExpressionManager {
 
         val attributesKey = node.getAttributesKey(element)
         run {
-            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING
+            val mustUseAttributesKey = attributesKey != ParadoxScriptHighlighterColors.PROPERTY_KEY && attributesKey != ParadoxScriptHighlighterColors.STRING
             if (attributesKey != null && mustUseAttributesKey) {
                 annotateNodeByAttributesKey(element, node, attributesKey, holder)
                 return@run
@@ -418,53 +415,6 @@ object ParadoxExpressionManager {
 
         val result = ParadoxExpressionService.multiResolveCsvExpression(element, rangeInElement, expressionText, config)
         return result
-    }
-
-    fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
-        return ParadoxModifierManager.resolveModifier(name, element, configGroup)
-    }
-
-    @Suppress("unused")
-    fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val systemScopeConfig = configGroup.systemScopes[name] ?: return null
-        val resolved = systemScopeConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
-        val resolved = linkConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
-        val resolved = linkConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    fun resolvePredefinedEnumValue(name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
-        val enumConfig = configGroup.enums[enumName] ?: return null
-        val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
-        val resolved = enumValueConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.localisationLinks[name] ?: return null
-        val resolved = linkConfig.resolveElementWithConfig() ?: return null
-        return resolved
-    }
-
-    @Suppress("unused")
-    fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val commandConfig = configGroup.localisationCommands[name] ?: return null
-        val resolved = commandConfig.resolveElementWithConfig() ?: return null
-        return resolved
     }
 
     // endregion

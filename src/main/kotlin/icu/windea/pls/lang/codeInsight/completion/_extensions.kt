@@ -19,12 +19,12 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -111,7 +111,7 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
     return this
 }
 
-fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): LookupElementBuilder? {
+fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElementBuilder? {
     // check whether scope is matched again here
     if ((!scopeMatched || !context.scopeMatched) && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
 
@@ -123,13 +123,13 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtSingleAliasConfig -> config.config
         config is CwtMacroConfig -> config.config
         else -> null
-    }?.let { c -> CwtConfigInlineService.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
+    }?.let { c -> CwtConfigManipulationService.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
 
     val contextElement = context.contextElement
     val isKeyElement = contextElement is ParadoxScriptPropertyKey
     val isStringElement = contextElement is ParadoxScriptString
     val isKey = context.isKey
-    val isBlockConfig = targetConfig?.let { it.valueType == CwtType.Block } ?: false
+    val isBlockConfig = targetConfig?.let { it.valueType == CwtExpressionType.Block } ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null

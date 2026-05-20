@@ -27,37 +27,34 @@ class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, P
 
         ProgressManager.checkCanceled()
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
-        val context = createContext(queryParameters, scope)
-        if (!context.isValid()) return
-        processInternal(context, consumer)
+        val context = queryParameters.createContext(scope)
+        processQuery(context, consumer)
     }
 
-    private fun processInternal(context: Context, consumer: Processor<in ParadoxScriptProperty>) {
-        val project = context.project
-        val scope = context.scope
+    private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptProperty>): Boolean {
+        if (!context.isValid()) return true
         if (context.namespace != null && context.variable != null) {
             val key = ParadoxDefineVariableKey(context.namespace, context.variable)
-            PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, project, scope) { element ->
+            return PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         } else if (context.namespace != null) {
-            PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.namespace == context.namespace }) { _, element ->
+            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, context.project, context.scope, { it.namespace == context.namespace }) { _, element ->
                 consumer.process(element)
             }
         } else if (context.variable != null) {
-            PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.variable == context.variable }) { _, element ->
+            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, context.project, context.scope, { it.variable == context.variable }) { _, element ->
                 consumer.process(element)
             }
         } else {
-            PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope) { _, element ->
+            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         }
     }
 
-
-    private fun createContext(p: ParadoxDefineVariableSearch.Parameters, scope: GlobalSearchScope = p.scope): Context {
-        return Context(p.namespace, p.variable, p.gameType, p.project, scope)
+    private fun ParadoxDefineVariableSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+        return Context(namespace, variable, gameType, project, scope)
     }
 
     private data class Context(

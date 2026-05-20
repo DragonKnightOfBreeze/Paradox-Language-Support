@@ -16,10 +16,11 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  */
 data class CwtDeclarationConfigAttributes(
     val involvedSubtypes: Set<String> = emptySet(),
-    override val dynamicValueInvolved: Boolean = false,
-    override val parameterInvolved: Boolean = false,
-    override val localisationParameterInvolved: Boolean = false,
-    override val inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
+    override val involvesDynamicValue: Boolean = false,
+    override val involvesParameter: Boolean = false,
+    override val involvesLocalisationParameter: Boolean = false,
+    override val involvesInferredScopeContextAwareDefinitionReference: Boolean = false,
+    override val involvesExternalReference: Boolean = false,
 ) : CwtDeclarationLikeConfigAttributes {
     companion object {
         @JvmField val EMPTY = CwtDeclarationConfigAttributes()

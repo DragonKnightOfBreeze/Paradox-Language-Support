@@ -92,13 +92,13 @@ private class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, 
 
     private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
         val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull() ?: return null
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
+        val propConfigs = config.properties
+        if (propConfigs.isNullOrEmpty()) {
             logger.warn("Skipped invalid complex enum config (name: $name): Missing properties.".withLocationPrefix(config))
             return null
         }
 
-        val propGroup = propElements.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
         val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()

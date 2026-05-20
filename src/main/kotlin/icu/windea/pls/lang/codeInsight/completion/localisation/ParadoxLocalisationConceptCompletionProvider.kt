@@ -16,9 +16,7 @@ import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -38,8 +36,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 提示concept的name或alias
-        val conceptSelector = selector(project, file).definition().contextSensitive()
-            .distinctByName()
+        val conceptSelector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
         val keysToDistinct = mutableSetOf<String>()
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
             val tailText = " from concepts"

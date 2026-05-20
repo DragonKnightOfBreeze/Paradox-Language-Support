@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
+import org.jetbrains.annotations.Nls
 import java.nio.file.Path
 import javax.swing.Icon
 
@@ -14,12 +15,10 @@ import javax.swing.Icon
  *
  * @property icon 用于 UI 展示的图标。
  * @property text 用于 UI 展示的文本。
- *
- * @see icu.windea.pls.lang.ui.settings.ParadoxModDependenciesExportPopup
  */
 interface ParadoxModExporter {
     val icon: Icon? get() = null
-    val text: String
+    val text: @Nls String
 
     /**
      * 检查是否可用。
@@ -57,9 +56,5 @@ interface ParadoxModExporter {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxModExporter>("icu.windea.pls.modExporter")
-
-        fun getAll(gameType: ParadoxGameType): List<ParadoxModExporter> {
-            return EP_NAME.extensionList.filter { it.isAvailable(gameType) }
-        }
     }
 }

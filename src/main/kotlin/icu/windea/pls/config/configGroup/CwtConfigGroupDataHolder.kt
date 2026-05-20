@@ -147,14 +147,14 @@ interface CwtConfigGroupDataHolder {
     /** 相关本地化的模式，用于从本地化导航到相关定义。 */
     val relatedLocalisationPatterns: Set<Tuple2<String, String>>
 
+    /** 获取符合特定条件的定义类型。 */
+    val typesModel: CwtTypesModel
     /** 获取符合特定条件的链接规则。 */
     val linksModel: CwtLinksModel
     /** 获取符合特定条件的本地化的链接规则。 */
     val localisationLinksModel: CwtLinksModel
     /** 获取符合特定条件的宏规则。 */
     val macrosModel: CwtMacrosModel
-    /** 获取符合特定条件的定义类型。 */
-    val definitionTypesModel: CwtDefinitionTypesModel
 
     // endregion
 
@@ -175,6 +175,28 @@ interface CwtConfigGroupDataHolder {
     // endregion
 
     fun clear()
+
+    fun trim()
+}
+
+/** 用于获取符合特定条件的定义类型。 */
+interface CwtTypesModel {
+    /** 基础类型到切换类型的映射。 */
+    val base2Swapped: Map<String, String>
+    /** 切换类型到基础类型的映射。 */
+    val swapped2Base: Map<String, String>
+    /** 支持作用域的定义类型。 */
+    val supportScope: Set<String>
+    /** 间接支持作用域的定义类型。 */
+    val indirectSupportScope: Set<String>
+    /** 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）。 */
+    val skipCheckSystemScope: Set<String>
+    /** 支持参数的定义类型。 */
+    val supportParameters: Set<String>
+    /** 支持作用域推断的定义类型。 */
+    val supportScopeContextInference: Set<String>
+    /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
+    val typeKeyPrefixAware: Set<String>
 
     fun trim()
 }
@@ -201,24 +223,6 @@ interface CwtLinksModel {
 interface CwtMacrosModel {
     val forInlineScripts: List<CwtMacroConfig.InlineScript>
     val forDefinitionInjections: CwtMacroConfig.DefinitionInjection?
-
-    fun trim()
-}
-
-/** 用于获取符合特定条件的定义类型。 */
-interface CwtDefinitionTypesModel {
-    /** 支持作用域的定义类型。 */
-    val supportScope: Set<String>
-    /** 间接支持作用域的定义类型。 */
-    val indirectSupportScope: Set<String>
-    /** 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）。 */
-    val skipCheckSystemScope: Set<String>
-    /** 支持参数的定义类型。 */
-    val supportParameters: Set<String>
-    /** 支持作用域推断的定义类型。 */
-    val supportScopeContextInference: Set<String>
-    /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
-    val typeKeyPrefixAware: Set<String>
 
     fun trim()
 }

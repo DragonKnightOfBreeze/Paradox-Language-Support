@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.isSamePointer
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -106,7 +106,7 @@ object CwtConfigKeyManager {
         run {
             // 处理规则需要内联的情况，并且尝试避免SOF
             if (config !is CwtPropertyConfig) return@run
-            val inlinedConfig = CwtConfigInlineService.inlineSingleAlias(config) ?: return@run
+            val inlinedConfig = CwtConfigManipulationService.inlineSingleAlias(config) ?: return@run
             val guardKey = inlinedConfig.singleAliasConfig?.let { "sa:${it.name}" } ?: return@run
             val newGuardStack = guardStack ?: mutableSetOf()
             if (!newGuardStack.add(guardKey)) return "..."

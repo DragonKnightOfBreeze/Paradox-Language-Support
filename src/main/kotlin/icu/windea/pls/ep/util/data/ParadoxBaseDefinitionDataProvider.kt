@@ -30,8 +30,8 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         createKey("cached.paradox.definition.data:$shortKey")
     }
 
-    override fun <T : ParadoxDefinitionData> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
-        if (relax) return true
+    override fun <T : ParadoxDefinitionData> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean): Boolean {
+        if (lenient) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
         if (!PlsAnnotationManager.check(type, definitionInfo)) return false

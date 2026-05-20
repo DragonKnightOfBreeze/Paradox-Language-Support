@@ -9,8 +9,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
@@ -39,7 +38,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
         val definitionType = snippetNode.configExpression.value ?: return
         if (definitionType.substringBefore('.') !in ParadoxDefinitionTypeSets.job) return
         val configGroup = modifierConfig.config.configGroup
-        val selector = selector(configGroup.project, element).definition().contextSensitive()
+        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive()
         ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).process p@{ definition ->
             ProgressManager.checkCanceled()
             val property = selectScope { definition.properties(inline = true).ofKey("icon").one() } ?: return@p true

@@ -14,22 +14,22 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxTagType
+import icu.windea.pls.model.type.CwtExpressionType
 
 // region CwtMemberConfig Accessors
 
-/** 将值解析为布尔值。如果值类型非 [CwtType.Boolean]，则返回 `null`。 */
-val CwtMemberConfig<*>.booleanValue: Boolean? get() = if (valueType == CwtType.Boolean) value.toBooleanYesNo() else null
+/** 将值解析为布尔值。如果值类型非 [CwtExpressionType.Boolean]，则返回 `null`。 */
+val CwtMemberConfig<*>.booleanValue: Boolean? get() = if (valueType == CwtExpressionType.Boolean) value.toBooleanYesNo() else null
 
-/** 将值解析为整数。如果值类型非 [CwtType.Int] 或解析失败，则返回 `null`。 */
-val CwtMemberConfig<*>.intValue: Int? get() = if (valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
+/** 将值解析为整数。如果值类型非 [CwtExpressionType.Int] 或解析失败，则返回 `null`。 */
+val CwtMemberConfig<*>.intValue: Int? get() = if (valueType == CwtExpressionType.Int) value.toIntOrNull() ?: 0 else null
 
-/** 将值解析为浮点数。如果值类型非 [CwtType.Float] 或解析失败，则返回 `0f`）。 */
-val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
+/** 将值解析为浮点数。如果值类型非 [CwtExpressionType.Float] 或解析失败，则返回 `0f`）。 */
+val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtExpressionType.Float) value.toFloatOrNull() ?: 0f else null
 
-/** 将值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。 */
-val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
+/** 将值解析为字符串。如果值类型非 [CwtExpressionType.String]，则返回 `null`。 */
+val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtExpressionType.String) value else null
 
 /** 如果当前成员规则对应属性的值，则返回所属的属性规则。否则返回自身。 */
 val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*> get() = if (this is CwtValueConfig) propertyConfig ?: this else this
@@ -62,17 +62,17 @@ var CwtMemberConfig<*>.declarationConfigCacheKey: String? by registerKey(CwtMemb
 
 // region CwtOptionMemberConfig Accessors
 
-/** 将选项值解析为布尔值。如果值类型非 [CwtType.Boolean]，则返回 `null`。 */
-val CwtOptionMemberConfig<*>.booleanValue: Boolean? get() = if (valueType == CwtType.Boolean) value.toBooleanYesNo() else null
+/** 将选项值解析为布尔值。如果值类型非 [CwtExpressionType.Boolean]，则返回 `null`。 */
+val CwtOptionMemberConfig<*>.booleanValue: Boolean? get() = if (valueType == CwtExpressionType.Boolean) value.toBooleanYesNo() else null
 
-/** 将选项值解析为整数。如果值类型非 [CwtType.Int] 或解析失败，则返回 `null`。 */
-val CwtOptionMemberConfig<*>.intValue: Int? get() = if (valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
+/** 将选项值解析为整数。如果值类型非 [CwtExpressionType.Int] 或解析失败，则返回 `null`。 */
+val CwtOptionMemberConfig<*>.intValue: Int? get() = if (valueType == CwtExpressionType.Int) value.toIntOrNull() ?: 0 else null
 
-/** 将选项值解析为浮点数。如果值类型非 [CwtType.Float] 或解析失败，则返回 `0f`）。 */
-val CwtOptionMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
+/** 将选项值解析为浮点数。如果值类型非 [CwtExpressionType.Float] 或解析失败，则返回 `0f`）。 */
+val CwtOptionMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtExpressionType.Float) value.toFloatOrNull() ?: 0f else null
 
-/** 将选项值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。 */
-val CwtOptionMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
+/** 将选项值解析为字符串。如果值类型非 [CwtExpressionType.String]，则返回 `null`。 */
+val CwtOptionMemberConfig<*>.stringValue: String? get() = if (valueType == CwtExpressionType.String) value else null
 
 // endregion
 

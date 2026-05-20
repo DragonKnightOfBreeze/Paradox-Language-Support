@@ -6,12 +6,15 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.match.ParadoxMatchResult
+import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 
 /**
  * 数据类型。
  *
- * 用于描述规则表达式（键或值）的取值形态，可为常量、模式、基本数据类型、引用、复杂表达式等情况。
- * 每种数据类型表示一种语义范畴，脚本表达式与规则表达式之间的匹配由数据类型驱动。
+ * 用于描述数据表达式（作为最常见的一种规则表达式）的类型，可为常量、模式、基本数据类型、引用、复杂表达式等情况。
+ *
+ * 每种数据类型表示一种语义范畴，参与决定表达式与规则表达式之间的匹配逻辑。
  *
  * ### 解析逻辑
  *
@@ -20,9 +23,10 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
  *
  * ### 匹配逻辑
  *
- * 脚本表达式与规则表达式的匹配由 [ParadoxScriptExpressionMatcher]
- * 驱动，根据规则表达式的数据类型分派到对应的匹配分支。匹配结果为 [ParadoxMatchResult]，
- * 存在多个候选规则时优先选择 [priority] 更高的数据表达式。
+ * 脚本文件中的表达式与规则表达式的匹配逻辑由扩展点 [ParadoxScriptExpressionMatcher] 驱动，
+ * CSV 文件中的表达式与规则表达式的匹配逻辑由扩展点 [ParadoxCsvExpressionMatcher] 驱动（有限支持），
+ * 根据规则表达式的数据类型分派到对应的匹配分支。
+ * 匹配结果为 [ParadoxMatchResult]，存在多个候选规则时优先选择 [priority] 更高的数据表达式。
  *
  * ### 数据类型分类
  *
@@ -46,9 +50,8 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
  * @see CwtDataTypeSets
  * @see CwtDataExpression
  * @see CwtDataExpressionResolver
- * @see ParadoxScriptExpressionMatcher
+ * @see ParadoxExpression
  */
-@Suppress("unused")
 class CwtDataType private constructor(
     val id: String,
     val isReference: Boolean = false,

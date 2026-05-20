@@ -6,16 +6,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.codeInsight.type.CwtTypeManager
-import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionCandidateManager
@@ -25,7 +19,6 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.lang.util.data.ParadoxDataService
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo
@@ -37,7 +30,6 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxTagType
-import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -70,22 +62,8 @@ inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxCom
 
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
-inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(relax: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, relax)
+inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(lenient: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, lenient)
 inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.getDefinitionPresentation(): T? = ParadoxPresentationService.getDefinitionPresentation(this)
-
-// endregion
-
-// region Code Insight Data Accessors
-
-val CwtExpressionElement.type: CwtType get() = CwtTypeManager.getType(this)
-val CwtExpressionElement.configType: CwtConfigType? get() = CwtTypeManager.getConfigType(this)
-
-val ParadoxExpressionElement.expression: String get() = ParadoxTypeManager.getExpression(this) ?: text
-val ParadoxExpressionElement.type: ParadoxType get() = ParadoxTypeManager.getType(this) ?: ParadoxType.Unknown
-val ParadoxExpressionElement.configExpression: String? get() = ParadoxTypeManager.getConfigExpression(this)
-
-val ParadoxScriptProperty.expression: String get() = "${propertyKey.expression} = ${propertyValue?.expression ?: FallbackStrings.unknown}"
-val ParadoxScriptProperty.configExpression: String get() = "${propertyKey.configExpression} = ${propertyValue?.configExpression ?: FallbackStrings.unknown}"
 
 // endregion
 

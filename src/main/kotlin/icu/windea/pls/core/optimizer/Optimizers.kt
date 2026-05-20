@@ -6,8 +6,6 @@ import com.github.benmanes.caffeine.cache.Interner
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import icu.windea.pls.PlsCapacities
-import icu.windea.pls.core.cache.CacheBuilder
 import it.unimi.dsi.fastutil.Hash
 import java.util.*
 
@@ -19,22 +17,20 @@ fun <E : Any> OptimizerFactory.forList() = getTyped<List<E>, _>(ListOptimizer)
 fun <E : Any> OptimizerFactory.forSet() = getTyped<Set<E>, _>(SetOptimizer)
 fun <K : Any, V : Any> OptimizerFactory.forMap() = getTyped<Map<K, V>, _>(MapOptimizer)
 
-private const val SMALL_INTERN_THRESHOLD = 8
-
-private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
-private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
-private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
-    val className = c.name
-    // Java immutable collections
-    if (className.startsWith("java.util.ImmutableCollections$")) return true
-    // Kotlin standard collections may return the JDK's singleton implementation in some cases (e.g. listOf("a") -> java.util.Collections$SingletonList）
-    if (className.startsWith("java.util.Collections$")) return true
-    // Kotlin collections which are immutable
-    if (className.startsWith("kotlin.collections.")) return true
-    // Kotlin immutable collections, but bad memory
-    // if (className.startsWith("kotlinx.collections.immutable.")) return true
-    return false
-}
+// private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
+// private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
+// private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
+//     val className = c.name
+//     // Java immutable collections
+//     if (className.startsWith("java.util.ImmutableCollections$")) return true
+//     // Kotlin standard collections may return the JDK's singleton implementation in some cases (e.g. listOf("a") -> java.util.Collections$SingletonList）
+//     if (className.startsWith("java.util.Collections$")) return true
+//     // Kotlin collections which are immutable
+//     if (className.startsWith("kotlin.collections.")) return true
+//     // Kotlin immutable collections, but bad memory
+//     // if (className.startsWith("kotlinx.collections.immutable.")) return true
+//     return false
+// }
 
 private object StringOptimizer : Optimizer.Unary<String> {
     private val interner = Interner.newWeakInterner<String>()
@@ -46,21 +42,23 @@ private object StringOptimizer : Optimizer.Unary<String> {
 }
 
 private object StringListOptimizer : Optimizer.Unary<List<String>> {
+    private const val threshold = 8
     private val interner = Interner.newWeakInterner<List<String>>()
 
     override fun optimize(input: List<String>): List<String> {
         if (input.isEmpty()) return emptyList()
-        if (input.size > SMALL_INTERN_THRESHOLD) return input
+        if (input.size > threshold) return input
         return interner.intern(input)
     }
 }
 
 private object StringSetOptimizer : Optimizer.Unary<Set<String>> {
+    private const val threshold = 8
     private val interner = Interner.newWeakInterner<Set<String>>()
 
     override fun optimize(input: Set<String>): Set<String> {
         if (input.isEmpty()) return emptySet()
-        if (input.size > SMALL_INTERN_THRESHOLD) return input
+        if (input.size > threshold) return input
         return interner.intern(input)
     }
 }
@@ -74,9 +72,7 @@ private object ListOptimizer : Optimizer.Unary<List<Any>> {
 
     private inline fun ignore(input: List<Any>): Boolean {
         if (input is ImmutableList) return true
-        if (PlsCapacities.relaxOptimize()) {
-            if (isOptimizedByClass(input)) return true
-        }
+        // if (isOptimizedByClass(input)) return true
         return false
     }
 
@@ -99,9 +95,7 @@ private object SetOptimizer : Optimizer.Unary<Set<Any>> {
 
     private inline fun ignore(input: Set<Any>): Boolean {
         if (input is ImmutableSet) return true
-        if (PlsCapacities.relaxOptimize()) {
-            if (isOptimizedByClass(input)) return true
-        }
+        // if (isOptimizedByClass(input)) return true
         if (input is Hash) return true // may be case-insensitive or custom hash
         return false
     }
@@ -124,9 +118,7 @@ private object MapOptimizer : Optimizer.Unary<Map<Any, Any>> {
 
     private inline fun ignore(input: Map<*, Any>): Boolean {
         if (input is ImmutableMap) return true
-        if (PlsCapacities.relaxOptimize()) {
-            if (isOptimizedByClass(input)) return true
-        }
+        // if (isOptimizedByClass(input)) return true
         if (input is Hash) return true // may be case-insensitive or custom hash
         return false
     }

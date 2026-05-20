@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createResults
-import icu.windea.pls.core.psi.PsiReferencesAware
+import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -28,7 +28,7 @@ class ParadoxScriptExpressionPsiReference(
     rangeInElement: TextRange,
     val configs: List<CwtMemberConfig<*>>,
     val isKey: Boolean? = null
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiCompositeReference {
     val config: CwtMemberConfig<*> get() = configs.first()
 
     private val configGroup get() = configs.first().configGroup

@@ -9,6 +9,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
@@ -254,7 +255,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (size == 0) return emptyList()
 
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
-        return MutableList(size) {
+        return ImmutableList(size) {
             val source = storage.readByte().deoptimized(OptimizerFactory.forParadoxDefinitionSource())
             val name = storage.readUTFFast()
             val type = storage.readUTFFast()

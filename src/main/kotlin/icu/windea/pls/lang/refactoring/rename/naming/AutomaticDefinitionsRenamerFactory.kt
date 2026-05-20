@@ -10,7 +10,6 @@ import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
@@ -20,7 +19,7 @@ class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
         val name = definitionInfo.name
         val type = definitionInfo.type
         if (name.isEmpty()) return false
-        val selector = selector(element.project, element).definition()
+        val selector = ParadoxDefinitionSearch.selector(element.project, element)
         val processor = Processors.duplicate<ParadoxScriptProperty>()
         ParadoxDefinitionSearch.searchProperty(name, type, selector).process(processor)
         return processor.duplicated

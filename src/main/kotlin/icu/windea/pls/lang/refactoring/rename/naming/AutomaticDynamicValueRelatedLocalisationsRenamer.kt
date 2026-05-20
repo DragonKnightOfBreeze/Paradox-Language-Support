@@ -8,8 +8,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 
 /**
  * 用于在重命名动态值时，自动重命名相关本地化（如果存在且需要）。
@@ -39,7 +38,7 @@ class AutomaticDynamicValueRelatedLocalisationsRenamer(element: PsiElement, newN
         if (element !is ParadoxDynamicValueLightElement) return
         val name = element.name.orNull() ?: return
         ProgressManager.checkCanceled()
-        val selector = selector(element.project, element).localisation().contextSensitive()
+        val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
         val targets = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         for (target in targets) {
             ProgressManager.checkCanceled()

@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -114,7 +114,7 @@ private class CwtExtendedInlineScriptConfigImpl(
     private fun computeContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
-        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
+        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
@@ -126,7 +126,7 @@ private class CwtExtendedInlineScriptConfigImpl(
             else -> containerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigInlineService.inlineWithConfigs(config, r, config.configGroup)
+        val contextConfig = CwtConfigManipulationService.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }
 

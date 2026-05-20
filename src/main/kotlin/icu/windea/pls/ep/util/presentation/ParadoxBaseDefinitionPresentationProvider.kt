@@ -28,8 +28,8 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         createKey("cached.paradox.definition.presentation:$shortKey")
     }
 
-    override fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
-        if (relax) return true
+    override fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean): Boolean {
+        if (lenient) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
         if (!PlsAnnotationManager.check(type, definitionInfo)) return false

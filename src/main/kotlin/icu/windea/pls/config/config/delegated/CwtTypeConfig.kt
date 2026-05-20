@@ -133,19 +133,19 @@ private class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResol
 
     private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.optimized() ?: return null
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
+        val propConfigs = config.properties
+        if (propConfigs.isNullOrEmpty()) {
             logger.warn("Skipped invalid type config (name: $name): Missing properties.".withLocationPrefix(config))
             return null
         }
 
-        val propGroup = propElements.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
         val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
         val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
-        val baseType = propGroup.getOne("base_type")?.stringValue
+        var baseType = propGroup.getOne("base_type")?.stringValue?.orNull()
         val nameField = propGroup.getOne("name_field")?.stringValue
         val nameFromFile = propGroup.getOne("name_from_file")?.booleanValue ?: false
         val typePerFile = propGroup.getOne("type_per_file")?.booleanValue ?: false
@@ -160,9 +160,14 @@ private class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResol
         val unique = propGroup.getOne("unique")?.booleanValue ?: false
         val severity = propGroup.getOne("severity")?.stringValue
         val graphRelatedTypes = config.optionData.graphRelatedTypes
-        val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
+        val subtypes = propConfigs.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
+
+        if (baseType != null && baseType == name) {
+            logger.warn("Incorrect base_type property: base type cannot be same to current type, fallback to null.".withLocationPrefix(config))
+            baseType = null
+        }
 
         logger.debug { "Resolved type config (name: $name).".withLocationPrefix(config) }
         return CwtTypeConfigImpl(

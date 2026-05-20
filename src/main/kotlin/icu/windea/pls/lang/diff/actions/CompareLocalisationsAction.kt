@@ -38,7 +38,6 @@ import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -121,7 +120,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val localisations = mutableListOf<ParadoxLocalisationProperty>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.localisations.collect.title")) {
             readAction {
-                val selector = selector(project, file).localisation()
+                val selector = ParadoxLocalisationSearch.selector(project, file)
                 val result = ParadoxLocalisationSearch.searchNormal(localisationName, selector).findAll()
                 localisations.addAll(result)
             }

@@ -14,14 +14,12 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefineExpression
-import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -55,9 +53,8 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
                 // property value must be null or a block
                 if (memberElement is ParadoxScriptProperty && memberElement.propertyValue.let { it != null && it !is ParadoxScriptBlock }) return
 
-                val selector = selector(project, element).define().contextSensitive()
+                val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive().distinct()
                     .filterBy { it.name != keyword } // skip if name = input
-                    .distinctByDefineExpression()
                 ParadoxDefineNamespaceSearch.search(null, selector).processAsync {
                     processDefineNamespace(context, result, it)
                 }
@@ -69,9 +66,8 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
                 if (parentPropertyElement.parent !is ParadoxScriptRootBlock) return
 
                 val namespace = parentPropertyElement.name
-                val selector = selector(project, element).define().contextSensitive()
+                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive().distinct()
                     .filterBy { it.name != keyword } // skip if name = input
-                    .distinctByDefineExpression()
                 ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync {
                     processDefineVariable(context, result, it)
                 }
@@ -88,7 +84,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
         val lookupElement = LookupElementBuilder.create(element, name)
             .withIcon(PlsIcons.Nodes.DefineNamespace)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }
@@ -102,7 +98,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
         val lookupElement = LookupElementBuilder.create(element, name)
             .withIcon(PlsIcons.Nodes.DefineVariable)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .forScriptExpression(context)
+            .forExpression(context)
         result.addElement(lookupElement, context)
         return true
     }

@@ -6,7 +6,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.manipulation.CwtConfigMergeService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.orNull
@@ -18,7 +18,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -139,14 +138,14 @@ object ParadoxInlineScriptService {
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
-        val selector = selector(project, contextElement).inlineScriptUsage()
+        val selector = ParadoxInlineScriptUsageSearch.selector(project, contextElement)
         ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
             if (!ParadoxInlineScriptManager.isMatched(p.name)) return@p true // 再次确认
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
             val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(options).orNull()
             // merge
-            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigMergeService.mergeConfigs(v1, v2) }.also {
+            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }.also {
                 if (it) return@also
                 context.inlineScriptHasConflict = true
                 result.set(null)

@@ -1,5 +1,6 @@
 package icu.windea.pls.test
 
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
@@ -49,6 +50,8 @@ context(_: UsefulTestCase)
 fun markIntegrationTest() {
     ParadoxAnalysisInjector.configureUseDefaultFileExtensions(true)
     ParadoxAnalysisInjector.configureUseGameTypeInference(true)
+
+    addAdditionalAllowedRoots(PathManager.getPluginsDir()) // Why should I add this? So unreasonable.
 }
 
 context(_: UsefulTestCase)
@@ -83,4 +86,19 @@ fun markFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", gr
 context(_: UsefulTestCase)
 fun VirtualFile.injectFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
     ParadoxAnalysisInjector.injectFileInfo(this, gameType, path, entry, group)
+}
+
+@Suppress("unused")
+interface InspectionTestScope {
+    data class Tag(val start: String, val end: String)
+
+    fun String.toTag(level: String) = Tag("<$level descr=\"${this.replace("\"", "\\\\\"")}\">", "</$level>")
+
+    fun String.toErrorTag() = toTag("error")
+
+    fun String.toWarningTag() = toTag("warning")
+
+    fun String.toWeakWarningTag() = toTag("weak_warning")
+
+    fun String.toInfoTag() = toTag("info")
 }

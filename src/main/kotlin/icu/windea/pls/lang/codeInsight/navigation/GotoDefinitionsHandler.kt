@@ -15,8 +15,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -39,7 +38,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitions.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, definition).definition().contextSensitive()
+                val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
                 val resolved = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll()
                 targets.addAll(resolved)
             }

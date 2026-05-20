@@ -7,7 +7,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
@@ -19,7 +18,7 @@ class UnusedInlineScriptInspection : InlineScriptInspectionBase() {
         // if (!getSettings().inference.inlineScriptConfig) return null
 
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
-        val selector = selector(file.project, file).inlineScriptUsage()
+        val selector = ParadoxInlineScriptUsageSearch.selector(file.project, file)
         val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).findFirst() != null
         if (hasUsages) return null
 

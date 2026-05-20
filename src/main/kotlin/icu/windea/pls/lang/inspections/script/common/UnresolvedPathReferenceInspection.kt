@@ -23,7 +23,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -91,7 +90,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                         if (fileNames.isNullOrEmpty()) return@run
                         if (fileNames.any { fileName -> fileName.matchesPatterns(ignoredFileNames, ignoreCase = true) }) return // 忽略
                     }
-                    val selector = selector(project, file).file() // use file as context
+                    val selector = ParadoxFilePathSearch.selector(project, file) // use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                     val description = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)

@@ -27,9 +27,8 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.locale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies
@@ -133,7 +132,7 @@ class GenerateLocalisationFileAction : AnAction() {
                                         }
                                         PlsSettingsStrategies.LocalisationGeneration.FromLocale -> {
                                             // 使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
-                                            val selector = selector(project, baseFile).localisation().contextSensitive().locale(fromLocale)
+                                            val selector = ParadoxLocalisationSearch.selector(project, baseFile).contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.searchNormal(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())
                                         }

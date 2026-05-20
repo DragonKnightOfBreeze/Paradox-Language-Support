@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * 用于得到定义的数据。
  */
 interface ParadoxDefinitionDataProvider {
-    fun <T : ParadoxDefinitionData> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean = false): Boolean
+    fun <T : ParadoxDefinitionData> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean = false): Boolean
 
     fun <T : ParadoxDefinitionData> get(element: ParadoxDefinitionElement, type: Class<T>): T?
 

@@ -32,7 +32,6 @@ import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxRootInfo
@@ -82,7 +81,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val virtualFiles = mutableListOf<VirtualFile>()
         runWithModalProgressBlocking<Unit>(project, PlsBundle.message("diff.compare.files.collect.title")) {
             readAction {
-                val selector = selector(project, file).file()
+                val selector = ParadoxFilePathSearch.selector(project, file)
                 val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 virtualFiles.addAll(result)
             }

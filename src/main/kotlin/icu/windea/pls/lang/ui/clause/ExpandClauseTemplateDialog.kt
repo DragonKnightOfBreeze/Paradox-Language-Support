@@ -62,7 +62,7 @@ class ExpandClauseTemplateDialog(
                     comment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
                 }
             }
-        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+        }.withPreferredWidth(preferredDialogWidth)
     }
 
     override fun createCenterPanel(): JComponent {
@@ -108,13 +108,12 @@ class ExpandClauseTemplateDialog(
                 it.addExtraAction(ElementsToolbarActions.SwitchToNextAction(listTable))
             }
             .createPanel()
-        panel.preferredSize = Dimension(panel.preferredSize.width, PREFERRED_ELEMENTS_WIDTH)
+        panel.preferredSize = Dimension(panel.preferredSize.width, JBUI.scale(preferredElementsWidth))
         return panel
     }
 
     companion object {
-        private const val PREFERRED_DIALOG_WIDTH = 600
-        private const val PREFERRED_ELEMENTS_WIDTH = 540
+        private const val preferredDialogWidth = 600
+        private const val preferredElementsWidth = 540
     }
 }
-

@@ -5,8 +5,7 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -54,7 +53,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
         configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, null, null, selector).findAll()
@@ -79,7 +78,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionInjectionSearch.search(null, "tome_of_flames", null, selector).findFirst()
@@ -98,7 +97,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
         configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, "shared_name", null, selector).findAll()
@@ -113,7 +112,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 搜索不存在的 target
         val result = ParadoxDefinitionInjectionSearch.search(null, "nonexistent_target", null, selector).findFirst()
@@ -131,7 +130,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, null, "arcane_tome", selector).findAll()
@@ -154,7 +153,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionInjectionSearch.search(null, "shared_name", "academy_spell", selector).findFirst()
@@ -172,7 +171,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange: target 存在但类型不匹配
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionInjectionSearch.search(null, "tome_of_flames", "academy_spell", selector).findFirst()
@@ -190,7 +189,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange: mode 参数大小写不敏感
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val result = ParadoxDefinitionInjectionSearch.search("replace", "tome_of_ice", "arcane_tome", selector).findFirst()
@@ -205,7 +204,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange: 同一类型中不同 mode 的结果应被过滤
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 仅搜索 INJECT 模式
         val results = ParadoxDefinitionInjectionSearch.search("INJECT", null, "arcane_tome", selector).findAll()
@@ -225,7 +224,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val elements = ParadoxDefinitionInjectionSearch.searchElement(null, "tome_of_flames", "arcane_tome", selector).findAll()
@@ -240,7 +239,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act: 搜索 REPLACE 模式的元素
         val elements = ParadoxDefinitionInjectionSearch.searchElement("REPLACE", "tome_of_ice", "arcane_tome", selector).findAll()
@@ -261,7 +260,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         val arcaneFile = myFixture.file.virtualFile
         configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
-        val selector = selector(project, myFixture.file).definitionInjection()
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file)
             .withSearchScope(GlobalSearchScope.fileScope(project, arcaneFile))
 
         // Act: 仅搜索 arcane_tomes 文件
@@ -283,7 +282,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
 
         // Act: 仅搜索 arcane_tomes + academy_spells 两个文件
         val unionScope = GlobalSearchScope.filesScope(project, listOf(arcaneFile, spellsFile))
-        val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(unionScope)
+        val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(unionScope)
         val results = ParadoxDefinitionInjectionSearch.search(null, null, null, selector).findAll()
 
         // Assert: arcane_tome(4) + academy_spell(2) = 5（排除 ai_strategy）

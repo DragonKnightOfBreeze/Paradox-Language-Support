@@ -18,8 +18,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxDefineService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo
@@ -84,13 +83,13 @@ object ParadoxDefineManager {
     @Suppress("unused")
     fun findDefineNamespaceElement(namespace: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
         if (namespace.isEmpty()) return null
-        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        val defineSelector = ParadoxDefineNamespaceSearch.selector(project, contextElement).contextSensitive()
         return ParadoxDefineNamespaceSearch.search(namespace, defineSelector).find()
     }
 
     fun findDefineVariableElement(namespace: String, variable: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
         if (namespace.isEmpty() || variable.isEmpty()) return null
-        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        val defineSelector = ParadoxDefineVariableSearch.selector(project, contextElement).contextSensitive()
         return ParadoxDefineVariableSearch.search(namespace, variable, defineSelector).find()
     }
 

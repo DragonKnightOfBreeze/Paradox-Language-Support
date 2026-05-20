@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiPolyVariantReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -23,7 +23,7 @@ class ParadoxValueFieldPrefixNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.valueFieldPrefix()
+        return ParadoxSemanticHighlighterColors.valueFieldPrefix()
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {
