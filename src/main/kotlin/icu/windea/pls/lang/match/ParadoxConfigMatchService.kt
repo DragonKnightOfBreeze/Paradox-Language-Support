@@ -196,7 +196,7 @@ object ParadoxConfigMatchService {
         }
 
         // 如果属性 type_key_prefix 存在，且有必要校验，则要求其与 typeKeyPrefix 必须一致（忽略大小写）
-        if (context.typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesModel.typeKeyPrefixAware) {
+        if (context.typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
             val result = typeConfig.typeKeyPrefix.equals(context.typeKeyPrefix.value, ignoreCase = true)
             if (!result) return false
         }

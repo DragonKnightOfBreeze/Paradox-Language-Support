@@ -45,7 +45,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        val definitionTypes = definitionInfo.configGroup.definitionTypesModel.supportScopeContextInference
+        val definitionTypes = definitionInfo.configGroup.typesModel.supportScopeContextInference
         return definitionInfo.type in definitionTypes
     }
 

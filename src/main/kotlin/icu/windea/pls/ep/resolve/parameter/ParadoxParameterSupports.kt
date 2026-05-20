@@ -76,7 +76,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (element !is ParadoxScriptProperty) return false
         val definitionInfo = element.definitionInfo ?: return false
         // NOTE 简单判断 - 目前不需要兼容子类型
-        return definitionInfo.type in definitionInfo.configGroup.definitionTypesModel.supportParameters
+        return definitionInfo.type in definitionInfo.configGroup.typesModel.supportParameters
     }
 
     override fun findContext(element: PsiElement): ParadoxDefinitionElement? {

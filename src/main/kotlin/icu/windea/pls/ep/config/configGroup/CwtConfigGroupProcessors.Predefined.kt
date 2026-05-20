@@ -14,7 +14,7 @@ class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
             this += "trigger"
             this += "effect"
         }
-        with(initializer.definitionTypesModel) {
+        with(initializer.typesModel) {
             with(supportScope) {
                 this += "scripted_trigger"
                 this += "scripted_effect"
