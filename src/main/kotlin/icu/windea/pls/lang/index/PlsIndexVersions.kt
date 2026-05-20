@@ -11,5 +11,5 @@ object PlsIndexVersions {
     const val ComplexEnumValue = 93 // 2.1.8
     const val Definition = 93 // 2.1.8
     const val DefinitionInjection = 93 // 2.1.8
-    const val Merged = 93 // 2.1.8
+    const val Merged = 94 // 2.1.9
 }
