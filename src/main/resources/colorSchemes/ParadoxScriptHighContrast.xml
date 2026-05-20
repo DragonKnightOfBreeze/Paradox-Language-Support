@@ -70,4 +70,20 @@
       <option name="FOREGROUND" value="4EADE5"/>
     </value>
   </option>
+  <option name="PARADOX_SCRIPT.SHADER_EFFECT_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="FFC66D"/>
+      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_TYPE" value="5"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.MESH_LOCATOR_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="FFC66D"/>
+      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_TYPE" value="5"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
 </list>
