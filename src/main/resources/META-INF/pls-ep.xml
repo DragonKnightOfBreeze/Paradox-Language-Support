@@ -173,6 +173,7 @@
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.ParadoxCoreCsvExpressionMatcher"/>
 
     <overrideStrategyProvider id="forcedFile" implementation="icu.windea.pls.ep.overrides.ParadoxForcedFileOverrideStrategyProvider"/>
+    <overrideStrategyProvider id="forcedDefinitionInjection" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionInjectionOverrideStrategyProvider"/>
     <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider"/>
     <overrideStrategyProvider id="base" implementation="icu.windea.pls.ep.overrides.ParadoxBaseOverrideStrategyProvider"/>
 
