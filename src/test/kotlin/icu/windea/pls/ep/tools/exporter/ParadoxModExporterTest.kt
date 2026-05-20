@@ -73,7 +73,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = JsonService.mapper.readValue(Files.newInputStream(outFile), LauncherJsonV2::class.java)
+        val json = JsonService.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV2::class.java)
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })
@@ -92,7 +92,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = JsonService.mapper.readValue(Files.newInputStream(outFile), LauncherJsonV3::class.java)
+        val json = JsonService.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV3::class.java)
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })

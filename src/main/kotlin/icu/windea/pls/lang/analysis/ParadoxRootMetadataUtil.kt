@@ -40,7 +40,7 @@ object ParadoxRootMetadataUtil {
 
     fun getLauncherSettingsJsonInfo(path: Path): ParadoxLauncherSettingsJsonInfo? {
         try {
-            return JsonService.mapper.readValue(path.toFile())
+            return JsonService.jsonMapper.readValue(path.toFile())
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null
@@ -65,7 +65,7 @@ object ParadoxRootMetadataUtil {
 
     fun getMetadataJsonInfo(path: Path): ParadoxMetadataJsonInfo? {
         try {
-            return JsonService.mapper.readValue(path.toFile())
+            return JsonService.jsonMapper.readValue(path.toFile())
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null

@@ -148,7 +148,7 @@ data class TigerLintResult(
 
         @JvmStatic
         fun parse(name: String, outputFile: File): TigerLintResult {
-            val items = JsonService.mapper.readValue<List<Item>>(outputFile)
+            val items = JsonService.jsonMapper.readValue<List<Item>>(outputFile)
             if (items.isEmpty()) return EMPTY
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {

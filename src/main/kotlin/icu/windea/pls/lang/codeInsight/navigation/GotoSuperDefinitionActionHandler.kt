@@ -17,6 +17,10 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * 从光标位置对应的定义跳转到其父定义。
  */
 class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
+    // com.intellij.codeInsight.navigation.JavaGotoSuperHandler
+    // org.jetbrains.kotlin.idea.codeInsight.GotoSuperActionHandler
+    // com.intellij.testIntegration.GotoTestOrCodeAction
+
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxDefinitionElement? {
         val offset = editor.caretModel.offset
         val definition = ParadoxPsiFileManager.findDefinition(file, offset) { BY_TYPE_KEY or BY_NAME or BY_REFERENCE } ?: return null
@@ -37,6 +41,7 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
 
     @Suppress("DEPRECATION")
     override fun update(editor: Editor, file: PsiFile, presentation: Presentation?, actionPlace: String?) {
+        // TODO 2.1.9: How can I get `AnActionEvent` here?
         if (presentation == null) return
         val useShortName = actionPlace != null && (ActionPlaces.MAIN_MENU == actionPlace || ActionPlaces.isPopupPlace(actionPlace))
         if (useShortName) {

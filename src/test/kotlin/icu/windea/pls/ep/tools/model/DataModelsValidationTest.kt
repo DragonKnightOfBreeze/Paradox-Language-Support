@@ -28,7 +28,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV2_fromResources() {
         val ins = getResource("/tools/playlist_v2.json")
-        val model = JsonService.mapper.readValue(ins, LauncherJsonV2::class.java)
+        val model = JsonService.jsonMapper.readValue(ins, LauncherJsonV2::class.java)
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
@@ -42,7 +42,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV3_fromResources() {
         val ins = getResource("/tools/playlist_v3.json")
-        val model = JsonService.mapper.readValue(ins, LauncherJsonV3::class.java)
+        val model = JsonService.jsonMapper.readValue(ins, LauncherJsonV3::class.java)
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })

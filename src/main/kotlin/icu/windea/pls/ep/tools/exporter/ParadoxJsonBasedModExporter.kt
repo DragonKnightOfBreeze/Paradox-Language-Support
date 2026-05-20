@@ -25,7 +25,7 @@ abstract class ParadoxJsonBasedModExporter : ParadoxModExporter {
 
     private fun doWriteData(filePath: Path, data: Any) {
         try {
-            JsonService.mapper.writeValue(filePath.toFile(), data)
+            JsonService.jsonMapper.writeValue(filePath.toFile(), data)
         } catch (e: Exception) {
             throw IllegalStateException(PlsBundle.message("mod.exporter.error.data", filePath), e)
         }

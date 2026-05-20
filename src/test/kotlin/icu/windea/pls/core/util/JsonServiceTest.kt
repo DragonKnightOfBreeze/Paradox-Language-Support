@@ -10,8 +10,8 @@ class JsonServiceTest {
     fun smokeTest() {
         val weapon = Weapon("Breeze Saber", "Saber", 180)
 
-        val json = JsonService.mapper.writeValueAsString(weapon)
-        val result = JsonService.mapper.readValue<Weapon>(json)
+        val json = JsonService.jsonMapper.writeValueAsString(weapon)
+        val result = JsonService.jsonMapper.readValue<Weapon>(json)
         assertEquals(weapon, result)
     }
 

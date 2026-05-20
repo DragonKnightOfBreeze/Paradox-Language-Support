@@ -25,7 +25,7 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
 
     private fun <T> doReadData(filePath: Path, type: Class<T>): T {
         return try {
-            JsonService.mapper.readValue(filePath.toFile(), type)
+            JsonService.jsonMapper.readValue(filePath.toFile(), type)
         } catch (e: Exception) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.data", filePath), e)
         }
