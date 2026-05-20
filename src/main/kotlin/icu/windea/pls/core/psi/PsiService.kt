@@ -15,6 +15,7 @@ import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.data.MarkdownService
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.runSmartReadAction
 
 object PsiService {
     fun toPresentableString(element: PsiElement): String {
@@ -22,8 +23,8 @@ object PsiService {
             val type = element.javaClass.simpleName.removeSuffix("Impl")
             append(type)
             val name = when (element) {
-                is PsiNamedElement -> element.name
-                is NavigatablePsiElement -> element.name
+                is PsiNamedElement -> runSmartReadAction { element.name }
+                is NavigatablePsiElement -> runSmartReadAction { element.name }
                 else -> null
             }
             if (name != null) append(": ").append(name)
