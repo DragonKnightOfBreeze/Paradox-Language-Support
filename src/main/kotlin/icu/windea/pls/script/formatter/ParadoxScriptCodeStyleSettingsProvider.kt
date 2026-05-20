@@ -13,7 +13,7 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
-import icu.windea.pls.model.constants.PlsPreviewTexts
+import icu.windea.pls.script.ParadoxScriptConstants
 import icu.windea.pls.script.ParadoxScriptLanguage
 import kotlin.reflect.KMutableProperty1
 
@@ -32,7 +32,7 @@ class ParadoxScriptCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
 
     override fun getConfigurableDisplayName() = PlsBundle.message("script.settings.name")
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.scriptCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = ParadoxScriptConstants.codeStyleSettingsText
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
         // 需要重载这个方法以显示 indentOptions 设置页面

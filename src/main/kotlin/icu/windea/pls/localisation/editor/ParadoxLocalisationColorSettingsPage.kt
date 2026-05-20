@@ -6,8 +6,8 @@ import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.localisation.ParadoxLocalisationConstants
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.model.constants.PlsPreviewTexts
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -83,5 +83,5 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = PlsBundle.message("localisation.settings.name")
 
-    override fun getDemoText() = PlsPreviewTexts.localisationColorSettings
+    override fun getDemoText() = ParadoxLocalisationConstants.colorSettingsText
 }

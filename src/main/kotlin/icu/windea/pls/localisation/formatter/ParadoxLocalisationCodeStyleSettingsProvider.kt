@@ -11,8 +11,8 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
+import icu.windea.pls.localisation.ParadoxLocalisationConstants
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.model.constants.PlsPreviewTexts
 
 class ParadoxLocalisationCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxLocalisationLanguage
@@ -29,7 +29,7 @@ class ParadoxLocalisationCodeStyleSettingsProvider : LanguageCodeStyleSettingsPr
 
     override fun getConfigurableDisplayName() = PlsBundle.message("localisation.settings.name")
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.localisationCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = ParadoxLocalisationConstants.codeStyleSettingsText
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
         // 需要重载这个方法以显示 indentOptions 设置页面

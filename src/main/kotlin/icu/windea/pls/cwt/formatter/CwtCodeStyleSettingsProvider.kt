@@ -13,8 +13,8 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
+import icu.windea.pls.cwt.CwtConstants
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.model.constants.PlsPreviewTexts
 import kotlin.reflect.KMutableProperty1
 
 class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
@@ -32,7 +32,7 @@ class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 
     override fun getConfigurableDisplayName() = PlsBundle.message("cwt.settings.name")
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.cwtCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = CwtConstants.codeStyleSettingsText
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
         // 需要重载这个方法以显示 indentOptions 设置页面

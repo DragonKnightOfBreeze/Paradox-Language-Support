@@ -319,7 +319,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             append(PlsStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
-            // 2.1.8 文本可能过长，因此目前改为不显示
+            // 2.1.8 文本可能过长，因此这里目前改为不显示
             // append(" ")
             // grayed {
             //     append(PlsBundle.message("fromTemplate"))

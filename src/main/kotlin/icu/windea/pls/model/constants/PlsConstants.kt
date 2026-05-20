@@ -26,6 +26,7 @@ object PlsConstants {
     val metadataFileNames = setOf(descriptorModFileName, metadataJsonFileName, launcherSettingsJsonFileName)
 
     const val dummyIdentifier = "windea"
+    const val suppressInspectionsTagName = "noinspection"
 
     // val eraseMarker = TextAttributes()
     // val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)

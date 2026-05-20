@@ -21,6 +21,9 @@ object PlsStrings {
     const val defineVariablePrefix = "(define variable)"
     const val propertyPrefix = "(property)"
     const val stringPrefix = "(string)"
+    const val sourcePropertyPrefix = "(source property)"
+    const val sourceStringPrefix = "(source string)"
+    const val sourcePrefix = "(source)"
     const val localePrefix = "(locale)"
     const val localisationPrefix = "(localisation)"
     const val localisationSyncedPrefix = "(synced localisation)"
@@ -45,6 +48,4 @@ object PlsStrings {
     const val commandFolder = "[...]"
     const val conceptCommandFolder = "['...']"
     const val conceptCommandWithTextFolder = "['...', ...]"
-
-    const val suppressInspectionsTagName = "noinspection"
 }

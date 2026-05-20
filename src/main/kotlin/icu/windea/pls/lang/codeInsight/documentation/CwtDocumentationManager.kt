@@ -212,9 +212,8 @@ object CwtDocumentationManager {
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
             val referenceElement = PsiService.getReferenceElement(originalElement)
 
-            val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
-            val byName = if (shortName == name) null else name.orNull()
-            val prefix = when {
+            val semanticName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
+            val semanticProperty = when {
                 referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
                 referenceElement is ParadoxScriptPropertyKey -> PlsStrings.definitionPropertyPrefix
@@ -223,17 +222,17 @@ object CwtDocumentationManager {
                 element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> PlsStrings.definitionValuePrefix
                 else -> configType?.prefix
             }
-            val finalPrefix = when {
-                prefix != null -> prefix
+
+            val prefix = when {
+                semanticProperty != null -> semanticProperty
                 element is CwtProperty -> PlsStrings.propertyPrefix
                 element is CwtString -> PlsStrings.stringPrefix
                 else -> null
             }
-
-            if (finalPrefix != null) {
-                append(finalPrefix).append(" ")
+            if (prefix != null) {
+                append(prefix).append(" ")
             }
-            append("<b>").append(shortName.escapeXml().or.anonymous()).append("</b>")
+            append("<b>").append(semanticName.escapeXml().or.anonymous()).append("</b>")
             if (configType?.category != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
@@ -248,9 +247,17 @@ object CwtDocumentationManager {
                     }
                 }
             }
-            if (byName != null) {
-                appendBr().appendIndent() // 2.1.1 文本可能过长，因此这里换行并缩进
-                grayed { append("by ").append(byName.escapeXml()) }
+
+            val sourceName = if (semanticName == name) null else name.orNull()
+            if (sourceName != null) {
+                val sourcePrefix = when {
+                    element is CwtProperty -> PlsStrings.sourcePropertyPrefix
+                    element is CwtString -> PlsStrings.sourceStringPrefix
+                    else -> PlsStrings.sourcePrefix
+                }
+                grayed {
+                    append(sourcePrefix).append(" ").append(sourceName.escapeXml())
+                }
             }
 
             if (configGroup != null) {
