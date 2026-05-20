@@ -18,6 +18,7 @@
 - [x] 支持在 CSV 文件中使用动态值（匹配与解析） / Supported to use dynamic values in CSV files (match and resolution)
 - [x] 增强对数据类型 `ShaderEffect` （数据表达式：`$shader_effect`）的支持，视为动态引用 / Enhanced support for data type `ShaderEffect` (data expression: `$shader_effect`), treats as dynamic references
 - [x] 增强对数据类型 `MeshLocator` （数据表达式：`$mesh_locator`）的支持，视为动态引用 / Enhanced support for data type `MeshLocator` (data expression: `$mesh_locator`), treats as dynamic references
+- [x] 完善规则文件，适用 `$shader_effect` 和 `$mesh_locator` / Optimized config files, applying `$shader_effect` and `$mesh_locator`
 - [x] 重新设计浏览、复制与打开各种特殊路径与地址的动作 / Redesigned actions to browse, copy and open various special paths and urls
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
