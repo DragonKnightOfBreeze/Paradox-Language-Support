@@ -1,7 +1,10 @@
 ## @type string = string
+## @definition_type event_namespace
+## @config_expression event_namespace = scalar
+## @override_strategy ORDERED
 namespace = hello_world
 ## @type string = block
-## @definition_type event, scopeless
+## @definition_type event, triggered, scopeless
 ## @config_expression event = {...}
 ## @override_strategy FIOS
 ## @scope_context this = any root = any
@@ -29,7 +32,7 @@ event = {
     }
 }
 ## @type string = block
-## @definition_type event, scopeless
+## @definition_type event, triggered, scopeless
 ## @config_expression event = {...}
 ## @override_strategy FIOS
 ## @scope_context this = any root = any
