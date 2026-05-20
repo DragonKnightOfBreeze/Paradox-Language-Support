@@ -103,7 +103,7 @@ Download the [latest release][url:release-latest] and install it manually (No ne
 
 **Known Limitations:**
 
-- The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
+- The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
 - The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
   Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
   Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.

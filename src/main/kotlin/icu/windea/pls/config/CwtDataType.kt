@@ -12,9 +12,9 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 /**
  * 数据类型。
  *
- * 用于描述规则表达式的取值形态，可为常量、模式、基本数据类型、引用、复杂表达式等情况。
+ * 用于描述数据表达式（作为最常见的一种规则表达式）的类型，可为常量、模式、基本数据类型、引用、复杂表达式等情况。
  *
- * 每种数据类型表示一种语义范畴，决定表达式与规则表达式之间的匹配逻辑。
+ * 每种数据类型表示一种语义范畴，参与决定表达式与规则表达式之间的匹配逻辑。
  *
  * ### 解析逻辑
  *
@@ -52,7 +52,6 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
  * @see CwtDataExpressionResolver
  * @see ParadoxExpression
  */
-@Suppress("unused")
 class CwtDataType private constructor(
     val id: String,
     val isReference: Boolean = false,

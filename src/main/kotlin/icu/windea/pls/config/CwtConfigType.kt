@@ -33,7 +33,6 @@ import javax.swing.Icon
  *
  * @see CwtConfigTypes
  */
-@Suppress("unused")
 class CwtConfigType private constructor(
     val id: String,
     val category: String? = null,

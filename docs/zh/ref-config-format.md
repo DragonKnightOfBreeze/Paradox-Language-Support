@@ -12,7 +12,14 @@
 
 ## 总览 {#overview}
 
-本文档是 CWT 规则格式的参考手册，面向希望理解、编写或扩展 CWT 规则文件的所有读者——包括模组作者、规则文件的协助维护者、插件维护者以及 AI 编程助手。
+<!-- @see icu.windea.pls.config.config.CwtConfig -->
+<!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
+<!-- @see icu.windea.pls.config.CwtDataType -->
+<!-- @see icu.windea.pls.model.expressions.ParadoxExpression -->
+<!-- @see icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression -->
+
+本文档是 CWT 规则格式的参考手册，面向希望理解、编写或扩展规则文件的所有读者——包括模组作者、规则文件的协助维护者、插件维护者以及 AI 编程助手。
 
 本文档旨在：
 
@@ -20,14 +27,19 @@
 - **建立从文档到实现的映射**：在必要时标注对应的接口与解析器，便于回溯源码与验证行为。
 - **指导实践**：概述各类规则的用途、格式与注意事项，为正确编写和维护规则文件打好基础。
 
-插件通过读取 `.cwt` 规则文件，构建"规则分组（config group）"，并将其中的规则解析为结构化的"规则对象（config object）"。这些规则对象在代码高亮、补全、导航、检查、快速文档等语言功能中被广泛使用。规则系统由两大要素构成：
+插件会在打开项目或应用时解析规则文件，读取和计算规则分组数据，以构建规则分组。
+规则分组数据中存储了结构化的规则对象，以及其他各类数据。
+它们驱动了核心的语义匹配和语义解析逻辑，在代码高亮、代码补全、代码检查等语言功能中被广泛使用。
 
-- **规则（config）**：每条规则定义了键、值或块的允许形态与上下文约束，如类型、枚举、别名、链接等。详见[规则](#configs)章节。
-- **规则表达式（config expression）**：嵌入在规则的字符串字段中，用于描述取值形态或匹配模式的结构化语法，如 `<type>`、`enum[...]`、`value[...]`，以及基数表达式、模板表达式、位置表达式等。详见[规则表达式](#config-expressions)章节。
+其中：
+- **规则（config）**：是一类统一的领域模型，在语法层面对应规则文件或者其中的属性、值等节点。
+- **规则表达式（config expression）**：是在规则字段中使用的结构化语法，在语法层面对应规则文件中拥有特殊语义的字符串字面量。
+- **数据表达式（data expression）**：是最常见的一种规则表达式，决定了表达式的匹配逻辑与解析逻辑。
+- **数据类型（data type）**：是数据表达式的类型，不同的数据类型往往意味着不同语义的表达式。
+- **表达式（expression）**：区别于规则表达式/数据表达式，在语法层面对应脚本文件、本地化文件或 CSV 文件中的各种表达式节点。例如，脚本文件中的属性和值、本地化文件中的命令文本、CSV 文件中的列。
+- **复杂表达式（complex expression）**：区别于简单的表达式，作为一类轻量的语法树，其中的各个节点都有各自的语义。例如，作用域字段表达式 `root.owner`、本地化命令表达式 `Root.GetName`。
 
-此外，规则表达式解析后会得到具体的**数据类型（data type）**，数据类型决定了表达式能够匹配脚本文件中的哪些键或值。详见[数据类型](#data-types)章节。
-
-关于规则系统的整体介绍（如规则分组、规则覆盖、自定义规则等），请参阅 [config.md](config.md)。
+关于规则系统的整体介绍（如规则分组、规则覆盖、自定义规则等），请参阅[规则](config.md)文档。
 
 ## 规则 {#configs}
 
@@ -37,7 +49,9 @@
 
 ### 概述 {#configs-summary}
 
-#### 规则字段的表示约定
+规则（config）是在插件自身的规则系统中使用的统一的、核心的领域模型。
+
+#### 规则字段的表示约定 {#configs-fields}
 
 每条规则由若干**字段**（field）组成。字段在规则文件中有多种来源，本文档采用以下格式统一描述：
 
@@ -49,7 +63,7 @@
 
 字段名在规则文件中使用 `snake_case` 形式。
 
-#### 处理流程
+#### 处理流程 {#configs-processing-flow}
 
 规则的整体处理流程可以简化为三个阶段：
 
@@ -57,11 +71,13 @@
 2. 按规则类别，使用对应的解析器（Resolver）将语法树节点转化为结构化的规则对象。
 3. 在各语言功能中，根据当前上下文（作用域、类型名、声明上下文等）查询并应用这些规则对象。
 
-规则的来源与覆盖机制详见 [config.md](config.md) 中"规则分组"与"覆盖方式"相关章节。
+规则的来源与覆盖机制详见[规则](config.md)文档中"规则分组"与"覆盖方式"相关章节。
 
-本文档中的"规则"按层级分为以下几类：
+#### 分类 {#config-category}
 
-- **基础规则**：如 `CwtPropertyConfig`，是语法树级别的通用节点，用于承载规则文件中的属性和值。本文档不逐一介绍基础规则。
+规则按层级分为以下几类：
+
+- **基础规则**：作为语法树层面的通用模型，对应规则文件或者其中的属性、值等节点。本文档不逐一介绍基础规则。
 - **[标准规则](#configs-standard)**：驱动各种语言功能的核心规则，包括类型、别名、枚举、链接、作用域等。
 - **[扩展规则](#configs-extended)**：用于增强插件功能的附加规则，如为特定定义或内联脚本提供额外的上下文与提示。
 - **[内部规则](#configs-internal)**：由插件内部使用的规则，目前不支持（或尚不支持）自定义。
@@ -1296,13 +1312,13 @@ inline_scripts = {
 
 ### 概述 {#config-expressions-summary}
 
-规则表达式是在规则的"字符串字段"中使用的结构化语法，用于描述值的形态或匹配模式。规则表达式解析后会得到具体的[数据类型](#data-types)，数据类型决定了表达式能够匹配脚本文件中的哪些键或值。
+规则表达式（config expression）是在规则字段中使用的结构化语法。
 
-在语义匹配流程中，插件会将脚本文件中的表达式与规则表达式逐一进行匹配。匹配时，首先根据规则表达式的数据类型分发到对应的匹配器（`ParadoxScriptExpressionMatcher`），由匹配器判断脚本表达式是否符合该数据类型的要求。各数据类型的具体匹配行为详见[数据类型](#data-types)章节。
+#### 分类 {#config-expressions-category}
 
 本章节涵盖以下几种规则表达式：
 
-- **[数据表达式](#config-expression-data)**（Data Expression）：描述键或值的取值形态，解析后得到具体的数据类型。
+- **[数据表达式](#config-expression-data)**（Data Expression）：描述表达式的取值形态和匹配模式，解析后得到具体的数据类型。
 - **[模板表达式](#config-expression-template)**（Template Expression）：由常量与动态片段拼接的模式，用于更灵活的匹配。
 - **[基数表达式](#config-expression-cardinality)**（Cardinality Expression）：约束定义成员的出现次数。
 - **[位置表达式](#config-expression-location)**（Location Expression）：定位图片、本地化等资源的来源。
@@ -1312,9 +1328,9 @@ inline_scripts = {
 
 <!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
-数据表达式用于描述脚本文件中键或值的取值形态，可为常量、基本数据类型、引用或动态内容等。解析后会得到具体的[数据类型](#data-types)（如 `Int`、`Float`、`Scalar`、`Enum`、`Scope`、`Definition` 等），并可附带扩展元数据（如数值范围 `int[-5..100]`、大小写策略等）。
+数据表达式用于描述各种表达式的取值形态和匹配模式，以决定它们的匹配逻辑与解析逻辑。
 
-解析时会区分键上下文（isKey=true）与值上下文（isKey=false），部分数据类型仅在特定上下文中有效。
+数据表达式在解析后会得到具体的[数据类型](#data-types)，并且可以附带元数据。数据类型以及这些元数据决定了数据表达式能够匹配脚本文件、本地化文件和 CSV 文件中的哪些表达式。
 
 默认与边界行为：
 
@@ -1470,23 +1486,28 @@ title
 
 ### 概述 {#data-types-summary}
 
-数据类型（Data Type）描述了规则表达式（数据表达式）的取值形态，并决定表达式与规则表达式的匹配逻辑。
+数据类型（data type）描述数据表达式（作为最常见的一种规则表达式）的类型。
 
-例如，数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义。
-又如，`enum[weight_or_base]` 的数据类型为 `EnumValue`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
+每种数据类型表示一种语义范畴，参与决定表达式与规则表达式之间的匹配逻辑。
+
+示例：
+- 数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义引用。
+- 数据表达式 `enum[weight_or_base]` 的数据类型为 `EnumValue`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
 
 相关的扩展点：
 - 数据类型的解析逻辑由扩展点 `CwtDataExpressionResolver` 驱动。
 - 脚本文件中的表达式与规则表达式的匹配逻辑由扩展点 `ParadoxScriptExpressionMatcher` 驱动。
 - CSV 文件中的表达式与规则表达式的匹配逻辑由扩展点 `ParadoxCsvExpressionMatcher` 驱动（有限支持）。
+- 脚本文件中的表达式的各种语言功能的实现逻辑由扩展点 `ParadoxScriptExpressionSupport` 驱动。
+- CSV 文件中的表达式的各种语言功能的实现逻辑由扩展点 `ParadoxCsvExpressionSupport` 驱动（有限支持）。
 
 ### 基本数据类型 {#data-types-base}
 
-以下数据类型表示脚本中的基本取值形态。
+以下数据类型表示基本的取值形态。
 
 #### Any {#data-type-any}
 
-匹配任意脚本表达式，作为最低优先级的后备匹配。
+匹配任意表达式，作为最低优先级的后备匹配。
 
 对应的数据表达式的格式：
 - `$any`
@@ -1916,14 +1937,14 @@ title
 
 #### Constant {#data-type-constant}
 
-解析为此类型时，表达式字符串即为常量值本身。匹配与常量值完全相同的脚本表达式。作为值时，常量 `yes` / `no` 不匹配用引号括起的表达式。
+解析为此类型时，表达式字符串即为常量值本身。匹配与常量值完全相同的表达式。作为值时，常量 `yes` / `no` 不匹配用引号括起的表达式。
 
 对应的数据表达式的格式：
 - 直接使用字面量作为数据表达式，如 `yes`、`10`、`trigger` 等。
 
 #### TemplateExpression {#data-type-template-expression}
 
-由常量文本片段和引用片段交替组成的模式。匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+由常量文本片段和引用片段交替组成的模式。匹配时将表达式按模板结构拆分，逐个验证各引用片段。
 
 此类型为模式感知类型，其数据表达式格式即为模板表达式本身（参见[模板表达式](#config-expression-template)）。
 

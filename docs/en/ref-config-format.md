@@ -12,22 +12,35 @@ The content is based on the implementation of the Paradox Language Support plugi
 
 ## Overview {#overview}
 
-This document is the reference manual for the CWT config format, intended for all readers who wish to understand, write, or extend CWT config files — including mod authors, config file co-maintainers, plugin maintainers, and AI programming assistants.
+<!-- @see icu.windea.pls.config.config.CwtConfig -->
+<!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
+<!-- @see icu.windea.pls.config.CwtDataType -->
+<!-- @see icu.windea.pls.model.expressions.ParadoxExpression -->
+<!-- @see icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression -->
+
+This document is the reference manual for the CWT config format, intended for all readers who wish to understand, write, or extend config files – including mod authors, config file maintainers, plugin maintainers, and AI coding assistants.
 
 This document aims to:
 
-- **Unify terminology and boundaries**: Align the plugin's semantics with CWTools, clarifying the plugin's extension points and differences.
-- **Establish a mapping from documentation to implementation**: Annotate corresponding interfaces and resolvers where necessary, facilitating source code tracing and behavior verification.
-- **Guide to practice**: Outline the purpose, format, and considerations of each config type, laying the foundation for correctly writing and maintaining config files.
+- **Unify terminology and boundaries**: Align the semantics between the plugin and CWTools, clarifying the plugin's extensions and differences.
+- **Establish mappings from documentation to implementation**: Annotate corresponding interfaces and resolvers where necessary, facilitating source code tracing and behavior verification.
+- **Guide to practice**: Outline the purpose, format, and considerations for various config types, laying the foundation for correctly writing and maintaining config files.
 
-The plugin reads `.cwt` config files, builds "config groups", and parses the configs within into structured "config objects". These config objects are widely used in language features such as highlighting, completion, navigation, inspections, and quick documentation. The config system is composed of two major elements:
+The plugin parses config files when opening a project or on application startup, reading and computing config group data to build config groups.
+The config group data stores structured config objects, and other types of data.
+They drive the core semantic matching and resolution logic, and are widely used in language features such as code highlighting, code completion, and code inspection.
 
-- **Configs**: Each config defines the allowed forms and contextual constraints for keys, values, or blocks, such as types, enums, aliases, links, etc. See the [Configs](#configs) chapter for details.
-- **Config expressions**: Structured syntax embedded in string fields of configs, used to describe value forms or matching patterns, such as `<type>`, `enum[...]`, `value[...]`, as well as cardinality expressions, template expressions, location expressions, etc. See the [Config Expressions](#config-expressions) chapter for details.
+Among these:
 
-Additionally, a parsed config expression yields a specific **data type**, which determines what keys or values in script files the expression can match. See the [Data Types](#data-types) chapter for details.
+- **Config**: A unified domain model that corresponds syntactically to a config file or nodes within it (such as properties or values).
+- **Config expression**: A structured syntax used in config fields, corresponding syntactically to string literals with special semantics in config files.
+- **Data expression**: The most common type of config expression, determining the matching and parsing logic of an expression.
+- **Data type**: The type of data expression; different data types often imply expressions with different semantics.
+- **Expression**: Distinct from config expressions / data expressions, this corresponds syntactically to various expression nodes in script files, localisation files, or CSV files – for example, properties and values in script files, command text in localisation files, or columns in CSV files.
+- **Complex expression**: Distinguished from simple expressions, this is a lightweight syntax tree where each node has its own semantics – for example, the scope field expression `root.owner`, or the localisation command expression `Root.GetName`.
 
-For an overall introduction to the config system (such as config groups, config overriding, custom configs, etc.), see [config.md](config.md).
+For an overall introduction to the config system (such as config groups, config overriding, custom configs, etc.), please refer to the [Configs](config.md) documentation.
 
 ## Configs {#configs}
 
@@ -37,7 +50,9 @@ For an overall introduction to the config system (such as config groups, config 
 
 ### Summary {#configs-summary}
 
-#### Representation Conventions for Config Fields
+Configs are the unified and core domain model used in the plugin's own config system.
+
+#### Representation Conventions for Config Fields {#configs-fields}
 
 Each config is composed of several **fields**. Fields come from various sources in config files; this document uses the following format for unified description:
 
@@ -49,7 +64,7 @@ Each config is composed of several **fields**. Fields come from various sources 
 
 Field names use `snake_case` form in config files.
 
-#### Processing Flow
+#### Processing Flow {#configs-processing-flow}
 
 The overall processing flow of configs can be simplified into three stages:
 
@@ -57,11 +72,13 @@ The overall processing flow of configs can be simplified into three stages:
 2. Use the corresponding resolver for each config category to transform syntax tree nodes into structured config objects.
 3. In each language feature, query and apply these config objects based on the current context (scope, type name, declaration context, etc.).
 
-The source and overriding mechanisms for configs are detailed in the "Config Groups" and "Override Methods" sections of [config.md](config.md).
+The source and overriding mechanisms for configs are detailed in the "Config Groups" and "Override Methods" sections of [Config](config.md).
 
-The "configs" in this document are categorized by level as follows:
+#### Category {#config-category}
 
-- **Base configs**: Such as `CwtPropertyConfig`, generic syntax-tree-level nodes used to carry properties and values from config files. This document does not cover base configs individually.
+Configs are categorized by level as follows:
+
+- **Base configs**: As the general model at the syntax tree level, corresponding to the config file or the properties, values or other nodes in it. This document does not cover base configs individually.
 - **[Standard configs](#configs-standard)**: Core configs that drive various language features, including types, aliases, enums, links, scopes, etc.
 - **[Extended configs](#configs-extended)**: Additional configs for enhancing plugin functionality, such as providing extra context and hints for specific definitions or inline scripts.
 - **[Internal configs](#configs-internal)**: Configs used internally by the plugin, currently not supporting (or not yet supporting) customization.
@@ -1280,13 +1297,13 @@ Originating only from the built-in file `internal/postfix_template_settings.cwt`
 
 ### Summary {#config-expressions-summary}
 
-Config expressions are structured syntax used in the "string fields" of configs, describing value forms or matching patterns. A parsed config expression yields a specific [data type](#data-types), which determines what keys or values in script files the expression can match.
+Configs expressions are structured syntax used in config fields.
 
-In the semantic matching flow, the plugin matches expressions in script files against config expressions one by one. During matching, the data type of the config expression is first used to dispatch to the corresponding matcher (`ParadoxScriptExpressionMatcher`), which then determines whether the script expression satisfies the requirements of that data type. The specific matching behavior of each data type is detailed in the [Data Types](#data-types) chapter.
+#### Category {#config-expressions-category}
 
 This chapter covers the following config expressions:
 
-- **[Data Expression](#config-expression-data)**: Describes the value form of keys or values, yielding a specific data type after parsing.
+- **[Data Expression](#config-expression-data)**: Describes the value form and matching patterns of expressions, yielding a specific data type after parsing.
 - **[Template Expression](#config-expression-template)**: A pattern composed of constants and dynamic fragments concatenated, used for more flexible matching.
 - **[Cardinality Expression](#config-expression-cardinality)**: Constrains the number of occurrences of definition members.
 - **[Location Expression](#config-expression-location)**: Locates the source of resources such as images and localisation.
@@ -1296,9 +1313,9 @@ This chapter covers the following config expressions:
 
 <!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
-Data expressions describe the value form of keys or values in script files, which can be constants, base data types, references, dynamic content, etc. After parsing, they yield a specific [data type](#data-types) (such as `Int`, `Float`, `Scalar`, `Enum`, `Scope`, `Definition`, etc.) and may carry extended metadata (such as numeric ranges `int[-5..100]`, case sensitivity strategy, etc.).
+Data expressions are used to describe the value forms and matching patterns of various expressions, which determine their matching logic and parsing logic.
 
-During parsing, key context (isKey=true) and value context (isKey=false) are distinguished; some data types are only valid in specific contexts.
+The data expression will get the specific [data type] (#data-types) after parsing, and can be accompanied by metadata. The data type, along with this metadata, determines which expressions in script files, localization files, and CSV files can be matched by data expressions.
 
 **Default and boundary behaviors**:
 
@@ -1454,23 +1471,28 @@ Schema expressions support the following four forms:
 
 ### Summary {#data-types-summary}
 
-A data type describes the value form of a config expression (data expression) and determines the matching logic between expressions and config expressions.
+Data types describe the type of data expression (as the most common type of config expression).
 
-For example, the data type of the data expression `<event.country>` is `Definition`, with metadata `event.country`, indicating that it matches definitions of type `event` whose subtype includes `country`.
-As another example, the data type of `enum[weight_or_base]` is `EnumValue`, with metadata `weight_or_base`, indicating that it matches any of the possible values declared in that enum.
+Each data type represents a semantic category and participates in determining the matching logic between expressions and rule expressions.
+
+Examples:
+- For data expression `<event.country>`, the data type is `Definition`, with metadata `event.country`, indicating that it matches definition references of type `event` whose subtype includes `country`.
+- the data expression `enum[weight_or_base]`, the data type is `EnumValue`, with metadata `weight_or_base`, indicating that it matches any of the possible values declared in that enum.
 
 Related extension points:
 - The resolution logic for data types is driven by the extension point `CwtDataExpressionResolver`.
 - The matching logic between expressions in script files and config expressions is driven by the extension point `ParadoxScriptExpressionMatcher`.
 - The matching logic between expressions in CSV files and config expressions is driven by the extension point `ParadoxCsvExpressionMatcher` (limited support).
+- The implementation logic for expressions in script files is driven by the extension point `ParadoxScriptExpressionSupport`.
+- The implementation logic for expressions in CSV files is driven by the extension point `ParadoxScriptExpressionSupport` (limited support).
 
 ### Base Data Types {#data-types-base}
 
-The following data types represent basic value forms in scripts.
+The following data types represent basic value forms.
 
 #### Any {#data-type-any}
 
-Matches any script expression, serving as the lowest-priority fallback match.
+Matches any expression, serving as the lowest-priority fallback match.
 
 Data expression format:
 - `$any`
@@ -1907,14 +1929,14 @@ The following data types use special pattern matching strategies. The [Constant]
 
 #### Constant {#data-type-constant}
 
-When resolved to this type, the expression string is the constant value itself. Matches script expressions identical to the constant value. As a value, `yes` / `no` do not match quoted expressions.
+When resolved to this type, the expression string is the constant value itself. Matches expressions identical to the constant value. As a value, `yes` / `no` do not match quoted expressions.
 
 Data expression format:
 - Use the constant string directly as the data expression, e.g. `yes`, `100`, `trigger`.
 
 #### TemplateExpression {#data-type-template-expression}
 
-A pattern composed of alternating constant text fragments and reference fragments. On match, splits the script expression by the template structure and validates each reference fragment individually.
+A pattern composed of alternating constant text fragments and reference fragments. On match, splits the expression by the template structure and validates each reference fragment individually.
 
 This is a pattern-aware type; its data expression format is the template expression itself (see [Template Expression](#config-expression-template)).
 

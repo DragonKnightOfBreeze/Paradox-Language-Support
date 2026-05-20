@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 脚本文件、本地化文件或者 CSV 文件中的表达式，
+ * 脚本文件、本地化文件或者 CSV 文件中的各种表达式，
  *
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionMatcher
