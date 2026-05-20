@@ -20,7 +20,7 @@
 - [x] #324 Nested Subtypes in types localisation
 - [x] #326 切换游戏类型问题
 
-## 2.1.9-dev
+## 2.1.9 - 2020-05-21
 
 - [x] 修复游戏类型发生变更时，分析数据可能未被正确刷新的问题 / Fixed an issue that analysis data may not be refreshed when game type is changed ([#326](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/326))
 - [x] 支持在类型展示规则中使用嵌套的 `subtype[x] = {...}` / Supported nested `subtype[x] = {...}` in type presentation configs ([#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324))
@@ -60,7 +60,7 @@
 - [x] 优化：为 `launcher-settings.json` 和 `metadata.json` 提供内置的 JSON Schema / OP: Provide built-in JSON Schema for `lanucher-settings.json` and `metadata.json`
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.6 - 2026-3-21
+## 2.1.6 - 2026-03-21
 
 - [x] [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288) [EU5] Validating Required Fields for INJECT Statements
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
