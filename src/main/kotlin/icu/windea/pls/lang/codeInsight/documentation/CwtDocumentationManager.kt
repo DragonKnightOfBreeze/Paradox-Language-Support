@@ -255,6 +255,7 @@ object CwtDocumentationManager {
                     element is CwtString -> PlsStrings.sourceStringPrefix
                     else -> PlsStrings.sourcePrefix
                 }
+                appendBr()
                 grayed {
                     append(sourcePrefix).append(" ").append(sourceName.escapeXml())
                 }

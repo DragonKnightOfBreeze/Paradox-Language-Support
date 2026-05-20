@@ -32,18 +32,18 @@ complex_expressions = {
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><SCOPE>owner</SCOPE>
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><SCOPE_PREFIX>event_target:</SCOPE_PREFIX><DYNAMIC_VALUE>target</DYNAMIC_VALUE>
     }
-    value_field_expression = {
+    value_field_expressions = {
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><VALUE_FIELD>field</VALUE_FIELD>
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><VALUE_FIELD_PREFIX>var:</VALUE_FIELD_PREFIX><VARIABLE>variable</VARIABLE>
     }
     variable_field_expressions = {
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><VARIABLE>variable</VARIABLE>
     }
-    script_value_expression = {
+    script_value_expressions = {
         key = <DEFINITION_REFERENCE>some_script_value</DEFINITION_REFERENCE>
         key = <DEFINITION_REFERENCE>some_script_value</DEFINITION_REFERENCE><MARKER>|</MARKER><ARGUMENT>PARAM</ARGUMENT><MARKER>|</MARKER>value<MARKER>|</MARKER>
     }
-    dynamic_value_expression = {
+    dynamic_value_expressions = {
         key = <DYNAMIC_VALUE>some_dynamic_value</DYNAMIC_VALUE>
         key = <DYNAMIC_VALUE>some_dynamic_value</DYNAMIC_VALUE><MARKER>@</MARKER><SYSTEM_SCOPE>this</SYSTEM_SCOPE>
     }
