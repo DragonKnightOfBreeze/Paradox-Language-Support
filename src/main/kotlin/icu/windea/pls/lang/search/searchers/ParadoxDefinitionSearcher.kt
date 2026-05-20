@@ -55,9 +55,8 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         if (!r) return false
 
         // process for swapped types
-        val swappedTypeConfig = context.swappedTypeConfig
-        if (swappedTypeConfig != null) {
-            val r = processQuery(context.copy(type = swappedTypeConfig.name, subtypes = emptyList()), consumer)
+        if (context.swappedType != null) {
+            val r = processQuery(context.copy(type = context.swappedType, subtypes = emptyList()), consumer)
             if (!r) return false
         }
 
@@ -128,7 +127,6 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
     ) : ParadoxSearchContext {
         val configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(project, gameType)
         val typeConfig: CwtTypeConfig? = type?.orNull()?.let { configGroup.types[it] }
-        val swappedType: String? = type?.orNull()?.let { configGroup.typesModel.base2Swapped[it] }
-        val swappedTypeConfig: CwtTypeConfig? = swappedType?.orNull()?.let { configGroup.swappedTypes[it] }
+        val swappedType: String? = type?.orNull()?.let { configGroup.typesModel.base2Swapped[it] }?.takeIf { it != type }
     }
 }
