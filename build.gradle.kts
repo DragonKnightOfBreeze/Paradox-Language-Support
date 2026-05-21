@@ -210,12 +210,6 @@ intellijPlatform {
             sinceBuild = properties("sinceBuild")
             untilBuild = null
         }
-
-        vendor {
-            name = "DragonKnightOfBreeze"
-            url = "https://github.com/DragonKnightOfBreeze"
-            email = "dk_breeze@qq.com"
-        }
     }
 
     // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
@@ -287,7 +281,9 @@ val cwtRepositories = listOf(
 // Generated output directory (stores unzipped configs); used as a fallback when local configs are missing
 val generatedCwtDir = layout.buildDirectory.dir("generated/cwt")
 // Preparation task: collects downstream download/unzip dependencies so the JAR task can depend on a single task
-val prepareCwtConfigs = tasks.register("prepareCwtConfigs")
+val prepareCwtConfigs = tasks.register("prepareCwtConfigs") {
+    description = "Prepare CWT configs."
+}
 
 // Register download/unzip tasks for each downloadable repository (skip if a local copy exists)
 cwtRepositories.filter { it.downloadable }.forEach { r ->
@@ -297,6 +293,7 @@ cwtRepositories.filter { it.downloadable }.forEach { r ->
     val unzipDir = generatedCwtDir.map { it.dir(r.repoDir) }
 
     val download = tasks.register("downloadCwtConfig_${r.gameTypeId}", de.undercouch.gradle.tasks.download.Download::class) {
+        description = "Download CWT configs for game type id ${r.gameTypeId}."
         // Only download when the local repository is missing to reduce unnecessary network traffic in CI and locally
         src(zipUrl)
         dest(zipFile)
@@ -305,6 +302,7 @@ cwtRepositories.filter { it.downloadable }.forEach { r ->
         onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() && !zipFile.get().asFile.exists() }
     }
     val unzip = tasks.register<Copy>("unzipCwtConfig_${r.gameTypeId}") {
+        description = "Unzip CWT configs for game type id ${r.gameTypeId}."
         // Unzip the downloaded ZIP into the generated build directory as a fallback config source
         dependsOn(download)
         onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() }

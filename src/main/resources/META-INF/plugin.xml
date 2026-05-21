@@ -3,6 +3,10 @@
 <idea-plugin url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support" xmlns:xi="http://www.w3.org/2001/XInclude">
   <category>Languages</category>
 
+  <!-- I see you, ..., but please be patient, for ... -->
+  <id>icu.windea.pls</id>
+
+  <!-- With the title of breeze, the dragon knight embarks on a Journey to seek in the wonderful world. -->
   <vendor email="dk_breeze@qq.com" url="https://github.com/DragonKnightOfBreeze">DragonKnightOfBreeze</vendor>
 
   <resource-bundle>messages.PlsBundle</resource-bundle>
