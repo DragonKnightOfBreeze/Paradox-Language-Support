@@ -208,7 +208,7 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = properties("sinceBuild")
-            untilBuild = null
+            untilBuild = properties("untilBuild")
         }
     }
 
@@ -391,7 +391,6 @@ tasks {
             .filter { it.startsWith("pls.test.") }
             .forEach { k -> systemProperty(k, System.getProperty(k)) }
     }
-
     withType<AbstractArchiveTask> {
         // Ensure the latest built-in config files are read
         // Keep archive entry timestamps consistent with file write times (not normalized to a constant)
