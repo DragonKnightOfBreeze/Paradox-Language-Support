@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -8,7 +7,6 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
 
 @Suppress("unused")
@@ -59,18 +57,19 @@ object PlsFacade {
         return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(context)
     }
 
-    /** 是否正在进行单元测试。 */
+    /** 检查是否正在进行单元测试，或者 IDE 是否正处于单元测试模式。 */
     fun isUnitTestMode(): Boolean {
         return ApplicationManager.getApplication().let { it == null || it.isUnitTestMode }
     }
 
-    /** 是否正在调试。 */
-    fun isDebug(): Boolean {
-        return System.getProperty("pls.is.debug").toBoolean()
+    /** 检查 IDE 是否正处于内部模式。 */
+    fun isInternal(): Boolean {
+        return ApplicationManager.getApplication().let { it != null && it.isInternal }
     }
 
-    /** 是否是开发中版本。 */
-    fun isDevVersion(): Boolean {
-        return PluginManagerCore.getPlugin(PlsConstants.pluginId)?.version?.endsWith("-dev") == true
-    }
+    // TODO [compatibility] `PluginManagerCore.getPlugin(PluginId)` is internal since IDEA-262 - Commented out since this method is currently not used
+    // /** 是否是开发中版本。 */
+    // fun isDevVersion(): Boolean {
+    //     return PluginManagerCore.getPlugin(PlsConstants.pluginId)?.version?.endsWith("-dev") == true
+    // }
 }

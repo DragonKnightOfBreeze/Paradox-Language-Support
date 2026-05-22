@@ -12,13 +12,15 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import kotlinx.coroutines.coroutineScope
 
-// org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
-
+// NOTE the EP interface is internal (but ignored by verifier)
 // com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
-// NOTE the EP interface is marked as @Internal (nothing to say...)
+// com.intellij.ui.codeFloatingToolbar.FloatingCodeToolbarEditorCustomizer
+// org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
+    // TODO [compatibility] `TextEditorCustomizer.execute(TextEditor)` is remove since IDEA-262 - Use `TextEditorCustomizer.execute(TextEditor, CoroutineScope)` instead
+
     override suspend fun execute(textEditor: TextEditor) {
         if (shouldAcceptEditor(textEditor) && shouldShowFloatingToolbar()) {
             coroutineScope {
@@ -36,14 +38,14 @@ class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
     private fun shouldAcceptScratchFile(editor: TextEditor): Boolean {
         val file = editor.file
         val project = editor.editor.project ?: return false
-        return isParadoxScratchFile(file, project)
+        return isScratchFile(file, project)
+    }
+
+    private fun isScratchFile(file: VirtualFile, project: Project): Boolean {
+        return ScratchUtil.isScratch(file) && LanguageUtil.getLanguageForPsi(project, file, file.fileType) is ParadoxLocalisationLanguage
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
         return PlsSettings.getInstance().state.others.showLocalisationFloatingToolbar
-    }
-
-    private fun isParadoxScratchFile(file: VirtualFile, project: Project): Boolean {
-        return ScratchUtil.isScratch(file) && LanguageUtil.getLanguageForPsi(project, file, file.fileType) is ParadoxLocalisationLanguage
     }
 }

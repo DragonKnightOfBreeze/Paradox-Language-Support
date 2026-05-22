@@ -49,8 +49,7 @@ import kotlin.coroutines.resume
 import kotlin.properties.Delegates
 import kotlin.time.Duration.Companion.milliseconds
 
-// com.intellij.openapi.actionSystem.impl.FloatingToolbar
-// forked as the original class is marked as @Internal
+// NOTE forked from: com.intellij.openapi.actionSystem.impl.FloatingToolbar (since it's internal)
 
 @Suppress("unused", "ObsoleteDispatchersEdt")
 @OptIn(FlowPreview::class)

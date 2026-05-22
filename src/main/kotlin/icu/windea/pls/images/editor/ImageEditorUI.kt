@@ -81,7 +81,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
-// org.intellij.images.editor.impl.ImageEditorUI
+// NOTE forked and modified from: org.intellij.images.editor.impl.ImageEditorUI
 
 class ImageEditorUI(
     private val editor: ImageEditor?,
