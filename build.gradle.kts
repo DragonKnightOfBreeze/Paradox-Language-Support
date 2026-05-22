@@ -13,11 +13,93 @@ plugins {
     id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
-fun properties(key: String) = providers.gradleProperty(key)
-fun envVars(key: String) = providers.environmentVariable(key)
+val liteVersion = providers.gradleProperty("pls.is.lite").getOrElse("false").toBoolean()
+val includeSqlite = providers.gradleProperty("pls.capabilities.includeSqlite").getOrElse("true").toBoolean()
 
-group = properties("pluginGroup").get()
-version = properties("pluginVersion").get()
+val excludesInJar = emptyList<String>()
+val excludesInZip = buildList {
+    if (liteVersion || !includeSqlite) add("lib/sqlite-jdbc-*.jar")
+}
+
+group = providers.gradleProperty("pluginGroup").get()
+version = providers.gradleProperty("pluginVersion").get()
+
+// Configure IntelliJ Platform Plugin - read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
+intellijPlatform {
+    pluginConfiguration {
+        id = providers.gradleProperty("pluginId")
+        name = providers.gradleProperty("pluginName")
+        version = providers.gradleProperty("pluginVersion")
+
+        description = projectDir.resolve("DESCRIPTION.md").readText().let(::markdownToHTML)
+
+        // local variable for configuration cache compatibility
+        val changelog = project.changelog
+        // Get the latest available change notes from the changelog file
+        changeNotes = providers.gradleProperty("pluginVersion").map { pluginVersion ->
+            with(changelog) {
+                @Suppress("UNCHECKED_CAST")
+                fun handleChangelogItem(changelogItem: Changelog.Item) {
+                    val items = changelogItem.javaClass.getDeclaredField("items").also { it.trySetAccessible() }.get(changelogItem)
+                        as? MutableMap<String, Set<String>> ?: return
+                    items.keys.forEach { key ->
+                        val item = items[key]
+                        if (item.isNullOrEmpty()) return@forEach
+                        val finalItem = item.mapNotNull {
+                            when {
+                                it.contains("HIDDEN") -> null // hidden
+                                it.startsWith("[ ]") -> null // undo
+                                it.startsWith("[x]") || it.startsWith("[X]") -> it.drop(3).trim() // done
+                                else -> it.trim()
+                            }
+                        }.toSet()
+                        items[key] = finalItem
+                    }
+                }
+
+                val changelogItem0 = getOrNull(pluginVersion) ?: getUnreleased()
+                val changelogItem = changelogItem0.withHeader(false).withEmptySections(false)
+                handleChangelogItem(changelogItem)
+                renderItem(changelogItem, Changelog.OutputType.HTML)
+            }
+        }
+
+        ideaVersion {
+            sinceBuild = providers.gradleProperty("pluginSinceBuild")
+            untilBuild = providers.gradleProperty("pluginUntilBuild")
+        }
+    }
+
+    // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN_PLS")
+        privateKey = providers.environmentVariable("PRIVATE_KEY_PLS")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD_PLS")
+    }
+
+    publishing {
+        token = providers.environmentVariable("IDEA_TOKEN")
+    }
+
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
+}
+
+// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+changelog {
+    header = version
+    headerParserRegex = """\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?(?:\s+-\s+\d{4}-\d{2}-\d{2})?""".toRegex()
+    groups.empty()
+    keepUnreleasedSection = true
+    repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
+}
+
+grammarKit {
+    jflexRelease = "1.7.0-2"
+}
 
 repositories {
     mavenCentral()
@@ -26,16 +108,12 @@ repositories {
     }
 }
 
-// Lite build: excludes optional dependency JARs; also appends the `-lite` suffix to versions in the ZIP and plugin.xml
-val lite = properties("pls.is.lite").getOrElse("false").toBoolean()
-val includeSqlite = properties("pls.capabilities.includeSqlite").getOrElse("true").toBoolean()
-
 dependencies {
     // Configure Gradle IntelliJ Plugin
     // Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
     intellijPlatform {
-        val type = properties("platformType")
-        val version = properties("platformVersion")
+        val type = providers.gradleProperty("platformType")
+        val version = providers.gradleProperty("platformVersion")
         create(type, version) // https://github.com/JetBrains/intellij-platform-plugin
 
         testFramework(TestFrameworkType.Platform)
@@ -166,91 +244,8 @@ kotlin {
     }
 }
 
-// Configure IntelliJ Platform Plugin - read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
-intellijPlatform {
-    pluginConfiguration {
-        id = properties("pluginId")
-        name = properties("pluginName")
-        version = properties("pluginVersion")
+// CWT config source setup (prefer local, download if missing)
 
-        description = projectDir.resolve("DESCRIPTION.md").readText().let(::markdownToHTML)
-
-        // local variable for configuration cache compatibility
-        val changelog = project.changelog
-        // Get the latest available change notes from the changelog file
-        changeNotes = properties("pluginVersion").map { pluginVersion ->
-            with(changelog) {
-                @Suppress("UNCHECKED_CAST")
-                fun handleChangelogItem(changelogItem: Changelog.Item) {
-                    val items = changelogItem.javaClass.getDeclaredField("items").also { it.trySetAccessible() }.get(changelogItem)
-                        as? MutableMap<String, Set<String>> ?: return
-                    items.keys.forEach { key ->
-                        val item = items[key]
-                        if (item.isNullOrEmpty()) return@forEach
-                        val finalItem = item.mapNotNull {
-                            when {
-                                it.contains("HIDDEN") -> null // hidden
-                                it.startsWith("[ ]") -> null // undo
-                                it.startsWith("[x]") || it.startsWith("[X]") -> it.drop(3).trim() // done
-                                else -> it.trim()
-                            }
-                        }.toSet()
-                        items[key] = finalItem
-                    }
-                }
-
-                val changelogItem0 = getOrNull(pluginVersion) ?: getUnreleased()
-                val changelogItem = changelogItem0.withHeader(false).withEmptySections(false)
-                handleChangelogItem(changelogItem)
-                renderItem(changelogItem, Changelog.OutputType.HTML)
-            }
-        }
-
-        ideaVersion {
-            sinceBuild = properties("sinceBuild")
-            untilBuild = properties("untilBuild")
-        }
-    }
-
-    // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
-    signing {
-        certificateChain = envVars("CERTIFICATE_CHAIN_PLS")
-        privateKey = envVars("PRIVATE_KEY_PLS")
-        password = envVars("PRIVATE_KEY_PASSWORD_PLS")
-    }
-
-    publishing {
-        token = envVars("IDEA_TOKEN")
-    }
-
-    pluginVerification {
-        ides {
-            recommended()
-        }
-    }
-}
-
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-changelog {
-    header = version
-    headerParserRegex = """\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?(?:\s+-\s+\d{4}-\d{2}-\d{2})?""".toRegex()
-    groups.empty()
-    keepUnreleasedSection = true
-    repositoryUrl = properties("pluginRepositoryUrl")
-}
-
-grammarKit {
-    jflexRelease = "1.7.0-2"
-}
-
-val excludesInJar = emptyList<String>()
-val excludesInZip = buildList {
-    if (lite || !includeSqlite) {
-        add("lib/sqlite-jdbc-*.jar")
-    }
-}
-
-// ========== CWT config source setup (prefer local, download if missing) ==========
 // Configurable parameters for download behavior (override via -P)
 val cwtDownloadIfMissing = providers.gradleProperty("pls.cwt.downloadIfMissing").orElse("true")
 val cwtAcceptAnyCertificate = providers.gradleProperty("pls.cwt.acceptAnyCertificate").orElse("false")
@@ -312,6 +307,8 @@ cwtRepositories.filter { it.downloadable }.forEach { r ->
     prepareCwtConfigs.configure { dependsOn(unzip) }
 }
 
+// Tasks
+
 tasks {
     withType<Copy> {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -359,14 +356,14 @@ tasks {
         excludesInJar.forEach { exclude(it) }
     }
     patchPluginXml {
-        if (lite) pluginVersion = properties("pluginVersion").get() + "-lite"
+        if (liteVersion) pluginVersion = providers.gradleProperty("pluginVersion").get() + "-lite"
     }
     buildPlugin {
-        if (lite) archiveVersion = properties("pluginVersion").get() + "-lite"
+        if (liteVersion) archiveVersion = providers.gradleProperty("pluginVersion").get() + "-lite"
         // Exclude specific files
         excludesInZip.forEach { exclude(it) }
         // Rename the plugin archive
-        archiveBaseName = properties("pluginPackageName")
+        archiveBaseName = providers.gradleProperty("pluginPackageName")
     }
     runIde {
         jvmArgs("-Xmx4096m")
