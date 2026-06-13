@@ -54,15 +54,12 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     }
 }
 
-class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+class ParadoxExtendedBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)
             CwtDataTypes.IntPercentageField -> matchIntPercentageField(context)
             CwtDataTypes.DateField -> matchDataField(context)
-            CwtDataTypes.Definition -> matchDefinition(context)
-            CwtDataTypes.EnumValue -> matchEnumValue(context)
-            in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
             else -> null
         }
     }
@@ -84,6 +81,17 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         val datePattern = context.configExpression.value
         val r = TextMatcher.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
+    }
+}
+
+class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
+        return when (context.dataType) {
+            CwtDataTypes.Definition -> matchDefinition(context)
+            CwtDataTypes.EnumValue -> matchEnumValue(context)
+            in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
+            else -> null
+        }
     }
 
     private fun matchDefinition(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {

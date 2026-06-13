@@ -24,10 +24,7 @@ import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
 abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionResolver {
-    protected data class Match(
-        val type: CwtDataType,
-        val action: CwtDataExpression.() -> Unit = {}
-    )
+    protected data class Match(val type: CwtDataType, val action: CwtDataExpression.() -> Unit = {})
 
     private val providers = mutableListOf<TextPatternBasedProvider<Match, out TextPatternMatchResult>>()
     private val builder by lazy { TextPatternBasedBuilder<Match>(providers) }
@@ -53,7 +50,7 @@ abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionReso
         return CwtDataExpression.create(expressionString, isKey, match.type).apply(match.action)
     }
 
-    override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
+    final override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
         return providers.process { provider -> consumer.process(provider.pattern) }
     }
 }
@@ -80,13 +77,18 @@ class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
     }
 }
 
-class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
+class CwtExtendedBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
     init {
         fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
         fromLiteral(CwtDataTypes.IntPercentageField, "int_percentage_field")
+
         fromLiteral(CwtDataTypes.DateField, "date_field")
         fromParameterized(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() }
+    }
+}
 
+class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
+    init {
         fromLiteral(CwtDataTypes.Localisation, "localisation")
         fromLiteral(CwtDataTypes.SyncedLocalisation, "localisation_synced")
         fromLiteral(CwtDataTypes.InlineLocalisation, "localisation_inline")

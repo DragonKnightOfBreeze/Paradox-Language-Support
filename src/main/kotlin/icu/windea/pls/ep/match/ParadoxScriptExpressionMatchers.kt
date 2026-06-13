@@ -79,12 +79,39 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxExtendedBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)
             CwtDataTypes.IntPercentageField -> matchIntPercentageField(context)
             CwtDataTypes.DateField -> matchDataField(context)
+            else -> null
+        }
+    }
+
+    private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        val r = TextMatcher.matchesPercentageField(context.expression.value)
+        return ParadoxMatchResult.exactOrNot(r)
+    }
+
+    private fun matchIntPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        val r = TextMatcher.matchesIntPercentageField(context.expression.value)
+        return ParadoxMatchResult.exactOrNot(r)
+    }
+
+    private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        val datePattern = context.configExpression.value
+        val r = TextMatcher.matchesDateField(context.expression.value, datePattern)
+        return ParadoxMatchResult.exactOrNot(r)
+    }
+}
+
+class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
+        return when (context.dataType) {
             CwtDataTypes.Definition, CwtDataTypes.SuffixAwareDefinition -> matchDefinition(context)
             CwtDataTypes.Localisation, CwtDataTypes.SuffixAwareLocalisation -> matchLocalisation(context)
             CwtDataTypes.SyncedLocalisation, CwtDataTypes.SuffixAwareSyncedLocalisation -> matchSyncedLocalisation(context)
@@ -112,25 +139,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
             else -> null
         }
-    }
-
-    private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesPercentageField(context.expression.value)
-        return ParadoxMatchResult.exactOrNot(r)
-    }
-
-    private fun matchIntPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesIntPercentageField(context.expression.value)
-        return ParadoxMatchResult.exactOrNot(r)
-    }
-
-    private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val datePattern = context.configExpression.value
-        val r = TextMatcher.matchesDateField(context.expression.value, datePattern)
-        return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDefinition(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

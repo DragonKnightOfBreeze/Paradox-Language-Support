@@ -123,6 +123,7 @@
     <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseDataConfigGroupPostProcessor"/>
 
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionResolver"/>
+    <dataExpressionResolver id="extendedBase" implementation="icu.windea.pls.ep.config.configExpression.CwtExtendedBaseDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.config.configExpression.CwtCoreDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.config.configExpression.CwtConstantDataExpressionResolver" order="last"/>
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.config.configExpression.CwtTemplateDataExpressionResolver" order="last, after constant"/>
@@ -158,18 +159,20 @@
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>
 
     <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.ParadoxBaseScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="extendedBase" implementation="icu.windea.pls.ep.match.ParadoxExtendedBaseScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.ParadoxCoreScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.ParadoxConstantScriptExpressionMatcher" order="first"/>
     <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.ParadoxTemplateScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="ant" implementation="icu.windea.pls.ep.match.ParadoxAntScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="regex" implementation="icu.windea.pls.ep.match.ParadoxRegexScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.match.ParadoxPredicateBasedScriptExpressionMatcher" order="first, before constant"/>
+    <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.ParadoxPredicateBasedScriptExpressionMatcher" order="first, before constant"/>
 
     <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.ParadoxScriptExpressionConstantMatchOptimizer" order="first"/>
     <scriptExpressionMatchOptimizer id="block" implementation="icu.windea.pls.ep.match.ParadoxScriptExpressionBlockMatchOptimizer"/>
     <scriptExpressionMatchOptimizer id="overridden" implementation="icu.windea.pls.ep.match.ParadoxScriptExpressionOverriddenMatchOptimizer" order="last"/>
 
     <csvExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.ParadoxBaseCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="extendedBase" implementation="icu.windea.pls.ep.match.ParadoxExtendedBaseCsvExpressionMatcher"/>
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.ParadoxCoreCsvExpressionMatcher"/>
 
     <overrideStrategyProvider id="forcedFile" implementation="icu.windea.pls.ep.overrides.ParadoxForcedFileOverrideStrategyProvider"/>

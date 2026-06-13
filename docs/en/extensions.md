@@ -31,7 +31,7 @@ This functionality also applies to HTML links and PSI element navigation (defini
 
 For different types of reference links, the formats and examples are as follows:
 
-**CWT Rules** (limited support only)
+**CWT Configs** (limited support only)
 
 - Format
   - `cwt:{gameType}:{parts}`

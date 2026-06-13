@@ -1324,7 +1324,7 @@ The data expression will get the specific [data type] (#data-types) after parsin
 - When no known data type can be matched, falls back to `Constant`, using the original string as the constant value.
 - Definition references should use the angle-bracket form (e.g. `<event>`), not the bracket form with prefix (e.g. `definiton[event]`, which is an incorrect notation).
 
-**Example**:
+Example:
 
 ```cwt
 int                         # integer
@@ -1349,7 +1349,7 @@ Template expressions are composed of multiple fragments concatenated — constan
 - Multiple fragments use a "leftmost earliest match" splitting strategy.
 - Each fragment ultimately delegates to data expression parsing; when no known type is matched, it degrades to a constant fragment.
 
-**Example**:
+Example:
 
 The following examples demonstrate typical usage of template expressions, with `#` comments annotating the splitting of fragments:
 
@@ -1370,9 +1370,10 @@ For example, `job_<job>_add` can match `job_researcher_add`, `job_farmer_add`, e
 
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
-Cardinality expressions constrain the number of occurrences of definition members, driving code inspection and code completion features. Declared via the option comment `## cardinality`.
+Cardinality expressions constrain the number of occurrences of definition members, affecting code inspection and code completion features. Declared via the option comment `## cardinality`.
 
-The format is `{min}..{max}`, where `{min}` and `{max}` are non-negative integers or `inf` (case-insensitive, meaning unlimited). Adding a `~` prefix before the integer indicates lenient validation (when not satisfied, only a warning is produced instead of an error).
+The format is `{min}..{max}`, where `{min}` and `{max}` are non-negative integers or `inf` (case-insensitive, meaning unlimited).
+Adding a `~` prefix before the integer indicates lenient validation (when not satisfied, a weaker severity level is used, e.g. from warning to weak warning).
 
 **Default and boundary behaviors**:
 
@@ -1380,13 +1381,13 @@ The format is `{min}..{max}`, where `{min}` and `{max}` are non-negative integer
 - Missing the `..` separator is treated as invalid, producing no constraint.
 - When `min > max`, treated as invalid, producing no constraint.
 
-**Example**:
+Example:
 
 ```cwt
 ## cardinality = 0..1     # optional, at most 1 occurrence
 ## cardinality = 0..inf   # optional, unlimited occurrences
 ## cardinality = 1..5     # must occur 1 to 5 times
-## cardinality = ~1..10   # lenient: expected 1 to 10 times, but produces only a warning if not met
+## cardinality = ~1..10   # lenient: expected 1 to 10 times, but produces only a warning by default if not met
 ```
 
 **Tip:**
@@ -1414,7 +1415,7 @@ Argument conventions:
 - Other arguments represent "frame source paths" (supporting comma-separated multiple paths), used for image frame slicing.
 - When arguments of the same type appear repeatedly, the later one takes precedence.
 
-**Example**:
+Example:
 
 ```cwt
 gfx/interface/icons/modifiers/mod_$.dds
@@ -1436,7 +1437,7 @@ Argument conventions:
 - The argument `u` forces the final name to uppercase (only effective when using placeholders).
 - When `$` arguments appear repeatedly, the later one takes precedence.
 
-**Example**:
+Example:
 
 ```cwt
 $_desc
@@ -1473,7 +1474,7 @@ Schema expressions support the following four forms:
 
 Data types describe the type of data expression (as the most common type of config expression).
 
-Each data type represents a semantic category and participates in determining the matching logic between expressions and rule expressions.
+Each data type represents a semantic category and participates in determining the matching logic between expressions and config expressions.
 
 Examples:
 - For data expression `<event.country>`, the data type is `Definition`, with metadata `event.country`, indicating that it matches definition references of type `event` whose subtype includes `country`.
@@ -2013,7 +2014,7 @@ The following examples demonstrate the progression from simple literals to compl
 - `a_enum[weight_or_base]_b`: Template containing the enum reference `enum[weight_or_base]`, can match `a_weight_b` and `a_base_b`.
 - `a_value[anything]_b`: Template containing the dynamic value reference `value[anything]`. Since `value[anything]` typically has no value restrictions, the effect is similar to the regex `a_.*_b`.
 
-**Example**:
+Example:
 
 ```cwt
 x
@@ -2034,7 +2035,7 @@ ANT path patterns support the following wildcards:
 - `*`: Matches any characters (excluding `/`).
 - `**`: Matches any characters (including `/`).
 
-**Example**:
+Example:
 
 ```cwt
 ant:/foo/bar?/*
@@ -2047,11 +2048,39 @@ ant.i:/foo/bar?/*
 
 Starting from plugin version 1.3.6, regular expressions can be used in data expressions for more flexible matching. Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive. The part after the prefix is a standard regular expression.
 
-**Example**:
+Example:
 
 ```cwt
 re:foo.*
 re.i:foo.*
+```
+
+#### How to Specify the Occurrence Count of a Definition Member in a Config Expression {#faq-cardinality}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.cardinality -->
+<!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
+
+In config files, the occurrence range of a defined member is specified through the `## cardinality` option.  
+The value of this option is a [cardinality expression](#config-expression-cardinality), which constrains the number of times a defined member can appear, affecting features such as code inspection and code completion.
+
+If not explicitly specified, and the data type of this member config is constant or enum value, it is inferred as `1..~1`; otherwise, it defaults to `0..inf`.
+
+Example:
+
+```cwt
+# optional, redeclaration is not allowed
+## cardinality = 0..1
+status = bool
+
+# required, redeclaration is lenient allowed
+value = float
+
+# required, redeclaration is not allowed
+## cardinality = 1..1
+type = float
+
+# optional, redeclaration is allowed
+effect = single_alias_right[effect_clause]
 ```
 
 #### How to Specify Scope Context in Config Files {#faq-scope-context}
@@ -2065,7 +2094,7 @@ In config files, scope context is specified via the options `## push_scope` and 
 
 `## replace_scopes = { this = x root = y}` replaces the specified system scope to scope type mappings into the current scope context. Only `this`, `root`, and `from`-based system scopes are supported; `prev`-based system scopes are not supported.
 
-**Example**:
+Example:
 
 ```cwt
 # for this example, the next this scope will be `country`
@@ -2084,7 +2113,7 @@ some_config = single_alias_right[trigger_clause]
 
 In config files, the supported scopes for triggers and effects are specified via the option `## scopes` (or `## scope`).
 
-**Example**:
+Example:
 
 ```cwt
 # for this example, the supported scope type of trigger `has_country_flag` is `country`
@@ -2104,7 +2133,7 @@ For script color fields (e.g. `rgb { 255 255 255 }`), the color type is inferred
 
 By specifying a color type, color gutter icons can be provided for various targets in script files, allowing convenient viewing and editing of colors.
 
-**Example (config fragments)**：
+Example (config fragments)：
 
 ```cwt
 # specify the color type as hexadecimal
@@ -2131,7 +2160,7 @@ color_field_rgb = color[rgb]
 color_field_hsv = color[hsv]
 ```
 
-**Example (matched script fragments)**：
+Example (matched script fragments)：
 
 ```paradox_script
 color = 0x2288E1
@@ -2157,7 +2186,7 @@ By specifying allowed extensions, the plugin can limit the file extensions that 
 
 Note that path references of some data types (such as [Icon](#data-type-icon)) and formats (such as extension information has been specified) will not carry extension information, so this option should not be used.
 
-**Example**:
+Example:
 
 ```cwt
 ## file_extensions = { png dds tga }
