@@ -47,7 +47,7 @@
 
 > 本章节介绍各种规则的用途、格式要点与注意事项，帮助读者正确理解与编写这些规则。
 
-### 概述 {#configs-summary}
+### 概述 {#configs-overview}
 
 规则（config）是在插件自身的规则系统中使用的统一的、核心的领域模型。
 
@@ -1310,7 +1310,7 @@ inline_scripts = {
 
 > 本章节介绍各种规则表达式的用途、格式与默认 / 边界行为，帮助读者正确理解与编写这类特殊的表达式。
 
-### 概述 {#config-expressions-summary}
+### 概述 {#config-expressions-overview}
 
 规则表达式（config expression）是在规则字段中使用的结构化语法。
 
@@ -1485,7 +1485,7 @@ title
 
 > 本章节介绍数据类型的概念、分类与用途，帮助读者理解规则文件中的数据表达式如何与脚本文件中的实际内容进行匹配。
 
-### 概述 {#data-types-summary}
+### 概述 {#data-types-overview}
 
 数据类型（data type）描述数据表达式（作为最常见的一种规则表达式）的类型。
 
@@ -1962,8 +1962,6 @@ title
 
 ### 别名数据类型 {#data-types-alias}
 
-
-
 以下数据类型与别名解析机制相关，通常不直接参与脚本匹配，而是由别名系统内部处理。
 
 #### SingleAliasRight {#data-type-single-alias-right}
@@ -2214,7 +2212,7 @@ re:foo.*
 re.i:foo.*
 ```
 
-#### 如何在规则表达式中指定定义成员的出现次数 {#faq-cardinality}
+#### 如何在规则文件中指定定义成员的出现次数 {#faq-cardinality}
 
 <!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.cardinality -->
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
