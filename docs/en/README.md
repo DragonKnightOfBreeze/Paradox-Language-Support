@@ -72,7 +72,7 @@ For a detailed list of contributors, please see [`CONTRIBUTORS.md`](https://gith
 
 ### Contributing Code
 
-Given the plugin's large codebase (~11k Kotlin production code) and high complexity (platform & domain & architecture), contributing core code is highly challenging.
+Given the plugin's large codebase (~110k lines of Kotlin production code) and high complexity (platform & domain & architecture), contributing core code is highly challenging.
 Nevertheless, by referencing existing documentation, code, configuration files and config files, leveraging AI assistance, and exploring on your own, it is still possible to consider and practice contributions to certain parts of the codebase.
 For example, by inspecting the reference documentation and configuration files (`plugin.xml` and the including XML configuration files), combined with keyword searching, you can try adding and improving various language features, or enhancing the plugin's capabilities and compatibility.
 
