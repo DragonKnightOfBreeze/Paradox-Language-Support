@@ -43,7 +43,7 @@
 
 ## v2.2.0-csv
 
-本版本聚焦于**完善对 CSV 文件与 rowConfig 的支持**，处理边界情况，调整相关代码检查。核心目标参见 [#314](https://github.com/anomalyco/Paradox-Language-Support/issues/314)。
+本版本聚焦于**完善对 CSV 文件与 rowConfig 的支持**，处理边界情况，调整相关代码检查。核心目标参见 [#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314)。
 
 - [ ] **P2/MS** 完善对 CSV 文件与 rowConfig 的支持：
   - [ ] 允许在 CSV 文件中声明复杂枚举值（提案：列规则上的 `## declare_complex_enum = x`）
