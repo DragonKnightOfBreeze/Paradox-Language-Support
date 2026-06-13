@@ -1,6 +1,6 @@
 # Quick Start
 
-<--! TODO: updating -->
+<!-- TODO: updating -->
 
 ### Installation
 

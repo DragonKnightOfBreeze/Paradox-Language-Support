@@ -48,7 +48,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ## 已知限制
 
-<--! TODO: updating -->
+<!-- TODO: updating -->
 
 - 插件对脚本文件与本地化文件的部分复杂语言构造的支持尚不完整，并仍在完善中，欢迎反馈。
 - 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
