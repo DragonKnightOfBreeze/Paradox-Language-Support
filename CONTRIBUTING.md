@@ -6,7 +6,7 @@
 
 Thank you for your interest in opening **Paradox Chronicle**.
 
-This is a large, mature and rather specialized project: an IntelliJ IDEA plugin for Paradox game mod developers, with roughly 11k lines of Kotlin production code, built on PSI-based deep semantic analysis and driven by its own CWT config system.
+This is a large, mature and rather specialized project: an IntelliJ IDEA plugin for Paradox game mod developers, with roughly 110k lines of Kotlin production code, built on PSI-based deep semantic analysis and driven by its own CWT config system.
 Its scope spans the IntelliJ Platform, the Paradox modding domain, and a fair amount of in-house architecture. That makes it both an interesting playground and a genuinely challenging codebase to work in.
 
 This guide explains **what kinds of contributions are welcome**, **what to read before you start**, and **how to actually get changes in**.
