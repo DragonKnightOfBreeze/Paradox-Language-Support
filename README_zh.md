@@ -47,15 +47,15 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ![](docs/assets/preview_1_zh.png)
 
-## 快速开始
+## 入门
 
 <-- TODO: updating -->
 
 ### 安装
 
 - 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
-- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace][url:plugin-homepage]，点击 `Install to ...` 按钮进行安装。
-- 手动安装：下载[最新版本][url:release-latest]并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
+- 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### 使用步骤
 
@@ -208,7 +208,6 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
-[url:release-latest]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions

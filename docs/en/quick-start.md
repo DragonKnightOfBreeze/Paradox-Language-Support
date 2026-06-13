@@ -1,15 +1,23 @@
 # Quick Start
 
-## Usage Steps
+<-- TODO: updating -->
 
-1. Open your mod's root directory in the IDE.
-2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
-3. Click the mod settings button in the floating toolbar at the top right of the editor.
-4. Configure the mod's game type, game directory, and required mod dependencies.
-5. Confirm the configuration and wait for the IDE to finish indexing.
-6. Then enjoy your mod development voyage.
+### Installation
 
-## Practical Tips
+- Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
+- Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) and install it by clicking the `Install to ...` button.
+- Manual Installation: Download the [latest release](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest) and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+
+### Usage Steps
+
+- Open your mod's root directory in the IDE.
+- Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
+- Click the mod settings button in the floating toolbar at the top right of the editor.
+- Configure the mod's game type, game directory, and required mod dependencies.
+- Confirm the configuration and wait for the IDE to finish indexing.
+- Start your mod development journey.
+
+### Practical Tips
 
 - **Global Search**:
   - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
@@ -18,11 +26,11 @@
   - Use `Ctrl + Click` to jump to the declaration or usage of a target.
   - Use `Ctrl + Shift + Click` to jump to the type declaration of a target.
   - Use `Alt + Click` to jump to the declaration of the relevant config for a target.
-  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localization for a target.
+  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localisation for a target.
   - Use `Ctrl + Shift + Alt + Click` to jump to the declaration of the relevant image for a target.
   - Use the `Navigate` menu (or the `Go To` option in the editor's right-click menu) for quick navigation.
   - Use `Navigate > Definition Hierarchy` to open the type hierarchy window and view definitions of specific types.
-  - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localizations, scripted variables, etc.
+  - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localisations, scripted variables, etc.
   - Select the `Paradox Files` view in the project panel to browse aggregated game and mod files.
   - Select the `CWT Config Files` view in the project panel to browse aggregated config files.
 - **Code Inspection**:
@@ -37,18 +45,11 @@
     - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
   - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
   - Adjust game directory, mod dependencies and other configurations in the mod settings.
-- **Troubleshooting**:
-  - Ensure both the IDE and the plugin are updated to the latest versions.
-  - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
-  - If the issue might be config-related, try to [write custom config files](config.md#write-config-files).
-  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
-  - Feedback is welcome through GitHub, Discord and other channels.
 
-## Known Limitations
+### Troubleshooting
 
-- The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
-- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
-  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
-  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
-  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
-- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
+- Ensure both the IDE and the plugin are updated to the latest versions.
+- If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
+- If the issue might be config-related, try to [write custom config files](config.md#write-config-files).
+- If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
+- Feedback is welcome through GitHub, Discord and other channels.

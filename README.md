@@ -53,8 +53,8 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 ### Installation
 
 - Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
-- Using JetBrains Marketplace: Go to [JetBrains Marketplace][url:plugin-homepage] and install it by clicking the `Install to ...` button.
-- Manual Installation: Download the [latest release][url:release-latest] and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+- Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) and install it by clicking the `Install to ...` button.
+- Manual Installation: Download the [latest release](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest) and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### Usage Steps
 
@@ -206,7 +206,6 @@ For reference, please read the [documentation for the config system](https://win
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
-[url:release-latest]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions

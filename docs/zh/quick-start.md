@@ -1,15 +1,23 @@
 # 快速开始
 
-## 使用步骤
+<-- TODO: updating -->
 
-1. 在 IDE 中打开你的模组根目录。
-2. 打开模组描述符文件（`descriptor.mod`，VIC3 和 EU5 中为 `.metadata/metadata.json`）。
-3. 点击编辑器右上角的悬浮工具栏中的模组设置按钮。
-4. 配置模组的游戏类型、游戏目录及所需的模组依赖。
-5. 确认配置，等待 IDE 完成索引。
-6. 开启你的模组开发之旅。
+### 安装
 
-## 实用技巧
+- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
+- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
+- 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+
+### 使用步骤
+
+- 在 IDE 中打开你的模组根目录。
+- 打开模组描述符文件（`descriptor.mod`，VIC3 和 EU5 中为 `.metadata/metadata.json`）。
+- 点击编辑器右上角的悬浮工具栏中的模组设置按钮。
+- 配置模组的游戏类型、游戏目录及所需的模组依赖。
+- 确认配置，等待 IDE 完成索引。
+- 开启你的模组开发之旅。
+
+### 实用技巧
 
 - **全局搜索**：
   - 使用 `Ctrl + Shift + R` 或 `Ctrl + Shift + F` 在当前项目、目录或指定查询作用域中搜索。
@@ -37,18 +45,11 @@
     - 点击主菜单中的 `Tools > Paradox Language Support > Open Mod Settings...`。
   - 可在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
   - 可在模组设置中调整游戏目录、模组依赖等配置。
-- **问题排查**：
-  - 确保 IDE 和插件均为最新版本。
-  - 如果问题可能与索引有关，可尝试[清除缓存并重启 IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html)。
-  - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](config.md#write-config-files)。
-  - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 搜索定位）。
-  - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
-## 已知限制
+### 问题排查
 
-- 插件对脚本文件与本地化文件的部分复杂语言特性的支持尚不完整，并仍在完善中，欢迎反馈。
-- 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
-  目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
-  其他游戏（如 Crusader Kings III、Hearts of Iron IV）的规则可能已过时，这会导致误报警告或缺少补全。
-  欢迎向[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)贡献。
-- 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
+- 确保 IDE 和插件均为最新版本。
+- 如果问题可能与索引有关，可尝试[清除缓存并重启 IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html)。
+- 如果问题可能与规则有关，可尝试[编写自定义的规则文件](config.md#write-config-files)。
+- 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 搜索定位）。
+- 欢迎通过 GitHub、Discord 等渠道反馈问题。

@@ -114,7 +114,6 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
-[url:release-latest]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
