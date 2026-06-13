@@ -1,7 +1,7 @@
 # AI Integration
 
 As foundational infrastructure, beyond language support and general toolchains, this plugin also provides basic AI functionality (MVP state).
-These features primarily focus on translating and polishing localisation text, aiming to offer more intelligent, context-aware assistance for text processing during mod development.
+These features primarily focus on translating and polishing localisation text, aiming to offer more intelligent assistance for text processing during mod development.
 
 > [!note]
 > The plugin’s positioning is as infrastructure: language support and general toolchains. It does not, and is not planned to, provide more advanced or customized AI features.

@@ -1,8 +1,8 @@
-# Paradox Language Support
-
-### -- The Paradox Chronicle Project
+# Paradox Language Support - The Paradox Chronicle
 
 <!-- Here we inscribe the revelations from the old era, the truths and realities of this land. -->
+<!-- Ascend to the tower’s peak and open the Book of Prophecy, for within it are recorded all our discoveries and foresights. -->
+<!-- Pay no heed to the mists and riddles of the past, for we shall reveal you a radiant horizon. -->
 
 [![中文文档][badge:doc-zh]](README_zh.md)
 [![English Documentation][badge:doc-en]](README.md)
@@ -23,50 +23,47 @@
 
 Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
-**Core Features:**
+The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
+After completing the necessary configuration (such as game type, game directory, mod dependencies) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
 
-- **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
-- **Enhanced Information Hints**: Shows key information intuitively through quick documentation and inlay hints, including localisation text, images, scopes, parameters, etc.
-- **Advanced Language Constructs Support**: Compatible with various advanced constructs in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
-- **Directory Detection**: Automatically detects game and mod directories.
-- **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
-- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
-- **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
-- **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
+The plugin implements core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).  
+The CWT config files it uses follow a syntax and format largely consistent with [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.  
+The plugin comes with the latest version of built-in configs, ready to use out of the box, while also supporting [customization](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) of config files to meet personalized development needs.
 
-The plugin implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
-The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
-The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
+**Core Features**:
+
+- **Multi-language support**: Supports the script language, localisation language, and CSV language used for mod development, as well as the CWT language for writing configs.
+- **Advanced language construct support**: Supports parameters, scopes, complex expressions, inline scripts, definition injection, and other advanced language constructs.
+- **Rich language features**: Supports code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams, and many other language features.
+- **Flexible code navigation**: Quickly navigate to various targets, including files, definitions, localisations, related localisations, related images, related configs, etc., through navigation actions, quick documentation, inlay hints, code hierarchy, search everywhere, and more.
+- **Enhanced information hints**: Intuitively show key information such as localisation text, images, scopes, parameters, etc., through quick documentation, inlay hints, and more.
+- **Extensible config system**: Supports customizing and importing config files to enhance features like code navigation, code completion, and documentation hints.
+- **Image processing**: Supports previewing and rendering DDS and TGA images, and can convert between different image formats (PNG, DDS, TGA).
+- **Tool integration**: Integrates useful tools such as [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), [Tiger](https://github.com/amtep/tiger), etc., to boost development efficiency.
+- **AI assistance**: Initial integration of AI technology for translating and polishing localisation text.
 
 ![](docs/assets/preview_1_en.png)
 
-## Installation
-
-**Using the IDE built-in plugin system**
-
-`Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
-
-**Using JetBrains Marketplace**
-
-Go to [JetBrains Marketplace][url:plugin-homepage] and install it by clicking the `Install to ...` button.
-
-**Manual Installation**
-
-Download the [latest release][url:release-latest] and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+![](docs/assets/preview_1_zh.png)
 
 ## Getting Started
 
-**Usage Steps:**
+### Installation
 
-1. Open your mod's root directory in the IDE.
-2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
-3. Click the mod settings button in the floating toolbar at the top right of the editor.
-4. Configure the mod's game type, game directory, and required mod dependencies.
-5. Confirm the configuration and wait for the IDE to finish indexing.
-6. Then enjoy your mod development voyage.
+- Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
+- Using JetBrains Marketplace: Go to [JetBrains Marketplace][url:plugin-homepage] and install it by clicking the `Install to ...` button.
+- Manual Installation: Download the [latest release][url:release-latest] and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
-**Practical Tips:**
+### Usage Steps
+
+- Open your mod's root directory in the IDE.
+- Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
+- Click the mod settings button in the floating toolbar at the top right of the editor.
+- Configure the mod's game type, game directory, and required mod dependencies.
+- Confirm the configuration and wait for the IDE to finish indexing.
+- Start your mod development journey.
+
+### Practical Tips
 
 - **Global Search**:
   - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
@@ -75,11 +72,11 @@ Download the [latest release][url:release-latest] and install it manually (No ne
   - Use `Ctrl + Click` to jump to the declaration or usage of a target.
   - Use `Ctrl + Shift + Click` to jump to the type declaration of a target.
   - Use `Alt + Click` to jump to the declaration of the relevant config for a target.
-  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localization for a target.
+  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localisation for a target.
   - Use `Ctrl + Shift + Alt + Click` to jump to the declaration of the relevant image for a target.
   - Use the `Navigate` menu (or the `Go To` option in the editor's right-click menu) for quick navigation.
   - Use `Navigate > Definition Hierarchy` to open the type hierarchy window and view definitions of specific types.
-  - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localizations, scripted variables, etc.
+  - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localisations, scripted variables, etc.
   - Select the `Paradox Files` view in the project panel to browse aggregated game and mod files.
   - Select the `CWT Config Files` view in the project panel to browse aggregated config files.
 - **Code Inspection**:
@@ -94,20 +91,22 @@ Download the [latest release][url:release-latest] and install it manually (No ne
     - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
   - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
   - Adjust game directory, mod dependencies and other configurations in the mod settings.
-- **Troubleshooting**:
-  - Ensure both the IDE and the plugin are updated to the latest versions.
-  - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
-  - If the issue might be config-related, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files).
-  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
-  - Feedback is welcome through GitHub, Discord and other channels.
 
-**Known Limitations:**
+### Troubleshooting
+
+- Ensure both the IDE and the plugin are updated to the latest versions.
+- If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
+- If the issue might be config-related, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files).
+- If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
+- Feedback is welcome through GitHub, Discord and other channels.
+
+## Known Limitations
 
 - The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
 - The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
   Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
   Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
-  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
+  Contributions to the [config repositories](cwt/README.md) are very welcome.
 - Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
 
 ## Technical Details
@@ -119,16 +118,37 @@ Download the [latest release][url:release-latest] and install it manually (No ne
 - Integrates image processing, translation and lint tools to optimize and extend plugin capabilities.
 - Preliminary integration of AI technology for translating and polishing localisation text.
 
+## Contribution & Support
+
+We welcome all forms of contribution and support, including but not limited to:
+
+- ⭐ Star the project on GitHub.
+- 🐛 Submit feedback and issues (via [Discord][url:discord] or [GitHub Issues][url:issues]).
+- 🔧 Submit Pull Requests (to the [plugin repository][url:github] (this project), or to the [config repositories](cwt/README.md)).
+- 📢 Recommend this plugin to friends or in the community.
+- 💝 Sponsor the project via [Afdian][url:afdian].
+
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
+
+**Contributing to Config Files**:
+
+Given the plugin's config-driven architecture, contributing to the CWT config files is one of the most impactful ways to improve support for a specific game.
+Config files define the semantics (definitions, modifiers, scopes, effects, triggers, etc.) that power code completion, code inspection and documentation — keeping them up to date directly improves the experience for all users of that game.
+
+See the [config repositories](cwt/README.md) for links, and the [config documentation](https://windea.icu/Paradox-Language-Support/en/config.html) for guidance on the config format.
+
+For a list of current maintainers and contributors, see [CONTRIBUTORS.md](CONTRIBUTORS.md).
+
 ## Reference Links
 
-**Official Documentation:**
+### Official Documentation
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
 
-**Tools & Plugins:**
+### Tools & Plugins
 
 - [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
 - [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
@@ -136,42 +156,23 @@ Download the [latest release][url:release-latest] and install it manually (No ne
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
-- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
+- [Victoria-3-Modding-Co-op/Modding-Digests: This repository contains modding digests for Victoria 3 updates.](https://github.com/Victoria-3-Modding-Co-op/Modding-Digests)
 
-**Tutorials & Wikis:**
+### Tutorials & Wiki
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) (Stellaris Chinese Wiki)
 - [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) (Stellaris Mod Tutorial, written in Simplified Chinese)
 
-## Contribution & Support
-
-All forms of contribution and support are welcomed, including but not limited to:
-
-- ⭐ Star the project on GitHub.
-- 🐛 Submit feedback and issues (via [Discord][url:discord] or [GitHub Issues][url:issues]).
-- 🔧 Submit Pull Requests (to the [plugin repository][url:github] (this project), or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
-- 📢 Recommend this plugin to friends or in the community.
-- 💝 Sponsor the project via [Afdian][url:afdian].
-
-If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
-
-**Contributing to Config Files:**
-
-Given the plugin's config-driven architecture, contributing to the CWT config files is one of the most impactful ways to improve support for a specific game.
-Config files define the semantics (definitions, modifiers, scopes, effects, triggers, etc.) that power code completion, code inspection and documentation — keeping them up to date directly improves the experience for all users of that game.
-
-See the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) for links, and the [config documentation](https://windea.icu/Paradox-Language-Support/en/config.html) for guidance on the config format.
-
-For a list of current maintainers and contributors, see [CONTRIBUTORS.md](CONTRIBUTORS.md).
-
 ## Acknowledgments
+
+### Developed by
+
+[Windea][url:profile], the dragon knight who with the title of breeze.
 
 ### Powered by
 
-[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
-
-[plugin-logo]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/pluginIcon.svg
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)][url:jetbrains]
 
 [badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
 [badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
@@ -196,6 +197,7 @@ For a list of current maintainers and contributors, see [CONTRIBUTORS.md](CONTRI
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:afdian]: https://afdian.com/a/dk_breeze
+[url:profile]: https://github.com/DragonKnightOfBreeze
 [url:jetbrains]: https://jb.gg/OpenSource
 
 [mailto]: mailto:dk_breeze@qq.com
