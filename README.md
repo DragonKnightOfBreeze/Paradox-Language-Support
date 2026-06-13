@@ -180,7 +180,7 @@ For reference, please read the [documentation for the config system](https://win
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) (Stellaris Chinese Wiki)
 - [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) (Stellaris Mod Tutorial, written in Simplified Chinese)
 
-## Acknowledgments
+## About
 
 ### Developed by
 

@@ -11,7 +11,7 @@
 - **[@NS9927](https://github.com/NS9927)** - Config maintenance for HOI4. Ongoing.
 - And others.
 
-## Community support
+## Community Supports
 
 - **[@TTFTCUTS](https://github.com/TTFTCUTS)** - Community support, community advocate, issue reporter, and active user.
 - **[@kaiser-chris](https://github.com/kaiser-chris)** - Community support, community advocate, issue reporter, and issue support.

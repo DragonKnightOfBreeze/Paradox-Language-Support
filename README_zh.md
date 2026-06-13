@@ -181,7 +181,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
 - [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app)
 
-## 致谢
+## 关于
 
 ### Developed by
 
