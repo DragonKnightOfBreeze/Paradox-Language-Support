@@ -5,9 +5,9 @@
 This repository contains **Paradox Language Support**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
 
 In narrative level, the plugin's name is **Paradox Chronicle**.
-While playing on the double meaning of **Chronicle** and **Prophecy Book**, this book is, indeed, also the guidebook, to the paradox universe.
+While playing on the double meaning of **Chronicle** and **Prophecy Book**, this book is, indeed, also the guide book, to the paradox universe.
 
-Given the extremely large codebase (~11k Kotlin production code) and complexity (platform & domain & architecture), make this project a highly challenging undertaking.
+Given the plugin's large codebase (~110k lines of Kotlin production code) and high complexity (platform & domain & architecture), make this project a highly challenging undertaking.
 As you embark on this journey, remain serious, cautious, and curious.
 
 ## Project quick orientation
