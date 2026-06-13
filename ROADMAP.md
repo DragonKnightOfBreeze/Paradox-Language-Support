@@ -4,6 +4,8 @@
 
 ## Overview
 
+> This document is written in Chinese. For non-Chinese readers, please prepare a translation engine and an LLM for assistance.
+
 本文档是基于项目原始开发笔记（`documents/notes/笔记：开发路线.md`）进一步整理后的路线图文档。原始笔记按日期组织，本文件将其重新归纳为按版本号划分的结构。
 
 相对于原始笔记，本文件：
@@ -12,8 +14,6 @@
 - **保留优先级标记**（如 `P2`）和**状态标记**（如 `MS`、`FAST`、`DELAY`、`MAYBE`），但不保留版本标记
 - 将带有明确版本号标记的待办事项归入对应版本章节，其余未标记版本号的待办事项统一置于末尾的 `Unsorted` 章节
 - 对非正式的吐槽性文字做了删除或改写
-
-> This document is written in Chinese. For non-Chinese readers, please prepare a translation engine and an LLM for assistance.
 
 ## v2.1.10
 

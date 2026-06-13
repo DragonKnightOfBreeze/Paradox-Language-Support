@@ -63,10 +63,10 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 ### CWT config repositories
 
-The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
+The local config repos used are in the `cwt/<repoDir>` directory, and there are also some useful scripts in the `cwt/scripts` directory.
 
-- Prefer local repos in `cwt/<repoDir>`.
-- If missing (common in CI), Gradle can download ZIPs and unzip them into: `build/generated/cwt/<repoDir>`
+The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
+If missing (common in CI), Gradle can download ZIPs and unzip them into `build/generated/cwt/<repoDir>`.
 
 ## Testing guidance
 
@@ -197,7 +197,7 @@ Here are some common code patterns:
 - How to get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
 - How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Service`, `...Manager`, `...Util` and so on.
-- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and including XML configuration files), or search relevant keywords. 
+- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords. 
 
 ## Domain terminology and guidance
 

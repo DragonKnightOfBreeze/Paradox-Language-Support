@@ -135,18 +135,20 @@ We welcome various forms of contribution and support, including but not limited 
 - 🐛 Submitting feedback and issues (via [GitHub Issues][url:issues], [Discord][url:discord], or [email][mailto]).
 - 🔧 Submitting pull requests (to the [plugin repository][url:github] (this project), or the [respective config repositories](cwt/README.md)).
 
-For the detailed list of contributors, please see [CONTRIBUTORS.md](CONTRIBUTORS.md).
+For a detailed guidance for contributing, please see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-### Contributing to Documentation
-
-The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](documents) directory), and reference documentation (located in the [docs](docs) directory).
-These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.
+For a detailed list of contributors, please see [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
 ### Contributing Code
 
 Given the plugin's extremely large codebase (~11k Kotlin production code) and complexity (platform & domain & architecture), contributing core code is highly challenging.
 Nevertheless, by referencing existing documentation, code, configuration files and config files, leveraging AI assistance, and exploring on your own, it is still possible to consider and practice contributions to certain parts of the codebase.
 For example, by inspecting the reference documentation and configuration files (`plugin.xml` and the including XML configuration files), combined with keyword searching, you can try adding and improving various language features, or enhancing the plugin's capabilities and compatibility.
+
+### Contributing to Documentation
+
+The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](documents) directory), and reference documentation (located in the [docs](docs) directory).
+These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.
 
 ### Contributing Config Files
 

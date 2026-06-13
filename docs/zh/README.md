@@ -67,18 +67,20 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 🐛 提交问题反馈（通过 [GitHub Issues][url:issues]、[Discord][url:discord]、[群聊][url:qq-group] 或 [邮件][mailto]）。
 - 🔧 提交 Pull Request（提交至[插件仓库][url:github]（即此项目），或者[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)）。
 
+关于具体的贡献指南，请参见 [`CONTRIBUTING.md`](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTING.md)。
+
 关于具体的贡献者名单，请参见 [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md)。
-
-### 贡献文档
-
-项目的文档主要分为普通文档（如 `README.md`）、维护者文档（位于 [documents](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/documents) 目录中）和参考文档（位于 [docs](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/docs) 目录中）。
-这些文档中难免存在错误和不足之处、遗漏的细节以及待补充的内容，欢迎贡献以改善文档质量，尤其是项目的参考文档。
 
 ### 贡献代码
 
 鉴于插件同时拥有极高的代码规模（~11k Kotlin 生产代码）与复杂度（平台 & 领域 & 架构），贡献核心代码是极具挑战性的。
 尽管如此，通过参考已有的文档、代码、配置文件和规则文件，AI 协助以及自行探索，考虑与实践部分代码上的贡献仍然是可能的。
 例如，通过检查参考文档和配置文件（`plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
+
+### 贡献文档
+
+项目的文档主要分为普通文档（如 `README.md`）、维护者文档（位于 [documents](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/documents) 目录中）和参考文档（位于 [docs](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/docs) 目录中）。
+这些文档中难免存在错误和不足之处、遗漏的细节以及待补充的内容，欢迎贡献以改善文档质量，尤其是项目的参考文档。
 
 ### 贡献规则文件
 
