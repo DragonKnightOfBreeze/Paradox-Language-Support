@@ -1,8 +1,14 @@
-# Paradox Language Support
+# Guidance to the Paradox Chronicle
+
+## Overview
 
 This repository contains **Paradox Language Support**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
 
 In narrative level, the plugin's name is **Paradox Chronicle**.
+While playing on the double meaning of **Chronicle** and **Prophecy Book**, this book is, indeed, also the guidebook, to the paradox universe.
+
+Given the extremely large codebase (~11k Kotlin production code) and complexity (platform & domain & architecture), make this project a highly challenging undertaking.
+As you embark on this journey, remain serious, cautious, and curious.
 
 ## Project quick orientation
 
@@ -191,6 +197,7 @@ Here are some common code patterns:
 - How to get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
 - How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Service`, `...Manager`, `...Util` and so on.
+- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and including XML configuration files), or search relevant keywords. 
 
 ## Domain terminology and guidance
 
