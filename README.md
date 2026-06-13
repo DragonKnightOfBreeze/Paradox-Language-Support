@@ -34,7 +34,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 **Core Features**:
 
 - **Multi-language support**: Supports the script language, localisation language, and CSV language used for mod development, as well as the CWT language for writing configs.
-- **Advanced language construct support**: Supports parameters, scopes, complex expressions, inline scripts, definition injection, and other advanced language constructs.
+- **Advanced language construct support**: Supports parameters, scopes, complex expressions, inline scripts, definition injections, and other advanced language constructs.
 - **Rich language features**: Supports code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams, and many other language features.
 - **Flexible code navigation**: Quickly navigate to various targets, including files, definitions, localisations, related localisations, related images, related configs, etc., through navigation actions, quick documentation, inlay hints, code hierarchy, search everywhere, and more.
 - **Enhanced information hints**: Intuitively show key information such as localisation text, images, scopes, parameters, etc., through quick documentation, inlay hints, and more.
@@ -141,7 +141,7 @@ For a detailed list of contributors, please see [`CONTRIBUTORS.md`](CONTRIBUTORS
 
 ### Contributing Code
 
-Given the plugin's extremely large codebase (~11k Kotlin production code) and complexity (platform & domain & architecture), contributing core code is highly challenging.
+Given the plugin's large codebase (~11k Kotlin production code) and high complexity (platform & domain & architecture), contributing core code is highly challenging.
 Nevertheless, by referencing existing documentation, code, configuration files and config files, leveraging AI assistance, and exploring on your own, it is still possible to consider and practice contributions to certain parts of the codebase.
 For example, by inspecting the reference documentation and configuration files (`plugin.xml` and the including XML configuration files), combined with keyword searching, you can try adding and improving various language features, or enhancing the plugin's capabilities and compatibility.
 
