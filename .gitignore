@@ -8,7 +8,7 @@ cwt/cwtools-*-config
 
 # excluded ai workflow files
 CHRO*.md
-opencode.json
+opencode.json*
 .opencode
 .firebender
 .idea/firebender

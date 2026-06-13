@@ -1,5 +1,7 @@
 # Contributors
 
+<!-- As the determined pioneer seekers entered the tower, the realistic face of the Chronicle was revealed. -->
+
 ## Maintainer
 
 - **[@DragonKnightOfBreeze](https://github.com/DragonKnightOfBreeze)** - The plugin author and maintainer.
