@@ -23,11 +23,11 @@
 
 Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
-The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
+The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.
 After completing the necessary configuration (such as game type, game directory, mod dependencies) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
 
-The plugin implements core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).  
-The CWT config files it uses follow a syntax and format largely consistent with [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.  
+The plugin implements core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
+The CWT config files it uses follow a syntax and format largely consistent with [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
 The plugin comes with the latest version of built-in configs, ready to use out of the box, while also supporting [customization](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) of config files to meet personalized development needs.
 
 **Core Features**:
@@ -47,6 +47,8 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 ![](docs/assets/preview_1_zh.png)
 
 ## Getting Started
+
+<-- TODO: updating -->
 
 ### Installation
 
@@ -102,6 +104,8 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ## Known Limitations
 
+<-- TODO: updating -->
+
 - The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
 - The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
   Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
@@ -111,33 +115,44 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ## Technical Details
 
-- Built on the IntelliJ Platform SDK, developed with Kotlin, and utilizes [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)) for deep language parsing and manipulation.
-- Uses BNF for grammar parsing and JFlex for lexical analysis.
-- Employs an extension point mechanism for dynamic functional expansion, facilitating customization and enhancement of plugin behavior by both the plugin itself and mod developers.
-- Includes a built-in custom code injectors for achieving IDE features that cannot be accomplished by conventional means.
-- Integrates image processing, translation and lint tools to optimize and extend plugin capabilities.
-- Preliminary integration of AI technology for translating and polishing localisation text.
+- Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
+- Built on the [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html), implementing deep semantic analysis and rich language features based on [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)).
+- Uses JFlex for lexing and BNF for grammar parsing.
+- Built-in rich custom extension points for flexible feature extension, making it easy to customize and enhance plugin behavior.
+- Built-in code injection system for implementing functionalities, fixes, and optimizations that cannot be achieved through conventional means.
+- Built-in image processing module (DDS, TGA) for previewing, rendering, and processing additional image formats.
+- Built-in tool integration module (image processing, translation, inspection tools) for optimizing and extending plugin capabilities.
+- Built-in AI integration module (preliminary, MVP status) for translating and polishing localisation text.
 
-## Contribution & Support
+## Contribution and Support
 
-We welcome all forms of contribution and support, including but not limited to:
+We welcome various forms of contribution and support, including but not limited to:
 
-- ⭐ Star the project on GitHub.
-- 🐛 Submit feedback and issues (via [Discord][url:discord] or [GitHub Issues][url:issues]).
-- 🔧 Submit Pull Requests (to the [plugin repository][url:github] (this project), or to the [config repositories](cwt/README.md)).
-- 📢 Recommend this plugin to friends or in the community.
-- 💝 Sponsor the project via [Afdian][url:afdian].
+- 📢 Recommending this plugin to friends or the community.
+- ⭐ Starring this project on GitHub.
+- 💝 Sponsoring this project via [Afdian][url:afdian].
+- 🐛 Submitting feedback and issues (via [GitHub Issues][url:issues], [Discord][url:discord], or [email][mailto]).
+- 🔧 Submitting pull requests (to the [plugin repository][url:github] (this project), or the [respective config repositories](cwt/README.md)).
 
-If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
+For the detailed list of contributors, please see [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
-**Contributing to Config Files**:
+### Contributing to Documentation
 
-Given the plugin's config-driven architecture, contributing to the CWT config files is one of the most impactful ways to improve support for a specific game.
-Config files define the semantics (definitions, modifiers, scopes, effects, triggers, etc.) that power code completion, code inspection and documentation — keeping them up to date directly improves the experience for all users of that game.
+The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](documents) directory), and reference documentation (located in the [docs](docs) directory).
+These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.
 
-See the [config repositories](cwt/README.md) for links, and the [config documentation](https://windea.icu/Paradox-Language-Support/en/config.html) for guidance on the config format.
+### Contributing Code
 
-For a list of current maintainers and contributors, see [CONTRIBUTORS.md](CONTRIBUTORS.md).
+Given the plugin's extremely large codebase (~11k Kotlin production code) and complexity (platform & domain & architecture), contributing core code is highly challenging.
+Nevertheless, by referencing existing documentation, code, configuration files and config files, leveraging AI assistance, and exploring on your own, it is still possible to consider and practice contributions to certain parts of the codebase.
+For example, by inspecting the reference documentation and configuration files (`plugin.xml` and the including XML configuration files), combined with keyword searching, you can try adding and improving various language features, or enhancing the plugin's capabilities and compatibility.
+
+### Contributing Config Files
+
+Given the plugin's config-driven architecture, contributing config files is one of the most effective ways to improve support for specific games.
+Config files define the semantic information (definitions, corrections, scopes, effects, triggers, etc.) that drives code completion, code inspections, and documentation hints. Keeping them up to date directly improves the user experience for all users of that game.
+
+For reference, please read the [documentation for the config system](https://windea.icu/Paradox-Language-Support/en/config.html), the [syntax reference manual](https://windea.icu/Paradox-Language-Support/en/ref-syntax.html), and the [config format reference manual](https://windea.icu/Paradox-Language-Support/en/ref-config-format.html).
 
 ## Reference Links
 

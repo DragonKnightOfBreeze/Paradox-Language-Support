@@ -49,6 +49,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ## 快速开始
 
+<-- TODO: updating -->
+
 ### 安装
 
 - 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
@@ -103,6 +105,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ## 已知限制
 
+<-- TODO: updating -->
+
 - 插件对脚本文件与本地化文件的部分复杂语言构造的支持尚不完整，并仍在完善中，欢迎反馈。
 - 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
   目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
@@ -131,7 +135,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 🐛 提交问题反馈（通过 [GitHub Issues][url:issues]、[Discord][url:discord]、[群聊][url:qq-group] 或 [邮件][mailto]）。
 - 🔧 提交 Pull Request（提交至[插件仓库][url:github]（即此项目），或者[各个规则仓库](cwt/README.md)）。
 
-贡献者名单请参见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
+关于具体的贡献者名单，请参见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
 
 ### 贡献文档
 
@@ -142,14 +146,14 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 鉴于插件同时拥有极高的代码规模（~11k Kotlin 生产代码）与复杂度（平台 & 领域 & 架构），贡献核心代码是极具挑战性的。
 尽管如此，通过参考已有的文档、代码、配置文件和规则文件，AI 协助以及自行探索，考虑与实践部分代码上的贡献仍然是可能的。
-例如，通过检查参考文档和配置文件（`plugin.xml` 以及其中引入的 xml 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
+例如，通过检查参考文档和配置文件（`plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
 
 ### 贡献规则文件
 
 鉴于插件的规则驱动架构，贡献规则文件是改善特定游戏支持的最有效方式之一。
 规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等），保持其更新将直接改善该游戏所有用户的使用体验。
 
-作为参考，请阅读[规则系统的文档](https://windea.icu/Paradox-Language-Support/zh/config.html)、[语法的参考手册](https://windea.icu/Paradox-Language-Support/en/ref-syntax.html)和[规则格式的参考手册](https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html)。
+作为参考，请阅读[规则系统的文档](https://windea.icu/Paradox-Language-Support/zh/config.html)、[语法的参考手册](https://windea.icu/Paradox-Language-Support/zh/ref-syntax.html)和[规则格式的参考手册](https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html)。
 
 ## 参考链接
 

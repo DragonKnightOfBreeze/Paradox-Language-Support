@@ -37,6 +37,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ## 已知限制
 
+<-- TODO: updating -->
+
 - 插件对脚本文件与本地化文件的部分复杂语言构造的支持尚不完整，并仍在完善中，欢迎反馈。
 - 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
   目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
@@ -46,33 +48,44 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ## 技术细节
 
-- 基于 IntelliJ Platform SDK 构建，采用 Kotlin 开发，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语言解析与操作。
-- 使用 BNF 进行语法解析，JFlex 进行词法分析。
-- 通过扩展点机制实现功能的动态扩展，便于插件自身及模组开发者定制与增强插件行为。
-- 内置自定义的代码注入器，用于实现常规手段无法达成的语言功能。
-- 内置与图片处理、翻译和检查工具的集成，以优化和扩展插件能力。
-- 初步集成 AI 技术，为本地化文本提供翻译和润色支持。
+- 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
+- 基于 [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html) 构建，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语义分析与丰富的语言功能。
+- 使用 JFlex 进行词法分析，使用 BNF 进行语法解析。
+- 内置丰富的自定义扩展点，提供功能的灵活扩展，便于定制与增强插件行为。
+- 内置代码注入系统，用于实现常规手段无法达成的功能、修复与优化。
+- 内置图像处理模块（DDS、TGA），用于预览、渲染和处理额外的图片格式。
+- 内置工具集成模块（图片处理、翻译、检查工具），用于优化和扩展插件能力。
+- 内置 AI 集成模块（初步，MVP 状态），用于翻译和润色本地化文本。
 
 ## 贡献与支持
 
-欢迎任何形式的贡献与支持，包括但不限于：
+我们欢迎各种形式的贡献与支持，包括但不限于：
 
-- ⭐ 在 GitHub 上收藏项目。
-- 🐛 提交问题反馈（通过 [Discord][url:discord]、[群聊][url:qq-group] 或 [GitHub Issues][url:issues]）。
+- 📢 向朋友或社区推荐此插件。
+- ⭐ 在 GitHub 上收藏此项目。
+- 💝 通过[爱发电][url:afdian] 赞助此项目。
+- 🐛 提交问题反馈（通过 [GitHub Issues][url:issues]、[Discord][url:discord]、[群聊][url:qq-group] 或 [邮件][mailto]）。
 - 🔧 提交 Pull Request（提交至[插件仓库][url:github]（即此项目），或者[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)）。
-- 📢 向朋友或社区推荐本插件。
-- 💝 通过[爱发电][url:afdian]赞助项目。
 
-如果你对提交 PR 感兴趣，但就插件开发或规则编写有任何疑问，欢迎通过[邮件][mailto]或 [Discord][url:discord] 进行联系。
+关于具体的贡献者名单，请参见 [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md)。
 
-**贡献规则文件**：
+### 贡献文档
 
-鉴于插件的规则驱动架构，贡献 CWT 规则文件是改善特定游戏支持的最有效方式之一。
-规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等）——保持其更新将直接改善该游戏所有用户的使用体验。
+项目的文档主要分为普通文档（如 `README.md`）、维护者文档（位于 [documents](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/documents) 目录中）和参考文档（位于 [docs](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/docs) 目录中）。
+这些文档中难免存在错误和不足之处、遗漏的细节以及待补充的内容，欢迎贡献以改善文档质量，尤其是项目的参考文档。
 
-各规则仓库的链接请参见 [cwt/README.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)，规则格式的编写指南请参见[规则文档](config.md)。
+### 贡献代码
 
-当前维护者与贡献者名单请参见 [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md)。
+鉴于插件同时拥有极高的代码规模（~11k Kotlin 生产代码）与复杂度（平台 & 领域 & 架构），贡献核心代码是极具挑战性的。
+尽管如此，通过参考已有的文档、代码、配置文件和规则文件，AI 协助以及自行探索，考虑与实践部分代码上的贡献仍然是可能的。
+例如，通过检查参考文档和配置文件（`plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
+
+### 贡献规则文件
+
+鉴于插件的规则驱动架构，贡献规则文件是改善特定游戏支持的最有效方式之一。
+规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等），保持其更新将直接改善该游戏所有用户的使用体验。
+
+作为参考，请阅读[规则系统的文档](config.md)、[语法的参考手册](ref-syntax.md)和[规则格式的参考手册](ref-config-format.md)。
 
 ## 参考链接
 
