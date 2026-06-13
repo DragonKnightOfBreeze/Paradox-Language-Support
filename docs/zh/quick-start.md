@@ -1,6 +1,6 @@
 # 快速开始
 
-<--! TODO: updating -->
+<!-- TODO: updating -->
 
 ### 安装
 
