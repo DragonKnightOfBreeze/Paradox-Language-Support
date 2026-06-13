@@ -64,7 +64,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 打开模组描述符文件（`descriptor.mod`，VIC3 和 EU5 中为 `.metadata/metadata.json`）。
 - 点击编辑器右上角的悬浮工具栏中的模组设置按钮。
 - 配置模组的游戏类型、游戏目录及所需的模组依赖。
-- 确认配置，等待 IDE 完成索引。
+- 确认配置，等待 IDE 完成项目分析。
 - 开启你的模组开发之旅。
 
 ### 实用技巧

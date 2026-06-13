@@ -14,7 +14,7 @@
 - Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
 - Click the mod settings button in the floating toolbar at the top right of the editor.
 - Configure the mod's game type, game directory, and required mod dependencies.
-- Confirm the configuration and wait for the IDE to finish indexing.
+- Confirm the configuration and wait for the IDE to finish project analysis.
 - Start your mod development journey.
 
 ### Practical Tips
@@ -25,9 +25,9 @@
 - **Code Navigation**:
   - Use `Ctrl + Click` to jump to the declaration or usage of a target.
   - Use `Ctrl + Shift + Click` to jump to the type declaration of a target.
-  - Use `Alt + Click` to jump to the declaration of the relevant config for a target.
-  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localisation for a target.
-  - Use `Ctrl + Shift + Alt + Click` to jump to the declaration of the relevant image for a target.
+  - Use `Alt + Click` to jump to the declaration of the related configs for a target.
+  - Use `Shift + Alt + Click` to jump to the declaration of the related localisations for a target.
+  - Use `Ctrl + Shift + Alt + Click` to jump to the declaration of the related images for a target.
   - Use the `Navigate` menu (or the `Go To` option in the editor's right-click menu) for quick navigation.
   - Use `Navigate > Definition Hierarchy` to open the type hierarchy window and view definitions of specific types.
   - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localisations, scripted variables, etc.
