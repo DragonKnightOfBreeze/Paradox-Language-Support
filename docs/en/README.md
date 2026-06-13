@@ -34,17 +34,6 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ![](../assets/preview_1_zh.png)
 
-## Known Limitations
-
-<-- TODO: updating -->
-
-- The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
-- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
-  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
-  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
-  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
-- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
-
 ## Technical Details
 
 - Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
@@ -55,6 +44,17 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - Built-in image processing module (DDS, TGA) for previewing, rendering, and processing additional image formats.
 - Built-in tool integration module (image processing, translation, inspection tools) for optimizing and extending plugin capabilities.
 - Built-in AI integration module (preliminary, MVP status) for translating and polishing localisation text.
+
+## Known Limitations
+
+<-- TODO: updating -->
+
+- The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
+- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
+  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
+  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
+  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
+- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
 
 ## Contribution and Support
 

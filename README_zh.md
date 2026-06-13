@@ -18,6 +18,7 @@
 [![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
 [![Plugin Rating][badge:plugin-rating]][url:plugin-homepage]
 <br/>
+[![Developed by Windea][badge:windea]][url:windea]
 [![Supported by JetBrains][badge:jetbrains]][url:jetbrains]
 
 ## 概述
@@ -103,17 +104,6 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 搜索定位）。
 - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
-## 已知限制
-
-<-- TODO: updating -->
-
-- 插件对脚本文件与本地化文件的部分复杂语言构造的支持尚不完整，并仍在完善中，欢迎反馈。
-- 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
-  目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
-  其他游戏（如 Crusader Kings III、Hearts of Iron IV）的规则可能已过时，这会导致误报警告或缺少补全。
-  欢迎向[各个规则仓库](cwt/README.md)贡献。
-- 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
-
 ## 技术细节
 
 - 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
@@ -124,6 +114,17 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 内置图像处理模块（DDS、TGA），用于预览、渲染和处理额外的图片格式。
 - 内置工具集成模块（图片处理、翻译、检查工具），用于优化和扩展插件能力。
 - 内置 AI 集成模块（初步，MVP 状态），用于翻译和润色本地化文本。
+
+## 已知限制
+
+<-- TODO: updating -->
+
+- 插件对脚本文件与本地化文件的部分复杂语言构造的支持尚不完整，并仍在完善中，欢迎反馈。
+- 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
+  目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
+  其他游戏（如 Crusader Kings III、Hearts of Iron IV）的规则可能已过时，这会导致误报警告或缺少补全。
+  欢迎向[各个规则仓库](cwt/README.md)贡献。
+- 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
 
 ## 贡献与支持
 
@@ -184,7 +185,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### Developed by
 
-[Windea][url:profile], the dragon knight who with the title of breeze.
+**Windea** - the dragon knight who with the title of breeze.
 
 ### Powered by
 
@@ -202,6 +203,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
 [badge:discord]: https://img.shields.io/badge/Discord-社区-blue.svg?logo=discord
 [badge:qq-group]: https://img.shields.io/badge/群聊-653824651-blue.svg?logo=qq
+[badge:windea]: https://img.shields.io/badge/Developed%20by-Windea-2f89d7.svg?style=flat
 [badge:jetbrains]: https://img.shields.io/badge/Supported%20by-JetBrains-000000.svg?style=flat&logo=jetbrains
 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
@@ -214,7 +216,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
 [url:afdian]: https://afdian.com/a/dk_breeze
-[url:profile]: https://github.com/DragonKnightOfBreeze
+[url:windea]: https://github.com/DragonKnightOfBreeze
 [url:jetbrains]: https://jb.gg/OpenSource
 
 [mailto]: mailto:dk_breeze@qq.com

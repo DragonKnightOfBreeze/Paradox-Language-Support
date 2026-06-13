@@ -17,6 +17,7 @@
 [![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
 [![Plugin Rating][badge:plugin-rating]][url:plugin-homepage]
 <br/>
+[![Developed by Windea][badge:windea]][url:windea]
 [![Supported by JetBrains][badge:jetbrains]][url:jetbrains]
 
 ## Overview
@@ -102,17 +103,6 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
 - Feedback is welcome through GitHub, Discord and other channels.
 
-## Known Limitations
-
-<-- TODO: updating -->
-
-- The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
-- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
-  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
-  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
-  Contributions to the [config repositories](cwt/README.md) are very welcome.
-- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
-
 ## Technical Details
 
 - Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
@@ -123,6 +113,17 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - Built-in image processing module (DDS, TGA) for previewing, rendering, and processing additional image formats.
 - Built-in tool integration module (image processing, translation, inspection tools) for optimizing and extending plugin capabilities.
 - Built-in AI integration module (preliminary, MVP status) for translating and polishing localisation text.
+
+## Known Limitations
+
+<-- TODO: updating -->
+
+- The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
+- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
+  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
+  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
+  Contributions to the [config repositories](cwt/README.md) are very welcome.
+- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
 
 ## Contribution and Support
 
@@ -183,7 +184,7 @@ For reference, please read the [documentation for the config system](https://win
 
 ### Developed by
 
-[Windea][url:profile], the dragon knight who with the title of breeze.
+**Windea** - the dragon knight who with the title of breeze.
 
 ### Powered by
 
@@ -200,6 +201,7 @@ For reference, please read the [documentation for the config system](https://win
 [badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
 [badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
 [badge:discord]: https://img.shields.io/badge/Discord-Community-blue.svg?logo=discord
+[badge:windea]: https://img.shields.io/badge/Developed%20by-Windea-2f89d7.svg?style=flat
 [badge:jetbrains]: https://img.shields.io/badge/Supported%20by-JetBrains-000000.svg?style=flat&logo=jetbrains
 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
@@ -211,7 +213,7 @@ For reference, please read the [documentation for the config system](https://win
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:afdian]: https://afdian.com/a/dk_breeze
-[url:profile]: https://github.com/DragonKnightOfBreeze
+[url:windea]: https://github.com/DragonKnightOfBreeze
 [url:jetbrains]: https://jb.gg/OpenSource
 
 [mailto]: mailto:dk_breeze@qq.com
