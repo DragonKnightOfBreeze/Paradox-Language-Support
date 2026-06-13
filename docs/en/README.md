@@ -47,7 +47,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ## Known Limitations
 
-<-- TODO: updating -->
+<--! TODO: updating -->
 
 - The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
 - The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
