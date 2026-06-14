@@ -8,7 +8,7 @@ import java.nio.file.Path
 import javax.swing.Icon
 
 /**
- * 用于根据可选的上下文参数，得到特定的特殊路径。
+ * 用于根据可选的上下文参数，得到特定的特殊路径（可能不存在于本地）。
  *
  * @property icon 用于 UI 展示的图标。
  * @property text 用于 UI 展示的文本。

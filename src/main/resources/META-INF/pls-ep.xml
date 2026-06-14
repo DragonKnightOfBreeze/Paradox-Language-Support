@@ -309,6 +309,7 @@
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameWorkshopInSteam"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$ModInSteam"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameLaunchInSteam"/>
+    <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameInSteamDb"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameInParadoxMods"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$ModInParadoxMods"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameWiki"/>

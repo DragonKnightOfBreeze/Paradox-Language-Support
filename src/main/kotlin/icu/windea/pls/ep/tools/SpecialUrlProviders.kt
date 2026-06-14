@@ -77,6 +77,15 @@ interface SpecialUrlProviders {
         }
     }
 
+    class GameInSteamDb : SpecialUrlProvider {
+        override val text get() = PlsBundle.message("special.url.gameInSteamDb")
+
+        override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
+            val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
+            return SpecialUrlService.getInstance().getSteamDbAppUrl(gameType.steamId)
+        }
+    }
+
     class GameInParadoxMods : SpecialUrlProvider {
         override val text get() = PlsBundle.message("special.url.gameInParadoxMods")
 

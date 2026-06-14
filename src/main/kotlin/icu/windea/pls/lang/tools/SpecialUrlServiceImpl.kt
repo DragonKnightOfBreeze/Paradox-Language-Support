@@ -47,6 +47,11 @@ class SpecialUrlServiceImpl : SpecialUrlService {
         return "steam://launch/$steamId"
     }
 
+    override fun getSteamDbAppUrl(steamId: String): String {
+        // e.g., https://steamdb.info/app/281990/
+        return "https://steamdb.info/app/$steamId/"
+    }
+
     override fun getParadoxModsGameUrl(gameId: String): String {
         // e.g., https://mods.paradoxplaza.com/games/stellaris
         return "https://mods.paradoxplaza.com/games/$gameId"

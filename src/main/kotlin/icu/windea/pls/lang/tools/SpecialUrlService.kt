@@ -49,6 +49,13 @@ interface SpecialUrlService {
     fun getSteamGameLaunchUrl(steamId: String): String
 
     /**
+     * 得到 [steamId] 对应的 SteamDB 页面链接。
+     *
+     * 参见：[SteamDB](https://steamdb.info)
+     */
+    fun getSteamDbAppUrl(steamId: String): String
+
+    /**
      * 得到 [gameId] 对应的游戏的 Paradox Mods 页面链接。
      *
      * @param gameId 官方使用的游戏 ID（见 [ParadoxGameType.gameId]）。
