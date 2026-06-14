@@ -33,13 +33,18 @@ interface ParadoxParameterConditionExpression {
         fun resolve(expressionString: String): ParadoxParameterConditionExpression
     }
 
-    companion object : Resolver by ParadoxParameterConditionExpressionResolverImpl()
+    companion object {
+        @JvmStatic
+        fun resolve(expressionString: String): ParadoxParameterConditionExpression {
+            return ParadoxParameterConditionExpressionResolver.resolve(expressionString)
+        }
+    }
 }
 
 // region Implementations
 
-private class ParadoxParameterConditionExpressionResolverImpl : ParadoxParameterConditionExpression.Resolver {
-    override fun resolve(expressionString: String): ParadoxParameterConditionExpression {
+private object ParadoxParameterConditionExpressionResolver {
+    fun resolve(expressionString: String): ParadoxParameterConditionExpression {
         return ParadoxParameterConditionExpressionImpl(expressionString)
     }
 }

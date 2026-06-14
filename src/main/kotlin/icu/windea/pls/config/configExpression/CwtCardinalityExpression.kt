@@ -67,9 +67,7 @@ interface CwtCardinalityExpression : CwtConfigExpression {
 
 private class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val logger = thisLogger()
-    private val cache = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtCardinalityExpression> { key -> doResolve(key) }
-
+    private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtCardinalityExpression> { key -> doResolve(key) }
     private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
 
     override fun resolveEmpty(): CwtCardinalityExpression = emptyExpression

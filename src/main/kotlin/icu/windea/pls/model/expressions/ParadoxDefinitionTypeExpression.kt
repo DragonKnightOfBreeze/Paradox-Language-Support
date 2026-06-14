@@ -35,17 +35,18 @@ interface ParadoxDefinitionTypeExpression {
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
-        fun resolve(expressionString: String): ParadoxDefinitionTypeExpression
+    companion object {
+        @JvmStatic
+        fun resolve(expressionString: String): ParadoxDefinitionTypeExpression {
+            return ParadoxDefinitionTypeExpressionResolver.resolve(expressionString)
+        }
     }
-
-    companion object : Resolver by ParadoxDefinitionTypeExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxDefinitionTypeExpressionResolverImpl : ParadoxDefinitionTypeExpression.Resolver {
-    override fun resolve(expressionString: String): ParadoxDefinitionTypeExpression {
+private object ParadoxDefinitionTypeExpressionResolver {
+    fun resolve(expressionString: String): ParadoxDefinitionTypeExpression {
         return ParadoxDefinitionTypeExpressionImpl(expressionString)
     }
 }
