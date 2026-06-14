@@ -202,9 +202,9 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 
 ### Tutorials & Wiki
 
-- [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki) - Stellaris Official Wiki
-- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris Chinese Wiki
-- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris Mod Tutorial (written in Simplified Chinese)
+- [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki) - Stellaris Official wiki
+- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris Chinese wiki
+- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris mod tutorial (written in Simplified Chinese)
 
 ## About
 

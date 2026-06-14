@@ -6,7 +6,7 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 
 /**
- * 用于为动态值提供（基于使用）推断的作用域上下文。
+ * 用于为动态值提供（基于用法的）推断的作用域上下文。
  */
 @WithGameTypeEP
 interface ParadoxDynamicValueInferredScopeContextProvider {

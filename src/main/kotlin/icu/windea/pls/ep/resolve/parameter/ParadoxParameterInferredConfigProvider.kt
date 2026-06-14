@@ -6,7 +6,7 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxParameterContextInfo
 
 /**
- * 用于为脚本参数提供（基于使用）推断的规则上下文。
+ * 用于为脚本参数提供（基于用法的）推断的规则上下文。
  *
  * 基于语言注入功能为参数值对应的脚本片段提供高级语言功能。
  *

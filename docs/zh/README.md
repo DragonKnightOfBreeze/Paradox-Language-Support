@@ -57,7 +57,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
   欢迎向[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)贡献。
 - 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
 
-## 贡献 & 支持
+## 贡献与支持
 
 我们欢迎各种形式的贡献与支持，包括但不限于：
 
@@ -132,7 +132,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - [Paradox Mods](https://mods.paradoxplaza.com) - Paradox 游戏的官方模组平台
 - [Paradox Forums:](https://forum.paradoxplaza.com) - Paradox 游戏的官方论坛
 
-### 教程 && 百科
+### 教程 & 百科
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris 中文维基
