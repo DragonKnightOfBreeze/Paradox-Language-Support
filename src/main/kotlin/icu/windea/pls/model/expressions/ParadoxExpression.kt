@@ -6,6 +6,9 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -27,6 +30,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionMatcher
  * @see ParadoxCsvExpressionMatcher
+ * @see ParadoxScriptExpressionSupport
+ * @see ParadoxLocalisationExpressionSupport
+ * @see ParadoxCsvExpressionSupport
  */
 interface ParadoxExpression {
     val text: String

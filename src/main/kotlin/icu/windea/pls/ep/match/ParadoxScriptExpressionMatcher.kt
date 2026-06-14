@@ -12,10 +12,10 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 /**
  * 用于匹配脚本表达式与规则表达式。
  *
- * @see ParadoxMatchService
- * @see ParadoxScriptExpressionElement
  * @see ParadoxExpression
  * @see CwtDataExpression
+ * @see ParadoxScriptExpressionElement
+ * @see ParadoxMatchService
  */
 interface ParadoxScriptExpressionMatcher {
     /**

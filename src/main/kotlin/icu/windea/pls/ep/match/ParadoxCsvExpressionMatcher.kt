@@ -14,10 +14,10 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  *
  * 注意：相比 [ParadoxScriptExpressionMatcher]，仅支持有限的 [CwtDataType]。
  *
- * @see ParadoxMatchService
- * @see ParadoxCsvExpressionElement
  * @see ParadoxExpression
  * @see CwtDataExpression
+ * @see ParadoxCsvExpressionElement
+ * @see ParadoxMatchService
  */
 interface ParadoxCsvExpressionMatcher {
     /**

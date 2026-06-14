@@ -10,9 +10,9 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 /**
  * 用于优化脚本表达式与规则表达式的匹配逻辑。
  *
- * @see ParadoxMatchPipeline
- * @see ParadoxScriptExpressionElement
  * @see ParadoxExpression
+ * @see ParadoxScriptExpressionElement
+ * @see ParadoxMatchPipeline
  */
 interface ParadoxScriptExpressionMatchOptimizer {
     /**

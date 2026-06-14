@@ -19,7 +19,7 @@
 
 本版本聚焦于**快速的修复、简单的新功能、相对简单的重构和优化**。涵盖解析器/表达式支持重构、新表达式类型支持、开发体验改进等方面。
 
-- [ ] **P2** 重构 path/expression/config/configExpression 的解析器与解析的相关代码（改为：模型类上的静态解析方法 + 委托给解析器单例对象的对应方法）
+- [ ] **P2** 重构 path/expression/complexExpression/config/configExpression 的解析器与解析的相关代码（改为：模型接口上的静态解析方法 + 委托给解析器类的对应方法）
 - [ ] **P2** 重构 scriptExpressionSupport 与 csvExpressionSupport（改为统一传入 `expression: ParadoxExpression` 和 `expressionOffset: Int = 0` 作为接口方法的参数）
 - [ ] **P3** 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作）
 - [ ] **P3** 提供动作，以进行定义/定义注入之间的差异比较
