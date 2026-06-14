@@ -149,6 +149,9 @@ class ParadoxModSettingsDialog(
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
+                row {
+                    comment(PlsBundle.message("mod.options.comment.1"))
+                }
             }
 
             // modDependencies
