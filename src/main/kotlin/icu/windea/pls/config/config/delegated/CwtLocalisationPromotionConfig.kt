@@ -67,22 +67,21 @@ interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPr
     @FromOptionMember(": string | string[]")
     val supportedScopes: Set<String>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为本地化提升规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {
+            return CwtLocalisationPromotionConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtLocalisationPromotionConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtLocalisationPromotionConfigResolverImpl : CwtLocalisationPromotionConfig.Resolver, CwtConfigResolverScope {
+private object CwtLocalisationPromotionConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {
+    fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {
         val name = config.key
         val supportedScopes = buildSet {
             config.stringValue?.let { v -> add(ParadoxScope.getId(v)) }

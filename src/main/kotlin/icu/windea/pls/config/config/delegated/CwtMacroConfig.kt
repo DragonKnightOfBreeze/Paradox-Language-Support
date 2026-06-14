@@ -76,22 +76,21 @@ interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
         val createModes: Set<@CaseInsensitive String>
     }
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为声明规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtMacroConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtMacroConfig? {
+            return CwtMacroConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtMacroConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigResolverScope {
+private object CwtMacroConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtMacroConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtMacroConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtMacroConfig? {
         val name = config.key.removeSurroundingOrNull("macro[", "]")?.orNull()?.optimized()
             ?: config.key.removeSurroundingOrNull("directive[", "]")?.orNull()?.optimized() // stay compatible
             ?: return null

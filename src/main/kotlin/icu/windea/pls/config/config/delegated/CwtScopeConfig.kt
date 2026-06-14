@@ -53,22 +53,21 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     @FromMember("is_subscope_of: string?")
     val isSubscopeOf: String?
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为作用域规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtScopeConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtScopeConfig? {
+            return CwtScopeConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtScopeConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigResolverScope {
+private object CwtScopeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtScopeConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtScopeConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtScopeConfig? {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {

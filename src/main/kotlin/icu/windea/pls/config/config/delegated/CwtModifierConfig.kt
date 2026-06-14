@@ -76,28 +76,27 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val template: CwtTemplateExpression
     val supportedScopes: Set<String>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为修正规则。 */
-        fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig?
-        // /** 由别名规则（`alias[modifier:...] = ...`）解析为修正规则。 */
-        // fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig
-        /** 从定义上下文中的 modifiers 条目解析为修正规则，可指定 [name] 与类型表达式。 */
-        fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig?
-    }
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
+            return CwtModifierConfigResolver.resolve(config, name)
+        }
 
-    companion object : Resolver by CwtModifierConfigResolverImpl()
+        /** 从定义上下文中的 modifiers 条目解析为修正规则，可指定 [name] 与类型表达式。 */
+        @JvmStatic
+        fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
+            return CwtModifierConfigResolver.resolveFromDefinitionModifier(config, name, typeExpression)
+        }
+    }
 }
 
 // region Implementations
 
-private class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtConfigResolverScope {
+private object CwtModifierConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? = doResolve(config, name)
-    // override fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig = doResolveFromAlias(config)
-    override fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? = doResolveFromDefinitionModifier(config, name, typeExpression)
-
-    private fun doResolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
+    fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
@@ -108,11 +107,7 @@ private class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtCon
         return CwtModifierConfigImpl(config, name, categories)
     }
 
-    // private fun doResolveFromAlias(config: CwtAliasConfig): CwtModifierConfig {
-    //     return CwtModifierConfigImpl(config.config, config.subName)
-    // }
-
-    private fun doResolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
+    fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {

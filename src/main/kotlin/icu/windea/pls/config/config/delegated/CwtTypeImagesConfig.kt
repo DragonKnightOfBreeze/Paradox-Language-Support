@@ -48,22 +48,21 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * @see CwtImageLocationExpression
  */
 interface CwtTypeImagesConfig : CwtTypePresentationConfig {
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为类型图片规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
+            return CwtTypeImagesConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtTypeImagesConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, CwtConfigResolverScope {
+private object CwtTypeImagesConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
         val locationConfigGroup = mutableMapOf<String, MutableList<CwtLocationConfig>>()
 
         // #324

@@ -50,22 +50,21 @@ interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
     @FromMember("supported_scopes: string | string[]")
     val supportedScopes: Set<String>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为修正分类规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
+            return CwtModifierCategoryConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtModifierCategoryConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.Resolver, CwtConfigResolverScope {
+private object CwtModifierCategoryConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {

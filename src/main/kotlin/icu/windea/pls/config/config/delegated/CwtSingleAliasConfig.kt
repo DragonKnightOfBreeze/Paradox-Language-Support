@@ -50,22 +50,21 @@ interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     @FromName("single_alias[$]")
     val name: String
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为单别名规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
+            return CwtSingleAliasConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtSingleAliasConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtSingleAliasConfigResolverImpl : CwtSingleAliasConfig.Resolver, CwtConfigResolverScope {
+private object CwtSingleAliasConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("single_alias[", "]")?.orNull()?.optimized() ?: return null
         logger.debug { "Resolved single alias config (name: $name).".withLocationPrefix(config) }

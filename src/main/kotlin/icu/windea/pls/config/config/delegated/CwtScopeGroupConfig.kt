@@ -55,22 +55,21 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
 
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为作用域分组规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig? {
+            return CwtScopeGroupConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtScopeGroupConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver, CwtConfigResolverScope {
+private object CwtScopeGroupConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtScopeGroupConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig? {
         val name = config.key
         val valueConfigs = config.values
         if (valueConfigs == null) {

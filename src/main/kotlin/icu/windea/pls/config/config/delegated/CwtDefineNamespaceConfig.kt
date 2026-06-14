@@ -53,18 +53,19 @@ interface CwtDefineNamespaceConfig : CwtDefineConfig {
 
     override val namespace: String
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为定值命名空间规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig? {
+            return CwtDefineNamespaceConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtDefineNamespaceConfigResolverImpl()
 }
 
-private class CwtDefineNamespaceConfigResolverImpl : CwtDefineNamespaceConfig.Resolver, CwtConfigResolverScope {
+private object CwtDefineNamespaceConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig? {
         // NOTE 2.1.8 a define namespace config can have no within define variable configs
         val namespace = config.key
         val propConfigs = config.properties

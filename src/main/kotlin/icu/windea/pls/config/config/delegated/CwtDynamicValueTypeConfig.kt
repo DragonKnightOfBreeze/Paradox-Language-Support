@@ -50,24 +50,23 @@ interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
 
     val valueConfigMap: Map<String, CwtValueConfig>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为动态值类型规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
+            return CwtDynamicValueTypeConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtDynamicValueTypeConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver, CwtConfigResolverScope {
+private object CwtDynamicValueTypeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
     // TODO a dynamic value can also be a template expression
 
-    override fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("value[", "]")?.orNull()?.optimized() ?: return null
         val valueConfigs = config.values

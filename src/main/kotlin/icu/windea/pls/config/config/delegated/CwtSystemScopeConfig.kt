@@ -59,22 +59,21 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为系统作用域规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
+            return CwtSystemScopeConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtSystemScopeConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtSystemScopeConfigResolverImpl : CwtSystemScopeConfig.Resolver, CwtConfigResolverScope {
+private object CwtSystemScopeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
+    fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
         val id = config.key
         val baseId = config.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
         val name = config.stringValue ?: id

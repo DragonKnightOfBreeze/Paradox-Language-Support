@@ -52,24 +52,23 @@ interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
 
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为简单枚举规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtEnumConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtEnumConfig? {
+            return CwtEnumConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtEnumConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigResolverScope {
+private object CwtEnumConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
     // TODO an enum value can also be a template expression
 
-    override fun resolve(config: CwtPropertyConfig): CwtEnumConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtEnumConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtEnumConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("enum[", "]")?.orNull()?.optimized() ?: return null
         val valueConfigs = config.values
