@@ -26,19 +26,19 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 interface ParadoxLocalisationExpressionSupport {
     fun supports(element: ParadoxExpressionElement): Boolean
 
-    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
 
     }
 
-    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): PsiElement? {
         return null
     }
 
-    fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): List<PsiElement> {
-        return resolve(element, rangeInElement, expressionText).to.singletonListOrEmpty()
+    fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiElement> {
+        return resolve(element, rangeInElement, text).to.singletonListOrEmpty()
     }
 
-    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): List<PsiReference> {
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
         return emptyList()
     }
 

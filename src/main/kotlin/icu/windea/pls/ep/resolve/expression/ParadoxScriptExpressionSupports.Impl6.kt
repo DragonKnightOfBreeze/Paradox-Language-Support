@@ -43,9 +43,9 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         return dataType == CwtDataTypes.TechnologyWithLevel
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
-        val separatorIndex = expressionText.indexOf('@')
+        val separatorIndex = text.indexOf('@')
         if (separatorIndex == -1) return
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -63,10 +63,10 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
         }
         run {
-            val offset = expressionText.length - separatorIndex - 1
+            val offset = text.length - separatorIndex - 1
             if (offset <= 0) return@run
             // annotate only if snippet after '@' is number like
-            if (!expressionText.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
+            if (!text.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
             val attributesKey = ParadoxScriptHighlighterColors.NUMBER
             val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range3).textAttributes(attributesKey).create()

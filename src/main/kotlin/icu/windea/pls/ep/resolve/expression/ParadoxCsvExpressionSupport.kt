@@ -30,16 +30,16 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 interface ParadoxCsvExpressionSupport {
     fun supports(config: CwtValueConfig, configExpression: CwtDataExpression) : Boolean
 
-    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
 
     }
 
-    fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
+    fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         return null
     }
 
-    fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): List<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config).to.singletonListOrEmpty()
+    fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
+        return resolve(element, rangeInElement, text, config).to.singletonListOrEmpty()
     }
 
     fun complete(context: ProcessingContext, result: CompletionResultSet) {

@@ -18,14 +18,14 @@ abstract class ParadoxLocalisationExpressionSupportBase : ParadoxLocalisationExp
 abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisationExpressionSupportBase() {
     // NOTE 2.0.6 - unnecessary to support for `ParadoxScriptExpressionElement` yet
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
         if (element !is ParadoxLocalisationExpressionElement) return
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder)
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
         if (element !is ParadoxLocalisationExpressionElement) return emptyList()
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return emptyList()

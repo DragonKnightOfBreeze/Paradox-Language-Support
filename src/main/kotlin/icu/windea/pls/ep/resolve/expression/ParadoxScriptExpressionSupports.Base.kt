@@ -24,10 +24,10 @@ abstract class ParadoxScriptExpressionSupportBase : ParadoxScriptExpressionSuppo
  * @see ParadoxComplexExpression
  */
 abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressionSupportBase() {
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder, config)
     }
 

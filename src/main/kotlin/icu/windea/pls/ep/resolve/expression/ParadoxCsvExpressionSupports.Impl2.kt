@@ -28,29 +28,29 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         return dataType == CwtDataTypes.Definition
     }
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
+    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return null
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
-        return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).find()
+        return ParadoxDefinitionSearch.searchElement(text, type, selector).find()
     }
 
-    override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): List<PsiElement> {
+    override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return emptyList()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
-        return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).findAll()
+        return ParadoxDefinitionSearch.searchElement(text, type, selector).findAll()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -66,7 +66,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         return dataType == CwtDataTypes.EnumValue
     }
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val enumName = config.configExpression.value ?: return
         val attributesKey = when {
@@ -78,8 +78,8 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolutionManager.resolveEnumValue(element, expressionText, config)
+    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+        return ParadoxResolutionManager.resolveEnumValue(element, text, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -95,15 +95,15 @@ class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase(
         return dataType in CwtDataTypeSets.DynamicValue
     }
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolutionManager.resolveDynamicValue(element, expressionText, config)
+    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+        return ParadoxResolutionManager.resolveDynamicValue(element, text, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
