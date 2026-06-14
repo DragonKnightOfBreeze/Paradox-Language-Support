@@ -297,6 +297,10 @@
     <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$GameData"/>
     <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$Game"/>
     <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$Mod"/>
+    <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$GameExecutable"/>
+    <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$GameModDirectory"/>
+    <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$GameSaveGames"/>
+    <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$GameLogs"/>
 
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameStore"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameWorkshop"/>
@@ -306,6 +310,8 @@
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$ModInSteam"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameLaunchInSteam"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameWiki"/>
+    <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameInParadoxMods"/>
+    <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$ModInParadoxMods"/>
 
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxGameJsonImporter"/>
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherJsonImporter"/>

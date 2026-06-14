@@ -47,6 +47,16 @@ class SpecialUrlServiceImpl : SpecialUrlService {
         return "steam://launch/$steamId"
     }
 
+    override fun getParadoxModsGameUrl(gameId: String): String {
+        // e.g., https://mods.paradoxplaza.com/games/stellaris
+        return "https://mods.paradoxplaza.com/games/$gameId"
+    }
+
+    override fun getParadoxModsModUrl(remoteId: String): String {
+        // e.g., https://mods.paradoxplaza.com/mods/12345/Any
+        return "https://mods.paradoxplaza.com/mods/$remoteId"
+    }
+
     override fun getGameWikiUrl(gameType: ParadoxGameType): String {
         // e.g.,
         // - https://stellaris.paradoxwikis.com

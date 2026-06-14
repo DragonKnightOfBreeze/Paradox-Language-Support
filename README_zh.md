@@ -164,9 +164,22 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 ### 官方文档
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
+- [Coroutines | Kotlin Documentation](https://kotlinlang.org/docs/coroutines-overview.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+- [PSI | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/psi.html)
+- [Custom Language Support | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)
+- [Indexing and PSI Stubs | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/indexing-and-psi-stubs.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
+- [Steam browser protocol | Valve Developer Community](https://developer.valvesoftware.com/wiki/Steam_browser_protocol)
+
+### 插件开发
+
+- [JetBrains/intellij-community: IntelliJ 平台源代码（插件开发的主要参考）](https://github.com/JetBrains/intellij-community)
+- [JetBrains/intellij-platform-plugin-template: 用于构建 IntelliJ 平台插件的模板项目](https://github.com/JetBrains/intellij-platform-plugin-template)
+- [JetBrains/intellij-platform-gradle-plugin: 用于构建 IntelliJ 平台插件的 Gradle 插件](https://github.com/JetBrains/intellij-platform-gradle-plugin)
+- [JetBrains/Grammar-Kit: IntelliJ IDEA 的语法文件支持与解析器/PSI 生成工具](https://github.com/JetBrains/Grammar-Kit)
+- [jflex-de/jflex: 支持完整 Unicode 的高速 Java 词法分析器生成器](https://github.com/jflex-de/jflex)
 
 ### 工具与插件
 
@@ -175,8 +188,20 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
+- [ParadoxGameConverters: Tools that convert a save game from one Paradox game into a playable mod for another](https://github.com/ParadoxGameConverters)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 - [Victoria-3-Modding-Co-op/Modding-Digests: This repository contains modding digests for Victoria 3 updates.](https://github.com/Victoria-3-Modding-Co-op/Modding-Digests)
+
+### 图像处理
+
+- [haraldk/TwelveMonkeys: 为 Java ImageIO 提供额外插件与扩展（DDS / TGA 支持）](https://github.com/haraldk/TwelveMonkeys)
+- [Texconv | microsoft/DirectXTex Wiki: 用于转换与处理 DDS 纹理的命令行工具](https://github.com/microsoft/DirectXTex/wiki/Texconv)
+- [ImageMagick: 创建、编辑、合成与转换数字图像](https://www.imagemagick.org)
+
+### 社区与模组资源
+
+- [Paradox Mods: Paradox 游戏的官方模组平台](https://mods.paradoxplaza.com)
+- [Paradox Forums: 官方论坛（包含各游戏的模组子论坛）](https://forum.paradoxplaza.com)
 
 ### 教程与百科
 

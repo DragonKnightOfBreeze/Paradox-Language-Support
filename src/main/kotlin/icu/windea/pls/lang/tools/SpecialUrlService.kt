@@ -48,6 +48,24 @@ interface SpecialUrlService {
     fun getSteamGameLaunchUrl(steamId: String): String
 
     /**
+     * 得到 [gameId] 对应的游戏的 Paradox Mods 页面链接。
+     *
+     * @param gameId 官方使用的游戏 ID（见 [ParadoxGameType.gameId]）。
+     *
+     * 参见：[Paradox Mods](https://mods.paradoxplaza.com)
+     */
+    fun getParadoxModsGameUrl(gameId: String): String
+
+    /**
+     * 得到 [remoteId] 对应的 Paradox Mods 模组的页面链接。
+     *
+     * @param remoteId Paradox Mods 使用的模组 ID（见 [ParadoxRootInfo.Mod.remoteId]）。
+     *
+     * 参见：[Paradox Mods](https://mods.paradoxplaza.com)
+     */
+    fun getParadoxModsModUrl(remoteId: String): String
+
+    /**
      * 得到 [gameType] 对应的游戏维基页面的路径。
      */
     fun getGameWikiUrl(gameType: ParadoxGameType): String
