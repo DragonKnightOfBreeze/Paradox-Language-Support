@@ -52,7 +52,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolve
      */
-    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
         if (expressionText.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
@@ -63,7 +63,7 @@ object ParadoxExpressionService {
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 val r = withRecursionCheck("${ep.javaClass.name}@resolve@${expressionText}") {
-                    ep.resolve(element, rangeInElement, expressionText, config, isKey, exact)
+                    ep.resolve(element, rangeInElement, expressionText, config, isKey)
                 }
                 r
             }

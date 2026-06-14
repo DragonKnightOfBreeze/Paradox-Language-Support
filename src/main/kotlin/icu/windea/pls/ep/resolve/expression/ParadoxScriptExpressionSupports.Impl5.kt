@@ -34,7 +34,7 @@ class ParadoxShaderEffectExpressionSupport: ParadoxScriptExpressionSupportBase()
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement {
         val configGroup = config.configGroup
         return ParadoxResolutionManager.resolveShaderEffect(element, expressionText, configGroup)
     }
@@ -60,7 +60,7 @@ class ParadoxMeshLocatorExpressionSupport: ParadoxScriptExpressionSupportBase() 
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement {
         val configGroup = config.configGroup
         return ParadoxResolutionManager.resolveMeshLocator(element, expressionText, configGroup)
     }

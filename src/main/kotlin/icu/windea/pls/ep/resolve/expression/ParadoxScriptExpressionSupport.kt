@@ -33,12 +33,12 @@ interface ParadoxScriptExpressionSupport {
 
     }
 
-    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
         return null
     }
 
     fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config, isKey, false).to.singletonSetOrEmpty()
+        return resolve(element, rangeInElement, expressionText, config, isKey).to.singletonSetOrEmpty()
     }
 
     fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {

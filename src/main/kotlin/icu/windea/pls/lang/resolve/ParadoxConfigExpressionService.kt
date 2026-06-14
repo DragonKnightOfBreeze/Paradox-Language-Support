@@ -173,7 +173,7 @@ object ParadoxConfigExpressionService {
                 if (filePath.isNullOrEmpty()) return null
                 return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
             }
-            // 由name解析为定义（如果不是sprite，就继续向下解析）
+            // 由 name 解析为定义（如果不是 sprite，就继续向下解析）
             resolved is ParadoxDefinitionElement -> {
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null

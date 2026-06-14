@@ -341,13 +341,13 @@ object ParadoxExpressionManager {
 
     // region Resolve Methods
 
-    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): PsiElement? {
         ProgressManager.checkCanceled()
         if (configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除引用文本带参数的情况
 
-        val result = ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, isKey, exact)
+        val result = ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, isKey)
         if (result != null) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)

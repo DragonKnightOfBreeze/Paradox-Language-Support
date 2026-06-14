@@ -43,7 +43,7 @@ class ParadoxDataSourceNode(
             val offset = ParadoxExpressionManager.getExpressionOffset(element)
             val rangeInElement = rangeInExpression.shiftRight(offset)
             val resolved = linkConfigs.find {
-                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression, exact = false) != null
+                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression) != null
             }
             if (resolved != null) return resolved
         }

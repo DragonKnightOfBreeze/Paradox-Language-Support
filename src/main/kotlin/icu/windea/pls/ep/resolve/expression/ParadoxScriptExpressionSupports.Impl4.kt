@@ -37,7 +37,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
         return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
     }
@@ -64,7 +64,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
         return ParadoxLocalisationParameterService.resolveArgument(element, rangeInElement, config)
     }
