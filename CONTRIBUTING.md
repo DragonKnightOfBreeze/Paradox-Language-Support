@@ -6,11 +6,13 @@
 
 Thank you for your interest in opening **Paradox Chronicle**.
 
-This is a large, mature and rather specialized project: an IntelliJ IDEA plugin for Paradox game mod developers, with roughly 110k lines of Kotlin production code, built on PSI-based deep semantic analysis and driven by its own CWT config system.
-Its scope spans the IntelliJ Platform, the Paradox modding domain, and a fair amount of in-house architecture. That makes it both an interesting playground and a genuinely challenging codebase to work in.
+This is a large, mature and rather specialized project: an IntelliJ IDEA plugin with over 100k lines of Kotlin production code, built on PSI-based deep semantic analysis and driven by its own CWT config system.
+Its scope spans the IntelliJ Platform, the Paradox modding domain, and a fair amount of in-house architecture.
+That makes it both an interesting playground and a genuinely challenging codebase to work in.
 
 This guide explains **what kinds of contributions are welcome**, **what to read before you start**, and **how to actually get changes in**.
-It assumes you already have programming experience, so it favors keywords, links and short steps over step-by-step tool tutorials. If a tool or term is unfamiliar, treat the mentions here as search hints.
+It assumes you already have programming experience, so it favors keywords, links and short steps over step-by-step tool tutorials.
+If a tool or term is unfamiliar, treat the mentions here as search hints.
 
 ## Before You Start
 
@@ -65,6 +67,8 @@ The project uses **Gradle** with the **IntelliJ Platform Gradle Plugin**.
 - Build the plugin ZIP: `./gradlew buildPlugin`
 - Run tests: `./gradlew test`
 
+On Windows PowerShell, prefer the wrapper and prefix it when needed: `.\gradlew <task>`.
+
 The local config repos used are in the `cwt/<repoDir>` directory, and there are also some useful scripts in the `cwt/scripts` directory.
 Typically, after configuring the basic development environment, you should clone the local config repos into here, and update as needed during development.
 
@@ -87,16 +91,6 @@ Keep changes minimal and localized. A small, well-scoped, well-tested PR that im
 - Improving compatibility with a specific game, IDE version, or optional plugin dependency (for example, the Markdown plugin).
 - Adding default EP implementations where the architecture already anticipates them (for example, additional expression resolvers and supports).
 
-## Contributing Documentation
-
-Documentation falls into three groups:
-
-- **General documentation** — e.g. `README.md`, `CONTRIBUTORS.md`, this file.
-- **Reference documentation** — the `docs` directory (the published reference manuals).
-- **Maintainer documentation** — the `documents` directory.
-
-These docs inevitably contain errors, gaps and stale details. Corrections and additions are welcome, especially to the reference documentation.
-
 ## Contributing Config Files
 
 Config files define the semantic information (definitions, modifiers, scopes, effects, triggers, etc.) that powers config-driven features. Keeping them current with each game version directly improves the experience for everyone playing that game.
@@ -106,6 +100,16 @@ Config files define the semantic information (definitions, modifiers, scopes, ef
 - Config changes are best validated by running the plugin (`./gradlew runIde`) against a real mod/game setup and confirming that completion, inspections and documentation behave as intended.
 - As an alternative, you may also consider keeping in dev IDE, and using global-local or project-local config files to validate config changes.
 - For games actively maintained upstream, please consider whether a fix belongs in the Vanilla repository as well, so the two stay in sync.
+
+## Contributing Documentation
+
+Documentation falls into three groups:
+
+- **General documentation** — e.g. `README.md`, `CONTRIBUTORS.md`, this file.
+- **Reference documentation** — the `docs` directory (the published reference manuals).
+- **Maintainer documentation** — the `documents` directory.
+
+These docs inevitably contain errors, gaps and stale details. Corrections and additions are welcome, especially to the reference documentation.
 
 ## On AI Assistance
 

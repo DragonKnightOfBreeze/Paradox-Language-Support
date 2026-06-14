@@ -141,14 +141,10 @@ For a detailed list of contributors, please see [`CONTRIBUTORS.md`](CONTRIBUTORS
 
 ### Contributing Code
 
-Given the plugin's large codebase (~110k lines of Kotlin production code) and high complexity (platform & domain & architecture), contributing core code is highly challenging.
+Given the plugin's large codebase and high complexity, contributing core code is highly challenging.
 Nevertheless, by referencing existing documentation, code, configuration files and config files, leveraging AI assistance, and exploring on your own, it is still possible to consider and practice contributions to certain parts of the codebase.
-For example, by inspecting the reference documentation and configuration files (`plugin.xml` and the including XML configuration files), combined with keyword searching, you can try adding and improving various language features, or enhancing the plugin's capabilities and compatibility.
 
-### Contributing to Documentation
-
-The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](documents) directory), and reference documentation (located in the [docs](docs) directory).
-These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.
+For example, by viewing the reference documentation and configuration files (e.g., `plugin.xml` and the including XML configuration files), combined with keyword searching, you can try adding and improving various language features, or enhancing the plugin's capabilities and compatibility.
 
 ### Contributing Config Files
 
@@ -156,6 +152,11 @@ Given the plugin's config-driven architecture, contributing config files is one 
 Config files define the semantic information (definitions, corrections, scopes, effects, triggers, etc.) that drives code completion, code inspections, and documentation hints. Keeping them up to date directly improves the user experience for all users of that game.
 
 For reference, please read the [documentation for the config system](https://windea.icu/Paradox-Language-Support/en/config.html), the [syntax reference manual](https://windea.icu/Paradox-Language-Support/en/ref-syntax.html), and the [config format reference manual](https://windea.icu/Paradox-Language-Support/en/ref-config-format.html).
+
+### Contributing to Documentation
+
+The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](documents) directory), and reference documentation (located in the [docs](docs) directory).
+These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.
 
 ## Reference Links
 
