@@ -68,7 +68,6 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     companion object {
         /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。 */
         @JvmStatic
-        @JvmOverloads
         fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig? {
             return CwtDeclarationConfigResolver.resolve(config, name)
         }
