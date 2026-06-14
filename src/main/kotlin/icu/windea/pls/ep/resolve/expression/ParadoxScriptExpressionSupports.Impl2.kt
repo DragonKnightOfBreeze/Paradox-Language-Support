@@ -68,7 +68,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
@@ -79,7 +79,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         return ParadoxDefinitionSearch.searchElement(name, type, selector).find()
     }
 
-    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
+    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -118,7 +118,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
@@ -127,7 +127,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
 
-    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
+    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -164,7 +164,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
@@ -173,7 +173,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         return ParadoxLocalisationSearch.searchSynced(name, selector).find()
     }
 
-    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
+    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -205,7 +205,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (element.text.isLeftQuoted()) return null // inline string
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -213,7 +213,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         return ParadoxLocalisationSearch.searchNormal(expressionText, selector).find()
     }
 
-    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
+    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         if (element.text.isLeftQuoted()) return emptyList() // specific expression
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -243,7 +243,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBas
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configGroup = config.configGroup
         return ParadoxResolutionManager.resolveModifier(element, expressionText, configGroup)
     }
@@ -275,7 +275,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         return ParadoxResolutionManager.resolveEnumValue(element, expressionText, config)
     }
 
@@ -306,28 +306,26 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, aliasConfig, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val aliasName = config.configExpression?.value ?: return null
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
         val quoted = element.text.isLeftQuoted()
-        val role = if (isKey == true) ParadoxExpressionRole.Key else if (isKey == false) ParadoxExpressionRole.Value else ParadoxExpressionRole.Other
         val aliasExpression = ParadoxExpression.resolve(expressionText, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, isKey)
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, role)
     }
 
-    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
+    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val aliasName = config.configExpression?.value ?: return emptyList()
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
         val quoted = element.text.isLeftQuoted()
-        val role = if (isKey == true) ParadoxExpressionRole.Key else if (isKey == false) ParadoxExpressionRole.Value else ParadoxExpressionRole.Other
         val aliasExpression = ParadoxExpression.resolve(expressionText, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptyList()
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
-        return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, alias, isKey)
+        return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, alias, role)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -383,7 +381,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
         return true
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         return config.resolved().pointer.element
     }
 
@@ -408,7 +406,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configExpression = config.configExpression ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -422,7 +420,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         }
     }
 
-    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
+    override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configExpression = config.configExpression ?: return emptyList()
         val configGroup = config.configGroup
         val project = configGroup.project

@@ -63,6 +63,8 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
+import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -339,13 +341,13 @@ object ParadoxExpressionManager {
 
     // region Resolve Methods
 
-    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
+    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configExpression = config.configExpression ?: return null
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除文本带参数的情况
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, isKey)
+        val result = ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, role)
         if (result != null) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
@@ -353,13 +355,13 @@ object ParadoxExpressionManager {
         return null
     }
 
-    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, isKey: Boolean? = null): List<PsiElement> {
+    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configExpression = config.configExpression ?: return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return emptyList() // 排除文本带参数的情况
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, expressionText, config, isKey)
+        val result = ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, expressionText, config, role)
         if (result.isNotEmpty()) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
@@ -506,10 +508,11 @@ object ParadoxExpressionManager {
         val isKey = element is ParadoxScriptPropertyKey
         val isDumb = ParadoxMatchService.isDumb()
         val options = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
-        val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
-        if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) // unquoted text
-        val reference = ParadoxScriptExpressionPsiReference(element, textRange, configs, isKey)
+        val referenceConfigs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
+        if (referenceConfigs.isEmpty()) return PsiReference.EMPTY_ARRAY
+        val referenceRange = getExpressionTextRange(element) // unquoted text
+        val referenceRole = ParadoxTypeResolver.resolveExpressionRole(element)
+        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)
         return reference.collectReferences()
     }
 

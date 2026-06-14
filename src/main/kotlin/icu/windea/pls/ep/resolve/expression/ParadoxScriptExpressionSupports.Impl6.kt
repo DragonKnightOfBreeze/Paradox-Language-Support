@@ -24,6 +24,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -72,16 +73,16 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         }
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val separatorIndex = expressionText.indexOf('@')
-        if (separatorIndex == -1) return emptyList()
+        if (separatorIndex == -1) return emptyList() // no `@` -> ignore
+        if (separatorIndex == 0) return emptyList() // no tech node -> ignore
         val range = rangeInElement ?: TextRange.create(0, expressionText.length).unquote(expressionText)
-        val offset = separatorIndex
-        val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-        if (range1.isEmpty) return emptyList()
-        val config1 = CwtValueConfig.createMock(config.configGroup, typeExpression)
-        val reference = ParadoxScriptExpressionPsiReference(element, range1, listOf(config1))
+        val referenceRange = range.let { TextRange.create(it.startOffset, it.startOffset + separatorIndex) }
+        val referenceConfigs = listOf(CwtValueConfig.createMock(config.configGroup, typeExpression))
+        val referenceRole = ParadoxExpressionRole.Other
+        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)
         return reference.to.singletonList()
     }
 

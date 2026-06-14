@@ -25,6 +25,7 @@ import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -125,7 +126,7 @@ class ParadoxTemplateSnippetNode(
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved
             }
-            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, ParadoxExpressionRole.Other)
             return resolved
         }
 
@@ -136,7 +137,7 @@ class ParadoxTemplateSnippetNode(
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved.createResults()
             }
-            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config)
+            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, ParadoxExpressionRole.Other)
             return resolved.createResults()
         }
 

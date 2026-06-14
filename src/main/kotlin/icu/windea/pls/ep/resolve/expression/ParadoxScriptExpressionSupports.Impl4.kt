@@ -17,6 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Parameters
@@ -37,7 +38,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
         return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
     }
@@ -64,7 +65,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
         return ParadoxLocalisationParameterService.resolveArgument(element, rangeInElement, config)
     }

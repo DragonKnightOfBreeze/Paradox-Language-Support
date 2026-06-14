@@ -23,6 +23,7 @@ import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.model.type.ParadoxExpressionRole
 
 object ParadoxExpressionService {
     // NOTE recursion guard is required for script expression resolution
@@ -52,7 +53,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolve
      */
-    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
+    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (expressionText.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
@@ -63,7 +64,7 @@ object ParadoxExpressionService {
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@r@${expressionText}") {
-                    ep.resolve(element, rangeInElement, expressionText, config, isKey)
+                    ep.resolve(element, rangeInElement, expressionText, config, role)
                 }
             }
         }
@@ -72,7 +73,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolveAll
      */
-    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): List<PsiElement> {
+    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         if (expressionText.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
@@ -83,7 +84,7 @@ object ParadoxExpressionService {
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@ra@${expressionText}") {
-                    ep.resolveAll(element, rangeInElement, expressionText, config, isKey).orNull()
+                    ep.resolveAll(element, rangeInElement, expressionText, config, role).orNull()
                 }
             }
         }.orEmpty()
@@ -92,7 +93,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.getReferences
      */
-    fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): List<PsiReference> {
+    fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (expressionText.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
@@ -103,7 +104,7 @@ object ParadoxExpressionService {
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@gr@${expressionText}") {
-                    ep.getReferences(element, rangeInElement, expressionText, config, isKey).orNull()
+                    ep.getReferences(element, rangeInElement, expressionText, config, role).orNull()
                 }
             }
         }.orEmpty()

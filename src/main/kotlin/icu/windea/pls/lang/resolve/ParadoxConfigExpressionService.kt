@@ -32,6 +32,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -165,7 +166,7 @@ object ParadoxConfigExpressionService {
         if (valueElement.text.isParameterized()) {
             return createImageResolveResult(PlsBundle.message("parameterized"))
         }
-        val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, false)
+        val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, ParadoxExpressionRole.Value)
         when {
             // 由filePath解析为图片文件
             resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {

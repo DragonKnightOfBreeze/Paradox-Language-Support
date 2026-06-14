@@ -9,6 +9,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 abstract class ParadoxScriptExpressionSupportBase : ParadoxScriptExpressionSupport {
@@ -30,7 +31,7 @@ abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressi
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val configGroup = config.configGroup
         val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return emptyList()

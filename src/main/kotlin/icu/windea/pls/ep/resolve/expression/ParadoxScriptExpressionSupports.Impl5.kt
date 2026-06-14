@@ -15,6 +15,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxResolutionManager
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
 // Extra
@@ -34,7 +35,7 @@ class ParadoxShaderEffectExpressionSupport: ParadoxScriptExpressionSupportBase()
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
         val configGroup = config.configGroup
         return ParadoxResolutionManager.resolveShaderEffect(element, expressionText, configGroup)
     }
@@ -60,7 +61,7 @@ class ParadoxMeshLocatorExpressionSupport: ParadoxScriptExpressionSupportBase() 
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
         val configGroup = config.configGroup
         return ParadoxResolutionManager.resolveMeshLocator(element, expressionText, configGroup)
     }
