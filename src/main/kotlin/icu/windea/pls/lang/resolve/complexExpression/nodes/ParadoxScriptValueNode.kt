@@ -102,11 +102,10 @@ class ParadoxScriptValueNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueNode {
             return ParadoxScriptValueNode(text, textRange, configGroup, config)
         }
     }
-
-    companion object : Resolver()
 }

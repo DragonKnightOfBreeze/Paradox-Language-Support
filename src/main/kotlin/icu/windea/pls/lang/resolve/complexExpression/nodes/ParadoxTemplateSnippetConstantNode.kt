@@ -12,12 +12,11 @@ class ParadoxTemplateSnippetConstantNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateSnippetConstantNode {
             // text may contain parameters
             return ParadoxTemplateSnippetConstantNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

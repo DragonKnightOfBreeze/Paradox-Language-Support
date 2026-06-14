@@ -204,11 +204,10 @@ class ParadoxDatabaseObjectDataNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectDataNode {
             return ParadoxDatabaseObjectDataNode(text, textRange, configGroup, expression, isBase)
         }
     }
-
-    companion object : Resolver()
 }

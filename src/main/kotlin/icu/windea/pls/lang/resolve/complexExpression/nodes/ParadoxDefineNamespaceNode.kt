@@ -89,11 +89,10 @@ class ParadoxDefineNamespaceNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineNamespaceNode {
             return ParadoxDefineNamespaceNode(text, textRange, configGroup, expression)
         }
     }
-
-    companion object : Resolver()
 }

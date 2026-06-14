@@ -28,7 +28,8 @@ class ParadoxDatabaseObjectNode(
         return ParadoxSemanticHighlighterColors.databaseObject(element.language)
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectNode {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
@@ -38,6 +39,4 @@ class ParadoxDatabaseObjectNode(
             return ParadoxDatabaseObjectNode(text, textRange, configGroup, expression, nodes)
         }
     }
-
-    companion object : Resolver()
 }

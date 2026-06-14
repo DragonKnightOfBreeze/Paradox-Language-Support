@@ -152,12 +152,11 @@ class ParadoxTemplateSnippetNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configExpression: CwtDataExpression): ParadoxTemplateSnippetNode {
             // text may contain parameters
             return ParadoxTemplateSnippetNode(text, textRange, configGroup, configExpression)
         }
     }
-
-    companion object : Resolver()
 }

@@ -15,11 +15,10 @@ class ParadoxDefinePrefixNode(
         return ParadoxSemanticHighlighterColors.keyword(element.language)
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDefinePrefixNode {
             return ParadoxDefinePrefixNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

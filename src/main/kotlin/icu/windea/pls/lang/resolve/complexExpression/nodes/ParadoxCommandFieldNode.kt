@@ -4,7 +4,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 interface ParadoxCommandFieldNode : ParadoxLinkNode {
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandFieldNode {
             ParadoxStaticCommandFieldNode.resolve(text, textRange, configGroup)?.let { return it }
             ParadoxDynamicCommandFieldNode.resolve(text, textRange, configGroup)?.let { return it }
@@ -12,6 +13,4 @@ interface ParadoxCommandFieldNode : ParadoxLinkNode {
             return ParadoxErrorCommandFieldNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

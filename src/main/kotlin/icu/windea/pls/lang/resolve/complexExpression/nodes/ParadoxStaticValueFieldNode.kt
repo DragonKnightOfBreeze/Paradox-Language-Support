@@ -36,13 +36,12 @@ class ParadoxStaticValueFieldNode(
         config: CwtLinkConfig
     ) : CwtConfigBasedPsiReference<CwtProperty>(element, rangeInElement, config), ParadoxIdentifierNode.Reference
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxStaticValueFieldNode? {
             if (text.isParameterized()) return null
             val config = configGroup.links[text]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
             return ParadoxStaticValueFieldNode(text, textRange, configGroup, config)
         }
     }
-
-    companion object : Resolver()
 }

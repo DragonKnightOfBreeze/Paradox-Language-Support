@@ -156,13 +156,12 @@ class ParadoxDataSourceNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
             // text may contain parameters
             return ParadoxDataSourceNode(text, textRange, configGroup, linkConfigs)
         }
     }
-
-    companion object : Resolver()
 }
 

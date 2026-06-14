@@ -9,12 +9,11 @@ class ParadoxParameterizedCommandScopeNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeNode, ParadoxParameterizedNode {
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedCommandScopeNode? {
             if (!text.isParameterized()) return null
             return ParadoxParameterizedCommandScopeNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

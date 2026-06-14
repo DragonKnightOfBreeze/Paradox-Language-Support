@@ -93,11 +93,10 @@ class ParadoxDefineVariableNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineVariableNode {
             return ParadoxDefineVariableNode(text, textRange, configGroup, expression)
         }
     }
-
-    companion object : Resolver()
 }

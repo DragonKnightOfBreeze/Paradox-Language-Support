@@ -29,7 +29,8 @@ class ParadoxValueFieldValueNode(
         return linkConfigs
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
@@ -151,6 +152,4 @@ class ParadoxValueFieldValueNode(
             return ParadoxDataSourceNode.resolve(text, textRange, configGroup, configs)
         }
     }
-
-    companion object : Resolver()
 }

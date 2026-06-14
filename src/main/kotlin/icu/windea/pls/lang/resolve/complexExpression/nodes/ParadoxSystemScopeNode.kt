@@ -42,13 +42,12 @@ class ParadoxSystemScopeNode(
         config: CwtSystemScopeConfig
     ) : CwtConfigBasedPsiReference<CwtProperty>(element, rangeInElement, config), ParadoxIdentifierNode.Reference
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemScopeNode? {
             if (text.isParameterized()) return null
             val config = configGroup.systemScopes.get(text) ?: return null
             return ParadoxSystemScopeNode(text, textRange, configGroup, config)
         }
     }
-
-    companion object : Resolver()
 }
