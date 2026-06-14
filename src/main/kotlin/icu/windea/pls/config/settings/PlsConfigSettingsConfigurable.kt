@@ -28,6 +28,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
         callbackLock.reset()
         return panel {
             group(PlsBundle.message("settings.config.configGroups")) { configureGroupForConfigGroups() }
+            // features
+            collapsibleGroup(PlsBundle.message("settings.config.features")) { configureGroupForFeatures() }
         }
     }
 
@@ -135,6 +137,18 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             checkBox(PlsBundle.message("settings.config.overrideBuiltIn"))
                 .bindSelected(settings::overrideBuiltIn)
                 .onApply { PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock) }
+        }
+    }
+
+    private fun Panel.configureGroupForFeatures() {
+        // val group = "pls.config.features"
+        val settings = PlsConfigSettings.getInstance().state.features
+
+        // checkComparisonOperators
+        row {
+            checkBox(PlsBundle.message("settings.config.features.checkComparisonOperators"))
+                .bindSelected(settings::checkComparisonOperators)
+            contextHelp(PlsBundle.message("settings.config.features.checkComparisonOperators.tip"))
         }
     }
 }

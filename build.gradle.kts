@@ -14,7 +14,7 @@ plugins {
 }
 
 val liteVersion = providers.gradleProperty("pls.is.lite").getOrElse("false").toBoolean()
-val includeSqlite = providers.gradleProperty("pls.capabilities.includeSqlite").getOrElse("true").toBoolean()
+val includeSqlite = providers.gradleProperty("pls.include.sqlite").getOrElse("true").toBoolean()
 
 val excludesInJar = emptyList<String>()
 val excludesInZip = buildList {
@@ -371,10 +371,6 @@ tasks {
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
-
-        // systemProperty("pls.refresh.builtIn", "true")
-        // systemProperty("pls.record.cache.status", "true")
-        // systemProperty("pls.record.index.status", "true")
     }
     withType<Test> {
         useJUnit()

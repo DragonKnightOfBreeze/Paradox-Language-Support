@@ -27,25 +27,8 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
 
     override fun createPanel(): DialogPanel {
         return panel {
-            val settings = PlsAiSettings.getInstance().state
-
-            // enable
-            row {
-                checkBox(PlsAiBundle.message("settings.ai.enable")).bindSelected(settings::enable)
-                contextHelp(PlsAiBundle.message("settings.ai.enable.tip"))
-            }
-            // withContext
-            row {
-                checkBox(PlsAiBundle.message("settings.ai.withContext")).bindSelected(settings::withContext)
-                contextHelp(PlsAiBundle.message("settings.ai.withContext.tip"))
-            }
-            // providerType
-            row {
-                label(PlsAiBundle.message("settings.ai.providerType"))
-                comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
-                    .bindItem(settings::providerType.toNullableProperty())
-            }
-
+            // general
+            group(PlsAiBundle.message("settings.ai.general")) { configureGroupForGeneral() }
             // features
             collapsibleGroup(PlsAiBundle.message("settings.ai.features")) { configureGroupForFeatures() }
             // openAI
@@ -54,6 +37,27 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
             collapsibleGroup(PlsAiBundle.message("settings.ai.anthropic")) { configureGroupForAnthropic() }
             // local (Ollama)
             collapsibleGroup(PlsAiBundle.message("settings.ai.local")) { configureGroupForLocal() }
+        }
+    }
+
+    private fun Panel.configureGroupForGeneral() {
+        val settings = PlsAiSettings.getInstance().state
+
+        // enable
+        row {
+            checkBox(PlsAiBundle.message("settings.ai.general.enable")).bindSelected(settings::enable)
+            contextHelp(PlsAiBundle.message("settings.ai.general.enable.tip"))
+        }
+        // withContext
+        row {
+            checkBox(PlsAiBundle.message("settings.ai.general.withContext")).bindSelected(settings::withContext)
+            contextHelp(PlsAiBundle.message("settings.ai.general.withContext.tip"))
+        }
+        // providerType
+        row {
+            label(PlsAiBundle.message("settings.ai.general.providerType"))
+            comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
+                .bindItem(settings::providerType.toNullableProperty())
         }
     }
 

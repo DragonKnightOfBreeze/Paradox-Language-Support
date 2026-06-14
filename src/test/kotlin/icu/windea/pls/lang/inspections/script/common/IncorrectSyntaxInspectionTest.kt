@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -47,14 +48,14 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
 
     @Test
     fun testComparisonOperator_checkComparisonOperators() {
-        val registryValue = Registry.get("pls.settings.config.checkComparisonOperators")
-        registryValue.setValue(true)
+        val settings = PlsConfigSettings.getInstance().state.features
+        settings.checkComparisonOperators = true
         try {
             markFileInfo(gameType, "common/test_entities/comparison_operator_advanced.test.txt")
             myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test_entities/comparison_operator_advanced.test.txt")
             myFixture.checkHighlighting(true, false, false)
         } finally {
-            registryValue.resetToDefault()
+            settings.checkComparisonOperators = false
         }
     }
 }

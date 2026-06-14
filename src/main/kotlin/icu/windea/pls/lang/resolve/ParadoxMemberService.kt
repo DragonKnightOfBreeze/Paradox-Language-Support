@@ -9,7 +9,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.settings.PlsConfigInternalSettings
+import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
@@ -193,7 +193,7 @@ object ParadoxMemberService {
      */
     fun isComparisonOperatorAllowed(element: ParadoxScriptProperty): Boolean? {
         // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
-        if (!PlsConfigInternalSettings.getInstance().checkComparisonOperators) return null
+        if (!PlsConfigSettings.getInstance().state.features.checkComparisonOperators) return null
         val configs = ParadoxConfigManager.getConfigs(element)
         if (configs.isEmpty()) return null
         return configs.any { config -> isComparisonOperatorAllowed(config) }

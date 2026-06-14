@@ -6,7 +6,7 @@ import org.cef.OS
 
 object LintToolConstants {
     object Tiger {
-        val name get() = PlsIntegrationsBundle.message("integrations.tiger.name")
+        val name get() = PlsIntegrationsBundle.message("tool.tiger.name")
         const val url = "https://github.com/amtep/tiger"
 
         fun pathTip(gameType: ParadoxGameType): String {

@@ -5,12 +5,12 @@ import org.cef.OS
 
 object ImageToolConstants {
     object Texconv {
-        val name get() = PlsIntegrationsBundle.message("integrations.texconv.name")
+        val name get() = PlsIntegrationsBundle.message("tool.texconv.name")
         const val url = "https://github.com/microsoft/DirectXTex/wiki/Texconv"
     }
 
     object Magick {
-        val name get() = PlsIntegrationsBundle.message("integrations.magick.name")
+        val name get() = PlsIntegrationsBundle.message("tool.magick.name")
         const val url = "https://www.imagemagick.org"
 
         fun pathTip(): String {
