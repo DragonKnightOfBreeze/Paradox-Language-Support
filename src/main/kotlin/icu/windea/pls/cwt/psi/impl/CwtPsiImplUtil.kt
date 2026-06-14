@@ -37,7 +37,6 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")

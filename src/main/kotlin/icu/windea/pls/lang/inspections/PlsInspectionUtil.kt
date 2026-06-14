@@ -3,13 +3,6 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.HighlightSeverity
-import icu.windea.pls.lang.inspections.overrides.IncorrectOverrideForDefineVariableInspection
-import icu.windea.pls.lang.inspections.overrides.IncorrectOverrideForScriptedVariableInspection
-import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection
 
 object PlsInspectionUtil {
     context(tool: LocalInspectionTool)

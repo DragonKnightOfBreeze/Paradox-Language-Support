@@ -2,9 +2,6 @@ package icu.windea.pls.model.constraints
 
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPath
-import icu.windea.pls.model.paths.matchesExtension
-import icu.windea.pls.model.paths.matchesExtensions
-import icu.windea.pls.model.paths.matchesParent
 
 @Suppress("unused")
 enum class ParadoxPathConstraint {

@@ -66,8 +66,8 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScopeManager.findParentMember
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeConstants
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.isExact
 import icu.windea.pls.model.scope.overriddenProvider
 import icu.windea.pls.model.scope.promotions

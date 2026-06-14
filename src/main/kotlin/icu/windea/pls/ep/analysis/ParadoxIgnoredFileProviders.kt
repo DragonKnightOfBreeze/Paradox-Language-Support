@@ -3,7 +3,6 @@ package icu.windea.pls.ep.analysis
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.paths.ParadoxPath
-import icu.windea.pls.model.paths.matchesExtension
 
 class ParadoxSettingsBasedIgnoredFileProvider : ParadoxIgnoredFileProvider {
     // based on:
