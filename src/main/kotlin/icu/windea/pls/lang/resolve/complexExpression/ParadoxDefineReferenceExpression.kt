@@ -39,17 +39,18 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - 变量名：[ParadoxDefineVariableNode]（同文件的二级键）。
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
+            return ParadoxDefineReferenceExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxDefineReferenceExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineReferenceExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
+private object ParadoxDefineReferenceExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

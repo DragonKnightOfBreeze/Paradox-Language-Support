@@ -44,17 +44,18 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * - 可选替换值节点：[ParadoxDatabaseObjectNode]（第 3 段，替换值）。
  */
 interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+            return ParadoxDataObjectExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxDataObjectExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+private object ParadoxDataObjectExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

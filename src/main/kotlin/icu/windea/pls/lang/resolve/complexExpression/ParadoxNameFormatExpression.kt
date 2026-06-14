@@ -70,17 +70,18 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 interface ParadoxNameFormatExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
+            return ParadoxNameFormatExpressionResolver.resolve(text, range, configGroup, config)
+        }
     }
-
-    companion object : Resolver by ParadoxNameFormatExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxNameFormatExpressionResolverImpl : ParadoxNameFormatExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
+private object ParadoxNameFormatExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
         val configExpression = config.configExpression ?: return null
         if (configExpression.type != CwtDataTypes.NameFormat) return null
 

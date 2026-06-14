@@ -71,17 +71,18 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
+            return ParadoxCommandExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxCommandExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
+private object ParadoxCommandExpressionResolver {
+     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

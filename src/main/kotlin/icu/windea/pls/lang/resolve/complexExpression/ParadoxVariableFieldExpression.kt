@@ -55,18 +55,18 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
-
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
+            return ParadoxVariableFieldExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxVariableFieldExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableFieldExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
+private object ParadoxVariableFieldExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

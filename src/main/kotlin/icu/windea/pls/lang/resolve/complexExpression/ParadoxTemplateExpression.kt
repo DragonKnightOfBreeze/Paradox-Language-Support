@@ -43,23 +43,24 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  * @see CwtTemplateExpression
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
-    /** 是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun isExactMatched(): Boolean
 
-    /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
+            return ParadoxTemplateExpressionResolver.resolve(text, range, configGroup, config)
+        }
     }
-
-    companion object : Resolver by ParadoxTemplateExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
+private object ParadoxTemplateExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
         val templateExpression = when {
             config is CwtModifierConfig -> config.template
             else -> {

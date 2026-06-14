@@ -50,22 +50,27 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
     val configs: List<CwtConfig<*>>
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression?
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression?
-    }
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
+            return ParadoxDynamicValueExpressionResolver.resolve(text, range, configGroup, config)
+        }
 
-    companion object : Resolver by ParadoxDynamicValueExpressionResolverImpl()
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+            return ParadoxDynamicValueExpressionResolver.resolve(text, range, configGroup, configs)
+        }
+    }
 }
 
 // region Implementations
 
-private class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
+private object ParadoxDynamicValueExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
         return resolve(text, range, configGroup, config.to.singletonList())
     }
 
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
         if (configs.any { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
 
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false

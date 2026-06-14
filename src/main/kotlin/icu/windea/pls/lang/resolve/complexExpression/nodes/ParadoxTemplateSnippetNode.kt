@@ -38,7 +38,7 @@ class ParadoxTemplateSnippetNode(
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     val config = CwtValueConfig.createMock(configGroup, configExpression.expressionString)
 
-    /** 是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun isExactMatched(): Boolean {
         val dataType = config.configExpression.type
         return when {
@@ -57,7 +57,7 @@ class ParadoxTemplateSnippetNode(
         }
     }
 
-    /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean {
         val expression = ParadoxExpression.resolve(text)
         val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup)
