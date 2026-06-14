@@ -22,7 +22,7 @@
 ### 计划
 
 - [x] **P2** 重构 path/expression/complexExpression/config/configExpression 的解析器与解析的相关代码（改为：模型接口上的静态解析方法 + 委托给解析器类的对应方法）
-- [ ] **P2** 重构 expressionSupport 以及相关代码（精简与规范化）
+- [x] **P2** 重构 expressionSupport 以及相关代码（精简与规范化）
 - [ ] **P3** 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作）
 - [ ] **P3** 提供动作，以进行定义/定义注入之间的差异比较
 - [ ] **P4** 借助 AI，提供更多 specialPathProvider 和 specialUrlProvider 的默认 EP 实现
