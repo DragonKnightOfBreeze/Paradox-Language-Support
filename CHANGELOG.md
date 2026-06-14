@@ -9,7 +9,7 @@
 - [ ] 支持数组定值引用表达式（`arrayDefineReferenceExpression`）
 - [ ] 支持动态值集合表达式（`dynamicValueSetExpression`）
 - [ ] 在打开项目时，递归扫描项目中的目录，检测未配置游戏目录的模组目录，并逐个发送警告级别的通知
-- [ ] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 
+- [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
 - [x] 其他重构、优化与BUG修复 / Other refactors, optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 

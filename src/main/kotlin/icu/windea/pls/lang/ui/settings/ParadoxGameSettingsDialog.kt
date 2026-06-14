@@ -17,10 +17,12 @@ import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 
 @Suppress("UnstableApiUsage")
 class ParadoxGameSettingsDialog(
     val project: Project,
+    val rootInfo: ParadoxRootInfo.Game,
     val settings: ParadoxGameSettingsState
 ) : DialogWrapper(project, true) {
     private val callbackLock = CallbackLock()

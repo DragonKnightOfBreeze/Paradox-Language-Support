@@ -20,10 +20,10 @@ class OpenGameSettingsAction : OpenSettingsActionBase() {
     }
 
     override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return
+        if (rootInfo !is ParadoxRootInfo.Game) return
         val rootPath = rootInfo.rootFile.path
         val gameSettings = PlsProfilesSettings.getInstance().state.gameSettings.get(rootPath) ?: return
-        val dialog = ParadoxGameSettingsDialog(project, gameSettings)
+        val dialog = ParadoxGameSettingsDialog(project, rootInfo, gameSettings)
         dialog.show()
     }
 }
@@ -40,10 +40,10 @@ class OpenModSettingsAction : OpenSettingsActionBase() {
     }
 
     override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return
+        if (rootInfo !is ParadoxRootInfo.Mod) return
         val rootPath = rootInfo.rootFile.path
         val modSettings = PlsProfilesSettings.getInstance().state.modSettings.get(rootPath) ?: return
-        val dialog = ParadoxModSettingsDialog(project, modSettings)
+        val dialog = ParadoxModSettingsDialog(project, rootInfo, modSettings)
         dialog.show()
     }
 }

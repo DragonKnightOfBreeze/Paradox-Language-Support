@@ -2,6 +2,7 @@ package icu.windea.pls.ep.analysis
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameTypeInfo
 import java.nio.file.Path
 
 /**
@@ -10,7 +11,7 @@ import java.nio.file.Path
  * @see ParadoxGameType
  */
 interface ParadoxInferredGameTypeProvider {
-    fun get(rootPath: Path): ParadoxGameType?
+    fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxInferredGameTypeProvider>("icu.windea.pls.inferredGameTypeProvider")

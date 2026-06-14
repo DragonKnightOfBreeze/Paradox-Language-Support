@@ -77,7 +77,7 @@ object ParadoxGameTypeManager {
     }
 
     fun getModGameType(rootInfo: ParadoxRootInfo.Mod): ParadoxGameType {
-        return rootInfo.metadata.gameType
+        return rootInfo.metadata.gameTypeInfo?.gameType
             ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
             ?: ParadoxGameType.getDefault()
     }

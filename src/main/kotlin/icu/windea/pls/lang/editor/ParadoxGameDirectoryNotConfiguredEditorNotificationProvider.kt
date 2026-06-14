@@ -47,7 +47,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
             val message = PlsBundle.message("editor.notification.1.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.1")) {
-                showModSettingsDialog(project, modSettings)
+                showModSettingsDialog(project, rootInfo, modSettings)
             }
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
                 configureDefaultGameDirectories()
@@ -56,8 +56,8 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
         }
     }
 
-    private fun showModSettingsDialog(project: Project, modSettings: ParadoxModSettingsState) {
-        val dialog = ParadoxModSettingsDialog(project, modSettings)
+    private fun showModSettingsDialog(project: Project, rootInfo: ParadoxRootInfo.Mod, modSettings: ParadoxModSettingsState) {
+        val dialog = ParadoxModSettingsDialog(project, rootInfo, modSettings)
         dialog.show()
     }
 
