@@ -85,12 +85,12 @@ class ParadoxScriptValueNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config)
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config)
             return resolved.createResults()
         }
 

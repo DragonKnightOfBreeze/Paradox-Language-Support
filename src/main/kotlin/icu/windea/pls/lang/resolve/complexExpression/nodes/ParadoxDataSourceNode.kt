@@ -43,7 +43,7 @@ class ParadoxDataSourceNode(
             val offset = ParadoxExpressionManager.getExpressionOffset(element)
             val rangeInElement = rangeInExpression.shiftRight(offset)
             val resolved = linkConfigs.find {
-                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression) != null
+                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it) != null
             }
             if (resolved != null) return resolved
         }
@@ -112,7 +112,7 @@ class ParadoxDataSourceNode(
             run {
                 if (linkConfigsNotDynamicValue.isEmpty()) return@run
                 val resolved = linkConfigsNotDynamicValue.firstNotNullOfOrNull {
-                    ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression)
+                    ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it)
                 }
                 if (resolved != null) return resolved
             }
@@ -131,7 +131,7 @@ class ParadoxDataSourceNode(
             run {
                 if (linkConfigsNotDynamicValue.isEmpty()) return@run
                 val resolved = linkConfigsNotDynamicValue.flatMap {
-                    ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, it, it.configExpression)
+                    ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, it)
                 }
                 if (resolved.isNotEmpty()) return resolved.createResults()
             }

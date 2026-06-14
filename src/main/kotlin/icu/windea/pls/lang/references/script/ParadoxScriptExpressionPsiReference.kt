@@ -82,7 +82,7 @@ class ParadoxScriptExpressionPsiReference(
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
         val resolved = configs.firstNotNullOfOrNull { config ->
-            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, isKey)
         }
         return resolved
     }
@@ -90,7 +90,7 @@ class ParadoxScriptExpressionPsiReference(
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
         val resolved = configs.flatMap { config ->
-            ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+            ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, isKey)
         }
         return resolved.createResults()
     }

@@ -165,7 +165,7 @@ object ParadoxConfigExpressionService {
         if (valueElement.text.isParameterized()) {
             return createImageResolveResult(PlsBundle.message("parameterized"))
         }
-        val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.configExpression, false)
+        val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, false)
         when {
             // 由filePath解析为图片文件
             resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {

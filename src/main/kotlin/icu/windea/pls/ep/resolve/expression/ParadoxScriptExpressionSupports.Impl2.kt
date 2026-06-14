@@ -315,7 +315,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasExpression = ParadoxExpression.resolve(expressionText, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey)
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, isKey)
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiElement> {
@@ -327,7 +327,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasExpression = ParadoxExpression.resolve(expressionText, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptyList()
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
-        return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey)
+        return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, alias, isKey)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

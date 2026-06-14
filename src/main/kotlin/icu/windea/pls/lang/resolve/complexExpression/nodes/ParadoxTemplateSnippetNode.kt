@@ -125,7 +125,7 @@ class ParadoxTemplateSnippetNode(
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved
             }
-            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config)
             return resolved
         }
 
@@ -136,7 +136,7 @@ class ParadoxTemplateSnippetNode(
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved.createResults()
             }
-            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config)
             return resolved.createResults()
         }
 
