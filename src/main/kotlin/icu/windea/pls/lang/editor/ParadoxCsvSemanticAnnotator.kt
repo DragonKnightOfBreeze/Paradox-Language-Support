@@ -23,6 +23,6 @@ class ParadoxCsvSemanticAnnotator : Annotator {
             else -> null
         }
         val config = columnConfig?.valueConfig ?: return
-        ParadoxExpressionManager.annotateCsvExpression(element, null, holder, config)
+        ParadoxExpressionManager.annotateCsvExpression(element, null, config, holder)
     }
 }

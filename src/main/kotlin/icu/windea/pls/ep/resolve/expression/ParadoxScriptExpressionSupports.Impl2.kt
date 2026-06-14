@@ -57,7 +57,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         return dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -107,7 +107,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         return dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -153,7 +153,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         return dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -198,7 +198,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         return dataType == CwtDataTypes.InlineLocalisation
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (expressionText.isLeftQuoted()) return
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange.unquote(element.text)
@@ -236,7 +236,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBas
         return dataType == CwtDataTypes.Modifier
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.MODIFIER
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -262,7 +262,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
         return dataType == CwtDataTypes.EnumValue
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val enumName = config.configExpression?.value ?: return
         val attributesKey = when {
@@ -294,7 +294,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         return dataType == CwtDataTypes.AliasName || dataType == CwtDataTypes.AliasKeysField
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val configExpression = config.configExpression
         val aliasName = configExpression?.value ?: return
@@ -303,7 +303,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasExpression = ParadoxExpression.resolve(expressionText, quoted)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return
         val aliasConfig = aliasGroup[aliasSubName]?.first() ?: return
-        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, holder, aliasConfig)
+        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, aliasConfig, holder)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
@@ -344,7 +344,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
         return dataType == CwtDataTypes.Constant
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if (annotated) return
         val configExpression = config.configExpression ?: return
@@ -401,7 +401,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         return dataType in CwtDataTypeSets.PathReference
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.PATH_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)

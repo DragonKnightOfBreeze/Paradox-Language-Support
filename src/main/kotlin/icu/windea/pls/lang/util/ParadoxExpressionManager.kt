@@ -248,9 +248,9 @@ object ParadoxExpressionManager {
 
     // region Annotate Methods
 
-    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>) {
+    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
-        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, holder, config)
+        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, config, holder)
     }
 
     fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
@@ -258,10 +258,10 @@ object ParadoxExpressionManager {
         ParadoxExpressionService.annotateLocalisationExpression(element, rangeInElement, expressionText, holder)
     }
 
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtValueConfig) {
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig, holder: AnnotationHolder) {
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) return
         val expressionText = getExpressionText(element, rangeInElement)
-        ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, expressionText, holder, config)
+        ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, expressionText, config, holder)
     }
 
     fun annotateExpressionByAttributesKey(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
@@ -300,7 +300,7 @@ object ParadoxExpressionManager {
             val attributesKeyConfig = node.getAttributesKeyConfig(element)
             if (attributesKeyConfig != null) {
                 val offset = ParadoxExpressionManager.getExpressionOffset(element)
-                annotateScriptExpression(element, node.rangeInExpression.shiftRight(offset), holder, attributesKeyConfig)
+                annotateScriptExpression(element, node.rangeInExpression.shiftRight(offset), attributesKeyConfig, holder)
                 return@run
             }
             if (attributesKey != null) {

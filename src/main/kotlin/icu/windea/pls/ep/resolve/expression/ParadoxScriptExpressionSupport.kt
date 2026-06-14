@@ -13,7 +13,6 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -21,7 +20,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
- * @see ParadoxExpression
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
  */
@@ -29,11 +27,11 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 interface ParadoxScriptExpressionSupport {
     fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean
 
-    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
 
     }
 
-    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): PsiElement? {
         return null
     }
 

@@ -32,7 +32,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
-    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (expressionText.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
@@ -42,8 +42,8 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                withRecursionCheck("${ep.javaClass.name}@annotate@${expressionText}") {
-                    ep.annotate(element, rangeInElement, expressionText, holder, config)
+                withRecursionCheck("${ep.javaClass.name}@a@${expressionText}") {
+                    ep.annotate(element, rangeInElement, expressionText, config, holder)
                 }
             }
         }
@@ -62,7 +62,7 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                withRecursionCheck("${ep.javaClass.name}@resolve@${expressionText}") {
+                withRecursionCheck("${ep.javaClass.name}@r@${expressionText}") {
                     ep.resolve(element, rangeInElement, expressionText, config, isKey)
                 }
             }
@@ -82,7 +82,7 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                withRecursionCheck("${ep.javaClass.name}@multiResolve@${expressionText}") {
+                withRecursionCheck("${ep.javaClass.name}@ra@${expressionText}") {
                     ep.resolveAll(element, rangeInElement, expressionText, config, isKey).orNull()
                 }
             }
@@ -102,7 +102,7 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                withRecursionCheck("${ep.javaClass.name}@multiResolve@${expressionText}") {
+                withRecursionCheck("${ep.javaClass.name}@gr@${expressionText}") {
                     ep.getReferences(element, rangeInElement, expressionText, config, isKey).orNull()
                 }
             }
@@ -122,7 +122,7 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                withRecursionCheck("${ep.javaClass.name}@complete${context.keyword}") {
+                withRecursionCheck("${ep.javaClass.name}@c@${context.keyword}") {
                     ep.complete(context, result)
                 }
             }
@@ -211,7 +211,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.annotate
      */
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
         if (expressionText.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
@@ -219,7 +219,7 @@ object ParadoxExpressionService {
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
-            ep.annotate(element, rangeInElement, expressionText, holder, config)
+            ep.annotate(element, rangeInElement, expressionText, config, holder)
         }
     }
 

@@ -10,12 +10,10 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.util.values.singletonListOrEmpty
-import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -25,7 +23,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * 注意：相比 [ParadoxScriptExpressionSupport]，仅支持有限的 [CwtDataType]。
  *
- * @see ParadoxExpression
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
  */
@@ -33,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 interface ParadoxCsvExpressionSupport {
     fun supports(config: CwtValueConfig, configExpression: CwtDataExpression) : Boolean
 
-    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
 
     }
 

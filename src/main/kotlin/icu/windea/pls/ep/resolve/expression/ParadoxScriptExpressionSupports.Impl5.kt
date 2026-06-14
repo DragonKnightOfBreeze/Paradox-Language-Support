@@ -27,7 +27,7 @@ class ParadoxShaderEffectExpressionSupport: ParadoxScriptExpressionSupportBase()
         return dataType == CwtDataTypes.ShaderEffect
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.SHADER_EFFECT_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -53,7 +53,7 @@ class ParadoxMeshLocatorExpressionSupport: ParadoxScriptExpressionSupportBase() 
         return dataType == CwtDataTypes.MeshLocator
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.MESH_LOCATOR_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)

@@ -12,7 +12,6 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
  * 提供对本地化表达式的支持。
@@ -20,7 +19,6 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
  *
- * @see ParadoxExpression
  * @see ParadoxExpressionElement
  * @see ParadoxLocalisationExpressionElement
  */

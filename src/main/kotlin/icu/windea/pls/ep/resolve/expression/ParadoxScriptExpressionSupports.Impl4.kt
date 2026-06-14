@@ -29,7 +29,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
         return dataType == CwtDataTypes.Parameter
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
         val textRange = element.textRange
@@ -56,7 +56,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         return dataType == CwtDataTypes.LocalisationParameter
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
         val textRange = element.textRange

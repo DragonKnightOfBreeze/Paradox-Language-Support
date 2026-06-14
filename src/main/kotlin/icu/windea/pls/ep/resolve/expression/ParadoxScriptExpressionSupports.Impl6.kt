@@ -42,7 +42,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         return dataType == CwtDataTypes.TechnologyWithLevel
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val separatorIndex = expressionText.indexOf('@')
         if (separatorIndex == -1) return

@@ -28,7 +28,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         return dataType == CwtDataTypes.Definition
     }
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -66,7 +66,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         return dataType == CwtDataTypes.EnumValue
     }
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val enumName = config.configExpression.value ?: return
         val attributesKey = when {
@@ -95,7 +95,7 @@ class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase(
         return dataType in CwtDataTypeSets.DynamicValue
     }
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
