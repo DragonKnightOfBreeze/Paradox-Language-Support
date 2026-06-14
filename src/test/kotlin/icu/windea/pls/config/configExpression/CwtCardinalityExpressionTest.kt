@@ -6,7 +6,7 @@ import org.junit.Test
 class CwtCardinalityExpressionTest {
     @Test
     fun resolveEmpty() {
-        val e = CwtCardinalityExpression.resolveEmpty()
+        val e = CwtCardinalityExpression.resolve("")
         assertEquals("", e.expressionString)
         assertEquals(0, e.min)
         assertNull(e.max)

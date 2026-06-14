@@ -6,14 +6,14 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 
 object CwtConfigExpressionService {
     /**
-     * @see CwtDataExpressionResolver.resolve
+     * @see CwtDataExpressionSupport.resolve
      */
     fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        CwtDataExpressionResolver.EP_NAME.extensionList.forEach { ep ->
+        CwtDataExpressionSupport.EP_NAME.extensionList.forEach { ep ->
             val r = ep.resolve(expressionString, isKey)
             if (r != null) return r
         }
@@ -21,10 +21,10 @@ object CwtConfigExpressionService {
     }
 
     /**
-     * @see CwtDataExpressionResolver.resolveTemplate
+     * @see CwtDataExpressionSupport.resolveTemplate
      */
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        CwtDataExpressionResolver.EP_NAME.extensionList.forEach { ep ->
+        CwtDataExpressionSupport.EP_NAME.extensionList.forEach { ep ->
             val r = ep.resolveTemplate(expressionString)
             if (r != null) return r
         }
@@ -32,10 +32,10 @@ object CwtConfigExpressionService {
     }
 
     /**
-     * @see CwtDataExpressionResolver.processTextPatterns
+     * @see CwtDataExpressionSupport.processTextPatterns
      */
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
-        return CwtDataExpressionResolver.EP_NAME.extensionList.process { ep ->
+        return CwtDataExpressionSupport.EP_NAME.extensionList.process { ep ->
             ep.processTextPatterns(consumer)
         }
     }

@@ -1465,8 +1465,12 @@ Schema expressions support the following four forms:
 <!-- @see icu.windea.pls.config.CwtDataType -->
 <!-- @see icu.windea.pls.config.CwtDataTypes -->
 <!-- @see icu.windea.pls.config.CwtDataTypeSets -->
-<!-- @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver -->
+<!-- @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport -->
 <!-- @see icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher -->
+<!-- @see icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher -->
+<!-- @see icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport -->
+<!-- @see icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport -->
+<!-- @see icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport -->
 
 > This chapter introduces the concepts, classification, and usage of data types, helping readers understand how data expressions in config files match actual content in script files.
 
@@ -1481,11 +1485,12 @@ Examples:
 - the data expression `enum[weight_or_base]`, the data type is `EnumValue`, with metadata `weight_or_base`, indicating that it matches any of the possible values declared in that enum.
 
 Related extension points:
-- The resolution logic for data types is driven by the extension point `CwtDataExpressionResolver`.
-- The matching logic between expressions in script files and config expressions is driven by the extension point `ParadoxScriptExpressionMatcher`.
-- The matching logic between expressions in CSV files and config expressions is driven by the extension point `ParadoxCsvExpressionMatcher` (limited support).
-- The implementation logic for expressions in script files is driven by the extension point `ParadoxScriptExpressionSupport`.
-- The implementation logic for expressions in CSV files is driven by the extension point `ParadoxScriptExpressionSupport` (limited support).
+- The resolution logic for data types is driven by the extension point `icu.windea.pls.dataExpressionSupport`.
+- The matching logic between expressions in script files and config expressions is driven by the extension point `icu.windea.pls.scriptExpressionMatcher`.
+- The matching logic between expressions in CSV files and config expressions is driven by the extension point `icu.windea.pls.csvExpressionMatcher` (limited support).
+- The implementation logic for expressions in script files is driven by the extension point `icu.windea.pls.scriptExpressionSupport`.
+- The implementation logic for expressions in localisation files is driven by the extension point `icu.windea.pls.localisationExpressionSupport` (special support).
+- The implementation logic for expressions in CSV files is driven by the extension point `icu.windea.pls.csvExpressionSupport` (limited support).
 
 ### Basic Data Types {#data-types-base}
 

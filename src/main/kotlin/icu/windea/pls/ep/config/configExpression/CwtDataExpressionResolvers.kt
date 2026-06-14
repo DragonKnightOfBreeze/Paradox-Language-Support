@@ -1,7 +1,5 @@
 package icu.windea.pls.ep.config.configExpression
 
-import com.intellij.util.Processor
-import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -11,52 +9,15 @@ import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.wildcard
 import icu.windea.pls.config.optimizedPath
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.text.TextPattern
-import icu.windea.pls.core.text.TextPatternBasedBuilder
-import icu.windea.pls.core.text.TextPatternBasedProvider
-import icu.windea.pls.core.text.TextPatternMatchResult
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
-abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionResolver {
-    protected data class Match(val type: CwtDataType, val action: CwtDataExpression.() -> Unit = {})
-
-    private val providers = mutableListOf<TextPatternBasedProvider<Match, out TextPatternMatchResult>>()
-    private val builder by lazy { TextPatternBasedBuilder<Match>(providers) }
-
-    protected fun fromLiteral(type: CwtDataType, value: String, action: CwtDataExpression.() -> Unit = {}) {
-        providers += TextPatternBasedProvider(TextPattern.from(value)) { _, _ -> Match(type, action) }
-    }
-
-    protected fun fromParameterized(type: CwtDataType, prefix: String, suffix: String, action: CwtDataExpression.(String) -> Unit = {}) {
-        providers += TextPatternBasedProvider(TextPattern.from(prefix, suffix)) { _, r -> Match(type) { action(r.value) } }
-    }
-
-    protected fun fromRanged(type: CwtDataType, prefix: String, action: CwtDataExpression.(String) -> Unit = {}) {
-        providers += TextPatternBasedProvider(TextPattern.from(prefix, "")) { _, r -> if (isRangeLike(r.value)) Match(type) { action(r.value) } else null }
-    }
-
-    private fun isRangeLike(v: String): Boolean {
-        return v.length >= 2 && v.first().let { c -> c == '[' || c == '(' } && v.last().let { c -> c == ']' || c == ')' }
-    }
-
-    final override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        val match = builder.build(expressionString) ?: return null
-        return CwtDataExpression.create(expressionString, isKey, match.type).apply(match.action)
-    }
-
-    final override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
-        return providers.process { provider -> consumer.process(provider.pattern) }
-    }
-}
-
-class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
-    init {
+class CwtBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+    override fun registerProviders() {
         fromLiteral(CwtDataTypes.Any, "\$any")
 
         fromLiteral(CwtDataTypes.Bool, "bool")
@@ -77,8 +38,8 @@ class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
     }
 }
 
-class CwtExtendedBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
-    init {
+class CwtExtendedBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+    override fun registerProviders() {
         fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
         fromLiteral(CwtDataTypes.IntPercentageField, "int_percentage_field")
 
@@ -87,8 +48,8 @@ class CwtExtendedBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionR
     }
 }
 
-class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
-    init {
+class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+    override fun registerProviders() {
         fromLiteral(CwtDataTypes.Localisation, "localisation")
         fromLiteral(CwtDataTypes.SyncedLocalisation, "localisation_synced")
         fromLiteral(CwtDataTypes.InlineLocalisation, "localisation_inline")
@@ -148,7 +109,7 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
     }
 }
 
-class CwtConstantDataExpressionResolver : CwtDataExpressionResolver {
+class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
     private val forceRegex = """\w*\[[\w:]*]""".toRegex() // `type[x]`, `alias[x:y]`, etc.
     private val excludeCharacters = ":.@[]<>".toCharArray() // `x_<y>_enum[z]`, etc.
 
@@ -162,7 +123,7 @@ class CwtConstantDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class CwtTemplateDataExpressionResolver : CwtDataExpressionResolver {
+class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
         return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression).apply { value = expressionString }
@@ -173,7 +134,7 @@ class CwtTemplateDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class CwtAntDataExpressionResolver : CwtDataExpressionResolver {
+class CwtAntDataExpressionSupport : CwtDataExpressionSupport {
     private val prefix = "ant:"
     private val prefixIgnoreCase = "ant.i:"
     private val dataType = CwtDataTypes.Ant
@@ -195,7 +156,7 @@ class CwtAntDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class CwtRegexDataExpressionResolver : CwtDataExpressionResolver {
+class CwtRegexDataExpressionSupport : CwtDataExpressionSupport {
     private val prefix = "re:"
     private val prefixIgnoreCase = "re.i:"
     private val dataType = CwtDataTypes.Regex
@@ -217,7 +178,7 @@ class CwtRegexDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class CwtSuffixAwareDataExpressionResolver : CwtDataExpressionResolver {
+class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         val separatorIndex = expressionString.indexOf('|')
         if (separatorIndex == -1) return null

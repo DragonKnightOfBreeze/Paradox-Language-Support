@@ -9,8 +9,9 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
  * 数据表达式。
@@ -35,72 +36,95 @@ import icu.windea.pls.model.constants.PlsStrings
  * @property value 主要的元数据。可用于存储定义类型、枚举名等信息。
  *
  * @see CwtDataType
- * @see CwtDataExpressionResolver
+ * @see CwtDataExpressionSupport
+ * @see ParadoxExpression
  */
 interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
     val isKey: Boolean
     val type: CwtDataType
     var value: String?
 
-    interface Resolver {
-        fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression
-        fun resolveEmpty(isKey: Boolean): CwtDataExpression
-        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression
-        fun resolveKey(expressionString: String): CwtDataExpression
-        fun resolveValue(expressionString: String): CwtDataExpression
-        fun resolveTemplate(expressionString: String): CwtDataExpression
-        fun resolveBlock(): CwtDataExpression
-    }
-
     object Keys : KeyRegistry()
 
-    companion object : Resolver by CwtDataExpressionResolverImpl()
+    companion object {
+        @JvmStatic
+        fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
+            return CwtDataExpressionResolver.create(expressionString, isKey, type)
+        }
+
+        @JvmStatic
+        fun resolveEmpty(isKey: Boolean): CwtDataExpression {
+            return CwtDataExpressionResolver.resolveEmpty(isKey)
+        }
+
+        @JvmStatic
+        fun resolveBlock(): CwtDataExpression {
+            return CwtDataExpressionResolver.resolveBlock()
+        }
+
+        @JvmStatic
+        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
+            return CwtDataExpressionResolver.resolve(expressionString, isKey)
+        }
+
+        @JvmStatic
+        fun resolveKey(expressionString: String): CwtDataExpression {
+            return CwtDataExpressionResolver.resolveKey(expressionString)
+        }
+
+        @JvmStatic
+        fun resolveValue(expressionString: String): CwtDataExpression {
+            return CwtDataExpressionResolver.resolveValue(expressionString)
+        }
+
+        @JvmStatic
+        fun resolveTemplate(expressionString: String): CwtDataExpression {
+            return CwtDataExpressionResolver.resolveTemplate(expressionString)
+        }
+    }
 }
 
 // region Implementations
 
-private class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
-    private val cacheForKey = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtDataExpression> { doResolve(it, true) }
-    private val cacheForValue = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtDataExpression> { doResolve(it, false) }
-    private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtDataExpression> { doResolveTemplate(it) }
+private object CwtDataExpressionResolver {
+    private val cacheForKey = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, true) }
+    private val cacheForValue = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, false) }
+    private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolveTemplate(it) }
 
     private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant, "")
     private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant, "")
     private val blockExpression = CwtDataExpressionImpl(PlsStrings.blockFolder, false, CwtDataTypes.Block)
 
-    override fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
+    fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
         if (expressionString.isEmpty()) return resolveEmpty(isKey)
         return CwtDataExpressionImpl(expressionString, isKey, type)
     }
 
-    override fun resolveEmpty(isKey: Boolean): CwtDataExpression {
+    fun resolveEmpty(isKey: Boolean): CwtDataExpression {
         return if (isKey) emptyKeyExpression else emptyValueExpression
     }
 
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
+    fun resolveBlock(): CwtDataExpression {
+        return blockExpression
+    }
+
+    fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
         if (expressionString.isEmpty()) return if (isKey) emptyKeyExpression else emptyValueExpression
         val cache = if (isKey) cacheForKey else cacheForValue
         return cache.get(expressionString)
     }
 
-    override fun resolveKey(expressionString: String): CwtDataExpression {
+    fun resolveKey(expressionString: String): CwtDataExpression {
         return resolve(expressionString, true)
     }
 
-    override fun resolveValue(expressionString: String): CwtDataExpression {
+    fun resolveValue(expressionString: String): CwtDataExpression {
         return resolve(expressionString, false)
     }
 
-    override fun resolveTemplate(expressionString: String): CwtDataExpression {
+    fun resolveTemplate(expressionString: String): CwtDataExpression {
         if (expressionString.isEmpty()) return emptyValueExpression
         return cacheForTemplate.get(expressionString)
-    }
-
-    override fun resolveBlock(): CwtDataExpression {
-        return blockExpression
     }
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {

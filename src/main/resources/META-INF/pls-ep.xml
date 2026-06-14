@@ -13,7 +13,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupPostProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionSupport" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.mergedIndexOptimizer" interface="icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.mergedIndexSupport" interface="icu.windea.pls.ep.index.ParadoxMergedIndexSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
@@ -122,14 +122,14 @@
 
     <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseDataConfigGroupPostProcessor"/>
 
-    <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionResolver"/>
-    <dataExpressionResolver id="extendedBase" implementation="icu.windea.pls.ep.config.configExpression.CwtExtendedBaseDataExpressionResolver"/>
-    <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.config.configExpression.CwtCoreDataExpressionResolver"/>
-    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.config.configExpression.CwtConstantDataExpressionResolver" order="last"/>
-    <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.config.configExpression.CwtTemplateDataExpressionResolver" order="last, after constant"/>
-    <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.config.configExpression.CwtAntDataExpressionResolver"/>
-    <dataExpressionResolver id="regex" implementation="icu.windea.pls.ep.config.configExpression.CwtRegexDataExpressionResolver"/>
-    <dataExpressionResolver id="suffixAware" implementation="icu.windea.pls.ep.config.configExpression.CwtSuffixAwareDataExpressionResolver"/>
+    <dataExpressionSupport id="base" implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionSupport"/>
+    <dataExpressionSupport id="extendedBase" implementation="icu.windea.pls.ep.config.configExpression.CwtExtendedBaseDataExpressionSupport"/>
+    <dataExpressionSupport id="core" implementation="icu.windea.pls.ep.config.configExpression.CwtCoreDataExpressionSupport"/>
+    <dataExpressionSupport id="constant" implementation="icu.windea.pls.ep.config.configExpression.CwtConstantDataExpressionSupport" order="last"/>
+    <dataExpressionSupport id="template" implementation="icu.windea.pls.ep.config.configExpression.CwtTemplateDataExpressionSupport" order="last, after constant"/>
+    <dataExpressionSupport id="ant" implementation="icu.windea.pls.ep.config.configExpression.CwtAntDataExpressionSupport"/>
+    <dataExpressionSupport id="regex" implementation="icu.windea.pls.ep.config.configExpression.CwtRegexDataExpressionSupport"/>
+    <dataExpressionSupport id="suffixAware" implementation="icu.windea.pls.ep.config.configExpression.CwtSuffixAwareDataExpressionSupport"/>
 
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexOptimizer"/>
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxFallbackMergedIndexOptimizer" order="last"/>

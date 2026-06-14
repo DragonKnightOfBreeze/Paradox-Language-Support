@@ -29,14 +29,6 @@ import icu.windea.pls.core.removeSurroundingOrNull
  *
  * 不兼容。插件作为扩展提供。
  *
- * ### 示例
- *
- * ```cwt
- * ## cardinality = 0..1
- * ## cardinality = 0..inf
- * ## cardinality = ~1..10
- * ```
- *
  * @see CwtSchemaConfig
  */
 interface CwtSchemaExpression : CwtConfigExpression {
@@ -59,29 +51,25 @@ interface CwtSchemaExpression : CwtConfigExpression {
         val name: String
     }
 
-    interface Resolver {
-        fun resolveEmpty(): CwtSchemaExpression
-        fun resolve(expressionString: String): CwtSchemaExpression
+    companion object {
+        @JvmStatic
+        fun resolve(expressionString: String): CwtSchemaExpression {
+            return CwtSchemaExpressionResolver.resolve(expressionString)
+        }
     }
-
-    companion object : Resolver by CwtSchemaExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
+private object CwtSchemaExpressionResolver {
     private val logger = thisLogger()
-    private val cache = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtSchemaExpression> { doResolve(it) }
+    private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtSchemaExpression> { doResolve(it) }
+    private val emptyExpression: CwtSchemaExpression = CwtSchemaConstantExpression("")
 
     // 匹配未转义的 `$...$` 片段，用于生成模板的 pattern（替换为 `*`）
     private val parameterRegex = """(?<!\\)\$.*?\$""".toRegex()
 
-    private val emptyExpression: CwtSchemaExpression = CwtSchemaConstantExpression("")
-
-    override fun resolveEmpty(): CwtSchemaExpression = emptyExpression
-
-    override fun resolve(expressionString: String): CwtSchemaExpression {
+    fun resolve(expressionString: String): CwtSchemaExpression {
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }

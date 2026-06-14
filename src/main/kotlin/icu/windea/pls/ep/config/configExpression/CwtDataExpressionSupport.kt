@@ -7,9 +7,11 @@ import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 
 /**
- * 用于解析数据表达式。
+ * 提供对数据表达式的支持。
+ *
+ * 例如，决定数据表达式的实际解析逻辑。
  */
-interface CwtDataExpressionResolver {
+interface CwtDataExpressionSupport {
     /**
      * 尝试解析数据表达式。
      */
@@ -21,11 +23,11 @@ interface CwtDataExpressionResolver {
     fun resolveTemplate(expressionString: String): CwtDataExpression? = resolve(expressionString, false)
 
     /**
-     * 遍历此解析器支持的所有文本模式（[TextPattern]）。
+     * 遍历支持的所有文本模式（[TextPattern]）。
      */
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean = true
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
+        val EP_NAME = ExtensionPointName<CwtDataExpressionSupport>("icu.windea.pls.dataExpressionSupport")
     }
 }

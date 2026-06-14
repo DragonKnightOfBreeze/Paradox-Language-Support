@@ -43,25 +43,21 @@ interface CwtLocalisationLocationExpression : CwtLocationExpression {
     operator fun component3() = namePaths
     operator fun component4() = forceUpperCase
 
-    interface Resolver {
-        fun resolveEmpty(): CwtLocalisationLocationExpression
-        fun resolve(expressionString: String): CwtLocalisationLocationExpression
+    companion object {
+        @JvmStatic
+        fun resolve(expressionString: String): CwtLocalisationLocationExpression {
+            return CwtLocalisationLocationExpressionResolver.resolve(expressionString)
+        }
     }
-
-    companion object : Resolver by CwtLocalisationLocationExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
-    private val cache = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtLocalisationLocationExpression> { doResolve(it) }
-
+private object CwtLocalisationLocationExpressionResolver {
+    private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtLocalisationLocationExpression> { doResolve(it) }
     private val emptyExpression = CwtLocalisationLocationExpressionImpl("", "")
 
-    override fun resolveEmpty(): CwtLocalisationLocationExpression = emptyExpression
-
-    override fun resolve(expressionString: String): CwtLocalisationLocationExpression {
+    fun resolve(expressionString: String): CwtLocalisationLocationExpression {
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }

@@ -55,24 +55,22 @@ interface CwtCardinalityExpression : CwtConfigExpression {
 
     fun isRequired() = !lenientMin && min > 0
 
-    interface Resolver {
-        fun resolveEmpty(): CwtCardinalityExpression
-        fun resolve(expressionString: String): CwtCardinalityExpression
+    companion object {
+        @JvmStatic
+        fun resolve(expressionString: String): CwtCardinalityExpression {
+            return CwtCardinalityExpressionResolver.resolve(expressionString)
+        }
     }
-
-    companion object : Resolver by CwtCardinalityExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
+private object CwtCardinalityExpressionResolver {
     private val logger = thisLogger()
     private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtCardinalityExpression> { key -> doResolve(key) }
     private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
 
-    override fun resolveEmpty(): CwtCardinalityExpression = emptyExpression
-
-    override fun resolve(expressionString: String): CwtCardinalityExpression {
+    fun resolve(expressionString: String): CwtCardinalityExpression {
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }
