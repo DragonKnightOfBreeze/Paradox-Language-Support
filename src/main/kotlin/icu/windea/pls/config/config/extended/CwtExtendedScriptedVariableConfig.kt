@@ -47,22 +47,21 @@ interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMember, CwtM
     @FromOptionMember("hint: string?")
     val hint: String?
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为封装变量的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig?
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
+            return CwtExtendedScriptedVariableConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtExtendedScriptedVariableConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedScriptedVariableConfigResolverImpl : CwtExtendedScriptedVariableConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedScriptedVariableConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig = doResolve(config)
-
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
+    fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionData.hint
         logger.debug { "Resolved extended scripted variable config (name: $name).".withLocationPrefix(config) }

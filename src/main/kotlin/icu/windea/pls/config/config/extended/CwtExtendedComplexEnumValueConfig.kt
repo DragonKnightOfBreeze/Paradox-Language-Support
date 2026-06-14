@@ -51,22 +51,21 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMember, CwtM
     @FromOptionMember("hint: string?")
     val hint: String?
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为复杂枚举值的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
+            return CwtExtendedComplexEnumValueConfigResolver.resolve(config, type)
+        }
     }
-
-    companion object : Resolver by CwtExtendedComplexEnumValueConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedComplexEnumValueConfigResolverImpl : CwtExtendedComplexEnumValueConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedComplexEnumValueConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig = doResolve(config, type)
-
-    private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
+    fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionData.hint
         logger.debug { "Resolved extended complex enum value config (name: $name, type: $type).".withLocationPrefix(config) }

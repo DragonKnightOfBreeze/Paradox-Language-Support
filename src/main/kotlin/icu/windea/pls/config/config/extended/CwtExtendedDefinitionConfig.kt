@@ -57,22 +57,21 @@ interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberC
     @FromOptionMember("hint: string?")
     val hint: String?
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为定义的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig?
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
+            return CwtExtendedDefinitionConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtExtendedDefinitionConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedDefinitionConfigResolverImpl : CwtExtendedDefinitionConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedDefinitionConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
+    fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val type = config.optionData.type
         if (type == null) {

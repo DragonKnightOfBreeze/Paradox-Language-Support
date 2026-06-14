@@ -23,19 +23,20 @@ data class CwtSchemaConfig(
     val enums: Map<String, CwtPropertyConfig>,
     val constraints: Map<String, CwtPropertyConfig>
 ) : CwtDetachedConfig {
-    interface Resolver {
-        fun resolveInFile(fileConfig: CwtFileConfig)
+    companion object {
+        @JvmStatic
+        fun resolveInFile(fileConfig: CwtFileConfig) {
+            return CwtSchemaConfigResolver.resolveInFile(fileConfig)
+        }
     }
-
-    companion object : Resolver by CwtSchemaConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverScope {
-    // no logger here (unnecessary)
+private object CwtSchemaConfigResolver : CwtConfigResolverScope {
+    // private val logger = thisLogger()
 
-    override fun resolveInFile(fileConfig: CwtFileConfig) {
+    fun resolveInFile(fileConfig: CwtFileConfig) {
         val initializer = fileConfig.configGroup.initializer
         val properties = mutableListOf<CwtPropertyConfig>()
         val enums = mutableMapOf<String, CwtPropertyConfig>()

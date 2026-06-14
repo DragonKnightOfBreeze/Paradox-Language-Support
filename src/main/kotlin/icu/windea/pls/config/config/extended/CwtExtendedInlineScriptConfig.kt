@@ -72,22 +72,21 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     /** 得到由其声明的上下文规则列表。 */
     fun getContextConfigs(): List<CwtMemberConfig<*>>
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为内联脚本的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
+            return CwtExtendedInlineScriptConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtExtendedInlineScriptConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedInlineScriptConfigResolverImpl : CwtExtendedInlineScriptConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedInlineScriptConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig = doResolve(config)
-
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
+    fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextConfigsType = config.optionData.contextConfigsType
         logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }

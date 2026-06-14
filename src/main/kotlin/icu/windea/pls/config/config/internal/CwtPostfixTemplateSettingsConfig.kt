@@ -24,19 +24,20 @@ data class CwtPostfixTemplateSettingsConfig(
     val variables: Map<String, String>, // variableName - defaultValue
     val expression: String
 ) : CwtDetachedConfig {
-    interface Resolver {
-        fun resolveInFile(fileConfig: CwtFileConfig)
+    companion object {
+        @JvmStatic
+        fun resolveInFile(fileConfig: CwtFileConfig) {
+            return CwtPostfixTemplateSettingsConfigResolver.resolveInFile(fileConfig)
+        }
     }
-
-    companion object : Resolver by CwtPostfixTemplateSettingsConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtPostfixTemplateSettingsConfigResolverImpl : CwtPostfixTemplateSettingsConfig.Resolver, CwtConfigResolverScope {
+private object CwtPostfixTemplateSettingsConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolveInFile(fileConfig: CwtFileConfig) {
+    fun resolveInFile(fileConfig: CwtFileConfig) {
         val initializer = fileConfig.configGroup.initializer
         val configs = fileConfig.properties
         for (groupProperty in configs) {
