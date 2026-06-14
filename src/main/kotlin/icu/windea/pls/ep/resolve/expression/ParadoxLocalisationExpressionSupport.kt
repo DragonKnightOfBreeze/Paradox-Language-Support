@@ -7,7 +7,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -36,12 +36,12 @@ interface ParadoxLocalisationExpressionSupport {
         return null
     }
 
-    fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText).to.singletonSetOrEmpty()
+    fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): List<PsiElement> {
+        return resolve(element, rangeInElement, expressionText).to.singletonListOrEmpty()
     }
 
-    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
-        return null
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): List<PsiReference> {
+        return emptyList()
     }
 
     fun complete(context: ProcessingContext, result: CompletionResultSet) {

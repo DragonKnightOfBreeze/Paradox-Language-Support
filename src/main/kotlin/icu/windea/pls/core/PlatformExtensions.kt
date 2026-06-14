@@ -69,6 +69,7 @@ import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.util.Tuple2
@@ -406,31 +407,44 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
     return PsiFileService.findReferenceAt(this, offset, forward, predicate)
 }
 
-/** 若为多解析引用，返回首个解析目标；否则调用 `resolve()`。 */
+/**
+ * 解析得到第一个结果。
+ *
+ * 如果当前引用是 [PsiPolyVariantReference]，则调用 `multiResolve` 并返回解析得到的第一个不为空的 [PsiElement]。
+ * 否则直接调用 `resolve` 并返回解析得到的 [PsiElement]。
+ */
 fun PsiReference.resolveFirst(): PsiElement? {
-    return if (this is PsiPolyVariantReference) {
-        this.multiResolve(false).firstNotNullOfOrNull { it.element }
-    } else {
-        this.resolve()
+    return when (this) {
+        is PsiPolyVariantReference -> {
+            this.multiResolve(false).firstNotNullOfOrNull { it.element }
+        }
+        else -> this.resolve()
     }
 }
 
-/** 收集该引用及其子引用（若实现了 [PsiCompositeReference]）。 */
+/**
+ * 收集引用。
+ *
+ * 如果当前引用是 [PsiCompositeReference]，则递归收集其中的引用。
+ * 否则直接返回当前引用的单例数组。
+ */
 fun PsiReference.collectReferences(): Array<out PsiReference> {
-    if (this is PsiCompositeReference) {
-        val result = mutableListOf<PsiReference>()
-        doCollectReferences(this, result)
-        if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return result.toTypedArray()
+    return when (this) {
+        is PsiCompositeReference -> {
+            val result = mutableListOf<PsiReference>()
+            doCollectReferences(this, result)
+            if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
+            result.toTypedArray()
+        }
+        else -> arrayOf(this)
     }
-    return arrayOf(this)
 }
 
 private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
     if (sourceReference is PsiCompositeReference) {
         val references = sourceReference.getReferences()
-        if (references.isNotNullOrEmpty()) { // 为空数组 / 为 `null` 在这里是等价的
-            references.forEach { reference ->
+        if (references.isNotEmpty()) {
+            references.forEachFast { reference ->
                 ProgressManager.checkCanceled()
                 doCollectReferences(reference, result)
             }

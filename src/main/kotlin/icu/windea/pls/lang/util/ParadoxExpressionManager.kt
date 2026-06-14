@@ -30,7 +30,6 @@ import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.removePrefixOrNull
@@ -40,7 +39,7 @@ import icu.windea.pls.core.util.RegistedKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -355,18 +354,18 @@ object ParadoxExpressionManager {
         return null
     }
 
-    fun multiResolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Collection<PsiElement> {
+    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): List<PsiElement> {
         ProgressManager.checkCanceled()
-        if (configExpression == null) return emptySet()
+        if (configExpression == null) return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
+        if (expressionText.isParameterized()) return emptyList() // 排除引用文本带参数的情况
 
-        val result = ParadoxExpressionService.multiResolveScriptExpression(element, rangeInElement, expressionText, config, isKey)
-        if (result.isNotNullOrEmpty()) return result
+        val result = ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, expressionText, config, isKey)
+        if (result.isNotEmpty()) return result
 
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonSetOrEmpty()
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
 
-        return emptySet()
+        return emptyList()
     }
 
     private fun getResolvedConfigElement(element: ParadoxExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
@@ -390,12 +389,12 @@ object ParadoxExpressionManager {
         return result
     }
 
-    fun multiResolveLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Collection<PsiElement> {
+    fun resolveAllLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): List<PsiElement> {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
+        if (expressionText.isParameterized()) return emptyList() // 排除引用文本带参数的情况
 
-        val result = ParadoxExpressionService.multiResolveLocalisationExpression(element, rangeInElement, expressionText)
+        val result = ParadoxExpressionService.resolveAllLocalisationExpression(element, rangeInElement, expressionText)
         return result
     }
 
@@ -408,12 +407,12 @@ object ParadoxExpressionManager {
         return result
     }
 
-    fun multiResolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): Collection<PsiElement> {
+    fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): List<PsiElement> {
         ProgressManager.checkCanceled()
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return emptySet()
+        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
 
-        val result = ParadoxExpressionService.multiResolveCsvExpression(element, rangeInElement, expressionText, config)
+        val result = ParadoxExpressionService.resolveAllCsvExpression(element, rangeInElement, expressionText, config)
         return result
     }
 

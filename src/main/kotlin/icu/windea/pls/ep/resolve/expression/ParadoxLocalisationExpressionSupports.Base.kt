@@ -25,12 +25,12 @@ abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisa
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder)
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
-        if (element !is ParadoxLocalisationExpressionElement) return null
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): List<PsiReference> {
+        if (element !is ParadoxLocalisationExpressionElement) return emptyList()
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
-        val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return null
+        val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return emptyList()
         val references = complexExpression.getAllReferences(element)
-        if (references.isEmpty()) return null
-        return references.toTypedArray()
+        if (references.isEmpty()) return emptyList()
+        return references
     }
 }

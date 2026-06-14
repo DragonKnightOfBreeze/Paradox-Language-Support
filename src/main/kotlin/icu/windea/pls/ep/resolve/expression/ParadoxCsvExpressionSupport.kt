@@ -9,6 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -40,8 +41,8 @@ interface ParadoxCsvExpressionSupport {
         return null
     }
 
-    fun multiResolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config).to.singletonSetOrEmpty()
+    fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): List<PsiElement> {
+        return resolve(element, rangeInElement, expressionText, config).to.singletonListOrEmpty()
     }
 
     fun complete(context: ProcessingContext, result: CompletionResultSet) {

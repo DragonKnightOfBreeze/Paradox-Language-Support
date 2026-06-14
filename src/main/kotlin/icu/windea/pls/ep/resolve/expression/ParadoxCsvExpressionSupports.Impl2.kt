@@ -44,10 +44,10 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).find()
     }
 
-    override fun multiResolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
+    override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.configExpression.value ?: return emptySet()
+        val typeExpression = config.configExpression.value ?: return emptyList()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(expressionText, type, selector).findAll()

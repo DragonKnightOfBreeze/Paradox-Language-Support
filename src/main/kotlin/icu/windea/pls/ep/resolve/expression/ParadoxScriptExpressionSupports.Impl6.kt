@@ -12,6 +12,8 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configs
@@ -70,17 +72,17 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         }
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
-        if (element !is ParadoxScriptStringExpressionElement) return null
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): List<PsiReference> {
+        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val separatorIndex = expressionText.indexOf('@')
-        if (separatorIndex == -1) return null
+        if (separatorIndex == -1) return emptyList()
         val range = rangeInElement ?: TextRange.create(0, expressionText.length).unquote(expressionText)
         val offset = separatorIndex
         val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-        if (range1.isEmpty) return null
+        if (range1.isEmpty) return emptyList()
         val config1 = CwtValueConfig.createMock(config.configGroup, typeExpression)
         val reference = ParadoxScriptExpressionPsiReference(element, range1, listOf(config1))
-        return arrayOf(reference)
+        return reference.to.singletonList()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

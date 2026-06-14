@@ -62,7 +62,7 @@ class ParadoxCsvExpressionPsiReference(
         }
         // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return ResolveResult.EMPTY_ARRAY
-        val resolved = ParadoxExpressionManager.multiResolveCsvExpression(element, rangeInElement, config)
+        val resolved = ParadoxExpressionManager.resolveAllCsvExpression(element, rangeInElement, config)
         return resolved.createResults()
     }
 }

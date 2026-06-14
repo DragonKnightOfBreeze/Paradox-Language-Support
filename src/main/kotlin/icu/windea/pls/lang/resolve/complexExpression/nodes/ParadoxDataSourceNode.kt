@@ -131,7 +131,7 @@ class ParadoxDataSourceNode(
             run {
                 if (linkConfigsNotDynamicValue.isEmpty()) return@run
                 val resolved = linkConfigsNotDynamicValue.flatMap {
-                    ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, it, it.configExpression)
+                    ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, it, it.configExpression)
                 }
                 if (resolved.isNotEmpty()) return resolved.createResults()
             }
