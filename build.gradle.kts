@@ -336,10 +336,10 @@ tasks {
                     include("**/*.cwt", "**/LICENSE", "**/*.md")
                     // Normalize paths:
                     // - Flatten files under the {repoDir}-{branch} directory
-                    // - Flatten files under the config directory
+                    // - Flatten files under the `config` directory
                     eachFile {
-                        path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/")
-                        path = path.replace("/$gameTypeId/config/", "/$gameTypeId/")
+                        path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/", ignoreCase = true)
+                        path = path.replace("/$gameTypeId/config/", "/$gameTypeId/", ignoreCase = true)
                     }
                 }
             }
