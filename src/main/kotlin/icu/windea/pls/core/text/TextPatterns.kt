@@ -114,13 +114,14 @@ class TextPatternBasedBuilder<T>(providers: List<TextPatternBasedProvider<T, out
         }
     }
 
-    private val literalProviderMap = providers.asSequence()
-        .filter { it.pattern is TextPattern.Literal }
-        .associateBy { (it.pattern as TextPattern.Literal).value }
-    private val nonLiteralProviders = providers.asSequence()
-        .filterNot { it.pattern is TextPattern.Literal }
-        .sortedWith(providerComparator)
-        .toList()
+    private val literalProviderMap by lazy {
+        providers.filter { it.pattern is TextPattern.Literal }
+            .associateBy { (it.pattern as TextPattern.Literal).value }
+    }
+    private val nonLiteralProviders by lazy {
+        providers.filterNot { it.pattern is TextPattern.Literal }
+            .sortedWith(providerComparator)
+    }
 
     fun build(text: String): T? {
         val literalProvider = literalProviderMap[text]
