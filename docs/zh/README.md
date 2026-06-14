@@ -75,12 +75,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 鉴于插件同时拥有庞大的代码规模（约11万行 Kotlin 生产代码）与极高的复杂度（平台 & 领域 & 架构），贡献核心代码是极具挑战性的。
 尽管如此，通过参考已有的文档、代码、配置文件和规则文件，AI 协助以及自行探索，考虑与实践部分代码上的贡献仍然是可能的。
-例如，通过检查参考文档和配置文件（`plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
 
-### 贡献文档
-
-项目的文档主要分为普通文档（如 `README.md`）、维护者文档（位于 [documents](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/documents) 目录中）和参考文档（位于 [docs](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/docs) 目录中）。
-这些文档中难免存在错误和不足之处、遗漏的细节以及待补充的内容，欢迎贡献以改善文档质量，尤其是项目的参考文档。
+例如，通过浏览参考文档和配置文件（如 `plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
 
 ### 贡献规则文件
 
@@ -88,6 +84,11 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等），保持其更新将直接改善该游戏所有用户的使用体验。
 
 作为参考，请阅读[规则系统的文档](config.md)、[语法的参考手册](ref-syntax.md)和[规则格式的参考手册](ref-config-format.md)。
+
+### 贡献文档
+
+项目的文档主要分为普通文档（如 `README.md`）、维护者文档（位于 [documents](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/documents) 目录中）和参考文档（位于 [docs](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/docs) 目录中）。
+这些文档中难免存在错误和不足之处、遗漏的细节以及待补充的内容，欢迎贡献以改善文档质量，尤其是项目的参考文档。
 
 ## 参考链接
 
