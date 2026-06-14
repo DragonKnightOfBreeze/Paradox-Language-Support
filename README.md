@@ -168,7 +168,6 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
 - [PSI | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/psi.html)
 - [Custom Language Support | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)
-- [Indexing and PSI Stubs | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/indexing-and-psi-stubs.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
 - [Steam browser protocol | Valve Developer Community](https://developer.valvesoftware.com/wiki/Steam_browser_protocol)
 
@@ -193,20 +192,19 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 
 ### Image Processing
 
-- [haraldk/TwelveMonkeys: Additional plugins and extensions for Java's ImageIO (DDS / TGA support)](https://github.com/haraldk/TwelveMonkeys)
-- [Texconv | microsoft/DirectXTex Wiki: Command-line tool for converting and processing DDS textures](https://github.com/microsoft/DirectXTex/wiki/Texconv)
-- [ImageMagick: Create, edit, compose, or convert digital images](https://www.imagemagick.org)
+- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
 
 ### Community & Modding Resources
 
-- [Paradox Mods: The official mod portal for Paradox games](https://mods.paradoxplaza.com)
-- [Paradox Forums: The official forums (including per-game modding sub-forums)](https://forum.paradoxplaza.com)
+- [Paradox Mods](https://mods.paradoxplaza.com) - The official mod portal for Paradox games
+- [Paradox Forums](https://forum.paradoxplaza.com) - The official forums for Paradox games
 
 ### Tutorials & Wiki
 
-- [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
-- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) (Stellaris Chinese Wiki)
-- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) (Stellaris Mod Tutorial, written in Simplified Chinese)
+- [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki) - Stellaris Official Wiki
+- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris Chinese Wiki
+- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris Mod Tutorial (written in Simplified Chinese)
 
 ## About
 

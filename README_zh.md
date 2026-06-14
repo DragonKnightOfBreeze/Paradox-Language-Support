@@ -126,7 +126,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
   欢迎向[各个规则仓库](cwt/README.md)贡献。
 - 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
 
-## 贡献与支持
+## 贡献 & 支持
 
 我们欢迎各种形式的贡献与支持，包括但不限于：
 
@@ -169,17 +169,16 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
 - [PSI | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/psi.html)
 - [Custom Language Support | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)
-- [Indexing and PSI Stubs | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/indexing-and-psi-stubs.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
 - [Steam browser protocol | Valve Developer Community](https://developer.valvesoftware.com/wiki/Steam_browser_protocol)
 
 ### 插件开发
 
-- [JetBrains/intellij-community: IntelliJ 平台源代码（插件开发的主要参考）](https://github.com/JetBrains/intellij-community)
-- [JetBrains/intellij-platform-plugin-template: 用于构建 IntelliJ 平台插件的模板项目](https://github.com/JetBrains/intellij-platform-plugin-template)
-- [JetBrains/intellij-platform-gradle-plugin: 用于构建 IntelliJ 平台插件的 Gradle 插件](https://github.com/JetBrains/intellij-platform-gradle-plugin)
-- [JetBrains/Grammar-Kit: IntelliJ IDEA 的语法文件支持与解析器/PSI 生成工具](https://github.com/JetBrains/Grammar-Kit)
-- [jflex-de/jflex: 支持完整 Unicode 的高速 Java 词法分析器生成器](https://github.com/jflex-de/jflex)
+- [JetBrains/intellij-community: The IntelliJ Platform source code (a primary reference for plugin development)](https://github.com/JetBrains/intellij-community)
+- [JetBrains/intellij-platform-plugin-template: Template for building IntelliJ Platform plugins](https://github.com/JetBrains/intellij-platform-plugin-template)
+- [JetBrains/intellij-platform-gradle-plugin: Gradle plugin for building IntelliJ Platform plugins](https://github.com/JetBrains/intellij-platform-gradle-plugin)
+- [JetBrains/Grammar-Kit: Grammar files support & parser/PSI generation for IntelliJ IDEA](https://github.com/JetBrains/Grammar-Kit)
+- [jflex-de/jflex: The fast scanner generator for Java with full Unicode support](https://github.com/jflex-de/jflex)
 
 ### 工具与插件
 
@@ -194,20 +193,19 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### 图像处理
 
-- [haraldk/TwelveMonkeys: 为 Java ImageIO 提供额外插件与扩展（DDS / TGA 支持）](https://github.com/haraldk/TwelveMonkeys)
-- [Texconv | microsoft/DirectXTex Wiki: 用于转换与处理 DDS 纹理的命令行工具](https://github.com/microsoft/DirectXTex/wiki/Texconv)
-- [ImageMagick: 创建、编辑、合成与转换数字图像](https://www.imagemagick.org)
+- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
 
-### 社区与模组资源
+### 社区 & 模组资源
 
-- [Paradox Mods: Paradox 游戏的官方模组平台](https://mods.paradoxplaza.com)
-- [Paradox Forums: 官方论坛（包含各游戏的模组子论坛）](https://forum.paradoxplaza.com)
+- [Paradox Mods](https://mods.paradoxplaza.com) - Paradox 游戏的官方模组平台
+- [Paradox Forums:](https://forum.paradoxplaza.com) - Paradox 游戏的官方论坛
 
-### 教程与百科
+### 教程 && 百科
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
-- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
-- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app)
+- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris 中文维基
+- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris 模组教程（中文）
 
 ## 关于
 

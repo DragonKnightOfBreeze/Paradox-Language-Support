@@ -94,9 +94,21 @@ For reference, please read the [documentation for the config system](config.md),
 ### Official Documentation
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
+- [Coroutines | Kotlin Documentation](https://kotlinlang.org/docs/coroutines-overview.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+- [PSI | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/psi.html)
+- [Custom Language Support | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
+- [Steam browser protocol | Valve Developer Community](https://developer.valvesoftware.com/wiki/Steam_browser_protocol)
+
+### Plugin Development
+
+- [JetBrains/intellij-community: The IntelliJ Platform source code (a primary reference for plugin development)](https://github.com/JetBrains/intellij-community)
+- [JetBrains/intellij-platform-plugin-template: Template for building IntelliJ Platform plugins](https://github.com/JetBrains/intellij-platform-plugin-template)
+- [JetBrains/intellij-platform-gradle-plugin: Gradle plugin for building IntelliJ Platform plugins](https://github.com/JetBrains/intellij-platform-gradle-plugin)
+- [JetBrains/Grammar-Kit: Grammar files support & parser/PSI generation for IntelliJ IDEA](https://github.com/JetBrains/Grammar-Kit)
+- [jflex-de/jflex: The fast scanner generator for Java with full Unicode support](https://github.com/jflex-de/jflex)
 
 ### Tools & Plugins
 
@@ -105,20 +117,22 @@ For reference, please read the [documentation for the config system](config.md),
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
+- [ParadoxGameConverters: Tools that convert a save game from one Paradox game into a playable mod for another](https://github.com/ParadoxGameConverters)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 - [Victoria-3-Modding-Co-op/Modding-Digests: This repository contains modding digests for Victoria 3 updates.](https://github.com/Victoria-3-Modding-Co-op/Modding-Digests)
 
+### Image Processing
+
+- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
+
+### Community & Modding Resources
+
+- [Paradox Mods](https://mods.paradoxplaza.com) - The official mod portal for Paradox games
+- [Paradox Forums](https://forum.paradoxplaza.com) - The official forums for Paradox games
+
 ### Tutorials & Wiki
 
-- [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
-- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) (Stellaris Chinese Wiki)
-- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) (Stellaris Mod Tutorial, written in Simplified Chinese)
-
-[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
-[url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
-[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
-[url:discord]: https://discord.gg/vBpbET2bXT
-[url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
-[url:afdian]: https://afdian.com/a/dk_breeze
-
-[mailto]: mailto:dk_breeze@qq.com
+- [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki) - Stellaris Official Wiki
+- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris Chinese Wiki
+- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris Mod Tutorial (written in Simplified Chinese)
