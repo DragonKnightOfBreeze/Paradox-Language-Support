@@ -46,6 +46,7 @@
 ## 附加
 
 - [x] 重命名EP接口 `CwtDataExpressionResolver` 为 `CwtDataExpressionSupport`
+- [x] 将 `icu.windea.pls.ep.match` 中的已有代码全部移到 `icu.windea.pls.ep.match.expression`
 
 ## v2.2.0-csv
 

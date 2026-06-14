@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.match
+package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig

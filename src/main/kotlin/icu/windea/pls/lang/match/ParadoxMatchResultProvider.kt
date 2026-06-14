@@ -28,7 +28,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
+import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression

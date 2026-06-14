@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.match
+package icu.windea.pls.ep.match.expression
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
