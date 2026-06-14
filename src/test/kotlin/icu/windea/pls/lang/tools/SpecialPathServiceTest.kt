@@ -3,7 +3,7 @@ package icu.windea.pls.lang.tools
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Test
-import kotlin.io.path.exists
+import java.nio.file.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
@@ -14,11 +14,8 @@ class SpecialPathServiceTest {
     // 测试用模组信息：UI Overhaul Dynamic
     private val testModName = "UI Overhaul Dynamic"
     private val testModSteamId = "1623423360"
-    // Steam 创意工坊本地安装路径（若本机未安装则跳过断言）
-    private val testModWorkshopPath = "D:/Program Files/Steam/steamapps/workshop/content/281990/$testModSteamId"
-    // 游戏数据目录下的本地 .mod 描述符路径
-    private val testModLocalDescriptor =
-        "${System.getProperty("user.home")}/Documents/Paradox Interactive/Stellaris/mod/ugc_${testModSteamId}.mod"
+    // private val testModLocalPath = "${System.getProperty("user.home")}/Documents/Paradox Interactive/Stellaris/mod/ugc_${testModSteamId}.mod"
+    // private val testModWorkshopPath = "D:/Program Files/Steam/steamapps/workshop/content/281990/$testModSteamId"
 
     // region 辅助方法
 
@@ -30,7 +27,7 @@ class SpecialPathServiceTest {
         println("  $label$idPart: $path  ($existsStr)")
     }
 
-    private fun existsStr(path: java.nio.file.Path?): String {
+    private fun existsStr(path: Path?): String {
         if (path == null) return "null"
         return when {
             path.isRegularFile() -> "file, exists"
@@ -136,17 +133,9 @@ class SpecialPathServiceTest {
     @Test
     fun getModWorkshopPath() {
         println("=== Mod Workshop Path: $testModName ===")
-        val path = service.getSteamGameWorkshopPath("281990") // Stellaris steamId
+        val path = service.getSteamGameWorkshopPath(ParadoxGameType.Stellaris.steamId)
         val modPath = path?.resolve(testModSteamId)
         printPathEntry(testModName, testModSteamId, modPath, existsStr(modPath))
-        // 本地路径不存在不断言失败
-    }
-
-    @Test
-    fun getModLocalDescriptorPath() {
-        println("=== Mod Local Descriptor Path: $testModName ===")
-        val path = kotlin.io.path.Path(testModLocalDescriptor)
-        printPathEntry("$testModName (.mod)", testModSteamId, path, existsStr(path))
         // 本地路径不存在不断言失败
     }
 

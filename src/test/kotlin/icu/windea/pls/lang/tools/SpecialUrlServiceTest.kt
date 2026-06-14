@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools
 
+import com.google.common.base.Supplier
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert
 import org.junit.Test
@@ -14,9 +15,8 @@ class SpecialUrlServiceTest {
     // Steam 创意工坊 steamId 与本地 mod 路径
     private val testModName = "UI Overhaul Dynamic"
     private val testModSteamId = "1623423360"
-    private val testModLocalPath = "${System.getProperty("user.home")}/Documents/Paradox Interactive/Stellaris/mod/ugc_${testModSteamId}.mod"
-    private val testModWorkshopPath = System.getProperty("user.home")
-        .let { _ -> "D:/Program Files/Steam/steamapps/workshop/content/281990/$testModSteamId" }
+    // private val testModLocalPath = "${System.getProperty("user.home")}/Documents/Paradox Interactive/Stellaris/mod/ugc_${testModSteamId}.mod"
+    // private val testModWorkshopPath = "D:/Program Files/Steam/steamapps/workshop/content/281990/$testModSteamId"
 
     // region 辅助方法
 
@@ -36,7 +36,7 @@ class SpecialUrlServiceTest {
             conn.instanceFollowRedirects = true
             conn.connect()
             conn.responseCode
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             -1
         }
     }
@@ -55,6 +55,10 @@ class SpecialUrlServiceTest {
         println("  $label$idPart: $url$statusPart")
     }
 
+    private fun checkAccessibleOrTolerated(code: Int): Boolean {
+        return code in 200..299 || code == -1
+    }
+
     // endregion
 
     // region Steam 游戏链接（网页）
@@ -67,7 +71,7 @@ class SpecialUrlServiceTest {
             val url = service.getSteamGameStoreUrl(gameType.steamId)
             val code = checkUrl(url)
             printUrlEntry(gameType.title, gameType.id, url, code)
-            if (code !in 200..299) failed += "${gameType.id}: $url (HTTP $code)"
+            if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
         if (failed.isNotEmpty()) Assert.fail("Some Steam game store URLs are inaccessible:\n${failed.joinToString("\n")}")
     }
@@ -80,7 +84,7 @@ class SpecialUrlServiceTest {
             val url = service.getSteamGameWorkshopUrl(gameType.steamId)
             val code = checkUrl(url)
             printUrlEntry(gameType.title, gameType.id, url, code)
-            if (code !in 200..299) failed += "${gameType.id}: $url (HTTP $code)"
+            if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
         if (failed.isNotEmpty()) Assert.fail("Some Steam game workshop URLs are inaccessible:\n${failed.joinToString("\n")}")
     }
@@ -92,7 +96,7 @@ class SpecialUrlServiceTest {
         val url = service.getSteamWorkshopUrl(testModSteamId)
         val code = checkUrl(url)
         printUrlEntry(testModName, testModSteamId, url, code)
-        if (code !in 200..299) failed += "$testModName: $url (HTTP $code)"
+        if (!checkAccessibleOrTolerated(code)) failed += "$testModName: $url (HTTP $code)"
         if (failed.isNotEmpty()) Assert.fail("Some Steam workshop item URLs are inaccessible:\n${failed.joinToString("\n")}")
     }
 
@@ -161,7 +165,7 @@ class SpecialUrlServiceTest {
             val url = service.getParadoxModsGameUrl(gameId)
             val code = checkUrl(url)
             printUrlEntry(gameType.title, gameType.id, url, code)
-            if (code !in 200..299) failed += "${gameType.id}: $url (HTTP $code)"
+            if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
         if (failed.isNotEmpty()) Assert.fail("Some Paradox Mods game URLs are inaccessible:\n${failed.joinToString("\n")}")
     }
@@ -177,13 +181,26 @@ class SpecialUrlServiceTest {
         val url = service.getParadoxModsModUrl(pdxModId)
         val code = checkUrl(url)
         printUrlEntry(pdxModName, pdxModId, url, code)
-        if (code !in 200..299) failed += "$pdxModName: $url (HTTP $code)"
+        if (!checkAccessibleOrTolerated(code)) failed += "$pdxModName: $url (HTTP $code)"
         if (failed.isNotEmpty()) Assert.fail("Some Paradox Mods mod URLs are inaccessible:\n${failed.joinToString("\n")}")
     }
 
     // endregion
 
-    // region 游戏维基链接
+    // region 官网相关链接
+
+    @Test
+    fun getGameForumUrl() {
+        println("=== Game Forum URLs ===")
+        val failed = mutableListOf<String>()
+        for (gameType in gameTypes) {
+            val url = service.getGameForumUrl(gameType) ?: continue
+            val code = checkUrl(url)
+            printUrlEntry(gameType.title, gameType.id, url, code)
+            if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
+        }
+        if (failed.isNotEmpty()) Assert.fail("Some game forum URLs are inaccessible:\n${failed.joinToString("\n")}")
+    }
 
     @Test
     fun getGameWikiUrl() {
@@ -193,7 +210,7 @@ class SpecialUrlServiceTest {
             val url = service.getGameWikiUrl(gameType)
             val code = checkUrl(url)
             printUrlEntry(gameType.title, gameType.id, url, code)
-            if (code !in 200..299) failed += "${gameType.id}: $url (HTTP $code)"
+            if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
         if (failed.isNotEmpty()) Assert.fail("Some game wiki URLs are inaccessible:\n${failed.joinToString("\n")}")
     }

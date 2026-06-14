@@ -312,6 +312,7 @@
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameInSteamDb"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameInParadoxMods"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$ModInParadoxMods"/>
+    <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameForum"/>
     <specialUrlProvider implementation="icu.windea.pls.ep.tools.SpecialUrlProviders$GameWiki"/>
 
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxGameJsonImporter"/>

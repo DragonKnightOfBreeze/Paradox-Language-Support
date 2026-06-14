@@ -62,14 +62,31 @@ class SpecialUrlServiceImpl : SpecialUrlService {
         return "https://mods.paradoxplaza.com/mods/$remoteId"
     }
 
+    override fun getGameForumUrl(gameType: ParadoxGameType): String? {
+        // e.g.,
+        // - https://forum.paradoxplaza.com/forum/forums/stellaris.900/
+        if (gameType == ParadoxGameType.Core) throw UnsupportedOperationException()
+        return when (gameType) {
+            ParadoxGameType.Stellaris -> "https://forum.paradoxplaza.com/forum/forums/stellaris.900/"
+            ParadoxGameType.Ck3 -> "https://forum.paradoxplaza.com/forum/forums/crusader-kings-iii.1059/"
+            ParadoxGameType.Eu4 -> "https://forum.paradoxplaza.com/forum/forums/europa-universalis-iv.731/"
+            ParadoxGameType.Eu5 -> "https://forum.paradoxplaza.com/forum/forums/europa-universalis-v.1171/"
+            ParadoxGameType.Hoi4 -> "https://forum.paradoxplaza.com/forum/forums/hearts-of-iron-iv.844/"
+            ParadoxGameType.Ir -> "https://forum.paradoxplaza.com/forum/forums/imperator-rome.1008/"
+            ParadoxGameType.Vic3 -> "https://forum.paradoxplaza.com/forum/forums/victoria-3.1095/"
+            else -> null
+        }
+    }
+
     override fun getGameWikiUrl(gameType: ParadoxGameType): String {
         // e.g.,
         // - https://stellaris.paradoxwikis.com
         // - https://stellaris.paradoxwikis.com/Stellaris_Wiki
-
         if (gameType == ParadoxGameType.Core) throw UnsupportedOperationException()
-        val id = if (gameType == ParadoxGameType.Ir) "imperator" else gameType.id
-        return "https://${id}.paradoxwikis.com"
+        return when (gameType) {
+            ParadoxGameType.Ir -> "https://imperator.paradoxwikis.com"
+            else -> "https://${gameType.id}.paradoxwikis.com"
+        }
     }
 
     override fun isSteamUrl(url: String): Boolean {
