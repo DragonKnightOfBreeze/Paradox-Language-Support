@@ -62,10 +62,9 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                val r = withRecursionCheck("${ep.javaClass.name}@resolve@${expressionText}") {
+                withRecursionCheck("${ep.javaClass.name}@resolve@${expressionText}") {
                     ep.resolve(element, rangeInElement, expressionText, config, isKey)
                 }
-                r
             }
         }
     }
@@ -158,8 +157,7 @@ object ParadoxExpressionService {
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val r = ep.resolve(element, rangeInElement, expressionText)
-            r
+            ep.resolve(element, rangeInElement, expressionText)
         }
     }
 
@@ -236,8 +234,7 @@ object ParadoxExpressionService {
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val r = ep.resolve(element, rangeInElement, expressionText, config)
-            r
+            ep.resolve(element, rangeInElement, expressionText, config)
         }
     }
 
