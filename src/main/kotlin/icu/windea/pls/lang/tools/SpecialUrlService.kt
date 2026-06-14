@@ -2,6 +2,7 @@ package icu.windea.pls.lang.tools
 
 import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 
 interface SpecialUrlService {
     /**

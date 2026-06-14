@@ -77,15 +77,6 @@ interface SpecialUrlProviders {
         }
     }
 
-    class GameWiki : SpecialUrlProvider {
-        override val text get() = PlsBundle.message("special.url.gameWiki")
-
-        override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
-            val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
-            return SpecialUrlService.getInstance().getGameWikiUrl(gameType)
-        }
-    }
-
     class GameInParadoxMods : SpecialUrlProvider {
         override val text get() = PlsBundle.message("special.url.gameInParadoxMods")
 
@@ -105,6 +96,15 @@ interface SpecialUrlProviders {
             if (rootInfo.source != ParadoxModSource.Paradox) return null
             val remoteId = rootInfo.remoteId ?: return null
             return SpecialUrlService.getInstance().getParadoxModsModUrl(remoteId)
+        }
+    }
+
+    class GameWiki : SpecialUrlProvider {
+        override val text get() = PlsBundle.message("special.url.gameWiki")
+
+        override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
+            val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
+            return SpecialUrlService.getInstance().getGameWikiUrl(gameType)
         }
     }
 }
