@@ -17,34 +17,60 @@
 
 - [x] P2 补充并完善 `CONTRUBUTING.md` 和 `CONTRIBUTORS.md`
 - [x] P2 补充并完善 `ROADMAP.md`
-- [ ] P2 清理 `CHANGELOG.md`，进一步确定编写规范
+- [x] P2 清理 `CHANGELOG.md`，进一步确定编写规范
 - [x] P2 重构 path/expression/complexExpression/config/configExpression 的解析器与解析的相关代码（改为：模型接口上的静态解析方法 + 委托给解析器类的对应方法）
 - [x] P2 重构 expressionSupport 以及相关代码（精简与规范化）
 - [ ] P3 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作）
 - [ ] P3 提供动作，以进行定义/定义注入之间的差异比较
 - [x] P4 借助 AI，提供更多 specialPathProvider 和 specialUrlProvider 的默认 EP 实现
-- [ ] P2/FAST 支持形如 `event_target:target@root` 的动态链接节点
-  - 可在作用域字段表达式（scopeFieldExpression）和值字段表达式（valueFieldExpression）中使用，适用于传入的任意类型的动态值
-- [ ] P2/FAST 支持数组定值引用表达式（`arrayDefineReferenceExpression`）
-  - 格式：`array_define:Namespace|Name|Index`，索引从0开始
-  - 区别于已支持的 defineReferenceExpression
-  - 用于：CK3/VIC3/EU5
-- [ ] P2/FAST/MAYBE 支持动态值集合表达式（`dynamicValueSetExpression`） ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
-  - 读：`set_flags = "flag1,flag2"`
-  - 写：`required_flags = "flag1,not(flag2)"`
-  - `flag1` 和 `flag2` 视为标识符（动态值），`not` 视为关键字，允许多余的空白
-  - 要求必须用双引号括起，否则给出警告
+- [ ] P2 完善对作用域字段表达式（scopeFieldExpression）和值字段表达式（valueFieldExpression）的支持：兼容其中作为链接数据源传入的动态值表达式（dynamicValueExpression） ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
+  - 示例：`event_target:target@root.owner` - `event_target:target@root` 是一个单独的作用域链接节点，插件目前暂不支持其中的 `@root` 部分。
+  - 如果链接数据源传入了动态值，则从数据源节点替换为动态值表达式（dynamicValueExpression）。
+  - 插件目前认为适用于传入的任意类型的动态值。
+  - 单独的动态值表达式中的 `@` 之后允许一组链接节点，而嵌套时仅允许一个链接节点，之后的链接节点属于外层的链式表达式@。
+  - 在游戏引擎底层层面，`target@root.owner` 会被解析为 `target__{id}`，其中 `{id}` 是 `root.owner` 的作用域内部ID。
+  - 在游戏引擎底层层面，`event_target:target@root.owner` 会被解析为 `event_target:target__{id}.owner`，其中 `{id}` 是 `root` 的作用域内部ID。
+  - [ ] 需要补充测试。
+  - [ ] 需要更新相关规则文件。
+  - [ ] 需要创建单独的 Issue。
+- [ ] P2 [CK3/VIC3?/EU5?] 完善对动态值集合表达式（dynamicValueSetExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
+  - 示例：`flag1,flag2` - 写访问。`flag1` 和 `flag2` 视为标识符（作为动态值节点）。
+  - 示例：`flag1,not(flag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
+  - 对应的规则表达式（数据表达式）：`$dynamic_value_set[{name}]` 和 `$dynamic_value_set_condition[{name}]`（条件变体）。
+  - 忽略表达式中的多余空白。
+  - 需要用双引号括起，否则给出警告。
+  - [ ] 需要补充测试。
+  - [ ] 需要更新相关规则文件。
+  - [ ] 需要创建单独的 Issue。
+- [ ] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
+  - 示例：`Namespace|Name` - 定值引用表达式。引用字面量（通常是数字、颜色或日期）。
+  - 示例：`Namespace|Name|0` - 数组定值引用表达式。引用字面量（通常是数字）。索引从0开始。
+  - 对应的规则表达式（数据表达式）：`$define_reference` 和 `$array_define_reference`
+  - 需要补充规范化的链接规则 `define` 和 `array_define`（`type = value`）。
+  - 需要补充或重构复杂表达式实现、代码补全、代码检查。
+  - 需要考虑补充评估器、检查器（基于评估器）、代码折叠（基于评估器）、意向动作（基于评估器）。
+  - [ ] 需要补充测试。
+  - [ ] 需要更新相关规则文件。
+  - [ ] 需要创建单独的 Issue。
 - [x] P2/FAST 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
   - 例如说明模组目录直接位于游戏创意工坊目录下，因此被推断为对应的游戏类型
   - 此时不允许在模组设置对话框中更改游戏类型
-- [ ] P2/FAST ~~在打开项目时，递归扫描项目中的目录，检测未配置游戏目录的模组目录，并逐个发送警告级别的通知~~
-  - 跳过以 `.` 开始的目录、游戏目录和模组目录
-  - 忽略：存在其他类似的编辑器通知
 
 ## 附加
 
 - [x] 重命名EP接口 `CwtDataExpressionResolver` 为 `CwtDataExpressionSupport`
 - [x] 将 `icu.windea.pls.ep.match` 中的已有代码全部移到 `icu.windea.pls.ep.match.expression`
+
+## 移除
+
+- P2 2.1.10 ~~支持数组定值引用表达式（arrayDefineReferenceExpression）~~
+  - 格式：`array_define:Namespace|Name|Index`，索引从0开始
+  - 区别于已支持的 defineReferenceExpression
+  - 用于：CK3/VIC3/EU5
+  - 移除：情况比预想的更加复杂，实际上，`array_define:Namespace|Name|Index` 自身是一个值字段表达式，`Namespace|Name|Index` 则是其中嵌套的数组定值引用表达式。
+- P2/FAST ~~在打开项目时，递归扫描项目中的目录，检测未配置游戏目录的模组目录，并逐个发送警告级别的通知~~
+  - 跳过以 `.` 开始的目录、游戏目录和模组目录
+  - 忽略：存在其他类似的编辑器通知
 
 ## v2.2.0-csv
 
