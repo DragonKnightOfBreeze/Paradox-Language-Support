@@ -4,9 +4,9 @@
 
 ## Overview
 
-> This document is written in Chinese. For non-Chinese readers, please get your translation engine or AI assistant prepared.
+> This document is written in Chinese. For non-Chinese users, please have your translation engine or AI assistant ready.
 
-本文档是基于原始的开发路线笔记（`documents/notes/笔记：开发路线.md`）进一步整理后的路线图文档。
+本文档是基于原始的[开发路线笔记](documents/notes/笔记：开发路线.md)进一步整理后的路线图文档。
 原始笔记按日期组织，本文件将其重新归纳为按版本号组织后的结构，并且进一步规范化，补充了额外的细节。
 
 - 截止版本：v2.1.10
@@ -24,6 +24,7 @@
 - [x] P2 重构 path/expression/complexExpression/config/configExpression 的解析器与解析的相关代码（改为：模型接口上的静态解析方法 + 委托给解析器类的对应方法）
 - [x] P2 重构 expressionSupport 以及相关代码（精简与规范化）
 - [ ] P3 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作）
+- [ ] P3 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） - 相关EP：`extendWordSelectionHandler`
 - [ ] P3 提供动作，以进行定义/定义注入之间的差异比较
 - [x] P4 借助 AI，提供更多 specialPathProvider 和 specialUrlProvider 的默认 EP 实现
 - [x] P2 完善对作用域字段表达式（scopeFieldExpression）和值字段表达式（valueFieldExpression）的支持：兼容其中作为链接数据源传入的动态值表达式（dynamicValueExpression） ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
@@ -33,17 +34,19 @@
   - 单独的动态值表达式中的 `@` 之后允许一组链接节点，而嵌套时仅允许一个链接节点，再之后的链接节点属于外层的链式表达式。
   - 在游戏引擎底层层面，`target@root.owner` 会被解析为 `target__{id}`，其中 `{id}` 是 `root.owner` 的作用域内部ID。
   - 在游戏引擎底层层面，`event_target:target@root.owner` 会被解析为 `event_target:target__{id}.owner`，其中 `{id}` 是 `root` 的作用域内部ID。
-  - [x] 需要补充测试。
-  - [x] 需要创建单独的 Issue。
+  - [x] 补充实现代码。
+  - [x] 补充测试。
+  - [x] 创建单独的 Issue。
 - [ ] P2 [CK3/VIC3?/EU5?] 完善对动态值集合表达式（dynamicValueSetExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
   - 示例：`flag1,flag2` - 写访问。`flag1` 和 `flag2` 视为标识符（作为动态值节点）。
   - 示例：`flag1,not(flag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
   - 对应的规则表达式（数据表达式）：`$dynamic_value_set[{name}]` 和 `$dynamic_value_set_condition[{name}]`（条件变体）。
   - 忽略表达式中的多余空白。
   - 需要用双引号括起，否则给出警告。
-  - [ ] 需要补充测试。
-  - [ ] 需要更新相关规则文件。
-  - [ ] 需要创建单独的 Issue。
+  - [ ] 补充实现代码。
+  - [ ] 补充测试。
+  - [ ] 更新相关规则文件。
+  - [ ] 创建单独的 Issue。
 - [ ] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
   - 示例：`Namespace|Name` - 定值引用表达式。引用字面量（通常是数字、颜色或日期）。
   - 示例：`Namespace|Name|0` - 数组定值引用表达式。引用字面量（通常是数字）。索引从0开始。
@@ -51,9 +54,10 @@
   - 需要补充规范化的链接规则 `define` 和 `array_define`（`type = value`）。
   - 需要补充或重构复杂表达式实现、代码补全、代码检查。
   - 需要考虑补充评估器、检查器（基于评估器）、代码折叠（基于评估器）、意向动作（基于评估器）。
-  - [ ] 需要补充测试。
-  - [ ] 需要更新相关规则文件。
-  - [ ] 需要创建单独的 Issue。
+  - [ ] 补充实现代码。
+  - [ ] 补充测试。
+  - [ ] 更新相关规则文件。
+  - [ ] 创建单独的 Issue。
 - [x] P2/FAST 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
   - 例如说明模组目录直接位于游戏创意工坊目录下，因此被推断为对应的游戏类型
   - 此时不允许在模组设置对话框中更改游戏类型
