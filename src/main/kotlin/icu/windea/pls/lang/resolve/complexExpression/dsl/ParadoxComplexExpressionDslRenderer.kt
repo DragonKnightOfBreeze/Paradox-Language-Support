@@ -43,7 +43,7 @@ object ParadoxComplexExpressionDslRenderer {
             .append('(')
             .append('"').append(text).append('"')
             .append(',').append(' ')
-            .append(s).append(" to ").append(e)
+            .append(s).append(", ").append(e)
             .append(')')
         if (children.isEmpty()) {
             sb.append('\n')
