@@ -97,8 +97,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - [x] 对于本地化命令，兼容`event_target:`前缀
 - [x] 添加代码检查：（对于脚本文件）在不支持的地方使用了参数（仅限在scripted_effect/scripted_trigger）等支持参数的定义声明中以及内联脚本中使用
 - [x] 添加代码检查：（对于脚本文件）在不支持的地方使用了封装变量（不能在asset文件里面使用全局封装变量）
-- [x] 添加代码检查：（对于脚本文件）在不支持的地方使用了内联数学表达式（不能在asset文件里面使用，~~
-  在每个scripted_trigger/scripted_effect中最多只能使用1次~~）
+- [x] 添加代码检查：（对于脚本文件）在不支持的地方使用了内联数学表达式（不能在asset文件里面使用，~~在每个scripted_trigger/scripted_effect中最多只能使用1次~~）
 - [x] 添加代码检查：（对于脚本文件）在不支持的地方使用了内联脚本（不能在asset文件里面使用）
 - [x] 添加代码检查：（对于脚本文件）递归调用的scripted_trigger/scripted_effect（不支持）
 - [x] 添加代码检查：（对于本地化文件）递归调用的本地化引用（不支持）
@@ -144,8 +143,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 
 ## 0.9.7
 
-- [x] 
-  修复：[群星文本颜色插件失效（没有弹出选框），同时报错 #15](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/15)
+- [x] 修复：[群星文本颜色插件失效（没有弹出选框），同时报错 #15](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/15)
 - [x] 实现内嵌提示以提示复杂枚举值的信息（枚举名，如`policy_flag`，默认启用）
 - [x] 实现类型层级（`Navigate > Type Hierarchy`） - 用于基于定义类型列出定义（光标位置在定义声明中时，此功能可用）
 - [x] 完善对类型层级的支持 - 支持通过作用域过滤显示结果
@@ -304,16 +302,14 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 更新项：
 
 - BUG修复
-  - [x] 
-    修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
+  - [x] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   - [x] 修复：通过颜色装订线图标修改颜色时，颜色在第一次被设置后，不关闭对话框再次设置会无法生效
 - 功能优化
   - [x] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
   - [x] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
   - [x] 优化游戏目录（基于`launcher-settings.json`）和模组目录（基于`descriptor.mod`）的判断逻辑
   - [x] 优化在快速文档中或者新建库对话框中，点击文本超链接或者工具栏图标按钮以导航到Steam和游戏相关目录时的导航逻辑，并且可以快速选择游戏目录
-  - [x] 优化对颜色的支持（示例：`rgb { 255 255 255 }`，`color = { 255 255 255 }`
-    ，基于扩展的CWT选项`## color_type = rgb/hsv/hex`）
+  - [x] 优化对颜色的支持（示例：`rgb { 255 255 255 }`，`color = { 255 255 255 }`，基于扩展的CWT选项`## color_type = rgb/hsv/hex`）
   - [x] 兼容用文件路径匹配规则文件路径时，文件路径需要相对于入口目录（如`game` `jomini`）而非游戏根目录的情况
   - [x] 支持扩展的CWT数据类型`filename`，用于匹配直接位于脚本文件所在目录下的指定名称的文件（待完善）
   - [x] 支持复杂枚举的查询作用域`search_scope_type = xxx`，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
@@ -330,8 +326,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     - [x] 推断的`inline_script`的位置存在冲突（使用处的父节点对应的CWT规则存在不一致的情况）
     - [x] 定义声明中缺失/过多的表达式的检查 - 现在可以配置仅显示第一个错误
     - [x] 定义声明中缺失/过多的表达式的检查 - 现在可以配置是否解析内联的内联脚本，内联后进行检查
-    - [x] 路径引用的文件扩展名不匹配的检查（归类到`IncorrectExpressionInspection`
-      ，基于扩展的CWT选项`## file_extensions = xxx`）
+    - [x] 路径引用的文件扩展名不匹配的检查（归类到`IncorrectExpressionInspection`，基于扩展的CWT选项`## file_extensions = xxx`）
 
 ## 0.7.12
 
@@ -347,8 +342,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - 功能优化
   - [x] 语法解析优化 - 支持脚本文件中的`!=`
   - [x] 语法解析优化 - CWT文件的文档注释中可以任意使用`#`
-  - [x] CWT规则文件的`cardinality`
-    选项也可以引用define的数值（如，`## cardinality_max_define = NGameplay/ETHOS_MAX_POINTS`）
+  - [x] CWT规则文件的`cardinality`选项也可以引用define的数值（如，`## cardinality_max_define = NGameplay/ETHOS_MAX_POINTS`）
 - 新增功能
   - 操作（`Action`）
     - [x] ~~在文件上使用`Goto Implementations`操作可以导航到同名的重载或者被重载的文件~~（IDE默认不可行，无法生效）
@@ -365,8 +359,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 修复无法查找定义的引用和本地化图标中引用的问题
   - [x] 修复无法全局查找复杂枚举值的问题
   - [x] 修复动态模板的上下文范围判定的问题（脚本文件的keyExpressions/valueExpressions）
-  - [x] 
-    修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
+  - [x] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 - 功能优化
   - [x] 对于名称忽略大小写的CWT规则，在读取时保留规则文件中声明的顺序
   - [x] 如果某个游戏的规则文件未写明localisation_link规则，则使用from_data=no的link规则
@@ -380,8 +373,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     - 仅支持`root.var`的格式
   - [x] 初步支持处理生成的修正（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
     - 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_<job>_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
-    - 基于`modifiers.log`生成`modifiers.gen.cwt`，并且整理编写`modifiers.cwt`
-      ，以处理生成的修正（包括由Stellaris的`economic_category`生成的）
+    - 基于`modifiers.log`生成`modifiers.gen.cwt`，并且整理编写`modifiers.cwt`，以处理生成的修正（包括由Stellaris的`economic_category`生成的）
     - 注意：暂不支持通过Stellaris的`economic_category`生成修正（原版游戏会生成的照常支持）
 - 新增功能
   - 快速文档（`Quick Documentation`）
@@ -441,10 +433,8 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     - [x] 提示修正时，如果设置要求匹配作用域，则仅提示匹配的
     - [x] 在各种复杂表达式中进行提示时，如果设置要求匹配作用域，则仅提示匹配的（作用域字段表达式、值字段表达式和本地化命令表达式）
   - 代码检查（`Code > Inspect Code...`）
-    - [x] 检查作用域上下文与当前作用域是否匹配（警告级别，部分完成，适用于`effect`、`trigger`
-      以及本地化命令`localisationCommand`）
-    - [x] 
-      检查作用域上下文切换是否正确（警告级别，部分完成，适用于各种带作用域信息的脚本表达式以及本地化作用域`localisationCommand`）
+    - [x] 检查作用域上下文与当前作用域是否匹配（警告级别，部分完成，适用于`effect`、`trigger`以及本地化命令`localisationCommand`）
+    - [x] 检查作用域上下文切换是否正确（警告级别，部分完成，适用于各种带作用域信息的脚本表达式以及本地化作用域`localisationCommand`）
     - [x] 不充分的表达式（弱警告级别，部分完成，匹配某一CWT规则，但是值不在指定的范围内，或者作用域不匹配指定的作用域或作用域分组，等等）
     - [x] 过长的作用域连接（弱警告级别，超过5个作用域，即4个点号的连接认为是过长的）
     - 目前不会基于使用推断作用域上下文（例如，基于`event_target`在哪里被设值进行推断，基于本地化在哪里被使用进行推断）
@@ -455,10 +445,8 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - 为了避免意外，解析获取表达式对应的CWT规则时，不再使用全局缓存，而是使用基于表达式对应的PSI元素的缓存（当所在文件被修改时会失效）
 - 功能优化
   - [x] 可以通过导航到实现功能（`Navigate > Implementation(s)`）来从某一封装变量/定义/本地化/复杂枚举值跳转到所有同名的重载或者被重载的声明处
-    - 注意对于非顶级属性名的定义名（如`some_event_id`）和复杂枚举值（如`policy_flag`
-      ），从声明处出发，需要间接通过意向（`Intentions`）来查找用法/导航到实现/导航到类型声明
-  - [x] 
-    查找用法时，即使声明处与引用处的名字文本不同，也能正确进行，同时鼠标放到声明或使用处时也能正确显示引用高亮（例如：`GFX_text_unity` > `unity`）
+    - 注意对于非顶级属性名的定义名（如`some_event_id`）和复杂枚举值（如`policy_flag`），从声明处出发，需要间接通过意向（`Intentions`）来查找用法/导航到实现/导航到类型声明
+  - [x] 查找用法时，即使声明处与引用处的名字文本不同，也能正确进行，同时鼠标放到声明或使用处时也能正确显示引用高亮（例如：`GFX_text_unity` > `unity`）
   - [x] 优化如何提供类型信息（`View > Type Info`）和快速类型声明（`View > Quick Type Definition`）
 - 功能变更
   - [x] ~~Stellaris格式化引用（`format.xxx: "<some_parts> ..."`中的`<some_parts>`）~~ （移除支持，stellaris 3.6已经不再使用）
@@ -499,8 +487,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 导航到相关的CWT规则时，位置也可以是定义的rootKey
 - 新增功能
   - [x] 支持CWT规则：`stellaris_name_format[xxx]`
-    - （需要确定3.6是否仍然支持）如果未用引号括起，则对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`
-      ，而`some_parts`对应CWT规则`value[x]`
+    - （需要确定3.6是否仍然支持）如果未用引号括起，则对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`，而`some_parts`对应CWT规则`value[x]`
     - （3.6开始支持）如果用引号括起，则是一个特殊的表达式，例如`"{AofB{<imperial_mil> [This.Capital.GetName]}}"`
     - 需要进一步完善……
   - [x] 支持语法：Stellaris格式化引用（`format.xxx: "<some_parts> ..."`中的`<some_parts>`），实现相关的代码高亮，引用解析、代码补全、代码检查等功能
@@ -512,8 +499,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - 更新IDEA版本到2022.3
 - 优化
   - [x] 整合内部配置到CWT配置（作为全局的配置，要求检查文件名）
-  - [x] 如果无法解析值表达式（`k = v`中的`v`
-    ），如果存在，在代码检查的错误信息中提示可能的CWT规则表达式（如，`possible: <event>, {...}`）
+  - [x] 如果无法解析值表达式（`k = v`中的`v`），如果存在，在代码检查的错误信息中提示可能的CWT规则表达式（如，`possible: <event>, {...}`）
   - [x] 将非法的表达式`k = k1 = v`中的`k1`解析成key而非value，以便在某些情况下，例如使用从句内联模板进行代码补全时，能提供正确的高亮
 - 新增功能
   - [x] 提供包围选项：包围成从句（`k = v` → `{ k = v }`）和包围成值为从句的属性（`k = v` → `key = { k = v }`）
@@ -540,8 +526,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   - [x] 从任意同名同类型的封装变量/定义/本地化/文件路径出发，可以通过查找用法导航到所有那个名字的使用
   - [x] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
-  - [x] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`
-    ）（通过更新CWT规则文件`links.cwt`）
+  - [x] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`）（通过更新CWT规则文件`links.cwt`）
   - [x] 脚本文件中来自CWT文件的引用需要能被同时高亮出来，同时一般情况下不能从CWT文件中的规则查找引用（`modifier`等除外）
   - [x] 兼容localisationCommandScope需要被识别为`value[event_target]`或者`value[global_event_target]`的情况，以及代码提示
   - [x] 兼容localisationCommandField需要被识别为`value[variable]`的情况，以及代码提示
@@ -549,19 +534,16 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 修复无法跳转到某些定义成员对应的CWT规则的问题
 - 功能优化
   - [x] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
-  - [x] 
-    在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
+  - [x] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
   - [x] （可配置是否启用）进行代码补全时，如果在提示定义属性的键时，如果其值可能是常量字符串，应用补全后可以自动插入
   - [x] （可配置是否启用）进行代码补全时，如果在提示定义属性的键时，如果其值可能是从句，应用补全后可以自动插入花括号并将鼠标放到花括号中
   - [x] 本地化文件：兼容`$@some_scripted_variable$`、`£$SOME_REF$£`这样的语法
   - [x] 优化插件配置页面
 - 功能变更
-  - [x] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ →
-    使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
+  - [x] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
   - [x] 移除`icu.windea.pls.core.ParadoxPathReferenceProvider` （用于兼容markdown锚点）
 - 新增功能
-  - [x] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effecFt = { PARAM = some_value }`
-    但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
+  - [x] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effecFt = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
   - [x] 实现检查：值集值值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
   - [x] 实现检查：值集值值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
   - [x] 实现检查：无法解析的命令作用域（unresolvedCommandScope）
@@ -580,8 +562,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 支持`complex_enum`，以及相关功能：匹配、代码提示
   - [x] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   - [x] 为`complexEnumValue`的引用（而非声明）提供特殊文档
-  - [x] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找用法、导航到类型声明等功能 -
-    通过意向（intention）
+  - [x] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找用法、导航到类型声明等功能 - 通过意向（intention）
   - [x] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc`等，需要确定具体规则是什么） *
 
 ## 0.7.3
@@ -601,8 +582,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 脚本文件 - 基于注解器的语法高亮，不高亮带有参数的表达式
   - [x] 修复无法从项目文件中的声明导航到库中的引用的问题（默认情况下，对应的库需要导出）
 - 新增功能
-  - [x] 实现动作：导航到相关本地化和导航到相关图片（对于定义，在导航菜单/右键菜单中，在动作"导航到相关符号/Go to related
-    symbol"下面）
+  - [x] 实现动作：导航到相关本地化和导航到相关图片（对于定义，在导航菜单/右键菜单中，在动作"导航到相关符号/Go to related symbol"下面）
 - 功能变更
   - 支持一些特殊注释
     - [x] 通过在脚本文件的第一行添加特殊注释`@path:{gameType}:{path}`，可以强制指定脚本文件相对于模组根目录的路径
@@ -647,10 +627,8 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - [x] 更新cwt规则到最新版本（2022/6/10）
 - [x] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
 - BUG修复
-  - [x] 
-    修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
-  - [x] 
-    修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
+  - [x] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
+  - [x] 修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
   - [x] 修复：[Bugs in translation #6](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/6)
   - [x] 修复：对声明的查找用法的结果不完整（定义，本地化，参数等）
   - [x] 尝试修复：访问缓存（CachedValue）时导致的PsiInvalidElementAccessException（限制太多，暂时避免使用）
@@ -678,12 +656,9 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 优化：`Navigate > Related Symbol...`显示的弹出框中，使用所属文件的绝对路径+模组名（如果有）+模组版本（如果有）表示位置信息
   - [x] 优化：`View > Quick Definition`显示的文本中也包含定义的相关注释
   - [x] 完善快速类型定义功能（`View > Quick Type Definition`）
-  - ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`
-    ）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
+  - ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
 - 新增功能
-  - ~~
-    当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。~~
-    （需要延迟判断，何时判断？）
+  - ~~当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。~~（需要延迟判断，何时判断？）
   - [x] 本地化文件：提供快速更改文本颜色的悬浮工具栏
   - [x] 支持自定义的本地化颜色
   - [x] 脚本文件：本地封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
@@ -714,8 +689,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 获取封装变量名时不再包含作为前缀的"@"
   - [x] 封装变量的值也可以是bool类型（`yes`和`no`）
 - 本地化文件语法解析优化
-  - [x] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`
-    改成了`$O$`）
+  - [x] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
   - [x] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）
   - [x] 支持本地化语言`l_japanese`和`l_korean`
   - [ ] 兼容作为format的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
@@ -832,8 +806,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - [x] 解决BUG：origin和civic同时匹配了，可选的config的匹配逻辑存在BUG
 - [x] 解决BUG：config的name可能重复，这时只要匹配其中之一即可（要求是连续的）
 - [x] 更新克隆脚本，增强本地化文件语法兼容性，更新规则文件
-- [x] 实现paradoxScript的InlayHintsProvider，目前为定义提供来自本地文件的名字（如：对于特质`agenda_defensive_focus`
-  ，名字是`保卫边境`）
+- [x] 实现paradoxScript的InlayHintsProvider，目前为定义提供来自本地文件的名字（如：对于特质`agenda_defensive_focus`，名字是`保卫边境`）
 - [x] 实现`DdsToPngConverter`，基于放在jar包中的小工具`dds2png.zip`，可以将dds文件转化成png文件（Windows平台，插件中暂未使用）
 - [x] 基于gfx文件中的spriteDefinition（`spriteType = { name = ... texturefile = ... }`）解析图标（`paradoxIcon`）
 - [x] 图标（`paradoxIcon`，本地化文件会使用，在gfx文件中通过`spriteType = { ... }`定义）的索引以及代码提示
