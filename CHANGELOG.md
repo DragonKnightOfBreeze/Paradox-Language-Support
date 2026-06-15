@@ -240,4 +240,5 @@
 ## Previous Changelogs
 
 ### [Changelog 1.X.X](documents/changelogs/CHANGELOG_1.X.X.md)
+
 ### [Changelog 0.X.X](documents/changelogs/CHANGELOG_0.X.X.md)
