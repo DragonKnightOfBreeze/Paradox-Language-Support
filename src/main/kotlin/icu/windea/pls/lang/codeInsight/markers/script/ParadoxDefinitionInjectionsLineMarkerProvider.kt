@@ -42,7 +42,7 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.DefinitionInjections
         val prefix = PlsStrings.definitionInjectionPrefix
-        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.typeText}"
+        val tooltip = "$prefix <b>${info.target.orEmpty().escapeXml()}</b>: ${info.typeText}"
         val targets by lazy {
             val project = element.project
             val selector = ParadoxDefinitionInjectionSearch.selector(project, element).contextSensitive()
