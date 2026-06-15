@@ -4,11 +4,11 @@
 
 ## 2.1.10-dev
 
-- [ ] 提供动作，以进行定义/定义注入之间的差异比较
-- [ ] 支持形如 `event_target:target@root` 的动态链接节点
-- [ ] 支持数组定值引用表达式（`arrayDefineReferenceExpression`）
-- [ ] 支持动态值集合表达式（`dynamicValueSetExpression`） ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
-- [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
+- [ ] 提供动作，以进行定义/定义注入之间的差异比较 / Provide actions to compare differences between definitions and definition injections
+- [ ] 支持形如 `event_target:target@root` 的动态链接节点 / Support dynamic link nodes in the form of `event_target:target@root`
+- [ ] 支持数组定值引用表达式（`arrayDefineReferenceExpression`） / Support array define reference expressions (`arrayDefineReferenceExpression`)
+- [ ] 支持动态值集合表达式（`dynamicValueSetExpression`） / Support dynamic value set expressions (`dynamicValueSetExpression`) ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 / Provide description info when inferring game type, and display it in the mod settings dialog
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 
@@ -64,16 +64,16 @@
 ## 2.1.5 (2026-03-12)
 
 - [x] 同步规则文件 / Synchronize config files
-- [x] [Vic3] Scripted triggers not being recognized [#279](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/279)
-- [x] [Vic3] Link regression because of script value implementation [#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284)
+- [x] [Vic3] Scripted triggers not being recognized ([#279](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/279))
+- [x] [Vic3] Link regression because of script value implementation ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
 - [x] 修复：修复无法正确地重载同路径的规则文件的回归 BUG / FIX: Fixed a bug that cannot correctly override same-path config files
 - [x] 修复：修复和优化创建目录时的补全，兼容多种入口形式 / FIX: Fix and optimize create directory completion, compatible with various entry forms
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.4 (2026-03-04)
 
-- [x] [Vic3/EU5] Script Value and Static Value [#264](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/264)
-- [x] Arguments with value no are not recognized as required arguments [#278](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/278)
+- [x] [Vic3/EU5] Script Value and Static Value ([#264](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/264))
+- [x] Arguments with value no are not recognized as required arguments ([#278](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/278))
 - [x] 修复：修复游戏概念未被正确解析的回归 BUG / FIX: Fixed a regression bug that game concepts were not correctly resolved
 - [x] 优化：优化配色方案（尤其是默认主题 Islands Dark 的） / Optimize color scheme (Especially for the default theme Islands Dark)
 - [x] 优化：优化脚本文件的 `IncorrectSyntaxInspection`（更严格的对比较运算符的检查） / OP: Optimize `IncorrectSyntaxInspection` for script files (More strict check for comparison operators)
@@ -83,12 +83,12 @@
 ## 2.1.3 (2026-02-20)
 
 - [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题 / FIX: Fixed a bug that the source of the correction was not excluded when parsing generated corrections
-- [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified [#272](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/272)
+- [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified ([#272](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/272))
 - [x] 优化：格式化 CWT 文件时，`!=` `<>` 周围始终保留空格，避免格式化前后的语法不等效 / OP: Optimize the formatting of CWT files, always keep spaces around `!=` and `<>`, to avoid syntax inequality before and after formatting
 - [x] 优化：与重命名有关的相关优化与BUG修复 / OP: Optimizations and bug fixes related to renaming
 - [x] 优化：补充更多缺失的 `AutomaticRenamer`（关联重命名） / OP: Add more missing `AutomaticRenamer` (association-rename)
-- [x] 优化：为定义注入检测子类型 / OP: Detect subtypes for definition injection [#274](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/274)
-- [x] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Detect definition injections with mode `REPLACE_OR_CREATE` as definition declarations [#273](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/273)
+- [x] 优化：为定义注入检测子类型 / OP: Detect subtypes for definition injection ([#274](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/274))
+- [x] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Detect definition injections with mode `REPLACE_OR_CREATE` as definition declarations ([#273](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/273))
 - [x] 新功能：新增 `PutMembersOnOneLineIntention` 和 `PutMembersOnSeparateLinesIntention` / NEW: add `PutMembersOnOneLineIntention` and `PutMembersOnSeparateLinesIntention`
 - [x] 新功能：新增 `ReplaceInlineMathWithEvaluatedValueIntention` / NEW: add `ReplaceInlineMathWithEvaluatedValueIntention`
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -104,7 +104,7 @@
 - [x] 修复：避免渲染（数据库对象表达式中）存在递归的本地化文本时的 SOF / FIX: Avoided a SOF that occurred when rendering localisation text in database object expressions
 - [x] 修复：重命名文件后，文件信息（如定义的快速文档中的）不会正确更新 / FIX: Fixed a bug that file information (e.g., in quick doc) was not updated correctly after renaming a file
 - [x] 修复：修复对于对应多个 PSI 引用的表达式（如 `religion:catholic`），光标位置的用法高亮可能不正确的问题 / FIX: Fixed a bug that the usage highlight at cursor position may be incorrect for expressions that were resolved to multiple PSI references (e.g., `religion:catholic`)
-- [x] 修复：修复未正确识别动态的规则上下文的回归 BUG [#271](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/271) / FIX: Fixed a regression bug that dynamic config contexts were not correctly identified
+- [x] 修复：修复未正确识别动态的规则上下文的回归 BUG / FIX: Fixed a regression bug that dynamic config contexts were not correctly identified ([#271](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/271))
 - [x] 优化：优化插件的设置页面（排序子页面，规范化提示和注释，区分出扩展的设置页面） / OP: Optimize the plugin settings page (sort subpages, normalize tips and comments, separate extensions settings pages)
 - [x] 优化：优化内嵌提示的渲染效果 / OP: Optimize the rendering of inlay hints
 - [x] 优化：对于基于规则数据的功能，尽可能地预先检查规则数据是否已加载完毕（目前包括：代码检查，引用解析） / OP: For config-data-based features, Pre-check if the config data has been fully initialized when possible (Currently include: code inspections, reference resolving)
@@ -135,7 +135,7 @@
 - [x] 新功能：支持通过意向动作，根据传参信息求值内联数学表达式 / NEW: Support to evaluate inline math expressions with argument information via intention actions
 - [x] 新功能：为静态的内联数学表达式提供内嵌提示，显示评估后的值 / NEW: Provide inlay hints for static inline math expressions, showing the evaluation result
 - [x] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.cwt@some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.cwt@some/property`) ([#251](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/251))
-- [x] 新功能：支持 VIC3 和 EU5 中的定义注入特性（如 `inject:xxx = {...}` ） / NEW: Support the definition injection feature in VIC3 and EU5 (e.g., `inject:xxx = {...}`) [#252](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/252)
+- [x] 新功能：支持 VIC3 和 EU5 中的定义注入特性（如 `inject:xxx = {...}` ） / NEW: Support the definition injection feature in VIC3 and EU5 (e.g., `inject:xxx = {...}`) ([#252](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/252))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.7 (2025-11-18)
@@ -150,8 +150,8 @@
 
 - [x] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [x] 同步其他游戏的规则文件 / Synchronize config files of other games
-- [x] [#196](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/196) `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复
-- [x] [#220](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/220) [EU5] Multi Parameter Link/Trigger
+- [x] `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复 ([#196](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/196))
+- [x] [EU5] Multi Parameter Link/Trigger ([#220](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/220))
 - [x] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions, for nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed
 - [x] 优化：对于脚本文件中用引号括起的字符串，如有必要，尝试通过语言注入将其识别为本地化文本 / OP: For quoted strings in script files, if necessary, try to recognize it as localisation text via language injection
 - [x] 优化：可以在插件设置页面中配置是否启用自动语言注入 / OP: Can configure whether to enable auto language injection in plugin settings page
@@ -159,7 +159,7 @@
 - [x] 优化：优化与重载/覆盖相关的代码检查 / OP: Optimize override related inspections
 - [x] 优化：支持渲染规则文件中的文档注释（从而兼容阅读器模式和 Translation 插件） / OP: Support to render documentation comments in config files (thus compatible with reader mode and Translation plugin)
 - [x] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
-- [x] 新功能：支持 Stellaris 中的命名格式表达式 / NEW: Support the name format expressions in Stellaris [#193](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/193)
+- [x] 新功能：支持 Stellaris 中的命名格式表达式 / NEW: Support the name format expressions in Stellaris ([#193](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/193))
 - [x] 新功能：提供工具动作，用于从日志或脚本文件生成规则文件的维护提示 / NEW: Provide tool actions to generate maintenance hints for config files from log or script files
 - [x] 新功能：提供快速修复，将无法解析的表达式替换为合法且相似的字面量 / NEW: Provide quick fix to replace unresolved expressions with valid similar literals
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -167,12 +167,12 @@
 ## 2.0.5 (2025-09-24)
 
 - [x] [#186](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/186)
-- [x] [#187](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/187) 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别 / Can configure detailed highlight severity levels by *Severity x Confidence*
+- [x] 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别 / Can configure detailed highlight severity levels by *Severity x Confidence* ([#187](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/187))
 - [x] 优化：可在设置页面中通过 OpenAI API、Anthropic API 或本地模型提供 AI 服务 / OP: AI Service can be provided via OpenAI API, Anthropic API or local LLM in settings page
 - [x] 优化：优化模组依赖的导入导出功能 / OP: Optimize the import & export feature for mod dependencies
 - [x] 优化：在某些情况下禁用脚本文件中的语言注入，避免意外的报错 / OP: Disable language injection in script files in some situations to avoid unexpected error reports
 - [x] 优化：规则的数据类型 `Int` 和 `Float` 支持开区间写法（如 `float(0..inf]`） / OP: config data type `Int` and `Float` can accept open range format (e.g., `float(0..inf]`)
-- [x] 优化：支持需要在匹配时先加上一组后缀的数据类型（如`"<sprite>|locked,unlocked"` `"localisation|_enemy"`） [#162](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/162) [#193](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/193)
+- [x] 优化：支持需要在匹配时先加上一组后缀的数据类型（如`"<sprite>|locked,unlocked"` `"localisation|_enemy"`） ([#162](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/162) [#193](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/193))
 - [x] 修复：一些地方（如调用 Tiger 时）应使用最终的游戏类型与游戏目录 / FIX: Some locations (like when calling Tiger) should use the final game type and game directory.
 - [x] 修复：修复一些地方可能无法正确获取游戏类型，导致无法正确匹配与解析的问题 / FIX: Fixed an issue where some places may not be able to correctly obtain the game type, resulting in the inability to match and parse correctly
 - [x] 新功能：提供基于本地化文本片段的随处搜索 / NEW: Provide localisation text snippet based Search Everywhere
@@ -205,9 +205,9 @@
 
 ## 2.0.1 (2025-08-11)
 
-- [x] [#159](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/159) [CK3] Add file `lines.lines` to Paradox script file name patterns
-- [x] [#161](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/161) Using single alias for a type
-- [x] [#164](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/164) Plugin breaks Menus and Toolbars editor
+- [x] [CK3] Add file `lines.lines` to Paradox script file name patterns ([#159](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/159))
+- [x] Using single alias for a type ([#161](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/161))
+- [x] Plugin breaks Menus and Toolbars editor ([#164](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/164))
 - [x] 完善与Markdown的集成，涉及链接、内联代码、代码块等，详见[参考文档](https://windea.icu/Paradox-Language-Support/zh/extensions.html#md) / Complete integration with Markdown, including links, inline codes, code blocks, etc. See [reference document](https://windea.icu/Paradox-Language-Support/en/extensions.html#md) for details
 - [x] 修复：修复与概念相关的一些问题 / FIX: Fix some issues related to concepts
 - [x] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
@@ -216,11 +216,11 @@
 
 ## 2.0.0 (2025-07-10)
 
-- [x] [#128](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/128) 集成Tiger检查工具 / Integrate Tiger linting tools
-- [x] [#148](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/148) 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
-- [x] [#151](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/151) Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
-- [x] [#153](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/153) 可以配置是否在注入的文件（如，参数值）中、内联脚本文件中忽略各种无法解析的引用的代码检查 / Can configure whether to ignore unresolved references inspections in injected files (e.g., parameter values) and inline script files
-- [x] [#154](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/154) [2.0] Issues with the Dev Build
+- [x] 集成Tiger检查工具 / Integrate Tiger linting tools ([#128](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/128))
+- [x] 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`) ([#148](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/148))
+- [x] Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized. ([#151](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/151))
+- [x] 可以配置是否在注入的文件（如，参数值）中、内联脚本文件中忽略各种无法解析的引用的代码检查 / Can configure whether to ignore unresolved references inspections in injected files (e.g., parameter values) and inline script files ([#153](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/153))
+- [x] [2.0] Issues with the Dev Build ([#154](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/154))
 - [x] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / FIX: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
 - [x] 修复：修复对复杂表达式进行代码补全时可能出现的NPE / FIX: Fix a NPE that may occur when performing code completion on a complex expression 
 - [x] 优化：将插件的内部设置重构为`registryKey`，允许用户调整 / OP: Refactor the internal settings of the plugin to `registryKey`, allowing users to configure them
@@ -250,8 +250,8 @@
 
 ## 1.4.1 (2025-05-24)
 
-- [x] [#143](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/143) cwt图片渲染规则待支持
-- [x] [#144](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/144) cwt规则的type_key_filter <> xxx失效
+- [x] cwt图片渲染规则待支持 ([#143](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/143))
+- [x] cwt规则的type_key_filter <> xxx失效 ([#144](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/144))
 - [x] 修复：优化`PlsFileListener`，尝试避免某些特殊情况下的 SOF / FIX: Optimize `PlsFileListener` to avoid SOF in some special cases
 - [x] 修复：修复封装变量引用的代码折叠规则失效的问题 / FIX: Fixed the problem that the code folding rule for scripted variable references is inactive
 - [x] 优化：完善适用于规则文件的代码补全 / OP: Optimize code completion for config files
@@ -259,10 +259,10 @@
 
 ## 1.4.0 (2025-05-17)
 
-- [x] [#94](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/94) 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
-- [x] [#137](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137) [VIC3/CK3] Support special localizations - Basic support
-- [x] [#140](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/140) 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.)
-- [x] [#141](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/141) [Stellaris] Indexing process should not rely on non-indexed file data
+- [x] 优化CWT文件解析器的性能 / Optimize performance for CWT file parser ([#94](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/94))
+- [x] [VIC3/CK3] Support special localizations - Basic support ([#137](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137))
+- [x] 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.) ([#140](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/140))
+- [x] [Stellaris] Indexing process should not rely on non-indexed file data ([#141](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/141))
 - [x] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
 - [x] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 - [x] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
@@ -285,7 +285,7 @@
 ## 1.3.37 (2025-05-10)
 
 - [x] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0
-- [x] [#139](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/139) 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
+- [x] 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations ([#139](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/139))
 - [x] 可以分别配置是否启用内置、全局本地、项目的本地规则分组 / Allow to configure whether to enable built-in, global-local, and project-local config groups separately
 - [x] 修复无法显示text color的装订线图标（指示对应的颜色）的问题 / Fixed a problem that cannot show the gutter icon (implies corresponding color) for text colors
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -311,24 +311,24 @@
 - [x] 提供适配新UI的图标 / Provide icons that fit the new UI
 - [x] 提供简体中文的本地化 / Provide localization for Simplified Chinese
 - [x] 优化：有关重载的代码检查不应适用于匿名的定义 / OP: Code checks about overridden should not be applied to anonymous definitions
-- [x] [#138](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/138) 修复与导航到重载目标的快速修正有关的一个问题 / Fixed a problem related to quick fixes for navigation to overridden targets
+- [x] 修复与导航到重载目标的快速修正有关的一个问题 / Fixed a problem related to quick fixes for navigation to overridden targets ([#138](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/138))
 - [x] 修复依赖发生变化时，相关状态未正确刷新的问题 / Fixed the problem that related statuses are not refreshed correctly when dependencies changes
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.33 (2025-04-14)
 
 - [x] 更新VIC3的CWT规则文件，基于最新的文档 / Update CWT config files for VIC3, based on latest documentation
-- [x] [#136](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/136) [VIC3/CK3] Problems with ?= operator
+- [x] [VIC3/CK3] Problems with ?= operator ([#136](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/136))
 - [x] 将插件的代码折叠设置合并到插件的设置页面与文件 / Merge plugin code folding settings into plugin settings page and file
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.32 (2025-04-05)
 
-- [x] [#123](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/123) [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
-- [x] [#129](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/129) 更好的对模板表达式规则的支持 / Better template expression config support
-- [x] [#130](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/130) 更好的对嵌套的块的支持 / Better support for nested blocks
-- [x] [#131](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/131) Only numbers in event names
-- [x] [#134](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/134) [Vic3] Mods are not correctly detected
+- [x] [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt` ([#123](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/123))
+- [x] 更好的对模板表达式规则的支持 / Better template expression config support ([#129](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/129))
+- [x] 更好的对嵌套的块的支持 / Better support for nested blocks ([#130](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/130))
+- [x] Only numbers in event names ([#131](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/131))
+- [x] [Vic3] Mods are not correctly detected ([#134](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/134))
 - [x] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved
 - [x] 如果游戏目录未配置，打开模组文件后显示编辑器横幅通知，而非显示全局通知 / If game directory is not configured, show an editor notification after opening mod files, instead of showing a global notification
 - [x] 细化代码折叠配置 / Refine code folding configuration
@@ -339,410 +339,213 @@
 
 ## 1.3.31 (2025-03-11)
 
-- [x] [#121](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/121) Complex enums only accept `enum_name = scalar`, not `enum_name = bool` or `enum_name = int`
-- [x] [#122](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/122) Non-Stellaris games raise warning if modifier icon doesn't exist
-- [x] [#126](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/126) [CK3] Types inside other types do not register correctly
-- [x] [#127](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/127) Indexing Errors when working with Localizations
+- [x] Complex enums only accept `enum_name = scalar`, not `enum_name = bool` or `enum_name = int` ([#121](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/121))
+- [x] Non-Stellaris games raise warning if modifier icon doesn't exist ([#122](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/122))
+- [x] [CK3] Types inside other types do not register correctly ([#126](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/126))
+- [x] Indexing Errors when working with Localizations ([#127](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/127))
 - [x] Optimize color settings for various color schemes
 - [x] Optimize indexing performance
 
 ## 1.3.30 (2025-03-01)
 
-- [x] [#115](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/115) 优化对DDS图片的支持（基于[iTitus/dds](https://github.com/iTitus/dds)和[Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv)）
-
-***
-
-- [x] [#115](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/115) Optimize support for DDS images (Based on [iTitus/dds](https://github.com/iTitus/dds) and [Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv))
+- [x] 优化对DDS图片的支持（基于[iTitus/dds](https://github.com/iTitus/dds)和[Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv)）/ Optimize support for DDS images (Based on [iTitus/dds](https://github.com/iTitus/dds) and [Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv)) ([#115](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/115))
 
 ## 1.3.29 (2025-02-20)
 
-- [x] [#113](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/113) 修复本地化悬浮工具栏不再显示的问题
-- [x] [#114](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/114) 修复存在多个模组依赖时的一个有关解析作用域的问题
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] [#113](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/113) Fixed a bug that the localisation floating toolbar was no longer displayed
-- [x] [#114](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/114) Fixed a bug about resolving scope when there are multiple mod dependencies
-- [x] Other optimizations and bug fixes
+- [x] 修复本地化悬浮工具栏不再显示的问题 / Fixed a bug that the localisation floating toolbar was no longer displayed ([#113](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/113))
+- [x] 修复存在多个模组依赖时的一个有关解析作用域的问题 / Fixed a bug about resolving scope when there are multiple mod dependencies ([#114](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/114))
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.28 (2025-02-11)
 
-- [x] 提供扩展点以更好地识别各种来源的游戏目录和模组目录（参见 #111）
-- [x] 将内置规则统一移到插件压缩包中的单独的jar包中
-- [x] [#111](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/111) Support Victoria 3 metadata.json
-- [x] 优化内联操作的逻辑
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Provides EP to better identify game directories and mod directories from various sources (See #111)
-- [x] Move built-in configs into individual jar package which is inside which is inside the plugin's zip package
-- [x] [#111](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/111) Support Victoria 3 metadata.json
-- [x] Optimize the logic of inline operations
-- [x] Other optimizations and bug fixes
+- [x] 提供扩展点以更好地识别各种来源的游戏目录和模组目录（参见 #111）/ Provides EP to better identify game directories and mod directories from various sources (See #111)
+- [x] 将内置规则统一移到插件压缩包中的单独的jar包中 / Move built-in configs into individual jar package which is inside the plugin's zip package
+- [x] Support Victoria 3 metadata.json ([#111](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/111))
+- [x] 优化内联操作的逻辑 / Optimize the logic of inline operations
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.27 (2025-01-09)
 
-- [x] [#108](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/108) 支持使用内联数学块作为封装变量的值
-- [x] 优化脚本文件的索引逻辑，修复未索引不在顶层的封装变量的BUG
-
-***
-
-- [x] [#108](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/108) Support using inline math block as scripted variable value
-- [x] Optimize indexing logic for script files, fix a bug that non-root level local scripted variable are not indexed
+- [x] 支持使用内联数学块作为封装变量的值 / Support using inline math block as scripted variable value ([#108](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/108))
+- [x] 优化脚本文件的索引逻辑，修复未索引不在顶层的封装变量的BUG / Optimize indexing logic for script files, fix a bug that non-root level local scripted variable are not indexed
 
 ## 1.3.26 (2024-12-06)
 
-- [x] [#103](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/103) Victoria 3 has one more type of color: hsv360
-- [x] [#104](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/104) There is a problem with the new ?= operator when it is directly on a value.
-- [x] 优化`IncorrectFileEncodingInspection` (参见 #102)
-- [x] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field`
-- [x] 兼容在复杂表达式中使用内联的参数条件表达式（如，`value:xxx|P|[[P1]$V$]V|`）
-- [x] 修复查询修正相关本地化时没有忽略大小写的问题
-- [x] [#101](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/101) Victoria 3 link Comparisons - 兼容传参格式的连接（如，`relations(root.owner)`）
-- [x] [#105](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/105) Read access is allowed from inside read-action only - 相关优化
-
-***
-
-- [x] [#103](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/103) Victoria 3 has one more type of color: hsv360
-- [x] [#104](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/104) There is a problem with the new ?= operator when it is directly on a value.
-- [x] Optimize `IncorrectFileEncodingInspection` (See #102)
-- [x] Optimize rule match logic to match and differ `scope_field` and `value_field` more exactly
-- [x] Compatible with inline parameter condition expressions in complex expressions (e.g., `value:xxx|P|[[P1]$V$]V|`)
-- [x] Fixed the issue that case was not ignored when searching modifier-related localisations
-- [x] [#101](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/101) Victoria 3 link Comparisons - Compatible with argument-style links (e.g., `relations(root.owner)`)
-- [x] [#105](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/105) Read access is allowed from inside read-action only - Related optimizations
+- [x] Victoria 3 has one more type of color: hsv360 ([#103](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/103))
+- [x] There is a problem with the new ?= operator when it is directly on a value. ([#104](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/104))
+- [x] 优化`IncorrectFileEncodingInspection` (参见 #102) / Optimize `IncorrectFileEncodingInspection` (See #102)
+- [x] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field` / Optimize rule match logic to match and differ `scope_field` and `value_field` more exactly
+- [x] 兼容在复杂表达式中使用内联的参数条件表达式（如，`value:xxx|P|[[P1]$V$]V|`）/ Compatible with inline parameter condition expressions in complex expressions (e.g., `value:xxx|P|[[P1]$V$]V|`)
+- [x] 修复查询修正相关本地化时没有忽略大小写的问题 / Fixed the issue that case was not ignored when searching modifier-related localisations
+- [x] Victoria 3 link Comparisons - 兼容传参格式的连接（如，`relations(root.owner)`）/ Compatible with argument-style links (e.g., `relations(root.owner)`) ([#101](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/101))
+- [x] Read access is allowed from inside read-action only - 相关优化 / Related optimizations ([#105](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/105))
 
 ## 1.3.25 (2024-11-25)
 
-- [x] 兼容脚本文件中的内联模板表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）
+- [x] 兼容脚本文件中的内联模板表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）/ Compatible with inline template expressions in script files (e.g., `has_ethic = ethic_[[fanatic]fanatic_]pacifist`)
 - [x] [#96](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/96)
-- [x] [#97](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/97) 兼容VIC3中的定值（define）引用（对应新的规则类型`$define_reference`）
-- [x] [#100](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/100) 删除`disableLogger`以免忽略某些重要的报错
-
-***
-
-- [x] Compatible with inline template expressions in script files (e.g., `has_ethic = ethic_[[fanatic]fanatic_]pacifist`)
-- [x] [#96](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/96)
-- [x] [#97](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/97) Support Vic3 define references (corresponding to new data type `$define_reference`)
-- [x] [#100](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/100) Remove `disableLogger` to avoid ignoring some important errors.
+- [x] 兼容VIC3中的定值（define）引用（对应新的规则类型`$define_reference`）/ Support Vic3 define references (corresponding to new data type `$define_reference`) ([#97](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/97))
+- [x] 删除`disableLogger`以免忽略某些重要的报错 / Remove `disableLogger` to avoid ignoring some important errors. ([#100](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/100))
 
 ## 1.3.24 (2024-11-11)
 
-- [x] 更新CWT规则文件以适配Stellaris 3.14.1
-- [x] [#93](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/93) 允许在内联脚本文件中引用其使用位置的本地封装变量
-- [x] [#95](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/95) 合并规则表达式时兼容`alias_name[x]`和`alias_keys_field[x]`
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Update CWT config files to match Stellaris 3.14.1
-- [x] [#93](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/93) Allow to use local scripted variables from usage locations in inline script files
-- [x] [#95](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/95) When merge config expressions, support merge `alias_name[x]` and `alias_keys_field[x]`
-- [x] Other optimizations and bug fixes
+- [x] 更新CWT规则文件以适配Stellaris 3.14.1 / Update CWT config files to match Stellaris 3.14.1
+- [x] 允许在内联脚本文件中引用其使用位置的本地封装变量 / Allow to use local scripted variables from usage locations in inline script files ([#93](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/93))
+- [x] 合并规则表达式时兼容`alias_name[x]`和`alias_keys_field[x]` / When merge config expressions, support merge `alias_name[x]` and `alias_keys_field[x]` ([#95](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/95))
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.23 (2024-10-25)
 
-- [x] 修复无法补全封装变量（scripted variable）的问题
-- [x] [#90](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90) 排除特定的根目录以免解析与索引一些意外的文件
-- [x] [#92](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/92) 可以配置是否用对应的颜色高亮本地化颜色ID（默认启用）
-- [x] 修复渲染本地化文本时某些文本会被重复渲染的问题
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Fix a problem that cannot complete scripted variables
-- [x] [#90](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90) Exclude some specific root file paths to avoid parsing and indexing unexpected files
-- [x] [#92](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/92) Provide the configuration that whether to highlight localisation color ids by corresponding color (enabled by default)
-- [x] Fixed a problem that some text will be rendered repeatedly when rendering localisation text
-- [x] Other optimizations and bug fixes
+- [x] 修复无法补全封装变量（scripted variable）的问题 / Fix a problem that cannot complete scripted variables
+- [x] 排除特定的根目录以免解析与索引一些意外的文件 / Exclude some specific root file paths to avoid parsing and indexing unexpected files ([#90](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90))
+- [x] 可以配置是否用对应的颜色高亮本地化颜色ID（默认启用）/ Provide the configuration that whether to highlight localisation color ids by corresponding color (enabled by default) ([#92](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/92))
+- [x] 修复渲染本地化文本时某些文本会被重复渲染的问题 / Fixed a problem that some text will be rendered repeatedly when rendering localisation text
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.22 (2024-10-15)
 
-- [x] [#88](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88) 新的代码检查：`NonTriggeredEventInspection`
-- [x] BUG修复：修复不正确地缓存了基于扩展的规则推断的参数的上下文规则的问题
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] [#88](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88) New code inspection: `NonTriggeredEventInspection`
-- [x] BUG fix: fixed an issue that context configs for parameters inferred based on extended configs were cached incorrectly
-- [x] Other optimizations and bug fixes
+- [x] 新的代码检查：`NonTriggeredEventInspection` / New code inspection: `NonTriggeredEventInspection` ([#88](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88))
+- [x] BUG修复：修复不正确地缓存了基于扩展的规则推断的参数的上下文规则的问题 / BUG fix: fixed an issue that context configs for parameters inferred based on extended configs were cached incorrectly
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.21 (2024-09-14)
 
-- [x] 更新CWT规则文件以适配Stellaris 3.13.0
-- [x] 优化性能与内存占用
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Update CWT config files to match Stellaris 3.13.0
-- [x] Optimize performance and memory
-- [x] Other optimizations and bug fixes
+- [x] 更新CWT规则文件以适配Stellaris 3.13.0 / Update CWT config files to match Stellaris 3.13.0
+- [x] 优化性能与内存占用 / Optimize performance and memory
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.20 (2024-09-06)
 
-- [x] 适用于规则文件的代码补全，也适用于插件或者规则仓库中的CWT文件
-- [x] 完善脚本文件与本地化文件的词法器与解析器，修复存在的一些问题
-- [x] 完善对本地化命令的支持
-- [x] 完善参数对应的规则的推断与合并的逻辑
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Code completion for config files: also for CWT files in plugin or config repositories
-- [x] Optimize lexer and parser for script and localisation fixes, fix some existing problems
-- [x] Optimize support for localisation commands
+- [x] 适用于规则文件的代码补全，也适用于插件或者规则仓库中的CWT文件 / Code completion for config files: also for CWT files in plugin or config repositories
+- [x] 完善脚本文件与本地化文件的词法器与解析器，修复存在的一些问题 / Optimize lexer and parser for script and localisation fixes, fix some existing problems
+- [x] 完善对本地化命令的支持 / Optimize support for localisation commands
+- [x] 完善参数对应的规则的推断与合并的逻辑 / Optimize inference and merging logic for configs of parameters
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] Optimize inference and merging logic for configs of parameters
 - [x] Other optimizations and bug fixes
 
 ## 1.3.19 (2024-08-24)
 
-- [x] 完善适用于规则文件的代码补全
-- [x] [#83](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/83) 修复插件内置的VIC3的规则文件实际上是VIC2的规则文件的问题
-- [x] [#84](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/84) 解析规则文件中的路径时需要移除"game/"路径前缀
-- [x] [#85](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/85) 允许在声明规则的顶级使用`single_alias_right[x]`
-- [x] [#86](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/86) Date Validation and ?= does not work for Victoria 3
-
-***
-
-- [x] Optimize code completion for config files
-- [x] [#83](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/83) Fix an issue that builtin VIC3 config files are VIC2's
-- [x] [#84](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/84) Remove path prefix "game/" when resolve paths in config files
-- [x] [#85](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/85) Allow to use `single_alias_right[x]` on top level of declaration config
-- [x] [#86](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/86) Date Validation and ?= does not work for Victoria 3
+- [x] 完善适用于规则文件的代码补全 / Optimize code completion for config files
+- [x] 修复插件内置的VIC3的规则文件实际上是VIC2的规则文件的问题 / Fix an issue that builtin VIC3 config files are VIC2's ([#83](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/83))
+- [x] 解析规则文件中的路径时需要移除"game/"路径前缀 / Remove path prefix "game/" when resolve paths in config files ([#84](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/84))
+- [x] 允许在声明规则的顶级使用`single_alias_right[x]` / Allow to use `single_alias_right[x]` on top level of declaration config ([#85](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/85))
+- [x] Date Validation and ?= does not work for Victoria 3 ([#86](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/86))
 
 ## 1.3.18 (2024-08-18)
 
-- [x] 新功能：适用于规则文件的代码补全（初步支持）
-- [x] [#82](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/82) 修复解析脚本文件时，会在特定情况下进入无限循环的问题
-- [x] 修复与作用域解析相关的一些问题
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] New feature: Code completion for config files (initial support)
-- [x] [#82](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/82) Fix an issue that it will enter an infinite loop in specific situation when parsing script files.
-- [x] Fix some problems about parsing scopes
-- [x] Other optimizations and bug fixes
+- [x] 新功能：适用于规则文件的代码补全（初步支持）/ New feature: Code completion for config files (initial support)
+- [x] 修复解析脚本文件时，会在特定情况下进入无限循环的问题 / Fix an issue that it will enter an infinite loop in specific situation when parsing script files. ([#82](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/82))
+- [x] 修复与作用域解析相关的一些问题 / Fix some problems about parsing scopes
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.17 (2024-08-06)
 
-- BUG修复
-
-***
-
-- BUG fixes
+- BUG修复 / BUG fixes
 
 ## 1.3.16 (2024-08-06)
 
-- BUG修复
-
-***
-
-- BUG fixes
+- BUG修复 / BUG fixes
 
 ## 1.3.15 (2024-08-05)
 
-- [x] 正确渲染从数据库对象生成的概念的文本
-- [x] 修复对于`param = "$param$"`，当可以推断`param`的规则上下文时，无法推断`$param$`的规则上下文的问题
-- [x] 支持在数据库对象表达式中重复引用基础数据库对象，以在游戏中强制显示为非转换形式（如`authority:auth_oligarchic:auth_oligarchic`）
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Render concepts from database objects correctly
-- [x] Fix a problem that for `param = "$param$"`, when config context of `param` can be inferred, config context of `$param$` cannot be inferred
-- [x] Supports referencing base database objects in database object expression repeatedly to force show non-swapped form in the game (e.g., `authority:auth_oligarchic:auth_oligarchic`)
-- [x] Other optimizations and bug fixes
+- [x] 正确渲染从数据库对象生成的概念的文本 / Render concepts from database objects correctly
+- [x] 修复对于`param = "$param$"`，当可以推断`param`的规则上下文时，无法推断`$param$`的规则上下文的问题 / Fix a problem that for `param = "$param$"`, when config context of `param` can be inferred, config context of `$param$` cannot be inferred
+- [x] 支持在数据库对象表达式中重复引用基础数据库对象，以在游戏中强制显示为非转换形式（如`authority:auth_oligarchic:auth_oligarchic`）/ Supports referencing base database objects in database object expression repeatedly to force show non-swapped form in the game (e.g., `authority:auth_oligarchic:auth_oligarchic`)
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.14 (2024-07-18)
 
-- BUG修复
-
-***
-
-- BUG fixes
+- BUG修复 / BUG fixes
 
 ## 1.3.13 (2024-07-17)
 
-- [x] 支持内联脚本块中的带参数的封装变量引用（如`k = @[ foo$p$bar + 1 ]`）
-- [x] [#56](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/56) 支持数据库对象表达式以及从数据库对象生成的概念（如`civic:some_civic`）
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Supports parameterized scripted variable references in inline math blocks (e.g., `k = @[ foo$p$bar + 1 ]`)
-- [x] [#56](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/56) Supports database object expression and concepts from database objects (e.g., `civic:some_civic`)
-- [x] Other optimizations and bug fixes
+- [x] 支持内联脚本块中的带参数的封装变量引用（如`k = @[ foo$p$bar + 1 ]`）/ Supports parameterized scripted variable references in inline math blocks (e.g., `k = @[ foo$p$bar + 1 ]`)
+- [x] 支持数据库对象表达式以及从数据库对象生成的概念（如`civic:some_civic`）/ Supports database object expression and concepts from database objects (e.g., `civic:some_civic`) ([#56](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/56))
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.12 (2024-07-05)
 
-- [x] [#67](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/67) 尝试推断在条件表达式以及内联数学块中使用过的参数的上下文规则
-- [x] [#67](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/67) 考虑到`PARAM = $PARAM|no$`等同于`[[PARAM] PARAM = $PARAM$ ]`，为此添加一些额外的意向操作
-- [x] [#68](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/68) 允许指定参数的规则上下文与作用域上下文，使其与参数上下文的保持一致（基于`## inherit`，详见参考文档）
-
-***
-
-- [x] [#67](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/67) Try to infer context configs of parameters which are used in condition expression and inline math blocks
-- [x] [#68](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/68) Add some extra intention actions during to the equality of `PARAM = $PARAM|no$` and `[[PARAM] PARAM = $PARAM$ ]`
-- [x] [#68](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/68) Allow to specify a parameter's config context and scope context, to make them consistent with the parameter contexts (Base on `## inherit`, see reference documentation for details)
+- [x] 尝试推断在条件表达式以及内联数学块中使用过的参数的上下文规则 / Try to infer context configs of parameters which are used in condition expression and inline math blocks ([#67](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/67))
+- [x] 考虑到`PARAM = $PARAM|no$`等同于`[[PARAM] PARAM = $PARAM$ ]`，为此添加一些额外的意向操作 / Add some extra intention actions during to the equality of `PARAM = $PARAM|no$` and `[[PARAM] PARAM = $PARAM$ ]` ([#67](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/67))
+- [x] 允许指定参数的规则上下文与作用域上下文，使其与参数上下文的保持一致（基于`## inherit`，详见参考文档）/ Allow to specify a parameter's config context and scope context, to make them consistent with the parameter contexts (Base on `## inherit`, see reference documentation for details) ([#68](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/68))
 
 ## 1.3.11 (2024-06-25)
 
-- [x] BUG修复：修复图表（如科技树）无法正常显示的问题
-- [x] 优化：优化对游戏目录的判断
-
-***
-
-- [x] BUG fix: Fix a problem that diagrams (e.g., Technology Tree Diagram) cannot be opened correctly
-- [x] Optimization: Optimize the logic to determine game directory
+- [x] BUG修复：修复图表（如科技树）无法正常显示的问题 / BUG fix: Fix a problem that diagrams (e.g., Technology Tree Diagram) cannot be opened correctly
+- [x] 优化：优化对游戏目录的判断 / Optimization: Optimize the logic to determine game directory
 
 ## 1.3.10 (2024-06-13)
 
-- [x] 新功能：支持全局的本地规则分组（可在插件配置页面中配置所在的目录）
-- [x] 优化：在项目视图中显示规则分组的位置（作为外部库）
-
-***
-
-- [x] New feature: Support for global local config groups (Can be configured in plugin's settings page)
-- [x] Optimization: Show locations of config groups in project view (as external libraries)
+- [x] 新功能：支持全局的本地规则分组（可在插件配置页面中配置所在的目录）/ New feature: Support for global local config groups (Can be configured in plugin's settings page)
+- [x] 优化：在项目视图中显示规则分组的位置（作为外部库）/ Optimization: Show locations of config groups in project view (as external libraries)
 
 ## 1.3.9 (2024-06-05)
 
-- [x] 更新CWT规则文件以适配Stellaris 3.12.3
-- [x] 新功能：支持切换快速文档中的本地化使用的语言环境（如果可用，打开快速文档后，在右键菜单或者右下角更多菜单中，点击`Change Localisation Locale`）
-- [x] [#78](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/78) 优化：支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（详见参考文档）
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Update CWT config files to match Stellaris 3.12.3
-- [x] New feature: Supports to change localisation locale in quick documentation (If available, open quick documentation, then click `Change Localisation Locale` in Right Click Menu or More Menus in the bottom-right corner)
-- [x] [#78](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/78) Optimization: Support for specifying the scope context for dynamic values (e.g., `event_target`) via extended CWT configs - more perfect support (See reference documentation for details)
-- [x] Other optimizations and bug fixes
+- [x] 更新CWT规则文件以适配Stellaris 3.12.3 / Update CWT config files to match Stellaris 3.12.3
+- [x] 新功能：支持切换快速文档中的本地化使用的语言环境（如果可用，打开快速文档后，在右键菜单或者右下角更多菜单中，点击`Change Localisation Locale`）/ New feature: Supports to change localisation locale in quick documentation (If available, open quick documentation, then click `Change Localisation Locale` in Right Click Menu or More Menus in the bottom-right corner)
+- [x] 支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（详见参考文档）/ Support for specifying the scope context for dynamic values (e.g., `event_target`) via extended CWT configs - more perfect support (See reference documentation for details) ([#78](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/78))
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.8 (2024-05-27)
 
-- [x] 优化：优化查询，提高性能，修复有关重载的一些BUG
-- [x] 优化：优化代码格式化功能，修复一些细节上的BUG
-- [x] 优化：优化插件设置页面
-- [x] 优化：涉及CWT选项注释与文档注释时，粘贴文本以及行注释/取消行注释能够得到正确的结果
-- [x] 优化：允许折叠本地化文件中的本地化引用与本地化图标（完全折叠，可配置，默认不启用，搭配相关的内嵌提示使用）
-- [x] 优化：允许折叠本地化文件中的本地化命令与本地化概念（可配置，默认不启用）
-- [x] [#72](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/72) 也将`"$PARAM$"`中的`$PARAM$`识别为参数
-- [x] [#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79) 优化：匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配
-- [x] [#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79) 优化：匹配脚本内容与规则时，如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
-- [x] [#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79) 优化：如果`$scope$`表示一个作用域连接，也尝试（从扩展的CWT规则）推断其作用域上下文
-- [x] [#80](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/80) BUG修复：对于作用域的正确性的检查应当尽可能地适用
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Optimization: Optimize search implementation, performance improvement, bug fixes about override
-- [x] Optimization: Optimize code reformat implementation, bug fixes about details
-- [x] Optimization: Optimize plugin settings page
-- [x] Optimization: Paste, comment / uncomment with line comment now work correctly when CWT option comments or documentation comments are involved
-- [x] Optimization: Now it's available to fold localisation references & icons in localisation files (fully folded, configurable, disabled by default, use with relevant inlay hints)
-- [x] Optimization: Now it's available to fold localisation commands & concepts (configurable, disabled by default)
-- [x] [#72](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/72) Treat `$PARAM$` in `"$PARAM$"` as a parameter
-- [x] [#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79) Optimization: When match script content with configs, if the config type of parameterized key can be determined uniquely, it's necessary to continue matching down
-- [x] [#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79) Optimization: When match script content with configs, if the config type of parameterized key can be inferred and matched (via extended CWT configs), it's necessary to continue matching down
-- [x] [#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79) Optimization: If `$scope$` represents a scope link, also try to infer its scope context (via extended CWT configs)
-- [x] [#80](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/80) Bug fix: Incorrect expression inspection for scope field expressions should be available wherever possible
-- [x] Other optimizations and bug fixes
+- [x] 优化查询，提高性能，修复有关重载的一些BUG / Optimize search implementation, performance improvement, bug fixes about override
+- [x] 优化代码格式化功能，修复一些细节上的BUG / Optimize code reformat implementation, bug fixes about details
+- [x] 优化插件设置页面 / Optimize plugin settings page
+- [x] 涉及CWT选项注释与文档注释时，粘贴文本以及行注释/取消行注释能够得到正确的结果 / Paste, comment / uncomment with line comment now work correctly when CWT option comments or documentation comments are involved
+- [x] 允许折叠本地化文件中的本地化引用与本地化图标（完全折叠，可配置，默认不启用，搭配相关的内嵌提示使用）/ Now it's available to fold localisation references & icons in localisation files (fully folded, configurable, disabled by default, use with relevant inlay hints)
+- [x] 允许折叠本地化文件中的本地化命令与本地化概念（可配置，默认不启用）/ Now it's available to fold localisation commands & concepts (configurable, disabled by default)
+- [x] 也将`"$PARAM$"`中的`$PARAM$`识别为参数 / Treat `$PARAM$` in `"$PARAM$"` as a parameter ([#72](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/72))
+- [x] 匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配 / When match script content with configs, if the config type of parameterized key can be determined uniquely, it's necessary to continue matching down ([#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79))
+- [x] 匹配脚本内容与规则时，如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配 / When match script content with configs, if the config type of parameterized key can be inferred and matched (via extended CWT configs), it's necessary to continue matching down ([#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79))
+- [x] 如果`$scope$`表示一个作用域连接，也尝试（从扩展的CWT规则）推断其作用域上下文 / If `$scope$` represents a scope link, also try to infer its scope context (via extended CWT configs) ([#79](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/79))
+- [x] 对于作用域的正确性的检查应当尽可能地适用 / Incorrect expression inspection for scope field expressions should be available wherever possible ([#80](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/80))
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.7 (2024-05-12)
 
-- [x] 更新CWT规则文件以适配Stellaris 3.12.2（基本完成）
-- [x] 优化：优化代码格式化功能，修复一些细节上的BUG
-- [x] 优化：基于CWT规则文件来确定目标（定义、本地化等）的覆盖方式（可以自定义，参见参考文档）
-- [x] 优化：对于本地化文件，本地化文本中的双引号不需要转义（直到本行最后一个双引号之前为止，视为本地化文本）
-- [x] 优化：如果目标无法解析，但是存在对应的扩展的CWT规则，可以配置是否忽略相关的代码检查
-- [x] 优化：如果可以从扩展的CWT规则文件推断作用域上下文，就不要再尝试从使用推断
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Update CWT config files to match Stellaris 3.12.2 (almost done)
-- [x] Optimization: Optimize code reformatting feature, fixes some bugs in details
-- [x] Optimization: Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
-- [x] Optimization: For localisation file, it's unnecessary to escape double quotes in localisation text
-- [x] Optimization: It a target cannot be resolved, but related extended CWT configs exist, related code inspection can be configured to be ignored
-- [x] Optimization: If the scope context can be inferred from extended CWT configs, do not continue to be inferred from usages
-- [x] Other optimizations and bug fixes
+- [x] 更新CWT规则文件以适配Stellaris 3.12.2（基本完成）/ Update CWT config files to match Stellaris 3.12.2 (almost done)
+- [x] 优化代码格式化功能，修复一些细节上的BUG / Optimize code reformatting feature, fixes some bugs in details
+- [x] 基于CWT规则文件来确定目标（定义、本地化等）的覆盖方式（可以自定义，参见参考文档）/ Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
+- [x] 对于本地化文件，本地化文本中的双引号不需要转义（直到本行最后一个双引号之前为止，视为本地化文本）/ For localisation file, it's unnecessary to escape double quotes in localisation text
+- [x] 如果目标无法解析，但是存在对应的扩展的CWT规则，可以配置是否忽略相关的代码检查 / If a target cannot be resolved, but related extended CWT configs exist, related code inspection can be configured to be ignored
+- [x] 如果可以从扩展的CWT规则文件推断作用域上下文，就不要再尝试从使用推断 / If the scope context can be inferred from extended CWT configs, do not continue to be inferred from usages
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.6 (2024-04-28)
 
-- [x] 在内置规则文件的编辑器通知中提供操作，点击可以生成或者导航到对应的项目本地的规则文件
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) 扩展CWT规则：支持扩展的数据类型`AntExpression`，用于匹配ANT路径表达式（详见参考文档）
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) 扩展CWT规则：支持扩展的数据类型`Regex`，用于匹配正则表达式（详见参考文档）
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) 扩展CWT规则：支持在`## context_key`的值中使用模板表达式（详见参考文档）
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) 扩展CWT规则：编写扩展的CWT规则时，可以通过字符串字面量以及模板表达式进行匹配的地方，现在也可以通过ANT路径表达式以及正则表达式进行匹配（详见参考文档）
-- [x] [#71](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/71) 修复一个有关作用域上下文切换的问题
-- [x] [#74](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/74) 修复一个有关索引以及引用解析的问题
-- [x] [#76](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/76) 通过扩展的CWT规则提供上下文规则时，允许直接在顶级规则使用`single_alias`（示例：`extended_param = single_alias_right[trigger_clause]`）
-- [x] 优化：如果需要，对于已打开的文件，其文件内容应当及时重新解析，其中的内嵌提示应当及时更新（注意这可能需要先在后台花费一定时间）
-- [x] 优化：优化代码补全的用时
-
-***
-
-- [x] Provide an action in editor notification bar for builtin config files, click to generate (or navigate to) related project-local config file
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) Extend CWT Config: Supports extended data type `AntExpression`, which is used to match ANT expression (see reference documentation for details)
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) Extend CWT Config: Supports extended data type `Regex`, which is used to match regex (see reference documentation for details)
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) Extend CWT Config: Supports for using template expressions for value of `## context_key` (see reference documentation for details)
-- [x] [#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73) Extend CWT Config: When writing extended CWT configs, in places which can use string literals and template expressions, now can also use ANT expressions and regular expressions (see reference documentation for details)
-- [x] [#71](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/71) Fix a problem about scope context switching
-- [x] [#74](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/74) Fix a problem about indexing and reference resolving
-- [x] [#76](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/76) When provide context configs by extended configs, allows to use `single_alias` at top level directly (e.g. `extended_param = single_alias_right[trigger_clause]`)
-- [x] Optimization: If necessary, for opened files, reparse its file context and refresh its inlay hints (Note that this may take some times in background first)
-- [x] Optimization: Optimize time cost of code completion
+- [x] 在内置规则文件的编辑器通知中提供操作，点击可以生成或者导航到对应的项目本地的规则文件 / Provide an action in editor notification bar for builtin config files, click to generate (or navigate to) related project-local config file
+- [x] 支持扩展的数据类型`AntExpression`，用于匹配ANT路径表达式（详见参考文档）/ Supports extended data type `AntExpression`, which is used to match ANT expression (see reference documentation for details) ([#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73))
+- [x] 支持扩展的数据类型`Regex`，用于匹配正则表达式（详见参考文档）/ Supports extended data type `Regex`, which is used to match regex (see reference documentation for details) ([#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73))
+- [x] 支持在`## context_key`的值中使用模板表达式（详见参考文档）/ Supports for using template expressions for value of `## context_key` (see reference documentation for details) ([#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73))
+- [x] 编写扩展的CWT规则时，可以通过字符串字面量以及模板表达式进行匹配的地方，现在也可以通过ANT路径表达式以及正则表达式进行匹配（详见参考文档）/ When writing extended CWT configs, in places which can use string literals and template expressions, now can also use ANT expressions and regular expressions (see reference documentation for details) ([#73](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/73))
+- [x] 修复一个有关作用域上下文切换的问题 / Fix a problem about scope context switching ([#71](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/71))
+- [x] 修复一个有关索引以及引用解析的问题 / Fix a problem about indexing and reference resolving ([#74](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/74))
+- [x] 通过扩展的CWT规则提供上下文规则时，允许直接在顶级规则使用`single_alias`（示例：`extended_param = single_alias_right[trigger_clause]`）/ When provide context configs by extended configs, allows to use `single_alias` at top level directly (e.g. `extended_param = single_alias_right[trigger_clause]`) ([#76](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/76))
+- [x] 如果需要，对于已打开的文件，其文件内容应当及时重新解析，其中的内嵌提示应当及时更新（注意这可能需要先在后台花费一定时间）/ If necessary, for opened files, reparse its file context and refresh its inlay hints (Note that this may take some times in background first)
+- [x] 优化代码补全的用时 / Optimize time cost of code completion
 
 ## 1.3.5 (2024-04-20)
 
-- [x] 为操作“导航到相关的CWT规则”提供更加完善的支持（额外适用于封装变量、参数等）
-- [x] 支持通过扩展的CWT规则为封装变量（`scripted_variable`）提供扩展的快速文档（详见参考文档）
-- [x] 支持通过扩展的CWT规则为封装变量（`scripted_variable`）提供扩展的内嵌提示（详见参考文档）
-- [x] [#66](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/66) 支持为一些目标额外提供基于扩展的CWT规则的代码补全（包括封装变量、定义、内联脚本、参数、复杂枚举值与动态值，可配置，默认不启用）
-- [x] [#69](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/69) 支持通过扩展的CWT规则为一些目标指定作用域上下文（包括定义、参数与内联脚本，基于`## replace_scopes`和`## push_scope`，忽略选项不合法的情况）
-- [x] [#70](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/70) 提供内联脚本用法的代码补全（`inline_script = ...`，可配置，默认不启用，目前适用于所有游戏类型）
-- [x] 添加代码检查：未使用的内联脚本（弱警告级别）
-- [x] 其他优化与BUG修复
-
-***
-
-- [x] Improved support for the action "Goto to related CWT configs" (For scripted variables, parameters, etc.)
-- [x] Support for providing extended quick documentation for scripted variables via extended CWT configs (see reference documentation for details)
-- [x] Support for providing extended inlay hints for scripted variables via extended CWT configs (see reference documentation for details)
-- [x] [#66](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/66) Support for providing additional code completion for various targets via extended CWT configs (For scripted variables, definitions, inline scripts, parameters, complex enum values and dynamic values; Configurable; Disabled by default)
-- [x] [#69](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/69) Support for specifying the scope context for various targets via extended CWT configs (For definitions, parameters and inline scripts; Via `## replace_scopes` and `## push_scope`; Ignore invalid situations)
-- [x] [#70](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/70) Provide code completion for inline script usages (`inline_script = ...`; Configurable; Disabled by default; Currently for all game types)
-- [x] New code inspection: Unused inline scripts (level: weak warning)
-- [x] Other optimizations and bug fixes
+- [x] 为操作"导航到相关的CWT规则"提供更加完善的支持（额外适用于封装变量、参数等）/ Improved support for the action "Goto to related CWT configs" (For scripted variables, parameters, etc.)
+- [x] 支持通过扩展的CWT规则为封装变量（`scripted_variable`）提供扩展的快速文档（详见参考文档）/ Support for providing extended quick documentation for scripted variables via extended CWT configs (see reference documentation for details)
+- [x] 支持通过扩展的CWT规则为封装变量（`scripted_variable`）提供扩展的内嵌提示（详见参考文档）/ Support for providing extended inlay hints for scripted variables via extended CWT configs (see reference documentation for details)
+- [x] 支持为一些目标额外提供基于扩展的CWT规则的代码补全（包括封装变量、定义、内联脚本、参数、复杂枚举值与动态值，可配置，默认不启用）/ Support for providing additional code completion for various targets via extended CWT configs (For scripted variables, definitions, inline scripts, parameters, complex enum values and dynamic values; Configurable; Disabled by default) ([#66](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/66))
+- [x] 支持通过扩展的CWT规则为一些目标指定作用域上下文（包括定义、参数与内联脚本，基于`## replace_scopes`和`## push_scope`，忽略选项不合法的情况）/ Support for specifying the scope context for various targets via extended CWT configs (For definitions, parameters and inline scripts; Via `## replace_scopes` and `## push_scope`; Ignore invalid situations) ([#69](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/69))
+- [x] 提供内联脚本用法的代码补全（`inline_script = ...`，可配置，默认不启用，目前适用于所有游戏类型）/ Provide code completion for inline script usages (`inline_script = ...`; Configurable; Disabled by default; Currently for all game types) ([#70](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/70))
+- [x] 添加代码检查：未使用的内联脚本（弱警告级别）/ New code inspection: Unused inline scripts (level: weak warning)
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.4 (2024-03-31)
 
-- [x] 为操作“导航到相关的CWT规则”提供更加完善的支持
-- [x] 支持通过扩展的CWT规则为复杂枚举值（如`component_tag`）提供扩展的快速文档（详见参考文档）
-- [x] 支持通过扩展的CWT规则为动态值（如`variable`）提供扩展的快速文档（变更了对应CWT规则的格式，详见参考文档）
-- [x] 支持通过扩展的CWT规则为复杂枚举值（如`component_tag`）提供扩展的内嵌提示（详见参考文档）
-- [x] 支持通过扩展的CWT规则为动态值（如`variable`）提供扩展的内嵌提示（详见参考文档）
-- [x] 添加代码检查：重载的文件（弱警告级别，默认不开启）
-- [x] 修复当CWT规则涉及`single_alias`时，应用代码补全后，不会正确地自动插入` = {}`的问题
-- [x] 尝试修复涉及内联脚本与适用语言注入的参数时，IDE可能卡死的问题
-
-***
-
-- [x] Improved support for the action "Goto to related CWT configs"
-- [x] Support for providing extended quick documentation for complex enum values (e.g. `component_tag`) via extended CWT configs (see reference documentation for details)
-- [x] Support for providing extended quick documentation for dynamic values (e.g. `variable`) via extended CWT configs (format of relevant CWT configs is changed, see reference document for details)
-- [x] Support for providing extended inlay hints for complex enum values (e.g. `component_tag`) via extended CWT configs (see reference documentation for details)
-- [x] Support for providing extended inlay hints for dynamic values (e.g. `variable`) via extended CWT configs (see reference documentation for details)
-- [x] New code inspection: Overridden for files (level: weak warning, enabled by default: no)
-- [x] Fixed an issue that `= {}` would not be inserted correctly when applying code completion for script snippets matching CWT config of `single_alias`
-- [x] Try to fix an issue that when inline scripts and parameters (with language injection) are involved, IDE may be freezing.
+- [x] 为操作"导航到相关的CWT规则"提供更加完善的支持 / Improved support for the action "Goto to related CWT configs"
+- [x] 支持通过扩展的CWT规则为复杂枚举值（如`component_tag`）提供扩展的快速文档（详见参考文档）/ Support for providing extended quick documentation for complex enum values (e.g. `component_tag`) via extended CWT configs (see reference documentation for details)
+- [x] 支持通过扩展的CWT规则为动态值（如`variable`）提供扩展的快速文档（变更了对应CWT规则的格式，详见参考文档）/ Support for providing extended quick documentation for dynamic values (e.g. `variable`) via extended CWT configs (format of relevant CWT configs is changed, see reference document for details)
+- [x] 支持通过扩展的CWT规则为复杂枚举值（如`component_tag`）提供扩展的内嵌提示（详见参考文档）/ Support for providing extended inlay hints for complex enum values (e.g. `component_tag`) via extended CWT configs (see reference documentation for details)
+- [x] 支持通过扩展的CWT规则为动态值（如`variable`）提供扩展的内嵌提示（详见参考文档）/ Support for providing extended inlay hints for dynamic values (e.g. `variable`) via extended CWT configs (see reference documentation for details)
+- [x] 添加代码检查：重载的文件（弱警告级别，默认不开启）/ New code inspection: Overridden for files (level: weak warning, enabled by default: no)
+- [x] 修复当CWT规则涉及`single_alias`时，应用代码补全后，不会正确地自动插入` = {}`的问题 / Fixed an issue that `= {}` would not be inserted correctly when applying code completion for script snippets matching CWT config of `single_alias`
+- [x] 尝试修复涉及内联脚本与适用语言注入的参数时，IDE可能卡死的问题 / Try to fix an issue that when inline scripts and parameters (with language injection) are involved, IDE may be freezing.
 
 ## 1.3.3 (2024-03-04)
 
@@ -779,9 +582,9 @@
 - [x] 支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文
 - [x] 支持通过扩展的CWT规则文件为参数提供扩展的快速文档
 - [x] 完善对脚本文件和本地化文件中的转义字符的支持
-- [x] [#55](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/55) 支持在多行的脚本参数值中使用内联脚本
-- [x] [#58](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/58) 将条件参数加入参数上下文，用于代码补全、快速文档等功能
-- [x] [#59](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/59) 避免在获取上下文规则列表时递归加载缓存
+- [x] 支持在多行的脚本参数值中使用内联脚本 ([#55](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/55))
+- [x] 将条件参数加入参数上下文，用于代码补全、快速文档等功能 ([#58](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/58))
+- [x] 避免在获取上下文规则列表时递归加载缓存 ([#59](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/59))
 
 ## 1.2.6 (2023-11-28)
 
@@ -840,8 +643,8 @@
 
 ## 1.1.11 (2023-09-27)
 
-- [x] 修复 [#51](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/51) - 无法解析使用了scripted_variables的参数定值
-- [x] 优化 [#30](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/30) - 兼容脚本文件的高级插值语法（`a[[b]c]d$e|f$g`）
+- [x] 无法解析使用了scripted_variables的参数定值 ([#51](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/51))
+- [x] 兼容脚本文件的高级插值语法（`a[[b]c]d$e|f$g`） ([#30](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/30))
 
 ## 1.1.10 (2023-09-15)
 
@@ -855,7 +658,7 @@
 
 ## 1.1.8 (2023-09-12)
 
-- [x] [#50](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/50) 优化：完善对修正的名字和描述的本地化，以及图标的图片支持
+- [x] 优化：完善对修正的名字和描述的本地化，以及图标的图片支持 ([#50](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/50))
 - [x] 优化进行代码补全时提示项的排序
 - [x] 优化代码检查
 - [x] 其他优化与BUG修复
@@ -874,7 +677,7 @@
 
 - [x] 修复`some_scripted_trigger`可能被插件认为同时匹配`<scripted_trigger>`和`scope_field`的问题（以及类似问题）
 - [x] 优化对嵌套的定义的支持（如，`swapped_civic`）
-- [x] 优化 [#48](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/48) - 提示封装变量和本地化时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限
+- [x] 提示封装变量和本地化时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限 ([#48](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/48))
 - [x] 尝试优化插件性能
 
 ## 1.1.5 (2023-08-03)
@@ -884,7 +687,7 @@
 - [x] 修复DDS图片无法正确渲染的问题
 - [x] 修复更新到IDEA 2023.2后，按住Ctrl并点击参数（以及其他类似目标）后，无法查找用法的问题
 - [x] 修复更新到IDEA 2023.2后，无法打开事件树和科技树图表的问题
-- [x] 修复 [#47](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/47) - Parameters with defaults passed to script values cause highlight errors
+- [x] Parameters with defaults passed to script values cause highlight errors ([#47](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/47))
 - [x] 优化：检查定义的相关本地化和图片是否缺失时，也检查由其生成的修正的相关本地化和图片是否缺失（可以配置并且默认不启用）
 - [x] 优化：生成本地化时，可以配置需要生成哪些本地化（参考重载/实现方法时弹出的对话框）
 
@@ -920,19 +723,19 @@
 
 ## 1.1.1 (2023-06-28)
 
-- [x] 修复 [#36](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/36) - 修复方法`isSamePosition`的实现中的问题
-- [x] 修复 [#38](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/38) - value_field和variable_field应当可接受`-$PARAM$`
-- [x] 修复 [#39](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/39) - 允许`$SCOPE|this$.modifier:xxx`
-- [x] 修复 [#44](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/44) - 修复可能无法正确解析嵌套的定义声明中的内容的问题
+- [x] 修复方法`isSamePosition`的实现中的问题 ([#36](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/36))
+- [x] value_field和variable_field应当可接受`-$PARAM$` ([#38](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/38))
+- [x] 允许`$SCOPE|this$.modifier:xxx` ([#39](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/39))
+- [x] 修复可能无法正确解析嵌套的定义声明中的内容的问题 ([#44](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/44))
 - [x] 修复更改游戏类型后无法打开模组设置的BUG
 - [x] 更新CWT规则
 - [x] 其他BUG修复
 
 ## 1.1.0 (2023-06-19)
 
-- [x] 修复 [#26](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/26) P1 - 应当先尝试将`k = {...}`解析为内联脚本用法，再解析为定义声明
-- [x] 修复 [#32](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/32) - 重命名内联脚本的文件名时，相关缓存未正确刷新
-- [x] 修复 [#33](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/33) - 重命名内联脚本的文件名时，相关的表达式未正确更新文本
+- [x] 应当先尝试将`k = {...}`解析为内联脚本用法，再解析为定义声明 ([#26](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/26))
+- [x] 重命名内联脚本的文件名时，相关缓存未正确刷新 ([#32](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/32))
+- [x] 重命名内联脚本的文件名时，相关的表达式未正确更新文本 ([#33](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/33))
 - [x] 添加代码检查：未正确进行重载的全局封装变量（例如，游戏文件`test.txt`中声明了一个全局封装变量`@v`
   ，而模组在文件`zzz_test.txt`中进行了重载）
 - [x] 添加代码检查：未正确进行重载的定义 （例如，游戏文件`test.txt`中声明了一个事件`e.1`，而模组在文件`zzz_test.txt`中进行了重载）
@@ -969,9 +772,9 @@
 
 ## 1.0.7 (2023-06-08)
 
-- [x] 修复 [#26](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/26) P2 - 在脚本文件中，应当允许多行的用双引号括起的字符串
-- [x] 修复 [#28](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/28) - 生成科技树时报错
-- [x] 修复 [#29](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/29) - 应当允许在SV表达式（以及其他各种复杂表达式）中为参数指定默认值
+- [x] 在脚本文件中，应当允许多行的用双引号括起的字符串 ([#26](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/26))
+- [x] 生成科技树时报错 ([#28](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/28))
+- [x] 应当允许在SV表达式（以及其他各种复杂表达式）中为参数指定默认值 ([#29](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/29))
 - [x] 优化基于显示名称进行代码补全时的性能
 - [x] 尝试优化性能
 
@@ -994,7 +797,7 @@
 - [x] 尝试优化性能：如果可行，直接在索引时获取定义的子类型
 - [x] 尝试优化性能：`ParadoxValueSetValueFastIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
 - [x] 尝试优化性能：`ParadoxComplexEnumValueIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
-- [x] 修复 [#25](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/25) 空指针
+- [x] 空指针 ([#25](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/25))
 - [x] 更新CWT规则文件以适配Stellaris 3.8.3
 
 ## 1.0.3 (2023-05-25)
