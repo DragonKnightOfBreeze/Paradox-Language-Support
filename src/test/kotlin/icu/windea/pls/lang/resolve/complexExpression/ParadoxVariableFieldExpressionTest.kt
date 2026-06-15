@@ -32,11 +32,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(
-        text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
-        incomplete: Boolean = false
-    ): ParadoxVariableFieldExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxVariableFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxVariableFieldExpression.resolve(text, null, configGroup)
@@ -45,7 +41,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_chain() {
         val s = "root.owner.some_variable"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0 to s.length) {
             node<ParadoxScopeNode>("root", 0 to 4)
@@ -58,9 +54,9 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBarrier_noFurtherSplit() {
+    fun test_barrier_noFurtherSplit() {
         val s = "root.owner|x.y"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0 to s.length) {
             node<ParadoxScopeNode>("root", 0 to 4)
@@ -72,8 +68,8 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
 
     @Test
     fun test_empty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("", 0 to 0) {
             node<ParadoxDataSourceNode>("", 0 to 0)

@@ -44,20 +44,16 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(
-        text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
-        incomplete: Boolean = false,
-    ): ParadoxScopeFieldExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxScopeFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxScopeFieldExpression.resolve(text, null, configGroup)
     }
 
     @Test
-    fun testSingleScopeNode_root() {
+    fun test_singleScopeNode_root() {
         val s = "root"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0 to s.length) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -66,9 +62,9 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testDotSegmentation_basic() {
+    fun test_dotSegmentation_basic() {
         val s = "root.owner"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0 to s.length) {
             node<ParadoxScopeNode>("root", 0 to 4)
@@ -79,9 +75,9 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEventTarget() {
+    fun test_eventTarget() {
         val s = "event_target:some_target"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0 to s.length) {
             node<ParadoxDynamicScopeNode>("event_target:some_target", 0 to 24) {
@@ -97,9 +93,9 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBarrier_Pipe_NoFurtherSplit() {
+    fun test_barrier_Pipe_NoFurtherSplit() {
         val s = "root.owner|x.y"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0 to s.length) {
             node<ParadoxScopeNode>("root", 0 to 4)
@@ -111,8 +107,8 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
 
     @Test
     fun test_empty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("", 0 to 0) {
             node<ParadoxErrorScopeNode>("", 0 to 0)
@@ -123,7 +119,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments() {
         val s = "root.test_scope(root, some_building)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building)", 0 to 36) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -148,7 +144,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_withTrailComma() {
         val s = "root.test_scope(root, some_building,)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building,)", 0 to 37) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -174,7 +170,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_missingArgument_1() {
         val s = "root.test_scope(root)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root)", 0 to 21) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -196,7 +192,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_missingArgument_2() {
         val s = "root.test_scope(root,)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root,)", 0 to 22) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -219,7 +215,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_missingArgument_3() {
         val s = "root.test_scope(, some_building)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(, some_building)", 0 to 32) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -240,9 +236,9 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_for_Arguments_withLiteral() {
+    fun test_forArguments_withLiteral() {
         val s = "root.test_literal_scope('foo bar', some_variable)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_literal_scope('foo bar', some_variable)", 0 to 49) {
             node<ParadoxSystemScopeNode>("root", 0 to 4)
@@ -267,7 +263,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_usePipeSeparator() {
         val s = "colonial_charter_utility(scope:target|scope:some)"
-        val exp = parse(s, gameType = ParadoxGameType.Vic3)!! // ensure `scope:` is available
+        val exp = resolve(s, gameType = ParadoxGameType.Vic3)!! // ensure `scope:` is available
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("colonial_charter_utility(scope:target|scope:some)", 0 to 49) {
             node<ParadoxDynamicScopeNode>("colonial_charter_utility(scope:target|scope:some)", 0 to 49) {

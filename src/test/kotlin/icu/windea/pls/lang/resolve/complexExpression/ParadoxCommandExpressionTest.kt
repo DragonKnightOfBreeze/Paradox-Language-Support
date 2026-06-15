@@ -49,11 +49,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(
-        text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
-        incomplete: Boolean = false
-    ): ParadoxCommandExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxCommandExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxCommandExpression.resolve(text, null, configGroup)
@@ -62,7 +58,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic() {
         val s = "Root.GetName"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0 to s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -75,7 +71,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_chain_noSuffix() {
         val s = "Root.Owner.event_target:some_target.var"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0 to s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -101,7 +97,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_endsWithDot() {
         val s = "Root."
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0 to s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -118,7 +114,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_endsWithVar() {
         val s = "Root.Var"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0 to s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -135,7 +131,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_withSuffix_amp() {
         val s = "Root.GetName&L"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0 to s.length) {
             node<ParadoxCommandScopeNode>("Root", 0 to 4)
@@ -150,7 +146,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_withSuffix_doubleColon() {
         val s = "Root.GetName::UPPER"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0 to s.length) {
             node<ParadoxCommandScopeNode>("Root", 0 to 4)
@@ -164,8 +160,8 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
 
     @Test
     fun test_empty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("", 0 to 0) {
             node<ParadoxDynamicCommandFieldNode>("", 0 to 0) {
@@ -180,7 +176,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments() {
         val s = "Root.TestScope(root, some_building).TestCommand(some_flag, some_job)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building).TestCommand(some_flag, some_job)", 0 to 68) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -215,7 +211,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_withTrailComma() {
         val s = "Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)", 0 to 70) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -252,7 +248,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_missingArgument_1() {
         val s = "Root.TestScope(some_building).TestCommand(some_job)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(some_building).TestCommand(some_job)", 0 to 51) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -281,7 +277,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_missingArgument_2() {
         val s = "Root.TestScope(root, ).TestCommand(some_flag, )"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(root, ).TestCommand(some_flag, )", 0 to 47) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -314,7 +310,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_forArguments_missingArgument_3() {
         val s = "Root.TestScope(, some_building).TestCommand(, some_job)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(, some_building).TestCommand(, some_job)", 0 to 55) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)
@@ -347,9 +343,9 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_for_Arguments_withLiteral() {
+    fun test_forArguments_withLiteral() {
         val s = "Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)", 0 to 80) {
             node<ParadoxSystemCommandScopeNode>("Root", 0 to 4)

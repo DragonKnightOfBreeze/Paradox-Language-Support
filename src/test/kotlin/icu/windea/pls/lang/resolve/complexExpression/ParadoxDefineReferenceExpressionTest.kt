@@ -36,11 +36,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(
-        text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
-        incomplete: Boolean = false
-    ): ParadoxDefineReferenceExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDefineReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
@@ -49,7 +45,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0 to s.length) {
             node<ParadoxDefinePrefixNode>("define:", 0 to 7)
@@ -62,8 +58,8 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
 
     @Test
     fun test_empty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0 to 0) {
             node<ParadoxErrorTokenNode>("", 0 to 0)

@@ -33,11 +33,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(
-        text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
-        incomplete: Boolean = false
-    ): ParadoxScriptValueExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxScriptValueExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         val linkConfig = configGroup.links["script_value"] ?: error("script_value link not found in config group")
@@ -47,7 +43,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic() {
         val s = "some_sv"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScriptValueExpression>(s, 0 to s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0 to 7)
@@ -58,7 +54,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_withArgs() {
         val s = "some_sv|PARAM|VALUE|"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScriptValueExpression>(s, 0 to s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0 to 7)
@@ -72,9 +68,9 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testMalformed_singlePipe_incompleteAccepted() {
+    fun test_malformed_singlePipe_incompleteAccepted() {
         val s = "some_sv|"
-        val exp = parse(s)!!
+        val exp = resolve(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|", 0 to s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0 to 7)
@@ -85,8 +81,8 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
 
     @Test
     fun test_empty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxScriptValueExpression>("", 0 to 0) {
             node<ParadoxScriptValueNode>("", 0 to 0)

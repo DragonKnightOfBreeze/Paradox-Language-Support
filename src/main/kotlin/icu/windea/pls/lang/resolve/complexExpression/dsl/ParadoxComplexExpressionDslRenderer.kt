@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve.complexExpression.dsl
 
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 
 object ParadoxComplexExpressionDslRenderer {
@@ -36,12 +35,7 @@ object ParadoxComplexExpressionDslRenderer {
         val s = node.rangeInExpression.startOffset
         val e = node.rangeInExpression.endOffset
         val children = node.nodes
-        val isExpression = node is ParadoxComplexExpression
-        val funName = when {
-            asRoot -> "buildExpression"
-            isExpression -> "expression"
-            else -> "node"
-        }
+        val funName = if (asRoot) "buildComplexExpression" else "node"
         // header
         sb.append(indent)
             .append(funName)
@@ -49,7 +43,7 @@ object ParadoxComplexExpressionDslRenderer {
             .append('(')
             .append('"').append(text).append('"')
             .append(',').append(' ')
-            .append(s).append("..").append(e)
+            .append(s).append(" to ").append(e)
             .append(')')
         if (children.isEmpty()) {
             sb.append('\n')
