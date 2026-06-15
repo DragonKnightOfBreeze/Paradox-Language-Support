@@ -4,24 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldPrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopePrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -373,6 +356,158 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 }
                 node<ParadoxMarkerNode>(")", 79 to 80)
             }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nestedDynamicValueExpression_simple() {
+        val s = "this.event_target:target.GetName"
+        val exp = resolve(s)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("this.event_target:target.GetName", 0 to 32) {
+            node<ParadoxSystemCommandScopeNode>("this", 0 to 4)
+            node<ParadoxOperatorNode>(".", 4 to 5)
+            node<ParadoxDynamicCommandScopeNode>("event_target:target", 5 to 24) {
+                node<ParadoxCommandScopePrefixNode>("event_target:", 5 to 18)
+                node<ParadoxCommandScopeValueNode>("target", 18 to 24) {
+                    node<ParadoxDynamicValueExpression>("target", 18 to 24) {
+                        node<ParadoxDynamicValueNode>("target", 18 to 24)
+                    }
+                }
+            }
+            node<ParadoxOperatorNode>(".", 24 to 25)
+            node<ParadoxStaticCommandFieldNode>("GetName", 25 to 32)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nestedDynamicValueExpression_withScope() {
+        val s = "this.event_target:target@root.GetName"
+        val exp = resolve(s)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("this.event_target:target@root.GetName", 0 to 37) {
+            node<ParadoxSystemCommandScopeNode>("this", 0 to 4)
+            node<ParadoxOperatorNode>(".", 4 to 5)
+            node<ParadoxDynamicCommandScopeNode>("event_target:target@root", 5 to 29) {
+                node<ParadoxCommandScopePrefixNode>("event_target:", 5 to 18)
+                node<ParadoxCommandScopeValueNode>("target@root", 18 to 29) {
+                    node<ParadoxDynamicValueExpression>("target@root", 18 to 29) {
+                        node<ParadoxDynamicValueNode>("target", 18 to 24)
+                        node<ParadoxMarkerNode>("@", 24 to 25)
+                        node<ParadoxScopeFieldExpression>("root", 25 to 29) {
+                            node<ParadoxSystemScopeNode>("root", 25 to 29)
+                        }
+                    }
+                }
+            }
+            node<ParadoxOperatorNode>(".", 29 to 30)
+            node<ParadoxStaticCommandFieldNode>("GetName", 30 to 37)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nestedDynamicValueExpression_withScope_in_middle() {
+        val s = "this.event_target:target@root.GetName"
+        val exp = resolve(s)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("this.event_target:target@root.GetName", 0 to 37) {
+            node<ParadoxSystemCommandScopeNode>("this", 0 to 4)
+            node<ParadoxOperatorNode>(".", 4 to 5)
+            node<ParadoxDynamicCommandScopeNode>("event_target:target@root", 5 to 29) {
+                node<ParadoxCommandScopePrefixNode>("event_target:", 5 to 18)
+                node<ParadoxCommandScopeValueNode>("target@root", 18 to 29) {
+                    node<ParadoxDynamicValueExpression>("target@root", 18 to 29) {
+                        node<ParadoxDynamicValueNode>("target", 18 to 24)
+                        node<ParadoxMarkerNode>("@", 24 to 25)
+                        node<ParadoxScopeFieldExpression>("root", 25 to 29) {
+                            node<ParadoxSystemScopeNode>("root", 25 to 29)
+                        }
+                    }
+                }
+            }
+            node<ParadoxOperatorNode>(".", 29 to 30)
+            node<ParadoxStaticCommandFieldNode>("GetName", 30 to 37)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nestedDynamicValueExpression_withScope_inMiddle() {
+        val s = "this.event_target:target@root.owner.GetName"
+        val exp = resolve(s)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("this.event_target:target@root.owner.GetName", 0 to 43) {
+            node<ParadoxSystemCommandScopeNode>("this", 0 to 4)
+            node<ParadoxOperatorNode>(".", 4 to 5)
+            node<ParadoxDynamicCommandScopeNode>("event_target:target@root", 5 to 29) {
+                node<ParadoxCommandScopePrefixNode>("event_target:", 5 to 18)
+                node<ParadoxCommandScopeValueNode>("target@root", 18 to 29) {
+                    node<ParadoxDynamicValueExpression>("target@root", 18 to 29) {
+                        node<ParadoxDynamicValueNode>("target", 18 to 24)
+                        node<ParadoxMarkerNode>("@", 24 to 25)
+                        node<ParadoxScopeFieldExpression>("root", 25 to 29) {
+                            node<ParadoxSystemScopeNode>("root", 25 to 29)
+                        }
+                    }
+                }
+            }
+            node<ParadoxOperatorNode>(".", 29 to 30)
+            node<ParadoxStaticCommandScopeNode>("owner", 30 to 35)
+            node<ParadoxOperatorNode>(".", 35 to 36)
+            node<ParadoxStaticCommandFieldNode>("GetName", 36 to 43)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nestedDynamicValueExpression_withFollowingAt() {
+        val s = "this.event_target:target@.GetName"
+        val exp = resolve(s)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("this.event_target:target@.GetName", 0 to 33) {
+            node<ParadoxSystemCommandScopeNode>("this", 0 to 4)
+            node<ParadoxOperatorNode>(".", 4 to 5)
+            node<ParadoxDynamicCommandScopeNode>("event_target:target@", 5 to 25) {
+                node<ParadoxCommandScopePrefixNode>("event_target:", 5 to 18)
+                node<ParadoxCommandScopeValueNode>("target@", 18 to 25) {
+                    node<ParadoxDynamicValueExpression>("target@", 18 to 25) {
+                        node<ParadoxDynamicValueNode>("target", 18 to 24)
+                        node<ParadoxMarkerNode>("@", 24 to 25)
+                        node<ParadoxErrorTokenNode>("", 25 to 25)
+                    }
+                }
+            }
+            node<ParadoxOperatorNode>(".", 25 to 26)
+            node<ParadoxStaticCommandFieldNode>("GetName", 26 to 33)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nestedDynamicValueExpression_withFollowingAt_inMiddle() {
+        val s = "this.event_target:target@.owner.GetName"
+        val exp = resolve(s)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("this.event_target:target@.owner.GetName", 0 to 39) {
+            node<ParadoxSystemCommandScopeNode>("this", 0 to 4)
+            node<ParadoxOperatorNode>(".", 4 to 5)
+            node<ParadoxDynamicCommandScopeNode>("event_target:target@", 5 to 25) {
+                node<ParadoxCommandScopePrefixNode>("event_target:", 5 to 18)
+                node<ParadoxCommandScopeValueNode>("target@", 18 to 25) {
+                    node<ParadoxDynamicValueExpression>("target@", 18 to 25) {
+                        node<ParadoxDynamicValueNode>("target", 18 to 24)
+                        node<ParadoxMarkerNode>("@", 24 to 25)
+                        node<ParadoxErrorTokenNode>("", 25 to 25)
+                    }
+                }
+            }
+            node<ParadoxOperatorNode>(".", 25 to 26)
+            node<ParadoxStaticCommandScopeNode>("owner", 26 to 31)
+            node<ParadoxOperatorNode>(".", 31 to 32)
+            node<ParadoxStaticCommandFieldNode>("GetName", 32 to 39)
         }
         exp.check(dsl)
     }

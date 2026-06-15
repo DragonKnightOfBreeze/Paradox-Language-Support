@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
+import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypeSets.DynamicValue
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
@@ -86,7 +86,7 @@ interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpr
 // region Implementations
 
 private object ParadoxCommandExpressionResolver {
-     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
@@ -95,9 +95,60 @@ private object ParadoxCommandExpressionResolver {
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
-        val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
 
-        var suffixStartIndex = -1
+        val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val suffixStartIndexRef = Ref(-1)
+        collectSuffixNodes(text, configGroup, suffixStartIndexRef, suffixNodes)
+
+        val suffixStartIndex = suffixStartIndexRef.get()
+        val text = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
+        val offset = range.startOffset
+        var startIndex = 0
+        var i = 0
+        var depthParen = 0
+        val barrierCheckIndex = text.lastIndexOf("value:").let { if (it == -1) 0 else it }
+        var barrier = false // '|' 作为屏障：之后不再按 '.' 切分
+        val textLength = text.length
+        while (i < textLength) {
+            val ch = text[i]
+            val inParam = parameterRanges.any { i in it }
+            if (!inParam) {
+                when (ch) {
+                    '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
+                    ')' -> if (depthParen > 0) depthParen--
+                    '|' -> if (depthParen == 0 && i >= barrierCheckIndex) barrier = true
+                    '.' -> if (depthParen == 0 && !barrier) {
+                        // 中间段：按作用域链接解析
+                        val nodeText = text.substring(startIndex, i)
+                        val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
+                        val node = ParadoxCommandScopeNode.resolve(nodeText, nodeTextRange, configGroup)
+                        if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+                        nodes += node
+                        val dotRange = TextRange.create(i + offset, i + 1 + offset)
+                        nodes += ParadoxOperatorNode(".", dotRange, configGroup)
+                        startIndex = i + 1
+                    }
+                }
+            }
+            i++
+        }
+        // 收尾：最后一段
+        run {
+            val end = textLength
+            val nodeText = text.substring(startIndex, end)
+            val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
+            val node = ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+            if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+            nodes += node
+        }
+        nodes += suffixNodes
+        if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolution()
+        return expression
+    }
+
+    private fun collectSuffixNodes(text: String, configGroup: CwtConfigGroup, suffixStartIndexRef: Ref<Int>, suffixNodes: MutableList<ParadoxComplexExpressionNode>) {
+        var suffixStartIndex = suffixStartIndexRef.get()
         run r1@{
             run r2@{
                 suffixStartIndex = text.indexOf('&')
@@ -127,48 +178,7 @@ private object ParadoxCommandExpressionResolver {
                 }
             }
         }
-        run r1@{
-            val offset = range.startOffset
-            val expressionString0 = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
-            var startIndex = 0
-            var i = 0
-            var depthParen = 0
-            val textLength = expressionString0.length
-            while (i < textLength) {
-                val ch = expressionString0[i]
-                val inParam = parameterRanges.any { it.contains(i) }
-                if (!inParam) {
-                    when (ch) {
-                        '(' -> depthParen++ // 括号内的点不切分
-                        ')' -> if (depthParen > 0) depthParen--
-                        '.' -> if (depthParen == 0) {
-                            val nodeText = expressionString0.substring(startIndex, i)
-                            val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
-                            val node = ParadoxCommandScopeNode.resolve(nodeText, nodeTextRange, configGroup)
-                            if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
-                            nodes += node
-                            val dotRange = TextRange.create(i + offset, i + 1 + offset)
-                            nodes += ParadoxOperatorNode(".", dotRange, configGroup)
-                            startIndex = i + 1
-                        }
-                    }
-                }
-                i++
-            }
-            // last segment -> command field
-            run {
-                val end = textLength
-                val nodeText = expressionString0.substring(startIndex, end)
-                val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
-                val node = ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
-                if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
-                nodes += node
-            }
-        }
-        nodes += suffixNodes
-        if (!incomplete && nodes.isEmpty()) return null
-        expression.finishResolution()
-        return expression
+        suffixStartIndexRef.set(suffixStartIndex)
     }
 }
 

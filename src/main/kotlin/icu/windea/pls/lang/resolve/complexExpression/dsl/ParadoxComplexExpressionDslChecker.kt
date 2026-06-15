@@ -4,12 +4,13 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import kotlin.reflect.full.isSuperclassOf
 
 object ParadoxComplexExpressionDslChecker {
-    fun check(node: ParadoxComplexExpressionNode, dslNode: ParadoxComplexExpressionDslNode) {
+    fun check(node: ParadoxComplexExpressionNode, dslNode: ParadoxComplexExpressionDsl) {
+        if (dslNode !is ParadoxComplexExpressionDslNode) return
         if (!matches(node, dslNode)) {
-            mismatched(dslNode, node)
+            mismatched(node, dslNode)
         }
         if (dslNode.nodes.size != node.nodes.size) {
-            mismatchedChildrenSize(dslNode, node)
+            mismatchedChildrenSize(node, dslNode)
         }
         if (dslNode.nodes.isNotEmpty()) {
             dslNode.nodes.zip(node.nodes).forEach { (node1, targetNode1) -> check(targetNode1, node1) }
@@ -25,11 +26,11 @@ object ParadoxComplexExpressionDslChecker {
         return true
     }
 
-    private fun mismatched(dslNode: ParadoxComplexExpressionDslNode, node: ParadoxComplexExpressionNode): Nothing {
+    private fun mismatched(node: ParadoxComplexExpressionNode, dslNode: ParadoxComplexExpressionDslNode): Nothing {
         throw IllegalStateException("Mismatched: ${dslNode.render()} vs ${node.render()}")
     }
 
-    private fun mismatchedChildrenSize(dslNode: ParadoxComplexExpressionDslNode, node: ParadoxComplexExpressionNode): Nothing {
+    private fun mismatchedChildrenSize(node: ParadoxComplexExpressionNode, dslNode: ParadoxComplexExpressionDslNode): Nothing {
         throw IllegalStateException("Mismatched children size: ${dslNode.render()} vs ${node.render()} (${dslNode.nodes.size} vs ${node.nodes.size})")
     }
 
