@@ -13,3 +13,9 @@ k>v
 k<=v
 k>=v
 k?=v
+
+# NOTE 2.1.10 compatible with Stellaris 4.4
+k ? = v
+k ?  = v
+k? = v
+k?  = v
