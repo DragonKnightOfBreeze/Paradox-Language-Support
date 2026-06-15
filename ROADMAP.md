@@ -66,6 +66,7 @@
 
 - [x] 重命名EP接口 `CwtDataExpressionResolver` 为 `CwtDataExpressionSupport`
 - [x] 将 `icu.windea.pls.ep.match` 中的已有代码全部移到 `icu.windea.pls.ep.match.expression`
+- [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值操作符）
 
 ## v2.2.0-csv
 

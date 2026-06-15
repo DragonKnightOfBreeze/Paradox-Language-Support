@@ -4,6 +4,7 @@
 
 ## 2.1.10-dev
 
+- [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值操作符）
 - [ ] 提供动作，以进行定义/定义注入之间的差异比较 / Provide actions to compare differences between definitions and definition injections
 - [x] 完善对作用域字段表达式和值字段表达式的支持：兼容其中嵌套的动态值表达式 / Improve support for scope field expressions and value field expressions: compatible with nested dynamic value expressions ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
 - [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 / Provide description info when inferring game type, and display it in the mod settings dialog

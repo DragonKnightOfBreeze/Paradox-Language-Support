@@ -322,6 +322,9 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     ">" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
+
+    // NOTE 2.1.10 compatible with Stellaris 4.4
+    \?\s+= { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_EQUAL_SIGN; }
 }
 
 <YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_PARAMETER_CONDITION_BODY> {

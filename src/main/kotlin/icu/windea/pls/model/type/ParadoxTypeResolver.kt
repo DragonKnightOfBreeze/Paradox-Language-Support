@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
+import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -97,6 +98,9 @@ object ParadoxTypeResolver {
     }
 
     fun resolveSeparatorType(text: String): ParadoxSeparatorType? {
+        // NOTE 2.1.10 compatible with Stellaris 4.4
+        if (text.removeSurroundingOrNull("?", "=")?.isBlank() == true) return ParadoxSeparatorType.SafeEqual
+
         return when (text) {
             "=" -> ParadoxSeparatorType.Equal
             "!=", "<>" -> ParadoxSeparatorType.NotEqual
