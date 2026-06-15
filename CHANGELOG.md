@@ -46,7 +46,7 @@
 ## 2.1.7 - 2026-03-28
 
 - [x] 同步规则文件 / Synchronize config files
-- [x] [#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289) Refactoring via inlining doesn't substitute parameters
+- [x] Refactoring via inlining doesn't substitute parametersk ([#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289))
 - [x] 修复：修复自 IDEA 2026.1 开始，无法预期地从 Steam 超链接跳转到客户端或启动游戏的问题 / FIX: Fixed an issue where starting from IDEA 2026.1, cannot jump to the client or launch the game from Steam hyperlinks as expected
 - [x] 修复：修复自 IDEA 2026.1 开始，无法预期地在快速文档中渲染无需切分的 DDS/TGA 图片的问题 / FIX: Fixed an issue where starting from IDEA 2026.1, cannot render DDS / TGA images without splitting in quick doc as expected
 - [x] 优化：为 `launcher-settings.json` 和 `metadata.json` 提供内置的 JSON Schema / OP: Provide built-in JSON Schema for `lanucher-settings.json` and `metadata.json`
@@ -54,7 +54,7 @@
 
 ## 2.1.6 - 2026-03-21
 
-- [x] [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288) [EU5] Validating Required Fields for INJECT Statements
+- [x] [EU5] Validating Required Fields for INJECT Statements ([#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288))
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
 - [x] 优化：优化索引时的性能，将耗时降低到旧版本的 (Stellaris/VIC3/EU5 65%/47%/25%) / OP: Optimize performance during indexing, reducing the time taken to (Stellaris/VIC3/EU5 65%/47%/25%) of the old version
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -114,8 +114,8 @@
 ## 2.1.1 - 2026-01-18
 
 - [x] 同步规则文件 / Synchronize config files
-- [x] [#259](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/259) [Vic 3] PLS Hangs while indexing game files
-- [x] [#261](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/261) Case Insensitive Enums
+- [x] [Vic 3] PLS Hangs while indexing game files ([#259](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/259))
+- [x] Case Insensitive Enums ([#261](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/261))
 - [x] 优化：继续完善对链式的复杂表达式的支持 / OP: Continue to optimize support for linked complex expressions
 - [x] 优化：优化从 PSI 解析规则数据时的性能，将耗时降低到旧版本的 30% / OP: Optimize the performance when parsing config data from PSI, reducing the time taken to 30% of the old version
 - [x] 优化：优化索引时的性能，将耗时降低到旧版本的 12% / OP: Optimize performance during indexing, reducing the time taken to 12% of the old version
@@ -125,16 +125,16 @@
 
 - [x] 更新 IDEA 版本到 2025.2 / Update IDEA version to 2025.2
 - [x] 同步规则文件 / Synchronize config files
-- [x] [#241](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/241) Exception in version 2.0.7
-- [x] [#242](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/242) Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
-- [x] [#243](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/243) 生成本地化时，某些缺失的本地化未被包含
+- [x] Exception in version 2.0.7 ([#241](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/241))
+- [x] Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo` ([#242](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/242))
+- [x] 生成本地化时，某些缺失的本地化未被包含 ([#243](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/243))
 - [x] 优化：可配置 - 如果远程仓库地址已配置，覆盖相关的内置规则分组 / OP: Configurable - Override related builtin config group if remote repository urls are configured
 - [x] 优化：为内联脚本表达式提供特殊的快速文档 / OP: Provide special quick doc for inline script expressions
 - [x] 优化：补充更多装订线图标和内嵌提示，补充部分内嵌提示的预览（在对应的配置页面中） / OP: Add more gutter icons and inlay hints, add several inlay hint previews (in related settings page)
 - [x] 优化：以 `####` （或者更多的 `#`）开始的 CWT 文档注释会被直接渲染为 HTML / OP: CWT documentation comments start with `####` (or more `#`) will be rendered directly as HTML
 - [x] 新功能：支持通过意向动作，根据传参信息求值内联数学表达式 / NEW: Support to evaluate inline math expressions with argument information via intention actions
 - [x] 新功能：为静态的内联数学表达式提供内嵌提示，显示评估后的值 / NEW: Provide inlay hints for static inline math expressions, showing the evaluation result
-- [x] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.cwt@some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.cwt@some/property`) [#251](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/251)
+- [x] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.cwt@some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.cwt@some/property`) ([#251](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/251))
 - [x] 新功能：支持 VIC3 和 EU5 中的定义注入特性（如 `inject:xxx = {...}` ） / NEW: Support the definition injection feature in VIC3 and EU5 (e.g., `inject:xxx = {...}`) [#252](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/252)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
