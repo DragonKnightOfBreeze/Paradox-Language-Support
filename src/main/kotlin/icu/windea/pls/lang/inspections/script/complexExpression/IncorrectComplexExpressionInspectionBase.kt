@@ -15,13 +15,14 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 
 /**
  * 不正确的复杂表达式的代码检查的基类。
  */
-abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
+abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
@@ -51,8 +52,8 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     protected open fun resolveComplexExpression(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (!isAvailableForConfig(config)) return null
-        val value = element.value
-        return ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config)
+        val expressionText = ParadoxExpressionManager.getExpressionText(element)
+        return ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config)
     }
 
     protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean

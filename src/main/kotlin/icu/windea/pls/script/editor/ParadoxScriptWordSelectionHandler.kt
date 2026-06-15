@@ -8,7 +8,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.unquote
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // com.intellij.json.editor.selection.JsonStringLiteralSelectionHandler
@@ -39,7 +38,7 @@ class ParadoxScriptWordSelectionHandler : ExtendWordSelectionHandlerBase() {
         selectUnquoted(element, textRange, result)
     }
 
-    private fun selectUnquoted(element: ParadoxScriptExpressionElement, textRange: TextRange, result: MutableList<TextRange>) {
+    private fun selectUnquoted(element: ParadoxScriptStringExpressionElement, textRange: TextRange, result: MutableList<TextRange>) {
         val text = element.text
         if (!text.isLeftQuoted()) return
         result += textRange.unquote(text)

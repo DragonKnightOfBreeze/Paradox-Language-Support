@@ -248,6 +248,9 @@
     <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticAnnotator"/>
     <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.editor.ParadoxCsvSemanticAnnotator"/>
 
+    <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxScriptSemanticWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticWordSelectionHandler"/>
+
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameTypeMismatchedEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider"/>

@@ -39,7 +39,7 @@ class CwtWordSelectionHandler : ExtendWordSelectionHandlerBase() {
         selectUnquoted(element, textRange, result)
     }
 
-    private fun selectUnquoted(element: CwtExpressionElement, textRange: TextRange, result: MutableList<TextRange>) {
+    private fun selectUnquoted(element: CwtStringExpressionElement, textRange: TextRange, result: MutableList<TextRange>) {
         val text = element.text
         if (!text.isLeftQuoted()) return
         result += textRange.unquote(text)

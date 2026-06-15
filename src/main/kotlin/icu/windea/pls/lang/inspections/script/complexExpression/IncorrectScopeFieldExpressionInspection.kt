@@ -7,7 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 /**
  * 不正确的 [ParadoxScopeFieldExpression] 的代码检查。
  */
-class IncorrectScopeFieldExpressionInspection : IncorrectComplexExpressionBase() {
+class IncorrectScopeFieldExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
         val dataType = config.configExpression.type
         return dataType in CwtDataTypeSets.ScopeField

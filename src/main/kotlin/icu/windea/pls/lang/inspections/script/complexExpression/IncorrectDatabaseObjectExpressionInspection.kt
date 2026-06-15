@@ -7,7 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
 /**
  * 不正确的 [ParadoxDatabaseObjectExpression] 的代码检查。
  */
-class IncorrectDatabaseObjectExpressionInspection : IncorrectComplexExpressionBase() {
+class IncorrectDatabaseObjectExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
         val dataType = config.configExpression.type
         return dataType == CwtDataTypes.DatabaseObject

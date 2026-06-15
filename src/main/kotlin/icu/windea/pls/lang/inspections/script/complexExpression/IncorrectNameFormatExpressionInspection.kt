@@ -7,7 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 /**
  * 不正确的 [ParadoxNameFormatExpression] 的代码检查。
  */
-class IncorrectNameFormatExpressionInspection : IncorrectComplexExpressionBase() {
+class IncorrectNameFormatExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
         val dataType = config.configExpression.type
         return dataType == CwtDataTypes.NameFormat
