@@ -1,11 +1,9 @@
-# Changelog Achieved
+# Changelog 0.X.X
 
 ## 0.10.3
 
 - [x] 在本地化文件中允许`KEY:"..."`这样没有冒号和引号之间没有空格的写法
-- [x] 
-  实现扩展点以在某些极个别情况下基于特定逻辑获取脚本表达式对应的CWT规则以及作用域上下文（如，对于`complex_trigger_modifier`
-  和`switch`）
+- [x] 实现扩展点以在某些极个别情况下基于特定逻辑获取脚本表达式对应的CWT规则以及作用域上下文（如，对于`complex_trigger_modifier`和`switch`）
 - [x] 实现扩展点以兼容定义继承，可在快速文档中或者通过导航菜单转到父 定义（如，事件的继承）
 - [x] 实现扩展点以在匹配CWT规则的基础上，进一步检查脚本表达式是否正确（如，对于`switch`中的`trigger`的值）
 - [x] 可以通过`Navigate > Super Definition`跳转到父定义（如果存在）
