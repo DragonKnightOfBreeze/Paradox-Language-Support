@@ -23,7 +23,6 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.psi.PsiFile
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -56,26 +55,23 @@ import javax.swing.Icon
  */
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: return null
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (file.isDirectory) return null
         if (file.fileType !is ParadoxLocalisationFileType) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
-        // val gameType = fileInfo.rootInfo.gameType
-        // val path = fileInfo.path.path
         return file
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileManager.findLocalisation(file, offset)?.takeIf { it.type != null }
-    }
-
-    private fun findElement(e: AnActionEvent): ParadoxLocalisationProperty? {
+    private fun findElement(e: AnActionEvent, file: VirtualFile, project: Project): ParadoxLocalisationProperty? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
         if (element is ParadoxLocalisationProperty && element.type != null) return element
-        return null
+
+        val editor = e.editor ?: return null
+        val offset = editor.caretModel.offset
+        val psiFile = file.toPsiFile(project) ?: return null
+        return ParadoxPsiFileManager.findLocalisation(psiFile, offset)?.takeIf { it.type != null }
     }
 
     override fun update(e: AnActionEvent) {
@@ -86,37 +82,18 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
 
         // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
-        val presentation = e.presentation
-        presentation.isVisible = false
-        presentation.isEnabled = false
+        e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
         val file = findFile(e) ?: return
-        var localisation = findElement(e)
-        if (localisation == null) {
-            presentation.isVisible = true
-            val editor = e.editor ?: return
-            val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile(project) ?: return
-            localisation = findElement(psiFile, offset)
-        }
-        presentation.isEnabledAndVisible = localisation != null
+        val element = findElement(e, file, project)
+        e.presentation.isEnabledAndVisible = element != null
     }
 
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
-        var localisation = findElement(e)
-        if (localisation == null) {
-            val project = e.project ?: return null
-            val file = findFile(e) ?: return null
-            val editor = e.editor ?: return null
-            val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile(project) ?: return null
-            localisation = findElement(psiFile, offset)
-        }
-        if (localisation == null) return null
-        val psiFile = localisation.containingFile
-        val file = psiFile.virtualFile
-        val project = psiFile.project
-        val localisationName = localisation.name
+        val project = e.project ?: return null
+        val file = findFile(e) ?: return null
+        val element = findElement(e, file, project) ?: return null
+        val localisationName = element.name
         val localisations = mutableListOf<ParadoxLocalisationProperty>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.localisations.collect.title")) {
             readAction {
@@ -127,7 +104,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         if (localisations.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.localisations.content.title.info.1")
+            val content = PlsBundle.message("diff.compare.localisations.content.notification.empty")
             PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
@@ -135,10 +112,10 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
 
-        val windowTitle = getWindowsTitle(localisation) ?: return null
-        val contentTitle = getContentTitle(localisation) ?: return null
+        val windowTitle = getWindowsTitle(element) ?: return null
+        val contentTitle = getContentTitle(element) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
-        val content = createContent(contentFactory, project, documentContent, localisation)
+        val content = createContent(contentFactory, project, documentContent, element)
 
         var index = 0
         var currentIndex = 0
@@ -148,7 +125,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
                 val locale = selectLocale(otherPsiFile) ?: return@mapNotNull null
                 val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
 
-                val isSamePosition = localisation isSamePosition otherLocalisation
+                val isSamePosition = element isSamePosition otherLocalisation
                 val isCurrent = isSamePosition
                 val isReadonly = isSamePosition
 
@@ -160,7 +137,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
                     isSamePosition -> {
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
-                        createContent(contentFactory, project, otherDocumentContent, localisation)
+                        createContent(contentFactory, project, otherDocumentContent, element)
                     }
                     else -> {
                         val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
@@ -211,10 +188,10 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val name = localisation.name
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息
+        val name = localisation.name
         return PlsBundle.message("diff.compare.localisations.dialog.title", name, path, qualifiedName)
     }
 
@@ -223,10 +200,10 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val name = localisation.name
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息
+        val name = localisation.name
         return when {
             original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, path, qualifiedName)
             else -> PlsBundle.message("diff.compare.localisations.content.title", name, path, qualifiedName)
@@ -258,11 +235,11 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val name = otherLocalisationName
-            val localeId = locale.id
             val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
             // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息（这里还会显示语言环境信息）
+            val name = otherLocalisationName
+            val localeId = locale.id
             return PlsBundle.message("diff.compare.localisations.popup.name", name, localeId, path, qualifiedName)
         }
     }

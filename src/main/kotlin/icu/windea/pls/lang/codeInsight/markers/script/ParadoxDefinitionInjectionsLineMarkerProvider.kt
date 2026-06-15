@@ -37,8 +37,7 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         val locationElement = element.propertyKey.idElement ?: return
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
         val info = element.definitionInjectionInfo ?: return
-        if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
-        if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
+        if (!info.isTargetValid()) return // 排除目标或目标类型为空的情况
 
         ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.DefinitionInjections

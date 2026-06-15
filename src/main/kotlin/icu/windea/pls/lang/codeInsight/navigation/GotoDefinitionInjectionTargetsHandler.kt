@@ -30,10 +30,9 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
         val info = element.definitionInjectionInfo ?: return null
-        if (info.target.isNullOrEmpty()) return null // 排除目标为空的情况
-        if (info.type.isNullOrEmpty()) return null // 排除目标定义的类型为空的情况
+        if (!info.isTargetValid()) return null // 排除目标或目标类型为空的情况
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target)) {
+        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target.orEmpty())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()

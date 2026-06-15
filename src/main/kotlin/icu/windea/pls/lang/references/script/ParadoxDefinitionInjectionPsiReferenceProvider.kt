@@ -29,7 +29,7 @@ class ParadoxDefinitionInjectionPsiReferenceProvider : PsiReferenceProvider() {
         val modeRange = TextRange.from(offset, info.mode.length)
         val modeReference = ParadoxDefinitionInjectionModePsiReference(element, modeRange, info)
 
-        if (info.target.isNullOrEmpty() || info.type.isNullOrEmpty()) return arrayOf(modeReference)
+        if (!info.isTargetValid()) return arrayOf(modeReference)
         val targetRange = TextRange.from(offset + info.mode.length + 1, info.target.length)
         val targetReference = ParadoxDefinitionInjectionTargetPsiReference(element, targetRange, info)
         return arrayOf(modeReference, targetReference)

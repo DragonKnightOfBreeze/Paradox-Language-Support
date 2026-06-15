@@ -48,15 +48,11 @@ import javax.swing.Icon
  */
 class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
-            ?: e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: return null
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull() ?: e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (file.isDirectory) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
-        // val gameType = fileInfo.rootInfo.gameType
-        // val path = fileInfo.path.path
         return file
     }
 
@@ -88,7 +84,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
         if (virtualFiles.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.files.content.title.info.1")
+            val content = PlsBundle.message("diff.compare.files.content.notification.empty")
             PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }

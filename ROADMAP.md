@@ -24,8 +24,8 @@
 - [x] P2 重构 path/expression/complexExpression/config/configExpression 的解析器与解析的相关代码（改为：模型接口上的静态解析方法 + 委托给解析器类的对应方法）
 - [x] P2 重构 expressionSupport 以及相关代码（精简与规范化）
 - [ ] P3 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作）
-- [ ] P3 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） - 相关EP：`extendWordSelectionHandler`
-- [ ] P3 提供动作，以进行定义/定义注入之间的差异比较
+- [x] P3 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） - 相关EP：`extendWordSelectionHandler`
+- [x] P3 提供动作，以进行定义/定义注入之间的差异比较
 - [x] P4 借助 AI，提供更多 specialPathProvider 和 specialUrlProvider 的默认 EP 实现
 - [x] P2 完善对作用域字段表达式（scopeFieldExpression）和值字段表达式（valueFieldExpression）的支持：兼容其中作为链接数据源传入的动态值表达式（dynamicValueExpression） ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
   - 示例：`event_target:target@root.owner` - `event_target:target@root` 是一个单独的作用域链接节点，插件目前暂不支持其中的 `@root` 部分。
