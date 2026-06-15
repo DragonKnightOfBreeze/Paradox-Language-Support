@@ -28,6 +28,7 @@ import icu.windea.pls.script.psi.isBlockMember
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         var current = element
+        if (PlsInspectionSuppressManager.isSuppressedInComment(current, toolId)) return true
         if (PlsInspectionSuppressManager.isSuppressedForDefinition(element, toolId)) return true
         while (current !is PsiFile) {
             current = current.parent ?: return false
