@@ -56,8 +56,7 @@ import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -175,6 +174,23 @@ object ParadoxExpressionManager {
         s = s.replace("""\Q\E""", "")
         return s.toRegex(RegexOption.IGNORE_CASE)
     }
+
+    // fun isQuoted(element: ParadoxExpressionElement): Boolean {
+    //     val r = when (element) {
+    //         is ParadoxScriptExpressionElement -> element is ParadoxScriptStringExpressionElement
+    //         is ParadoxCsvColumn -> true
+    //         else -> false
+    //     }
+    //     if (!r) return false
+    //
+    //     // simpler version
+    //     return element.text.isLeftQuoted()
+    //
+    //     // detailed version
+    //     // val first = element.firstChild ?: return false
+    //     // if (first is ParadoxScriptInlineParameterCondition || first is ParadoxParameter) return false
+    //     // return first.text.isLeftQuoted()
+    // }
 
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {

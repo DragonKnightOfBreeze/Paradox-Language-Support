@@ -184,10 +184,11 @@ operator fun Segment.contains(other: Segment): Boolean {
  * 去除文本范围首尾的引号。返回处理后的新的文本范围。
  */
 fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
+    if (text.isEmpty()) return TextRange.EMPTY_RANGE
     val leftQuoted = text.isLeftQuoted(quote)
     val rightQuoted = text.isRightQuoted(quote)
-    val startOffset = if (leftQuoted) this.startOffset + 1 else this.startOffset
-    val endOffset = if (rightQuoted) this.endOffset - 1 else this.endOffset
+    val startOffset = if (leftQuoted) startOffset + 1 else startOffset
+    val endOffset = if (rightQuoted) endOffset - 1 else endOffset
     return TextRange.create(startOffset, endOffset)
 }
 
