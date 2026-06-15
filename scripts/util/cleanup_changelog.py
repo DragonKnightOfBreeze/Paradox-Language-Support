@@ -5,7 +5,7 @@
 
 This script updates CHANGELOG.md in two ways:
 1. Replace standalone issue IDs in list items, such as ` #123`, with Markdown links.
-2. Append release dates to released version headings, such as `## 2.0.0 (2026-01-01)`.
+2. Append release dates to released version headings, such as `## 2.0.0 - 2026-01-01`.
 
 Date source:
 - Prefer the date of the corresponding git tag in the local repository.
@@ -109,7 +109,7 @@ def normalize_version_heading(line: str, repo_root: Path) -> str:
     tag_date = get_tag_date(repo_root, version)
     if tag_date is None:
         return line
-    return f"{prefix}{version} ({tag_date})"
+    return f"{prefix}{version} - {tag_date}"
 
 
 def normalize_changelog(text: str, repo_root: Path) -> str:

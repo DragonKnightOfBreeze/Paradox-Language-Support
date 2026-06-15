@@ -11,7 +11,7 @@
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 
-## 2.1.9 (2026-05-21)
+## 2.1.9 - 2026-05-21
 
 - [x] 修复游戏类型发生变更时，分析数据可能未被正确刷新的问题 / Fixed an issue that analysis data may not be refreshed when game type is changed ([#326](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/326))
 - [x] 支持在类型展示规则中使用嵌套的 `subtype[x] = {...}` / Supported nested `subtype[x] = {...}` in type presentation configs ([#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324))
@@ -22,7 +22,7 @@
 - [x] 重新设计浏览、复制与打开各种特殊路径与地址的动作 / Redesigned actions to browse, copy and open various special paths and urls
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.8 (2026-05-10)
+## 2.1.8 - 2026-05-10
 
 - [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
 - [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, compatible with situations where there are multiple non-exact matching candidates
@@ -42,16 +42,16 @@
 - [x] 修复在某些情况下无法添加模组依赖的问题 / Fixed an issue that cannot add mod dependencies in some situations ([#323](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/323)) 
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.7 (2026-03-28)
+## 2.1.7 - 2026-03-28
 
 - [x] 同步规则文件 / Synchronize config files
-- [x] Refactoring via inlining doesn't substitute parametersk ([#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289))
+- [x] Refactoring via inlining doesn't substitute parameters ([#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289))
 - [x] 修复：修复自 IDEA 2026.1 开始，无法预期地从 Steam 超链接跳转到客户端或启动游戏的问题 / FIX: Fixed an issue where starting from IDEA 2026.1, cannot jump to the client or launch the game from Steam hyperlinks as expected
 - [x] 修复：修复自 IDEA 2026.1 开始，无法预期地在快速文档中渲染无需切分的 DDS/TGA 图片的问题 / FIX: Fixed an issue where starting from IDEA 2026.1, cannot render DDS / TGA images without splitting in quick doc as expected
 - [x] 优化：为 `launcher-settings.json` 和 `metadata.json` 提供内置的 JSON Schema / OP: Provide built-in JSON Schema for `lanucher-settings.json` and `metadata.json`
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.6 (2026-03-21)
+## 2.1.6 - 2026-03-21
 
 - [x] [EU5] Validating Required Fields for INJECT Statements ([#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288))
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
@@ -60,7 +60,7 @@
 - [x] 性能分析与优化 / Performance analysis and optimization
 - [x] 完善参考文档 / Improve reference documentation
 
-## 2.1.5 (2026-03-12)
+## 2.1.5 - 2026-03-12
 
 - [x] 同步规则文件 / Synchronize config files
 - [x] [Vic3] Scripted triggers not being recognized ([#279](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/279))
@@ -69,7 +69,7 @@
 - [x] 修复：修复和优化创建目录时的补全，兼容多种入口形式 / FIX: Fix and optimize create directory completion, compatible with various entry forms
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.4 (2026-03-04)
+## 2.1.4 - 2026-03-04
 
 - [x] [Vic3/EU5] Script Value and Static Value ([#264](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/264))
 - [x] Arguments with value no are not recognized as required arguments ([#278](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/278))
@@ -79,7 +79,7 @@
 - [x] 优化：允许通过扩展规则为内联脚本文件提供快速文档文本 / OP: Make it possible to provide quick doc text for inline script files via extended configs
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.3 (2026-02-20)
+## 2.1.3 - 2026-02-20
 
 - [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题 / FIX: Fixed a bug that the source of the correction was not excluded when parsing generated corrections
 - [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified ([#272](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/272))
@@ -93,7 +93,7 @@
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 性能分析与优化 / Performance analysis and optimization
 
-## 2.1.2 (2026-01-24)
+## 2.1.2 - 2026-01-24
 
 - [x] 同步规则文件 / Synchronize config files
 - [x] 修复：修复 Steam 路径缓存未被正确预加载的回归 BUG / FIX: Fixed a regression bug that the Steam path cache was not preloaded correctly
@@ -110,7 +110,7 @@
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 性能分析与优化 / Performance analysis and optimization
 
-## 2.1.1 (2026-01-18)
+## 2.1.1 - 2026-01-18
 
 - [x] 同步规则文件 / Synchronize config files
 - [x] [Vic 3] PLS Hangs while indexing game files ([#259](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/259))
@@ -120,7 +120,7 @@
 - [x] 优化：优化索引时的性能，将耗时降低到旧版本的 12% / OP: Optimize performance during indexing, reducing the time taken to 12% of the old version
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.0 (2026-01-07)
+## 2.1.0 - 2026-01-07
 
 - [x] 更新 IDEA 版本到 2025.2 / Update IDEA version to 2025.2
 - [x] 同步规则文件 / Synchronize config files
@@ -137,7 +137,7 @@
 - [x] 新功能：支持 VIC3 和 EU5 中的定义注入特性（如 `inject:xxx = {...}` ） / NEW: Support the definition injection feature in VIC3 and EU5 (e.g., `inject:xxx = {...}`) ([#252](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/252))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.0.7 (2025-11-18)
+## 2.0.7 - 2025-11-18
 
 - [x] 优化：在 Stellaris 中，如果一个事件继承自另一个事件，那么此事件也会继承部分子类型 / OP: In Stellaris, if an event inherits from another event, then this event will also inherit specific subtypes
 - [x] 优化：优化对游戏和模组的入口目录的识别，并修复相关BUG / OP: Optimize detection for game and mod entry directories, with related bug fixes
@@ -145,7 +145,7 @@
 - [x] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.0.6 (2025-11-08)
+## 2.0.6 - 2025-11-08
 
 - [x] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [x] 同步其他游戏的规则文件 / Synchronize config files of other games
@@ -163,7 +163,7 @@
 - [x] 新功能：提供快速修复，将无法解析的表达式替换为合法且相似的字面量 / NEW: Provide quick fix to replace unresolved expressions with valid similar literals
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.0.5 (2025-09-24)
+## 2.0.5 - 2025-09-24
 
 - [x] [#186](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/186)
 - [x] 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别 / Can configure detailed highlight severity levels by *Severity x Confidence* ([#187](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/187))
@@ -177,16 +177,16 @@
 - [x] 新功能：提供基于本地化文本片段的随处搜索 / NEW: Provide localisation text snippet based Search Everywhere
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.0.4 (2025-09-09)
+## 2.0.4 - 2025-09-09
 
 - [x] [#184](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/184)
 
-## 2.0.3 (2025-09-08)
+## 2.0.3 - 2025-09-08
 
 - [x] 修复：修复与切换类型有关的一处 BUG / FIX: Fix an issue related to swapped types
 - [x] 修复：修复规则数据可能在重启项目后被清空的问题 / FIX: Fix an issue that config data may be cleared after project reopening
 
-## 2.0.2 (2025-09-04)
+## 2.0.2 - 2025-09-04
 
 - [x] [#165](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/165)
 - [x] 优化：优化自动识别切换类型的声明规则的逻辑 / OP: Optimize the logic for automatically detecting declaration configs for swapped types
@@ -202,7 +202,7 @@
 - [x] 新功能：提供本地化操作任务，用于从另一语言环境的本地化翻译为当前语言环境 / NEW: Provide the localisation manipulation task to translate localisations from another locale to current locale
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.0.1 (2025-08-11)
+## 2.0.1 - 2025-08-11
 
 - [x] [CK3] Add file `lines.lines` to Paradox script file name patterns ([#159](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/159))
 - [x] Using single alias for a type ([#161](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/161))
@@ -213,7 +213,7 @@
 - [x] 新功能：支持Paradox CSV语言，提供各种必要的语言功能 / NEW: Support Paradox CSV language, and provide various necessary language features
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.0.0 (2025-07-10)
+## 2.0.0 - 2025-07-10
 
 - [x] 集成Tiger检查工具 / Integrate Tiger linting tools ([#128](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/128))
 - [x] 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`) ([#148](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/148))
