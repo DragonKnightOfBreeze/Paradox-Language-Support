@@ -28,6 +28,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
@@ -47,7 +48,6 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -63,7 +63,7 @@ import javax.swing.Icon
  * - 仅适用于支持定义注入的游戏类型，同时可能支持定义注入的定义类型。
  */
 class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
-    private fun findFile(e: AnActionEvent): VirtualFile? {
+    private fun findSourceFile(e: AnActionEvent): VirtualFile? {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (file.isDirectory) return null
         if (file.fileType !is ParadoxScriptFileType) return null
@@ -73,8 +73,6 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val project = e.project ?: return null
         val psiFile = file.toPsiFile(project) ?: return null
         if (!ParadoxPsiFileMatcher.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
-        // val gameType = fileInfo.rootInfo.gameType
-        // val path = fileInfo.path.path
         return file
     }
 
@@ -102,32 +100,33 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
         e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
-        val file = findFile(e) ?: return
-        val element = findElement(e, file, project)
+        val sourceFile = findSourceFile(e) ?: return
+        val element = findElement(e, sourceFile, project)
         e.presentation.isEnabledAndVisible = element != null
     }
 
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
-        val file = findFile(e) ?: return null
-        val element = findElement(e, file, project) ?: return null
+        val sourceFile = findSourceFile(e) ?: return null
+        val element = findElement(e, sourceFile, project) ?: return null
+        val file = element.containingFile?.virtualFile ?: return null
         val definitionCandidates = mutableListOf<ParadoxScriptProperty>()
         val definitionInjectionInfo = element.definitionInjectionInfo
         val definitionInfo = if (definitionInjectionInfo != null) null else element.definitionInfo
         val definitionCandidateInfo = definitionInjectionInfo ?: definitionInfo ?: return null
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitionsOrInjections.collect.title")) {
-            if (definitionInfo != null && definitionInfo.source != ParadoxDefinitionSource.Injection) {
+            val definitionName = definitionInjectionInfo?.target?.orNull() ?: definitionInfo?.name?.orNull()
+            val definitionType = definitionInjectionInfo?.type?.orNull() ?: definitionInfo?.type?.orNull()
+            if (definitionName != null && definitionType != null) {
                 readAction {
                     val selector = ParadoxDefinitionSearch.selector(project, file)
                     // pass main type only
-                    val result = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
+                    val result = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
                     definitionCandidates.addAll(result)
                 }
-            }
-            if (definitionInjectionInfo != null && definitionInjectionInfo.isTargetValid()) {
                 readAction {
                     val selector = ParadoxDefinitionInjectionSearch.selector(project, file)
-                    val result = ParadoxDefinitionInjectionSearch.searchElement(null, definitionInjectionInfo.target, definitionInjectionInfo.type, selector).findAll()
+                    val result = ParadoxDefinitionInjectionSearch.searchElement(null, definitionName, definitionType, selector).findAll()
                     definitionCandidates.addAll(result)
                 }
             }
@@ -191,30 +190,30 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         return MyDiffRequestChain(producers, defaultIndex)
     }
 
-    private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptProperty): DocumentContent {
-        return createTempContent(contentFactory, project, documentContent, definition)
-            ?: createFragment(contentFactory, project, documentContent, definition)
+    private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definitionCandidate: ParadoxScriptProperty): DocumentContent {
+        return createTempContent(contentFactory, project, documentContent, definitionCandidate)
+            ?: createFragment(contentFactory, project, documentContent, definitionCandidate)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptProperty): DocumentContent? {
+    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definitionCandidate: ParadoxScriptProperty): DocumentContent? {
         // 创建临时文件
         val file = documentContent.highlightFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        val text = definition.text
+        val text = definitionCandidate.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         // 这里目前并不需要注入 rootKeys，因为定义注入只能位于文件顶层
         // ParadoxAnalysisInjector.injectRootKeys(tempFile, emptyList())
         // return contentFactory.createDocument(project, tempFile)
-        return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)
+        return FileDocumentFragmentContent(project, documentContent, definitionCandidate.textRange, tempFile)
     }
 
-    private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptProperty): DocumentContent {
-        return contentFactory.createFragment(project, documentContent, definition.textRange)
+    private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definitionCandidate: ParadoxScriptProperty): DocumentContent {
+        return contentFactory.createFragment(project, documentContent, definitionCandidate.textRange)
     }
 
-    private fun getWindowsTitle(definition: ParadoxScriptProperty, definitionCandidateInfo: ParadoxDefinitionCandidateInfo): String? {
-        val file = definition.containingFile ?: return null
+    private fun getWindowsTitle(definitionCandidate: ParadoxScriptProperty, definitionCandidateInfo: ParadoxDefinitionCandidateInfo): String? {
+        val file = definitionCandidate.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
@@ -236,8 +235,8 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         }
     }
 
-    private fun getContentTitle(definition: ParadoxScriptProperty, definitionCandidateInfo: ParadoxDefinitionCandidateInfo, original: Boolean = false): String? {
-        val file = definition.containingFile ?: return null
+    private fun getContentTitle(definitionCandidate: ParadoxScriptProperty, definitionCandidateInfo: ParadoxDefinitionCandidateInfo, original: Boolean = false): String? {
+        val file = definitionCandidate.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null

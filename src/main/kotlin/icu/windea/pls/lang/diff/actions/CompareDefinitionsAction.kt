@@ -56,7 +56,7 @@ import javax.swing.Icon
  * - 按照覆盖方式进行排序。
  */
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
-    private fun findFile(e: AnActionEvent): VirtualFile? {
+    private fun findSourceFile(e: AnActionEvent): VirtualFile? {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (file.isDirectory) return null
         if (file.fileType !is ParadoxScriptFileType) return null
@@ -87,15 +87,16 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
         e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
-        val file = findFile(e) ?: return
-        val element = findElement(e, file, project)
+        val sourceFile = findSourceFile(e) ?: return
+        val element = findElement(e, sourceFile, project)
         e.presentation.isEnabledAndVisible = element != null
     }
 
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
-        val file = findFile(e) ?: return null
-        val element = findElement(e, file, project) ?: return null
+        val sourceFile = findSourceFile(e) ?: return null
+        val element = findElement(e, sourceFile, project) ?: return null
+        val file = element.containingFile?.virtualFile ?: return null
         val definitionInfo = element.definitionInfo ?: return null
         val definitions = mutableListOf<ParadoxDefinitionElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {

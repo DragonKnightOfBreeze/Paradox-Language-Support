@@ -65,7 +65,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 val containerPointer = definitionInjection.createPointer<PsiElement>(file)
                 add(SuppressForDefinitionInjectionFix(toolId, expression, containerPointer))
             }
-            add(SuppressForExpressionFix(toolId))
+            add(SuppressForMemberFix(toolId))
         }.toTypedArray()
     }
 
@@ -120,13 +120,11 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
     }
 
-    private class SuppressForExpressionFix(
+    private class SuppressForMemberFix(
         toolId: String
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
-        // here just call scriptMemberElement (property / value) "expression"
-
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.expression")
+            return PlsBundle.message("suppress.for.member")
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
