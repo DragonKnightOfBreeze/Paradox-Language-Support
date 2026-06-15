@@ -27,7 +27,7 @@
   - 示例：`event_target:target@root.owner` - `event_target:target@root` 是一个单独的作用域链接节点，插件目前暂不支持其中的 `@root` 部分。
   - 如果链接数据源传入了动态值，则从数据源节点替换为动态值表达式（dynamicValueExpression）。
   - 插件目前认为适用于传入的任意类型的动态值。
-  - 单独的动态值表达式中的 `@` 之后允许一组链接节点，而嵌套时仅允许一个链接节点，之后的链接节点属于外层的链式表达式@。
+  - 单独的动态值表达式中的 `@` 之后允许一组链接节点，而嵌套时仅允许一个链接节点，再之后的链接节点属于外层的链式表达式。
   - 在游戏引擎底层层面，`target@root.owner` 会被解析为 `target__{id}`，其中 `{id}` 是 `root.owner` 的作用域内部ID。
   - 在游戏引擎底层层面，`event_target:target@root.owner` 会被解析为 `event_target:target__{id}.owner`，其中 `{id}` 是 `root` 的作用域内部ID。
   - [ ] 需要补充测试。

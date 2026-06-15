@@ -18,7 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
- * - 引用的定值变量的值应当是一个字面量（布尔值、数字、字符串等）。
+ * - 引用的定值变量的值应当是一个字面量（通常是数字、颜色或日期）。
  *
  * 示例：
  * ```
