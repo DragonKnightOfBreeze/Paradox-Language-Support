@@ -45,7 +45,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic() {
+    fun test_basic() {
         val s = "some_sv"
         val exp = parse(s)!!
         println(exp.render())
@@ -56,7 +56,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_withArgs() {
+    fun test_basic_withArgs() {
         val s = "some_sv|PARAM|VALUE|"
         val exp = parse(s)!!
         println(exp.render())
@@ -84,7 +84,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())

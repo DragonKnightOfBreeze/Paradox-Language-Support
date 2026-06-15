@@ -44,7 +44,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_twoSegments() {
+    fun test_basic_twoSegments() {
         val s = "civic:some_civic"
         val exp = parse(s)!!
         println(exp.render())
@@ -59,7 +59,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_threeSegments() {
+    fun test_basic_threeSegments() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = parse(s)!!
         println(exp.render())
@@ -78,7 +78,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_job() {
+    fun test_basic_job() {
         val s = "job:job_soldier"
         val exp = parse(s)!!
         println(exp.render())
@@ -93,7 +93,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())

@@ -60,7 +60,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic() {
+    fun test_basic() {
         val s = "Root.GetName"
         val exp = parse(s)!!
         println(exp.render())
@@ -73,7 +73,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_chain_noSuffix() {
+    fun test_basic_chain_noSuffix() {
         val s = "Root.Owner.event_target:some_target.var"
         val exp = parse(s)!!
         println(exp.render())
@@ -133,7 +133,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testWithSuffix_amp() {
+    fun test_withSuffix_amp() {
         val s = "Root.GetName&L"
         val exp = parse(s)!!
         println(exp.render())
@@ -148,7 +148,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testWithSuffix_doubleColon() {
+    fun test_withSuffix_doubleColon() {
         val s = "Root.GetName::UPPER"
         val exp = parse(s)!!
         println(exp.render())
@@ -163,7 +163,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())

@@ -69,7 +69,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // ScopeField samples
     @Test
-    fun testDump_Scope_basicSamples() {
+    fun test_scope_basicSamples() {
         listOf(
             "root",
             "root.owner",
@@ -85,7 +85,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // ValueField samples (incl. Vic3-only valueField with arguments)
     @Test
-    fun testDump_Value_basicSamples() {
+    fun test_value_basicSamples() {
         listOf(
             ParadoxGameType.Stellaris to "trigger:some_trigger",
             ParadoxGameType.Stellaris to "value:some_sv|PARAM|VALUE|",
@@ -101,7 +101,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // VariableField samples
     @Test
-    fun testDump_Variable_basicSamples() {
+    fun test_variable_basicSamples() {
         val s = "root.owner.some_variable"
         val exp = parseVariable(s)!!
         val out = exp.render()
@@ -111,7 +111,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // DatabaseObject samples
     @Test
-    fun testDump_DatabaseObject_basicSamples() {
+    fun test_databaseObject_basicSamples() {
         listOf(
             "civic:some_civic",
             "civic:some_civic:some_swapped_civic",
@@ -126,7 +126,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // DefineReference samples
     @Test
-    fun testDump_DefineReference_basicSamples() {
+    fun test_defineReference_basicSamples() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
         val exp = parseDefine(s)!!
         val out = exp.render()
@@ -136,7 +136,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // Command samples
     @Test
-    fun testDump_Command_basicSamples() {
+    fun test_command_basicSamples() {
         listOf(
             "Root.GetName",
             "Root.Owner.event_target:some_target.var",
@@ -150,7 +150,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     // Incomplete vs trimmed compare for ValueField
     @Test
-    fun testDump_Value_incomplete_trimmedCompare() {
+    fun test_value_incomplete_trimmedCompare() {
         val s = ""
         val exp = parseValue(s, incomplete = true)!!
         val out1 = exp.render()

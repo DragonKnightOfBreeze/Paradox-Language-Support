@@ -125,53 +125,6 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testForArgument() {
-        val s = "relations(root)"
-        val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxValueFieldExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueFieldNode>("relations(root)", 0 to 15) {
-                node<ParadoxValueFieldPrefixNode>("relations", 0 to 9)
-                node<ParadoxMarkerNode>("(", 9 to 10)
-                node<ParadoxValueFieldValueNode>("root", 10 to 14) {
-                    node<ParadoxScopeFieldExpression>("root", 10 to 14) {
-                        node<ParadoxSystemScopeNode>("root", 10 to 14)
-                    }
-                }
-                node<ParadoxMarkerNode>(")", 14 to 15)
-            }
-        }
-        exp.check(dsl)
-    }
-
-    @Test
-    fun testForArgument_nested() {
-        val s = "relations(scope:some_scope)"
-        val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("relations(scope:some_scope)", 0 to 27) {
-            node<ParadoxDynamicValueFieldNode>("relations(scope:some_scope)", 0 to 27) {
-                node<ParadoxValueFieldPrefixNode>("relations", 0 to 9)
-                node<ParadoxMarkerNode>("(", 9 to 10)
-                node<ParadoxValueFieldValueNode>("scope:some_scope", 10 to 26) {
-                    node<ParadoxScopeFieldExpression>("scope:some_scope", 10 to 26) {
-                        node<ParadoxDynamicScopeNode>("scope:some_scope", 10 to 26) {
-                            node<ParadoxScopePrefixNode>("scope:", 10 to 16)
-                            node<ParadoxScopeValueNode>("some_scope", 16 to 26) {
-                                node<ParadoxDynamicValueExpression>("some_scope", 16 to 26) {
-                                    node<ParadoxDynamicValueNode>("some_scope", 16 to 26)
-                                }
-                            }
-                        }
-                    }
-                }
-                node<ParadoxMarkerNode>(")", 26 to 27)
-            }
-        }
-        exp.check(dsl)
-    }
-
-    @Test
     fun testVariable_inChain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
@@ -193,7 +146,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
@@ -204,6 +157,53 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                         node<ParadoxDynamicValueNode>("", 0 to 0)
                     }
                 }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArgument() {
+        val s = "relations(root)"
+        val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>(s, 0 to s.length) {
+            node<ParadoxDynamicValueFieldNode>("relations(root)", 0 to 15) {
+                node<ParadoxValueFieldPrefixNode>("relations", 0 to 9)
+                node<ParadoxMarkerNode>("(", 9 to 10)
+                node<ParadoxValueFieldValueNode>("root", 10 to 14) {
+                    node<ParadoxScopeFieldExpression>("root", 10 to 14) {
+                        node<ParadoxSystemScopeNode>("root", 10 to 14)
+                    }
+                }
+                node<ParadoxMarkerNode>(")", 14 to 15)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArgument_nested() {
+        val s = "relations(scope:some_scope)"
+        val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
+        println(exp.render())
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("relations(scope:some_scope)", 0 to 27) {
+            node<ParadoxDynamicValueFieldNode>("relations(scope:some_scope)", 0 to 27) {
+                node<ParadoxValueFieldPrefixNode>("relations", 0 to 9)
+                node<ParadoxMarkerNode>("(", 9 to 10)
+                node<ParadoxValueFieldValueNode>("scope:some_scope", 10 to 26) {
+                    node<ParadoxScopeFieldExpression>("scope:some_scope", 10 to 26) {
+                        node<ParadoxDynamicScopeNode>("scope:some_scope", 10 to 26) {
+                            node<ParadoxScopePrefixNode>("scope:", 10 to 16)
+                            node<ParadoxScopeValueNode>("some_scope", 16 to 26) {
+                                node<ParadoxDynamicValueExpression>("some_scope", 16 to 26) {
+                                    node<ParadoxDynamicValueNode>("some_scope", 16 to 26)
+                                }
+                            }
+                        }
+                    }
+                }
+                node<ParadoxMarkerNode>(")", 26 to 27)
             }
         }
         exp.check(dsl)

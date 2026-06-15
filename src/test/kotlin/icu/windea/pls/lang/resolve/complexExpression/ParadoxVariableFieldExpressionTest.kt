@@ -43,7 +43,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_chain() {
+    fun test_basic_chain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
         println(exp.render())
@@ -71,7 +71,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())

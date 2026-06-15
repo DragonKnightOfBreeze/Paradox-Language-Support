@@ -43,7 +43,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_withoutScopeSuffix() {
+    fun test_basic_withoutScopeSuffix() {
         val s = "some_variable"
         val exp = parse(s)!!
         println(exp.render())
@@ -54,7 +54,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_withScopeSuffix() {
+    fun test_basic_withScopeSuffix() {
         val s = "some_variable@root"
         val exp = parse(s)!!
         println(exp.render())
@@ -69,7 +69,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_withScopeSuffix_chained() {
+    fun test_basic_withScopeSuffix_chained() {
         val s = "some_variable@root.owner"
         val exp = parse(s)!!
         println(exp.render())
@@ -86,7 +86,23 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_incomplete_withFollowingAt() {
+        val s = "some_variable@"
+        val exp = parse(s)!!
+        println(exp.render())
+        // TODO 2.1.10
+    }
+
+    @Test
+    fun test_incomplete_withFollowingDot() {
+        val s = "some_variable@root."
+        val exp = parse(s)!!
+        println(exp.render())
+        // TODO 2.1.10
+    }
+
+    @Test
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())

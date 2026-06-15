@@ -57,7 +57,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_empire1() {
+    fun test_basic_empire1() {
         val s = "{<eater_adj> {<patron_noun>}}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
@@ -86,7 +86,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_empire2() {
+    fun test_basic_empire2() {
         val s = "{AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
@@ -120,7 +120,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_empire3() {
+    fun test_basic_empire3() {
         val s = "{<home_planet> Fleet}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
@@ -141,7 +141,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_federation() {
+    fun test_basic_federation() {
         val s = "{<union_adj> Council}"
         val exp = parse(s, formatName = "federation")!!
         println(exp.render())
@@ -162,7 +162,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", formatName = "empire", incomplete = false))
         val exp = parse("", formatName = "empire", incomplete = true)!!
         println(exp.render())

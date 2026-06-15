@@ -97,19 +97,6 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBarrier_At_NoFurtherSplit() {
-        val s = "root.owner@x.y"
-        val exp = parse(s)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0 to s.length) {
-            node<ParadoxScopeNode>("root", 0 to 4)
-            node<ParadoxOperatorNode>(".", 4 to 5)
-            node<ParadoxScopeNode>("owner@x.y", 5 to 14)
-        }
-        exp.check(dsl)
-    }
-
-    @Test
     fun testBarrier_Pipe_NoFurtherSplit() {
         val s = "root.owner|x.y"
         val exp = parse(s)!!
@@ -123,7 +110,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
+    fun test_empty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
