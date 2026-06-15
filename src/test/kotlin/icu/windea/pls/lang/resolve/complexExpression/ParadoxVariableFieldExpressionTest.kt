@@ -40,7 +40,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_chain() {
         val s = "root.owner.some_variable"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0, s.length) {
             node<ParadoxScopeNode>("root", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -55,7 +55,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_barrier_noFurtherSplit() {
         val s = "root.owner|x.y"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0, s.length) {
             node<ParadoxScopeNode>("root", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -68,7 +68,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_empty_incompleteDiff() {
         Assert.assertNull(resolve("", incomplete = false))
         val exp = resolve("", incomplete = true)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("", 0, 0) {
             node<ParadoxDataSourceNode>("", 0, 0)
         }
@@ -79,7 +79,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_nestedDynamicValueExpression_simple() {
         val s = "this.event_target:target"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("this.event_target:target", 0, 24) {
             node<ParadoxSystemScopeNode>("this", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -92,7 +92,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_nestedDynamicValueExpression_withScope() {
         val s = "this.event_target:target@root.var"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("this.event_target:target@root.var", 0, 33) {
             node<ParadoxSystemScopeNode>("this", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -118,7 +118,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_nestedDynamicValueExpression_withScope_in_middle() {
         val s = "this.event_target:target@root.var"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("this.event_target:target@root.var", 0, 33) {
             node<ParadoxSystemScopeNode>("this", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -144,7 +144,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_nestedDynamicValueExpression_withScope_inMiddle() {
         val s = "this.event_target:target@root.owner.var"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("this.event_target:target@root.owner.var", 0, 39) {
             node<ParadoxSystemScopeNode>("this", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -172,7 +172,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_nestedDynamicValueExpression_withFollowingAt() {
         val s = "this.event_target:target@.var"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("this.event_target:target@.var", 0, 29) {
             node<ParadoxSystemScopeNode>("this", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
@@ -196,7 +196,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_nestedDynamicValueExpression_withFollowingAt_inMiddle() {
         val s = "this.event_target:target@.owner.var"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("this.event_target:target@.owner.var", 0, 35) {
             node<ParadoxSystemScopeNode>("this", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)

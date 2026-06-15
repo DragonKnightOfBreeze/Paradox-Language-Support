@@ -40,7 +40,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_twoSegments() {
         val s = "civic:some_civic"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0, 5)
             node<ParadoxMarkerNode>(":", 5, 6)
@@ -55,7 +55,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_threeSegments() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0, 5)
             node<ParadoxMarkerNode>(":", 5, 6)
@@ -74,7 +74,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_job() {
         val s = "job:job_soldier"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("job", 0, 3)
             node<ParadoxMarkerNode>(":", 3, 4)
@@ -89,7 +89,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun test_empty_incompleteDiff() {
         Assert.assertNull(resolve("", incomplete = false))
         val exp = resolve("", incomplete = true)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>("", 0, 0) {
             node<ParadoxDatabaseObjectTypeNode>("", 0, 0)
         }

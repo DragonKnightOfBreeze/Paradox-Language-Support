@@ -12,4 +12,8 @@ abstract class ParadoxComplexExpressionTest : BasePlatformTestCase() {
     protected fun ParadoxComplexExpressionNode.render(): String {
         return ParadoxComplexExpressionDslRenderer.render(this)
     }
+
+    protected fun ParadoxComplexExpressionNode.renderAndPrintln() {
+        println(ParadoxComplexExpressionDslRenderer.render(this))
+    }
 }

@@ -42,7 +42,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0, s.length) {
             node<ParadoxDefinePrefixNode>("define:", 0, 7)
             node<ParadoxDefineNamespaceNode>("NPortrait", 7, 16)
@@ -56,7 +56,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     fun test_empty_incompleteDiff() {
         Assert.assertNull(resolve("", incomplete = false))
         val exp = resolve("", incomplete = true)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0, 0) {
             node<ParadoxErrorTokenNode>("", 0, 0)
         }

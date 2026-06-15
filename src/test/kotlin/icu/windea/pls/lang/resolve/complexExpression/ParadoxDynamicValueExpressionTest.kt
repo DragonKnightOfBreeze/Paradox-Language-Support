@@ -43,7 +43,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_withoutScopeSuffix() {
         val s = "some_variable"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
             node<ParadoxDynamicValueNode>(s, 0, 13)
         }
@@ -54,7 +54,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_withScopeSuffix() {
         val s = "some_variable@root"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
             node<ParadoxMarkerNode>("@", 13, 14)
@@ -69,7 +69,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun test_basic_withScopeSuffix_chained() {
         val s = "some_variable@root.owner"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
             node<ParadoxMarkerNode>("@", 13, 14)
@@ -86,7 +86,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun test_incomplete_withFollowingAt() {
         val s = "some_variable@"
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@", 0, 14) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
             node<ParadoxMarkerNode>("@", 13, 14)
@@ -99,7 +99,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun test_incomplete_withFollowingDot() {
         val s = "some_variable@root."
         val exp = resolve(s)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@root.", 0, 19) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
             node<ParadoxMarkerNode>("@", 13, 14)
@@ -116,7 +116,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun test_empty_incompleteDiff() {
         Assert.assertNull(resolve("", incomplete = false))
         val exp = resolve("", incomplete = true)!!
-        println(exp.render())
+        exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("", 0, 0) {
             node<ParadoxDynamicValueNode>("", 0, 0)
         }
