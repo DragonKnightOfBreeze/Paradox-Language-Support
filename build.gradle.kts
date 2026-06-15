@@ -1,5 +1,3 @@
-import com.github.javaparser.printer.concretesyntaxmodel.CsmElement.token
-import com.github.javaparser.resolution.model.Value.from
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -37,93 +35,8 @@ val excludesInZip = buildList {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
-// Custom markdown-to-HTML conversion using IntelliJ Markdown parser
-private fun markdownToHTML(markdown: String): String {
-    // Normalize text to LF, because a Markdown library currently fully supports only this line separator
-    val text = markdown.normalizeLineSeparator()
-    val flavour = GFMFlavourDescriptor()
-    val ast = MarkdownParser(flavour).buildMarkdownTreeFromString(text)
-    return HtmlGenerator(text, ast, flavour).generateHtml().normalizeLineSeparator()
-}
-
-// Normalize text to LF
-private fun String.normalizeLineSeparator() = replace("\\R".toRegex(), "\n")
-
-// Extract and process the changelog section for a given version from the changelog document
-private fun extractChangelogForVersion(fullChangelog: String, targetVersion: String): String {
-    // Match h2 headings: `## <heading>`
-    val headingRegex = """^##\s+(.+)$""".toRegex()
-    // Match version from heading text: `3.0.0`, `3.0.0-dev`, `3.0.0-dev-262`, `3.0.0 - 2026-01-01`, etc.
-    val versionRegex = """^(\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?)(?:\s+-\s+\d{4}-\d{2}-\d{2})?$""".toRegex()
-
-    // Parse the changelog into heading-content sections
-    data class Section(val heading: String, val content: String)
-
-    val sections = mutableListOf<Section>()
-    var currentHeading = ""
-    var currentContent = StringBuilder()
-
-    for (line in fullChangelog.lines()) {
-        val match = headingRegex.matchEntire(line)
-        if (match != null) {
-            if (currentHeading.isNotEmpty()) {
-                sections.add(Section(currentHeading, currentContent.toString().trim()))
-            }
-            currentHeading = match.groupValues[1].trim()
-            currentContent = StringBuilder()
-        } else {
-            if (currentContent.isNotEmpty()) currentContent.appendLine()
-            currentContent.append(line)
-        }
-    }
-    if (currentHeading.isNotEmpty()) {
-        sections.add(Section(currentHeading, currentContent.toString().trim()))
-    }
-
-    // Find the matching section for the target version
-    var targetContent: String? = null
-
-    // 1. Try exact version match against the heading text
-    for (section in sections) {
-        val vMatch = versionRegex.matchEntire(section.heading)
-        if (vMatch != null && vMatch.groupValues[1] == targetVersion) {
-            targetContent = section.content
-            break
-        }
-    }
-
-    // 2. Fallback: use the "Unreleased" section if non-empty
-    if (targetContent == null) {
-        val unreleased = sections.find { it.heading == "Unreleased" }?.content
-        if (!unreleased.isNullOrBlank()) {
-            targetContent = unreleased
-        }
-    }
-
-    // 3. Last fallback: use the first version-matching section
-    if (targetContent == null) {
-        targetContent = sections.firstOrNull { versionRegex.matches(it.heading) }?.content ?: ""
-    }
-
-    return processChangelogSection(targetContent)
-}
-
-// Process changelog section content: filter out undone/hidden items, strip checkbox markers
-private fun processChangelogSection(content: String): String {
-    val lines = content.lines()
-    val processed = lines.mapNotNull { line ->
-        val line1 = line.trimStart().lowercase()
-        when {
-            line1.contains("HIDDEN") -> null // Exclude hidden items
-            line1.startsWith("- [ ] ") -> null // Exclude not-done items
-            line1.startsWith("- [x] ") -> line.replaceFirst("- [x] ", "- ") // Convert to normal list item
-            else -> line // Keep as-is
-        }
-    }
-    return processed.joinToString("\n").trim()
-}
-
-// Configure IntelliJ Platform Plugin - read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
+// Configure IntelliJ Platform Plugin
+// read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
 intellijPlatform {
     pluginConfiguration {
         id = providers.gradleProperty("pluginId")
@@ -312,7 +225,97 @@ kotlin {
     }
 }
 
-// CWT config source setup (prefer local, download if missing)
+// region Methods for Markdown
+
+// Custom markdown-to-HTML conversion using IntelliJ Markdown parser
+private fun markdownToHTML(markdown: String): String {
+    // Normalize text to LF, because a Markdown library currently fully supports only this line separator
+    val text = markdown.normalizeLineSeparator()
+    val flavour = GFMFlavourDescriptor()
+    val ast = MarkdownParser(flavour).buildMarkdownTreeFromString(text)
+    return HtmlGenerator(text, ast, flavour).generateHtml().normalizeLineSeparator()
+}
+
+// Normalize text to LF
+private fun String.normalizeLineSeparator() = replace("\\R".toRegex(), "\n")
+
+// Extract and process the changelog section for a given version from the changelog document
+private fun extractChangelogForVersion(fullChangelog: String, targetVersion: String): String {
+    // Match h2 headings: `## <heading>`
+    val headingRegex = """^##\s+(.+)$""".toRegex()
+    // Match version from heading text: `3.0.0`, `3.0.0-dev`, `3.0.0-dev-262`, `3.0.0 - 2026-01-01`, etc.
+    val versionRegex = """^(\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?)(?:\s+-\s+\d{4}-\d{2}-\d{2})?$""".toRegex()
+
+    // Parse the changelog into heading-content sections
+    data class Section(val heading: String, val content: String)
+
+    val sections = mutableListOf<Section>()
+    var currentHeading = ""
+    var currentContent = StringBuilder()
+
+    for (line in fullChangelog.lines()) {
+        val match = headingRegex.matchEntire(line)
+        if (match != null) {
+            if (currentHeading.isNotEmpty()) {
+                sections.add(Section(currentHeading, currentContent.toString().trim()))
+            }
+            currentHeading = match.groupValues[1].trim()
+            currentContent = StringBuilder()
+        } else {
+            if (currentContent.isNotEmpty()) currentContent.appendLine()
+            currentContent.append(line)
+        }
+    }
+    if (currentHeading.isNotEmpty()) {
+        sections.add(Section(currentHeading, currentContent.toString().trim()))
+    }
+
+    // Find the matching section for the target version
+    var targetContent: String? = null
+
+    // 1. Try exact version match against the heading text
+    for (section in sections) {
+        val vMatch = versionRegex.matchEntire(section.heading)
+        if (vMatch != null && vMatch.groupValues[1] == targetVersion) {
+            targetContent = section.content
+            break
+        }
+    }
+
+    // 2. Fallback: use the "Unreleased" section if non-empty
+    if (targetContent == null) {
+        val unreleased = sections.find { it.heading == "Unreleased" }?.content
+        if (!unreleased.isNullOrBlank()) {
+            targetContent = unreleased
+        }
+    }
+
+    // 3. Last fallback: use the first version-matching section
+    if (targetContent == null) {
+        targetContent = sections.firstOrNull { versionRegex.matches(it.heading) }?.content ?: ""
+    }
+
+    return processChangelogSection(targetContent)
+}
+
+// Process changelog section content: filter out undone/hidden items, strip checkbox markers
+private fun processChangelogSection(content: String): String {
+    val lines = content.lines()
+    val processed = lines.mapNotNull { line ->
+        val line1 = line.trimStart().lowercase()
+        when {
+            line1.contains("HIDDEN") -> null // Exclude hidden items
+            line1.startsWith("- [ ] ") -> null // Exclude not-done items
+            line1.startsWith("- [x] ") -> line.replaceFirst("- [x] ", "- ") // Convert to normal list item
+            else -> line // Keep as-is
+        }
+    }
+    return processed.joinToString("\n").trim()
+}
+
+// endregion
+
+// region CWT Config Source Setup
 
 // Configurable parameters for download behavior (override via -P)
 val cwtDownloadIfMissing = providers.gradleProperty("pls.cwt.downloadIfMissing").orElse("true")
@@ -374,6 +377,8 @@ cwtRepositories.filter { it.downloadable }.forEach { r ->
     }
     prepareCwtConfigs.configure { dependsOn(unzip) }
 }
+
+// endregion
 
 tasks {
     withType<Copy> {
