@@ -13,6 +13,10 @@ enum class ParadoxSyntaxConstraint(
     vararg val gameTypes: ParadoxGameType
 ) {
     /**
+     * `?=` in `owner = ...`
+     */
+    SafeAssignOperator(Stellaris, Ck3, Vic3, Eu5),
+    /**
      * `['{concept_name}']` or `['{concept_name}', {concept_text}]`
      */
     LocalisationConceptCommand(Stellaris),
@@ -28,12 +32,13 @@ enum class ParadoxSyntaxConstraint(
 
     fun test(target: Any): Boolean {
         val gameType = when (target) {
+            is ParadoxGameType -> target
             is _ParadoxLocalisationTextLexer -> target.gameType
             is PsiBuilder -> selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY))
             is VirtualFile -> selectGameType(target)
             is PsiFile -> selectGameType(target)
             else -> null
         }
-        return gameType == null || gameType in this.gameTypes
+        return gameType == null || gameType == Core || gameType in gameTypes
     }
 }

@@ -11,7 +11,10 @@ import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.findChild
 import icu.windea.pls.lang.resolve.ParadoxMemberService
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
@@ -32,6 +35,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 checkComparisonOperator(holder, element)
+                checkUnsupportedSafeAssignOperator(holder, element)
             }
         }
     }
@@ -57,5 +61,14 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
             holder.registerProblem(token, description)
             return
         }
+    }
+
+    private fun checkUnsupportedSafeAssignOperator(holder: ProblemsHolder, element: PsiElement) {
+        if (element.elementType != ParadoxScriptElementTypes.SAFE_EQUAL_SIGN) return
+        val gameType = selectGameType(holder.file) ?: return
+        val supported = ParadoxSyntaxConstraint.SafeAssignOperator.test(gameType)
+        if (supported) return
+        val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.11", gameType.title)
+        holder.registerProblem(element, description)
     }
 }
