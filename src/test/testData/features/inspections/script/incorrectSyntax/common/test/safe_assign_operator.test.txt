@@ -1,0 +1,6 @@
+# simple form
+owner ?= {}
+
+# complex form
+exists = owner
+owner = {}

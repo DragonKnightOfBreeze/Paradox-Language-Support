@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.openapi.util.registry.Registry
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.settings.PlsConfigSettings
@@ -41,7 +40,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
 
     @Test
     fun testComparisonOperator() {
-        markFileInfo(gameType, "common/test/comparisonOperator.test.txt")
+        markFileInfo(gameType, "common/test/comparison_operator.test.txt")
         myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/comparison_operator.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
@@ -57,5 +56,12 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
         } finally {
             settings.checkComparisonOperators = false
         }
+    }
+
+    @Test
+    fun testSafeAssignOperator() {
+        markFileInfo(gameType, "common/test/safe_assign_operator.test.txt")
+        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.test.txt")
+        myFixture.checkHighlighting(true, false, false)
     }
 }
