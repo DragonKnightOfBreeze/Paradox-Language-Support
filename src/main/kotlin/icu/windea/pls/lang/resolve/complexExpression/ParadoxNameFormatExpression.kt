@@ -65,7 +65,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *     并在必要时于当前层末尾补充一个尾随错误节点，便于高亮与补全的容错处理。
  *
  * - 配置关联：
- *   - `formatName` 来自 CWT 规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
+ *   - `formatName` 来自规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
  */
 interface ParadoxNameFormatExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>

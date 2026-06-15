@@ -36,7 +36,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  *
  * #### 整体形态
  * - 形如：`<type>:<value>`，或 `<type>:<baseValue>:<swappedValue>`（允许一个可选的“替换值”段）。
- * - `<type>` 与 `<value>` 均来自 CWT 规则中预定义的数据库对象类型与对象名。
+ * - `<type>` 与 `<value>` 均来自规则中预定义的数据库对象类型与对象名。
  *
  * #### 节点组成
  * - 类型节点：[ParadoxDatabaseObjectTypeNode]（第 1 段）。

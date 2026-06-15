@@ -18,7 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.TemplateExpression]。
- * - 模板由 CWT 规则提供（或由修正的 `template` 字段提供），本表达式文本按模板匹配并被切分为“常量片段/占位片段”。
+ * - 模板格式取决于对应的规则表达式（[CwtTemplateExpression]）。
  *
  * 语法：
  * ```bnf
@@ -37,7 +37,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  * - 引用片段：[ParadoxTemplateSnippetNode]（与模板的引用部分对应）。
  *
  * #### 解析要点
- * - 通过 `toMatchedRegex` 将模板转为正则并对文本进行组匹配，再依组构造片段节点。
+ * - 将模板转为正则，对文本进行组匹配，再依组创建片段节点。
  * - 解析占位片段时，忽略匿名的定义。
  *
  * @see CwtTemplateExpression
