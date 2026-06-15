@@ -7,9 +7,9 @@
 - [ ] 提供动作，以进行定义/定义注入之间的差异比较
 - [ ] 支持形如 `event_target:target@root` 的动态链接节点
 - [ ] 支持数组定值引用表达式（`arrayDefineReferenceExpression`）
-- [ ] 支持动态值集合表达式（`dynamicValueSetExpression`）
+- [ ] 支持动态值集合表达式（`dynamicValueSetExpression`） ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
 - [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
-- [x] 其他重构、优化与BUG修复 / Other refactors, optimizations and bug fixes
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 
 ## 2.1.9 - 2026-05-21

@@ -81,7 +81,7 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 2. **Follow an existing example.** When adding a feature, find a sibling EP implementation and mirror its shape. More detailed naming conventions and package layout are described in `AGENTS.md`.
 3. **Prefer semantic navigation.** When exploring symbols, IDE/index-based navigation (find references, go to definition, find implementations, type hierarchy) is far more accurate than plain text search for this PSI-heavy codebase.
 4. **Add or update tests.** Distinguish unit tests (pure components, no IntelliJ API) from integration tests (PSI / index / config-driven resolution). Config-driven features usually need a simulated game/mod context. More detailed integration-test setup patterns are described in `AGENTS.md`.
-5. **Verify before submitting.** Run targeted tests during development (`./gradlew test --tests "*SomeKeyword*"`) and a broader pass before finishing. Running IDE inspections on the files you touched is a good habit.
+5. **Verify before submitting.** Run targeted tests during development and a broader pass before finishing, run and debug IDE when necessary. Running IDE inspections on the files you touched is a good habit.
 
 Keep changes minimal and localized. A small, well-scoped, well-tested PR that improves one feature or one compatibility case is much easier to accept than a sprawling one.
 
@@ -89,7 +89,7 @@ Keep changes minimal and localized. A small, well-scoped, well-tested PR that im
 
 - Adding or improving a single language feature for a specific construct.
 - Improving compatibility with a specific game, IDE version, or optional plugin dependency (for example, the Markdown plugin).
-- Adding default EP implementations where the architecture already anticipates them (for example, additional expression resolvers and supports).
+- Adding default EP implementations where the architecture already anticipates them (for example, additional script expression matchers and supports).
 
 ## Contributing Config Files
 
