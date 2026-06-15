@@ -35,7 +35,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 checkComparisonOperator(holder, element)
-                checkUnsupportedSafeAssignOperator(holder, element)
+                checkSafeAssignOperator(holder, element)
             }
         }
     }
@@ -63,12 +63,15 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         }
     }
 
-    private fun checkUnsupportedSafeAssignOperator(holder: ProblemsHolder, element: PsiElement) {
+    private fun checkSafeAssignOperator(holder: ProblemsHolder, element: PsiElement) {
         if (element.elementType != ParadoxScriptElementTypes.SAFE_EQUAL_SIGN) return
+
         val gameType = selectGameType(holder.file) ?: return
         val supported = ParadoxSyntaxConstraint.SafeAssignOperator.test(gameType)
-        if (supported) return
-        val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.11", gameType.title)
-        holder.registerProblem(element, description)
+        if (!supported) {
+            val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.11", gameType.title)
+            holder.registerProblem(element, description)
+            return
+        }
     }
 }
