@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression.dsl
 
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import kotlin.reflect.full.isSuperclassOf
 
 object ParadoxComplexExpressionDslChecker {
@@ -20,9 +20,8 @@ object ParadoxComplexExpressionDslChecker {
     private fun matches(node: ParadoxComplexExpressionNode, dslNode: ParadoxComplexExpressionDslNode): Boolean {
         if (!dslNode.type.isSuperclassOf(node::class)) return false
         if (dslNode.text != node.text) return false
-        val (startOffset, endOffset) = dslNode.rangeInExpression
-        if (startOffset != node.rangeInExpression.startOffset) return false
-        if (endOffset != node.rangeInExpression.endOffset) return false
+        if (dslNode.startOffset != node.rangeInExpression.startOffset) return false
+        if (dslNode.endOffset != node.rangeInExpression.endOffset) return false
         return true
     }
 
@@ -35,7 +34,6 @@ object ParadoxComplexExpressionDslChecker {
     }
 
     private fun ParadoxComplexExpressionDslNode.render(): String {
-        val (startOffset, endOffset) = rangeInExpression
         return "${type.simpleName}: ${text} (${startOffset}, ${endOffset})"
     }
 

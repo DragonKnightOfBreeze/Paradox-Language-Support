@@ -56,25 +56,25 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<eater_adj> {<patron_noun>}}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 29) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<eater_adj>", 1 to 12) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("eater_adj", 2 to 11)
-                    node<ParadoxMarkerNode>(">", 11 to 12)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 29) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<eater_adj>", 1, 12) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("eater_adj", 2, 11)
+                    node<ParadoxMarkerNode>(">", 11, 12)
                 }
-                node<ParadoxBlankNode>(" ", 12 to 13)
-                node<ParadoxNameFormatClosureNode>("{<patron_noun>}", 13 to 28) {
-                    node<ParadoxMarkerNode>("{", 13 to 14)
-                    node<ParadoxNamePartNode>("<patron_noun>", 14 to 27) {
-                        node<ParadoxMarkerNode>("<", 14 to 15)
-                        node<ParadoxNameFormatDefinitionNode>("patron_noun", 15 to 26)
-                        node<ParadoxMarkerNode>(">", 26 to 27)
+                node<ParadoxBlankNode>(" ", 12, 13)
+                node<ParadoxNameFormatClosureNode>("{<patron_noun>}", 13, 28) {
+                    node<ParadoxMarkerNode>("{", 13, 14)
+                    node<ParadoxNamePartNode>("<patron_noun>", 14, 27) {
+                        node<ParadoxMarkerNode>("<", 14, 15)
+                        node<ParadoxNameFormatDefinitionNode>("patron_noun", 15, 26)
+                        node<ParadoxMarkerNode>(">", 26, 27)
                     }
-                    node<ParadoxMarkerNode>("}", 27 to 28)
+                    node<ParadoxMarkerNode>("}", 27, 28)
                 }
-                node<ParadoxMarkerNode>("}", 28 to 29)
+                node<ParadoxMarkerNode>("}", 28, 29)
             }
         }
         exp.check(dsl)
@@ -85,30 +85,30 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 58) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("AofB", 1 to 5)
-                node<ParadoxNameFormatClosureNode>("{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}", 5 to 57) {
-                    node<ParadoxMarkerNode>("{", 5 to 6)
-                    node<ParadoxNamePartNode>("<imperial_mil>", 6 to 20) {
-                        node<ParadoxMarkerNode>("<", 6 to 7)
-                        node<ParadoxNameFormatDefinitionNode>("imperial_mil", 7 to 19)
-                        node<ParadoxMarkerNode>(">", 19 to 20)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 58) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("AofB", 1, 5)
+                node<ParadoxNameFormatClosureNode>("{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}", 5, 57) {
+                    node<ParadoxMarkerNode>("{", 5, 6)
+                    node<ParadoxNamePartNode>("<imperial_mil>", 6, 20) {
+                        node<ParadoxMarkerNode>("<", 6, 7)
+                        node<ParadoxNameFormatDefinitionNode>("imperial_mil", 7, 19)
+                        node<ParadoxMarkerNode>(">", 19, 20)
                     }
-                    node<ParadoxBlankNode>(" ", 20 to 21)
-                    node<ParadoxCommandNode>("[This.GetCapitalSystemNameOrRandom]", 21 to 56) {
-                        node<ParadoxMarkerNode>("[", 21 to 22)
-                        node<ParadoxCommandExpression>("This.GetCapitalSystemNameOrRandom", 22 to 55) {
-                            node<ParadoxSystemCommandScopeNode>("This", 22 to 26)
-                            node<ParadoxOperatorNode>(".", 26 to 27)
-                            node<ParadoxStaticCommandFieldNode>("GetCapitalSystemNameOrRandom", 27 to 55)
+                    node<ParadoxBlankNode>(" ", 20, 21)
+                    node<ParadoxCommandNode>("[This.GetCapitalSystemNameOrRandom]", 21, 56) {
+                        node<ParadoxMarkerNode>("[", 21, 22)
+                        node<ParadoxCommandExpression>("This.GetCapitalSystemNameOrRandom", 22, 55) {
+                            node<ParadoxSystemCommandScopeNode>("This", 22, 26)
+                            node<ParadoxOperatorNode>(".", 26, 27)
+                            node<ParadoxStaticCommandFieldNode>("GetCapitalSystemNameOrRandom", 27, 55)
                         }
-                        node<ParadoxMarkerNode>("]", 55 to 56)
+                        node<ParadoxMarkerNode>("]", 55, 56)
                     }
-                    node<ParadoxMarkerNode>("}", 56 to 57)
+                    node<ParadoxMarkerNode>("}", 56, 57)
                 }
-                node<ParadoxMarkerNode>("}", 57 to 58)
+                node<ParadoxMarkerNode>("}", 57, 58)
             }
         }
         exp.check(dsl)
@@ -119,17 +119,17 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<home_planet> Fleet}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>("{<home_planet> Fleet}", 0 to 21) {
-            node<ParadoxNameFormatClosureNode>("{<home_planet> Fleet}", 0 to 21) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<home_planet>", 1 to 14) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("home_planet", 2 to 13)
-                    node<ParadoxMarkerNode>(">", 13 to 14)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>("{<home_planet> Fleet}", 0, 21) {
+            node<ParadoxNameFormatClosureNode>("{<home_planet> Fleet}", 0, 21) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<home_planet>", 1, 14) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("home_planet", 2, 13)
+                    node<ParadoxMarkerNode>(">", 13, 14)
                 }
-                node<ParadoxBlankNode>(" ", 14 to 15)
-                node<ParadoxNameFormatLocalisationNode>("Fleet", 15 to 20)
-                node<ParadoxMarkerNode>("}", 20 to 21)
+                node<ParadoxBlankNode>(" ", 14, 15)
+                node<ParadoxNameFormatLocalisationNode>("Fleet", 15, 20)
+                node<ParadoxMarkerNode>("}", 20, 21)
             }
         }
         exp.check(dsl)
@@ -140,17 +140,17 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<union_adj> Council}"
         val exp = resolve(s, formatName = "federation")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>("{<union_adj> Council}", 0 to 21) {
-            node<ParadoxNameFormatClosureNode>("{<union_adj> Council}", 0 to 21) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<union_adj>", 1 to 12) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("union_adj", 2 to 11)
-                    node<ParadoxMarkerNode>(">", 11 to 12)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>("{<union_adj> Council}", 0, 21) {
+            node<ParadoxNameFormatClosureNode>("{<union_adj> Council}", 0, 21) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<union_adj>", 1, 12) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("union_adj", 2, 11)
+                    node<ParadoxMarkerNode>(">", 11, 12)
                 }
-                node<ParadoxBlankNode>(" ", 12 to 13)
-                node<ParadoxNameFormatLocalisationNode>("Council", 13 to 20)
-                node<ParadoxMarkerNode>("}", 20 to 21)
+                node<ParadoxBlankNode>(" ", 12, 13)
+                node<ParadoxNameFormatLocalisationNode>("Council", 13, 20)
+                node<ParadoxMarkerNode>("}", 20, 21)
             }
         }
         exp.check(dsl)
@@ -161,7 +161,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(resolve("", formatName = "empire", incomplete = false))
         val exp = resolve("", formatName = "empire", incomplete = true)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>("", 0 to 0) { }
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>("", 0, 0) { }
         exp.check(dsl)
     }
 
@@ -172,10 +172,10 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>("{}", 0 to 2) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxMarkerNode>("}", 1 to 2)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>("{}", 0, 2) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxMarkerNode>("}", 1, 2)
             }
         }
         exp.check(dsl)
@@ -186,11 +186,11 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{alpha}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 7) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("alpha", 1 to 6)
-                node<ParadoxMarkerNode>("}", 6 to 7)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 7) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("alpha", 1, 6)
+                node<ParadoxMarkerNode>("}", 6, 7)
             }
         }
         exp.check(dsl)
@@ -201,17 +201,17 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<x> y}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 7) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<x>", 1 to 4) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("x", 2 to 3)
-                    node<ParadoxMarkerNode>(">", 3 to 4)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 7) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<x>", 1, 4) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("x", 2, 3)
+                    node<ParadoxMarkerNode>(">", 3, 4)
                 }
-                node<ParadoxBlankNode>(" ", 4 to 5)
-                node<ParadoxNameFormatLocalisationNode>("y", 5 to 6)
-                node<ParadoxMarkerNode>("}", 6 to 7)
+                node<ParadoxBlankNode>(" ", 4, 5)
+                node<ParadoxNameFormatLocalisationNode>("y", 5, 6)
+                node<ParadoxMarkerNode>("}", 6, 7)
             }
         }
         exp.check(dsl)
@@ -222,19 +222,19 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[Root.GetName]}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 16) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxCommandNode>("[Root.GetName]", 1 to 15) {
-                    node<ParadoxMarkerNode>("[", 1 to 2)
-                    node<ParadoxCommandExpression>("Root.GetName", 2 to 14) {
-                        node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
-                        node<ParadoxOperatorNode>(".", 6 to 7)
-                        node<ParadoxStaticCommandFieldNode>("GetName", 7 to 14)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 16) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxCommandNode>("[Root.GetName]", 1, 15) {
+                    node<ParadoxMarkerNode>("[", 1, 2)
+                    node<ParadoxCommandExpression>("Root.GetName", 2, 14) {
+                        node<ParadoxSystemCommandScopeNode>("Root", 2, 6)
+                        node<ParadoxOperatorNode>(".", 6, 7)
+                        node<ParadoxStaticCommandFieldNode>("GetName", 7, 14)
                     }
-                    node<ParadoxMarkerNode>("]", 14 to 15)
+                    node<ParadoxMarkerNode>("]", 14, 15)
                 }
-                node<ParadoxMarkerNode>("}", 15 to 16)
+                node<ParadoxMarkerNode>("}", 15, 16)
             }
         }
         exp.check(dsl)
@@ -245,30 +245,30 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{X{<Y> [Root.GetName]}}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 23) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("X", 1 to 2)
-                node<ParadoxNameFormatClosureNode>("{<Y> [Root.GetName]}", 2 to 22) {
-                    node<ParadoxMarkerNode>("{", 2 to 3)
-                    node<ParadoxNamePartNode>("<Y>", 3 to 6) {
-                        node<ParadoxMarkerNode>("<", 3 to 4)
-                        node<ParadoxNameFormatDefinitionNode>("Y", 4 to 5)
-                        node<ParadoxMarkerNode>(">", 5 to 6)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 23) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("X", 1, 2)
+                node<ParadoxNameFormatClosureNode>("{<Y> [Root.GetName]}", 2, 22) {
+                    node<ParadoxMarkerNode>("{", 2, 3)
+                    node<ParadoxNamePartNode>("<Y>", 3, 6) {
+                        node<ParadoxMarkerNode>("<", 3, 4)
+                        node<ParadoxNameFormatDefinitionNode>("Y", 4, 5)
+                        node<ParadoxMarkerNode>(">", 5, 6)
                     }
-                    node<ParadoxBlankNode>(" ", 6 to 7)
-                    node<ParadoxCommandNode>("[Root.GetName]", 7 to 21) {
-                        node<ParadoxMarkerNode>("[", 7 to 8)
-                        node<ParadoxCommandExpression>("Root.GetName", 8 to 20) {
-                            node<ParadoxSystemCommandScopeNode>("Root", 8 to 12)
-                            node<ParadoxOperatorNode>(".", 12 to 13)
-                            node<ParadoxStaticCommandFieldNode>("GetName", 13 to 20)
+                    node<ParadoxBlankNode>(" ", 6, 7)
+                    node<ParadoxCommandNode>("[Root.GetName]", 7, 21) {
+                        node<ParadoxMarkerNode>("[", 7, 8)
+                        node<ParadoxCommandExpression>("Root.GetName", 8, 20) {
+                            node<ParadoxSystemCommandScopeNode>("Root", 8, 12)
+                            node<ParadoxOperatorNode>(".", 12, 13)
+                            node<ParadoxStaticCommandFieldNode>("GetName", 13, 20)
                         }
-                        node<ParadoxMarkerNode>("]", 20 to 21)
+                        node<ParadoxMarkerNode>("]", 20, 21)
                     }
-                    node<ParadoxMarkerNode>("}", 21 to 22)
+                    node<ParadoxMarkerNode>("}", 21, 22)
                 }
-                node<ParadoxMarkerNode>("}", 22 to 23)
+                node<ParadoxMarkerNode>("}", 22, 23)
             }
         }
         exp.check(dsl)
@@ -281,13 +281,13 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<abc"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 5) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<abc", 1 to 5) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("abc", 2 to 5)
-                    node<ParadoxErrorTokenNode>("", 5 to 5)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 5) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<abc", 1, 5) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("abc", 2, 5)
+                    node<ParadoxErrorTokenNode>("", 5, 5)
                 }
             }
         }
@@ -301,21 +301,21 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[Root."
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 7) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxCommandNode>("[Root.", 1 to 7) {
-                    node<ParadoxMarkerNode>("[", 1 to 2)
-                    node<ParadoxCommandExpression>("Root.", 2 to 7) {
-                        node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
-                        node<ParadoxOperatorNode>(".", 6 to 7)
-                        node<ParadoxDynamicCommandFieldNode>("", 7 to 7) {
-                            node<ParadoxCommandFieldValueNode>("", 7 to 7) {
-                                node<ParadoxDataSourceNode>("", 7 to 7)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 7) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxCommandNode>("[Root.", 1, 7) {
+                    node<ParadoxMarkerNode>("[", 1, 2)
+                    node<ParadoxCommandExpression>("Root.", 2, 7) {
+                        node<ParadoxSystemCommandScopeNode>("Root", 2, 6)
+                        node<ParadoxOperatorNode>(".", 6, 7)
+                        node<ParadoxDynamicCommandFieldNode>("", 7, 7) {
+                            node<ParadoxCommandFieldValueNode>("", 7, 7) {
+                                node<ParadoxDataSourceNode>("", 7, 7)
                             }
                         }
                     }
-                    node<ParadoxErrorTokenNode>("", 7 to 7)
+                    node<ParadoxErrorTokenNode>("", 7, 7)
                 }
             }
         }
@@ -327,13 +327,13 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{Alpha Beta}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 12) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("Alpha", 1 to 6)
-                node<ParadoxBlankNode>(" ", 6 to 7)
-                node<ParadoxNameFormatLocalisationNode>("Beta", 7 to 11)
-                node<ParadoxMarkerNode>("}", 11 to 12)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 12) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("Alpha", 1, 6)
+                node<ParadoxBlankNode>(" ", 6, 7)
+                node<ParadoxNameFormatLocalisationNode>("Beta", 7, 11)
+                node<ParadoxMarkerNode>("}", 11, 12)
             }
         }
         exp.check(dsl)
@@ -344,22 +344,22 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "   { <x> y  }   "
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxBlankNode>("   ", 0 to 3)
-            node<ParadoxNameFormatClosureNode>("{ <x> y  }", 3 to 13) {
-                node<ParadoxMarkerNode>("{", 3 to 4)
-                node<ParadoxBlankNode>(" ", 4 to 5)
-                node<ParadoxNamePartNode>("<x>", 5 to 8) {
-                    node<ParadoxMarkerNode>("<", 5 to 6)
-                    node<ParadoxNameFormatDefinitionNode>("x", 6 to 7)
-                    node<ParadoxMarkerNode>(">", 7 to 8)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxBlankNode>("   ", 0, 3)
+            node<ParadoxNameFormatClosureNode>("{ <x> y  }", 3, 13) {
+                node<ParadoxMarkerNode>("{", 3, 4)
+                node<ParadoxBlankNode>(" ", 4, 5)
+                node<ParadoxNamePartNode>("<x>", 5, 8) {
+                    node<ParadoxMarkerNode>("<", 5, 6)
+                    node<ParadoxNameFormatDefinitionNode>("x", 6, 7)
+                    node<ParadoxMarkerNode>(">", 7, 8)
                 }
-                node<ParadoxBlankNode>(" ", 8 to 9)
-                node<ParadoxNameFormatLocalisationNode>("y", 9 to 10)
-                node<ParadoxBlankNode>("  ", 10 to 12)
-                node<ParadoxMarkerNode>("}", 12 to 13)
+                node<ParadoxBlankNode>(" ", 8, 9)
+                node<ParadoxNameFormatLocalisationNode>("y", 9, 10)
+                node<ParadoxBlankNode>("  ", 10, 12)
+                node<ParadoxMarkerNode>("}", 12, 13)
             }
-            node<ParadoxBlankNode>("   ", 13 to 16)
+            node<ParadoxBlankNode>("   ", 13, 16)
         }
         exp.check(dsl)
     }
@@ -369,25 +369,25 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "foo { <x> y  } <bar> "
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxErrorTokenNode>("foo", 0 to 3)
-            node<ParadoxBlankNode>(" ", 3 to 4)
-            node<ParadoxNameFormatClosureNode>("{ <x> y  }", 4 to 14) {
-                node<ParadoxMarkerNode>("{", 4 to 5)
-                node<ParadoxBlankNode>(" ", 5 to 6)
-                node<ParadoxNamePartNode>("<x>", 6 to 9) {
-                    node<ParadoxMarkerNode>("<", 6 to 7)
-                    node<ParadoxNameFormatDefinitionNode>("x", 7 to 8)
-                    node<ParadoxMarkerNode>(">", 8 to 9)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxErrorTokenNode>("foo", 0, 3)
+            node<ParadoxBlankNode>(" ", 3, 4)
+            node<ParadoxNameFormatClosureNode>("{ <x> y  }", 4, 14) {
+                node<ParadoxMarkerNode>("{", 4, 5)
+                node<ParadoxBlankNode>(" ", 5, 6)
+                node<ParadoxNamePartNode>("<x>", 6, 9) {
+                    node<ParadoxMarkerNode>("<", 6, 7)
+                    node<ParadoxNameFormatDefinitionNode>("x", 7, 8)
+                    node<ParadoxMarkerNode>(">", 8, 9)
                 }
-                node<ParadoxBlankNode>(" ", 9 to 10)
-                node<ParadoxNameFormatLocalisationNode>("y", 10 to 11)
-                node<ParadoxBlankNode>("  ", 11 to 13)
-                node<ParadoxMarkerNode>("}", 13 to 14)
+                node<ParadoxBlankNode>(" ", 9, 10)
+                node<ParadoxNameFormatLocalisationNode>("y", 10, 11)
+                node<ParadoxBlankNode>("  ", 11, 13)
+                node<ParadoxMarkerNode>("}", 13, 14)
             }
-            node<ParadoxBlankNode>(" ", 14 to 15)
-            node<ParadoxErrorTokenNode>("<bar>", 15 to 20)
-            node<ParadoxBlankNode>(" ", 20 to 21)
+            node<ParadoxBlankNode>(" ", 14, 15)
+            node<ParadoxErrorTokenNode>("<bar>", 15, 20)
+            node<ParadoxBlankNode>(" ", 20, 21)
         }
         exp.check(dsl)
     }
@@ -397,9 +397,9 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "<x> y} "
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxErrorTokenNode>("<x> y}", 0 to 6)
-            node<ParadoxBlankNode>(" ", 6 to 7)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxErrorTokenNode>("<x> y}", 0, 6)
+            node<ParadoxBlankNode>(" ", 6, 7)
         }
         exp.check(dsl)
     }
@@ -409,14 +409,14 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x> y}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 6) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("x", 1 to 2)
-                node<ParadoxErrorTokenNode>(">", 2 to 3)
-                node<ParadoxBlankNode>(" ", 3 to 4)
-                node<ParadoxNameFormatLocalisationNode>("y", 4 to 5)
-                node<ParadoxMarkerNode>("}", 5 to 6)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 6) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("x", 1, 2)
+                node<ParadoxErrorTokenNode>(">", 2, 3)
+                node<ParadoxBlankNode>(" ", 3, 4)
+                node<ParadoxNameFormatLocalisationNode>("y", 4, 5)
+                node<ParadoxMarkerNode>("}", 5, 6)
             }
         }
         exp.check(dsl)
@@ -427,20 +427,20 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<x>> y}}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>("{<x>> y}", 0 to 8) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<x>", 1 to 4) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("x", 2 to 3)
-                    node<ParadoxMarkerNode>(">", 3 to 4)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>("{<x>> y}", 0, 8) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<x>", 1, 4) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("x", 2, 3)
+                    node<ParadoxMarkerNode>(">", 3, 4)
                 }
-                node<ParadoxErrorTokenNode>(">", 4 to 5)
-                node<ParadoxBlankNode>(" ", 5 to 6)
-                node<ParadoxNameFormatLocalisationNode>("y", 6 to 7)
-                node<ParadoxMarkerNode>("}", 7 to 8)
+                node<ParadoxErrorTokenNode>(">", 4, 5)
+                node<ParadoxBlankNode>(" ", 5, 6)
+                node<ParadoxNameFormatLocalisationNode>("y", 6, 7)
+                node<ParadoxMarkerNode>("}", 7, 8)
             }
-            node<ParadoxErrorTokenNode>("}", 8 to 9)
+            node<ParadoxErrorTokenNode>("}", 8, 9)
         }
         exp.check(dsl)
     }
@@ -450,15 +450,15 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[]}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 4) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxCommandNode>("[]", 1 to 3) {
-                    node<ParadoxMarkerNode>("[", 1 to 2)
-                    node<ParadoxErrorTokenNode>("", 2 to 2)
-                    node<ParadoxMarkerNode>("]", 2 to 3)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 4) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxCommandNode>("[]", 1, 3) {
+                    node<ParadoxMarkerNode>("[", 1, 2)
+                    node<ParadoxErrorTokenNode>("", 2, 2)
+                    node<ParadoxMarkerNode>("]", 2, 3)
                 }
-                node<ParadoxMarkerNode>("}", 3 to 4)
+                node<ParadoxMarkerNode>("}", 3, 4)
             }
         }
         exp.check(dsl)
@@ -469,15 +469,15 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<>}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 4) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<>", 1 to 3) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxErrorTokenNode>("", 2 to 2)
-                    node<ParadoxMarkerNode>(">", 2 to 3)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 4) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<>", 1, 3) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxErrorTokenNode>("", 2, 2)
+                    node<ParadoxMarkerNode>(">", 2, 3)
                 }
-                node<ParadoxMarkerNode>("}", 3 to 4)
+                node<ParadoxMarkerNode>("}", 3, 4)
             }
         }
         exp.check(dsl)
@@ -488,17 +488,17 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<abc y}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 8) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNamePartNode>("<abc", 1 to 5) {
-                    node<ParadoxMarkerNode>("<", 1 to 2)
-                    node<ParadoxNameFormatDefinitionNode>("abc", 2 to 5)
-                    node<ParadoxErrorTokenNode>("", 5 to 5)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 8) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNamePartNode>("<abc", 1, 5) {
+                    node<ParadoxMarkerNode>("<", 1, 2)
+                    node<ParadoxNameFormatDefinitionNode>("abc", 2, 5)
+                    node<ParadoxErrorTokenNode>("", 5, 5)
                 }
-                node<ParadoxBlankNode>(" ", 5 to 6)
-                node<ParadoxNameFormatLocalisationNode>("y", 6 to 7)
-                node<ParadoxMarkerNode>("}", 7 to 8)
+                node<ParadoxBlankNode>(" ", 5, 6)
+                node<ParadoxNameFormatLocalisationNode>("y", 6, 7)
+                node<ParadoxMarkerNode>("}", 7, 8)
             }
         }
         exp.check(dsl)
@@ -509,25 +509,25 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[Root. y}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>("{[Root. y}", 0 to 10) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxCommandNode>("[Root.", 1 to 7) {
-                    node<ParadoxMarkerNode>("[", 1 to 2)
-                    node<ParadoxCommandExpression>("Root.", 2 to 7) {
-                        node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
-                        node<ParadoxOperatorNode>(".", 6 to 7)
-                        node<ParadoxDynamicCommandFieldNode>("", 7 to 7) {
-                            node<ParadoxCommandFieldValueNode>("", 7 to 7) {
-                                node<ParadoxDataSourceNode>("", 7 to 7)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>("{[Root. y}", 0, 10) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxCommandNode>("[Root.", 1, 7) {
+                    node<ParadoxMarkerNode>("[", 1, 2)
+                    node<ParadoxCommandExpression>("Root.", 2, 7) {
+                        node<ParadoxSystemCommandScopeNode>("Root", 2, 6)
+                        node<ParadoxOperatorNode>(".", 6, 7)
+                        node<ParadoxDynamicCommandFieldNode>("", 7, 7) {
+                            node<ParadoxCommandFieldValueNode>("", 7, 7) {
+                                node<ParadoxDataSourceNode>("", 7, 7)
                             }
                         }
                     }
-                    node<ParadoxErrorTokenNode>("", 7 to 7)
+                    node<ParadoxErrorTokenNode>("", 7, 7)
                 }
-                node<ParadoxBlankNode>(" ", 7 to 8)
-                node<ParadoxNameFormatLocalisationNode>("y", 8 to 9)
-                node<ParadoxMarkerNode>("}", 9 to 10)
+                node<ParadoxBlankNode>(" ", 7, 8)
+                node<ParadoxNameFormatLocalisationNode>("y", 8, 9)
+                node<ParadoxMarkerNode>("}", 9, 10)
             }
         }
         exp.check(dsl)
@@ -538,14 +538,14 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x] y}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 6) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("x", 1 to 2)
-                node<ParadoxErrorTokenNode>("]", 2 to 3)
-                node<ParadoxBlankNode>(" ", 3 to 4)
-                node<ParadoxNameFormatLocalisationNode>("y", 4 to 5)
-                node<ParadoxMarkerNode>("}", 5 to 6)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 6) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("x", 1, 2)
+                node<ParadoxErrorTokenNode>("]", 2, 3)
+                node<ParadoxBlankNode>(" ", 3, 4)
+                node<ParadoxNameFormatLocalisationNode>("y", 4, 5)
+                node<ParadoxMarkerNode>("}", 5, 6)
             }
         }
         exp.check(dsl)
@@ -556,13 +556,13 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x}y"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>("{x}", 0 to 3) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("x", 1 to 2)
-                node<ParadoxMarkerNode>("}", 2 to 3)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>("{x}", 0, 3) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("x", 1, 2)
+                node<ParadoxMarkerNode>("}", 2, 3)
             }
-            node<ParadoxErrorTokenNode>("y", 3 to 4)
+            node<ParadoxErrorTokenNode>("y", 3, 4)
         }
         exp.check(dsl)
     }
@@ -572,11 +572,11 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{ }"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 3) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxBlankNode>(" ", 1 to 2)
-                node<ParadoxMarkerNode>("}", 2 to 3)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 3) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxBlankNode>(" ", 1, 2)
+                node<ParadoxMarkerNode>("}", 2, 3)
             }
         }
         exp.check(dsl)
@@ -587,20 +587,20 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x[Root.GetName]}"
         val exp = resolve(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0 to s.length) {
-            node<ParadoxNameFormatClosureNode>(s, 0 to 17) {
-                node<ParadoxMarkerNode>("{", 0 to 1)
-                node<ParadoxNameFormatLocalisationNode>("x", 1 to 2)
-                node<ParadoxCommandNode>("[Root.GetName]", 2 to 16) {
-                    node<ParadoxMarkerNode>("[", 2 to 3)
-                    node<ParadoxCommandExpression>("Root.GetName", 3 to 15) {
-                        node<ParadoxSystemCommandScopeNode>("Root", 3 to 7)
-                        node<ParadoxOperatorNode>(".", 7 to 8)
-                        node<ParadoxStaticCommandFieldNode>("GetName", 8 to 15)
+        val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
+            node<ParadoxNameFormatClosureNode>(s, 0, 17) {
+                node<ParadoxMarkerNode>("{", 0, 1)
+                node<ParadoxNameFormatLocalisationNode>("x", 1, 2)
+                node<ParadoxCommandNode>("[Root.GetName]", 2, 16) {
+                    node<ParadoxMarkerNode>("[", 2, 3)
+                    node<ParadoxCommandExpression>("Root.GetName", 3, 15) {
+                        node<ParadoxSystemCommandScopeNode>("Root", 3, 7)
+                        node<ParadoxOperatorNode>(".", 7, 8)
+                        node<ParadoxStaticCommandFieldNode>("GetName", 8, 15)
                     }
-                    node<ParadoxMarkerNode>("]", 15 to 16)
+                    node<ParadoxMarkerNode>("]", 15, 16)
                 }
-                node<ParadoxMarkerNode>("}", 16 to 17)
+                node<ParadoxMarkerNode>("}", 16, 17)
             }
         }
         exp.check(dsl)

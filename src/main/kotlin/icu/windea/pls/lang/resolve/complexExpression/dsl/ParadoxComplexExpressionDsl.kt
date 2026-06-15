@@ -2,7 +2,6 @@
 
 package icu.windea.pls.lang.resolve.complexExpression.dsl
 
-import icu.windea.pls.core.util.TypedTuple2
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import kotlin.reflect.KClass
@@ -23,7 +22,8 @@ data class ParadoxComplexExpressionDslStub(
 data class ParadoxComplexExpressionDslNode(
     val type: KClass<out ParadoxComplexExpressionNode>,
     val text: String,
-    val rangeInExpression: TypedTuple2<Int>,
+    val startOffset: Int,
+    val endOffset: Int,
     val nodes: MutableList<ParadoxComplexExpressionDslNode>
 ) : ParadoxComplexExpressionDsl
 
@@ -35,20 +35,22 @@ inline fun <reified T : ParadoxComplexExpression> buildComplexExpressionStub(
 
 inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
     text: String,
-    rangeInExpression: TypedTuple2<Int>,
+    startOffset: Int,
+    endOffset: Int,
     block: ParadoxComplexExpressionDslNode.() -> Unit = {}
 ): ParadoxComplexExpressionDslNode {
-    val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
+    val node = ParadoxComplexExpressionDslNode(T::class, text, startOffset, endOffset, mutableListOf())
     block(node)
     return node
 }
 
 inline fun <reified T : ParadoxComplexExpressionNode> ParadoxComplexExpressionDslNode.node(
     text: String,
-    rangeInExpression: TypedTuple2<Int>,
+    startOffset: Int,
+    endOffset: Int,
     block: ParadoxComplexExpressionDslNode.() -> Unit = {}
 ): ParadoxComplexExpressionDslNode {
-    val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
+    val node = ParadoxComplexExpressionDslNode(T::class, text, startOffset, endOffset, mutableListOf())
     block(node)
     nodes += node
     return node

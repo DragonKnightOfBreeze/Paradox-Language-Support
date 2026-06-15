@@ -50,8 +50,8 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_variable"
         val exp = resolve(s)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueNode>(s, 0 to 13)
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
+            node<ParadoxDynamicValueNode>(s, 0, 13)
         }
         exp.check(dsl)
     }
@@ -61,11 +61,11 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_variable@root"
         val exp = resolve(s)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
-            node<ParadoxMarkerNode>("@", 13 to 14)
-            node<ParadoxScopeFieldExpression>("root", 14 to 18) {
-                node<ParadoxScopeNode>("root", 14 to 18)
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxScopeFieldExpression>("root", 14, 18) {
+                node<ParadoxScopeNode>("root", 14, 18)
             }
         }
         exp.check(dsl)
@@ -76,13 +76,13 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_variable@root.owner"
         val exp = resolve(s)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
-            node<ParadoxMarkerNode>("@", 13 to 14)
-            node<ParadoxScopeFieldExpression>("root.owner", 14 to 24) {
-                node<ParadoxScopeNode>("root", 14 to 18)
-                node<ParadoxOperatorNode>(".", 18 to 19)
-                node<ParadoxScopeNode>("owner", 19 to 24)
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxScopeFieldExpression>("root.owner", 14, 24) {
+                node<ParadoxScopeNode>("root", 14, 18)
+                node<ParadoxOperatorNode>(".", 18, 19)
+                node<ParadoxScopeNode>("owner", 19, 24)
             }
         }
         exp.check(dsl)
@@ -93,10 +93,10 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_variable@"
         val exp = resolve(s)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@", 0 to 14) {
-            node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
-            node<ParadoxMarkerNode>("@", 13 to 14)
-            node<ParadoxErrorTokenNode>("", 14 to 14)
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@", 0, 14) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxErrorTokenNode>("", 14, 14)
         }
         exp.check(dsl)
     }
@@ -106,13 +106,13 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_variable@root."
         val exp = resolve(s)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@root.", 0 to 19) {
-            node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
-            node<ParadoxMarkerNode>("@", 13 to 14)
-            node<ParadoxScopeFieldExpression>("root.", 14 to 19) {
-                node<ParadoxSystemScopeNode>("root", 14 to 18)
-                node<ParadoxOperatorNode>(".", 18 to 19)
-                node<ParadoxErrorScopeNode>("", 19 to 19)
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@root.", 0, 19) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxScopeFieldExpression>("root.", 14, 19) {
+                node<ParadoxSystemScopeNode>("root", 14, 18)
+                node<ParadoxOperatorNode>(".", 18, 19)
+                node<ParadoxErrorScopeNode>("", 19, 19)
             }
         }
         exp.check(dsl)
@@ -123,8 +123,8 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(resolve("", incomplete = false))
         val exp = resolve("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("", 0 to 0) {
-            node<ParadoxDynamicValueNode>("", 0 to 0)
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("", 0, 0) {
+            node<ParadoxDynamicValueNode>("", 0, 0)
         }
         exp.check(dsl)
     }
