@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 链式的复杂表达式。

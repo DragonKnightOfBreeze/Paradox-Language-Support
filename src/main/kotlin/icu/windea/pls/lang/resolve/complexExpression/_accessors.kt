@@ -6,21 +6,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 val ParadoxCommandExpression.scopeNodes: List<ParadoxCommandScopeNode>
     get() = nodes.filterIsInstance<ParadoxCommandScopeNode>()

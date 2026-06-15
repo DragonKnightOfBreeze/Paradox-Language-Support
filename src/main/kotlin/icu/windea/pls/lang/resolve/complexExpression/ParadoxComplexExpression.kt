@@ -8,7 +8,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -33,7 +33,7 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     override fun hashCode(): Int
     override fun toString(): String
 
-    companion object  {
+    companion object {
         @JvmStatic
         fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
             return ParadoxComplexExpressionResolver.resolve(element, configGroup)
