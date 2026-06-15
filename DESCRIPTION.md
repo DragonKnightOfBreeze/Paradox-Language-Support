@@ -57,6 +57,4 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [群聊](https://qm.qq.com/q/oRPgLwrTZm) |
 [By me a coffee ☕](https://afdian.com/a/dk_breeze)
 
-<br/>
-
 KEYWORDS: Paradox Chronicle, CWTools, Paradox, Stellaris, Crusader Kings, Europa Universalis, Hearts of Iron, Imperator: Rome, Victoria
