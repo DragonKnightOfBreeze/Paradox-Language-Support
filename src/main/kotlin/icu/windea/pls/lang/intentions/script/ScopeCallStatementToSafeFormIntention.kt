@@ -6,9 +6,8 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -37,7 +36,7 @@ class ScopeCallStatementToSafeFormIntention : PsiUpdateModCommandAction<ParadoxS
     override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToSafeForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
-        val gameType = ParadoxAnalysisManager.selectGameType(element) ?: ParadoxGameType.getDefault()
+        val gameType = selectGameType(element)
         return ParadoxScopeCallStatementManipulationService.convertToSafeForm(element, context.project, gameType)
     }
 

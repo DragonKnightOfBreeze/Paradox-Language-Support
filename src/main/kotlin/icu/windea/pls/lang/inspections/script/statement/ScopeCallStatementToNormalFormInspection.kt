@@ -6,6 +6,7 @@ import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -23,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
-class ScopeCallStatementToNormalFormInspection : LocalInspectionTool() {
+class ScopeCallStatementToNormalFormInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
@@ -48,7 +49,7 @@ class ScopeCallStatementToNormalFormInspection : LocalInspectionTool() {
         override fun getFamilyName() = text
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            val property = (startElement as? ParadoxScriptProperty) ?: return
+            val property = startElement as? ParadoxScriptProperty ?: return
             ParadoxScopeCallStatementManipulationService.convertToNormalForm(property, project)
         }
     }

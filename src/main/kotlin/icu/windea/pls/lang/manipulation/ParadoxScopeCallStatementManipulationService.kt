@@ -74,8 +74,8 @@ object ParadoxScopeCallStatementManipulationService {
         if (!ParadoxSyntaxService.isSafeAssignOperatorAllowed(secondProperty)) return false
         val gameType = ParadoxAnalysisManager.selectGameType(element)
         if (gameType == null || gameType == ParadoxGameType.Core) return true
-        return ParadoxSyntaxConstraint.SafeAssignOperator.testTarget(gameType)
-            || ParadoxSyntaxConstraint.SafeCallAssignOperator.testTarget(gameType)
+        return ParadoxSyntaxConstraint.SafeAssignOperator.test(gameType)
+            || ParadoxSyntaxConstraint.SafeCallAssignOperator.test(gameType)
     }
 
     /**
@@ -105,7 +105,7 @@ object ParadoxScopeCallStatementManipulationService {
      * @param element 显式形式中的任一属性（`exists = x` 或 `x = y`）。
      * @param gameType 游戏类型，用于决定使用 `?=` 还是 `? =`。
      */
-    fun convertToSafeForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType) {
+    fun convertToSafeForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType?) {
         val existsProperty = getExistsProperty(element) ?: return
         val secondProperty = getSecondProperty(element) ?: return
         if (existsProperty === secondProperty) return
@@ -114,7 +114,7 @@ object ParadoxScopeCallStatementManipulationService {
         val keyText = secondProperty.propertyKey.text
 
         val safeSeparator = when {
-            ParadoxSyntaxConstraint.SafeCallAssignOperator.testTarget(gameType) -> "? = "
+            ParadoxSyntaxConstraint.SafeCallAssignOperator.test(gameType) -> "? = "
             else -> " ?= "
         }
 

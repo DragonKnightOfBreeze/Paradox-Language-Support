@@ -44,7 +44,6 @@ class ScopeCallStatementToNormalFormIntention : PsiUpdateModCommandAction<Parado
     override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToNormalForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
-        val gameType = ParadoxAnalysisManager.selectGameType(element) ?: ParadoxGameType.getDefault()
         return ParadoxScopeCallStatementManipulationService.convertToNormalForm(element, context.project)
     }
 

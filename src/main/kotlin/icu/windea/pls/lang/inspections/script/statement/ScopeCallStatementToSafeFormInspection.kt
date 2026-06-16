@@ -6,14 +6,14 @@ import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
-class ScopeCallStatementToSafeFormInspection : LocalInspectionTool() {
+class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
@@ -50,8 +50,8 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool() {
         override fun getFamilyName() = text
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            val property = (startElement as? ParadoxScriptProperty) ?: return
-            val gameType = ParadoxAnalysisManager.selectGameType(property) ?: ParadoxGameType.getDefault()
+            val property = startElement as? ParadoxScriptProperty ?: return
+            val gameType = selectGameType(file)
             ParadoxScopeCallStatementManipulationService.convertToSafeForm(property, project, gameType)
         }
     }
