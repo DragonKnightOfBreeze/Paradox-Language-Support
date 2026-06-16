@@ -46,9 +46,9 @@ object ParadoxScopeCallStatementManipulationService {
      * 判断 [element] 是否为显式形式（`exists = x x = y`）。
      * [element] 可以是显式形式中的任意一个属性（`exists = x` 或 `x = y`）。
      */
-    fun isNormalForm(element: ParadoxScriptProperty): Boolean {
-        if (isSecondPropertyOfNormalForm(element)) return true
-        if (isExistsPropertyOfNormalForm(element)) return true
+    fun isNormalForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeSecondProperty: Boolean = true): Boolean {
+        if (canBeExistsProperty && isExistsPropertyOfNormalForm(element)) return true
+        if (canBeSecondProperty && isSecondPropertyOfNormalForm(element)) return true
         return false
     }
 
@@ -68,8 +68,8 @@ object ParadoxScopeCallStatementManipulationService {
      * - 游戏类型必须支持至少一种安全操作符（宽松测试：仅检查游戏类型，不检查游戏版本）。
      * - 仅检查语法级别（键必须是字符串字面量）。
      */
-    fun canConvertToSafeForm(element: ParadoxScriptProperty): Boolean {
-        if (!isNormalForm(element)) return false
+    fun canConvertToSafeForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeSecondProperty: Boolean = true): Boolean {
+        if (!isNormalForm(element, canBeExistsProperty, canBeSecondProperty)) return false
         val secondProperty = getSecondProperty(element) ?: return false
         if (!ParadoxSyntaxService.isSafeAssignOperatorAllowed(secondProperty)) return false
         val gameType = ParadoxAnalysisManager.selectGameType(element)

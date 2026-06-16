@@ -30,7 +30,7 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool() {
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)) return
+                if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element, canBeExistsProperty = false)) return
                 val description = PlsBundle.message("inspection.script.scopeCallToSafeForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element.propertyKey, description, *fixes)
