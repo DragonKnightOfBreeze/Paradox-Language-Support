@@ -40,6 +40,7 @@ class EvaluateInlineMathAction : AnAction() {
         if (file !is ParadoxScriptFile) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
+        if (!element.isValid) return // precheck
         if (element.expression.isEmpty()) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
