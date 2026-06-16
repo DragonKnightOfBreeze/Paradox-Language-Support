@@ -31,7 +31,7 @@ class ConditionalStatementToPropertyFormIntention : PsiUpdateModCommandAction<Pa
     }
 
     override fun isElementApplicable(element: ParadoxScriptParameterCondition, context: ActionContext): Boolean {
-        return ParadoxConditionalStatementManipulationService.isBlockForm(element)
+        return ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

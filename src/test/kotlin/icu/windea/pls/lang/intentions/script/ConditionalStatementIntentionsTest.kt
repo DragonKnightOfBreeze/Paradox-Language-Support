@@ -29,8 +29,10 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    // region conditionalStatementToPropertyForm
+
     @Test
-    fun testConditionalSnippetToPropertyFormat_basic() {
+    fun testConditionalStatementToPropertyForm_basic() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_basic.test.txt",
@@ -42,7 +44,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testConditionalSnippetToPropertyFormat_multiline() {
+    fun testConditionalStatementToPropertyForm_multiline() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_multiline.test.txt",
@@ -66,7 +68,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testConditionalSnippetToPropertyFormat_notAvailableWhenAlreadyPropertyFormat() {
+    fun testConditionalStatementToPropertyForm_notAvailableWhenAlreadyPropertyForm() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_not_available_property_form.test.txt",
@@ -77,7 +79,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testConditionalSnippetToPropertyFormat_notAvailableWhenMismatchParameterName() {
+    fun testConditionalStatementToPropertyForm_notAvailableWhenMismatchParameterName() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_not_available_mismatch.test.txt",
@@ -87,8 +89,12 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
         assertFalse(available.any { it.text == intentionName })
     }
 
+    // endregion
+
+    // region conditionalStatementToBlockForm
+
     @Test
-    fun testConditionalSnippetToBlockFormat_basic() {
+    fun testConditionalStatementToBlockForm_basic() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_basic.test.txt",
@@ -100,7 +106,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testConditionalSnippetToBlockFormat_parameterNameWithUnderscore() {
+    fun testConditionalStatementToBlockForm_parameterNameWithUnderscore() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_underscore.test.txt",
@@ -112,7 +118,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testConditionalSnippetToBlockFormat_notAvailableWhenAlreadyBlockFormat() {
+    fun testConditionalStatementToBlockForm_notAvailableWhenAlreadyBlockForm() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_not_available_block_form.test.txt",
@@ -123,7 +129,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testConditionalSnippetToBlockFormat_notAvailableWhenMismatchParameterName() {
+    fun testConditionalStatementToBlockForm_notAvailableWhenMismatchParameterName() {
         val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_not_available_mismatch.test.txt",
@@ -132,4 +138,6 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
     }
+
+    // endregion
 }

@@ -8,11 +8,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
-import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -30,7 +26,9 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * owner? = { ... }
  * ```
  *
- * 如果 `exists = x` 和 `x = y` 之间存在注释，注释会在转换后移到安全形式之前。
+ * 说明：
+ * - 根据 [ParadoxSyntaxConstraint][icu.windea.pls.model.constraints.ParadoxSyntaxConstraint] 来决定使用 `?=` 还是 `? =`。
+ * - `exists = x` 和 `x = y` 之间的注释会在转换后移到安全形式之前。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
@@ -44,19 +42,7 @@ class ScopeCallStatementToSafeFormIntention : PsiUpdateModCommandAction<ParadoxS
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        // 必须是显式调用形式
-        if (!ParadoxScopeCallStatementManipulationService.isNormalForm(element)) return false
-        // 语法级别验证：键必须是字符串字面量
-        val secondProperty = ParadoxScopeCallStatementManipulationService.getSecondProperty(element) ?: return false
-        if (!ParadoxSyntaxService.isSafeAssignOperatorAllowed(secondProperty)) return false
-        // 游戏类型必须支持安全操作符
-        val gameType = ParadoxAnalysisManager.selectGameType(element)
-        if (gameType == null || gameType == ParadoxGameType.Core) return true
-        return when {
-            ParadoxSyntaxConstraint.SafeAssignOperator.testTarget(gameType) -> true
-            ParadoxSyntaxConstraint.SafeCallAssignOperator.testTarget(gameType) -> true
-            else -> false
-        }
+        return ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

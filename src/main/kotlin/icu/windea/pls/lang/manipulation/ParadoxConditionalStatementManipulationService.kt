@@ -10,13 +10,13 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 /**
  * 用于操作脚本文件中的条件化语句（conditional statement）。
  *
- * 属性形式：
+ * 示例 - 属性形式：
  *
  * ```paradox_script
  * [[PARAM] PARAM = $PARAM$ ]
  * ```
  *
- * 块形式：
+ * 示例 - 块形式：
  *
  * ```paradox_script
  * PARAM = $PARAM|no$
@@ -37,6 +37,14 @@ object ParadoxConditionalStatementManipulationService {
     fun isBlockForm(element: ParadoxScriptParameterCondition): Boolean {
         val text = element.text
         return blockFormRegex.matches(text)
+    }
+
+    fun canConvertToPropertyForm(element: ParadoxScriptParameterCondition): Boolean {
+        return isBlockForm(element)
+    }
+
+    fun canConvertToBlockForm(element: ParadoxScriptProperty): Boolean {
+        return isPropertyForm(element)
     }
 
     fun convertToPropertyForm(element: ParadoxScriptParameterCondition, project: Project) {

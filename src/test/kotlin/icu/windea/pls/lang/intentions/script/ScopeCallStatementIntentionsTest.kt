@@ -196,6 +196,22 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testScopeCallToSafeForm_withQuotedKey() {
+        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_quoted.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
+        myFixture.configureByText(
+            "to_safe_form_quoted.ck3.test.txt",
+            """
+            k = { exists = owner
+            <caret>"owner" = { a = 1 } }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("""k = { "owner" ?= { a = 1 } }""")
+    }
+
+    @Test
     fun testScopeCallToSafeForm_notAvailableWhenAlreadySafeForm() {
         markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_not_available_already_safe.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
@@ -223,19 +239,38 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToSafeForm_withQuotedKey() {
-        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_quoted.test.txt")
+    fun testScopeCallToSafeForm_notAvailableWhenNotNeighboring() {
+        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_not_available_notNeighboring.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
-            "to_safe_form_quoted.ck3.test.txt",
+            "to_safe_form_not_available_notNeighboring.ck3.test.txt",
             """
-            k = { exists = owner
-            <caret>"owner" = { a = 1 } }
+            k = {
+                exists = owner
+                key = value
+                <caret>owner = { a = 1 }
+            }
             """.trimIndent()
         )
-        val intention = myFixture.findSingleIntention(intentionName)
-        myFixture.launchAction(intention)
-        myFixture.checkResult("""k = { "owner" ?= { a = 1 } }""")
+        val available = myFixture.availableIntentions
+        assertFalse(available.any { it.text == intentionName })
+    }
+
+    @Test
+    fun testScopeCallToSafeForm_notAvailableWhenNotBefore() {
+        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_not_available_notBefore.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
+        myFixture.configureByText(
+            "to_safe_form_not_available_notBefore.ck3.test.txt",
+            """
+            k = {
+                <caret>owner = { a = 1 }
+                exists = owner
+            }
+            """.trimIndent()
+        )
+        val available = myFixture.availableIntentions
+        assertFalse(available.any { it.text == intentionName })
     }
 
     // endregion

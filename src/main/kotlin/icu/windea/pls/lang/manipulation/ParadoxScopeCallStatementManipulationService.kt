@@ -2,8 +2,14 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.siblings
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.stringValue
+import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -13,13 +19,17 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 /**
  * 用于操作脚本中的作用域调用语句（scope call statement）。
  *
- * 显式调用形式（normal form）：
+ * 说明：
+ * - 对于显式调用形式，要求 `exists = x` 必须在 `x = { ... }` 之前，且两者之间仅能有空白或注释。
+ *
+ * 示例 - 显式调用形式（normal form）：
+ *
  * ```paradox_script
  * exists = owner
  * owner = { ... }
  * ```
  *
- * 安全调用形式（safe form）：
+ * 示例 - 安全调用形式（safe form）：
  *
  * CK3/VIC3/EU5:
  * ```paradox_script
@@ -32,19 +42,68 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
  * ```
  */
 object ParadoxScopeCallStatementManipulationService {
+    /**
+     * 判断 [element] 是否为显式调用形式（`exists = x x = y`）。
+     * [element] 可以是显式调用形式中的任意一个属性（`exists = x` 或 `x = y`）。
+     */
     fun isNormalForm(element: ParadoxScriptProperty): Boolean {
         if (isSecondPropertyOfNormalForm(element)) return true
         if (isExistsPropertyOfNormalForm(element)) return true
         return false
     }
 
+    /**
+     * 判断 [element] 是否为安全调用形式（使用 `?=` 或 `? =` 作为分隔符的属性）。
+     */
     fun isSafeForm(element: ParadoxScriptProperty): Boolean {
         val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
         return separatorNode.elementType == SAFE_ASSIGN_SIGN || separatorNode.elementType == SAFE_CALL_ASSIGN_SIGN
     }
 
     /**
+     * 判断是否可以转换为安全调用形式。
+     *
+     * 说明：
+     * - 必须是显式调用形式。
+     * - 游戏类型必须支持至少一种安全操作符（宽松测试：仅检查游戏类型，不检查游戏版本）。
+     * - 仅检查语法级别（键必须是字符串字面量）。
+     */
+    fun canConvertToSafeForm(element: ParadoxScriptProperty): Boolean {
+        if (!isNormalForm(element)) return false
+        val secondProperty = getSecondProperty(element) ?: return false
+        if (!ParadoxSyntaxService.isSafeAssignOperatorAllowed(secondProperty)) return false
+        val gameType = ParadoxAnalysisManager.selectGameType(element)
+        if (gameType == null || gameType == ParadoxGameType.Core) return true
+        return ParadoxSyntaxConstraint.SafeAssignOperator.testTarget(gameType)
+            || ParadoxSyntaxConstraint.SafeCallAssignOperator.testTarget(gameType)
+    }
+
+    /**
+     * 判断是否可以转换为显式调用形式。
+     *
+     * 说明：
+     * - 对于任意游戏类型和任意安全调用操作符均可用。
+     * - 仅检查语法级别（键必须是字符串字面量）。
+     */
+    fun canConvertToNormalForm(element: ParadoxScriptProperty): Boolean {
+        if (!isSafeForm(element)) return false
+        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
+        return when (separatorNode.elementType) {
+            SAFE_ASSIGN_SIGN -> ParadoxSyntaxService.isSafeAssignOperatorAllowed(element)
+            SAFE_CALL_ASSIGN_SIGN -> ParadoxSyntaxService.isSafeCallAssignOperatorAllowed(element)
+            else -> false
+        }
+    }
+
+    /**
      * 将显式调用形式转换为安全调用形式。
+     *
+     * 说明：
+     * - 根据 [ParadoxSyntaxConstraint] 来决定使用 `?=` 还是 `? =`。
+     * - `exists = x` 和 `x = y` 之间的注释会保留并移到安全形式之前。
+     *
+     * @param element 显式调用形式中的任一属性（`exists = x` 或 `x = y`）。
+     * @param gameType 游戏类型，用于决定使用 `?=` 还是 `? =`。
      */
     fun convertToSafeForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType) {
         val existsProperty = getExistsProperty(element) ?: return
@@ -54,8 +113,8 @@ object ParadoxScopeCallStatementManipulationService {
         val valueText = secondProperty.propertyValue?.text ?: return
         val keyText = secondProperty.propertyKey.text
 
-        val safeSeparator = when (gameType) {
-            ParadoxGameType.Stellaris -> "? = "
+        val safeSeparator = when {
+            ParadoxSyntaxConstraint.SafeCallAssignOperator.testTarget(gameType) -> "? = "
             else -> " ?= "
         }
 
@@ -87,9 +146,14 @@ object ParadoxScopeCallStatementManipulationService {
 
     /**
      * 将安全调用形式转换为显式调用形式。
-     * 注释留在原位不动，仅替换属性并在其上方插入 exists 属性。
+     *
+     * 说明：
+     * - 注释留在原位不动，仅替换属性并在其上方插入 `exists = x` 属性。
+     * - 如果在多行块中，会在两个属性之间自动插入换行。
+     *
+     * @param element 安全调用形式的属性（使用 `?=` 或 `? =` 作为分隔符）。
      */
-    fun convertToNormalForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType) {
+    fun convertToNormalForm(element: ParadoxScriptProperty, project: Project) {
         val keyText = element.propertyKey.text
         val valueText = element.propertyValue?.text ?: return
 
@@ -115,7 +179,7 @@ object ParadoxScopeCallStatementManipulationService {
         }
     }
 
-    fun getExistsProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
+    private fun getExistsProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
         if (isExistsProperty(element)) {
             val next = findNextProperty(element)
             if (next != null && matchesExistsValue(element, next)) return element
@@ -132,7 +196,7 @@ object ParadoxScopeCallStatementManipulationService {
         return null
     }
 
-    fun getSecondProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
+    private fun getSecondProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
         if (isSecondPropertyOfNormalForm(element)) return element
         if (isExistsProperty(element)) {
             val next = findNextProperty(element)
@@ -141,14 +205,8 @@ object ParadoxScopeCallStatementManipulationService {
         return null
     }
 
-    fun collectCommentsBetween(first: ParadoxScriptProperty, second: ParadoxScriptProperty): List<PsiComment> {
-        val comments = mutableListOf<PsiComment>()
-        var current = first.nextSibling
-        while (current != null && current !== second) {
-            if (current is PsiComment) comments.add(current)
-            current = current.nextSibling
-        }
-        return comments
+    private fun collectCommentsBetween(first: ParadoxScriptProperty, second: ParadoxScriptProperty): List<PsiComment> {
+        return first.siblings(withSelf = false).takeWhile { it !== second }.filterIsInstance<PsiComment>().toList()
     }
 
     private fun isExistsProperty(element: ParadoxScriptProperty): Boolean {
@@ -175,23 +233,14 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     private fun findNextProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
-        var next = element.nextSibling
-        while (next != null) {
-            if (next is ParadoxScriptProperty) return next
-            next = next.nextSibling
-        }
-        return null
+        // 跳过（且仅能跳过）空白和注释
+        return element.siblings(forward = true, withSelf = false).dropWhile { it is PsiWhiteSpace || it is PsiComment }
+            .firstOrNull()?.castOrNull()
     }
 
     private fun findExistsPropertyBefore(element: ParadoxScriptProperty): ParadoxScriptProperty? {
-        var prev = element.prevSibling
-        while (prev != null) {
-            if (prev is ParadoxScriptProperty) {
-                if (isExistsProperty(prev)) return prev
-                break
-            }
-            prev = prev.prevSibling
-        }
-        return null
+        // 跳过（且仅能跳过）空白和注释
+        return element.siblings(forward = false, withSelf = false).dropWhile { it is PsiWhiteSpace || it is PsiComment }
+            .firstOrNull()?.castOrNull<ParadoxScriptProperty>()?.takeIf { isExistsProperty(it) }
     }
 }

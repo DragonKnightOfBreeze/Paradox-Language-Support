@@ -8,13 +8,8 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
-import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
  * 将安全作用域调用转换为显式调用形式。
@@ -39,6 +34,9 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
  * owner = { ... }
  * ```
  *
+ * 说明：
+ * - 对于任意游戏类型和任意安全调用操作符均可用。
+ *
  * @see ParadoxScopeCallStatementManipulationService
  */
 @Suppress("UnstableApiUsage")
@@ -47,17 +45,11 @@ class ScopeCallStatementToNormalFormIntention : PsiUpdateModCommandAction<Parado
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
         val gameType = ParadoxAnalysisManager.selectGameType(element) ?: ParadoxGameType.getDefault()
-        return ParadoxScopeCallStatementManipulationService.convertToNormalForm(element, context.project, gameType)
+        return ParadoxScopeCallStatementManipulationService.convertToNormalForm(element, context.project)
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        if (!ParadoxScopeCallStatementManipulationService.isSafeForm(element)) return false
-        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
-        return when (separatorNode.elementType) {
-            SAFE_ASSIGN_SIGN -> ParadoxSyntaxService.isSafeAssignOperatorAllowed(element)
-            SAFE_CALL_ASSIGN_SIGN -> ParadoxSyntaxService.isSafeCallAssignOperatorAllowed(element)
-            else -> false
-        }
+        return ParadoxScopeCallStatementManipulationService.canConvertToNormalForm(element)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

@@ -1,0 +1,3 @@
+example = {
+	<spot>owner ?= { a = 1 }</spot>
+}

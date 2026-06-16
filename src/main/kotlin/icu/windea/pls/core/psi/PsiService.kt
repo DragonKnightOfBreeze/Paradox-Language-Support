@@ -218,4 +218,3 @@ object PsiService {
         return TextRange.create(startElement.startOffset, endElement.endOffset)
     }
 }
-
