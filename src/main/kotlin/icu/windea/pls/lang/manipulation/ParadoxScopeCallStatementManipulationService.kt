@@ -20,16 +20,16 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
  * 用于操作脚本中的作用域调用语句（scope call statement）。
  *
  * 说明：
- * - 对于显式调用形式，要求 `exists = x` 必须在 `x = { ... }` 之前，且两者之间仅能有空白或注释。
+ * - 对于显式形式，要求 `exists = x` 必须在 `x = { ... }` 之前，且两者之间仅能有空白或注释。
  *
- * 示例 - 显式调用形式（normal form）：
+ * 示例 - 显式形式：
  *
  * ```paradox_script
  * exists = owner
  * owner = { ... }
  * ```
  *
- * 示例 - 安全调用形式（safe form）：
+ * 示例 - 安全形式）：
  *
  * CK3/VIC3/EU5:
  * ```paradox_script
@@ -43,8 +43,8 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
  */
 object ParadoxScopeCallStatementManipulationService {
     /**
-     * 判断 [element] 是否为显式调用形式（`exists = x x = y`）。
-     * [element] 可以是显式调用形式中的任意一个属性（`exists = x` 或 `x = y`）。
+     * 判断 [element] 是否为显式形式（`exists = x x = y`）。
+     * [element] 可以是显式形式中的任意一个属性（`exists = x` 或 `x = y`）。
      */
     fun isNormalForm(element: ParadoxScriptProperty): Boolean {
         if (isSecondPropertyOfNormalForm(element)) return true
@@ -53,7 +53,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 判断 [element] 是否为安全调用形式（使用 `?=` 或 `? =` 作为分隔符的属性）。
+     * 判断 [element] 是否为安全形式（使用 `?=` 或 `? =` 作为分隔符的属性）。
      */
     fun isSafeForm(element: ParadoxScriptProperty): Boolean {
         val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
@@ -61,10 +61,10 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 判断是否可以转换为安全调用形式。
+     * 判断是否可以转换为安全形式。
      *
      * 说明：
-     * - 必须是显式调用形式。
+     * - 必须是显式形式。
      * - 游戏类型必须支持至少一种安全操作符（宽松测试：仅检查游戏类型，不检查游戏版本）。
      * - 仅检查语法级别（键必须是字符串字面量）。
      */
@@ -79,7 +79,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 判断是否可以转换为显式调用形式。
+     * 判断是否可以转换为显式形式。
      *
      * 说明：
      * - 对于任意游戏类型和任意安全调用操作符均可用。
@@ -96,13 +96,13 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 将显式调用形式转换为安全调用形式。
+     * 将显式形式转换为安全形式。
      *
      * 说明：
      * - 根据 [ParadoxSyntaxConstraint] 来决定使用 `?=` 还是 `? =`。
      * - `exists = x` 和 `x = y` 之间的注释会保留并移到安全形式之前。
      *
-     * @param element 显式调用形式中的任一属性（`exists = x` 或 `x = y`）。
+     * @param element 显式形式中的任一属性（`exists = x` 或 `x = y`）。
      * @param gameType 游戏类型，用于决定使用 `?=` 还是 `? =`。
      */
     fun convertToSafeForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType) {
@@ -145,13 +145,13 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 将安全调用形式转换为显式调用形式。
+     * 将安全形式转换为显式形式。
      *
      * 说明：
      * - 注释留在原位不动，仅替换属性并在其上方插入 `exists = x` 属性。
      * - 如果在多行块中，会在两个属性之间自动插入换行。
      *
-     * @param element 安全调用形式的属性（使用 `?=` 或 `? =` 作为分隔符）。
+     * @param element 安全形式的属性（使用 `?=` 或 `? =` 作为分隔符）。
      */
     fun convertToNormalForm(element: ParadoxScriptProperty, project: Project) {
         val keyText = element.propertyKey.text

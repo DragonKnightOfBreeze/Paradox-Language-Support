@@ -126,23 +126,15 @@
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedRecursionInspection"/>
     <!-- endregion -->
-    <!-- region Paradox Script/Scope issues -->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
-                     key="inspection.script.incorrectScope" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeSwitch"
-                     key="inspection.script.incorrectScopeSwitch" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeSwitchInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeLinkChain"
-                     key="inspection.script.incorrectScopeLinkChain" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
+    <!-- region Paradox Script/Statements -->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToNormalForm"
+                     key="inspection.script.scopeCallToNormalForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="INFORMATION"
+                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNormalFormInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToSafeForm"
+                     key="inspection.script.scopeCallToSafeForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeLinkChainInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingScopeContextInference"
-                     key="inspection.script.conflictingScopeContextInference" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="false" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.scope.ConflictingScopeContextInferenceInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToSafeFormInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Complex expressions -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
@@ -224,6 +216,24 @@
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.IncorrectDefinitionInjectionUsageInspection"/>
     <!-- endregion -->
+    <!-- region Paradox Script/Scope issues -->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
+                     key="inspection.script.incorrectScope" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeSwitch"
+                     key="inspection.script.incorrectScopeSwitch" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeSwitchInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeLinkChain"
+                     key="inspection.script.incorrectScopeLinkChain" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeLinkChainInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingScopeContextInference"
+                     key="inspection.script.conflictingScopeContextInference" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="false" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.scope.ConflictingScopeContextInferenceInspection"/>
+    <!-- endregion -->
     <!-- endregion -->
 
     <!-- region Paradox Localisation -->
@@ -289,6 +299,16 @@
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnsupportedRecursionInspection"/>
     <!-- endregion -->
+    <!-- region Paradox Localisation/Complex expressions -->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectCommandExpression"
+                     key="inspection.localisation.incorrectCommandExpression" groupKey="inspection.localisation.complexExpression.group" groupPathKey="inspection.localisation.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.complexExpression.IncorrectCommandExpressionInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectDatabaseObjectExpression"
+                     key="inspection.localisation.incorrectDatabaseObjectExpression" groupKey="inspection.localisation.complexExpression.group" groupPathKey="inspection.localisation.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.complexExpression.IncorrectDatabaseObjectExpressionInspection"/>
+    <!-- endregion -->
     <!-- region Paradox Localisation/Scope issues -->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScope"
                      key="inspection.localisation.incorrectScope" groupKey="inspection.localisation.scope.group" groupPathKey="inspection.localisation.groupPath"
@@ -302,16 +322,6 @@
                      key="inspection.localisation.incorrectScopeLinkChain" groupKey="inspection.localisation.scope.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.scope.IncorrectScopeLinkChainInspection"/>
-    <!-- endregion -->
-    <!-- region Paradox Localisation/Complex expressions -->
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectCommandExpression"
-                     key="inspection.localisation.incorrectCommandExpression" groupKey="inspection.localisation.complexExpression.group" groupPathKey="inspection.localisation.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.complexExpression.IncorrectCommandExpressionInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectDatabaseObjectExpression"
-                     key="inspection.localisation.incorrectDatabaseObjectExpression" groupKey="inspection.localisation.complexExpression.group" groupPathKey="inspection.localisation.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.complexExpression.IncorrectDatabaseObjectExpressionInspection"/>
     <!-- endregion -->
     <!-- endregion -->
 

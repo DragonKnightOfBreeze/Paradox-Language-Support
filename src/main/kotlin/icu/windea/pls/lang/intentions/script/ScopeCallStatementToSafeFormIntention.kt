@@ -12,7 +12,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 将显式作用域调用转换为安全调用形式。
+ * 将显式作用域调用转换为安全形式。
  *
  * ```paradox_script
  * # before

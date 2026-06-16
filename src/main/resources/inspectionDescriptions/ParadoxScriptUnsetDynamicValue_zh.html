@@ -1,11 +1,12 @@
 <html>
 <body>
   报告未设置的动态值。
+  <!-- tooltip end -->
   <p>
     如果动态值被使用（如 has-flag 表达式），但未被设置（如 set-flag 表达式），则视为未设置。
   </p>
   <p><b>示例：</b></p>
-  <pre>
+  <pre><code class="language-paradox_script">
 # some_script_file.txt
 some_definition = {
     set_global_flag = flag
@@ -15,8 +16,7 @@ some_definition = {
         }
         # ……
     }
-}</pre>
-  <!-- tooltip end -->
+}</code></pre>
   <p>
     动态值是在匹配表达式数据类型 <code>value</code>、<code>value_set</code> 或 <code>dynamic_value</code> 的脚本表达式中声明或使用的，位于 <code>@</code> 之前（如果存在）。
   </p>

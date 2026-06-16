@@ -1,0 +1,21 @@
+<html>
+<body>
+  报告安全形式的作用域调用，可以被替换为显式形式。
+  <!-- tooltip end -->
+  <p>说明：</p>
+  <ul>
+    <li>对于显式形式，要求 <code>exists = x</code> 必须在 <code>x = { ... }</code> 之前，且两者之间仅能有空白或注释。</li>
+  </ul>
+  <p>示例 - 显式形式：</p>
+  <pre><code class="language-paradox_script">
+exists = owner
+owner = { ... }</code></pre>
+  <p>示例 - 安全形式：</p>
+  <p>CK3/VIC3/EU5:</p>
+  <pre><code class="language-paradox_script">
+owner ?= { ... }</code></pre>
+  <p>Stellaris:</p>
+  <pre><code class="language-paradox_script">
+owner? = { ... }</code></pre>
+</body>
+</html>
