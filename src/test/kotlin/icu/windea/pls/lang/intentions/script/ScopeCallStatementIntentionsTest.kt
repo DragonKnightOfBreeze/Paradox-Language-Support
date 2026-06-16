@@ -30,7 +30,7 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region Safe → Normal Form (CK3-style ?=)
+    // region Safe → Normal Form
 
     @Test
     fun testScopeCallToNormalForm_basic() {
@@ -64,11 +64,28 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "to_normal_form_with_comment.ck3.test.txt",
-            "k = {\n    # some comment\n    <caret>owner ?= {\n        a = 1\n    }\n}"
+            """
+            k = {
+                # some comment
+                <caret>owner ?= {
+                    a = 1
+                }
+            }
+            """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = {\n    # some comment\n    exists = owner\n    owner = {\n        a = 1\n    }\n}")
+        myFixture.checkResult(
+            """
+            k = {
+                # some comment
+                exists = owner
+                owner = {
+                    a = 1
+                }
+            }
+            """.trimIndent()
+        )
     }
 
     @Test
@@ -77,7 +94,10 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "to_normal_form_not_available.ck3.test.txt",
-            "k = { exists = owner\n<caret>owner = { a = 1 } }"
+            """
+            k = { exists = owner
+            <caret>owner = { a = 1 } }
+            """.trimIndent()
         )
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -85,7 +105,7 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region Normal → Safe Form (CK3-style ?=)
+    // region Normal → Safe Form
 
     @Test
     fun testScopeCallToSafeForm_basic() {
@@ -93,7 +113,52 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_basic.ck3.test.txt",
-            "k = { exists = owner\n<caret>owner = { a = 1 } }"
+            """
+            k = { exists = owner
+            <caret>owner = { a = 1 } }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("k = { owner ?= { a = 1 } }")
+    }
+
+    @Test
+    fun testScopeCallToSafeForm_basic_stellaris() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/to_safe_form_basic_stellaris.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
+        myFixture.configureByText(
+            "to_safe_form_basic_stellaris.test.txt",
+            """
+            k = { exists = owner
+            <caret>owner = { a = 1 } }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("k = { owner? = { a = 1 } }")
+    }
+
+    @Test
+    fun testScopeCallToSafeForm_oneLine() {
+        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_basic.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
+        myFixture.configureByText(
+            "to_safe_form_basic.ck3.test.txt",
+            "k = { exists = owner <caret>owner = { a = 1 } }"
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("k = { owner ?= { a = 1 } }")
+    }
+
+    @Test
+    fun testScopeCallToSafeForm_oneLine_quoted() {
+        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_basic.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
+        myFixture.configureByText(
+            "to_safe_form_basic.ck3.test.txt",
+            "k = { exists = \"owner\" <caret>owner = { a = 1 } }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -106,11 +171,28 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_with_comment.ck3.test.txt",
-            "k = {\n    exists = owner\n    # comment between\n    <caret>owner = {\n        a = 1\n    }\n}"
+            """
+            k = {
+                exists = owner
+                # comment between
+                <caret>owner = {
+                    a = 1
+                }
+            }
+            """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = {\n    # comment between\n    owner ?= {\n        a = 1\n    }\n}")
+        myFixture.checkResult(
+            """
+            k = {
+                # comment between
+                owner ?= {
+                    a = 1
+                }
+            }
+            """.trimIndent()
+        )
     }
 
     @Test
@@ -131,7 +213,10 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_not_available_mismatch.ck3.test.txt",
-            "k = { exists = owner\n<caret>other = { a = 1 } }"
+            """
+            k = { exists = owner
+            <caret>other = { a = 1 } }
+            """.trimIndent()
         )
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -143,11 +228,14 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_quoted.ck3.test.txt",
-            "k = { exists = owner\n<caret>\"owner\" = { a = 1 } }"
+            """
+            k = { exists = owner
+            <caret>"owner" = { a = 1 } }
+            """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { \"owner\" ?= { a = 1 } }")
+        myFixture.checkResult("""k = { "owner" ?= { a = 1 } }""")
     }
 
     // endregion
