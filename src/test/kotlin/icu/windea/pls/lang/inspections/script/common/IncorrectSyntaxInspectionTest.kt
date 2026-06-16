@@ -79,4 +79,11 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.stellaris.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
+
+    @Test
+    fun testSafeAssignOperator_Stellaris_Old() {
+        markFileInfo(createRootInfo(ParadoxGameType.Stellaris, "3.1415"), "common/test/safe_assign_operator.stellaris_old.test.txt")
+        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.stellaris_old.test.txt")
+        myFixture.checkHighlighting(true, false, false)
+    }
 }

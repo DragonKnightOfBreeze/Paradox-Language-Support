@@ -1,4 +1,4 @@
-# for Stellaris 4.4
+# for Stellaris (>= 4.4)
 
 owner <warning descr="Safe assign operators (`?=`) are not supported in Stellaris">?=</warning> {}
 
