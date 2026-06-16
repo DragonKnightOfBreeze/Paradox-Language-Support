@@ -86,11 +86,21 @@ object ParadoxSyntaxService {
     }
 
     /**
-     * 判断 [element] 是否允许使用比较运算符作为属性分隔符。语法级别。
+     * 判断 [element] 是否允许使用安全赋值运算符作为属性分隔符。语法级别。
      *
      * 要求键的表达式类型是字符串。
      */
     fun isSafeAssignOperatorAllowed(element: ParadoxScriptProperty): Boolean {
+        val expressionType = ParadoxTypeResolver.resolveExpressionType(element.propertyKey)
+        return expressionType == ParadoxExpressionType.String
+    }
+
+    /**
+     * 判断 [element] 是否允许使用安全调用赋值运算符作为属性分隔符。语法级别。
+     *
+     * 要求键的表达式类型是字符串。
+     */
+    fun isSafeCallAssignOperatorAllowed(element: ParadoxScriptProperty): Boolean {
         val expressionType = ParadoxTypeResolver.resolveExpressionType(element.propertyKey)
         return expressionType == ParadoxExpressionType.String
     }

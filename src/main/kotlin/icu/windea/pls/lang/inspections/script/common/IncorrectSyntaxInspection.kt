@@ -104,7 +104,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check on grammar level
 
         // 所在属性的键的表达式类型是字符串
-        val allowed = ParadoxSyntaxService.isSafeAssignOperatorAllowed(propertyElement)
+        val allowed = ParadoxSyntaxService.isSafeCallAssignOperatorAllowed(propertyElement)
         if (!allowed) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.4")
             context.holder.registerProblem(element, description)
