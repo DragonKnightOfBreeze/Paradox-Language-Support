@@ -34,7 +34,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
@@ -180,7 +180,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         val rootKeys = definition.definitionInfo?.rootKeys
         if (rootKeys.isNotNullOrEmpty()) {
-            ParadoxAnalysisInjector.injectRootKeys(tempFile, rootKeys)
+            ParadoxAnalysisInjectionManager.injectRootKeys(tempFile, rootKeys)
         }
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)

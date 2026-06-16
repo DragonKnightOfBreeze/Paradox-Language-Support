@@ -12,7 +12,7 @@ import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 
 @Suppress("unused")
-object ParadoxAnalysisInjector {
+object ParadoxAnalysisInjectionManager {
     private val dataService get() = ParadoxAnalysisDataService.getInstance()
 
     // region Get Methods

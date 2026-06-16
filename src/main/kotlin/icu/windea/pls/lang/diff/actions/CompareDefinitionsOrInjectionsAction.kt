@@ -203,7 +203,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val text = definitionCandidate.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         // 这里目前并不需要注入 rootKeys，因为定义注入只能位于文件顶层
-        // ParadoxAnalysisInjector.injectRootKeys(tempFile, emptyList())
+        // ParadoxAnalysisInjectionManager.injectRootKeys(tempFile, emptyList())
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definitionCandidate.textRange, tempFile)
     }

@@ -5,7 +5,7 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
@@ -28,7 +28,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         val possibleGroup = ParadoxFileGroup.resolvePossible(file.name)
         if (possibleGroup == ParadoxFileGroup.Other) return null
 
-        if (ParadoxAnalysisInjector.useDefaultFileExtensions()) {
+        if (ParadoxAnalysisInjectionManager.useDefaultFileExtensions()) {
             val fileType = ParadoxFileManager.getFileType(possibleGroup)
             if (fileType != null) return fileType
         }

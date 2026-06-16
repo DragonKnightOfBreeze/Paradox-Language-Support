@@ -16,7 +16,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.ParadoxCsvFileType
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -124,7 +124,7 @@ object ParadoxFileManager {
             val fileName = UUID.randomUUID().toString()
             val diffDirFile = directoryPath.toVirtualFile() ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
-            ParadoxAnalysisInjector.injectFileInfo(tempFile, file.fileInfo)
+            ParadoxAnalysisInjectionManager.injectFileInfo(tempFile, file.fileInfo)
             return tempFile
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
@@ -140,7 +140,7 @@ object ParadoxFileManager {
             val path = directoryPath.resolve(fileName)
             Files.writeString(path, text)
             val tempFile = path.toVirtualFile() ?: return null
-            ParadoxAnalysisInjector.injectFileInfo(tempFile, fileInfo)
+            ParadoxAnalysisInjectionManager.injectFileInfo(tempFile, fileInfo)
             return tempFile
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
@@ -153,7 +153,7 @@ object ParadoxFileManager {
         // 为了兼容不同的 `lineSeparator`，这里不能直接使用 `document.charSequence`
         val text = file.toPsiFile(project)?.text ?: throw IllegalStateException()
         val lightFile = LightVirtualFile(name, text)
-        ParadoxAnalysisInjector.injectFileInfo(lightFile, file.fileInfo)
+        ParadoxAnalysisInjectionManager.injectFileInfo(lightFile, file.fileInfo)
         return lightFile
     }
 
@@ -169,7 +169,7 @@ object ParadoxFileManager {
 
     fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
         val lightFile = LightVirtualFile(name, text)
-        ParadoxAnalysisInjector.injectFileInfo(lightFile, fileInfo)
+        ParadoxAnalysisInjectionManager.injectFileInfo(lightFile, fileInfo)
         return lightFile
     }
 }

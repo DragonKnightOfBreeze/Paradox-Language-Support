@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
@@ -86,7 +86,7 @@ object ParadoxMemberService {
      */
     fun injectRootKeys(element: PsiElement, result: MutableList<String>) {
         val vFile = selectFile(element) ?: return
-        val injectedRootKeys = ParadoxAnalysisInjector.getInjectedRootKeys(vFile)
+        val injectedRootKeys = ParadoxAnalysisInjectionManager.getInjectedRootKeys(vFile)
         if (injectedRootKeys.isEmpty()) return
         result.addAll(0, injectedRootKeys)
     }

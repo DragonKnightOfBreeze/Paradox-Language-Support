@@ -32,7 +32,7 @@ import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
@@ -175,7 +175,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val localeConfig = selectLocale(localisation) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
         val text = localisation.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
-        ParadoxAnalysisInjector.injectLocaleConfig(tempFile, localeConfig)
+        ParadoxAnalysisInjectionManager.injectLocaleConfig(tempFile, localeConfig)
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, localisation.textRange, tempFile)
     }

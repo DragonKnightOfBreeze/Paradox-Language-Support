@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -554,53 +554,53 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
     fun injectRootKeys_affectsGetPath() {
         val file = configureScriptFile("a = { b = 1 }")
         val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, listOf("injected"))
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("injected"))
 
         val b = findProperty(file, "b")
         val path = ParadoxMemberService.getPath(b)
         Assert.assertEquals("injected/a/b", path!!.path)
 
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, emptyList())
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     @Test
     fun injectRootKeys_affectsGetRootKeys() {
         val file = configureScriptFile("a = { b = 1 }")
         val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, listOf("i1", "i2"))
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("i1", "i2"))
 
         val b = findProperty(file, "b")
         val rootKeys = ParadoxMemberService.getRootKeys(b)
         Assert.assertEquals(listOf("i1", "i2", "a"), rootKeys)
 
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, emptyList())
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     @Test
     fun injectRootKeys_doesNotAffectLimitedPath() {
         val file = configureScriptFile("a = { b = { c = 1 } }")
         val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, listOf("injected"))
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("injected"))
 
         val c = findProperty(file, "c")
         // limit=2 时，只返回最近 2 层，不受注入键影响
         val limited = ParadoxMemberService.getPath(c, limit = 2)
         Assert.assertEquals("b/c", limited!!.path)
 
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, emptyList())
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     @Test
     fun injectRootKeys_multipleInjected_allPrepended() {
         val file = configureScriptFile("root = { child = 1 }")
         val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, listOf("i1", "i2", "i3"))
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("i1", "i2", "i3"))
 
         val child = findProperty(file, "child")
         val path = ParadoxMemberService.getPath(child)
         Assert.assertEquals("i1/i2/i3/root/child", path!!.path)
 
-        ParadoxAnalysisInjector.injectRootKeys(virtualFile, emptyList())
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     // endregion

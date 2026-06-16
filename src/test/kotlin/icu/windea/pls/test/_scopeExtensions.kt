@@ -9,7 +9,7 @@ import com.intellij.testFramework.UsefulTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -51,59 +51,59 @@ fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
 
 context(_: UsefulTestCase)
 fun markIntegrationTest() {
-    ParadoxAnalysisInjector.configureUseDefaultFileExtensions(true)
-    ParadoxAnalysisInjector.configureUseGameTypeInference(true)
+    ParadoxAnalysisInjectionManager.configureUseDefaultFileExtensions(true)
+    ParadoxAnalysisInjectionManager.configureUseGameTypeInference(true)
 
     addAdditionalAllowedRoots(PathManager.getPluginsDir()) // Why should I add this? So unreasonable.
 }
 
 context(_: UsefulTestCase)
 fun clearIntegrationTest() {
-    ParadoxAnalysisInjector.configureUseDefaultFileExtensions(false)
-    ParadoxAnalysisInjector.configureUseGameTypeInference(false)
-    ParadoxAnalysisInjector.clearMarkedRootInfo()
-    ParadoxAnalysisInjector.clearMarkedFileInfo()
-    ParadoxAnalysisInjector.clearMarkedRootDirectory()
-    ParadoxAnalysisInjector.clearMarkedConfigDirectory()
+    ParadoxAnalysisInjectionManager.configureUseDefaultFileExtensions(false)
+    ParadoxAnalysisInjectionManager.configureUseGameTypeInference(false)
+    ParadoxAnalysisInjectionManager.clearMarkedRootInfo()
+    ParadoxAnalysisInjectionManager.clearMarkedFileInfo()
+    ParadoxAnalysisInjectionManager.clearMarkedRootDirectory()
+    ParadoxAnalysisInjectionManager.clearMarkedConfigDirectory()
 }
 
 context(_: UsefulTestCase)
 fun markRootDirectory(relPath: String) {
     val testDataPath = "src/test/testData".toPathOrNull() ?: return
     val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.markRootDirectory(relPath, path)
+    ParadoxAnalysisInjectionManager.markRootDirectory(relPath, path)
 }
 
 context(_: UsefulTestCase)
 fun markConfigDirectory(relPath: String) {
     val testDataPath = "src/test/testData".toPathOrNull() ?: return
     val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.markConfigDirectory(relPath, path)
+    ParadoxAnalysisInjectionManager.markConfigDirectory(relPath, path)
 }
 
 context(_: UsefulTestCase)
 fun createRootInfo(gameType: ParadoxGameType, gameVersion: String? = null): ParadoxRootInfo.Injected {
-    return ParadoxAnalysisInjector.createRootInfo(gameType, gameVersion)
+    return ParadoxAnalysisInjectionManager.createRootInfo(gameType, gameVersion)
 }
 
 context(_: UsefulTestCase)
 fun markFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalysisInjector.markFileInfo(createRootInfo(gameType), path, entry, group)
+    ParadoxAnalysisInjectionManager.markFileInfo(createRootInfo(gameType), path, entry, group)
 }
 
 context(_: UsefulTestCase)
 fun markFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalysisInjector.markFileInfo(rootInfo, path, entry, group)
+    ParadoxAnalysisInjectionManager.markFileInfo(rootInfo, path, entry, group)
 }
 
 context(_: UsefulTestCase)
 fun VirtualFile.injectFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalysisInjector.injectFileInfo(this, createRootInfo(gameType), path, entry, group)
+    ParadoxAnalysisInjectionManager.injectFileInfo(this, createRootInfo(gameType), path, entry, group)
 }
 
 context(_: UsefulTestCase)
 fun VirtualFile.injectFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalysisInjector.injectFileInfo(this, rootInfo, path, entry, group)
+    ParadoxAnalysisInjectionManager.injectFileInfo(this, rootInfo, path, entry, group)
 }
 
 interface InspectionTestScope {
