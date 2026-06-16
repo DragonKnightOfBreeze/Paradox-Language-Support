@@ -10,7 +10,7 @@ import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationS
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 将条件构造转为块形式。
+ * 将条件化语句转为块形式。
  *
  * ```paradox_script
  * # before
