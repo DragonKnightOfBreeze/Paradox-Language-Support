@@ -108,8 +108,8 @@ object ParadoxSyntaxService {
     }
 
     fun isDanglingColorfulTextEndMarker(element: PsiElement): Boolean {
-        if (element.elementType != TEXT_FORMAT_END) return false
-        if (element.nextSibling == null && element.parent?.elementType == TEXT_FORMAT) return false
+        if (element.elementType != COLORFUL_TEXT_END) return false
+        if (element.nextSibling == null && element.parent?.elementType == COLORFUL_TEXT) return false
         return true
     }
 
