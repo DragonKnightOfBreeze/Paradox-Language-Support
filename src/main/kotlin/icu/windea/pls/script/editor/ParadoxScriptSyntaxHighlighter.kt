@@ -17,7 +17,8 @@ class ParadoxScriptSyntaxHighlighter(
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
             LEFT_BRACE, RIGHT_BRACE -> ColorSets.BRACES
-            EQUAL_SIGN, SAFE_EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN -> ColorSets.OPERATOR
+            EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN -> ColorSets.OPERATOR
+            SAFE_ASSIGN_SIGN, SAFE_CALL_ASSIGN_SIGN -> ColorSets.OPERATOR
             PIPE, PARAMETER_START, PARAMETER_END -> ColorSets.MARKER
             LEFT_BRACKET, RIGHT_BRACKET -> ColorSets.PARAMETER_CONDITION_BRACKETS
             NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET -> ColorSets.PARAMETER_CONDITION_EXPRESSION_BRACKETS

@@ -747,7 +747,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_EQUAL_SIGN
+  // EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
   static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
     boolean r;
@@ -757,7 +757,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LE_SIGN);
     if (!r) r = consumeToken(b, GE_SIGN);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
-    if (!r) r = consumeToken(b, SAFE_EQUAL_SIGN);
+    if (!r) r = consumeToken(b, SAFE_ASSIGN_SIGN);
+    if (!r) r = consumeToken(b, SAFE_CALL_ASSIGN_SIGN);
     return r;
   }
 

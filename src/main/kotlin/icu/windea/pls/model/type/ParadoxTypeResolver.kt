@@ -98,18 +98,19 @@ object ParadoxTypeResolver {
     }
 
     fun resolveSeparatorType(text: String): ParadoxSeparatorType? {
-        // NOTE 2.1.10 compatible with Stellaris 4.4
-        if (text.removeSurroundingOrNull("?", "=")?.isBlank() == true) return ParadoxSeparatorType.SafeEqual
-
         return when (text) {
             "=" -> ParadoxSeparatorType.Equal
             "!=", "<>" -> ParadoxSeparatorType.NotEqual
-            "?=" -> ParadoxSeparatorType.SafeEqual
             "<" -> ParadoxSeparatorType.Lt
             ">" -> ParadoxSeparatorType.Gt
             "<=" -> ParadoxSeparatorType.Le
             ">=" -> ParadoxSeparatorType.Ge
-            else -> null
+            else -> {
+                // 2.1.10 safe assign && safe call assign
+                if (text == "?=") return ParadoxSeparatorType.SafeAssign
+                if (text.length > 2 && text.removeSurroundingOrNull("?", "=")?.isBlank() == true) return ParadoxSeparatorType.SafeCallAssign
+                null
+            }
         }
     }
 
@@ -118,11 +119,12 @@ object ParadoxTypeResolver {
         return when (elementType) {
             ParadoxScriptElementTypes.EQUAL_SIGN -> ParadoxSeparatorType.Equal
             ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> ParadoxSeparatorType.NotEqual
-            ParadoxScriptElementTypes.SAFE_EQUAL_SIGN -> ParadoxSeparatorType.SafeEqual
             ParadoxScriptElementTypes.LT_SIGN -> ParadoxSeparatorType.Lt
             ParadoxScriptElementTypes.GT_SIGN -> ParadoxSeparatorType.Gt
             ParadoxScriptElementTypes.LE_SIGN -> ParadoxSeparatorType.Le
             ParadoxScriptElementTypes.GE_SIGN -> ParadoxSeparatorType.Ge
+            ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN -> ParadoxSeparatorType.SafeAssign
+            ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN -> ParadoxSeparatorType.SafeCallAssign
             else -> null
         }
     }

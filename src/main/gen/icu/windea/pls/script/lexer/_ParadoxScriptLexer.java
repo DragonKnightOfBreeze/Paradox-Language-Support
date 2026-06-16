@@ -57,8 +57,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15,
     16, 16, 17, 17, 18, 18
   };
 
@@ -160,11 +160,11 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\1\1\53\1\0\1\55\1\56\1\57\1\0\1\60"+
     "\1\61\1\0\3\1\1\62\2\1\1\0\1\63\1\25"+
     "\1\0\1\64\1\65\1\25\1\30\1\0\1\32\3\0"+
-    "\1\1\1\53\1\0\2\1\1\0\1\1\1\0\1\1"+
-    "\1\66";
+    "\1\1\1\53\1\0\1\66\2\1\1\0\1\1\1\0"+
+    "\1\1\1\67";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[141];
+    int [] result = new int[142];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -202,14 +202,14 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\0\u04b9\0\u08d6\0\u04b9\0\u08fd\0\u04b9\0\u0924\0\u04b9\0\u094b"+
     "\0\u04b9\0\u0555\0\u04b9\0\u0972\0\u0999\0\u04b9\0\u09c0\0\u09e7"+
     "\0\u0a0e\0\u0a35\0\u0a5c\0\u04b9\0\u0a5c\0\u04b9\0\u0a83\0\u03f6"+
-    "\0\u0aaa\0\u046b\0\u04b9\0\u04b9\0\u0507\0\u04b9\0\u04b9\0\u0ad1"+
-    "\0\u0555\0\u04b9\0\u0af8\0\u0381\0\u0b1f\0\u0b46\0\u0b6d\0\u04b9"+
-    "\0\u04b9\0\u0b94\0\u06db\0\u0666\0\u0bbb\0\u04b9\0\u07ec\0\u04b9"+
-    "\0\u0861\0\u04b9\0\u0be2\0\u0c09\0\u0c09\0\u0c30\0\u0c57\0\u0c7e"+
-    "\0\u0ca5\0\u0ccc\0\u0cf3\0\u0d1a\0\u04b9";
+    "\0\u0aaa\0\u046b\0\u04b9\0\u04b9\0\u0ad1\0\u04b9\0\u04b9\0\u0af8"+
+    "\0\u0555\0\u04b9\0\u0b1f\0\u0381\0\u0b46\0\u0b6d\0\u0b94\0\u04b9"+
+    "\0\u04b9\0\u0bbb\0\u06db\0\u0666\0\u0be2\0\u04b9\0\u07ec\0\u04b9"+
+    "\0\u0861\0\u04b9\0\u0c09\0\u0c30\0\u0c30\0\u0c57\0\u04b9\0\u0c7e"+
+    "\0\u0ca5\0\u0ccc\0\u0cf3\0\u0d1a\0\u0d41\0\u04b9";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[141];
+    int [] result = new int[142];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -338,29 +338,30 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\203\21\142\1\0\3\143\1\144\11\0\4\144\22\0"+
     "\1\143\2\0\1\204\3\147\1\205\1\162\10\204\4\205"+
     "\3\204\1\206\16\204\1\147\2\204\2\33\2\204\42\33"+
-    "\1\204\24\0\1\157\22\0\1\30\3\143\1\144\1\145"+
-    "\1\0\7\30\4\144\15\30\1\207\1\30\1\0\1\30"+
-    "\1\0\1\143\3\30\3\143\1\144\1\145\1\0\7\30"+
-    "\4\144\5\30\1\210\11\30\1\0\1\30\1\0\1\143"+
-    "\3\30\3\143\1\144\1\145\1\0\7\30\4\144\14\30"+
-    "\1\164\2\30\1\0\1\30\1\0\1\143\2\30\1\0"+
-    "\3\167\13\0\1\170\24\0\1\167\2\0\47\71\1\70"+
-    "\4\0\1\171\2\0\6\70\4\0\2\70\1\0\1\70"+
-    "\1\0\7\70\1\174\2\70\1\0\1\70\2\0\2\70"+
-    "\2\142\2\0\42\142\1\0\5\204\1\162\17\204\1\206"+
-    "\70\204\1\30\1\211\2\143\1\144\1\145\1\0\5\30"+
-    "\1\212\1\30\4\144\17\30\1\213\1\30\1\0\1\143"+
-    "\3\30\1\211\2\143\1\144\1\145\1\0\7\30\4\144"+
-    "\17\30\1\213\1\30\1\0\1\143\2\30\1\0\1\211"+
-    "\2\143\1\144\11\0\4\144\17\0\1\213\2\0\1\143"+
-    "\2\0\1\30\3\143\1\144\1\145\1\0\6\30\1\214"+
-    "\4\144\17\30\1\0\1\30\1\0\1\143\2\30\1\0"+
-    "\1\213\1\0\1\213\5\0\5\213\25\0\1\215\2\213"+
-    "\1\0\1\30\3\143\1\144\1\145\1\0\3\30\1\210"+
-    "\3\30\4\144\17\30\1\0\1\30\1\0\1\143\2\30";
+    "\1\204\1\0\3\155\13\0\1\207\24\0\1\155\26\0"+
+    "\1\157\22\0\1\30\3\143\1\144\1\145\1\0\7\30"+
+    "\4\144\15\30\1\210\1\30\1\0\1\30\1\0\1\143"+
+    "\3\30\3\143\1\144\1\145\1\0\7\30\4\144\5\30"+
+    "\1\211\11\30\1\0\1\30\1\0\1\143\3\30\3\143"+
+    "\1\144\1\145\1\0\7\30\4\144\14\30\1\164\2\30"+
+    "\1\0\1\30\1\0\1\143\2\30\1\0\3\167\13\0"+
+    "\1\170\24\0\1\167\2\0\47\71\1\70\4\0\1\171"+
+    "\2\0\6\70\4\0\2\70\1\0\1\70\1\0\7\70"+
+    "\1\174\2\70\1\0\1\70\2\0\2\70\2\142\2\0"+
+    "\42\142\1\0\5\204\1\162\17\204\1\206\70\204\1\30"+
+    "\1\212\2\143\1\144\1\145\1\0\5\30\1\213\1\30"+
+    "\4\144\17\30\1\214\1\30\1\0\1\143\3\30\1\212"+
+    "\2\143\1\144\1\145\1\0\7\30\4\144\17\30\1\214"+
+    "\1\30\1\0\1\143\2\30\1\0\1\212\2\143\1\144"+
+    "\11\0\4\144\17\0\1\214\2\0\1\143\2\0\1\30"+
+    "\3\143\1\144\1\145\1\0\6\30\1\215\4\144\17\30"+
+    "\1\0\1\30\1\0\1\143\2\30\1\0\1\214\1\0"+
+    "\1\214\5\0\5\214\25\0\1\216\2\214\1\0\1\30"+
+    "\3\143\1\144\1\145\1\0\3\30\1\211\3\30\4\144"+
+    "\17\30\1\0\1\30\1\0\1\143\2\30";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[3393];
+    int [] result = new int[3432];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -405,10 +406,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\1\1\11\2\1\1\0\1\1\2\11\1\0\2\11"+
     "\1\0\1\1\1\11\4\1\1\0\2\11\1\0\3\1"+
     "\1\11\1\0\1\11\1\0\1\11\1\0\2\1\1\0"+
-    "\2\1\1\0\1\1\1\0\1\1\1\11";
+    "\1\11\2\1\1\0\1\1\1\0\1\1\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[141];
+    int [] result = new int[142];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -796,125 +797,125 @@ public class _ParadoxScriptLexer implements FlexLexer {
         }
             }
           // fall through
-          case 55: break;
+          case 56: break;
           case 2:
             { exitState(templateStateRef); return WHITE_SPACE;
             }
           // fall through
-          case 56: break;
+          case 57: break;
           case 3:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 57: break;
+          case 58: break;
           case 4:
             { return COMMENT;
             }
           // fall through
-          case 58: break;
+          case 59: break;
           case 5:
             { enterState(templateStateRef, yystate());  return INT_TOKEN;
             }
           // fall through
-          case 59: break;
+          case 60: break;
           case 6:
             { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LT_SIGN;
             }
           // fall through
-          case 60: break;
+          case 61: break;
           case 7:
             { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN;
             }
           // fall through
-          case 61: break;
+          case 62: break;
           case 8:
             { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GT_SIGN;
             }
           // fall through
-          case 62: break;
+          case 63: break;
           case 9:
             { yybegin(IN_SCRIPTED_VARIABLE); return AT;
             }
           // fall through
-          case 63: break;
+          case 64: break;
           case 10:
             { enterState(stack, YYINITIAL); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
             }
           // fall through
-          case 64: break;
+          case 65: break;
           case 11:
             { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET;
             }
           // fall through
-          case 65: break;
+          case 66: break;
           case 12:
             { enterState(stack, YYINITIAL); return LEFT_BRACE;
             }
           // fall through
-          case 66: break;
+          case 67: break;
           case 13:
             { exitState(stack, YYINITIAL); return RIGHT_BRACE;
             }
           // fall through
-          case 67: break;
+          case 68: break;
           case 14:
             { boolean r = exitStateForErrorToken(templateStateRef);
         if(!r) return BAD_CHARACTER;
             }
           // fall through
-          case 68: break;
+          case 69: break;
           case 15:
             { yypushback(yylength());
         enterState(templateStateRef, yystate());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
             }
           // fall through
-          case 69: break;
+          case 70: break;
           case 16:
             { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
             }
           // fall through
-          case 70: break;
+          case 71: break;
           case 17:
             { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE;
             }
           // fall through
-          case 71: break;
+          case 72: break;
           case 18:
             { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START;
             }
           // fall through
-          case 72: break;
+          case 73: break;
           case 19:
             { return SCRIPTED_VARIABLE_NAME_TOKEN;
             }
           // fall through
-          case 73: break;
+          case 74: break;
           case 20:
             { exitState(templateStateRef); yybegin(IN_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;
             }
           // fall through
-          case 74: break;
+          case 75: break;
           case 21:
             { enterState(templateStateRef, yystate()); return STRING_TOKEN;
             }
           // fall through
-          case 75: break;
+          case 76: break;
           case 22:
             { enterState(templateStateRef, yystate()); return INT_TOKEN;
             }
           // fall through
-          case 76: break;
+          case 77: break;
           case 23:
             { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT;
             }
           // fall through
-          case 77: break;
+          case 78: break;
           case 24:
             { return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 78: break;
+          case 79: break;
           case 25:
             { boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
@@ -923,12 +924,12 @@ public class _ParadoxScriptLexer implements FlexLexer {
         return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 79: break;
+          case 80: break;
           case 26:
             { return STRING_TOKEN;
             }
           // fall through
-          case 80: break;
+          case 81: break;
           case 27:
             { boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
@@ -937,82 +938,82 @@ public class _ParadoxScriptLexer implements FlexLexer {
         return STRING_TOKEN;
             }
           // fall through
-          case 81: break;
+          case 82: break;
           case 28:
             { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
-          case 82: break;
+          case 83: break;
           case 29:
             { yypushback(yylength()); exitState(parameterStateRef);
             }
           // fall through
-          case 83: break;
+          case 84: break;
           case 30:
             { exitState(parameterStateRef); return PARAMETER_END;
             }
           // fall through
-          case 84: break;
+          case 85: break;
           case 31:
             { return PARAMETER_TOKEN;
             }
           // fall through
-          case 85: break;
+          case 86: break;
           case 32:
             { yybegin(IN_PARAMETER_ARGUMENT); return PIPE;
             }
           // fall through
-          case 86: break;
+          case 87: break;
           case 33:
             { yybegin(IN_PARAMETER_ARGUMENT_END); return ARGUMENT_TOKEN;
             }
           // fall through
-          case 87: break;
+          case 88: break;
           case 34:
             { yybegin(IN_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;
             }
           // fall through
-          case 88: break;
+          case 89: break;
           case 35:
             { return WHITE_SPACE;
             }
           // fall through
-          case 89: break;
+          case 90: break;
           case 36:
             { return NOT_SIGN;
             }
           // fall through
-          case 90: break;
+          case 91: break;
           case 37:
             { return CONDITION_PARAMETER_TOKEN;
             }
           // fall through
-          case 91: break;
+          case 92: break;
           case 38:
             { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET;
             }
           // fall through
-          case 92: break;
+          case 93: break;
           case 39:
             { enterState(stack, IN_PARAMETER_CONDITION_BODY); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
             }
           // fall through
-          case 93: break;
+          case 94: break;
           case 40:
             { enterState(stack, IN_PARAMETER_CONDITION_BODY); return LEFT_BRACE;
             }
           // fall through
-          case 94: break;
+          case 95: break;
           case 41:
             { return INLINE_MATH_TOKEN;
             }
           // fall through
-          case 95: break;
+          case 96: break;
           case 42:
             { exitState(stack, YYINITIAL); return INLINE_MATH_END;
             }
           // fall through
-          case 96: break;
+          case 97: break;
           case 43:
             // general lookahead, find correct zzMarkedPos
             { int zzFState = 21;
@@ -1056,32 +1057,32 @@ public class _ParadoxScriptLexer implements FlexLexer {
         }
             }
           // fall through
-          case 97: break;
+          case 98: break;
           case 44:
             { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 98: break;
+          case 99: break;
           case 45:
             { enterState(templateStateRef, yystate());  return FLOAT_TOKEN;
             }
           // fall through
-          case 99: break;
+          case 100: break;
           case 46:
             { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN;
             }
           // fall through
-          case 100: break;
+          case 101: break;
           case 47:
             { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN;
             }
           // fall through
-          case 101: break;
+          case 102: break;
           case 48:
-            { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_EQUAL_SIGN;
+            { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_ASSIGN_SIGN;
             }
           // fall through
-          case 102: break;
+          case 103: break;
           case 49:
             { enterState(stack, yystate());
         enterState(templateStateRef, yystate());
@@ -1089,12 +1090,12 @@ public class _ParadoxScriptLexer implements FlexLexer {
         return INLINE_MATH_START;
             }
           // fall through
-          case 103: break;
+          case 104: break;
           case 50:
             { enterState(templateStateRef, yystate());  return BOOLEAN_TOKEN;
             }
           // fall through
-          case 104: break;
+          case 105: break;
           case 51:
             // general lookahead, find correct zzMarkedPos
             { int zzFState = 19;
@@ -1130,22 +1131,27 @@ public class _ParadoxScriptLexer implements FlexLexer {
         yybegin(IN_SCRIPTED_VARIABLE_NAME);
             }
           // fall through
-          case 105: break;
+          case 106: break;
           case 52:
             { enterState(templateStateRef, yystate()); return FLOAT_TOKEN;
             }
           // fall through
-          case 106: break;
+          case 107: break;
           case 53:
             { enterState(templateStateRef, yystate()); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 107: break;
+          case 108: break;
           case 54:
+            { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_CALL_ASSIGN_SIGN;
+            }
+          // fall through
+          case 109: break;
+          case 55:
             { enterState(templateStateRef, yystate());  return COLOR_TOKEN;
             }
           // fall through
-          case 108: break;
+          case 110: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

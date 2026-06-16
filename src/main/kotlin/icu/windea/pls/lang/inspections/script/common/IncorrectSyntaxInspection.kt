@@ -64,7 +64,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun checkSafeAssignOperator(holder: ProblemsHolder, element: PsiElement) {
-        if (element.elementType != ParadoxScriptElementTypes.SAFE_EQUAL_SIGN) return
+        if (element.elementType != ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN) return
 
         val gameType = selectGameType(holder.file) ?: return
         val supported = ParadoxSyntaxConstraint.SafeAssignOperator.test(gameType)

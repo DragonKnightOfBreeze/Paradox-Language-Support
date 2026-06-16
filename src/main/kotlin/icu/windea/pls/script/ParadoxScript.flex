@@ -317,14 +317,15 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 <YYINITIAL, IN_SCRIPTED_VARIABLE, IN_PROPERTY_OR_VALUE, IN_KEY> {
     "=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
-    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_EQUAL_SIGN; }
     "<" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
     ">" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
 
-    // NOTE 2.1.10 compatible with Stellaris 4.4
-    \?\s+= { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_EQUAL_SIGN; }
+    // #86 supported in ck3, vic3 and eu5 (preferred format: `k ?= v`)
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_ASSIGN_SIGN; }
+    // NOTE 2.1.10 supported in stellaris 4.4 (preferred format: `k? = v`)
+    \?\s+= { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_CALL_ASSIGN_SIGN; }
 }
 
 <YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_PARAMETER_CONDITION_BODY> {
