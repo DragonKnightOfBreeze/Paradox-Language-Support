@@ -7,28 +7,17 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
-import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptFloat
-import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
@@ -156,53 +145,5 @@ object ParadoxMemberService {
         if (!name.isIdentifier(".-")) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
         if (ParadoxInlineScriptManager.isMatched(name, context)) return null // 排除是内联脚本用法的情况
         return name
-    }
-
-    /**
-     * 判断 [element] 的键和值是否可以表示一个数值。
-     */
-    fun isNumberRepresentable(element: ParadoxScriptProperty): Boolean? {
-        val propertyKey = element.propertyKey
-        if (!isNumberRepresentable(propertyKey)) return false
-        val propertyValue = element.propertyValue ?: return null
-        if (!isNumberRepresentable(propertyValue)) return false
-        return true
-    }
-
-    @Suppress("unused")
-    private fun isNumberRepresentable(element: ParadoxScriptPropertyKey): Boolean {
-        // always true
-        return true
-    }
-
-    private fun isNumberRepresentable(element: ParadoxScriptValue): Boolean {
-        // string literal, or number after revolution and evaluation
-        val resolved = element.resolved()
-        return when (resolved) {
-            is ParadoxScriptInt -> true
-            is ParadoxScriptFloat -> true
-            is ParadoxScriptInlineMath -> true
-            is ParadoxScriptString -> true
-            is ParadoxScriptBlock -> true // #291 [VIC3/EU5] we can do comparisons between numbers and formula blocks
-            else -> false
-        }
-    }
-
-    /**
-     * 判断 [element] 是否允许使用比较运算符作为属性分隔符。要求匹配的规则显式使用 `==` 作为属性分隔符（而非常规的 `=`）。
-     */
-    fun isComparisonOperatorAllowed(element: ParadoxScriptProperty): Boolean? {
-        // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
-        if (!PlsConfigSettings.getInstance().state.features.checkComparisonOperators) return null
-        val configs = ParadoxConfigManager.getConfigs(element)
-        if (configs.isEmpty()) return null
-        return configs.any { config -> isComparisonOperatorAllowed(config) }
-    }
-
-    /**
-     * 判断 [config] 对应的脚本属性是否允许使用比较运算符作为属性分隔符。要求显式使用 `==` 作为属性分隔符（而非常规的 `=`）。
-     */
-    fun isComparisonOperatorAllowed(config: CwtMemberConfig<*>): Boolean {
-        return config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DoubleEqual
     }
 }

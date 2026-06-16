@@ -21,7 +21,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-object PlsInspectionService {
+object ParadoxInspectionService {
     fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()

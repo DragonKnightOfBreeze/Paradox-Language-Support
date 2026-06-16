@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.inspections.PlsInspectionService
+import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -60,7 +60,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
 
                 // 开始检查
-                PlsInspectionService.checkIncorrectExpression(element, config, holder)
+                ParadoxInspectionService.checkIncorrectExpression(element, config, holder)
 
                 // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }

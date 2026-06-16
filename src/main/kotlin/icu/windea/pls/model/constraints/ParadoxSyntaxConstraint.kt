@@ -18,13 +18,11 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
     SafeAssignOperator(Ck3, Vic3, Eu5),
 
     // #331
-    // `?=` in `k? = v`
+    // `? =` in `k? = v`
     SafeCallAssignOperator(Stellaris) {
-        override fun testStrict(gameType: ParadoxGameType?, gameVersion: String?): Boolean {
-            return when (gameType) {
-                Stellaris -> sinceGameVersion(gameVersion, "4.4")
-                else -> super.testStrict(gameType, gameVersion)
-            }
+        override fun testResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult = when (gameType) {
+            Stellaris -> sinceGameVersion(gameVersion, "4.4")
+            else -> super.testResult(gameType, gameVersion)
         }
     },
 
@@ -43,33 +41,39 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
 
     fun testTarget(target: Any): Boolean {
         return when (target) {
-            is ParadoxGameType -> testLenient(target)
-            is _ParadoxLocalisationTextLexer -> testLenient(target.gameType)
-            is PsiBuilder -> testLenient(selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)))
-            is VirtualFile -> testTargetFromFile(target)
-            is PsiFile -> testTargetFromFile(target)
+            is ParadoxGameType -> testGameType(target)
+            is _ParadoxLocalisationTextLexer -> testGameType(target.gameType)
+            is PsiBuilder -> testGameType(selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)))
+            is VirtualFile -> testFrom(target)
+            is PsiFile -> testFrom(target)
             else -> false // unsupported
         }
     }
 
-    private fun testTargetFromFile(from: Any): Boolean {
+    private fun testFrom(from: Any): Boolean {
         val selectedFile = selectFile(from)
         val rootInfo = selectedFile?.fileInfo?.rootInfo
         val gameType = rootInfo?.gameType
-        val gameVersion = rootInfo?.gameVersion
-        return testStrict(gameType, gameVersion)
-    }
-
-    open fun testLenient(gameType: ParadoxGameType?, gameVersion: String? = null): Boolean {
         return gameType == null || gameType == Core || gameType in gameTypes
     }
 
-    open fun testStrict(gameType: ParadoxGameType?, gameVersion: String? = null): Boolean {
-        return testLenient(gameType)
+    private fun testGameType(gameType: ParadoxGameType?): Boolean {
+        return gameType == null || gameType == Core || gameType in gameTypes
+    }
+
+    open fun testResult(gameType: ParadoxGameType?, gameVersion: String? = null): TestResult {
+        return TestResult(testGameType(gameType))
     }
 
     @Suppress("SameParameterValue")
-    protected fun sinceGameVersion(gameVersion: String?, since: String): Boolean {
-        return gameVersion != null && ParadoxGameManager.compareGameVersion(gameVersion, since) >= 0
+    protected fun sinceGameVersion(gameVersion: String?, since: String): TestResult {
+        val strictValue = gameVersion == null || ParadoxGameManager.compareGameVersion(gameVersion, since) >= 0
+        return TestResult(true, strictValue, since)
     }
+
+    data class TestResult(
+        val value: Boolean,
+        val strictValue: Boolean = value,
+        val sinceGameVersion: String? = null,
+    )
 }

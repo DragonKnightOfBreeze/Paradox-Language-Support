@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 
 @Suppress("unused")
 object ParadoxEffectService {
-    fun isWithinEffectClause(element: ParadoxScriptMember): Boolean? {
+    fun withinEffectClause(element: ParadoxScriptMember): Boolean? {
         val configs = ParadoxConfigManager.getConfigs(element)
         if (configs.isEmpty()) return null
         return configs.any { config ->

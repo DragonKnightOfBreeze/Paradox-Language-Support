@@ -14,7 +14,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.inspections.PlsInspectionService
+import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
@@ -51,7 +51,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 val config = columnConfig.valueConfig ?: return
 
                 // 开始检查
-                PlsInspectionService.checkIncorrectExpression(element, config, holder)
+                ParadoxInspectionService.checkIncorrectExpression(element, config, holder)
             }
         }
     }

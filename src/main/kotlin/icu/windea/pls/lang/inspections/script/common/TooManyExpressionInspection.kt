@@ -16,9 +16,9 @@ import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
-import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -147,7 +147,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                         maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
                         else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
-                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(lenientMax)
+                    val highlightType = InspectionService.getWeakerHighlightType(lenientMax)
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false

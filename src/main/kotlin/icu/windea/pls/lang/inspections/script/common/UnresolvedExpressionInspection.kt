@@ -19,11 +19,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
-import icu.windea.pls.lang.inspections.PlsInspectionService
-import icu.windea.pls.lang.inspections.PlsInspectionUtil
-import icu.windea.pls.lang.inspections.disabledElement
+import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
@@ -82,18 +81,20 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         val project = holder.project
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
         return object : PsiElementVisitor() {
+            private var disabledElement: PsiElement? = null
+
             override fun visitElement(element: PsiElement) {
                 val result = when (element) {
                     is ParadoxScriptProperty -> visitProperty(element)
                     is ParadoxScriptValue -> visitValue(element)
                     else -> true
                 }
-                if (!result) session.disabledElement = element
+                if (!result) disabledElement = element
             }
 
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
                 ProgressManager.checkCanceled()
-                val disabledElement = session.disabledElement
+                val disabledElement = disabledElement
                 if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
                 // skip checking property if property key is parameterized
@@ -127,7 +128,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 if (!element.isExpression()) return false // skip check if element is not an expression
 
-                val disabledElement = session.disabledElement
+                val disabledElement = disabledElement
                 if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
                 // skip checking value if it is parameterized
@@ -265,15 +266,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             // localisation reference -> expression can be a string literal instead  -> use weaker highlight type
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val r = expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.LocalisationReference }
-            if (r) return PlsInspectionUtil.getWeakerHighlightType()
+            if (r) return InspectionService.getWeakerHighlightType()
         }
         return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
     }
 
     private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()
-        result += PlsInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        result += PlsInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
+        result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        result += ParadoxInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
         if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
     }

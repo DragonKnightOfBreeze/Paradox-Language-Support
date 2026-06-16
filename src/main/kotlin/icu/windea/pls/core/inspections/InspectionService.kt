@@ -1,10 +1,10 @@
-package icu.windea.pls.lang.inspections
+package icu.windea.pls.core.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.HighlightSeverity
 
-object PlsInspectionUtil {
+object InspectionService {
     context(tool: LocalInspectionTool)
     fun getWeakerHighlightType(condition: Boolean = true): ProblemHighlightType {
         if (!condition) return ProblemHighlightType.GENERIC_ERROR_OR_WARNING

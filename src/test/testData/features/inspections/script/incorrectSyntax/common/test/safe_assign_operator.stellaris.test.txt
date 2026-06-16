@@ -1,0 +1,9 @@
+# for Stellaris 4.4
+
+owner <warning descr="Safe assign operators (`?=`) are not supported in Stellaris">?=</warning> {}
+
+owner? = {}
+
+1 <warning descr="Safe assign operators (`?=`) are not supported in Stellaris">?=</warning> {}
+
+1<warning descr="Unexpected safe call assign operator (`? =`) (key of containing property should be a string literal)">? =</warning> {}

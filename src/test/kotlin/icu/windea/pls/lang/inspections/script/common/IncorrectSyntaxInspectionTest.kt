@@ -5,6 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.createRootInfo
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markFileInfo
@@ -46,7 +47,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComparisonOperator_checkComparisonOperators() {
+    fun testComparisonOperator_strict() {
         val settings = PlsConfigSettings.getInstance().state.features
         settings.checkComparisonOperators = true
         try {
@@ -60,8 +61,22 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
 
     @Test
     fun testSafeAssignOperator() {
-        markFileInfo(gameType, "common/test/safe_assign_operator.test.txt")
+        markFileInfo(createRootInfo(ParadoxGameType.Core), "common/test/safe_assign_operator.test.txt")
         myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.test.txt")
+        myFixture.checkHighlighting(true, false, false)
+    }
+
+    @Test
+    fun testSafeAssignOperator_Eu5() {
+        markFileInfo(createRootInfo(ParadoxGameType.Eu5), "common/test/safe_assign_operator.eu5.test.txt")
+        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.eu5.test.txt")
+        myFixture.checkHighlighting(true, false, false)
+    }
+
+    @Test
+    fun testSafeAssignOperator_Stellaris() {
+        markFileInfo(createRootInfo(ParadoxGameType.Stellaris, "4.4.4444"), "common/test/safe_assign_operator.stellaris.test.txt")
+        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.stellaris.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
 }
