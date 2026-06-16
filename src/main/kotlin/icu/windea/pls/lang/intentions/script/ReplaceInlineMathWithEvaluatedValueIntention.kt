@@ -14,8 +14,9 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
 
 /**
- * 将内联数学块替换为其表达式的求值结果（如果无需提供额外的传参信息）。
+ * 将内联数学块替换为其求值结果（如果无需提供额外的传参信息）。
  */
+@Suppress("UnstableApiUsage")
 class ReplaceInlineMathWithEvaluatedValueIntention : PsiUpdateModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
     override fun getFamilyName() = PlsBundle.message("intention.replaceInlineMathWithEvaluatedValue")
 

@@ -91,6 +91,11 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceScriptedVariableReferenceWithResolvedValueIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.EvaluateInlineMathIntention</className>
     </intentionAction>
     <intentionAction>
@@ -220,6 +225,11 @@
       <language>PARADOX_LOCALISATION</language>
       <categoryKey>intention.localisation.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithoutLocaleIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.ReplaceScriptedVariableReferenceWithResolvedValueIntention</className>
     </intentionAction>
     <!-- endregion -->
 
