@@ -33,7 +33,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求游戏类型支持文本图标
-        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(file)) return false
+        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(file)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = !ignoredInInjectedFiles)
     }

@@ -10,7 +10,7 @@ enum class ParadoxSeparatorType(val text: String) {
 
     // #86 supported in ck3, vic3 and eu5 (preferred format: `k ?= v`)
     SafeAssign("? ="),
-    // NOTE 2.1.10 supported in stellaris 4.4 (preferred format: `k? = v`)
+    // 2.1.10 #331 supported in stellaris 4.4 (preferred format: `k? = v`)
     SafeCallAssign("?="),
     ;
 

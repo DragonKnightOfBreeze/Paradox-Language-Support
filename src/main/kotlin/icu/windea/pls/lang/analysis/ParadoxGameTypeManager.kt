@@ -76,10 +76,22 @@ object ParadoxGameTypeManager {
         return rootInfo.metadata.gameType
     }
 
-    fun getModGameType(rootInfo: ParadoxRootInfo.Mod): ParadoxGameType {
-        return rootInfo.metadata.gameTypeInfo?.gameType
-            ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
-            ?: ParadoxGameType.getDefault()
+    fun getGameType(rootInfo: ParadoxRootInfo): ParadoxGameType {
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> rootInfo.metadata.gameType
+            is ParadoxRootInfo.Mod -> rootInfo.metadata.gameTypeInfo?.gameType
+                ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
+                ?: ParadoxGameType.getDefault()
+            else -> rootInfo.gameType
+        }
+    }
+
+    fun getGameVersion(rootInfo: ParadoxRootInfo): String? {
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> rootInfo.metadata.version
+            is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)?.gameVersion
+            else -> null
+        }
     }
 
     fun getGameQualifiedName(gameType: ParadoxGameType, version: String?): String {

@@ -35,7 +35,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求游戏类型支持文本格式
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(file)) return false
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(file)) return false
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的本地化文件

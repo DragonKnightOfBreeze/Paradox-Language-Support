@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.lexer;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
@@ -230,17 +229,17 @@ TEXT_ICON_TOKEN=\w+
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
     "£" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_ICON); }
     "#" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
-        setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
-    }
+            if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+            setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
+        }
     "#!" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
-        beginNextState(); return TEXT_FORMAT_END;
-    }
+            if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+            beginNextState(); return TEXT_FORMAT_END;
+        }
     "@" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return TEXT_TOKEN;
-        setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
-    }
+            if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
+            setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
+        }
     {PLAIN_TEXT_TOKEN} { return TEXT_TOKEN; }
     "]" {
         if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
@@ -300,13 +299,13 @@ TEXT_ICON_TOKEN=\w+
 }
 <IN_COMMAND>{
     . {
-        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.test(this)) {
-            yybegin(IN_CONCEPT_NAME);
-            return LEFT_SINGLE_QUOTE;
+            if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
+                yybegin(IN_CONCEPT_NAME);
+                return LEFT_SINGLE_QUOTE;
+            }
+            yypushback(1);
+            yybegin(IN_COMMAND_TEXT);
         }
-        yypushback(1);
-        yybegin(IN_COMMAND_TEXT);
-    }
 }
 <IN_COMMAND_TEXT>{
     "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }

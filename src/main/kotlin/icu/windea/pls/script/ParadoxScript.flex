@@ -324,7 +324,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 
     // #86 supported in ck3, vic3 and eu5 (preferred format: `k ?= v`)
     "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_ASSIGN_SIGN; }
-    // NOTE 2.1.10 supported in stellaris 4.4 (preferred format: `k? = v`)
+    // 2.1.10 #331 supported in stellaris 4.4 (preferred format: `k? = v`)
     \?\s+= { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_CALL_ASSIGN_SIGN; }
 }
 

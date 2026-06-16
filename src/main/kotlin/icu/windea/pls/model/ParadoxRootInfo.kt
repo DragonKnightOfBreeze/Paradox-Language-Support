@@ -16,6 +16,7 @@ import icu.windea.pls.model.analysis.ParadoxRootMetadata
 sealed interface ParadoxRootInfo {
     val rootFile: VirtualFile?
     val gameType: ParadoxGameType
+    val gameVersion: String?
     val qualifiedName: String
 
     val steamId: String? get() = null
@@ -34,7 +35,8 @@ sealed interface ParadoxRootInfo {
         rootFile: VirtualFile,
         override val metadata: ParadoxRootMetadata.Game
     ) : MetadataBased(rootFile, metadata) {
-        override val gameType: ParadoxGameType = ParadoxGameTypeManager.getGameGameType(this)
+        override val gameType: ParadoxGameType = ParadoxGameTypeManager.getGameType(this)
+        override val gameVersion: String? = ParadoxGameTypeManager.getGameVersion(this)
         override val qualifiedName: String = ParadoxGameTypeManager.getGameQualifiedName(gameType, version)
 
         override val steamId: String get() = gameType.steamId
@@ -56,7 +58,8 @@ sealed interface ParadoxRootInfo {
         val source: ParadoxModSource get() = metadata.source
 
         val inferredGameType: ParadoxGameType? = gameTypeInfo?.gameType
-        override val gameType: ParadoxGameType = ParadoxGameTypeManager.getModGameType(this)
+        override val gameType: ParadoxGameType = ParadoxGameTypeManager.getGameType(this)
+        override val gameVersion: String? = ParadoxGameTypeManager.getGameVersion(this)
         override val qualifiedName: String = ParadoxGameTypeManager.getModQualifiedName(gameType, name, version)
 
         override val steamId: String? get() = if (source == ParadoxModSource.Steam) remoteId else null
@@ -70,6 +73,7 @@ sealed interface ParadoxRootInfo {
         override val gameType: ParadoxGameType,
         override val rootFile: VirtualFile? = null,
     ) : ParadoxRootInfo {
+        override val gameVersion: String? get() = null
         override val qualifiedName: String get() = PlsBundle.message("root.name.injected")
         override val steamId: String? get() = null
 
