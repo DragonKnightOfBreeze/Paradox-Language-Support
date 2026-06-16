@@ -219,17 +219,6 @@ object ParadoxAnalysisManager {
 
     // endregion
 
-    // region Manipulation Methods
-
-    fun inferGameTypeFromFileName(file: VirtualFile): ParadoxGameType? {
-        if (!ParadoxAnalysisInjector.useGameTypeInference()) return null
-        val name = file.nameWithoutExtension
-        val gameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.get(it) }
-        return gameType
-    }
-
-    // endregion
-
     // region Select Methods
 
     tailrec fun selectRootFile(from: Any?): VirtualFile? {
@@ -262,7 +251,7 @@ object ParadoxAnalysisManager {
     tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         if (from == null) return null
         if (from is ParadoxGameType) return from
-        if (from is VirtualFile) inferGameTypeFromFileName(from)?.let { return it }
+        if (from is VirtualFile) ParadoxAnalysisInjector.inferGameTypeFromFileName(from)?.let { return it }
         return when {
             from is ParadoxIndexInfo -> from.gameType
             from is CwtConfigIndexInfo -> from.gameType

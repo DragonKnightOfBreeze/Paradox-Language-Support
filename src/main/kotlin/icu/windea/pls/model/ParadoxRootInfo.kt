@@ -70,10 +70,10 @@ sealed interface ParadoxRootInfo {
     }
 
     class Injected(
-        override val gameType: ParadoxGameType,
         override val rootFile: VirtualFile? = null,
+        override val gameType: ParadoxGameType,
+        override val gameVersion: String? = null,
     ) : ParadoxRootInfo {
-        override val gameVersion: String? get() = null
         override val qualifiedName: String get() = PlsBundle.message("root.name.injected")
         override val steamId: String? get() = null
 

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.test
 
 import com.intellij.openapi.application.PathManager
@@ -10,6 +12,7 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Path
@@ -79,16 +82,30 @@ fun markConfigDirectory(relPath: String) {
 }
 
 context(_: UsefulTestCase)
+fun createRootInfo(gameType: ParadoxGameType, gameVersion: String? = null): ParadoxRootInfo.Injected {
+    return ParadoxAnalysisInjector.createRootInfo(gameType, gameVersion)
+}
+
+context(_: UsefulTestCase)
 fun markFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalysisInjector.markFileInfo(gameType, path, entry, group)
+    ParadoxAnalysisInjector.markFileInfo(createRootInfo(gameType), path, entry, group)
+}
+
+context(_: UsefulTestCase)
+fun markFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
+    ParadoxAnalysisInjector.markFileInfo(rootInfo, path, entry, group)
 }
 
 context(_: UsefulTestCase)
 fun VirtualFile.injectFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalysisInjector.injectFileInfo(this, gameType, path, entry, group)
+    ParadoxAnalysisInjector.injectFileInfo(this, createRootInfo(gameType), path, entry, group)
 }
 
-@Suppress("unused")
+context(_: UsefulTestCase)
+fun VirtualFile.injectFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
+    ParadoxAnalysisInjector.injectFileInfo(this, rootInfo, path, entry, group)
+}
+
 interface InspectionTestScope {
     data class Tag(val start: String, val end: String)
 

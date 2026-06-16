@@ -90,7 +90,7 @@ object ParadoxGameTypeManager {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> rootInfo.metadata.version
             is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)?.gameVersion
-            else -> null
+            else -> rootInfo.gameVersion
         }
     }
 
