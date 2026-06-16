@@ -73,8 +73,8 @@
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值操作符） ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P1 [Stellaris] 在语法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在语法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [ ] P3/QOL/MAYBE 提供意向，以在作用域的安全调用形式（`owner ?= ...` 或 `owner?= ...`）与显式调用形式（`exists = owner owner = ...`）之间进行转换
-- [ ] P3/QOL/MAYBE 提供代码检查，以在作用域的安全调用形式（`owner ?= ...` 或 `owner?= ...`）与显式调用形式（`exists = owner owner = ...`）之间进行转换
+- [ ] P3/QOL/MAYBE 提供意向，以在作用域的安全调用形式（`owner ?= ...` 或 `owner? = ...`）与显式调用形式（`exists = owner owner = ...`）之间进行转换
+- [ ] P3/QOL/MAYBE 提供代码检查，以在作用域的安全调用形式（`owner ?= ...` 或 `owner? = ...`）与显式调用形式（`exists = owner owner = ...`）之间进行转换
 - [ ] P3/QOL/MAYBE 提供意向，以在作用域的链式调用形式（`root.owner = ...`）与分离调用形式（`root = { owner = ... }`）之间进行转换 - split/merge - 不检查调用链是否过长
 
 ## v2.2.0-csv
