@@ -3,6 +3,7 @@ package icu.windea.pls.lang.intentions.script
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -13,12 +14,13 @@ import org.junit.runners.JUnit4
 import icu.windea.pls.lang.util.builders.ParadoxScriptTextBuilder.parameter as p
 
 /**
- * @see ConditionalSnippetToPropertyFormatIntention
- * @see ConditionalSnippetToBlockFormatIntention
+ * @see ConditionalStatementToPropertyFormIntention
+ * @see ConditionalStatementToBlockFormIntention
+ * @see ParadoxConditionalStatementManipulationService
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
+class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -29,9 +31,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToPropertyFormat_basic() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
-            "conditional_snippet_to_property_format_basic.test.txt",
+            "conditional_statement_to_property_form_basic.test.txt",
             "k = { [[PARAM] <caret>PARAM = ${p("PARAM")} ] }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
@@ -41,9 +43,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToPropertyFormat_multiline() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
-            "conditional_snippet_to_property_format_multiline.test.txt",
+            "conditional_statement_to_property_form_multiline.test.txt",
             """
             k = {
                 [[PARAM]
@@ -65,9 +67,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToPropertyFormat_notAvailableWhenAlreadyPropertyFormat() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
-            "conditional_snippet_to_property_format_not_available_property_format.test.txt",
+            "conditional_statement_to_property_form_not_available_property_form.test.txt",
             "k = { <caret>PARAM = ${p("PARAM", "no")}}"
         )
         val available = myFixture.availableIntentions
@@ -76,9 +78,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToPropertyFormat_notAvailableWhenMismatchParameterName() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
-            "conditional_snippet_to_property_format_not_available_mismatch.test.txt",
+            "conditional_statement_to_property_form_not_available_mismatch.test.txt",
             "k = { [[PARAM] <caret>OTHER = ${p("PARAM")} ] }"
         )
         val available = myFixture.availableIntentions
@@ -87,9 +89,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToBlockFormat_basic() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
-            "conditional_snippet_to_block_format_basic.test.txt",
+            "conditional_statement_to_block_form_basic.test.txt",
             "k = { <caret>PARAM = ${p("PARAM", "no")}}"
         )
         val intention = myFixture.findSingleIntention(intentionName)
@@ -99,9 +101,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToBlockFormat_parameterNameWithUnderscore() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
-            "conditional_snippet_to_block_format_underscore.test.txt",
+            "conditional_statement_to_block_form_underscore.test.txt",
             "k = { <caret>PARAM_1 = ${p("PARAM_1", "no")} }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
@@ -111,9 +113,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToBlockFormat_notAvailableWhenAlreadyBlockFormat() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
-            "conditional_snippet_to_block_format_not_available_block_format.test.txt",
+            "conditional_statement_to_block_form_not_available_block_form.test.txt",
             "k = { [[PARAM] <caret>PARAM = ${p("PARAM")} ] }"
         )
         val available = myFixture.availableIntentions
@@ -122,9 +124,9 @@ class ConditionalSnippetIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalSnippetToBlockFormat_notAvailableWhenMismatchParameterName() {
-        val intentionName = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
+        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
-            "conditional_snippet_to_block_format_not_available_mismatch.test.txt",
+            "conditional_statement_to_block_form_not_available_mismatch.test.txt",
             "k = { <caret>PARAM = ${p("OTHER", "no")} }"
         )
         val available = myFixture.availableIntentions
