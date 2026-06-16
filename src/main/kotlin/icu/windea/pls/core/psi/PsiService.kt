@@ -1,5 +1,6 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiComment
@@ -206,6 +207,15 @@ object PsiService {
             return MarkdownService.toHtml(result)
         }
         return result
+    }
+
+    /**
+     * 得到展开 [element] 周围的空白后的文本范围。
+     */
+    fun getSpaceExtendedTextRange(element: PsiElement): TextRange {
+        val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
+        val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
+        return TextRange.create(startElement.startOffset, endElement.endOffset)
     }
 }
 

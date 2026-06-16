@@ -3,11 +3,8 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.endOffset
-import com.intellij.psi.util.siblings
-import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.quickfix.ReplaceStringFix
@@ -43,30 +40,55 @@ object ParadoxSyntaxInspectionService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getFixes(context: ParadoxSyntaxInspectionContext, element: PsiElement, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<LocalQuickFix> {
-        if (testResult.strictValue) return LocalQuickFix.EMPTY_ARRAY
+        if (testResult.strictValue) return LocalQuickFix.EMPTY_ARRAY // 严格匹配 -> 不报错，直接返回
         if (testResult.value) return LocalQuickFix.EMPTY_ARRAY // 游戏版本不匹配，但游戏类型匹配 -> 直接返回
         val result = mutableListOf<LocalQuickFix>()
         when (constraint) {
             ParadoxSyntaxConstraint.SafeAssignOperator -> {
-                val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
-                val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
-                val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
-                val offset = startElement.startOffset
-                val length = endElement.endOffset - offset
-                val string = if(spaceAroundPropertySeparator) "? = " else "? ="
-                result += ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.1.name"), string, offset, length)
+                if (ParadoxSyntaxConstraint.SafeCallAssignOperator.test(context.gameType)) {
+                    result += getReplaceWithSafeCallAssignOperatorFix(element, context)
+                }
+                result += getReplaceWithAssignOperatorFix(element, context)
             }
             ParadoxSyntaxConstraint.SafeCallAssignOperator -> {
-                val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
-                val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
-                val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
-                val offset = startElement.startOffset
-                val length = endElement.endOffset - offset
-                val string = if(spaceAroundPropertySeparator) " ?= " else "?="
-                result += ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.2.name"), string, offset, length)
+                if (ParadoxSyntaxConstraint.SafeAssignOperator.test(context.gameType)) {
+                    result += getReplaceWithSafeAssignOperatorFix(element, context)
+                }
+                result += getReplaceWithAssignOperatorFix(element, context)
             }
             else -> {}
         }
+        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
+    }
+
+    private fun getReplaceWithAssignOperatorFix(element: PsiElement, context: ParadoxSyntaxInspectionContext): ReplaceStringFix {
+        val spaceExtendedTextRange = PsiService.getSpaceExtendedTextRange(element)
+        val offset = spaceExtendedTextRange.startOffset
+        val length = spaceExtendedTextRange.endOffset - offset
+        val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
+        val string = if (spaceAroundPropertySeparator) " = " else "="
+        val fix = ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.1.name"), string, offset, length)
+        return fix
+    }
+
+    private fun getReplaceWithSafeCallAssignOperatorFix(element: PsiElement, context: ParadoxSyntaxInspectionContext): ReplaceStringFix {
+        val spaceExtendedTextRange = PsiService.getSpaceExtendedTextRange(element)
+        val offset = spaceExtendedTextRange.startOffset
+        val length = spaceExtendedTextRange.endOffset - offset
+        val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
+        val string = if (spaceAroundPropertySeparator) "? = " else "? ="
+        val fix = ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.2.name"), string, offset, length)
+        return fix
+    }
+
+    private fun getReplaceWithSafeAssignOperatorFix(element: PsiElement, context: ParadoxSyntaxInspectionContext): ReplaceStringFix {
+        val spaceExtendedTextRange = PsiService.getSpaceExtendedTextRange(element)
+        val offset = spaceExtendedTextRange.startOffset
+        val length = spaceExtendedTextRange.endOffset - offset
+        val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
+        val string = if (spaceAroundPropertySeparator) " ?= " else "?="
+        val fix = ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.3.name"), string, offset, length)
+        return fix
     }
 }
