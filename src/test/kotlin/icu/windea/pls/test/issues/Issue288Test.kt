@@ -42,6 +42,6 @@ class Issue288Test : BasePlatformTestCase() {
     fun test() {
         markFileInfo(gameType, "common/location_ranks/issue_288_eu5.test.txt")
         myFixture.configureByFile("issues/288/common/location_ranks/issue_288_eu5.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.checkHighlighting()
     }
 }

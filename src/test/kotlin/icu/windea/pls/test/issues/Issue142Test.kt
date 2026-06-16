@@ -44,14 +44,14 @@ class Issue142Test : BasePlatformTestCase() {
     fun testVarInTrigger() {
         markFileInfo(gameType, "common/scripted_triggers/test_trigger.test.txt")
         myFixture.configureByFile("issues/142/common/scripted_triggers/test_trigger.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.checkHighlighting()
     }
 
     @Test
     fun testVarInEffect() {
         markFileInfo(gameType, "common/scripted_effects/test_effect.test.txt")
         myFixture.configureByFile("issues/142/common/scripted_effects/test_effect.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.checkHighlighting()
     }
 
     // TODO testVarWithArithmeticBlock - var:xxx = { arithmetic operations }

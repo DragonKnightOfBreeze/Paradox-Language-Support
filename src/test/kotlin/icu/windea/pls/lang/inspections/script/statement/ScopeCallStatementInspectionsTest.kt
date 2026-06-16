@@ -28,7 +28,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), InspectionTest
         markIntegrationTest()
         myFixture.enableInspections(
             ScopeCallStatementToNormalFormInspection::class.java,
-            ScopeCallStatementToSafeFormInspection::class.java
+            ScopeCallStatementToSafeFormInspection::class.java,
         )
     }
 
