@@ -3,8 +3,12 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.quickfix.ReplaceStringFix
 import icu.windea.pls.lang.selectFile
@@ -44,10 +48,22 @@ object ParadoxSyntaxInspectionService {
         val result = mutableListOf<LocalQuickFix>()
         when (constraint) {
             ParadoxSyntaxConstraint.SafeAssignOperator -> {
-                result += ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.1.name"), "? =", element.startOffset, 3)
+                val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
+                val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
+                val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
+                val offset = startElement.startOffset
+                val length = endElement.endOffset - offset
+                val string = if(spaceAroundPropertySeparator) "? = " else "? ="
+                result += ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.1.name"), string, offset, length)
             }
             ParadoxSyntaxConstraint.SafeCallAssignOperator -> {
-                result += ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.2.name"), "?=", element.startOffset, 2)
+                val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
+                val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
+                val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.holder.file)
+                val offset = startElement.startOffset
+                val length = endElement.endOffset - offset
+                val string = if(spaceAroundPropertySeparator) " ?= " else "?="
+                result += ReplaceStringFix(element, PlsBundle.message("inspection.script.incorrectSyntax.fix.2.name"), string, offset, length)
             }
             else -> {}
         }
