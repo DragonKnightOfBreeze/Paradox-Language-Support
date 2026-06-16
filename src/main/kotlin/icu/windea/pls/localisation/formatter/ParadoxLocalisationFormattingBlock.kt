@@ -16,7 +16,7 @@ import icu.windea.pls.core.processChild
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class ParadoxLocalisationBlock(
+class ParadoxLocalisationFormattingBlock(
     node: ASTNode,
     private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
@@ -49,7 +49,7 @@ class ParadoxLocalisationBlock(
         val children = mutableListOf<Block>()
         myNode.processChild p@{ node ->
             if (node.elementType == TokenType.WHITE_SPACE) return@p true
-            children += ParadoxLocalisationBlock(node, settings)
+            children += ParadoxLocalisationFormattingBlock(node, settings)
             true
         }
         return children

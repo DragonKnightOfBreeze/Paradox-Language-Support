@@ -16,7 +16,7 @@ import icu.windea.pls.core.processChild
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtBlock(
+class CwtFormattingBlock(
     node: ASTNode,
     private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
@@ -56,7 +56,7 @@ class CwtBlock(
         val children = mutableListOf<Block>()
         myNode.processChild p@{ node ->
             if (node.elementType == TokenType.WHITE_SPACE) return@p true
-            children += CwtBlock(node, settings)
+            children += CwtFormattingBlock(node, settings)
             true
         }
         return children

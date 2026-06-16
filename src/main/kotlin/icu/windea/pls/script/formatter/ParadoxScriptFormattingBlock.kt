@@ -16,7 +16,7 @@ import icu.windea.pls.core.processChild
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-class ParadoxScriptBlock(
+class ParadoxScriptFormattingBlock(
     node: ASTNode,
     private val settings: CodeStyleSettings,
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
@@ -69,7 +69,7 @@ class ParadoxScriptBlock(
         val children = mutableListOf<Block>()
         myNode.processChild p@{ node ->
             if (node.elementType == TokenType.WHITE_SPACE) return@p true
-            children += ParadoxScriptBlock(node, settings)
+            children += ParadoxScriptFormattingBlock(node, settings)
             true
         }
         return children
