@@ -22,7 +22,8 @@ class ParadoxScriptBlock(
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
     companion object {
         private val MEMBERS = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, BLOCK, PARAMETER_CONDITION)
-        private val SEPARATORS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN, SAFE_ASSIGN_SIGN, SAFE_CALL_ASSIGN_SIGN)
+        private val NORMAL_SEPARATORS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN, SAFE_ASSIGN_SIGN)
+        private val LEADING_SEPARATORS = TokenSet.create(SAFE_CALL_ASSIGN_SIGN)
         private val INLINE_MATH_OPERATORS = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK, PARAMETER_CONDITION)
         private val SHOULD_INDENT_TYPES = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, BLOCK, PARAMETER_CONDITION, COMMENT)
@@ -43,8 +44,12 @@ class ParadoxScriptBlock(
             val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
             return SpacingBuilder(settings, ParadoxScriptLanguage)
                 .between(MEMBERS, MEMBERS).spaces(1) // 封装变量/属性/值/参数条件块之间需要有空格或者换行
-                .aroundInside(SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) // 间隔符周围按情况可能需要空格
-                .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
+                .aroundInside(NORMAL_SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) // 间隔符周围按情况可能需要空格
+                .beforeInside(LEADING_SEPARATORS, SCRIPTED_VARIABLE).spaces(0) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
+                .afterInside(LEADING_SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
+                .aroundInside(NORMAL_SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
+                .beforeInside(LEADING_SEPARATORS, PROPERTY).spaces(0) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
+                .afterInside(LEADING_SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
                 .around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) // 内联数学表达式操作符周围按情况可能需要空格
                 .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格

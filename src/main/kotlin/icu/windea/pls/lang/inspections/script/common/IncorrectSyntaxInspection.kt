@@ -43,7 +43,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         if (context.rootFile == null) return
 
         if (element !is ParadoxScriptProperty) return
-        val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
+        val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS } ?: return
 
         // 所在属性的键与值应可以表示一个数值
         val numberRepresentable = ParadoxMemberService.isNumberRepresentable(element)

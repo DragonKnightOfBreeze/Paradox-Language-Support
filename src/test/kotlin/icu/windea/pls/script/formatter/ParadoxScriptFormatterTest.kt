@@ -142,6 +142,28 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase() {
         assertEquals("level>=2", reformat("level >= 2"))
     }
 
+    @Test
+    fun testSpaceAroundPropertySeparator_safeSigns() {
+        getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = true
+        assertEquals("k ?= v", reformat("k?=v"))
+        assertEquals("k ?= v", reformat("k?= v"))
+        assertEquals("k ?= v", reformat("k ?= v"))
+        assertEquals("k? = v", reformat("k? =v"))
+        assertEquals("k? = v", reformat("k? = v"))
+        assertEquals("k? = v", reformat("k ? = v"))
+    }
+
+    @Test
+    fun testSpaceAroundPropertySeparator_safeSigns_disable() {
+        getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = false
+        assertEquals("k?=v", reformat("k?=v"))
+        assertEquals("k?=v", reformat("k?= v"))
+        assertEquals("k?=v", reformat("k ?= v"))
+        assertEquals("k? =v", reformat("k? =v"))
+        assertEquals("k? =v", reformat("k? = v"))
+        assertEquals("k? =v", reformat("k ? = v"))
+    }
+
     // endregion
 
     // region 内联数学操作符周围的空格
