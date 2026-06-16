@@ -6,7 +6,7 @@ import org.junit.Test
 class CwtImageLocationExpressionTest {
     @Test
     fun resolveEmpty() {
-        val e = CwtImageLocationExpression.resolveEmpty()
+        val e = CwtImageLocationExpression.resolve("")
         assertEquals("", e.expressionString)
         assertEquals("", e.location)
         assertFalse(e.isPlaceholder)

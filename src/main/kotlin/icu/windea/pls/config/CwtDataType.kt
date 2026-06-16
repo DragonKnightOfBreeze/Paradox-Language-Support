@@ -3,11 +3,11 @@ package icu.windea.pls.config
 import icu.windea.pls.config.CwtDataType.Companion.entries
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
+import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
+import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.model.expressions.ParadoxExpression
-import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 
 /**
  * 数据类型。
@@ -18,7 +18,7 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
  *
  * ### 解析逻辑
  *
- * 由 [CwtDataExpression.Resolver] 中的解析方法分派到扩展点 [CwtDataExpressionResolver] 中的解析方法，
+ * 由 [CwtDataExpression.Resolver] 中的解析方法分派到扩展点 [CwtDataExpressionSupport] 中的解析方法，
  * 解析得到 [CwtDataExpression]，其中包含对应的数据类型。
  *
  * ### 匹配逻辑
@@ -49,7 +49,7 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
  * @see CwtDataTypes
  * @see CwtDataTypeSets
  * @see CwtDataExpression
- * @see CwtDataExpressionResolver
+ * @see CwtDataExpressionSupport
  * @see ParadoxExpression
  */
 class CwtDataType private constructor(

@@ -5,8 +5,6 @@ package icu.windea.pls.core
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.template.TemplateBuilder
 import com.intellij.codeInsight.template.TemplateBuilderImpl
-import com.intellij.codeInspection.InspectionProfileEntry
-import com.intellij.codeInspection.ex.ScopeToolState
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.lang.ASTNode
@@ -41,7 +39,6 @@ import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.wm.IdeFrame
 import com.intellij.openapi.wm.ex.WindowManagerEx
 import com.intellij.platform.backend.presentation.TargetPresentationBuilder
-import com.intellij.profile.codeInspection.InspectionProfileManager
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -69,6 +66,7 @@ import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.util.Tuple2
@@ -183,10 +181,11 @@ operator fun Segment.contains(other: Segment): Boolean {
  * 去除文本范围首尾的引号。返回处理后的新的文本范围。
  */
 fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
+    if (text.isEmpty()) return TextRange.EMPTY_RANGE
     val leftQuoted = text.isLeftQuoted(quote)
     val rightQuoted = text.isRightQuoted(quote)
-    val startOffset = if (leftQuoted) this.startOffset + 1 else this.startOffset
-    val endOffset = if (rightQuoted) this.endOffset - 1 else this.endOffset
+    val startOffset = if (leftQuoted) startOffset + 1 else startOffset
+    val endOffset = if (rightQuoted) endOffset - 1 else endOffset
     return TextRange.create(startOffset, endOffset)
 }
 
@@ -406,31 +405,44 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
     return PsiFileService.findReferenceAt(this, offset, forward, predicate)
 }
 
-/** 若为多解析引用，返回首个解析目标；否则调用 `resolve()`。 */
+/**
+ * 解析得到第一个结果。
+ *
+ * 如果当前引用是 [PsiPolyVariantReference]，则调用 `multiResolve` 并返回解析得到的第一个不为空的 [PsiElement]。
+ * 否则直接调用 `resolve` 并返回解析得到的 [PsiElement]。
+ */
 fun PsiReference.resolveFirst(): PsiElement? {
-    return if (this is PsiPolyVariantReference) {
-        this.multiResolve(false).firstNotNullOfOrNull { it.element }
-    } else {
-        this.resolve()
+    return when (this) {
+        is PsiPolyVariantReference -> {
+            this.multiResolve(false).firstNotNullOfOrNull { it.element }
+        }
+        else -> this.resolve()
     }
 }
 
-/** 收集该引用及其子引用（若实现了 [PsiCompositeReference]）。 */
+/**
+ * 收集引用。
+ *
+ * 如果当前引用是 [PsiCompositeReference]，则递归收集其中的引用。
+ * 否则直接返回当前引用的单例数组。
+ */
 fun PsiReference.collectReferences(): Array<out PsiReference> {
-    if (this is PsiCompositeReference) {
-        val result = mutableListOf<PsiReference>()
-        doCollectReferences(this, result)
-        if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return result.toTypedArray()
+    return when (this) {
+        is PsiCompositeReference -> {
+            val result = mutableListOf<PsiReference>()
+            doCollectReferences(this, result)
+            if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
+            result.toTypedArray()
+        }
+        else -> arrayOf(this)
     }
-    return arrayOf(this)
 }
 
 private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
     if (sourceReference is PsiCompositeReference) {
         val references = sourceReference.getReferences()
-        if (references.isNotNullOrEmpty()) { // 为空数组 / 为 `null` 在这里是等价的
-            references.forEach { reference ->
+        if (references.isNotEmpty()) {
+            references.forEachFast { reference ->
                 ProgressManager.checkCanceled()
                 doCollectReferences(reference, result)
             }
@@ -668,20 +680,6 @@ fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate(
 
 /** 构建行内模板。 */
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
-
-// endregion
-
-// region Inspection Extensions
-
-/** 根据检查项短名获取对应的 [ScopeToolState]。 */
-fun getInspectionToolState(shortName: String, element: PsiElement?, project: Project): ScopeToolState? {
-    val currentProfile = InspectionProfileManager.getInstance(project).currentProfile
-    val tools = currentProfile.getToolsOrNull(shortName, project) ?: return null
-    return tools.getState(element)
-}
-
-/** 若检查项启用则返回实际的 [InspectionProfileEntry]，否则返回 null。 */
-val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
 
 // endregion
 

@@ -28,6 +28,7 @@ import icu.windea.pls.script.psi.isBlockMember
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         var current = element
+        if (PlsInspectionSuppressManager.isSuppressedInComment(current, toolId)) return true
         if (PlsInspectionSuppressManager.isSuppressedForDefinition(element, toolId)) return true
         while (current !is PsiFile) {
             current = current.parent ?: return false
@@ -65,7 +66,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 val containerPointer = definitionInjection.createPointer<PsiElement>(file)
                 add(SuppressForDefinitionInjectionFix(toolId, expression, containerPointer))
             }
-            add(SuppressForExpressionFix(toolId))
+            add(SuppressForMemberFix(toolId))
         }.toTypedArray()
     }
 
@@ -120,13 +121,11 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
     }
 
-    private class SuppressForExpressionFix(
+    private class SuppressForMemberFix(
         toolId: String
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
-        // here just call scriptMemberElement (property / value) "expression"
-
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.expression")
+            return PlsBundle.message("suppress.for.member")
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {

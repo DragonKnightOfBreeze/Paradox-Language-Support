@@ -27,15 +27,14 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return
         if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return
         val gameType = selectGameType(file)
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return // 只要向上能找到符合条件的属性就行
         val info = element.definitionInjectionInfo ?: return
-        if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
-        if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
+        if (!info.isTargetValid()) return // 排除目标或目标类型为空的情况
         presentation.isEnabledAndVisible = true
     }
 

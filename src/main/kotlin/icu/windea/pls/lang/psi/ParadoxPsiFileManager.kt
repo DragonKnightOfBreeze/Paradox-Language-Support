@@ -13,7 +13,9 @@ import icu.windea.pls.core.findReferenceAt
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
+import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -39,6 +41,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDefinitionName
 import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.parentProperty
 
 object ParadoxPsiFileManager {
     // region Find Extensions (from elementOffset)
@@ -75,6 +78,11 @@ object ParadoxPsiFileManager {
         const val BY_TYPE_KEY = 0x02
         const val BY_NAME = 0x04
         const val BY_REFERENCE = 0x08
+    }
+
+    object DefinitionInjectionOptions {
+        const val DEFAULT = 0x01
+        const val BY_EXPRESSION = 0x02
     }
 
     object LocalisationOptions {
@@ -116,16 +124,13 @@ object ParadoxPsiFileManager {
     fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxDefinitionElement? {
         if (offset < 0) return null
         val expressionElement by lazy {
-            file.findElementAt(offset) {
-                it.parentOfType<ParadoxScriptExpressionElement>(false)
-            }?.takeIf { it.isExpression() }
+            file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isExpression() }
         }
         val expressionReference by lazy {
             file.findReferenceAt(offset) {
                 it.element is ParadoxScriptExpressionElement && ParadoxResolveConstraint.Definition.canResolve(it)
             }
         }
-
         if (BitUtil.isSet(options, DefinitionOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = expressionReference
             val resolved = reference?.resolve()?.castOrNull<ParadoxDefinitionElement>()?.takeIf { it.definitionInfo != null }
@@ -141,7 +146,7 @@ object ParadoxPsiFileManager {
             if (BitUtil.isSet(options, DefinitionOptions.BY_TYPE_KEY)) {
                 val element = expressionElement
                 if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) {
-                    return selectScope { element.parentDefinition() }
+                    return element.parentProperty?.takeIf { it.definitionInfo != null }
                 }
             }
             if (BitUtil.isSet(options, DefinitionOptions.BY_NAME)) {
@@ -156,6 +161,32 @@ object ParadoxPsiFileManager {
 
     inline fun findDefinition(file: PsiFile, offset: Int, optionsProvider: DefinitionOptions.() -> Int): ParadoxDefinitionElement? {
         return findDefinition(file, offset, DefinitionOptions.optionsProvider())
+    }
+
+    fun findDefinitionInjection(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptProperty? {
+        if (offset < 0) return null
+        val expressionElement by lazy {
+            file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isExpression() }
+        }
+        if (file.language != ParadoxScriptLanguage) return null
+        if (BitUtil.isSet(options, DefinitionInjectionOptions.DEFAULT)) {
+            val result = file.findElementAt(offset) t@{
+                it.parents(false).findIsInstance<ParadoxScriptProperty> { p -> p.definitionInjectionInfo != null }
+            }
+            if (result != null) return result
+        } else {
+            if (BitUtil.isSet(options, DefinitionInjectionOptions.BY_EXPRESSION)) {
+                val element = expressionElement
+                if (element is ParadoxScriptPropertyKey) {
+                    return element.parentProperty?.takeIf { it.definitionCandidateInfo != null }
+                }
+            }
+        }
+        return null
+    }
+
+    inline fun findDefinitionInjection(file: PsiFile, offset: Int, optionsProvider: DefinitionInjectionOptions.() -> Int): ParadoxScriptProperty? {
+        return findDefinitionInjection(file, offset, DefinitionInjectionOptions.optionsProvider())
     }
 
     fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {

@@ -61,22 +61,21 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     @FromMember("end_column: string?")
     val endColumn: String?
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为行规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtRowConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtRowConfig? {
+            return CwtRowConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtRowConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolverScope {
+private object CwtRowConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtRowConfig? {
         val name = config.key.removeSurroundingOrNull("row[", "]")?.orNull() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {

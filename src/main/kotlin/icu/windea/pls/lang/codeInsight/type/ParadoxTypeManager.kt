@@ -21,7 +21,6 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolveLocalisation
-import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
@@ -30,8 +29,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.type.CwtTypeResolver
-import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxType
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxConditionParameter

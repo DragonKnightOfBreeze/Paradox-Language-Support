@@ -32,7 +32,7 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
     override suspend fun execute(project: Project) {
         // 这些操作仅需执行一次（应用范围）
         mutex.withDoubleLock(runOncePerApplication) {
-            // 在打开项目后，刷新内置规则目录，从而确保能读取到最新的内置规则文件
+            // 在打开项目后，刷新内置规则文件，从而确保能读取到最新的内置规则文件
             refreshBuiltInConfigFiles(project)
         }
 
@@ -51,8 +51,8 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
 
     private suspend fun refreshBuiltInConfigFiles(project: Project) {
         if (project.isDefault || project.isDisposed) return
-        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则目录
-        if (!PlsCapacities.refreshBuiltIn()) return // 必须显式启用
+        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则文件
+        if (!PlsCapacities.refreshBuiltInConfigDirectories()) return // 必须显式启用
         CwtConfigGroupService.getInstance().refreshBuiltInConfigFiles(project)
     }
 

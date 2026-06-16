@@ -5,11 +5,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -48,17 +44,18 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 interface ParadoxScriptValueExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+            return ParadoxScriptValueExpressionResolver.resolve(text, range, configGroup, config)
+        }
     }
-
-    companion object : Resolver by ParadoxScriptValueExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+private object ParadoxScriptValueExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

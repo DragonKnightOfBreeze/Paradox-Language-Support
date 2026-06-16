@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.match
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeConstants
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.promotions
 
 object ParadoxScopeMatchService {

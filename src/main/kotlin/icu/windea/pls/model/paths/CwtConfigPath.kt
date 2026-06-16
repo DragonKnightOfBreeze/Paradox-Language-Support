@@ -43,13 +43,16 @@ interface CwtConfigPath : Iterable<String> {
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
-        fun resolveEmpty(): CwtConfigPath
-        fun resolve(input: String): CwtConfigPath
-        fun resolve(input: List<String>): CwtConfigPath
-    }
+    companion object {
+        @JvmStatic
+        fun resolveEmpty(): CwtConfigPath = CwtConfigPathResolver.resolveEmpty()
 
-    companion object : Resolver by CwtConfigPathResolverImpl()
+        @JvmStatic
+        fun resolve(input: String): CwtConfigPath = CwtConfigPathResolver.resolve(input)
+
+        @JvmStatic
+        fun resolve(input: List<String>): CwtConfigPath = CwtConfigPathResolver.resolve(input)
+    }
 }
 
 // region Implementations
@@ -62,15 +65,15 @@ private fun String.internSubPath() = subPathInterner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
-private class CwtConfigPathResolverImpl : CwtConfigPath.Resolver {
-    override fun resolveEmpty(): CwtConfigPath = EmptyCwtConfigPath
+private object CwtConfigPathResolver {
+    fun resolveEmpty(): CwtConfigPath = EmptyCwtConfigPath
 
-    override fun resolve(input: String): CwtConfigPath {
+    fun resolve(input: String): CwtConfigPath {
         if (input.isEmpty()) return EmptyCwtConfigPath
         return CwtConfigPathImplFromPath(input)
     }
 
-    override fun resolve(input: List<String>): CwtConfigPath {
+    fun resolve(input: List<String>): CwtConfigPath {
         if (input.isEmpty()) return EmptyCwtConfigPath
         return CwtConfigPathImplFromSubPaths(input)
     }

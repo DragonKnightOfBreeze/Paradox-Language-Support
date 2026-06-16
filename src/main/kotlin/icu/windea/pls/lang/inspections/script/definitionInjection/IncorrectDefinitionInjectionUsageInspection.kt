@@ -6,8 +6,8 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -47,7 +47,7 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         if (definitionInjectionInfo.isLenientMode()) {
             if (checkForLenientModes) {
                 val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
-                val highlightType = PlsInspectionUtil.getWeakerHighlightType() // use weaker highlight type
+                val highlightType = InspectionService.getWeakerHighlightType() // use weaker highlight type
                 holder.registerProblem(element.propertyKey, description, highlightType)
             }
         } else {

@@ -33,29 +33,31 @@ interface CwtFileConfig : CwtMemberContainerConfig<CwtFile> {
     override val properties: List<CwtPropertyConfig>
     override val values: List<CwtValueConfig>
 
-    interface Resolver {
+    companion object {
+        @JvmStatic
         fun create(
             pointer: SmartPsiElementPointer<CwtFile>,
             configGroup: CwtConfigGroup,
             fileName: String,
             filePath: String,
             configs: List<CwtMemberConfig<*>> = emptyList(),
-        ): CwtFileConfig
+        ): CwtFileConfig = CwtFileConfigResolver.create(pointer, configGroup, fileName, filePath, configs)
 
-        fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean
+        @Suppress("unused")
+        @JvmStatic
+        fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean = CwtFileConfigResolver.withConfigs(config, configs)
 
-        fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig
+        @JvmStatic
+        fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig = CwtFileConfigResolver.resolve(file, configGroup, filePath)
     }
-
-    companion object : Resolver by CwtFileConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResolverScope {
+private object CwtFileConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun create(
+    fun create(
         pointer: SmartPsiElementPointer<CwtFile>,
         configGroup: CwtConfigGroup,
         fileName: String,
@@ -71,7 +73,7 @@ private class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResol
         return config
     }
 
-    override fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean {
+    fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean {
         if (config is CwtFileConfigImplWithConfigs) {
             config.configs = configs.optimized() // optimized to optimize memory
             config.memberType = CwtMembersType.UNSET
@@ -80,7 +82,7 @@ private class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResol
         return false
     }
 
-    override fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig {
+    fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig {
         val pointer = file.createPointer()
         val fileName = file.name
         val rootBlock = file.block

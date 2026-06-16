@@ -57,22 +57,21 @@ interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     @FromOptionMember("primary")
     val primary: Boolean
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为位置规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtLocationConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtLocationConfig? {
+            return CwtLocationConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtLocationConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver, CwtConfigResolverScope {
+private object CwtLocationConfigResolver : CwtConfigResolverScope {
     // no logger here (unnecessary)
 
-    override fun resolve(config: CwtPropertyConfig): CwtLocationConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtLocationConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtLocationConfig? {
         // default to optional
         // default to primary for `name` and `title` if it represents a localisation location (by inference)
         // default to primary for `icon` if it represents an image location (by inference)

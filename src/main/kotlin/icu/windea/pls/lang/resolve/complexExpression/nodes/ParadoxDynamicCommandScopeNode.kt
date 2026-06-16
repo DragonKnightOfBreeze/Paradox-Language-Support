@@ -22,7 +22,8 @@ class ParadoxDynamicCommandScopeNode(
         return linkConfigs
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeNode? {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = textRange.startOffset
@@ -97,6 +98,4 @@ class ParadoxDynamicCommandScopeNode(
             return null
         }
     }
-
-    companion object : Resolver()
 }

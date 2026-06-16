@@ -30,9 +30,6 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.*
 import javax.swing.*
 

@@ -30,32 +30,32 @@ import java.util.*
  * @see CwtOptionDataHolder
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
-    interface Resolver {
-        fun resolve(element: CwtValue): CwtOptionValueConfig
+    companion object {
+        @JvmStatic
+        fun resolve(element: CwtValue): CwtOptionValueConfig = CwtOptionValueConfigResolver.resolve(element)
 
+        @JvmStatic
         fun create(
             value: String,
             valueType: CwtExpressionType = CwtExpressionType.String,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
-        ): CwtOptionValueConfig
+        ): CwtOptionValueConfig = CwtOptionValueConfigResolver.create(value, valueType, optionConfigs)
     }
-
-    companion object : Resolver by CwtOptionValueConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverScope {
+private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
-    override fun resolve(element: CwtValue): CwtOptionValueConfig {
+    fun resolve(element: CwtValue): CwtOptionValueConfig {
         val value = element.value
         val valueType = CwtTypeResolver.resolveExpressionType(element)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element)
         return create(value, valueType, optionConfigs)
     }
 
-    override fun create(value: String, valueType: CwtExpressionType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
+    fun create(value: String, valueType: CwtExpressionType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
         val noOptionConfigs = optionConfigs.isNullOrEmpty()
         if (noOptionConfigs) {
             // use (strong) cache if not nested to optimize memory

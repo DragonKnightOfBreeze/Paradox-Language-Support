@@ -17,6 +17,9 @@ import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.errorDetails
+import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -27,13 +30,25 @@ import javax.swing.JTextArea
 import javax.swing.table.TableCellEditor
 
 class ParadoxInlineMathEvaluatorDialog(
-    private val project: Project,
-    private val element: ParadoxScriptInlineMath
+    project: Project,
+    element: ParadoxScriptInlineMath,
 ) : DialogWrapper(project, false, IdeModalityType.MODELESS) { // NOTE modeless dialog
+    private val elementPointer = element.createPointer(project)
+    private val element: ParadoxScriptInlineMath? get() = elementPointer.element
+
     private val evaluator = ParadoxInlineMathEvaluator()
     private val argumentList = evaluator.resolveArguments(element).values.toMutableList()
-    private var initialized = false
-    private var currentOutputText = ""
+    private var isInitialized = false
+    private var isValid = element.isValid
+
+    private var currentResult: MathResult? = null
+    private var currentResultText: String? = null
+
+    @Suppress("unused")
+    val result: MathResult? get() = currentResult
+    @Suppress("unused")
+    val resultText: String? get() = currentResultText
+
     private val resultTextArea by lazy {
         JTextArea().apply {
             minimumSize = Dimension(preferredTextWidth, minimumSize.height)
@@ -44,7 +59,6 @@ class ParadoxInlineMathEvaluatorDialog(
             isOpaque = false
         }
     }
-
     private val expressionField = run {
         val expressionText = getExpressionText(element)
         val inlineMathText = inlineMathPrefix + expressionText + inlineMathSuffix
@@ -99,8 +113,6 @@ class ParadoxInlineMathEvaluatorDialog(
         }.apply { comparator = SpeedSearchComparator(false) }
     }
 
-    val result: String get() = currentOutputText
-
     init {
         title = PlsBundle.message("ui.dialog.evaluator.inlineMath.title")
         setOKButtonText(PlsBundle.message("action.copy"))
@@ -146,29 +158,45 @@ class ParadoxInlineMathEvaluatorDialog(
                 a.expression to v
             }
             .toMap()
-
-        val output = getOutput(args)
-        resultTextArea.text = output
-        currentOutputText = output
+        evaluate(args)
+        resultTextArea.text = currentResultText.orEmpty()
     }
 
     private fun copyResultText() {
-        CopyPasteManager.getInstance().setContents(TextTransferable(currentOutputText as CharSequence))
+        CopyPasteManager.getInstance().setContents(TextTransferable(currentResultText.orEmpty() as CharSequence))
     }
 
-    private fun getOutput(args: Map<String, String>): String {
+    private fun evaluate(args: Map<String, String>) {
+        if (!isValid) {
+            currentResult = null
+            currentResultText = PlsBundle.message("ui.dialog.evaluator.inlineMath.message.invalid")
+            return
+        }
+
+        val element = element
+        if (element == null) {
+            isValid = false
+            currentResult = null
+            currentResultText = PlsBundle.message("ui.dialog.evaluator.inlineMath.message.invalid")
+            return
+        }
+
         try {
             val result = evaluator.evaluate(element, args)
-            initialized = true
-            return result.formatted()
+            isInitialized = true
+            currentResult = result
+            currentResultText = result.formatted()
         } catch (e: Throwable) {
-            val message = e.message.orEmpty().ifEmpty { e::class.java.simpleName }
-            if (!initialized && e is IllegalArgumentException && message.startsWith("Missing arguments:")) {
-                // 存在缺失的传参，此时仍然显示为空字符串
-                return ""
+            val message = e.message.orEmpty()
+            if (!isInitialized && e is IllegalArgumentException && message.startsWith("Missing arguments:")) {
+                // 存在缺失的传参，此时显示为空字符串
+                currentResult = null
+                currentResultText = ""
+                return
             }
-            initialized = true
-            return message
+            isInitialized = true
+            currentResult = null
+            currentResultText = PlsBundle.message("ui.dialog.evaluator.inlineMath.message.exception") + message.errorDetails
         }
     }
 

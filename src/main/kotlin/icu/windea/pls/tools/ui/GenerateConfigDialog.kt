@@ -12,7 +12,6 @@ import com.intellij.ui.RecentsManager
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
-import com.intellij.util.ui.JBUI
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText

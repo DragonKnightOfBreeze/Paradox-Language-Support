@@ -56,7 +56,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 - 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
 - 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
-- 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+- 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### 使用步骤
 
@@ -164,9 +164,21 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 ### 官方文档
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
+- [Coroutines | Kotlin Documentation](https://kotlinlang.org/docs/coroutines-overview.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+- [PSI | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/psi.html)
+- [Custom Language Support | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
+- [Steam browser protocol | Valve Developer Community](https://developer.valvesoftware.com/wiki/Steam_browser_protocol)
+
+### 插件开发
+
+- [JetBrains/intellij-community: The IntelliJ Platform source code (a primary reference for plugin development)](https://github.com/JetBrains/intellij-community)
+- [JetBrains/intellij-platform-plugin-template: Template for building IntelliJ Platform plugins](https://github.com/JetBrains/intellij-platform-plugin-template)
+- [JetBrains/intellij-platform-gradle-plugin: Gradle plugin for building IntelliJ Platform plugins](https://github.com/JetBrains/intellij-platform-gradle-plugin)
+- [JetBrains/Grammar-Kit: Grammar files support & parser/PSI generation for IntelliJ IDEA](https://github.com/JetBrains/Grammar-Kit)
+- [jflex-de/jflex: The fast scanner generator for Java with full Unicode support](https://github.com/jflex-de/jflex)
 
 ### 工具与插件
 
@@ -175,14 +187,25 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
+- [ParadoxGameConverters: Tools that convert a save game from one Paradox game into a playable mod for another](https://github.com/ParadoxGameConverters)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 - [Victoria-3-Modding-Co-op/Modding-Digests: This repository contains modding digests for Victoria 3 updates.](https://github.com/Victoria-3-Modding-Co-op/Modding-Digests)
 
-### 教程与百科
+### 图像处理
+
+- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
+
+### 社区 & 模组资源
+
+- [Paradox Mods](https://mods.paradoxplaza.com) - Paradox 游戏的官方模组平台
+- [Paradox Forums:](https://forum.paradoxplaza.com) - Paradox 游戏的官方论坛
+
+### 教程 & 百科
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
-- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
-- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app)
+- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris 中文维基
+- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris 模组教程（中文）
 
 ## 关于
 
@@ -212,7 +235,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
-[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
+[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions

@@ -4,7 +4,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class CwtDataExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {
-        CwtDataExpressionResolver.EP_NAME.extensionList.isNotEmpty()
+        CwtDataExpressionSupport.EP_NAME.extensionList.isNotEmpty()
     } catch (_: Throwable) {
         false
     }

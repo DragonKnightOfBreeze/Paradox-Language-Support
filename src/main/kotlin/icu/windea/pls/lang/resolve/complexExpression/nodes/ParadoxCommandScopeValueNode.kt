@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -10,6 +11,7 @@ import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxCommandScopeValueNode(
@@ -26,7 +28,8 @@ class ParadoxCommandScopeValueNode(
         return linkConfigs
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeValueNode {
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
@@ -131,12 +134,13 @@ class ParadoxCommandScopeValueNode(
         }
 
         private fun resolveDsNode(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtLinkConfig>): ParadoxComplexExpressionNode {
+            configs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
+                ?.let { ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, it) }
+                ?.let { return it }
             configs.filter { it.configExpression?.type == CwtDataTypes.Command }.orNull()
                 ?.let { ParadoxCommandExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
             return ParadoxDataSourceNode.resolve(text, textRange, configGroup, configs)
         }
     }
-
-    companion object : Resolver()
 }

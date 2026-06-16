@@ -1,20 +1,31 @@
-import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.markdownToHTML
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
+import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // Provides the IntelliJ Markdown parser for build-time markdown-to-HTML conversion
+        classpath("org.jetbrains:markdown-jvm:0.7.3")
+    }
+}
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.intellij.platform") version "2.16.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.3"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
-    id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
+    // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
     id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
 val liteVersion = providers.gradleProperty("pls.is.lite").getOrElse("false").toBoolean()
-val includeSqlite = providers.gradleProperty("pls.capabilities.includeSqlite").getOrElse("true").toBoolean()
+val includeSqlite = providers.gradleProperty("pls.include.sqlite").getOrElse("true").toBoolean()
 
 val excludesInJar = emptyList<String>()
 val excludesInZip = buildList {
@@ -24,7 +35,8 @@ val excludesInZip = buildList {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
-// Configure IntelliJ Platform Plugin - read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
+// Configure IntelliJ Platform Plugin
+// read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
 intellijPlatform {
     pluginConfiguration {
         id = providers.gradleProperty("pluginId")
@@ -33,35 +45,13 @@ intellijPlatform {
 
         description = projectDir.resolve("DESCRIPTION.md").readText().let(::markdownToHTML)
 
-        // local variable for configuration cache compatibility
-        val changelog = project.changelog
-        // Get the latest available change notes from the changelog file
+        // Extract change notes for the current version from CHANGELOG.md
+        // Finds the matching h2 section by version, processes items (strips [x]/[X], removes [ ] and HIDDEN),
+        // then converts the result to HTML
         changeNotes = providers.gradleProperty("pluginVersion").map { pluginVersion ->
-            with(changelog) {
-                @Suppress("UNCHECKED_CAST")
-                fun handleChangelogItem(changelogItem: Changelog.Item) {
-                    val items = changelogItem.javaClass.getDeclaredField("items").also { it.trySetAccessible() }.get(changelogItem)
-                        as? MutableMap<String, Set<String>> ?: return
-                    items.keys.forEach { key ->
-                        val item = items[key]
-                        if (item.isNullOrEmpty()) return@forEach
-                        val finalItem = item.mapNotNull {
-                            when {
-                                it.contains("HIDDEN") -> null // hidden
-                                it.startsWith("[ ]") -> null // undo
-                                it.startsWith("[x]") || it.startsWith("[X]") -> it.drop(3).trim() // done
-                                else -> it.trim()
-                            }
-                        }.toSet()
-                        items[key] = finalItem
-                    }
-                }
-
-                val changelogItem0 = getOrNull(pluginVersion) ?: getUnreleased()
-                val changelogItem = changelogItem0.withHeader(false).withEmptySections(false)
-                handleChangelogItem(changelogItem)
-                renderItem(changelogItem, Changelog.OutputType.HTML)
-            }
+            val changelogText = projectDir.resolve("CHANGELOG.md").readText()
+            val sectionText = extractChangelogForVersion(changelogText, pluginVersion)
+            if (sectionText.isBlank()) "" else markdownToHTML(sectionText)
         }
 
         ideaVersion {
@@ -86,15 +76,6 @@ intellijPlatform {
             recommended()
         }
     }
-}
-
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-changelog {
-    header = version
-    headerParserRegex = """\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?(?:\s+-\s+\d{4}-\d{2}-\d{2})?""".toRegex()
-    groups.empty()
-    keepUnreleasedSection = true
-    repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
 }
 
 grammarKit {
@@ -244,7 +225,97 @@ kotlin {
     }
 }
 
-// CWT config source setup (prefer local, download if missing)
+// region Methods for Markdown
+
+// Custom markdown-to-HTML conversion using IntelliJ Markdown parser
+private fun markdownToHTML(markdown: String): String {
+    // Normalize text to LF, because a Markdown library currently fully supports only this line separator
+    val text = markdown.normalizeLineSeparator()
+    val flavour = GFMFlavourDescriptor()
+    val ast = MarkdownParser(flavour).buildMarkdownTreeFromString(text)
+    return HtmlGenerator(text, ast, flavour).generateHtml().normalizeLineSeparator()
+}
+
+// Normalize text to LF
+private fun String.normalizeLineSeparator() = replace("\\R".toRegex(), "\n")
+
+// Extract and process the changelog section for a given version from the changelog document
+private fun extractChangelogForVersion(fullChangelog: String, targetVersion: String): String {
+    // Match h2 headings: `## <heading>`
+    val headingRegex = """^##\s+(.+)$""".toRegex()
+    // Match version from heading text: `3.0.0`, `3.0.0-dev`, `3.0.0-dev-262`, `3.0.0 - 2026-01-01`, etc.
+    val versionRegex = """^(\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?)(?:\s+-\s+\d{4}-\d{2}-\d{2})?$""".toRegex()
+
+    // Parse the changelog into heading-content sections
+    data class Section(val heading: String, val content: String)
+
+    val sections = mutableListOf<Section>()
+    var currentHeading = ""
+    var currentContent = StringBuilder()
+
+    for (line in fullChangelog.lines()) {
+        val match = headingRegex.matchEntire(line)
+        if (match != null) {
+            if (currentHeading.isNotEmpty()) {
+                sections.add(Section(currentHeading, currentContent.toString().trim()))
+            }
+            currentHeading = match.groupValues[1].trim()
+            currentContent = StringBuilder()
+        } else {
+            if (currentContent.isNotEmpty()) currentContent.appendLine()
+            currentContent.append(line)
+        }
+    }
+    if (currentHeading.isNotEmpty()) {
+        sections.add(Section(currentHeading, currentContent.toString().trim()))
+    }
+
+    // Find the matching section for the target version
+    var targetContent: String? = null
+
+    // 1. Try exact version match against the heading text
+    for (section in sections) {
+        val vMatch = versionRegex.matchEntire(section.heading)
+        if (vMatch != null && vMatch.groupValues[1] == targetVersion) {
+            targetContent = section.content
+            break
+        }
+    }
+
+    // 2. Fallback: use the "Unreleased" section if non-empty
+    if (targetContent == null) {
+        val unreleased = sections.find { it.heading == "Unreleased" }?.content
+        if (!unreleased.isNullOrBlank()) {
+            targetContent = unreleased
+        }
+    }
+
+    // 3. Last fallback: use the first version-matching section
+    if (targetContent == null) {
+        targetContent = sections.firstOrNull { versionRegex.matches(it.heading) }?.content ?: ""
+    }
+
+    return processChangelogSection(targetContent)
+}
+
+// Process changelog section content: filter out undone/hidden items, strip checkbox markers
+private fun processChangelogSection(content: String): String {
+    val lines = content.lines()
+    val processed = lines.mapNotNull { line ->
+        val line1 = line.trimStart().lowercase()
+        when {
+            line1.contains("HIDDEN") -> null // Exclude hidden items
+            line1.startsWith("- [ ] ") -> null // Exclude not-done items
+            line1.startsWith("- [x] ") -> line.replaceFirst("- [x] ", "- ") // Convert to normal list item
+            else -> line // Keep as-is
+        }
+    }
+    return processed.joinToString("\n").trim()
+}
+
+// endregion
+
+// region CWT Config Source Setup
 
 // Configurable parameters for download behavior (override via -P)
 val cwtDownloadIfMissing = providers.gradleProperty("pls.cwt.downloadIfMissing").orElse("true")
@@ -307,7 +378,7 @@ cwtRepositories.filter { it.downloadable }.forEach { r ->
     prepareCwtConfigs.configure { dependsOn(unzip) }
 }
 
-// Tasks
+// endregion
 
 tasks {
     withType<Copy> {
@@ -336,10 +407,10 @@ tasks {
                     include("**/*.cwt", "**/LICENSE", "**/*.md")
                     // Normalize paths:
                     // - Flatten files under the {repoDir}-{branch} directory
-                    // - Flatten files under the config directory
+                    // - Flatten files under the `config` directory
                     eachFile {
-                        path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/")
-                        path = path.replace("/$gameTypeId/config/", "/$gameTypeId/")
+                        path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/", ignoreCase = true)
+                        path = path.replace("/$gameTypeId/config/", "/$gameTypeId/", ignoreCase = true)
                     }
                 }
             }
@@ -371,10 +442,6 @@ tasks {
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
-
-        // systemProperty("pls.refresh.builtIn", "true")
-        // systemProperty("pls.record.cache.status", "true")
-        // systemProperty("pls.record.index.status", "true")
     }
     withType<Test> {
         useJUnit()

@@ -4,9 +4,6 @@ import com.intellij.ide.lightEdit.LightEditCompatible
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.SpecialUrlService
 import javax.swing.Icon
 

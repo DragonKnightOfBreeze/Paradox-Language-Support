@@ -20,6 +20,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.type.ParadoxExpressionRole
 
 class ParadoxDataSourceNode(
     override val text: String,
@@ -43,7 +44,7 @@ class ParadoxDataSourceNode(
             val offset = ParadoxExpressionManager.getExpressionOffset(element)
             val rangeInElement = rangeInExpression.shiftRight(offset)
             val resolved = linkConfigs.find {
-                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression, exact = false) != null
+                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other) != null
             }
             if (resolved != null) return resolved
         }
@@ -112,7 +113,7 @@ class ParadoxDataSourceNode(
             run {
                 if (linkConfigsNotDynamicValue.isEmpty()) return@run
                 val resolved = linkConfigsNotDynamicValue.firstNotNullOfOrNull {
-                    ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression)
+                    ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other)
                 }
                 if (resolved != null) return resolved
             }
@@ -131,7 +132,7 @@ class ParadoxDataSourceNode(
             run {
                 if (linkConfigsNotDynamicValue.isEmpty()) return@run
                 val resolved = linkConfigsNotDynamicValue.flatMap {
-                    ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, it, it.configExpression)
+                    ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other)
                 }
                 if (resolved.isNotEmpty()) return resolved.createResults()
             }
@@ -156,13 +157,12 @@ class ParadoxDataSourceNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
             // text may contain parameters
             return ParadoxDataSourceNode(text, textRange, configGroup, linkConfigs)
         }
     }
-
-    companion object : Resolver()
 }
 

@@ -9,6 +9,7 @@ import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -99,7 +100,9 @@ open class ParadoxScriptTextPlainRenderContext(
     fun renderSeparator(element: ParadoxScriptProperty) {
         val separator = element.findChild { it.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS }
         val separatorText = separator?.text ?: "="
-        builder.append(" ").append(separatorText).append(" ")
+        if (separator !== ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) builder.append(" ")
+        builder.append(separatorText)
+        builder.append(" ")
     }
 
     fun renderLeftBracket() {

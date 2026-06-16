@@ -5,10 +5,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 
@@ -36,7 +33,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  *
  * #### 整体形态
  * - 形如：`<type>:<value>`，或 `<type>:<baseValue>:<swappedValue>`（允许一个可选的“替换值”段）。
- * - `<type>` 与 `<value>` 均来自 CWT 规则中预定义的数据库对象类型与对象名。
+ * - `<type>` 与 `<value>` 均来自规则中预定义的数据库对象类型与对象名。
  *
  * #### 节点组成
  * - 类型节点：[ParadoxDatabaseObjectTypeNode]（第 1 段）。
@@ -44,17 +41,18 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * - 可选替换值节点：[ParadoxDatabaseObjectNode]（第 3 段，替换值）。
  */
 interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+            return ParadoxDataObjectExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxDataObjectExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+private object ParadoxDataObjectExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

@@ -120,32 +120,45 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val dataSourceExpressions: List<CwtDataExpression>
     override val configExpression: CwtDataExpression?
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为（常规）链接规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtLinkConfig?
-        /** 由属性规则解析为本地化链接规则。 */
-        fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig?
-        /** 由已有的（常规）链接规则，解析为本地化链接规则。 */
-        fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig
-        /** 构造一个委托版本（wrapper），并指定数据源的索引。如果索引越界，则返回 null。 */
-        fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig?
-    }
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtLinkConfig? {
+            return CwtLinkConfigResolver.resolve(config)
+        }
 
-    companion object : Resolver by CwtLinkConfigResolverImpl()
+        /** 由属性规则解析为本地化链接规则。 */
+        @JvmStatic
+        fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig? {
+            return CwtLinkConfigResolver.resolveForLocalisation(config)
+        }
+
+        /** 由已有的（常规）链接规则，解析为本地化链接规则。 */
+        @JvmStatic
+        fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig {
+            return CwtLinkConfigResolver.resolveForLocalisation(linkConfig)
+        }
+
+        /** 构造一个委托版本（wrapper），并指定数据源的索引。如果索引越界，则返回 null。 */
+        @JvmStatic
+        fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig? {
+            return CwtLinkConfigResolver.delegatedWith(linkConfig, dataSourceIndex)
+        }
+    }
 }
 
 // region Implementations
 
-private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResolverScope {
+private object CwtLinkConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
+    fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config, false)
 
-    override fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config, true)
+    fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config, true)
 
-    override fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig = doResolve(linkConfig, true)
+    fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig = doResolve(linkConfig, true)
 
-    private fun doResolve(config: CwtPropertyConfig, isLocalisationLink: Boolean = false): CwtLinkConfig? {
+    private fun doResolve(config: CwtPropertyConfig, isLocalisationLink: Boolean): CwtLinkConfig? {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
@@ -193,7 +206,7 @@ private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResol
     }
 
     @Suppress("SameParameterValue")
-    private fun doResolve(linkConfig: CwtLinkConfig, isLocalisationLink: Boolean = false): CwtLinkConfig {
+    private fun doResolve(linkConfig: CwtLinkConfig, isLocalisationLink: Boolean): CwtLinkConfig {
         return linkConfig.apply {
             CwtLinkConfigImpl(
                 config, name, type, fromData, fromArgument, argumentSeparator,
@@ -203,7 +216,7 @@ private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResol
         }
     }
 
-    override fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig? {
+    fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig? {
         if (dataSourceIndex < 0 || dataSourceIndex > linkConfig.dataSources.lastIndex) return null
         if (dataSourceIndex == linkConfig.dataSourceIndex) return linkConfig
         if (linkConfig.dataSources.size <= 1) return linkConfig

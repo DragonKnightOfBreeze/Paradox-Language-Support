@@ -23,7 +23,6 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.psi.PsiFile
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.editor
@@ -35,7 +34,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
@@ -57,27 +56,25 @@ import javax.swing.Icon
  * - 按照覆盖方式进行排序。
  */
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
-    private fun findFile(e: AnActionEvent): VirtualFile? {
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: return null
+    private fun findSourceFile(e: AnActionEvent): VirtualFile? {
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (file.isDirectory) return null
         if (file.fileType !is ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
-        // val gameType = fileInfo.rootInfo.gameType
-        // val path = fileInfo.path.path
         return file
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxDefinitionElement? {
-        return ParadoxPsiFileManager.findDefinition(file, offset)
-    }
-
-    private fun findElement(e: AnActionEvent): ParadoxDefinitionElement? {
+    private fun findElement(e: AnActionEvent, file: VirtualFile, project: Project): ParadoxDefinitionElement? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
         if (element is ParadoxDefinitionElement && element.definitionInfo != null) return element
-        return null
+
+        e.presentation.isVisible = true
+        val editor = e.editor ?: return null
+        val offset = editor.caretModel.offset
+        val psiFile = file.toPsiFile(project) ?: return null
+        return ParadoxPsiFileManager.findDefinition(psiFile, offset)
     }
 
     override fun update(e: AnActionEvent) {
@@ -88,37 +85,19 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
 
         // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
-        val presentation = e.presentation
-        presentation.isVisible = false
-        presentation.isEnabled = false
+        e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
-        val file = findFile(e) ?: return
-        var definition = findElement(e)
-        if (definition == null) {
-            presentation.isVisible = true
-            val editor = e.editor ?: return
-            val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile(project) ?: return
-            definition = findElement(psiFile, offset)
-        }
-        presentation.isEnabledAndVisible = definition != null
+        val sourceFile = findSourceFile(e) ?: return
+        val element = findElement(e, sourceFile, project)
+        e.presentation.isEnabledAndVisible = element != null
     }
 
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
-        var definition = findElement(e)
-        if (definition == null) {
-            val project = e.project ?: return null
-            val file = findFile(e) ?: return null
-            val editor = e.editor ?: return null
-            val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile(project) ?: return null
-            definition = findElement(psiFile, offset)
-        }
-        if (definition == null) return null
-        val psiFile = definition.containingFile
-        val file = psiFile.virtualFile
-        val project = psiFile.project
-        val definitionInfo = definition.definitionInfo ?: return null
+        val project = e.project ?: return null
+        val sourceFile = findSourceFile(e) ?: return null
+        val element = findElement(e, sourceFile, project) ?: return null
+        val file = element.containingFile?.virtualFile ?: return null
+        val definitionInfo = element.definitionInfo ?: return null
         val definitions = mutableListOf<ParadoxDefinitionElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {
             readAction {
@@ -130,7 +109,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
         if (definitions.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.definitions.content.title.info.1")
+            val content = PlsBundle.message("diff.compare.definitions.content.notification.empty")
             PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
@@ -138,10 +117,10 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
 
-        val windowTitle = getWindowsTitle(definition, definitionInfo) ?: return null
-        val contentTitle = getContentTitle(definition, definitionInfo) ?: return null
+        val windowTitle = getWindowsTitle(element, definitionInfo) ?: return null
+        val contentTitle = getContentTitle(element, definitionInfo) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
-        val content = createContent(contentFactory, project, documentContent, definition)
+        val content = createContent(contentFactory, project, documentContent, element)
 
         var index = 0
         var currentIndex = 0
@@ -151,7 +130,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                 val otherPsiFile = otherDefinition.containingFile ?: return@mapNotNull null
                 val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
 
-                val isSamePosition = definition isSamePosition otherDefinition
+                val isSamePosition = element isSamePosition otherDefinition
                 val isCurrent = isSamePosition
                 val isReadonly = isSamePosition
 
@@ -163,7 +142,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                     isSamePosition -> {
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
-                        createContent(contentFactory, project, otherDocumentContent, definition)
+                        createContent(contentFactory, project, otherDocumentContent, element)
                     }
                     else -> {
                         val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
@@ -201,7 +180,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         val rootKeys = definition.definitionInfo?.rootKeys
         if (rootKeys.isNotNullOrEmpty()) {
-            ParadoxAnalysisInjector.injectRootKeys(tempFile, rootKeys)
+            ParadoxAnalysisInjectionManager.injectRootKeys(tempFile, rootKeys)
         }
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)
@@ -216,11 +195,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val name = definitionInfo.name.or.anonymous()
-        val type = definitionInfo.type
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
+        val name = definitionInfo.name.or.anonymous()
+        val type = definitionInfo.type
         return PlsBundle.message("diff.compare.definitions.dialog.title", name, type, path, qualifiedName)
     }
 
@@ -229,11 +208,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val name = definitionInfo.name.or.anonymous()
-        val type = definitionInfo.type
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
+        val name = definitionInfo.name.or.anonymous()
+        val type = definitionInfo.type
         return when {
             original -> PlsBundle.message("diff.compare.definitions.originalContent.title", name, type, path, qualifiedName)
             else -> PlsBundle.message("diff.compare.definitions.content.title", name, type, path, qualifiedName)
@@ -264,11 +243,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val name = otherDefinitionInfo.name.or.anonymous()
-            val type = otherDefinitionInfo.type
             val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
             // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
+            val name = otherDefinitionInfo.name.or.anonymous()
+            val type = otherDefinitionInfo.type
             return PlsBundle.message("diff.compare.definitions.popup.name", name, type, path, qualifiedName)
         }
     }

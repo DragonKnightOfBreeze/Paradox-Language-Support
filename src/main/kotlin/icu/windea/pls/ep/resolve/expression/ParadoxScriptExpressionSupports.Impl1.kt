@@ -12,6 +12,7 @@ import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.type.ParadoxExpressionRole
 
 // Base
 
@@ -37,7 +38,7 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupportBase()
         return dataType == CwtDataTypes.Block
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         return config.pointer.element
     }
 

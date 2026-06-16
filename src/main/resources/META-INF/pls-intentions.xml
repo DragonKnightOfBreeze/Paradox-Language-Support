@@ -31,17 +31,27 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ChangeDefinitionInjectionModeIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.QuoteIdentifierIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.UnquoteIdentifierIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.PutMembersOnOneLineIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.PutMembersOnSeparateLinesIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ChangeDefinitionInjectionModeIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
@@ -96,22 +106,12 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ConditionalSnippetToPropertyFormatIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ConditionalStatementToPropertyFormIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ConditionalSnippetToBlockFormatIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.PutMembersOnOneLineIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.PutMembersOnSeparateLinesIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ConditionalStatementToBlockFormIntention</className>
     </intentionAction>
     <!-- endregion -->
 

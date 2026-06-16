@@ -6,13 +6,15 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
  * 提供对CSV表达式（列）的支持。
@@ -21,22 +23,23 @@ import icu.windea.pls.config.CwtDataType
  *
  * 注意：相比 [ParadoxScriptExpressionSupport]，仅支持有限的 [CwtDataType]。
  *
- * @see ParadoxCsvExpressionElement
+ * @see ParadoxExpressionElement
+ * @see ParadoxScriptExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxCsvExpressionSupport {
     fun supports(config: CwtValueConfig, configExpression: CwtDataExpression) : Boolean
 
-    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
 
     }
 
-    fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
+    fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         return null
     }
 
-    fun multiResolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config).to.singletonSetOrEmpty()
+    fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
+        return resolve(element, rangeInElement, text, config).to.singletonListOrEmpty()
     }
 
     fun complete(context: ProcessingContext, result: CompletionResultSet) {

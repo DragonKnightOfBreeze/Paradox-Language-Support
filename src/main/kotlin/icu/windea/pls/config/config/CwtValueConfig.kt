@@ -49,26 +49,25 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     }
 
     /** 创建基于当前规则的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-    override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtValueConfig {
-        throw UnsupportedOperationException()
-    }
+    override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtValueConfig = throw UnsupportedOperationException()
 
     /** 创建基于当前规则的委托规则，并指定要替换的值。父规则会被重置为 `null`。 */
-    fun delegatedWith(value: String): CwtValueConfig {
-        throw UnsupportedOperationException()
-    }
+    fun delegatedWith(value: String): CwtValueConfig = throw UnsupportedOperationException()
 
-    interface Resolver {
+    companion object {
         /** 由 [CwtValue] 解析为值规则。 */
-        fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig
+        @JvmStatic
+        fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig = CwtValueConfigResolver.resolve(element, file, configGroup)
 
         /** 基于属性型成员规则，解析出其值侧对应的值型成员规则。 */
+        @JvmStatic
         fun resolveFromPropertyConfig(
             pointer: SmartPsiElementPointer<out CwtValue>,
             propertyConfig: CwtPropertyConfig,
-        ): CwtValueConfig
+        ): CwtValueConfig = CwtValueConfigResolver.resolveFromPropertyConfig(pointer, propertyConfig)
 
         /** 创建值规则。其中的选项数据仍然需要手动初始化。 */
+        @JvmStatic
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
@@ -77,12 +76,14 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             configs: List<CwtMemberConfig<*>>? = null,
             propertyConfig: CwtPropertyConfig? = null,
             injectable: Boolean = false,
-        ): CwtValueConfig
+        ): CwtValueConfig = CwtValueConfigResolver.create(pointer, configGroup, valueExpression, valueType, configs, propertyConfig, injectable)
 
         /** 创建基于指定的字符串字面量 [value] 的模拟的值规则。使用空指针。 */
-        fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig
+        @JvmStatic
+        fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig = CwtValueConfigResolver.createMock(configGroup, value)
 
         /** 创建基于源规则 [sourceConfig] 的复制规则。其中的选项数据仍然需要手动合并。 */
+        @JvmStatic
         fun copy(
             sourceConfig: CwtValueConfig,
             pointer: SmartPsiElementPointer<out CwtValue> = sourceConfig.pointer,
@@ -90,18 +91,16 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             valueType: CwtExpressionType = sourceConfig.valueType,
             configs: List<CwtMemberConfig<*>>? = sourceConfig.configs,
             propertyConfig: CwtPropertyConfig? = sourceConfig.propertyConfig,
-        ): CwtValueConfig
+        ): CwtValueConfig = CwtValueConfigResolver.copy(sourceConfig, pointer, valueExpression, valueType, configs, propertyConfig)
     }
-
-    companion object : Resolver by CwtValueConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverScope {
+private object CwtValueConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig {
+    fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig {
         // - use `EmptyPointer` for default project to optimize memory
         // - 2.1.1 use `valueExpression` as constructor argument and field directly to optimize performance
 
@@ -109,7 +108,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         val configs = CwtConfigResolverManager.getConfigs(element, file, configGroup)
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(element.value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(element)
-        val config = create(pointer, configGroup, valueExpression, valueType, configs, injectable = true)
+        val config = create(pointer, configGroup, valueExpression, valueType, configs, propertyConfig = null, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
         when {
@@ -120,7 +119,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         return config
     }
 
-    override fun resolveFromPropertyConfig(
+    fun resolveFromPropertyConfig(
         pointer: SmartPsiElementPointer<out CwtValue>,
         propertyConfig: CwtPropertyConfig,
     ): CwtValueConfig {
@@ -129,7 +128,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         return config
     }
 
-    override fun create(
+    fun create(
         pointer: SmartPsiElementPointer<out CwtValue>,
         configGroup: CwtConfigGroup,
         valueExpression: CwtDataExpression,
@@ -147,11 +146,11 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         return config
     }
 
-    override fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig {
+    fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig {
         return CwtValueConfigMock(configGroup, CwtDataExpression.resolveValue(value))
     }
 
-    override fun copy(
+    fun copy(
         sourceConfig: CwtValueConfig,
         pointer: SmartPsiElementPointer<out CwtValue>,
         valueExpression: CwtDataExpression,

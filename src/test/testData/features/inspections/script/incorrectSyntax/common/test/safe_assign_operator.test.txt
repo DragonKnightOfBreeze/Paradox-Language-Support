@@ -1,0 +1,7 @@
+owner ?= {}
+
+owner? = {}
+
+1 <warning descr="Unexpected safe assign operator (`?=`) (key of containing property should be a string literal)">?=</warning> {}
+
+1<warning descr="Unexpected safe call assign operator (`? =`) (key of containing property should be a string literal)">? =</warning> {}

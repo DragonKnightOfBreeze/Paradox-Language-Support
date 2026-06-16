@@ -9,8 +9,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.enabledTool
-import icu.windea.pls.core.getInspectionToolState
+import icu.windea.pls.core.inspections.enabledTool
+import icu.windea.pls.core.inspections.getInspectionToolState
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection

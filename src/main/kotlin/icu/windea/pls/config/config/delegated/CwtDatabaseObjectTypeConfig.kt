@@ -63,22 +63,21 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     /** 根据 [isBase]（基础/替换）返回对应的值规则。 */
     fun getConfigForType(isBase: Boolean): CwtValueConfig?
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为数据库对象类型规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
+            return CwtDatabaseObjectTypeConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtDatabaseObjectTypeConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeConfig.Resolver, CwtConfigResolverScope {
+private object CwtDatabaseObjectTypeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {

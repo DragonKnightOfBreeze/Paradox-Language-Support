@@ -51,22 +51,21 @@ interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     @FromOptionMember("hint: string?")
     val hint: String?
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为动态值的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
+            return CwtExtendedDynamicValueConfigResolver.resolve(config, type)
+        }
     }
-
-    companion object : Resolver by CwtExtendedDynamicValueConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedDynamicValueConfigResolverImpl : CwtExtendedDynamicValueConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedDynamicValueConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig = doResolve(config, type)
-
-    private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
+    fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionData.hint
         logger.debug { "Resolved extended dynamic value config (name: $name, type: $type).".withLocationPrefix(config) }

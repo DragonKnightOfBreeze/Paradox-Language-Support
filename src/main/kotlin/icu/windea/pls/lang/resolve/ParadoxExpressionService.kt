@@ -23,6 +23,7 @@ import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.model.type.ParadoxExpressionRole
 
 object ParadoxExpressionService {
     // NOTE recursion guard is required for script expression resolution
@@ -32,8 +33,8 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
-    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if (expressionText.isEmpty()) return // skip if expression is empty
+    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+        if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
         // NOTE recursion guard is required here
@@ -42,8 +43,8 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                withRecursionCheck("${ep.javaClass.name}@annotate@${expressionText}") {
-                    ep.annotate(element, rangeInElement, expressionText, holder, config)
+                withRecursionCheck("${ep.javaClass.name}@a@${text}") {
+                    ep.annotate(element, rangeInElement, text, config, holder)
                 }
             }
         }
@@ -52,8 +53,8 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolve
      */
-    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-        if (expressionText.isEmpty()) return null // ignore if expression is empty
+    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+        if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
         // NOTE recursion guard is required here
@@ -62,20 +63,19 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                val r = withRecursionCheck("${ep.javaClass.name}@resolve@${expressionText}") {
-                    ep.resolve(element, rangeInElement, expressionText, config, isKey, exact)
+                withRecursionCheck("${ep.javaClass.name}@r@${text}") {
+                    ep.resolve(element, rangeInElement, text, config, role)
                 }
-                r
             }
         }
     }
 
     /**
-     * @see ParadoxScriptExpressionSupport.multiResolve
+     * @see ParadoxScriptExpressionSupport.resolveAll
      */
-    fun multiResolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-        if (expressionText.isEmpty()) return emptySet() // ignore if expression is empty
-        val configExpression = config.configExpression ?: return emptySet()
+    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
+        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+        val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
         // NOTE recursion guard is required here
         return withRecursionGuard {
@@ -83,10 +83,9 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                val r = withRecursionCheck("${ep.javaClass.name}@multiResolve@${expressionText}") {
-                    ep.multiResolve(element, rangeInElement, expressionText, config, isKey).orNull()
+                withRecursionCheck("${ep.javaClass.name}@ra@${text}") {
+                    ep.resolveAll(element, rangeInElement, text, config, role).orNull()
                 }
-                r
             }
         }.orEmpty()
     }
@@ -94,9 +93,9 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.getReferences
      */
-    fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
-        if (expressionText.isEmpty()) return null // ignore if expression is empty
-        val configExpression = config.configExpression ?: return null
+    fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+        val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
         // NOTE recursion guard is required here
         return withRecursionGuard {
@@ -104,12 +103,11 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                val r = withRecursionCheck("${ep.javaClass.name}@multiResolve@${expressionText}") {
-                    ep.getReferences(element, rangeInElement, expressionText, config, isKey).orNull()
+                withRecursionCheck("${ep.javaClass.name}@gr@${text}") {
+                    ep.getReferences(element, rangeInElement, text, config, role).orNull()
                 }
-                r
             }
-        }
+        }.orEmpty()
     }
 
     /**
@@ -125,7 +123,7 @@ object ParadoxExpressionService {
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                withRecursionCheck("${ep.javaClass.name}@complete${context.keyword}") {
+                withRecursionCheck("${ep.javaClass.name}@c@${context.keyword}") {
                     ep.complete(context, result)
                 }
             }
@@ -139,61 +137,57 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.annotate
      */
-    fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
-        if (expressionText.isEmpty()) return // skip if expression is empty
+    fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
+        if (text.isEmpty()) return // skip if expression is empty
         val gameType = selectGameType(element)
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
-            ep.annotate(element, rangeInElement, expressionText, holder)
+            ep.annotate(element, rangeInElement, text, holder)
         }
     }
 
     /**
      * @see ParadoxLocalisationExpressionSupport.resolve
      */
-    fun resolveLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
-        if (expressionText.isEmpty()) return null // ignore if expression is empty
+    fun resolveLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): PsiElement? {
+        if (text.isEmpty()) return null // ignore if expression is empty
         val gameType = selectGameType(element)
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val r = ep.resolve(element, rangeInElement, expressionText)
-            r
+            ep.resolve(element, rangeInElement, text)
         }
     }
 
     /**
-     * @see ParadoxLocalisationExpressionSupport.multiResolve
+     * @see ParadoxLocalisationExpressionSupport.resolveAll
      */
-    fun multiResolveLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
-        if (expressionText.isEmpty()) return emptySet() // ignore if expression is empty
+    fun resolveAllLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiElement> {
+        if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val r = ep.multiResolve(element, rangeInElement, expressionText).orNull()
-            r
+            ep.resolveAll(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
 
     /**
      * @see ParadoxLocalisationExpressionSupport.getReferences
      */
-    fun getLocalisationExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
-        if (expressionText.isEmpty()) return null // ignore if expression is empty
+    fun getLocalisationExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
+        if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
-        ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
+        return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
-            if (!ep.supports(element)) return@f
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
-            val r = ep.getReferences(element, rangeInElement, expressionText).orNull()
-            if (r != null) return r
-        }
-        return null
+            if (!ep.supports(element)) return@f null
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.getReferences(element, rangeInElement, text).orNull()
+        }.orEmpty()
     }
 
     /**
@@ -218,47 +212,45 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.annotate
      */
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
-        if (expressionText.isEmpty()) return // skip if expression is empty
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+        if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
-            ep.annotate(element, rangeInElement, expressionText, holder, config)
+            ep.annotate(element, rangeInElement, text, config, holder)
         }
     }
 
     /**
      * @see ParadoxCsvExpressionSupport.resolve
      */
-    fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
-        if (expressionText.isEmpty()) return null // ignore if expression is empty
+    fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+        if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val r = ep.resolve(element, rangeInElement, expressionText, config)
-            r
+            ep.resolve(element, rangeInElement, text, config)
         }
     }
 
     /**
-     * @see ParadoxCsvExpressionSupport.multiResolve
+     * @see ParadoxCsvExpressionSupport.resolveAll
      */
-    fun multiResolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
-        if (expressionText.isEmpty()) return emptySet() // ignore if expression is empty
+    fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
+        if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val r = ep.multiResolve(element, rangeInElement, expressionText, config).orNull()
-            r
+            ep.resolveAll(element, rangeInElement, text, config).orNull()
         }.orEmpty()
     }
 

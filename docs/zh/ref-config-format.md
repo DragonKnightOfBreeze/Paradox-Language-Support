@@ -1480,8 +1480,12 @@ title
 <!-- @see icu.windea.pls.config.CwtDataType -->
 <!-- @see icu.windea.pls.config.CwtDataTypes -->
 <!-- @see icu.windea.pls.config.CwtDataTypeSets -->
-<!-- @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver -->
+<!-- @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport -->
 <!-- @see icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher -->
+<!-- @see icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher -->
+<!-- @see icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport -->
+<!-- @see icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport -->
+<!-- @see icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport -->
 
 > 本章节介绍数据类型的概念、分类与用途，帮助读者理解规则文件中的数据表达式如何与脚本文件中的实际内容进行匹配。
 
@@ -1496,11 +1500,12 @@ title
 - 数据表达式 `enum[weight_or_base]` 的数据类型为 `EnumValue`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
 
 相关的扩展点：
-- 数据类型的解析逻辑由扩展点 `CwtDataExpressionResolver` 驱动。
-- 脚本文件中的表达式与规则表达式的匹配逻辑由扩展点 `ParadoxScriptExpressionMatcher` 驱动。
-- CSV 文件中的表达式与规则表达式的匹配逻辑由扩展点 `ParadoxCsvExpressionMatcher` 驱动（有限支持）。
-- 脚本文件中的表达式的各种语言功能的实现逻辑由扩展点 `ParadoxScriptExpressionSupport` 驱动。
-- CSV 文件中的表达式的各种语言功能的实现逻辑由扩展点 `ParadoxCsvExpressionSupport` 驱动（有限支持）。
+- 数据类型的解析逻辑由扩展点 `icu.windea.pls.dataExpressionSupport` 驱动。
+- 脚本文件中的表达式与规则表达式的匹配逻辑由扩展点 `icu.windea.pls.scriptExpressionMatcher` 驱动。
+- CSV 文件中的表达式与规则表达式的匹配逻辑由扩展点 `icu.windea.pls.csvExpressionMatcher` 驱动（有限支持）。
+- 脚本文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.scriptExpressionSupport` 驱动。
+- 本地化文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.localisationExpressionSupport` 驱动（特殊支持）。
+- CSV 文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.csvExpressionSupport` 驱动（有限支持）。
 
 ### 基本数据类型 {#data-types-base}
 

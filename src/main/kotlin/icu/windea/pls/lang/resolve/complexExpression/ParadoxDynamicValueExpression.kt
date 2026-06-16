@@ -8,10 +8,7 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -20,6 +17,8 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypeSets.DynamicValue]。
+ * - 如果单独使用，`@` 之后允许一组链接节点，组成作用域链。
+ * - 如果嵌套在链式表达式中，`@` 之后仅允许一个链接节点，作为单个作用域，再之后的链接节点属于外层的链式表达式。
  *
  * 示例：
  * ```
@@ -35,37 +34,37 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ### 语法与结构
  *
  * #### 整体形态
- * - 由“动态值名”与可选的 `@` 后缀“作用域字段表达式”组成：`dynamic_value` 或 `dynamic_value@scope_field`。
- * - 文本按第一处 `@` 切分；`@` 之后整体交由 [ParadoxScopeFieldExpression] 解析。
+ * - 由一个标识符（作为动态值节点）与可选的 `@` 部分（`@` 之后是一个嵌套的作用域字段表达式）组成。
  *
  * #### 节点组成
  * - 动态值名：[ParadoxDynamicValueNode]（首段）。
  * - 分隔符：`@`（[ParadoxMarkerNode]，可选）。
  * - 作用域字段表达式：[ParadoxScopeFieldExpression]（可选）。
- *
- * #### 解析与约束
- * - 动态值名需为参数感知的标识符（兼容 `.`）。
- * - 仅处理第一处 `@`；其后内容整体作为作用域字段表达式输入。
  */
 interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
     val configs: List<CwtConfig<*>>
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression?
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression?
-    }
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
+            return ParadoxDynamicValueExpressionResolver.resolve(text, range, configGroup, config)
+        }
 
-    companion object : Resolver by ParadoxDynamicValueExpressionResolverImpl()
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+            return ParadoxDynamicValueExpressionResolver.resolve(text, range, configGroup, configs)
+        }
+    }
 }
 
 // region Implementations
 
-private class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
+private object ParadoxDynamicValueExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
         return resolve(text, range, configGroup, config.to.singletonList())
     }
 
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
         if (configs.any { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
 
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false

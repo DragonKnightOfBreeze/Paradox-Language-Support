@@ -15,11 +15,10 @@ class ParadoxCommandSuffixNode(
         return ParadoxLocalisationHighlighterColors.TEXT
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandSuffixNode {
             return ParadoxCommandSuffixNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

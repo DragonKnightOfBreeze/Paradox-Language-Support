@@ -12,8 +12,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.values.ReversibleValue
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeConstants
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
     object Keys : KeyRegistry() {

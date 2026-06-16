@@ -2,6 +2,7 @@ package icu.windea.pls.lang.tools
 
 import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 
 interface SpecialUrlService {
     /**
@@ -48,9 +49,43 @@ interface SpecialUrlService {
     fun getSteamGameLaunchUrl(steamId: String): String
 
     /**
-     * 得到 [gameType] 对应的游戏维基页面的路径。
+     * 得到 [steamId] 对应的 SteamDB 页面链接。
+     *
+     * 参见：[SteamDB](https://steamdb.info)
      */
-    fun getGameWikiUrl(gameType: ParadoxGameType): String
+    fun getSteamDbAppUrl(steamId: String): String
+
+    /**
+     * 得到 [gameId] 对应的游戏的 Paradox Mods 页面链接。
+     *
+     * @param gameId 官方使用的游戏 ID（见 [ParadoxGameType.gameId]）。
+     *
+     * 参见：[Paradox Mods](https://mods.paradoxplaza.com)
+     */
+    fun getParadoxModsGameUrl(gameId: String): String
+
+    /**
+     * 得到 [remoteId] 对应的 Paradox Mods 模组的页面链接。
+     *
+     * @param remoteId Paradox Mods 使用的模组 ID（见 [ParadoxRootInfo.Mod.remoteId]）。
+     *
+     * 参见：[Paradox Mods](https://mods.paradoxplaza.com)
+     */
+    fun getParadoxModsModUrl(remoteId: String): String
+
+    /**
+     * 得到 [gameType] 对应的游戏论坛页面链接。
+     *
+     * 参见：[Paradox Forum](https://forum.paradoxplaza.com/forum/)
+     */
+    fun getGameForumUrl(gameType: ParadoxGameType): String?
+
+    /**
+     * 得到 [gameType] 对应的游戏维基页面的链接。
+     *
+     * 参见：[Paradox Wikis](https://wikis.paradoxplaza.com)
+     */
+    fun getGameWikiUrl(gameType: ParadoxGameType): String?
 
     /**
      * 是否是使用 Steam 超链接协议的链接。

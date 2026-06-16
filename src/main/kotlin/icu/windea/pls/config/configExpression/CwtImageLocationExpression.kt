@@ -44,25 +44,21 @@ interface CwtImageLocationExpression : CwtLocationExpression {
     operator fun component3() = namePaths
     operator fun component4() = framePaths
 
-    interface Resolver {
-        fun resolveEmpty(): CwtImageLocationExpression
-        fun resolve(expressionString: String): CwtImageLocationExpression
+    companion object {
+        @JvmStatic
+        fun resolve(expressionString: String): CwtImageLocationExpression {
+            return CwtImageLocationExpressionResolver.resolve(expressionString)
+        }
     }
-
-    companion object : Resolver by CwtImageLocationExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpression.Resolver {
-    private val cache = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtImageLocationExpression> { doResolve(it) }
-
+private object CwtImageLocationExpressionResolver {
+    private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtImageLocationExpression> { doResolve(it) }
     private val emptyExpression = CwtImageLocationExpressionImpl("", "")
 
-    override fun resolveEmpty(): CwtImageLocationExpression = emptyExpression
-
-    override fun resolve(expressionString: String): CwtImageLocationExpression {
+    fun resolve(expressionString: String): CwtImageLocationExpression {
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }

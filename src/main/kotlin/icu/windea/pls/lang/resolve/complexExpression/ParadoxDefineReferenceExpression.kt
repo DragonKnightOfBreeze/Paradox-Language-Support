@@ -5,12 +5,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 
 /**
@@ -18,10 +13,11 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
+ * - 引用的定值变量的值应当是一个字面量（通常是数字、颜色或日期）。
  *
  * 示例：
  * ```
- * define:NPortrait|GRACEFUL_AGING_START
+ * define:Namespace|Variable
  * ```
  *
  * 语法：
@@ -39,17 +35,18 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - 变量名：[ParadoxDefineVariableNode]（同文件的二级键）。
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
+            return ParadoxDefineReferenceExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxDefineReferenceExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineReferenceExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
+private object ParadoxDefineReferenceExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 

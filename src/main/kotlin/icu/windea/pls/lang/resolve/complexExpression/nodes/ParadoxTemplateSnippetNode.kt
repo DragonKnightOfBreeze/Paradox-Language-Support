@@ -25,6 +25,7 @@ import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -38,7 +39,7 @@ class ParadoxTemplateSnippetNode(
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     val config = CwtValueConfig.createMock(configGroup, configExpression.expressionString)
 
-    /** 是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun isExactMatched(): Boolean {
         val dataType = config.configExpression.type
         return when {
@@ -57,7 +58,7 @@ class ParadoxTemplateSnippetNode(
         }
     }
 
-    /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean {
         val expression = ParadoxExpression.resolve(text)
         val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup)
@@ -125,7 +126,7 @@ class ParadoxTemplateSnippetNode(
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved
             }
-            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, ParadoxExpressionRole.Other)
             return resolved
         }
 
@@ -136,7 +137,7 @@ class ParadoxTemplateSnippetNode(
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved.createResults()
             }
-            val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, ParadoxExpressionRole.Other)
             return resolved.createResults()
         }
 
@@ -152,12 +153,11 @@ class ParadoxTemplateSnippetNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configExpression: CwtDataExpression): ParadoxTemplateSnippetNode {
             // text may contain parameters
             return ParadoxTemplateSnippetNode(text, textRange, configGroup, configExpression)
         }
     }
-
-    companion object : Resolver()
 }

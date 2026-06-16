@@ -2,10 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.attributes
 
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicDataNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 
 /**

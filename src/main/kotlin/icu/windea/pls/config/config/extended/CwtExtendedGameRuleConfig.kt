@@ -52,22 +52,21 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
 
     val configForDeclaration: CwtPropertyConfig?
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为游戏规则的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
+            return CwtExtendedGameRuleConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtExtendedGameRuleConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedGameRuleConfigResolverImpl : CwtExtendedGameRuleConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedGameRuleConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig = doResolve(config)
-
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
+    fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionData.hint
         logger.debug { "Resolved extended game rule config (name: $name).".withLocationPrefix(config) }

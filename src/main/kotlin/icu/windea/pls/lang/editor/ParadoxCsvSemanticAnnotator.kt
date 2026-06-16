@@ -3,12 +3,16 @@ package icu.windea.pls.lang.editor
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.psi.PsiElement
+import icu.windea.pls.csv.editor.ParadoxCsvAnnotator
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
+/**
+ * @see ParadoxCsvAnnotator
+ */
 class ParadoxCsvSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element is ParadoxCsvExpressionElement) annotateExpression(element, holder)
@@ -23,6 +27,6 @@ class ParadoxCsvSemanticAnnotator : Annotator {
             else -> null
         }
         val config = columnConfig?.valueConfig ?: return
-        ParadoxExpressionManager.annotateCsvExpression(element, null, holder, config)
+        ParadoxExpressionManager.annotateCsvExpression(element, null, config, holder)
     }
 }

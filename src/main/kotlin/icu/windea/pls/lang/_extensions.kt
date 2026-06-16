@@ -99,4 +99,8 @@ fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
 }
 
+// fun ParadoxExpressionElement.isQuoted(): Boolean {
+//     return ParadoxExpressionManager.isQuoted(this)
+// }
+
 // endregion

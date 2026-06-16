@@ -5,10 +5,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -34,7 +31,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDynamicValueExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDynamicValueExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val configs = configGroup.links.values.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
@@ -43,55 +40,85 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun testBasic_withoutScopeSuffix() {
+    fun test_basic_withoutScopeSuffix() {
         val s = "some_variable"
-        val exp = parse(s)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueNode>(s, 0 to 13)
+        val exp = resolve(s)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
+            node<ParadoxDynamicValueNode>(s, 0, 13)
         }
         exp.check(dsl)
     }
 
     @Test
-    fun testBasic_withScopeSuffix() {
+    fun test_basic_withScopeSuffix() {
         val s = "some_variable@root"
-        val exp = parse(s)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
-            node<ParadoxMarkerNode>("@", 13 to 14)
-            node<ParadoxScopeFieldExpression>("root", 14 to 18) {
-                node<ParadoxScopeNode>("root", 14 to 18)
+        val exp = resolve(s)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxScopeFieldExpression>("root", 14, 18) {
+                node<ParadoxScopeNode>("root", 14, 18)
             }
         }
         exp.check(dsl)
     }
 
     @Test
-    fun testBasic_withScopeSuffix_chained() {
+    fun test_basic_withScopeSuffix_chained() {
         val s = "some_variable@root.owner"
-        val exp = parse(s)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
-            node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
-            node<ParadoxMarkerNode>("@", 13 to 14)
-            node<ParadoxScopeFieldExpression>("root.owner", 14 to 24) {
-                node<ParadoxScopeNode>("root", 14 to 18)
-                node<ParadoxOperatorNode>(".", 18 to 19)
-                node<ParadoxScopeNode>("owner", 19 to 24)
+        val exp = resolve(s)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxScopeFieldExpression>("root.owner", 14, 24) {
+                node<ParadoxScopeNode>("root", 14, 18)
+                node<ParadoxOperatorNode>(".", 18, 19)
+                node<ParadoxScopeNode>("owner", 19, 24)
             }
         }
         exp.check(dsl)
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("", 0 to 0) {
-            node<ParadoxDynamicValueNode>("", 0 to 0)
+    fun test_incomplete_withFollowingAt() {
+        val s = "some_variable@"
+        val exp = resolve(s)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@", 0, 14) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxErrorTokenNode>("", 14, 14)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_incomplete_withFollowingDot() {
+        val s = "some_variable@root."
+        val exp = resolve(s)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@root.", 0, 19) {
+            node<ParadoxDynamicValueNode>("some_variable", 0, 13)
+            node<ParadoxMarkerNode>("@", 13, 14)
+            node<ParadoxScopeFieldExpression>("root.", 14, 19) {
+                node<ParadoxSystemScopeNode>("root", 14, 18)
+                node<ParadoxOperatorNode>(".", 18, 19)
+                node<ParadoxErrorScopeNode>("", 19, 19)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_empty_incompleteDiff() {
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("", 0, 0) {
+            node<ParadoxDynamicValueNode>("", 0, 0)
         }
         exp.check(dsl)
     }

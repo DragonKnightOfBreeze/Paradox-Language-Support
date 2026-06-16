@@ -54,22 +54,21 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
     @FromOptionMember("hint: string?")
     val hint: String?
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为 on action 的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig?
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
+            return CwtExtendedOnActionConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtExtendedOnActionConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedOnActionConfigResolverImpl : CwtExtendedOnActionConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedOnActionConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
+    fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val eventType = config.optionData.eventType
         if (eventType == null) {

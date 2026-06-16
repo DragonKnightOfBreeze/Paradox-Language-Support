@@ -59,8 +59,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6, 
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
+     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6,
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14,
     15, 15,  0,  0, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19
   };
 
@@ -941,7 +941,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 46: break;
           case 2:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
             }
           // fall through
@@ -952,7 +952,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 48: break;
           case 4:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return TEXT_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
             }
           // fall through
@@ -1039,7 +1039,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 65: break;
           case 21:
-            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.test(this)) {
+            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
         }
@@ -1154,7 +1154,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 87: break;
           case 43:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
         beginNextState(); return TEXT_FORMAT_END;
             }
           // fall through

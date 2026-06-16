@@ -116,22 +116,21 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val attributes: CwtTypeConfigAttributes
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为类型规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtTypeConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtTypeConfig? {
+            return CwtTypeConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtTypeConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResolverScope {
+private object CwtTypeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtTypeConfig? {
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.optimized() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {

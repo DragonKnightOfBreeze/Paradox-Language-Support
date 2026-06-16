@@ -71,20 +71,18 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     }
 
     /** 创建基于当前规则的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-    override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtPropertyConfig {
-        throw UnsupportedOperationException()
-    }
+    override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtPropertyConfig = throw UnsupportedOperationException()
 
     /** 创建基于当前规则的委托规则，并指定要替换的值。父规则会被重置为 `null`。 */
-    fun delegatedWith(key: String, value: String): CwtPropertyConfig {
-        throw UnsupportedOperationException()
-    }
+    fun delegatedWith(key: String, value: String): CwtPropertyConfig = throw UnsupportedOperationException()
 
-    interface Resolver {
+    companion object {
         /** 由 [CwtProperty] 解析为属性规则。 */
-        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
+        @JvmStatic
+        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? = CwtPropertyConfigResolver.resolve(element, file, configGroup)
 
         /** 创建属性规则。其中的选项数据仍然需要手动初始化。 */
+        @JvmStatic
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
             configGroup: CwtConfigGroup,
@@ -94,9 +92,10 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             separatorType: CwtSeparatorType = CwtSeparatorType.Equal,
             configs: List<CwtMemberConfig<*>>? = null,
             injectable: Boolean = false,
-        ): CwtPropertyConfig
+        ): CwtPropertyConfig = CwtPropertyConfigResolver.create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable)
 
         /** 创建基于源规则 [sourceConfig] 的复制规则。其中的规则数据仍然需要手动合并。 */
+        @JvmStatic
         fun copy(
             sourceConfig: CwtPropertyConfig,
             pointer: SmartPsiElementPointer<out CwtProperty> = sourceConfig.pointer,
@@ -105,18 +104,16 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             valueType: CwtExpressionType = sourceConfig.valueType,
             separatorType: CwtSeparatorType = sourceConfig.separatorType,
             configs: List<CwtMemberConfig<*>>? = sourceConfig.configs,
-        ): CwtPropertyConfig
+        ): CwtPropertyConfig = CwtPropertyConfigResolver.copy(sourceConfig, pointer, keyExpression, valueExpression, valueType, separatorType, configs)
     }
-
-    companion object : Resolver by CwtPropertyConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResolverScope {
+private object CwtPropertyConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {
+    fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {
         // - use `EmptyPointer` for default project to optimize memory
         // - use `CwtPropertyPointer` to optimize performance and memory
         // - 2.1.1 use `keyExpression` and `valueExpression` as constructor argument and field directly to optimize performance
@@ -162,7 +159,7 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
         return config
     }
 
-    override fun create(
+    fun create(
         pointer: SmartPsiElementPointer<out CwtProperty>,
         configGroup: CwtConfigGroup,
         keyExpression: CwtDataExpression,
@@ -181,7 +178,7 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
         return config
     }
 
-    override fun copy(
+    fun copy(
         sourceConfig: CwtPropertyConfig,
         pointer: SmartPsiElementPointer<out CwtProperty>,
         keyExpression: CwtDataExpression,

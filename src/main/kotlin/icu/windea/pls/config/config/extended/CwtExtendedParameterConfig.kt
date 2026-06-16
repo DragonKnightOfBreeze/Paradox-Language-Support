@@ -86,22 +86,21 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     /** 得到由其声明的上下文规则列表。 */
     fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>>
 
-    interface Resolver {
+    companion object {
         /** 由成员规则解析为参数的扩展规则。 */
-        fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig?
+        @JvmStatic
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
+            return CwtExtendedParameterConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtExtendedParameterConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtExtendedParameterConfigResolverImpl : CwtExtendedParameterConfig.Resolver, CwtConfigResolverScope {
+private object CwtExtendedParameterConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
+    fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextKey = config.optionData.contextKey
         if (contextKey == null) {

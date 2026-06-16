@@ -9,10 +9,11 @@ import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -20,26 +21,27 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
+ * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxScriptExpressionSupport {
     fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean
 
-    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
 
     }
 
-    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         return null
     }
 
-    fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config, isKey, false).to.singletonSetOrEmpty()
+    fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
+        return resolve(element, rangeInElement, text, config, role).to.singletonListOrEmpty()
     }
 
-    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
-        return null
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        return emptyList()
     }
 
     fun complete(context: ProcessingContext, result: CompletionResultSet) {

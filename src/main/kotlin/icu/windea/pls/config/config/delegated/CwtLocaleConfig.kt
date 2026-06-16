@@ -61,35 +61,46 @@ interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, 
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
+    companion object {
         /** 按当前 IDE/项目设置自动解析语言环境规则。 */
-        fun resolveAuto(): CwtLocaleConfig
-        /** 按当前操作系统自动解析语言环境规则。 */
-        fun resolveAutoOs(): CwtLocaleConfig
-        /** 解析为后备（fallback）语言环境规则。 */
-        fun resolveFallback(): CwtLocaleConfig
-        /** 由属性规则解析为语言环境规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtLocaleConfig
-    }
+        @JvmStatic
+        fun resolveAuto(): CwtLocaleConfig {
+            return CwtLocaleConfigResolver.resolveAuto()
+        }
 
-    companion object : Resolver by CwtLocaleConfigResolverImpl()
+        /** 按当前操作系统自动解析语言环境规则。 */
+        @JvmStatic
+        fun resolveAutoOs(): CwtLocaleConfig {
+            return CwtLocaleConfigResolver.resolveAutoOs()
+        }
+
+        /** 解析为后备（fallback）语言环境规则。 */
+        @JvmStatic
+        fun resolveFallback(): CwtLocaleConfig {
+            return CwtLocaleConfigResolver.resolveFallback()
+        }
+
+        /** 由属性规则解析为语言环境规则。 */
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtLocaleConfig {
+            return CwtLocaleConfigResolver.resolve(config)
+        }
+    }
 }
 
 // region Implementations
 
-private class CwtLocaleConfigResolverImpl : CwtLocaleConfig.Resolver, CwtConfigResolverScope {
+private object CwtLocaleConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
     private val autoLocaleConfig = AutoCwtLocaleConfig(ParadoxLocaleManager.ID_AUTO)
     private val autoOsLocaleConfig = AutoCwtLocaleConfig(ParadoxLocaleManager.ID_AUTO_OS)
     private val fallbackLocaleConfig = FallbackCwtLocaleConfig(ParadoxLocaleManager.ID_FALLBACK)
 
-    override fun resolveAuto(): CwtLocaleConfig = autoLocaleConfig
-    override fun resolveAutoOs(): CwtLocaleConfig = autoOsLocaleConfig
-    override fun resolveFallback(): CwtLocaleConfig = fallbackLocaleConfig
-    override fun resolve(config: CwtPropertyConfig): CwtLocaleConfig = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtLocaleConfig {
+    fun resolveAuto(): CwtLocaleConfig = autoLocaleConfig
+    fun resolveAutoOs(): CwtLocaleConfig = autoOsLocaleConfig
+    fun resolveFallback(): CwtLocaleConfig = fallbackLocaleConfig
+    fun resolve(config: CwtPropertyConfig): CwtLocaleConfig {
         val id = config.key
         val codes = config.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }?.optimized().orEmpty()
         logger.debug { "Resolved locale config (id: $id).".withLocationPrefix(config) }

@@ -36,11 +36,10 @@ class ParadoxCommandFieldPrefixNode(
     class Reference(element: PsiElement, rangeInElement: TextRange, configs: List<CwtLinkConfig>) :
         CwtConfigBasedPsiPolyVariantReference<CwtProperty>(element, rangeInElement, configs)
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandFieldPrefixNode {
             return ParadoxCommandFieldPrefixNode(text, textRange, configGroup, linkConfigs)
         }
     }
-
-    companion object : Resolver()
 }

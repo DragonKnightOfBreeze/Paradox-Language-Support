@@ -1,7 +1,9 @@
 package icu.windea.pls.ep.analysis
 
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameTypeInfo
 import java.nio.file.Path
 import kotlin.io.path.name
 
@@ -11,14 +13,14 @@ import kotlin.io.path.name
 class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
     private val gameTypeMap = ParadoxGameType.getAll().associateBy { it.title }
 
-    override fun get(rootPath: Path): ParadoxGameType? {
+    override fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         val parentPath = rootPath.parent ?: return null
         val modPath = parentPath.takeIf { it.name == "mod" } ?: return null
         val gameDataPath = modPath.parent ?: return null
         val gameName = gameDataPath.name
         val gameType = gameTypeMap[gameName] ?: return null
         if (gameDataPath != SpecialPathService.getInstance().getGameDataPath(gameType)) return null
-        return gameType
+        return ParadoxGameTypeInfo(gameType, PlsBundle.lazyMessage("gameType.message.gameDataMod"))
     }
 }
 
@@ -28,12 +30,12 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
 class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
     private val gameTypeMap = ParadoxGameType.getAll().associateBy { it.steamId }
 
-    override fun get(rootPath: Path): ParadoxGameType? {
+    override fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         val parentPath = rootPath.parent ?: return null
         val steamWorkshopPath = parentPath
         val steamId = steamWorkshopPath.name
         val gameType = gameTypeMap[steamId] ?: return null
         if (steamWorkshopPath != SpecialPathService.getInstance().getSteamGameWorkshopPath(steamId)) return null
-        return gameType
+        return ParadoxGameTypeInfo(gameType, PlsBundle.lazyMessage("gameType.message.workshop"))
     }
 }

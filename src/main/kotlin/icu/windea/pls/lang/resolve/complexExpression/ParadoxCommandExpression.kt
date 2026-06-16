@@ -1,25 +1,13 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
+import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -37,10 +25,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * - 对于传参形式的动态链接，兼容多个传参（`Prefix(X,Y)`）和字面量传参（`Prefix('s')`）。
  *
  * [ParadoxDynamicCommandScopeNode] 的数据源的解析优先级：
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * [ParadoxDynamicCommandFieldNode] 的数据源的解析优先级：
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
@@ -71,17 +61,18 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
+            return ParadoxCommandExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxCommandExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
+private object ParadoxCommandExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
@@ -90,9 +81,60 @@ private class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Re
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
-        val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
 
-        var suffixStartIndex = -1
+        val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val suffixStartIndexRef = Ref(-1)
+        collectSuffixNodes(text, configGroup, suffixStartIndexRef, suffixNodes)
+
+        val suffixStartIndex = suffixStartIndexRef.get()
+        val text = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
+        val offset = range.startOffset
+        var startIndex = 0
+        var i = 0
+        var depthParen = 0
+        val barrierCheckIndex = text.lastIndexOf("value:").let { if (it == -1) 0 else it }
+        var barrier = false // '|' 作为屏障：之后不再按 '.' 切分
+        val textLength = text.length
+        while (i < textLength) {
+            val ch = text[i]
+            val inParam = parameterRanges.any { i in it }
+            if (!inParam) {
+                when (ch) {
+                    '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
+                    ')' -> if (depthParen > 0) depthParen--
+                    '|' -> if (depthParen == 0 && i >= barrierCheckIndex) barrier = true
+                    '.' -> if (depthParen == 0 && !barrier) {
+                        // 中间段：按作用域链接解析
+                        val nodeText = text.substring(startIndex, i)
+                        val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
+                        val node = ParadoxCommandScopeNode.resolve(nodeText, nodeTextRange, configGroup)
+                        if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+                        nodes += node
+                        val dotRange = TextRange.create(i + offset, i + 1 + offset)
+                        nodes += ParadoxOperatorNode(".", dotRange, configGroup)
+                        startIndex = i + 1
+                    }
+                }
+            }
+            i++
+        }
+        // 收尾：最后一段
+        run {
+            val end = textLength
+            val nodeText = text.substring(startIndex, end)
+            val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
+            val node = ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+            if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+            nodes += node
+        }
+        nodes += suffixNodes
+        if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolution()
+        return expression
+    }
+
+    private fun collectSuffixNodes(text: String, configGroup: CwtConfigGroup, suffixStartIndexRef: Ref<Int>, suffixNodes: MutableList<ParadoxComplexExpressionNode>) {
+        var suffixStartIndex = suffixStartIndexRef.get()
         run r1@{
             run r2@{
                 suffixStartIndex = text.indexOf('&')
@@ -122,48 +164,7 @@ private class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Re
                 }
             }
         }
-        run r1@{
-            val offset = range.startOffset
-            val expressionString0 = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
-            var startIndex = 0
-            var i = 0
-            var depthParen = 0
-            val textLength = expressionString0.length
-            while (i < textLength) {
-                val ch = expressionString0[i]
-                val inParam = parameterRanges.any { it.contains(i) }
-                if (!inParam) {
-                    when (ch) {
-                        '(' -> depthParen++ // 括号内的点不切分
-                        ')' -> if (depthParen > 0) depthParen--
-                        '.' -> if (depthParen == 0) {
-                            val nodeText = expressionString0.substring(startIndex, i)
-                            val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
-                            val node = ParadoxCommandScopeNode.resolve(nodeText, nodeTextRange, configGroup)
-                            if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
-                            nodes += node
-                            val dotRange = TextRange.create(i + offset, i + 1 + offset)
-                            nodes += ParadoxOperatorNode(".", dotRange, configGroup)
-                            startIndex = i + 1
-                        }
-                    }
-                }
-                i++
-            }
-            // last segment -> command field
-            run {
-                val end = textLength
-                val nodeText = expressionString0.substring(startIndex, end)
-                val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
-                val node = ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
-                if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
-                nodes += node
-            }
-        }
-        nodes += suffixNodes
-        if (!incomplete && nodes.isEmpty()) return null
-        expression.finishResolution()
-        return expression
+        suffixStartIndexRef.set(suffixStartIndex)
     }
 }
 

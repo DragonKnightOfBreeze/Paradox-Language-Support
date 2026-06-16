@@ -202,10 +202,15 @@ object ParadoxDefinitionInjectionManager {
         return mode in config.createModes
     }
 
-    fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {
+    fun isTargetValid(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         if (definitionInjectionInfo.target.isNullOrEmpty()) return false
         if (definitionInjectionInfo.type.isNullOrEmpty()) return false
         if (definitionInjectionInfo.typeConfig == null) return false
+        return true
+    }
+
+    fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {
+        if (!isTargetValid(definitionInjectionInfo)) return false
         val name = definitionInjectionInfo.target
         val typeExpression = definitionInjectionInfo.type
         val selector = ParadoxDefinitionSearch.selector(definitionInjectionInfo.project, context)

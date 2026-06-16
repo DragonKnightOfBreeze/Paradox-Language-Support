@@ -17,10 +17,12 @@ import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 
 @Suppress("UnstableApiUsage")
 class ParadoxGameSettingsDialog(
     val project: Project,
+    val rootInfo: ParadoxRootInfo.Game,
     val settings: ParadoxGameSettingsState
 ) : DialogWrapper(project, true) {
     private val callbackLock = CallbackLock()
@@ -76,6 +78,9 @@ class ParadoxGameSettingsDialog(
                     checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
+                }
+                row {
+                    comment(PlsBundle.message("mod.options.comment.1"))
                 }
             }
 

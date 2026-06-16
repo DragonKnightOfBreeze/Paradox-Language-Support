@@ -4,8 +4,11 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
-import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
+import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -27,6 +30,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionMatcher
  * @see ParadoxCsvExpressionMatcher
+ * @see ParadoxScriptExpressionSupport
+ * @see ParadoxLocalisationExpressionSupport
+ * @see ParadoxCsvExpressionSupport
  */
 interface ParadoxExpression {
     val text: String
@@ -46,43 +52,56 @@ interface ParadoxExpression {
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
-        fun resolveBlock(): ParadoxExpression
-        fun resolveUnknown(): ParadoxExpression
-        fun resolve(text: String, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression
-        fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression
-        fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions? = null): ParadoxExpression
-    }
+    companion object {
+        @JvmStatic
+        fun resolveBlock(): ParadoxExpression {
+            return ParadoxExpressionResolver.resolveBlock()
+        }
 
-    companion object : Resolver by ParadoxScriptExpressionResolverImpl()
+        @JvmStatic
+        fun resolveUnknown(): ParadoxExpression {
+            return ParadoxExpressionResolver.resolveUnknown()
+        }
+
+        @JvmStatic
+        fun resolve(text: String, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
+            return ParadoxExpressionResolver.resolve(text, role)
+        }
+
+        @JvmStatic
+        fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
+            return ParadoxExpressionResolver.resolve(value, quoted, role)
+        }
+
+        @JvmStatic
+        fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions? = null): ParadoxExpression {
+            return ParadoxExpressionResolver.resolve(element, options)
+        }
+    }
 }
 
 // region Implementations
 
-private class ParadoxScriptExpressionResolverImpl : ParadoxExpression.Resolver {
+private object ParadoxExpressionResolver {
     private val blockExpression: ParadoxExpression = ParadoxExpressionImpl(PlsStrings.blockFolder, PlsStrings.blockFolder, false, ParadoxExpressionType.Block, ParadoxExpressionRole.Value)
     private val unknownExpression: ParadoxExpression = ParadoxExpressionImpl("", "", false, ParadoxExpressionType.Unknown, ParadoxExpressionRole.Other)
 
-    override fun resolveBlock(): ParadoxExpression {
-        return blockExpression
-    }
+    fun resolveBlock(): ParadoxExpression = blockExpression
 
-    override fun resolveUnknown(): ParadoxExpression {
-        return unknownExpression
-    }
+    fun resolveUnknown(): ParadoxExpression = unknownExpression
 
-    override fun resolve(text: String, role: ParadoxExpressionRole): ParadoxExpression {
+    fun resolve(text: String, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
         return ParadoxTextBasedExpression(text, role)
     }
 
-    override fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole): ParadoxExpression {
+    fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
         return when {
             quoted -> ParadoxQuotedValueBasedExpression(value, role)
             else -> ParadoxUnquotedValueBasedExpression(value, role)
         }
     }
 
-    override fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions?): ParadoxExpression {
+    fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions? = null): ParadoxExpression {
         return when (element) {
             is ParadoxScriptBlock -> blockExpression
             is ParadoxScriptScriptedVariableReference -> ParadoxScriptedVariableReferenceBasedExpression(element, options)

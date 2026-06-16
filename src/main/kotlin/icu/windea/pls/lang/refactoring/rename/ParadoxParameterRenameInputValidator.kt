@@ -5,8 +5,8 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.util.ParadoxNameValidators
 
 class ParadoxParameterRenameInputValidator : RenameInputValidator {
     private val elementPattern = PlatformPatterns.psiElement(ParadoxParameterLightElement::class.java)

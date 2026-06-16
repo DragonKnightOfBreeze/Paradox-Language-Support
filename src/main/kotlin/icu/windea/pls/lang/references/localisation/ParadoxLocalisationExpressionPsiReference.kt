@@ -6,7 +6,6 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.lang.psi.ParadoxPsiManager
@@ -25,10 +24,10 @@ class ParadoxLocalisationExpressionPsiReference(
         return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
     }
 
-    override fun getReferences(): Array<out PsiReference>? {
+    override fun getReferences(): List<PsiReference> {
         val expressionText = getExpressionText(element, rangeInElement)
         val result = ParadoxExpressionService.getLocalisationExpressionReferences(element, rangeInElement, expressionText)
-        return result.orNull()
+        return result
     }
 
     // 缓存解析结果以优化性能
@@ -57,7 +56,7 @@ class ParadoxLocalisationExpressionPsiReference(
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
-        val resolved = ParadoxExpressionManager.multiResolveLocalisationExpression(element, rangeInElement)
+        val resolved = ParadoxExpressionManager.resolveAllLocalisationExpression(element, rangeInElement)
         return resolved.createResults()
     }
 }

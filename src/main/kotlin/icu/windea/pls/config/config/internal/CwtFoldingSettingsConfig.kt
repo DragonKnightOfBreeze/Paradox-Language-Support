@@ -23,19 +23,20 @@ data class CwtFoldingSettingsConfig(
     val keys: List<String>?,
     val placeholder: String
 ) : CwtDetachedConfig {
-    interface Resolver {
-        fun resolveInFile(fileConfig: CwtFileConfig)
+    companion object {
+        @JvmStatic
+        fun resolveInFile(fileConfig: CwtFileConfig) {
+            return CwtFoldingSettingsConfigResolver.resolveInFile(fileConfig)
+        }
     }
-
-    companion object : Resolver by CwtFoldingSettingsConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver, CwtConfigResolverScope {
+private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolveInFile(fileConfig: CwtFileConfig) {
+    fun resolveInFile(fileConfig: CwtFileConfig) {
         val initializer = fileConfig.configGroup.initializer
         val configs = fileConfig.properties
         for (groupProperty in configs) {

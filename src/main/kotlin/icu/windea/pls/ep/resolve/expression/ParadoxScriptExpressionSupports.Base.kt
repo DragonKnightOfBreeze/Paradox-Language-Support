@@ -9,6 +9,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 abstract class ParadoxScriptExpressionSupportBase : ParadoxScriptExpressionSupport {
@@ -23,19 +24,19 @@ abstract class ParadoxScriptExpressionSupportBase : ParadoxScriptExpressionSuppo
  * @see ParadoxComplexExpression
  */
 abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressionSupportBase() {
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
-        if (element !is ParadoxScriptStringExpressionElement) return null
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return null
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return emptyList()
         val references = complexExpression.getAllReferences(element)
-        if (references.isEmpty()) return null
-        return references.toTypedArray()
+        if (references.isEmpty()) return emptyList()
+        return references
     }
 }

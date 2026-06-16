@@ -45,28 +45,28 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     override val value: String
     override val valueType: CwtExpressionType
 
-    interface Resolver {
-        fun resolve(element: CwtOption): CwtOptionConfig?
+    companion object {
+        @JvmStatic
+        fun resolve(element: CwtOption): CwtOptionConfig? = CwtOptionConfigResolver.resolve(element)
 
+        @JvmStatic
         fun create(
             key: String,
             value: String,
             valueType: CwtExpressionType = CwtExpressionType.String,
             separatorType: CwtSeparatorType = CwtSeparatorType.Equal,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
-        ): CwtOptionConfig
+        ): CwtOptionConfig = CwtOptionConfigResolver.create(key, value, valueType, separatorType, optionConfigs)
     }
-
-    companion object : Resolver by CwtOptionConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigResolverScope {
+private object CwtOptionConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
     private val cache = CacheBuilder().build<String, CwtOptionConfig>()
 
-    override fun resolve(element: CwtOption): CwtOptionConfig? {
+    fun resolve(element: CwtOption): CwtOptionConfig? {
         // - use `EmptyPointer` since visit PSI is not needed
         // - 2.1.1 reduce PSI iterations to optimize performance
 
@@ -101,7 +101,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
         return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
     }
 
-    override fun create(
+    fun create(
         key: String,
         value: String,
         valueType: CwtExpressionType,

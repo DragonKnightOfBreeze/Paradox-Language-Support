@@ -16,6 +16,7 @@ import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameTypeInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
@@ -32,20 +33,20 @@ object ParadoxAnalysisService {
     }
 
     /**
-     * @see ParadoxRootMetadataProvider.get
+     * @see ParadoxRootMetadataProvider.getRootMetadata
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.get(rootPath)
+            ep.getRootMetadata(rootPath)
         }
     }
 
     /**
-     * @see ParadoxInferredGameTypeProvider.get
+     * @see ParadoxInferredGameTypeProvider.getInferredGameTypeInfo
      */
-    fun getInferredGameType(rootPath: Path): ParadoxGameType? {
+    fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.get(rootPath)
+            ep.getInferredGameTypeInfo(rootPath)
         }
     }
 

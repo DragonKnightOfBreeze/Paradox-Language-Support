@@ -65,22 +65,21 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val attributes: CwtDeclarationConfigAttributes
     val configForDeclaration: CwtPropertyConfig
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。 */
-        fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig? {
+            return CwtDeclarationConfigResolver.resolve(config, name)
+        }
     }
-
-    companion object : Resolver by CwtDeclarationConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver, CwtConfigResolverScope {
+private object CwtDeclarationConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? = doResolve(config, name)
-
-    private fun doResolve(config: CwtPropertyConfig, inputName: String?): CwtDeclarationConfig? {
+    fun resolve(config: CwtPropertyConfig, inputName: String?): CwtDeclarationConfig? {
         val name = inputName ?: config.key.takeIf { it.isIdentifier() } ?: return null
         logger.debug { "Resolved declaration config (name: $name).".withLocationPrefix(config) }
         return CwtDeclarationConfigImpl(config, name)

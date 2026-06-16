@@ -106,7 +106,7 @@ object MarkdownExtensionManager {
         // 需要尽可能兼容 markdown 文件不在游戏或模组目录中的情况
 
         val group = ParadoxFileGroup.resolve(path)
-        val rootInfo = ParadoxRootInfo.Injected(pathInjectionInfo.gameType)
+        val rootInfo = ParadoxRootInfo.Injected(gameType = pathInjectionInfo.gameType)
         val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
         return injectedFileInfo
     }

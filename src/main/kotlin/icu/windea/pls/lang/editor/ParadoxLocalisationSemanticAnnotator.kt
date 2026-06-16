@@ -10,6 +10,7 @@ import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator
 import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -18,6 +19,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
+/**
+ * @see ParadoxLocalisationAnnotator
+ */
 class ParadoxLocalisationSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {

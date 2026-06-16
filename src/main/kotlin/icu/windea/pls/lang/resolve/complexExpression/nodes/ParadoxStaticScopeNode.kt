@@ -43,13 +43,12 @@ class ParadoxStaticScopeNode(
         config: CwtLinkConfig
     ) : CwtConfigBasedPsiReference<CwtProperty>(element, rangeInElement, config), ParadoxIdentifierNode.Reference
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxStaticScopeNode? {
             if (text.isParameterized()) return null
             val config = configGroup.links[text]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
             return ParadoxStaticScopeNode(text, textRange, configGroup, config)
         }
     }
-
-    companion object : Resolver()
 }

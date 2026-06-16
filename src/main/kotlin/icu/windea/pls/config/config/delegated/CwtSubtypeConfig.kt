@@ -66,22 +66,21 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     @FromOptionMember("group: string?")
     val group: String?
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为子类型规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
+            return CwtSubtypeConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtSubtypeConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtSubtypeConfigResolverImpl : CwtSubtypeConfig.Resolver, CwtConfigResolverScope {
+private object CwtSubtypeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
         val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.optimized() ?: return null
         val typeKeyFilter = config.optionData.typeKeyFilter
         val typeKeyRegex = config.optionData.typeKeyRegex

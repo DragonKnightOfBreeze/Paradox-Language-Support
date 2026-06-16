@@ -6,7 +6,7 @@ import org.junit.Test
 class CwtSchemaExpressionTest {
     @Test
     fun resolveEmpty() {
-        val e = CwtSchemaExpression.resolveEmpty()
+        val e = CwtSchemaExpression.resolve("")
         assertTrue(e is CwtSchemaExpression.Constant)
         assertEquals("", e.expressionString)
         assertEquals(e, CwtSchemaExpression.resolve(""))

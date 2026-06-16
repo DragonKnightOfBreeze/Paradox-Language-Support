@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see QuoteAwareIntentionBase
+ * @see QuoteOrUnquoteIdentifierIntentionBase
  * @see QuoteIdentifierIntention
  * @see UnquoteIdentifierIntention
  */

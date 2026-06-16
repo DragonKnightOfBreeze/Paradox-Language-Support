@@ -21,14 +21,14 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
  * @property scope 当前作用域（即 `this`）。
  * @property root 根作用域（即 `root`）。此作用域等同于当前事件的根作用域，或者由系统预定义（硬编码）。
  * @property from 来源作用域（即 `from`）的上下文。此作用域等同于调用者事件的根作用域，或者由游戏预定义（硬编码）。
- * @property from2 堆叠1次后的来源作用域（即 `fromfrom`）的上下文。
- * @property from3 堆叠2次后的来源作用域（即 `fromfromfrom`）的上下文。
- * @property from4 堆叠3次后的来源作用域（即 `fromfromfromfrom`）的上下文。
- * @property prevStack 上一步作用域的上下文栈。
+ * @property from2 重复2次后的来源作用域（即 `fromfrom`）的上下文。
+ * @property from3 重复3次后的来源作用域（即 `fromfromfrom`）的上下文。
+ * @property from4 重复4次后的来源作用域（即 `fromfromfromfrom`）的上下文。
  * @property prev 上一步作用域（即 `prev`）的上下文。此作用域等同于切换前的那个作用域。
- * @property prev2 堆叠1次后的上一步作用域（即 `prevprev`）的上下文。
- * @property prev3 堆叠2次后的上一步作用域（即 `prevprevprev`）的上下文。
- * @property prev4 堆叠3次后的上一步作用域（即 `prevprevprevprev`）的上下文。
+ * @property prev2 重复2次后的上一步作用域（即 `prevprev`）的上下文。
+ * @property prev3 重复3次后的上一步作用域（即 `prevprevprev`）的上下文。
+ * @property prev4 重复4次后的上一步作用域（即 `prevprevprevprev`）的上下文。
+ * @property prevStack 上一步作用域的上下文栈。
  * @property links 对应的表达式为 [ParadoxScopeFieldExpression] 时，其中的各个 [ParadoxScopeNode] 以及对应的作用域上下文的列表。
  *
  * @see ParadoxScope
@@ -38,20 +38,29 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
  */
 sealed interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope
-    val root: ParadoxScopeContext?
 
+    val root: ParadoxScopeContext?
     val from: ParadoxScopeContext?
     val from2: ParadoxScopeContext?
     val from3: ParadoxScopeContext?
     val from4: ParadoxScopeContext?
-
-    val prevStack: List<ParadoxScopeContext>
     val prev: ParadoxScopeContext? get() = prevStack.getOrNull(0)
     val prev2: ParadoxScopeContext? get() = prevStack.getOrNull(1)
     val prev3: ParadoxScopeContext? get() = prevStack.getOrNull(2)
     val prev4: ParadoxScopeContext? get() = prevStack.getOrNull(3)
 
+    val prevStack: List<ParadoxScopeContext>
     val links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>
+
+    val rootScope: ParadoxScope? get() = root?.scope
+    val fromScope: ParadoxScope? get() = from?.scope
+    val from2Scope: ParadoxScope? get() = from2?.scope
+    val from3Scope: ParadoxScope? get() = from3?.scope
+    val from4Scope: ParadoxScope? get() = from4?.scope
+    val prevScope: ParadoxScope? get() = prev?.scope
+    val prev2Scope: ParadoxScope? get() = prev2?.scope
+    val prev3Scope: ParadoxScope? get() = prev3?.scope
+    val prev4Scope: ParadoxScope? get() = prev4?.scope
 
     fun resolveNext(pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
         return ParadoxScopeResolver.resolveNextScopeContext(this, pushScope, isFrom)

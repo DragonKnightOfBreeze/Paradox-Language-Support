@@ -97,11 +97,10 @@ class ParadoxNameFormatLocalisationNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxNameFormatLocalisationNode {
             return ParadoxNameFormatLocalisationNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

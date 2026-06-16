@@ -9,16 +9,14 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 模板表达式。
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.TemplateExpression]。
- * - 模板由 CWT 规则提供（或由修正的 `template` 字段提供），本表达式文本按模板匹配并被切分为“常量片段/占位片段”。
+ * - 模板格式取决于对应的规则表达式（[CwtTemplateExpression]）。
  *
  * 语法：
  * ```bnf
@@ -37,29 +35,30 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  * - 引用片段：[ParadoxTemplateSnippetNode]（与模板的引用部分对应）。
  *
  * #### 解析要点
- * - 通过 `toMatchedRegex` 将模板转为正则并对文本进行组匹配，再依组构造片段节点。
+ * - 将模板转为正则，对文本进行组匹配，再依组创建片段节点。
  * - 解析占位片段时，忽略匿名的定义。
  *
  * @see CwtTemplateExpression
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
-    /** 是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun isExactMatched(): Boolean
 
-    /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
+            return ParadoxTemplateExpressionResolver.resolve(text, range, configGroup, config)
+        }
     }
-
-    companion object : Resolver by ParadoxTemplateExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
+private object ParadoxTemplateExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
         val templateExpression = when {
             config is CwtModifierConfig -> config.template
             else -> {

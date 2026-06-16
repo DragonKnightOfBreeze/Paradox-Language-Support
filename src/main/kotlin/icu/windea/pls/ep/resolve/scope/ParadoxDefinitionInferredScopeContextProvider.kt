@@ -7,7 +7,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于为定义提供（基于使用）推断的作用域上下文。
+ * 用于为定义提供（基于用法的）推断的作用域上下文。
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInferredScopeContextProvider {

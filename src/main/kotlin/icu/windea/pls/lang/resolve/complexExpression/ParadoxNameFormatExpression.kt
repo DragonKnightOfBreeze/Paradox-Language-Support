@@ -7,16 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatClosureNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatDefinitionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatLocalisationNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatTextNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNamePartNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 
 /**
@@ -65,22 +56,23 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *     并在必要时于当前层末尾补充一个尾随错误节点，便于高亮与补全的容错处理。
  *
  * - 配置关联：
- *   - `formatName` 来自 CWT 规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
+ *   - `formatName` 来自规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
  */
 interface ParadoxNameFormatExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
+            return ParadoxNameFormatExpressionResolver.resolve(text, range, configGroup, config)
+        }
     }
-
-    companion object : Resolver by ParadoxNameFormatExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxNameFormatExpressionResolverImpl : ParadoxNameFormatExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
+private object ParadoxNameFormatExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
         val configExpression = config.configExpression ?: return null
         if (configExpression.type != CwtDataTypes.NameFormat) return null
 

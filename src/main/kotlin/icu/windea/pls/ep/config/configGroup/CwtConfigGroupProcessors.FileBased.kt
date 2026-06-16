@@ -318,7 +318,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 key == "scripted_variables" -> {
                     val configs = property.configs ?: continue
                     for (config in configs) {
-                        val scriptedVariableConfig = CwtExtendedScriptedVariableConfig.resolve(config) ?: continue
+                        val scriptedVariableConfig = CwtExtendedScriptedVariableConfig.resolve(config)
                         if (CwtConfigService.filter(scriptedVariableConfig)) continue
                         initializer.extendedScriptedVariables[scriptedVariableConfig.name] = scriptedVariableConfig
                     }

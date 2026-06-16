@@ -4,11 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -36,37 +32,33 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun parse(
-        text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
-        incomplete: Boolean = false
-    ): ParadoxDefineReferenceExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDefineReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
     }
 
     @Test
-    fun testBasic() {
+    fun test_basic() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
-        val exp = parse(s)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0 to s.length) {
-            node<ParadoxDefinePrefixNode>("define:", 0 to 7)
-            node<ParadoxDefineNamespaceNode>("NPortrait", 7 to 16)
-            node<ParadoxMarkerNode>("|", 16 to 17)
-            node<ParadoxDefineVariableNode>("GRACEFUL_AGING_START", 17 to 37)
+        val exp = resolve(s)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0, s.length) {
+            node<ParadoxDefinePrefixNode>("define:", 0, 7)
+            node<ParadoxDefineNamespaceNode>("NPortrait", 7, 16)
+            node<ParadoxMarkerNode>("|", 16, 17)
+            node<ParadoxDefineVariableNode>("GRACEFUL_AGING_START", 17, 37)
         }
         exp.check(dsl)
     }
 
     @Test
-    fun testEmpty_incompleteDiff() {
-        Assert.assertNull(parse("", incomplete = false))
-        val exp = parse("", incomplete = true)!!
-        println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0 to 0) {
-            node<ParadoxErrorTokenNode>("", 0 to 0)
+    fun test_empty_incompleteDiff() {
+        Assert.assertNull(resolve("", incomplete = false))
+        val exp = resolve("", incomplete = true)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0, 0) {
+            node<ParadoxErrorTokenNode>("", 0, 0)
         }
         exp.check(dsl)
     }

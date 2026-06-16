@@ -16,12 +16,11 @@ class ParadoxParameterizedValueFieldNode(
         return ParadoxSemanticHighlighterColors.valueField()
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedValueFieldNode? {
             if (!text.isParameterized()) return null
             return ParadoxParameterizedValueFieldNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

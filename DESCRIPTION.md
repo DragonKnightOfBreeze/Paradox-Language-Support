@@ -23,7 +23,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - **Extensible config system**: Supports customizing and importing config files to enhance features like code navigation, code completion, and documentation hints.
 - **Image processing**: Supports previewing and rendering DDS and TGA images, and can convert between different image formats (PNG, DDS, TGA).
 - **Tool integration**: Integrates useful tools such as [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), [Tiger](https://github.com/amtep/tiger), etc., to boost development efficiency.
-- **AI assistance**: Initial integration of AI technology for translating and polishing localisation text.
+- **AI assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
 
 <br/>
 
@@ -56,7 +56,5 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [Discord](https://discord.gg/vBpbET2bXT) |
 [群聊](https://qm.qq.com/q/oRPgLwrTZm) |
 [By me a coffee ☕](https://afdian.com/a/dk_breeze)
-
-<br/>
 
 KEYWORDS: Paradox Chronicle, CWTools, Paradox, Stellaris, Crusader Kings, Europa Universalis, Hearts of Iron, Imperator: Rome, Victoria

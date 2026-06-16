@@ -2,6 +2,7 @@ package icu.windea.pls.model.analysis
 
 import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameTypeInfo
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
@@ -13,7 +14,6 @@ import java.nio.file.Path
  *
  * 基于类别（游戏/模组）以及游戏类型（[icu.windea.pls.model.ParadoxGameType]），可以有多种不同的来源。
  *
- * @property gameType 游戏类型。如果无法确定，则为空。
  * @property name 名字。
  * @property version 版本。可以为空。
  * @property info 元数据信息。可以为空。
@@ -25,7 +25,6 @@ import java.nio.file.Path
  * @see ParadoxRootMetadataProvider
  */
 sealed interface ParadoxRootMetadata {
-    val gameType: ParadoxGameType?
     val name: String
     val version: String?
     val rootPath: Path
@@ -34,10 +33,11 @@ sealed interface ParadoxRootMetadata {
     val infoPresentablePath: String?
 
     interface Game : ParadoxRootMetadata {
-        override val gameType: ParadoxGameType
+        val gameType: ParadoxGameType
     }
 
     interface Mod : ParadoxRootMetadata {
+        val gameTypeInfo: ParadoxGameTypeInfo?
         val supportedVersion: String?
         val picture: String? // 相对于模组根目录的路径
         val tags: Set<String>

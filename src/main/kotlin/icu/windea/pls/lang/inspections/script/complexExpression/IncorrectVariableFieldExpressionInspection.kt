@@ -7,7 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
 /**
  * 不正确的 [ParadoxVariableFieldExpression] 的代码检查。
  */
-class IncorrectVariableFieldExpressionInspection : IncorrectComplexExpressionBase() {
+class IncorrectVariableFieldExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
         val dataType = config.configExpression.type
         return dataType in CwtDataTypeSets.VariableField

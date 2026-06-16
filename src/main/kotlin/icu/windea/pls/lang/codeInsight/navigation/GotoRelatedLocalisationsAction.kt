@@ -34,8 +34,8 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
         if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
         presentation.isVisible = true
         if (file.definitionInfo != null) {
             presentation.isEnabled = true

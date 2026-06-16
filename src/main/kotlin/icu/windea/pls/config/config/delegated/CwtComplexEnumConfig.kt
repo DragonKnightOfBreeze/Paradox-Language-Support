@@ -75,22 +75,21 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为复杂枚举规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
+            return CwtComplexEnumConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtComplexEnumConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, CwtConfigResolverScope {
+private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
         val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {

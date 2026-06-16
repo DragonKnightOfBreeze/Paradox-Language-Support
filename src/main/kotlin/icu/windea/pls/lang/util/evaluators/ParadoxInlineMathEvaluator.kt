@@ -4,10 +4,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.math.DefaultMathExpressionEvaluator
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.math.MathToken
@@ -36,9 +39,16 @@ class ParadoxInlineMathEvaluator(
         val expression: String,
         val id: String,
         val defaultValue: String,
-        val resolvedValueElement: PsiElement? = null,
         var value: String = "",
-    )
+    ) {
+        private var resolvedElementPointer: SmartPsiElementPointer<PsiElement>? = null
+        val resolvedElement: PsiElement? get() = resolvedElementPointer?.element
+
+        fun withResolvedElement(element: PsiElement?, file: PsiFile? = element?.containingFile): Argument {
+            resolvedElementPointer = element?.createPointer(file)
+            return this
+        }
+    }
 
     fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, Argument> {
         val tokenElement = element.tokenElement ?: return emptyMap()
@@ -66,7 +76,7 @@ class ParadoxInlineMathEvaluator(
                             else -> element.resolved()
                         }
                         val defaultValue = resolved?.text.orEmpty()
-                        result[expression] = Argument(expression, id, defaultValue, resolved)
+                        result[expression] = Argument(expression, id, defaultValue).withResolvedElement(resolved)
                         // if (id != expression) result[id] = Argument(id, id, defaultValue)
                     }
                 }
@@ -126,7 +136,7 @@ class ParadoxInlineMathEvaluator(
             if (a.expression.surroundsWith('$', '$')) {
                 a.value.isEmpty()
             } else {
-                a.value.isEmpty() && a.resolvedValueElement == null
+                a.value.isEmpty() && a.resolvedElement == null
             }
         }
         if (missingArguments.isNotEmpty()) {
@@ -198,7 +208,7 @@ class ParadoxInlineMathEvaluator(
                             ?: throw IllegalArgumentException("Invalid argument value for '$expression': '${argument.value}'")
                     }
                     else -> {
-                        val resolvedValueElement = argument.resolvedValueElement
+                        val resolvedValueElement = argument.resolvedElement
                             ?: throw IllegalArgumentException("Missing arguments: $expression")
                         when (resolvedValueElement) {
                             is ParadoxScriptInlineMath -> {

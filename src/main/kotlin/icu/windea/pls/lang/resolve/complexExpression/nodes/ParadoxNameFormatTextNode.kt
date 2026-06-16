@@ -19,11 +19,10 @@ class ParadoxNameFormatTextNode(
         return ParadoxSemanticHighlighterColors.string(element.language)
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxNameFormatTextNode {
             return ParadoxNameFormatTextNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

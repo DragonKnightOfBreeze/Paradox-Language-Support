@@ -25,16 +25,19 @@ import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 
 @Suppress("UnstableApiUsage")
 class ParadoxModSettingsDialog(
     val project: Project,
+    val rootInfo: ParadoxRootInfo.Mod,
     val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
     private val callbackLock = CallbackLock()
 
+    private val inferredGameTypeInfo = rootInfo.gameTypeInfo
+
     private val finalGameType = settings.finalGameType
-    private val inferredGameType = settings.inferredGameType
     private val defaultGameDirectory = PlsSettings.getInstance().state.defaultGameDirectories[finalGameType.id]
     private val defaultGameVersion = ParadoxGameManager.getGameVersionFromGameDirectory(defaultGameDirectory)
 
@@ -107,7 +110,7 @@ class ParadoxModSettingsDialog(
                 comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
-                    .enabled(inferredGameType == null) // disabled if game type can be inferred
+                    .enabled(inferredGameTypeInfo == null) // disabled if game type can be inferred
                 // gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
@@ -132,9 +135,9 @@ class ParadoxModSettingsDialog(
             row {
                 link(PlsBundle.message("gameDirectory.quickSelect")) { quickSelectGameDirectory() }
             }
-            if (inferredGameType != null) {
+            if (inferredGameTypeInfo != null) {
                 row {
-                    comment(PlsBundle.message("mod.settings.comment.1", inferredGameType.title))
+                    comment(PlsBundle.message("mod.settings.comment.1", inferredGameTypeInfo.gameType.title, inferredGameTypeInfo.lazyMessage.get()))
                 }
             }
 
@@ -145,6 +148,9 @@ class ParadoxModSettingsDialog(
                     checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
+                }
+                row {
+                    comment(PlsBundle.message("mod.options.comment.1"))
                 }
             }
 

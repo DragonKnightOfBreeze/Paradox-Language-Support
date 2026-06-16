@@ -10,7 +10,7 @@ import java.nio.file.Path
  * @see ParadoxRootMetadata
  */
 interface ParadoxRootMetadataProvider {
-    fun get(rootPath: Path): ParadoxRootMetadata?
+    fun getRootMetadata(rootPath: Path): ParadoxRootMetadata?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxRootMetadataProvider>("icu.windea.pls.rootMetadataProvider")

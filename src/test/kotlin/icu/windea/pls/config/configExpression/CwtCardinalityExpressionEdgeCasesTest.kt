@@ -7,7 +7,7 @@ class CwtCardinalityExpressionEdgeCasesTest {
     @Test
     fun resolveNoSeparator_returnsEmptyExpression() {
         val e = CwtCardinalityExpression.resolve("1")
-        val empty = CwtCardinalityExpression.resolveEmpty()
+        val empty = CwtCardinalityExpression.resolve("")
         assertEquals(empty.expressionString, e.expressionString)
         assertEquals(empty.min, e.min)
         assertEquals(empty.max, e.max)

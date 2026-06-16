@@ -80,6 +80,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
         }
         row {
             checkBox(PlsIntegrationsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
+                .comment(PlsIntegrationsBundle.message("settings.integrations.translation.from.ai.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             link(PlsBundle.message("link.configureInSettingsPage")) { PlsIntegrationsSettingsManager.openAiSettingsPage() }
         }
     }

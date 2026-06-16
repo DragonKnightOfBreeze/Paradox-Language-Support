@@ -1,8 +1,10 @@
 package icu.windea.pls.model.analysis
 
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameTypeInfo
 import icu.windea.pls.model.ParadoxModSource
 import java.nio.file.Path
 
@@ -13,7 +15,7 @@ data class ParadoxDescriptorModBasedModMetadata(
 ) : ParadoxRootMetadata.Mod {
     override val name: String get() = info.name
     override val version: String? get() = info.version
-    override val gameType: ParadoxGameType? = computeGameType()
+    override val gameTypeInfo: ParadoxGameTypeInfo? = computeGameTypeInfo()
     override val infoPresentablePath: String = "descriptor.mod"
 
     override val supportedVersion: String? get() = info.supportedVersion
@@ -22,8 +24,8 @@ data class ParadoxDescriptorModBasedModMetadata(
     override val remoteId: String? get() = info.remoteFileId
     override val source: ParadoxModSource get() = if (remoteId != null) ParadoxModSource.Steam else ParadoxModSource.Local
 
-    private fun computeGameType(): ParadoxGameType? {
-        return ParadoxAnalysisService.getInferredGameType(rootPath)
+    private fun computeGameTypeInfo(): ParadoxGameTypeInfo? {
+        return ParadoxAnalysisService.getInferredGameTypeInfo(rootPath)
     }
 }
 
@@ -34,7 +36,7 @@ data class ParadoxMetadataJsonBasedModMetadata(
 ) : ParadoxRootMetadata.Mod {
     override val name: String get() = info.name
     override val version: String? get() = info.version
-    override val gameType: ParadoxGameType? = computeGameType()
+    override val gameTypeInfo: ParadoxGameTypeInfo? = computeGameTypeInfo()
     override val infoPresentablePath: String = ".metadata/metadata.json"
 
     override val supportedVersion: String? get() = info.supportedGameVersion
@@ -43,11 +45,13 @@ data class ParadoxMetadataJsonBasedModMetadata(
     override val remoteId: String? get() = null
     override val source: ParadoxModSource get() = ParadoxModSource.Local
 
-    private fun computeGameType(): ParadoxGameType? {
-        return when (info.gameId) {
-            ParadoxGameType.Vic3.gameId -> ParadoxGameType.Vic3
-            ParadoxGameType.Eu5.gameId -> ParadoxGameType.Eu5
-            else -> ParadoxAnalysisService.getInferredGameType(rootPath)
+    private fun computeGameTypeInfo(): ParadoxGameTypeInfo? {
+        val lazyMessage = PlsBundle.lazyMessage("gameType.message.metadataJson")
+        when (info.gameId) {
+            ParadoxGameType.Vic3.gameId -> return ParadoxGameTypeInfo(ParadoxGameType.Vic3, lazyMessage)
+            ParadoxGameType.Eu5.gameId -> return ParadoxGameTypeInfo(ParadoxGameType.Eu5, lazyMessage)
         }
+
+        return ParadoxAnalysisService.getInferredGameTypeInfo(rootPath)
     }
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.config.option
 
+import icu.windea.pls.PlsCapacities
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -8,7 +9,6 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.settings.PlsConfigInternalSettings
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastMap
@@ -34,7 +34,7 @@ object CwtOptionDataProcessor {
             optionData.optionConfigs = optionConfigs // 始终保留选项规则到成员规则的用户数据中
             return
         }
-        if (PlsConfigInternalSettings.getInstance().keepOptionConfigs) {
+        if (PlsCapacities.keepOptionConfigs()) {
             optionData.optionConfigs = optionConfigs // 此时保留选项规则到成员规则的用户数据中
         }
         optionConfigs.forEachFast { config ->

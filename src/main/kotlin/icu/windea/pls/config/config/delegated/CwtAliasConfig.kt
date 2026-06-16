@@ -65,24 +65,26 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     val subNameExpression: CwtDataExpression
     override val configExpression: CwtDataExpression
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为别名规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtAliasConfig?
-        /** 进行解析后的后续处理（从数据表达式收集信息）。 */
-        fun postProcess(config: CwtAliasConfig)
-    }
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtAliasConfig? {
+            return CwtAliasConfigResolver.resolve(config)
+        }
 
-    companion object : Resolver by CwtAliasConfigResolverImpl()
+        /** 进行解析后的后续处理（从数据表达式收集信息）。 */
+        fun postProcess(config: CwtAliasConfig) {
+            CwtAliasConfigResolver.postProcess(config)
+        }
+    }
 }
 
 // region Implementations
 
-private class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigResolverScope {
+private object CwtAliasConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtAliasConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtAliasConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtAliasConfig? {
         val key = config.key
         val tokens = key.removeSurroundingOrNull("alias[", "]")?.orNull()
             ?.split(':', limit = 2)?.takeIf { it.size == 2 }
@@ -93,7 +95,7 @@ private class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigRes
         return CwtAliasConfigImpl(config, name, subName)
     }
 
-    override fun postProcess(config: CwtAliasConfig) {
+    fun postProcess(config: CwtAliasConfig) {
         // collect information
         CwtConfigResolverManager.collectFromConfigExpression(config, config.configExpression)
     }

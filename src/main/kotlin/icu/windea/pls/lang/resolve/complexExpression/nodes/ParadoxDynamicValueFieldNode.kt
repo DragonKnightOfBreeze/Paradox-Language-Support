@@ -22,7 +22,8 @@ class ParadoxDynamicValueFieldNode(
         return linkConfigs
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicValueFieldNode? {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = textRange.startOffset
@@ -97,6 +98,4 @@ class ParadoxDynamicValueFieldNode(
             return null
         }
     }
-
-    companion object : Resolver()
 }

@@ -68,13 +68,12 @@ class ParadoxDynamicValueNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             // text may contain parameters
             if (configs.any { c -> c.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }
-
-    companion object : Resolver()
 }

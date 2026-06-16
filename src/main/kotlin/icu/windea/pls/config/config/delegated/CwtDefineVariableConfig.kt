@@ -54,18 +54,19 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
 
     val configForDeclaration: CwtPropertyConfig
 
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为定值变量规则。 */
-        fun resolve(config: CwtPropertyConfig, namespace: String): CwtDefineVariableConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig, namespace: String): CwtDefineVariableConfig {
+            return CwtDefineVariableConfigResolver.resolve(config, namespace)
+        }
     }
-
-    companion object : Resolver by CwtDefineVariableConfigResolverImpl()
 }
 
-private class CwtDefineVariableConfigResolverImpl : CwtDefineVariableConfig.Resolver, CwtConfigResolverScope {
+private object CwtDefineVariableConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig, namespace: String): CwtDefineVariableConfig {
+    fun resolve(config: CwtPropertyConfig, namespace: String): CwtDefineVariableConfig {
         val variable = config.key
         logger.debug { "Resolved define variable config (namespace: $namespace, variable: $variable)".withLocationPrefix(config) }
         return CwtDefineVariableConfigImpl(config, namespace, variable)

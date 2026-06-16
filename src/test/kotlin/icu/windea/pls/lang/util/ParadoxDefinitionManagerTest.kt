@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.util.CwtConfigKeyManager
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxDefinitionSource
@@ -97,7 +97,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     @Test
     fun testGetInfo_WithInjectedRootKeys() {
         val file = configureScriptFile("common/modules/01_jump_modules_flattened.txt", "features/resolve/common/modules/01_jump_modules_flattened.txt")
-        ParadoxAnalysisInjector.injectRootKeys(file.virtualFile, listOf("modules"))
+        ParadoxAnalysisInjectionManager.injectRootKeys(file.virtualFile, listOf("modules"))
 
         val definitions = selectScope { file.properties().asProperty().all() }
         Assert.assertEquals(2, definitions.size)

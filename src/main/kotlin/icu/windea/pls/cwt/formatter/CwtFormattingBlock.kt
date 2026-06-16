@@ -1,0 +1,97 @@
+package icu.windea.pls.cwt.formatter
+
+import com.intellij.formatting.Alignment
+import com.intellij.formatting.Block
+import com.intellij.formatting.Indent
+import com.intellij.formatting.Spacing
+import com.intellij.formatting.SpacingBuilder
+import com.intellij.formatting.Wrap
+import com.intellij.lang.ASTNode
+import com.intellij.psi.TokenType
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.tree.IFileElementType
+import com.intellij.psi.tree.TokenSet
+import icu.windea.pls.core.processChild
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
+
+class CwtFormattingBlock(
+    node: ASTNode,
+    private val settings: CodeStyleSettings
+) : AbstractBlock(node, createWrap(), createAlignment()) {
+    companion object {
+        private val MEMBERS = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK)
+        private val SEPARATORS = TokenSet.create(EQUAL_SIGN, DOUBLE_EQUAL_SIGN)
+        private val SEPARATORS_FORCE_SPACES = TokenSet.create(NOT_EQUAL_SIGN)
+        private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK)
+        private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOC_COMMENT, OPTION_COMMENT)
+        private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK)
+
+        private fun createWrap(): Wrap? {
+            return null
+        }
+
+        private fun createAlignment(): Alignment? {
+            return null
+        }
+
+        private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
+            // 变量声明分隔符周围的空格，属性分隔符周围的空格
+            val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
+            return SpacingBuilder(settings, CwtLanguage)
+                .between(MEMBERS, MEMBERS).spaces(1) // 属性/值之间需要有空格或者换行
+                .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) // = == 周围按情况可能需要空格
+                .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // = == 周围按情况可能需要空格
+                .aroundInside(SEPARATORS_FORCE_SPACES, OPTION).spaces(1) // != <> 周围始终保留空格（移除空格会改变词法解析结果）
+                .aroundInside(SEPARATORS_FORCE_SPACES, PROPERTY).spaces(1) // != <> 周围始终保留空格（移除空格会改变词法解析结果）
+                .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
+                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
+        }
+    }
+
+    private val spacingBuilder = createSpacingBuilder(settings)
+
+    override fun buildChildren(): List<Block> {
+        val children = mutableListOf<Block>()
+        myNode.processChild p@{ node ->
+            if (node.elementType == TokenType.WHITE_SPACE) return@p true
+            children += CwtFormattingBlock(node, settings)
+            true
+        }
+        return children
+    }
+
+    override fun getIndent(): Indent? {
+        // 配置缩进
+        // `block` 中的 `property` `value` `comment` `doc_comment` 和 `option_comment` 需要缩进
+        val elementType = myNode.elementType
+        val parentElementType = myNode.treeParent?.elementType
+        return when {
+            parentElementType in SHOULD_INDENT_PARENT_TYPES && elementType in SHOULD_INDENT_TYPES -> Indent.getNormalIndent()
+            else -> Indent.getNoneIndent()
+        }
+    }
+
+    override fun getChildIndent(): Indent? {
+        // 配置换行时的自动缩进
+        // 在 `file` 和 `rootBlock` 中不要缩进
+        // 在 `block` 中需要缩进
+        val elementType = myNode.elementType
+        return when {
+            elementType is IFileElementType -> Indent.getNoneIndent()
+            elementType == ROOT_BLOCK -> Indent.getNoneIndent()
+            elementType in SHOULD_CHILD_INDENT_TYPES -> Indent.getNormalIndent()
+            else -> null
+        }
+    }
+
+    override fun getSpacing(child1: Block?, child2: Block): Spacing? {
+        return spacingBuilder.getSpacing(this, child1, child2)
+    }
+
+    override fun isLeaf(): Boolean {
+        return myNode.firstChildNode == null
+    }
+}
+

@@ -39,35 +39,26 @@ interface ParadoxPath : Iterable<String> {
     fun resolve(other: ParadoxPath): ParadoxPath?
     fun relativize(other: ParadoxPath, wildcard: String? = null): ParadoxPath?
 
+    fun matchesParent(path: String, strict: Boolean = false): Boolean
+    fun matchesExtension(extension: String): Boolean
+    fun matchesExtensions(extensions: Array<String>): Boolean
+    fun matchesExtensions(extensions: Collection<String>): Boolean
+
     override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
-        fun resolveEmpty(): ParadoxPath
-        fun resolve(input: String): ParadoxPath
-        fun resolve(input: List<String>): ParadoxPath
+    companion object {
+        @JvmStatic
+        fun resolveEmpty(): ParadoxPath = ParadoxPathResolver.resolveEmpty()
+
+        @JvmStatic
+        fun resolve(input: String): ParadoxPath = ParadoxPathResolver.resolve(input)
+
+        @JvmStatic
+        fun resolve(input: List<String>): ParadoxPath = ParadoxPathResolver.resolve(input)
     }
-
-    companion object : Resolver by ParadoxPathResolverImpl()
-}
-
-fun ParadoxPath.matchesParent(path: String, strict: Boolean = false): Boolean {
-    return if (strict) this.parent == path else path.matchesPath(this.path)
-}
-
-fun ParadoxPath.matchesExtension(extension: String): Boolean {
-    return this.fileExtension?.lowercase() == extension
-}
-
-fun ParadoxPath.matchesExtensions(extensions: Array<String>): Boolean {
-    return this.fileExtension?.lowercase() in extensions
-}
-
-@Suppress("unused")
-fun ParadoxPath.matchesExtensions(extensions: Collection<String>): Boolean {
-    return this.fileExtension?.lowercase() in extensions
 }
 
 // region Implementations
@@ -81,15 +72,15 @@ private fun String.splitSubPaths() = splitFast('/')
 private fun List<String>.joinSubPaths() = joinToString("/")
 private fun String.getParent() = substringBeforeLast('/', "")
 
-private class ParadoxPathResolverImpl : ParadoxPath.Resolver {
-    override fun resolveEmpty(): ParadoxPath = EmptyParadoxPath
+private object ParadoxPathResolver {
+    fun resolveEmpty(): ParadoxPath = EmptyParadoxPath
 
-    override fun resolve(input: String): ParadoxPath {
+    fun resolve(input: String): ParadoxPath {
         if (input.isEmpty()) return EmptyParadoxPath
         return ParadoxPathImplFromPath(input)
     }
 
-    override fun resolve(input: List<String>): ParadoxPath {
+    fun resolve(input: List<String>): ParadoxPath {
         if (input.isEmpty()) return EmptyParadoxPath
         return ParadoxPathImplFromSubPaths(input)
     }
@@ -118,6 +109,22 @@ private sealed class ParadoxPathBase : ParadoxPath {
         if (this.isEmpty()) return other
         val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
         return ParadoxPath.resolve(subPaths)
+    }
+
+    override fun matchesParent(path: String, strict: Boolean): Boolean {
+        return if (strict) this.parent == path else path.matchesPath(this.path)
+    }
+
+    override fun matchesExtension(extension: String): Boolean {
+        return this.fileExtension?.lowercase() == extension
+    }
+
+    override fun matchesExtensions(extensions: Array<String>): Boolean {
+        return this.fileExtension?.lowercase() in extensions
+    }
+
+    override fun matchesExtensions(extensions: Collection<String>): Boolean {
+        return this.fileExtension?.lowercase() in extensions
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path

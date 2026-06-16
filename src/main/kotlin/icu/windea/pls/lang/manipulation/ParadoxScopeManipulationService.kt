@@ -2,8 +2,8 @@ package icu.windea.pls.lang.manipulation
 
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.model.scope.ParadoxScope
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeConstants
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 object ParadoxScopeManipulationService {
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
@@ -33,26 +33,24 @@ object ParadoxScopeManipulationService {
     }
 
     fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, orUnknown: Boolean = false): Map<String, String>? {
+        val c = ParadoxScopeConstants
         val result = mutableMapOf<String, String>()
-        mergeScopeId(map["this"], otherMap["this"])?.let { result["this"] = it }
-        mergeScopeId(map["root"], otherMap["root"])?.let { result["root"] = it }
-        mergeScopeId(map["prev"], otherMap["prev"])?.let { result["prev"] = it }
-        mergeScopeId(map["prevprev"], otherMap["prevprev"])?.let { result["prevprev"] = it }
-        mergeScopeId(map["prevprevprev"], otherMap["prevprevprev"])?.let { result["prevprevprev"] = it }
-        mergeScopeId(map["prevprevprevprev"], otherMap["prevprevprevprev"])?.let { result["prevprevprevprev"] = it }
-        mergeScopeId(map["from"], otherMap["from"])?.let { result["from"] = it }
-        mergeScopeId(map["fromfrom"], otherMap["fromfrom"])?.let { result["fromfrom"] = it }
-        mergeScopeId(map["fromfromfrom"], otherMap["fromfromfrom"])?.let { result["fromfromfrom"] = it }
-        mergeScopeId(map["fromfromfromfrom"], otherMap["fromfromfromfrom"])?.let { result["fromfromfromfrom"] = it }
+        fun putScopeId(key: String) = mergeScopeId(map[key], otherMap[key])?.let { result[key] = it }
+        putScopeId(c.thisScope)
+        putScopeId(c.rootScope)
+        putScopeId(c.fromScope)
+        putScopeId(c.from2Scope)
+        putScopeId(c.from3Scope)
+        putScopeId(c.from4Scope)
+        putScopeId(c.prevScope)
+        putScopeId(c.prev2Scope)
+        putScopeId(c.prev3Scope)
+        putScopeId(c.prev4Scope)
         if (orUnknown) {
-            val thisScope = result["this"]
-            if (thisScope == null || thisScope == ParadoxScopeConstants.unknownScope) {
-                result["this"] = ParadoxScopeConstants.unknownScope
-            }
-            val rootScope = result["root"]
-            if (rootScope == null || rootScope == ParadoxScopeConstants.unknownScope) {
-                result["root"] = ParadoxScopeConstants.unknownScope
-            }
+            val thisScope = result[c.thisScope]
+            if (thisScope == null || thisScope == c.unknownScope) result[c.thisScope] = c.unknownScope
+            val rootScope = result[c.rootScope]
+            if (rootScope == null || rootScope == c.unknownScope) result[c.rootScope] = c.unknownScope
         }
         return result.orNull()
     }

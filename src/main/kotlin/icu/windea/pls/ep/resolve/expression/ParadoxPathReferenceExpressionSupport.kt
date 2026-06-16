@@ -11,6 +11,7 @@ import icu.windea.pls.lang.index.ParadoxFilePathIndex
  *
  * 用于实现如何匹配、解析脚本文件中使用的路径表达式，以及如何基于文件路径索引进行代码补全等功能。
  *
+ * @see CwtDataExpression
  * @see CwtDataTypeSets.PathReference
  * @see ParadoxFilePathIndex
  */

@@ -4,31 +4,43 @@ import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.parents
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.core.unquote
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+
+// com.intellij.json.editor.selection.JsonStringLiteralSelectionHandler
 
 class ParadoxScriptWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
         if (e.language !is ParadoxScriptLanguage) return false
-        val element = e.parents(true).find { findElementToSelect(it) } ?: return false
-        if (!element.text.isLeftQuoted()) return false
-        return true
+        val element = findExpressionElement(e)
+        if (element != null) return true
+        return false
     }
 
     override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange>? {
-        val element = e.parents(true).find { findElementToSelect(it) } ?: return null
-        val offset1 = if (element.text.isLeftQuoted()) 1 else return null
-        val offset2 = if (element.text.isRightQuoted()) -1 else 0
-        val textRange = element.textRange
-        if (textRange.isEmpty) return null
-        return listOf(TextRange.create(textRange.startOffset + offset1, textRange.endOffset + offset2))
+        val result = mutableListOf<TextRange>()
+        selectExpressionElement(e, result)
+        if (result.isEmpty()) return null
+        return result
     }
 
-    private fun findElementToSelect(element: PsiElement): Boolean {
-        return element is ParadoxScriptPropertyKey || element is ParadoxScriptString
+    private fun findExpressionElement(element: PsiElement): ParadoxScriptStringExpressionElement? {
+        return element.parent?.castOrNull()
+    }
+
+    private fun selectExpressionElement(e: PsiElement, result: MutableList<TextRange>) {
+        val element = findExpressionElement(e) ?: return
+        val textRange = element.textRange
+        if (textRange.isEmpty) return
+        selectUnquoted(element, textRange, result)
+    }
+
+    private fun selectUnquoted(element: ParadoxScriptStringExpressionElement, textRange: TextRange, result: MutableList<TextRange>) {
+        val text = element.text
+        if (!text.isLeftQuoted()) return
+        result += textRange.unquote(text)
     }
 }

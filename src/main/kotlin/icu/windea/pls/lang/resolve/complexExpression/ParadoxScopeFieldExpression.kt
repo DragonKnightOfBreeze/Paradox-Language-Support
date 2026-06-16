@@ -5,15 +5,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -53,17 +45,18 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
-    interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression?
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
+            return ParadoxScopeFieldExpressionResolver.resolve(text, range, configGroup)
+        }
     }
-
-    companion object : Resolver by ParadoxScopeFieldExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
+private object ParadoxScopeFieldExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
@@ -78,7 +71,7 @@ private class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpress
         var i = 0
         var depthParen = 0
         val barrierCheckIndex = text.lastIndexOf("value:").let { if (it == -1) 0 else it }
-        var barrier = false // '@' 或 '|' 作为屏障：之后不再按 '.' 切分
+        var barrier = false // '|' 作为屏障：之后不再按 '.' 切分
         val textLength = text.length
         while (i < textLength) {
             val ch = text[i]
@@ -87,7 +80,7 @@ private class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpress
                 when (ch) {
                     '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
                     ')' -> if (depthParen > 0) depthParen--
-                    '@', '|' -> if (depthParen == 0 && i >= barrierCheckIndex) barrier = true
+                    '|' -> if (depthParen == 0 && i >= barrierCheckIndex) barrier = true
                     '.' -> if (depthParen == 0 && !barrier) {
                         // 中间段：按作用域链接解析
                         val nodeText = text.substring(startIndex, i)

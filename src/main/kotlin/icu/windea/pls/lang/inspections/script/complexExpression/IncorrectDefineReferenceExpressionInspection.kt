@@ -7,7 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpre
 /**
  * 不正确的 [ParadoxDefineReferenceExpression] 的代码检查。
  */
-class IncorrectDefineReferenceExpressionInspection : IncorrectComplexExpressionBase() {
+class IncorrectDefineReferenceExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
         val dataType = config.configExpression.type
         return dataType == CwtDataTypes.DefineReference

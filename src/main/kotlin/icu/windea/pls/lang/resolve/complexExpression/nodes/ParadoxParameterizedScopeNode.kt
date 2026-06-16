@@ -16,12 +16,11 @@ class ParadoxParameterizedScopeNode(
         return ParadoxSemanticHighlighterColors.scope()
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedScopeNode? {
             if (!text.isParameterized()) return null
             return ParadoxParameterizedScopeNode(text, textRange, configGroup)
         }
     }
-
-    companion object : Resolver()
 }

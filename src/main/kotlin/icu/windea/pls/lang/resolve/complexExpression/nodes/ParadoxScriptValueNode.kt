@@ -21,6 +21,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptValueNode(
@@ -33,7 +34,7 @@ class ParadoxScriptValueNode(
         return config.to.singletonSet()
     }
 
-    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.definitionReference(element.language)
     }
 
@@ -85,12 +86,12 @@ class ParadoxScriptValueNode(
         }
 
         private fun doResolve(): PsiElement? {
-            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, ParadoxExpressionRole.Other)
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, ParadoxExpressionRole.Other)
             return resolved.createResults()
         }
 
@@ -102,11 +103,10 @@ class ParadoxScriptValueNode(
         }
     }
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueNode {
             return ParadoxScriptValueNode(text, textRange, configGroup, config)
         }
     }
-
-    companion object : Resolver()
 }

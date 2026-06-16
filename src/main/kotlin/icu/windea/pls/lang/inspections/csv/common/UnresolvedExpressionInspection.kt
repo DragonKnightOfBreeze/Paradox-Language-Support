@@ -22,7 +22,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.inspections.PlsInspectionService
+import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
@@ -86,7 +86,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     private fun getFixes(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): Array<LocalQuickFix> {
         val expectedConfigs = listOf(config)
         val result = mutableListOf<LocalQuickFix>()
-        result += PlsInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
         if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
     }

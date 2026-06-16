@@ -8,7 +8,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -33,19 +33,29 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
-        fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression?
-        fun resolveByConfig(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression?
-        fun resolveByDataType(text: String, range: TextRange?, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>? = null): ParadoxComplexExpression?
-    }
+    companion object {
+        @JvmStatic
+        fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
+            return ParadoxComplexExpressionResolver.resolve(element, configGroup)
+        }
 
-    companion object : Resolver by ParadoxComplexExpressionResolverImpl()
+        @JvmStatic
+        fun resolveByConfig(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
+            return ParadoxComplexExpressionResolver.resolveByConfig(text, range, configGroup, config)
+        }
+
+        @Suppress("unused")
+        @JvmStatic
+        fun resolveByDataType(text: String, range: TextRange?, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>? = null): ParadoxComplexExpression? {
+            return ParadoxComplexExpressionResolver.resolveByDataType(text, range, configGroup, dataType, config)
+        }
+    }
 }
 
 // region Implementations
 
-private class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.Resolver {
-    override fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
+private object ParadoxComplexExpressionResolver {
+    fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
                 val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
@@ -70,12 +80,12 @@ private class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.Re
         }
     }
 
-    override fun resolveByConfig(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
+    fun resolveByConfig(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
         val dataType = config.configExpression?.type ?: return null
         return resolveByDataType(text, range, configGroup, dataType, config)
     }
 
-    override fun resolveByDataType(text: String, range: TextRange?, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>?): ParadoxComplexExpression? {
+    fun resolveByDataType(text: String, range: TextRange?, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>?): ParadoxComplexExpression? {
         return when {
             dataType == CwtDataTypes.TemplateExpression -> ParadoxTemplateExpression.resolve(text, range, configGroup, config ?: return null)
             dataType in CwtDataTypeSets.DynamicValue -> ParadoxDynamicValueExpression.resolve(text, range, configGroup, config ?: return null)

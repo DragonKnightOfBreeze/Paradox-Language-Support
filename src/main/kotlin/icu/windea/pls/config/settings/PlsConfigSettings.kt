@@ -6,6 +6,10 @@ import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
+import com.intellij.util.xmlb.annotations.Property
+import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.ai.AiConstants
+import icu.windea.pls.ai.settings.PlsAiSettings.FeaturesState
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
@@ -40,5 +44,16 @@ class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State
         var localConfigDirectory by string()
         var projectLocalConfigDirectoryName by string(".config")
         var overrideBuiltIn by property(false)
+
+        @get:Property(surroundWithTag = false)
+        var features by property(FeaturesState())
+    }
+
+    /**
+     * @property checkComparisonOperators 是否通过匹配的规则来检查脚本属性是否允许使用比较运算符作为分隔符（匹配的规则应显式使用 `==` 作为属性分隔符）。
+     */
+    @Tag("features")
+    class FeaturesState : BaseState() {
+        var checkComparisonOperators by property(false)
     }
 }

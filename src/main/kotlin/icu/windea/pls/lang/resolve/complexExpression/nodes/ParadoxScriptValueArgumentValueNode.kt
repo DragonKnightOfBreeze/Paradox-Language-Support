@@ -61,11 +61,10 @@ class ParadoxScriptValueArgumentValueNode(
     // }
     // endregion
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?): ParadoxScriptValueArgumentValueNode {
             return ParadoxScriptValueArgumentValueNode(text, textRange, configGroup, valueNode, argumentNode)
         }
     }
-
-    companion object : Resolver()
 }

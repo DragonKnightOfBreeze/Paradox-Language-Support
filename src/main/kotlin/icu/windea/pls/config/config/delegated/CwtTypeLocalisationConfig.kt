@@ -50,22 +50,21 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * @see CwtLocalisationLocationExpression
  */
 interface CwtTypeLocalisationConfig : CwtTypePresentationConfig {
-    interface Resolver {
+    companion object {
         /** 由属性规则解析为类型本地化规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig?
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? {
+            return CwtTypeLocalisationConfigResolver.resolve(config)
+        }
     }
-
-    companion object : Resolver by CwtTypeLocalisationConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig.Resolver, CwtConfigResolverScope {
+private object CwtTypeLocalisationConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? {
+    fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? {
         val locationConfigGroup = mutableMapOf<String, MutableList<CwtLocationConfig>>()
 
         // #324

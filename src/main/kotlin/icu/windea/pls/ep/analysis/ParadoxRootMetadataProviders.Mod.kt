@@ -10,7 +10,7 @@ import java.nio.file.Path
  * 参见：[Mod structure - Victoria 3 Wiki](https://vic3.paradoxwikis.com/index.php?title=Mod_structure)
  */
 class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxRootMetadataProvider {
-    override fun get(rootPath: Path): ParadoxRootMetadata? {
+    override fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         // 尝试在根目录的 `.metadata` 子目录中查找 `metadata.json`
 
         val infoPath = ParadoxRootMetadataUtil.getMetadataJsonPath(rootPath) ?: return null
@@ -20,7 +20,7 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxRootMetadataProvider 
 }
 
 class ParadoxDescriptorModBasedModMetadataProvider : ParadoxRootMetadataProvider {
-    override fun get(rootPath: Path): ParadoxRootMetadata? {
+    override fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         // 尝试在根目录中查找 `descriptor.mod`
 
         val infoPath = ParadoxRootMetadataUtil.getDescriptorModPath(rootPath) ?: return null

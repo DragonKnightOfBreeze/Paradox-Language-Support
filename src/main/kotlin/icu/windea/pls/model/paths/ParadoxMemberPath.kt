@@ -43,13 +43,16 @@ interface ParadoxMemberPath : Iterable<String> {
     override fun hashCode(): Int
     override fun toString(): String
 
-    interface Resolver {
-        fun resolveEmpty(): ParadoxMemberPath
-        fun resolve(input: String): ParadoxMemberPath
-        fun resolve(input: List<String>): ParadoxMemberPath
-    }
+    companion object {
+        @JvmStatic
+        fun resolveEmpty(): ParadoxMemberPath = ParadoxMemberPathResolver.resolveEmpty()
 
-    companion object : Resolver by ParadoxMemberPathResolverImpl()
+        @JvmStatic
+        fun resolve(input: String): ParadoxMemberPath = ParadoxMemberPathResolver.resolve(input)
+
+        @JvmStatic
+        fun resolve(input: List<String>): ParadoxMemberPath = ParadoxMemberPathResolver.resolve(input)
+    }
 }
 
 // region Implementations
@@ -62,15 +65,15 @@ private fun String.internSubPath() = subPathInterner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
-private class ParadoxMemberPathResolverImpl : ParadoxMemberPath.Resolver {
-    override fun resolveEmpty(): ParadoxMemberPath = EmptyParadoxMemberPath
+private object ParadoxMemberPathResolver {
+    fun resolveEmpty(): ParadoxMemberPath = EmptyParadoxMemberPath
 
-    override fun resolve(input: String): ParadoxMemberPath {
+    fun resolve(input: String): ParadoxMemberPath {
         if (input.isEmpty()) return EmptyParadoxMemberPath
         return ParadoxMemberPathImplFromPath(input)
     }
 
-    override fun resolve(input: List<String>): ParadoxMemberPath {
+    fun resolve(input: List<String>): ParadoxMemberPath {
         if (input.isEmpty()) return EmptyParadoxMemberPath
         return ParadoxMemberPathImplFromSubPaths(input)
     }

@@ -55,12 +55,11 @@ class ParadoxDatabaseObjectTypeNode(
         config: CwtDatabaseObjectTypeConfig?
     ) : CwtConfigBasedPsiReference<CwtProperty>(element, rangeInElement, config), ParadoxIdentifierNode.Reference
 
-    open class Resolver {
+    companion object {
+        @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectTypeNode {
             val config = configGroup.databaseObjectTypes.get(text)
             return ParadoxDatabaseObjectTypeNode(text, textRange, configGroup, config)
         }
     }
-
-    companion object : Resolver()
 }

@@ -9,7 +9,7 @@ import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 import icu.windea.pls.lang.isIdentifierChar
 
 /**
@@ -45,23 +45,28 @@ import icu.windea.pls.lang.isIdentifierChar
  * @property referenceExpressions 过滤后的引用片段（即非 [CwtDataTypes.Constant] 片段），用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
- * @see CwtDataExpressionResolver
+ * @see CwtDataExpressionSupport
  */
 interface CwtTemplateExpression : CwtConfigExpression {
     val snippetExpressions: List<CwtDataExpression>
     val referenceExpressions: List<CwtDataExpression>
 
-    interface Resolver {
-        fun resolveEmpty(): CwtTemplateExpression
-        fun resolve(expressionString: String): CwtTemplateExpression
-    }
+    companion object {
+        @JvmStatic
+        fun resolveEmpty(): CwtTemplateExpression {
+            return CwtTemplateExpressionResolver.resolveEmpty()
+        }
 
-    companion object : Resolver by CwtTemplateExpressionResolverImpl()
+        @JvmStatic
+        fun resolve(expressionString: String): CwtTemplateExpression {
+            return CwtTemplateExpressionResolver.resolve(expressionString)
+        }
+    }
 }
 
 // region Implementations
 
-private class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {
+private object CwtTemplateExpressionResolver {
     // 关键点：
     // - 使用基于 `expressionString` 的缓存以复用解析结果
     // - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）
@@ -69,14 +74,12 @@ private class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver
     // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描
     // - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式
 
-    private val cache = CacheBuilder("expireAfterAccess=30m")
-        .build<String, CwtTemplateExpression> { doResolve(it) }
-
+    private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtTemplateExpression> { doResolve(it) }
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
 
-    override fun resolveEmpty(): CwtTemplateExpression = emptyExpression
+    fun resolveEmpty(): CwtTemplateExpression = emptyExpression
 
-    override fun resolve(expressionString: String): CwtTemplateExpression {
+    fun resolve(expressionString: String): CwtTemplateExpression {
         if (expressionString.isEmpty()) return emptyExpression
         if (expressionString.containsBlank()) return emptyExpression // 不允许包含空白
         return cache.get(expressionString)
