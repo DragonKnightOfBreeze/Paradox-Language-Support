@@ -45,13 +45,13 @@ object ParadoxSyntaxInspectionService {
         val result = mutableListOf<LocalQuickFix>()
         when (constraint) {
             ParadoxSyntaxConstraint.SafeAssignOperator -> {
-                if (ParadoxSyntaxConstraint.SafeCallAssignOperator.test(context.gameType)) {
+                if (context.gameType != null && ParadoxSyntaxConstraint.SafeCallAssignOperator.testTarget(context.gameType)) {
                     result += getReplaceWithSafeCallAssignOperatorFix(element, context)
                 }
                 result += getReplaceWithAssignOperatorFix(element, context)
             }
             ParadoxSyntaxConstraint.SafeCallAssignOperator -> {
-                if (ParadoxSyntaxConstraint.SafeAssignOperator.test(context.gameType)) {
+                if (context.gameType != null && ParadoxSyntaxConstraint.SafeAssignOperator.testTarget(context.gameType)) {
                     result += getReplaceWithSafeAssignOperatorFix(element, context)
                 }
                 result += getReplaceWithAssignOperatorFix(element, context)
