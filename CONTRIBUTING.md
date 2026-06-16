@@ -90,6 +90,7 @@ Keep changes minimal and localized. A small, well-scoped, well-tested PR that im
 - Adding or improving a single language feature for a specific construct.
 - Improving compatibility with a specific game, IDE version, or optional plugin dependency (for example, the Markdown plugin).
 - Adding default EP implementations where the architecture already anticipates them (for example, additional script expression matchers and supports).
+
 ## Contributing Config Files
 
 Config files define the semantic information (definitions, modifiers, scopes, effects, triggers, etc.) that powers config-driven features. Keeping them current with each game version directly improves the experience for everyone playing that game.
