@@ -44,6 +44,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -73,6 +74,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val project = e.project ?: return null
         val psiFile = file.toPsiFile(project) ?: return null
         if (!ParadoxPsiFileMatcher.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
+        if (!ParadoxDefinitionInjectionManager.isSupported(fileInfo.rootInfo.gameType)) return null // 忽略游戏类型不支持的情况
         return file
     }
 
