@@ -35,21 +35,22 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), InspectionTest
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    @Test
-    fun safeForm_ck3() {
-        markFileInfo(ParadoxGameType.Ck3, "common/test/inspection_scope_call.ck3.test.txt")
-        val description = PlsBundle.message("inspection.script.scopeCallToNormalForm.desc")
-        val tag = description.toInfoTag()
-
-        myFixture.configureByText("inspection_scope_call.ck3.test.txt", """
-            k = {
-                ${tag.start}owner${tag.end} ?= { a = 1 }
-            }
-        """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
-        myFixture.checkHighlighting(true, true, true)
-    }
+    // NOTE not available for INFORMATION level
+    // @Test
+    // fun safeForm_ck3() {
+    //     markFileInfo(ParadoxGameType.Ck3, "common/test/inspection_scope_call.ck3.test.txt")
+    //     val description = PlsBundle.message("inspection.script.scopeCallToNormalForm.desc")
+    //     val tag = description.toInfoTag()
+    //
+    //     myFixture.configureByText("inspection_scope_call.ck3.test.txt", """
+    //         k = {
+    //             ${tag.start}owner${tag.end} ?= { a = 1 }
+    //         }
+    //     """.trimIndent())
+    //
+    //     myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+    //     myFixture.checkHighlighting(true, true, true)
+    // }
 
     @Test
     fun normalForm_ck3() {
