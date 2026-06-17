@@ -126,7 +126,7 @@ object CwtConfigService {
             }.getOrNull()
         }
         if (gameTypeId.isNullOrEmpty()) return null
-        return ParadoxGameType.get(gameTypeId, withCore = true)
+        return ParadoxGameType.get(gameTypeId)
     }
 
     fun resolveFilePath(file: VirtualFile, configGroup: CwtConfigGroup): @NlsSafe String? {

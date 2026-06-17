@@ -304,5 +304,5 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
 private fun getGameTypeAndRemain(shortLink: String): Tuple2<ParadoxGameType?, String> {
     val i = shortLink.indexOf(':')
     if (i == -1) return null to shortLink
-    return shortLink.substring(0, i).let { ParadoxGameType.get(it) } to shortLink.substring(i + 1)
+    return shortLink.substring(0, i).let { ParadoxGameType.getSpecific(it) } to shortLink.substring(i + 1)
 }

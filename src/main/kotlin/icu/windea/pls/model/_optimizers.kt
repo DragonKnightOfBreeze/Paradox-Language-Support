@@ -37,7 +37,7 @@ private object ParadoxGameTypeOptimizer : Optimizer<ParadoxGameType, Byte> {
     }
 
     override fun deoptimize(input: Byte): ParadoxGameType {
-        return ParadoxGameType.getAll(withCore = true)[input.toInt() + 1]
+        return ParadoxGameType.getAll()[input.toInt() + 1]
     }
 }
 

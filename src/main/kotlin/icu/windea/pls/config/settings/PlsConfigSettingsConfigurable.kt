@@ -93,7 +93,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
                 .comment(PlsBundle.message("settings.config.configRepositoryUrls.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             val configRepositoryUrls = settings.configRepositoryUrls
-            ParadoxGameType.getAll().forEach { configRepositoryUrls.putIfAbsent(it.id, CwtConfigRepositoryManager.getDefaultUrl(it)) }
+            ParadoxGameType.getAllSpecific().forEach { configRepositoryUrls.putIfAbsent(it.id, CwtConfigRepositoryManager.getDefaultUrl(it)) }
             val defaultList = configRepositoryUrls.toMutableEntryList()
             var list = defaultList.mapTo(mutableListOf()) { it.copy() }
             val action = { _: ActionEvent ->

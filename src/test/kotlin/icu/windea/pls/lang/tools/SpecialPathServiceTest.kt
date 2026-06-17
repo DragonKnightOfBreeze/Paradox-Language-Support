@@ -9,7 +9,7 @@ import kotlin.io.path.isRegularFile
 
 class SpecialPathServiceTest {
     private val service = SpecialPathServiceImpl()
-    private val gameTypes = ParadoxGameType.getAll()
+    private val gameTypes = ParadoxGameType.getAllSpecific()
 
     // 测试用模组信息：UI Overhaul Dynamic
     private val testModName = "UI Overhaul Dynamic"

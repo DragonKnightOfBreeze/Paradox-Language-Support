@@ -30,7 +30,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
         val directoryName = relativePath.substringBefore('/')
         val gameTypeId = getGameTypeIdFromDirectoryName(project, directoryName) ?: return null
-        val gameType = ParadoxGameType.get(gameTypeId, withCore = true) ?: ParadoxGameType.Core
+        val gameType = ParadoxGameType.get(gameTypeId) ?: ParadoxGameType.Core
         return PlsFacade.getConfigGroup(project, gameType)
     }
 

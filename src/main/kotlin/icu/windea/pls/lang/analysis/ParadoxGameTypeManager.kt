@@ -18,48 +18,15 @@ import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.forParadoxGameTypeById
 import java.nio.file.Path
 
-@Suppress("unused")
 object ParadoxGameTypeManager {
-    private val gameTypesUseMetadataJson: List<ParadoxGameType> = createGameTypesUseMetadataJson()
-    private val gameTypesUseDescriptorMod: List<ParadoxGameType> = createGameTypesUseDescriptorMod()
     private val metadataMap: Map<ParadoxGameType, ParadoxGameTypeMetadata> = createMetadataMap()
-
-    private fun createGameTypesUseMetadataJson(): List<ParadoxGameType> {
-        return buildList {
-            add(ParadoxGameType.Vic3)
-            add(ParadoxGameType.Eu5)
-        }.optimized()
-    }
-
-    private fun createGameTypesUseDescriptorMod(): List<ParadoxGameType> {
-        return buildList {
-            addAll(ParadoxGameType.getAll())
-            removeAll(gameTypesUseMetadataJson)
-        }.optimized()
-    }
-
-    fun getGameTypesUseDescriptorMod(): List<ParadoxGameType> {
-        return gameTypesUseDescriptorMod
-    }
-
-    fun getGameTypesUseMetadataJson(): List<ParadoxGameType> {
-        return gameTypesUseMetadataJson
-    }
-
-    fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
-        return gameType in gameTypesUseDescriptorMod
-    }
-
-    fun useMetadataJson(gameType: ParadoxGameType): Boolean {
-        return gameType in gameTypesUseMetadataJson
-    }
 
     private fun createMetadataMap(): Map<ParadoxGameType, ParadoxGameTypeMetadata> {
         val mapper = JsonService.json5Mapper.copy().apply { registerModule(JsonModuleFactory.forParadoxGameTypeById()) }
         val url = "/data/game_type_metadata_list.json5".toClasspathUrl()
         val list = url.openStream().use { mapper.readValue<List<ParadoxDefaultGameTypeMetadata>>(it) }
         val map = list.associateBy { it.gameType }
-        val gameTypes = ParadoxGameType.getAll(withCore = true)
+        val gameTypes = ParadoxGameType.getAll()
         return buildMap {
             for (gameType in gameTypes) {
                 val metadata = map.getOrElse(gameType) { ParadoxFallbackGameTypeMetadata(gameType) }
@@ -70,10 +37,6 @@ object ParadoxGameTypeManager {
 
     fun getMetadata(gameType: ParadoxGameType): ParadoxGameTypeMetadata {
         return metadataMap.getValue(gameType)
-    }
-
-    fun getGameGameType(rootInfo: ParadoxRootInfo.Game): ParadoxGameType {
-        return rootInfo.metadata.gameType
     }
 
     fun getGameType(rootInfo: ParadoxRootInfo): ParadoxGameType {
@@ -125,6 +88,7 @@ object ParadoxGameTypeManager {
         }
     }
 
+    @Suppress("unused")
     fun processModPath(gameType: ParadoxGameType, rootPath: Path, relPath: String, processor: (path: Path, entryPath: Path) -> Boolean): Boolean {
         val entries = gameType.metadata.modEntries
         return if (entries.isEmpty()) {

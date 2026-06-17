@@ -130,7 +130,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
             toShow?.icon?.let { icon(it) }
             toShow?.displayName?.let { text(it) }
         }
-        return comboBox(LintHighlightSeverity.getAll(), renderer).bindItem(property)
+        return comboBox(LintHighlightSeverity.getAllSpecific(), renderer).bindItem(property)
     }
 
     private fun forceRefreshMergedOption(property: GraphProperty<LintHighlightSeverity>, mergedCb: ComboBox<LintHighlightSeverity>) {

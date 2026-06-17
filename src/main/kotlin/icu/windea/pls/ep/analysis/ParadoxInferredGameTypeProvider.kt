@@ -9,6 +9,7 @@ import java.nio.file.Path
  * 提供推断的游戏类型。
  *
  * @see ParadoxGameType
+ * @see ParadoxGameTypeInfo
  */
 interface ParadoxInferredGameTypeProvider {
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo?

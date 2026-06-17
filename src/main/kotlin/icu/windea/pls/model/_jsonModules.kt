@@ -16,6 +16,6 @@ private class ParadoxGameTypeByIdJsonModule : JsonModuleWithType<ParadoxGameType
 
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ParadoxGameType {
         val id = p.valueAsString
-        return ParadoxGameType.get(id, withCore = true) ?: throw IllegalArgumentException("Unknown id: $id")
+        return ParadoxGameType.get(id) ?: throw IllegalArgumentException("Unknown id: $id")
     }
 }

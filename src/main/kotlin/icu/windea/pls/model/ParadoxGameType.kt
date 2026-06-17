@@ -1,5 +1,6 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.settings.PlsSettings
@@ -17,6 +18,7 @@ import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
  * @see ParadoxGameTypeMetadata
  * @see ParadoxInferredGameTypeProvider
  */
+@Suppress("unused")
 enum class ParadoxGameType(
     val id: String,
     val title: String,
@@ -48,39 +50,24 @@ enum class ParadoxGameType(
     val metadata: ParadoxGameTypeMetadata get() = ParadoxGameTypeManager.getMetadata(this)
 
     companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.id }
-        @JvmStatic
-        private val values = entries.toList()
-        @JvmStatic
-        private val valuesNoCore = values - Core
+        private val values = entries.toList().optimized()
+        private val valuesSpecific = entries.filter { it != Core }.optimized()
+        private val map = values.associateBy { it.id }.optimized()
+        private val mapSpecific = valuesSpecific.associateBy { it.id }.optimized()
 
-        /**
-         * 得到 [id] 对应的游戏类型。
-         *
-         * @param withCore 是否包含通用游戏类型（[ParadoxGameType.Core]）。
-         */
         @JvmStatic
-        fun get(id: String, withCore: Boolean = false): ParadoxGameType? {
-            return map[id]?.takeIf { withCore || it != Core }
-        }
+        fun getAll(): List<ParadoxGameType> = values
 
-        /**
-         * 得到（插件目前支持的）所有游戏类型。
-         *
-         * @param withCore 是否包含通用游戏类型（[ParadoxGameType.Core]）。
-         */
         @JvmStatic
-        fun getAll(withCore: Boolean = false): List<ParadoxGameType> {
-            return if (withCore) values else valuesNoCore
-        }
+        fun getAllSpecific(): List<ParadoxGameType> = valuesSpecific
 
-        /**
-         * 得到默认的游戏类型。
-         */
         @JvmStatic
-        fun getDefault(): ParadoxGameType {
-            return PlsSettings.getInstance().state.defaultGameType
-        }
+        fun get(id: String): ParadoxGameType? = map[id]
+
+        @JvmStatic
+        fun getSpecific(id: String): ParadoxGameType? = mapSpecific[id]
+
+        @JvmStatic
+        fun getDefault(): ParadoxGameType = PlsSettings.getInstance().state.defaultGameType
     }
 }

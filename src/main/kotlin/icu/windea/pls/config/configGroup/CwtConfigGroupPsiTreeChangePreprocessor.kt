@@ -34,7 +34,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             if (!configGroup.changed) configGroupsToChange += configGroup
             if (configGroup.gameType != ParadoxGameType.Core) return@f
-            ParadoxGameType.getAll().forEachFast { gameType ->
+            ParadoxGameType.getAllSpecific().forEachFast { gameType ->
                 val extraConfigGroup = configGroupService.getConfigGroup(gameType)
                 if (!extraConfigGroup.changed) configGroupsToChange += extraConfigGroup
             }

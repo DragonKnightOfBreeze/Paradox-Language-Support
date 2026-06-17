@@ -9,6 +9,7 @@ import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 
 /**
  * 游戏或模组文件的路径。
@@ -21,6 +22,8 @@ import icu.windea.pls.core.splitFast
  * 示例：
  * - `common/buildings/00_capital_buildings.txt`
  * - `localisation/simp_chinese/l_simp_chinese.yml`
+ *
+ * @see ParadoxPathConstraint
  */
 interface ParadoxPath : Iterable<String> {
     val path: String
@@ -31,9 +34,9 @@ interface ParadoxPath : Iterable<String> {
     val fileExtension: String?
     val length: Int
 
-    fun isEmpty(): Boolean = length == 0
-    fun isNotEmpty(): Boolean = length != 0
-    fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
+    fun isEmpty(): Boolean
+    fun isNotEmpty(): Boolean
+    fun get(index: Int): String
 
     fun normalize(): ParadoxPath
     fun resolve(other: ParadoxPath): ParadoxPath?
@@ -91,6 +94,12 @@ private sealed class ParadoxPathBase : ParadoxPath {
     override val fileName: String get() = subPaths.lastOrNull().orEmpty()
     override val fileExtension: String? get() = fileName.substringAfterLast('.', "").orNull()
     override val length: Int get() = subPaths.size
+
+    override fun isEmpty(): Boolean = length == 0
+
+    override fun isNotEmpty(): Boolean = length != 0
+
+    override fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
 
     override fun normalize(): ParadoxPath {
         if (this is NormalizedParadoxPath || this is EmptyParadoxPath) return this

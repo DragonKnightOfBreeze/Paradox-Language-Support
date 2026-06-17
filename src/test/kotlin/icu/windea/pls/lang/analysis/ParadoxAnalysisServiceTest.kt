@@ -53,7 +53,7 @@ class ParadoxAnalysisServiceTest : BasePlatformTestCase() {
         companion object {
             @JvmStatic
             @Parameterized.Parameters(name = "{0}")
-            fun data() = ParadoxGameType.getAll()
+            fun data() = ParadoxGameType.getAllSpecific()
         }
 
         @Test

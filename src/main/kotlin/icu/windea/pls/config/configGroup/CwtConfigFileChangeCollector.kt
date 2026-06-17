@@ -73,7 +73,7 @@ class CwtConfigFileChangeCollector {
                     val configGroup = fileProvider.getContainingConfigGroup(contextDirectory, project) ?: return@f3
                     if (!configGroup.changed) configGroupsToChange += configGroup
                     if (configGroup.gameType != ParadoxGameType.Core) return@f3
-                    ParadoxGameType.getAll().forEachFast { gameType ->
+                    ParadoxGameType.getAllSpecific().forEachFast { gameType ->
                         val extraConfigGroup = configGroupService.getConfigGroup(gameType)
                         if (!extraConfigGroup.changed) configGroupsToChange += extraConfigGroup
                     }

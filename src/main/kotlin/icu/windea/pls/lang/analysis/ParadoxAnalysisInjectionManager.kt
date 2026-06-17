@@ -20,7 +20,7 @@ object ParadoxAnalysisInjectionManager {
     fun inferGameTypeFromFileName(file: VirtualFile): ParadoxGameType? {
         if (!useGameTypeInference()) return null
         val name = file.nameWithoutExtension
-        val gameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.get(it) }
+        val gameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.getSpecific(it) }
         return gameType
     }
 

@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.tools
 
-import com.google.common.base.Supplier
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert
 import org.junit.Test
@@ -9,7 +8,7 @@ import java.net.URI
 
 class SpecialUrlServiceTest {
     private val service = SpecialUrlServiceImpl()
-    private val gameTypes = ParadoxGameType.getAll()
+    private val gameTypes = ParadoxGameType.getAllSpecific()
 
     // 测试用模组信息：UI Overhaul Dynamic
     // Steam 创意工坊 steamId 与本地 mod 路径

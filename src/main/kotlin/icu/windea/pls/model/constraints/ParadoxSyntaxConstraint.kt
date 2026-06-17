@@ -20,9 +20,9 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
     // #331
     // `? =` in `k? = v`
     SafeCallAssignOperator(Stellaris) {
-        override fun testResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult = when (gameType) {
-            Stellaris -> sinceGameVersion(gameVersion, "4.4")
-            else -> super.testResult(gameType, gameVersion)
+        override fun testResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult {
+            if (gameType == Stellaris) return sinceGameVersion(gameVersion, "4.4")
+            return super.testResult(gameType, gameVersion)
         }
     },
 

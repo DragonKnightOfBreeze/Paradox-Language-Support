@@ -30,9 +30,9 @@ interface ParadoxMemberPath : Iterable<String> {
     val subPaths: List<String> // 子路径中不用保留括起的双引号
     val length: Int
 
-    fun isEmpty(): Boolean = length == 0
-    fun isNotEmpty(): Boolean = length != 0
-    fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
+    fun isEmpty(): Boolean
+    fun isNotEmpty(): Boolean
+    fun get(index: Int): String
 
     fun normalize(): ParadoxMemberPath
     fun resolve(other: ParadoxMemberPath): ParadoxMemberPath?
@@ -81,6 +81,12 @@ private object ParadoxMemberPathResolver {
 
 private sealed class ParadoxMemberPathBase : ParadoxMemberPath {
     override val length: Int get() = subPaths.size
+
+    override fun isEmpty(): Boolean = length == 0
+
+    override fun isNotEmpty(): Boolean = length != 0
+
+    override fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
 
     override fun normalize(): ParadoxMemberPath {
         if (this is NormalizedParadoxMemberPath || this is EmptyParadoxMemberPath) return this

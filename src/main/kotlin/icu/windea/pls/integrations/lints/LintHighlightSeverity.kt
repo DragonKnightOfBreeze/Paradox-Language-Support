@@ -3,6 +3,7 @@ package icu.windea.pls.integrations.lints
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.icons.AllIcons
 import com.intellij.lang.annotation.HighlightSeverity
+import icu.windea.pls.core.optimized
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 
 /**
@@ -21,11 +22,13 @@ enum class LintHighlightSeverity(val value: HighlightSeverity?) {
     val icon = level?.icon ?: AllIcons.General.InspectionsMixed
 
     companion object {
-        private val values = entries.toList()
-        private val valuesNoMerged = values - Merged
+        private val values = entries.toList().optimized()
+        private val valuesSpecific = entries.filter { it != Merged }.optimized()
 
-        fun getAll(withMerged: Boolean = false): List<LintHighlightSeverity> {
-            return if (withMerged) values else valuesNoMerged
-        }
+        @JvmStatic
+        fun getAll(): List<LintHighlightSeverity> = values
+
+        @JvmStatic
+        fun getAllSpecific(): List<LintHighlightSeverity> = valuesSpecific
     }
 }

@@ -54,7 +54,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun Panel.configureGroupForGeneral() {
         val groupName = "general"
         val settings = PlsSettings.getInstance().state
-        val gameTypes = ParadoxGameType.getAll()
+        val gameTypes = ParadoxGameType.getAllSpecific()
 
         // defaultGameType
         row {

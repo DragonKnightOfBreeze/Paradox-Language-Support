@@ -17,7 +17,7 @@ data class ParadoxLauncherSettingsJsonBasedGameMetadata(
     override val infoPresentablePath: String = rootPath.relativize(infoPath).toString().normalizePath()
 
     private fun computeGameType(): ParadoxGameType {
-        return ParadoxGameType.getAll().find { it.gameId == info.gameId } ?: throw IllegalStateException()
+        return ParadoxGameType.getAllSpecific().find { it.gameId == info.gameId } ?: throw IllegalStateException()
     }
 }
 
