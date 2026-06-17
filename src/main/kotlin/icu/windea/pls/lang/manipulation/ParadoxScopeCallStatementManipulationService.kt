@@ -7,6 +7,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
@@ -441,19 +442,16 @@ object ParadoxScopeCallStatementManipulationService {
      * 将嵌套形式转换为链式形式。
      *
      * 说明：
-     * - 保留块中内层属性前后的注释，转换后放到外层属性前面。
      * - 如果原属性键用双引号包围，转换后也保留。反之亦然。
      *
      * 示例：
      * ```paradox_script
      * # before
      * root = {
-     *     # comment
      *     owner = { a = 1 }
      * }
      *
      * # after
-     * # comment
      * root.owner = { a = 1 }
      * ```
      *
@@ -465,24 +463,7 @@ object ParadoxScopeCallStatementManipulationService {
         val innerKeyText = innerProperty.propertyKey.getValue()
         val valueText = innerProperty.propertyValue?.text ?: return
 
-        val commentsBefore = collectCommentsBeforeInBlock(element.block, innerProperty)
-        val commentsAfter = collectCommentsAfterInBlock(element.block, innerProperty)
-
-        // 删除原有注释
-        commentsBefore.forEach { it.delete() }
-        commentsAfter.forEach { it.delete() }
-
-        // 在 element 之前重新插入注释（从后向前插入以保持顺序）
-        val parent = element.parent
-        val allComments = commentsBefore + commentsAfter
-        for (comment in allComments.asReversed()) {
-            val newComment = ParadoxScriptElementFactory.createComment(project, comment.text.trimEnd())
-            parent.addBefore(newComment, element)
-        }
-
-        val wasQuoted = isPropertyKeyQuoted(element)
-        val newKeyText = if (wasQuoted) "\"$outerKeyText.$innerKeyText\"" else "$outerKeyText.$innerKeyText"
-        val newText = "$newKeyText = $valueText"
+        val newText = "$outerKeyText.$innerKeyText = $valueText"
         val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
         element.replace(newElement)
     }

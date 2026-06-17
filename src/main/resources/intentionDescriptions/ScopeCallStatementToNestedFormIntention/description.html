@@ -1,0 +1,14 @@
+<html>
+<body>
+  Convert chained scope call in script files to nested form.
+  <p>
+    Check on grammar level (with semantic fallback when config is available). 
+    This intention splits a chained scope call like <code>root.owner = { ... }</code>
+    into the nested form <code>root = { owner = { ... } }</code>.
+  </p>
+  <p>
+    Cursor-position sensitive: the split point is determined by the cursor position
+    within the key. This performs a single-step expansion only.
+  </p>
+</body>
+</html>

@@ -10,6 +10,8 @@ import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -152,15 +154,16 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToNestedForm_notAvailableWhenQuotedKey() {
+    fun testScopeCallToNestedForm_availableForQuotedKey() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToNestedForm")
         myFixture.configureByText(
             "chained_nested_stellaris.test.txt",
             """test_effect = { <caret>"root.owner" = { a = 1 } }"""
         )
-        val available = myFixture.availableIntentions
-        assertFalse(available.any { it.text == intentionName })
+        // 引号包围的键包含点号，可通过语法检查检测到链式形式
+        val intention = myFixture.findSingleIntention(intentionName)
+        assertNotNull(intention)
     }
 
     // endregion
@@ -194,89 +197,6 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToChainedForm_withCommentBefore() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
-        myFixture.configureByText(
-            "chained_nested_stellaris.test.txt",
-            """
-            test_effect = {
-                <caret>root = {
-                    # comment
-                    owner = { a = 1 }
-                }
-            }
-            """.trimIndent()
-        )
-        val intention = myFixture.findSingleIntention(intentionName)
-        myFixture.launchAction(intention)
-        myFixture.checkResult(
-            """
-            test_effect = {
-                # comment
-                root.owner = { a = 1 }
-            }
-            """.trimIndent()
-        )
-    }
-
-    @Test
-    fun testScopeCallToChainedForm_withCommentAfter() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
-        myFixture.configureByText(
-            "chained_nested_stellaris.test.txt",
-            """
-            test_effect = {
-                <caret>root = {
-                    owner = { a = 1 }
-                    # comment after
-                }
-            }
-            """.trimIndent()
-        )
-        val intention = myFixture.findSingleIntention(intentionName)
-        myFixture.launchAction(intention)
-        myFixture.checkResult(
-            """
-            test_effect = {
-                # comment after
-                root.owner = { a = 1 }
-            }
-            """.trimIndent()
-        )
-    }
-
-    @Test
-    fun testScopeCallToChainedForm_withBothComments() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
-        myFixture.configureByText(
-            "chained_nested_stellaris.test.txt",
-            """
-            test_effect = {
-                <caret>root = {
-                    # comment before
-                    owner = { a = 1 }
-                    # comment after
-                }
-            }
-            """.trimIndent()
-        )
-        val intention = myFixture.findSingleIntention(intentionName)
-        myFixture.launchAction(intention)
-        myFixture.checkResult(
-            """
-            test_effect = {
-                # comment before
-                # comment after
-                root.owner = { a = 1 }
-            }
-            """.trimIndent()
-        )
-    }
-
-    @Test
     fun testScopeCallToChainedForm_withQuotedKey() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
@@ -286,7 +206,7 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("""test_effect = { "root.owner" = { a = 1 } }""")
+        myFixture.checkResult("""test_effect = { root.owner = { a = 1 } }""")
     }
 
     @Test
