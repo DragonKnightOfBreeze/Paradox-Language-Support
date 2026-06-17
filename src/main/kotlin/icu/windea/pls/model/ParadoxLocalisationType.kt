@@ -7,6 +7,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
+import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.paths.ParadoxPath
 
 enum class ParadoxLocalisationType(val id: String) {
@@ -25,8 +26,8 @@ enum class ParadoxLocalisationType(val id: String) {
         @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxLocalisationType? {
             return when {
-                ParadoxPathConstraint.InNormalLocalisationPath.test(path) -> Normal
-                ParadoxPathConstraint.InSyncedLocalisationPath.test(path) -> Synced
+                path matchesBy ParadoxPathConstraint.InNormalLocalisationPath -> Normal
+                path matchesBy ParadoxPathConstraint.InSyncedLocalisationPath -> Synced
                 else -> null
             }
         }
