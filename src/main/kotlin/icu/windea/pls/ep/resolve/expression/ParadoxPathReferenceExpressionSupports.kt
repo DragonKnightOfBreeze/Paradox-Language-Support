@@ -35,6 +35,11 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         return filePathWithoutExtension.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
     }
 
+    override fun canResolve(configExpression: CwtDataExpression, pathReference: String): Boolean {
+        // 仅禁止绝对路径形式，不检查可能被操作系统禁止的字符
+        return pathReference.isNotEmpty() && !pathReference.startsWith('/')
+    }
+
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         return null // 信息不足
     }
@@ -112,7 +117,13 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
     }
 
+    override fun canResolve(configExpression: CwtDataExpression, pathReference: String): Boolean {
+        // 不检查可能被操作系统禁止的字符
+        return pathReference.isNotEmpty()
+    }
+
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
+        val pathReference = pathReference.trimStart('/') // #335
         val expression = configExpression.value ?: return pathReference.to.singletonSet()
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
@@ -132,6 +143,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
+        val pathReference = pathReference.trimStart('/') // #335
         val expression = configExpression.value ?: return pathReference.substringAfterLast('/').to.singletonSet()
         val index = expression.lastIndexOf(',') // `,` 应当最多出现一次
         val resolved = if (index == -1) {
@@ -165,6 +177,11 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
 
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String {
         return filePath.substringAfterLast('/')
+    }
+
+    override fun canResolve(configExpression: CwtDataExpression, pathReference: String): Boolean {
+        // 仅禁止绝对路径形式，不检查可能被操作系统禁止的字符
+        return pathReference.isNotEmpty() && !pathReference.startsWith('/')
     }
 
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {

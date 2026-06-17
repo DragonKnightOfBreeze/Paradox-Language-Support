@@ -471,7 +471,7 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
- * 使用"/"作为路径分隔符。
+ * 使用 "/" 作为路径分隔符。
  * 不会忽略前导的路径分隔符。
  *
  * @param other 另一个路径。
@@ -499,7 +499,7 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
 /**
  * 规范化当前路径。
  *
- * 将分隔符统一替换成"/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
+ * 将分隔符统一替换成 "/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
  */
 fun String.normalizePath(): String {
     if (this.isEmpty()) return ""

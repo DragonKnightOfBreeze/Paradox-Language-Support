@@ -171,6 +171,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        if (expression.isEmpty()) return ParadoxMatchResult.NotMatch
+
         // absolute file path -> treat as wildcard match
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) return ParadoxMatchResult.WildcardMatch
 
@@ -178,6 +180,7 @@ object ParadoxMatchResultProvider {
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val pathReference = expression.normalizePath()
+        if (pathReference.isEmpty()) return ParadoxMatchResult.NotMatch
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
         return getCached(element, project, key, cacheKey) {

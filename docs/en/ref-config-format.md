@@ -2008,28 +2008,37 @@ Format of corresponding data expressions:
 
 Icon path type.
 
-Matches a path reference to an icon file.  
-When matching, validates whether the referenced image file exists; requires a specified path pattern to constrain the parent path. The file extension is ignored.
+Matches references to icon file paths.
+When matching, it verifies whether the referenced image file exists. A path pattern may be specified to restrict the parent path.
 
-Format of corresponding data expressions:
+Notes:
+- For path references, "/", "\", repeated separators, or separators appearing as suffixes are all supported and will be normalized.
+- For path references, separators as prefixes are not supported; i.e., absolute path form is **not supported**.
+- File extensions are not distinguished.
+
+Corresponding data expression format:
 - `icon[{path}]` – where `{path}` matches a path pattern (e.g., `gfx/interface/icons`).
 
-Example of a corresponding data expression:
+Corresponding data expression example:
 - `icon[gfx/interface/icons]`
 
 #### FilePath {#data-type-file-path}
 
 File path type.
 
-Matches a path reference to a file.  
-When matching, validates whether the referenced file exists; a path pattern can be specified to constrain the parent path and file extension, or to use a relative path.
+Matches references to file paths.
+When matching, it verifies whether the referenced file exists. A path pattern may be specified to restrict the parent path and file extension, or a relative path may be used for location.
 
-Format of corresponding data expressions:
-- `filepath` – locates the path relative to the entry path.
-- `filepath[./]` – locates the path relative to the current script file.
+Notes:
+- For path references, "/", "\", repeated separators, or separators appearing as suffixes are all supported and will be normalized.
+- For path references, separators as prefixes are supported and will be ignored; i.e., absolute path form is **supported**.
+
+Corresponding data expression format:
+- `filepath` – locates relative to the entry path.
+- `filepath[./]` – locates relative to the current script file.
 - `filepath[{path}]` – where `{path}` matches a path pattern.
 
-Examples of corresponding data expressions:
+Corresponding data expression examples:
 - `filepath`
 - `filepath[./]`
 - `filepath[flags/]`
@@ -2039,14 +2048,19 @@ Examples of corresponding data expressions:
 
 File name type.
 
-Matches a reference to a file name.  
-When matching, validates whether the referenced file exists; a path pattern can be specified to constrain the parent path. Only the file name is considered.
+Matches references to file names.
+When matching, it verifies whether the referenced file exists. A path pattern may be specified to restrict the parent path.
 
-Format of corresponding data expressions:
+Notes:
+- For path references, "/", "\", repeated separators, or separators appearing as suffixes are all supported and will be normalized.
+- For path references, separators as prefixes are not supported; i.e., absolute path form is **not supported**.
+- Only the file name is distinguished.
+
+Corresponding data expression format:
 - `filename`
 - `filename[{path}]` – where `{path}` matches a path pattern.
 
-Examples of corresponding data expressions:
+Corresponding data expression examples:
 - `filename`
 - `filename[gfx/models]`
 

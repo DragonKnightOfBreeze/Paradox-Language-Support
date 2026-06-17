@@ -32,18 +32,26 @@ interface ParadoxPathReferenceExpressionSupport {
     fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = false): String?
 
     /**
-     * 解析指定的文件路径表达式，得到文件路径。如果返回 `null` 则表示无法仅基于这些参数得到完整的文件路径。
+     * 是否可用于解析指定的路径引用。这不意味着可以成功解析为文件路径、文件名或者最终的文件。
      *
      * @param configExpression 对应的规则表达式。拥有数种写法的文件路径表达式。
-     * @param pathReference 作为值的字符串。即脚本文件中使用的路径表达式。
+     * @param pathReference 指定的路径引用。即脚本文件中使用的路径引用表达式。
+     */
+    fun canResolve(configExpression: CwtDataExpression, pathReference: String): Boolean
+
+    /**
+     * 解析指定的路径引用，得到文件路径。如果返回 `null` 则表示无法仅基于这些参数得到完整的文件路径。
+     *
+     * @param configExpression 对应的规则表达式。拥有数种写法的文件路径表达式。
+     * @param pathReference 指定的路径引用。即脚本文件中使用的路径引用表达式。
      */
     fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>?
 
     /**
-     * 解析指定的文件路径表达式，得到文件名。
+     * 解析指定的路径引用，得到文件名。
      *
      * @param configExpression 对应的规则表达式。拥有数种写法的文件路径表达式。
-     * @param pathReference 作为值的字符串。即脚本文件中使用的路径表达式。
+     * @param pathReference 指定的路径引用。即脚本文件中使用的路径引用表达式。
      */
     fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String>?
 
