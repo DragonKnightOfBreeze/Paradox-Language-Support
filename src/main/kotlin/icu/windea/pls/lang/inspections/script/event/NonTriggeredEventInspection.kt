@@ -46,11 +46,11 @@ class NonTriggeredEventInspection : EventInspectionBase() {
 
     private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
         return buildList {
-            if (element.block != null) this += (Fix1(element))
+            if (element.block != null) this += (Fix(element))
         }.toTypedArray()
     }
 
-    private class Fix1(
+    private class Fix(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
         // add `is_triggered_only = yes` into declaration (after `id` field or at start)

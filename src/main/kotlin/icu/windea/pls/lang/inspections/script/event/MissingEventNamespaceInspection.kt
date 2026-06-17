@@ -21,12 +21,14 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class MissingEventNamespaceInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
-        val r = file.properties(inline = true).none { it.definitionInfo?.type == ParadoxDefinitionTypes.eventNamespace }
-        if (!r) return null
-
+        if (!isMissingEventNamespace(file)) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.script.missingEventNamespace.desc")
         holder.registerProblem(file, description)
         return holder.resultsArray
+    }
+
+    private fun isMissingEventNamespace(file: ParadoxScriptFile): Boolean {
+        return file.properties(inline = true).none { it.definitionInfo?.type == ParadoxDefinitionTypes.eventNamespace }
     }
 }
