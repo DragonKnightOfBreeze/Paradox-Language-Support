@@ -9,6 +9,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.isExactDigit
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -28,6 +29,8 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.stringValue
 
 @Suppress("unused")
 object ParadoxEventManager {
@@ -70,11 +73,17 @@ object ParadoxEventManager {
         return element.definitionInfo?.name.or.anonymous()
     }
 
-    fun getNamespace(element: ParadoxDefinitionElement): String {
-        return getName(element).substringBefore('.') // enough
+    fun getNamespaceFromEventNamespaceDeclaration(element: ParadoxDefinitionElement): String? {
+        if(element !is ParadoxScriptProperty) return null // TODO [inline_definition]
+        return element.propertyValue<ParadoxScriptString>()?.stringValue
     }
 
-    fun getMatchedNamespace(event: ParadoxDefinitionElement): ParadoxScriptProperty? {
+    fun getNamespaceFromEventDeclaration(element: ParadoxDefinitionElement): String? {
+        if(element !is ParadoxScriptProperty) return null // TODO [inline_definition]
+        return getName(element).substringBefore('.').orNull() // enough
+    }
+
+    fun getBoundNamespaceElement(event: ParadoxDefinitionElement): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
         while (true) {
             if (current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
