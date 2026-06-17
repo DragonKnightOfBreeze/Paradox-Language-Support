@@ -1,6 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.util.IncorrectOperationException
@@ -35,6 +36,12 @@ object ParadoxScriptElementFactory {
     fun createScriptedVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
         return createScriptedVariable(project, name, "0")
             .findChild<ParadoxScriptScriptedVariableName>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createComment(project: Project, text: String): PsiComment {
+        val file = createDummyFile(project, text.trim() + "\n")
+        return file.firstChild.firstChild as? PsiComment ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

@@ -284,11 +284,20 @@ object ParadoxScopeCallStatementManipulationService {
      * ```
      */
     fun isChainedForm(element: ParadoxScriptProperty): Boolean {
-        val file = element.containingFile ?: return false
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        val resolvedComplexExpression = resolveComplexExpressionFromKey(element) ?: return false
-        if (resolvedComplexExpression !is ParadoxLinkedExpression) return false
-        return resolvedComplexExpression.linkNodes.size >= 2
+        val propertyKey = element.propertyKey
+        val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
+        // 快速语法检查
+        if (!expressionText.contains('.')) return false
+        // 尝试语义检查（需要规则分组数据）
+        val file = element.containingFile
+        if (file != null && PlsFacade.checkConfigGroupInitialized(file.project, file)) {
+            val resolvedComplexExpression = resolveComplexExpressionFromKey(element)
+            if (resolvedComplexExpression is ParadoxLinkedExpression && resolvedComplexExpression.linkNodes.size >= 2) {
+                return true
+            }
+        }
+        // 回退：语法检查（至少一个点号）
+        return expressionText.count { it == '.' } >= 1
     }
 
     /**
@@ -342,35 +351,46 @@ object ParadoxScopeCallStatementManipulationService {
     fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, cursorOffset: Int) {
         val propertyKey = element.propertyKey
         val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
-        val resolvedComplexExpression = resolveComplexExpressionFromKey(element) as? ParadoxLinkedExpression ?: return
-        val linkNodes = resolvedComplexExpression.linkNodes
-        if (linkNodes.size < 2) return
-
         val expressionOffset = ParadoxExpressionManager.getExpressionOffset(propertyKey)
         val cursorOffsetInExpression = cursorOffset - propertyKey.textRange.startOffset - expressionOffset
 
-        // 找到光标之前的最后一个作为分隔符的点号（MarkerNode）
-        var lastMarkerBeforeCursor: ParadoxMarkerNode? = null
-        for (node in resolvedComplexExpression.nodes) {
-            if (node is ParadoxMarkerNode && node.rangeInExpression.startOffset < cursorOffsetInExpression) {
-                lastMarkerBeforeCursor = node
-            }
-        }
+        // 尝试语义解析
+        val resolvedComplexExpression = resolveComplexExpressionFromKey(element) as? ParadoxLinkedExpression
 
-        // 确定外层键和内层键
         val outerKeyText: String
         val innerKeyText: String
-        if (lastMarkerBeforeCursor != null) {
-            val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
-            val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset
-            outerKeyText = expressionText.substring(0, splitStart)
-            innerKeyText = expressionText.substring(splitEnd)
+        if (resolvedComplexExpression != null && resolvedComplexExpression.linkNodes.size >= 2) {
+            // 语义级别分割：基于复杂表达式节点
+            val linkNodes = resolvedComplexExpression.linkNodes
+            var lastMarkerBeforeCursor: ParadoxMarkerNode? = null
+            for (node in resolvedComplexExpression.nodes) {
+                if (node is ParadoxMarkerNode && node.rangeInExpression.startOffset < cursorOffsetInExpression) {
+                    lastMarkerBeforeCursor = node
+                }
+            }
+            if (lastMarkerBeforeCursor != null) {
+                val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
+                val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset
+                outerKeyText = expressionText.substring(0, splitStart)
+                innerKeyText = expressionText.substring(splitEnd)
+            } else {
+                val firstLinkEnd = linkNodes.first().rangeInExpression.endOffset
+                outerKeyText = expressionText.substring(0, firstLinkEnd)
+                innerKeyText = expressionText.substring(firstLinkEnd).removePrefix(".")
+            }
         } else {
-            // 没有点号在光标之前，从第一个 linkNode 之后分割
-            val firstLinkEnd = linkNodes.first().rangeInExpression.endOffset
-            outerKeyText = expressionText.substring(0, firstLinkEnd)
-            // inner 部分包含第一个点号及之后的所有内容
-            innerKeyText = expressionText.substring(firstLinkEnd).removePrefix(".")
+            // 回退到语法级别分割：基于点号字符位置
+            val dotPositions = expressionText.mapIndexedNotNull { i, c -> if (c == '.') i else null }
+            if (dotPositions.size < 1) return
+            val splitPos = dotPositions.lastOrNull { it < cursorOffsetInExpression }
+            if (splitPos != null) {
+                outerKeyText = expressionText.substring(0, splitPos)
+                innerKeyText = expressionText.substring(splitPos + 1)
+            } else {
+                val firstDot = dotPositions.first()
+                outerKeyText = expressionText.substring(0, firstDot)
+                innerKeyText = expressionText.substring(firstDot + 1)
+            }
         }
 
         val wasQuoted = isPropertyKeyQuoted(element)
@@ -399,6 +419,9 @@ object ParadoxScopeCallStatementManipulationService {
      * ```
      */
     fun isNestedForm(element: ParadoxScriptProperty): Boolean {
+        // 属性键不能已经包含点号（即不能已经是链式形式）
+        val expressionText = ParadoxExpressionManager.getExpressionText(element.propertyKey)
+        if (expressionText.contains('.')) return false
         return findSingleInnerProperty(element) != null
     }
 
@@ -445,11 +468,16 @@ object ParadoxScopeCallStatementManipulationService {
         val commentsBefore = collectCommentsBeforeInBlock(element.block, innerProperty)
         val commentsAfter = collectCommentsAfterInBlock(element.block, innerProperty)
 
-        // 移动注释到 outer property 前面
+        // 删除原有注释
+        commentsBefore.forEach { it.delete() }
+        commentsAfter.forEach { it.delete() }
+
+        // 在 element 之前重新插入注释（从后向前插入以保持顺序）
         val parent = element.parent
         val allComments = commentsBefore + commentsAfter
         for (comment in allComments.asReversed()) {
-            parent.addBefore(comment, element)
+            val newComment = ParadoxScriptElementFactory.createComment(project, comment.text.trimEnd())
+            parent.addBefore(newComment, element)
         }
 
         val wasQuoted = isPropertyKeyQuoted(element)

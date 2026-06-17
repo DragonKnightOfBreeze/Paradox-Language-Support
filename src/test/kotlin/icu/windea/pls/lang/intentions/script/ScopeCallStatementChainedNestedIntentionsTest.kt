@@ -321,15 +321,16 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToChainedForm_notAvailableWhenCursorNotOnKey() {
+    fun testScopeCallToChainedForm_availableOnInnerKey() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
         myFixture.configureByText(
             "chained_nested_stellaris.test.txt",
             "test_effect = { root = { <caret>owner = { a = 1 } } }"
         )
-        val available = myFixture.availableIntentions
-        assertFalse(available.any { it.text == intentionName })
+        // 内层属性也是有效的嵌套形式目标，意向应当可用
+        val intention = myFixture.findSingleIntention(intentionName)
+        assertNotNull(intention)
     }
 
     // endregion
