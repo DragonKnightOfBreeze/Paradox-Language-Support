@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 说明：
  * - 此代码检查是启发式的，可能存在误报。
  * - 此代码检查未通过时，不一定意味着会引发游戏引擎层面的异常。
- * - 实际上，事件脚本文件中可以不声明或者声明多个事件命名空间，事件ID不需要匹配同文件中的先前声明的事件命名空间。
+ * - 实际上，事件脚本文件中可以不声明或者声明多个事件命名空间，事件ID不需要严格匹配同文件中的先前声明的事件命名空间。
  */
 class MismatchedEventIdInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
