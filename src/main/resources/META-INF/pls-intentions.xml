@@ -128,6 +128,16 @@
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.ScopeCallStatementToSafeFormIntention</className>
     </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ScopeCallStatementToChainedFormIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ScopeCallStatementToNestedFormIntention</className>
+    </intentionAction>
     <!-- endregion -->
 
     <!-- region Paradox Localisation -->

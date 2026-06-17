@@ -2,14 +2,24 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
+import icu.windea.pls.lang.resolve.complexExpression.linkNodes
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -39,6 +49,20 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
  * Stellaris:
  * ```paradox_script
  * owner? = { ... }
+ * ```
+ *
+ * 示例 - 链式形式：
+ *
+ * ```paradox_script
+ * root.owner = { ... }
+ * ```
+ *
+ * 示例 - 嵌套形式：
+ *
+ * ```paradox_script
+ * root = {
+ *     owner = { ... }
+ * }
  * ```
  */
 object ParadoxScopeCallStatementManipulationService {
@@ -243,4 +267,263 @@ object ParadoxScopeCallStatementManipulationService {
         return element.siblings(forward = false, withSelf = false).dropWhile { it is PsiWhiteSpace || it is PsiComment }
             .firstOrNull()?.castOrNull<ParadoxScriptProperty>()?.takeIf { isExistsProperty(it) }
     }
+
+    // region Chained/Nested Form
+
+    /**
+     * 判断 [element] 的属性键是否为链式形式。
+     *
+     * 说明：
+     * - 链式形式指属性键能够解析为 [ParadoxLinkedExpression] 且含有至少 2 个 [icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode]。
+     * - 需要规则分组数据已初始化。
+     * - 需要属性键能够解析为复杂表达式。
+     *
+     * 示例：
+     * ```paradox_script
+     * root.owner = { ... }
+     * ```
+     */
+    fun isChainedForm(element: ParadoxScriptProperty): Boolean {
+        val file = element.containingFile ?: return false
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        val resolvedComplexExpression = resolveComplexExpressionFromKey(element) ?: return false
+        if (resolvedComplexExpression !is ParadoxLinkedExpression) return false
+        return resolvedComplexExpression.linkNodes.size >= 2
+    }
+
+    /**
+     * 判断 [element] 是否可以转换为嵌套形式。
+     *
+     * 说明：
+     * - 要求 [element] 是链式形式。
+     * - 检测于语义级别（需要规则分组数据已初始化）。
+     *
+     * @see isChainedForm
+     */
+    fun canConvertToNestedForm(element: ParadoxScriptProperty): Boolean {
+        return isChainedForm(element)
+    }
+
+    /**
+     * 将链式形式转换为嵌套形式。
+     *
+     * 说明：
+     * - 根据光标位置确定分割点：找到光标之前最后一个作为分隔符的点号（[ParadoxMarkerNode]），
+     *   在该点号处分割属性键。
+     * - 单步转换（仅展开一层）。
+     * - 展开后总是会换行（`{` 之后和 `}` 之前插入换行）。
+     *
+     * 示例：
+     * [光标位于 `root` 上]
+     * ```paradox_script
+     * # before
+     * root.owner = { a = 1 }
+     *
+     * # after
+     * root = {
+     *     owner = { a = 1 }
+     * }
+     * ```
+     *
+     * [光标位于 `owner` 上]
+     * ```paradox_script
+     * # before
+     * root.owner.event_target:x
+     *
+     * # after
+     * root = {
+     *     owner.event_target:x
+     * }
+     * ```
+     *
+     * @param element 链式形式的属性。
+     * @param cursorOffset 光标在文件中的偏移量。
+     */
+    fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, cursorOffset: Int) {
+        val propertyKey = element.propertyKey
+        val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
+        val resolvedComplexExpression = resolveComplexExpressionFromKey(element) as? ParadoxLinkedExpression ?: return
+        val linkNodes = resolvedComplexExpression.linkNodes
+        if (linkNodes.size < 2) return
+
+        val expressionOffset = ParadoxExpressionManager.getExpressionOffset(propertyKey)
+        val cursorOffsetInExpression = cursorOffset - propertyKey.textRange.startOffset - expressionOffset
+
+        // 找到光标之前的最后一个作为分隔符的点号（MarkerNode）
+        var lastMarkerBeforeCursor: ParadoxMarkerNode? = null
+        for (node in resolvedComplexExpression.nodes) {
+            if (node is ParadoxMarkerNode && node.rangeInExpression.startOffset < cursorOffsetInExpression) {
+                lastMarkerBeforeCursor = node
+            }
+        }
+
+        // 确定外层键和内层键
+        val outerKeyText: String
+        val innerKeyText: String
+        if (lastMarkerBeforeCursor != null) {
+            val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
+            val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset
+            outerKeyText = expressionText.substring(0, splitStart)
+            innerKeyText = expressionText.substring(splitEnd)
+        } else {
+            // 没有点号在光标之前，从第一个 linkNode 之后分割
+            val firstLinkEnd = linkNodes.first().rangeInExpression.endOffset
+            outerKeyText = expressionText.substring(0, firstLinkEnd)
+            // inner 部分包含第一个点号及之后的所有内容
+            innerKeyText = expressionText.substring(firstLinkEnd).removePrefix(".")
+        }
+
+        val wasQuoted = isPropertyKeyQuoted(element)
+        val outerKeyFormatted = if (wasQuoted) "\"$outerKeyText\"" else outerKeyText
+        val innerKeyFormatted = if (wasQuoted) "\"$innerKeyText\"" else innerKeyText
+
+        val valueText = element.propertyValue?.text ?: return
+
+        val newText = "$outerKeyFormatted = {\n$innerKeyFormatted = $valueText\n}"
+        val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
+        element.replace(newElement)
+    }
+
+    /**
+     * 判断 [element] 是否为嵌套形式。
+     *
+     * 说明：
+     * - 输入元素必须有块值，且块内有且仅有一个属性。
+     * - 块内属性前后仅允许注释和空白。
+     *
+     * 示例：
+     * ```paradox_script
+     * root = {
+     *     owner = { ... }
+     * }
+     * ```
+     */
+    fun isNestedForm(element: ParadoxScriptProperty): Boolean {
+        return findSingleInnerProperty(element) != null
+    }
+
+    /**
+     * 判断 [element] 是否可以转换为链式形式。
+     *
+     * 说明：
+     * - 要求 [element] 是嵌套形式。
+     *
+     * @see isNestedForm
+     */
+    fun canConvertToChainedForm(element: ParadoxScriptProperty): Boolean {
+        return isNestedForm(element)
+    }
+
+    /**
+     * 将嵌套形式转换为链式形式。
+     *
+     * 说明：
+     * - 保留块中内层属性前后的注释，转换后放到外层属性前面。
+     * - 如果原属性键用双引号包围，转换后也保留。反之亦然。
+     *
+     * 示例：
+     * ```paradox_script
+     * # before
+     * root = {
+     *     # comment
+     *     owner = { a = 1 }
+     * }
+     *
+     * # after
+     * # comment
+     * root.owner = { a = 1 }
+     * ```
+     *
+     * @param element 嵌套形式的外层属性。
+     */
+    fun convertToChainedForm(element: ParadoxScriptProperty, project: Project) {
+        val innerProperty = findSingleInnerProperty(element) ?: return
+        val outerKeyText = element.propertyKey.getValue()
+        val innerKeyText = innerProperty.propertyKey.getValue()
+        val valueText = innerProperty.propertyValue?.text ?: return
+
+        val commentsBefore = collectCommentsBeforeInBlock(element.block, innerProperty)
+        val commentsAfter = collectCommentsAfterInBlock(element.block, innerProperty)
+
+        // 移动注释到 outer property 前面
+        val parent = element.parent
+        val allComments = commentsBefore + commentsAfter
+        for (comment in allComments.asReversed()) {
+            parent.addBefore(comment, element)
+        }
+
+        val wasQuoted = isPropertyKeyQuoted(element)
+        val newKeyText = if (wasQuoted) "\"$outerKeyText.$innerKeyText\"" else "$outerKeyText.$innerKeyText"
+        val newText = "$newKeyText = $valueText"
+        val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
+        element.replace(newElement)
+    }
+
+    // endregion
+
+    // region Helpers for Chained/Nested Form
+
+    /**
+     * 从 [element] 的属性键解析复杂表达式。
+     */
+    private fun resolveComplexExpressionFromKey(element: ParadoxScriptProperty): ParadoxComplexExpression? {
+        val propertyKey = element.propertyKey
+        val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
+        if (!expressionText.contains('.')) return null
+        val file = element.containingFile ?: return null
+        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val config = ParadoxConfigManager.getConfigs(propertyKey).firstOrNull() ?: return null
+        return ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config)
+    }
+
+    /**
+     * 在 [element] 的块中查找唯一的内部属性。
+     * 如果块不为空且仅包含一个属性（允许注释和空白），则返回该属性，否则返回 `null`。
+     */
+    private fun findSingleInnerProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
+        val block = element.block ?: return null
+        var foundProperty: ParadoxScriptProperty? = null
+        for (child in block.children) {
+            when (child) {
+                is PsiWhiteSpace, is PsiComment -> { /* 允许 */ }
+                is ParadoxScriptProperty -> {
+                    if (foundProperty != null) return null // 多于一个属性
+                    foundProperty = child
+                }
+                else -> {
+                    // 块的括号自身也是子节点
+                    if (child.text == "{" || child.text == "}") continue
+                    return null // 意外的节点
+                }
+            }
+        }
+        return foundProperty
+    }
+
+    /**
+     * 收集 block 中 innerProperty 之前的注释。
+     */
+    private fun collectCommentsBeforeInBlock(block: ParadoxScriptBlock?, innerProperty: ParadoxScriptProperty): List<PsiComment> {
+        if (block == null) return emptyList()
+        return block.children.takeWhile { it !== innerProperty }.filterIsInstance<PsiComment>().toList()
+    }
+
+    /**
+     * 收集 block 中 innerProperty 之后的注释。
+     */
+    private fun collectCommentsAfterInBlock(block: ParadoxScriptBlock?, innerProperty: ParadoxScriptProperty): List<PsiComment> {
+        if (block == null) return emptyList()
+        val innerIndex = block.children.indexOf(innerProperty)
+        return block.children.drop(innerIndex + 1).filterIsInstance<PsiComment>().toList()
+    }
+
+    /**
+     * 判断属性的键是否用双引号包围。
+     */
+    private fun isPropertyKeyQuoted(element: ParadoxScriptProperty): Boolean {
+        val firstChild = element.propertyKey.node.findChildByType(STRING_TOKEN)
+        return firstChild != null
+    }
+
+    // endregion
 }
