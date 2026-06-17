@@ -131,7 +131,8 @@
   {
     "gameType": "vic3",
     "gameMainEntries": [
-      "game"
+      "game",
+      "game/dlc/*"
     ],
     "gameExtraEntries": [
       "clausewitz",
