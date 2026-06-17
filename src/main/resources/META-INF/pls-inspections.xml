@@ -177,11 +177,11 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.event.IncorrectEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      key="inspection.script.missingEventNamespace" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="false" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
                      key="inspection.script.mismatchedEventId" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="false" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.MismatchedEventIdInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptNonTriggeredEvent"
                      key="inspection.script.nonTriggeredEvent" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
