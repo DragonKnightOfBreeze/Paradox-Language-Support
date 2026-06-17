@@ -7,14 +7,10 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
-import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -29,66 +25,15 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class MismatchedEventIdInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
-        val context = mutableMapOf<String, MutableList<ParadoxScriptProperty>>() // key 为空字符串则表示当前文件中不存在绑定的命名空间
-        collectEventDeclarations(file, context)
-        if (context.isEmpty()) return null
+        val map = ParadoxEventManipulationService.getBoundEventDeclarationsInFile(file)
+        if (map.isEmpty()) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        for ((namespace, events) in context) {
+        for ((namespace, events) in map) {
             ProgressManager.checkCanceled()
             if (events.isEmpty()) continue
             for (event in events) checkEventIdForEventDeclaration(event, namespace, holder)
         }
         return holder.resultsArray
-    }
-
-    private fun collectEventDeclarations(file: ParadoxScriptFile, context: MutableMap<String, MutableList<ParadoxScriptProperty>>) {
-        val gameType = selectGameType(file) ?: return
-        if (gameType matchesBy ParadoxGameTypeConstraint.JominiBased) {
-            // #334
-            collectMixedEventDeclarations(file, context)
-        } else {
-            collectSequentialEventDeclarations(file, context)
-        }
-    }
-
-    private fun collectMixedEventDeclarations(file: ParadoxScriptFile, context: MutableMap<String, MutableList<ParadoxScriptProperty>>) {
-        val properties = file.properties(inline = true)
-        val existingNamespaces = mutableSetOf<String>()
-        for (property in properties) {
-            ProgressManager.checkCanceled()
-            val definitionInfo = property.definitionInfo ?: continue
-            if (definitionInfo.type == ParadoxDefinitionTypes.eventNamespace) {
-                val namespace = ParadoxEventManager.getNamespaceFromEventNamespaceDeclaration(property).orEmpty()
-                if (namespace.isNotEmpty()) existingNamespaces.add(namespace)
-            } else if (definitionInfo.type == ParadoxDefinitionTypes.event) {
-                val namespace = ParadoxEventManager.getNamespaceFromEventDeclaration(property).orEmpty()
-                if (namespace.isNotEmpty()) context.getOrPut(namespace) { mutableListOf() }.add(property)
-            }
-        }
-        val unboundEvents = mutableSetOf<ParadoxScriptProperty>()
-        for (namespace in context.keys) {
-            if (namespace !in existingNamespaces) {
-                context.remove(namespace)?.let { unboundEvents.addAll(it) }
-            }
-        }
-        context.put("", unboundEvents.toMutableList())
-    }
-
-    private fun collectSequentialEventDeclarations(file: ParadoxScriptFile, context: MutableMap<String, MutableList<ParadoxScriptProperty>>) {
-        val properties = file.properties(inline = true)
-        var nextNamespace = ""
-        for (property in properties) {
-            ProgressManager.checkCanceled()
-            val definitionInfo = property.definitionInfo ?: continue
-            if (definitionInfo.type == ParadoxDefinitionTypes.eventNamespace) {
-                // 如果值不是一个字符串，作为空字符串存到缓存中
-                val namespace = ParadoxEventManager.getNamespaceFromEventNamespaceDeclaration(property).orEmpty()
-                nextNamespace = namespace
-                context.getOrPut(namespace) { mutableListOf() }
-            } else if (definitionInfo.type == ParadoxDefinitionTypes.event) {
-                context.getOrPut(nextNamespace) { mutableListOf() }.add(property)
-            }
-        }
     }
 
     private fun checkEventIdForEventDeclaration(element: ParadoxScriptProperty, namespace: String, holder: ProblemsHolder) {

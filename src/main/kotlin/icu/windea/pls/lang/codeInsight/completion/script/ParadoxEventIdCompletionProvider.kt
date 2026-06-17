@@ -14,11 +14,8 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 提供事件ID中的事件命名空间的代码补全。
@@ -26,24 +23,26 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
-        val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
+        val element = position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if (element.text.isParameterized()) return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         if (keyword.contains('.')) return
-        val event = selectScope { element.parentOfPath("id", definitionType = ParadoxDefinitionTypes.event) } // 不处理内联的情况
-        if (event !is ParadoxScriptProperty) return
+
+        // 仅提示同文件中绑定的那些事件命名空间
+        val event = ParadoxEventManipulationService.getEventDeclarationElementFromEventId(element) ?: return
+        val boundEventNamespaces = ParadoxEventManipulationService.getBoundNamespaceDeclarationsFromEventDeclaration(event)
+        if (boundEventNamespaces.isEmpty()) return
 
         ParadoxCompletionManager.initializeContext(parameters, context)
-
-        // 仅提示脚本文件中向上查找到的那个合法的事件命名空间
-        val eventNamespace = ParadoxEventManager.getBoundNamespaceDeclarationElementFromEventDeclaration(event) ?: return // skip
-        val name = eventNamespace.value ?: return
-        val typeFile = eventNamespace.containingFile
-        val lookupElement = LookupElementBuilder.create(eventNamespace, name)
-            .withIcon(PlsIcons.Nodes.EventNamespace)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withCompletionId()
-        result.addElement(lookupElement, context)
+        for (eventNamespace in boundEventNamespaces) {
+            val name = eventNamespace.value ?: continue
+            val typeFile = eventNamespace.containingFile
+            val lookupElement = LookupElementBuilder.create(eventNamespace, name)
+                .withIcon(PlsIcons.Nodes.EventNamespace)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withCompletionId()
+            result.addElement(lookupElement, context)
+        }
     }
 }

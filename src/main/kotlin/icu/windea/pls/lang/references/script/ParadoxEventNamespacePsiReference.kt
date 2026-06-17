@@ -7,9 +7,9 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -31,8 +31,13 @@ class ParadoxEventNamespacePsiReference(
     override fun resolve(): PsiElement? {
         val element = element
         val event = event.element ?: return null
-        val preferredEventNamespace = ParadoxEventManager.getBoundNamespaceDeclarationElementFromEventDeclaration(event)
-        if (preferredEventNamespace != null) return preferredEventNamespace
+        val expectedNamespace = rangeInElement.substring(element.text)
+        if (expectedNamespace.isEmpty()) return null
+
+        // bound and matched
+        val boundEventNamespaces = ParadoxEventManipulationService.getBoundNamespaceDeclarationsFromEventDeclaration(event)
+        val boundEventNamespace = boundEventNamespaces.find { ParadoxEventManipulationService.getNamespaceFromEventNamespaceDeclaration(it) == expectedNamespace }
+        if (boundEventNamespace != null) return boundEventNamespace
 
         val name = element.value.substringBefore('.')
         val selector = ParadoxDefinitionSearch.selector(project, event).contextSensitive()
@@ -43,14 +48,20 @@ class ParadoxEventNamespacePsiReference(
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         val element = element
         val event = event.element ?: return ResolveResult.EMPTY_ARRAY
+        val expectedNamespace = rangeInElement.substring(element.text)
+        if (expectedNamespace.isEmpty()) return ResolveResult.EMPTY_ARRAY
         val result = mutableSetOf<PsiElement>()
-        val preferredEventNamespace = ParadoxEventManager.getBoundNamespaceDeclarationElementFromEventDeclaration(event)
-        if (preferredEventNamespace != null) result.add(preferredEventNamespace)
+
+        // bound and matched
+        val boundEventNamespaces = ParadoxEventManipulationService.getBoundNamespaceDeclarationsFromEventDeclaration(event)
+        val boundEventNamespace = boundEventNamespaces.filter { ParadoxEventManipulationService.getNamespaceFromEventNamespaceDeclaration(it) == expectedNamespace }
+        result.addAll(boundEventNamespace)
 
         val name = element.value.substringBefore('.')
         val selector = ParadoxDefinitionSearch.selector(project, event).contextSensitive()
         val eventNamespaces = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.eventNamespace, selector).findAll()
         result.addAll(eventNamespaces)
+
         return result.createResults()
     }
 }

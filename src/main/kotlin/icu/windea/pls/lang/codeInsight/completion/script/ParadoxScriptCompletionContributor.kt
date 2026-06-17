@@ -52,17 +52,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 
         // 当用户可能正在输入 eventId 时提示
         val eventIdPattern = psiElement()
-            .withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
-            .withParent(
-                psiElement(ParadoxScriptString::class.java)
-                    .withParent(
-                        psiElement(ParadoxScriptProperty::class.java)
-                            .withParent(
-                                psiElement(ParadoxScriptBlock::class.java)
-                                    .withParent(psiElement(ParadoxScriptProperty::class.java))
-                            )
-                    )
-            )
+            .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
         extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
 
         // 当用户可能正在输入 parameter 的名字时提示
