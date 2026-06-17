@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  *
  * 检测于文法级别。
  *
- * CK3/VIC3/EU5:
+ * [CK3/VIC3/EU5]
  * ```paradox_script
  * # before
  * owner ?= { ... }

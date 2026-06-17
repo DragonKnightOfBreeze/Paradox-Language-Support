@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
  *
  * 示例 - 安全形式）：
  *
- * CK3/VIC3/EU5:
+ * [CK3/VIC3/EU5]
  * ```paradox_script
  * owner ?= { ... }
  * ```
