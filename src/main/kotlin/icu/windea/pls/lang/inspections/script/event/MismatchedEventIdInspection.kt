@@ -19,9 +19,12 @@ import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 
 /**
- * 检查事件脚本文件中的事件ID与事件所属的命名空间是否匹配。
+ * 事件脚本文件中的（位于事件声明中的）不匹配事件命名空间的事件ID的代码检查。
  *
- * 注意：这项代码检查不是强制性的，未通过这项代码检查并不意味着脚本文件中存在错误，以至于导致游戏运行时的异常。
+ * 说明：
+ * - 此代码检查是启发式的，可能存在误报。
+ * - 此代码检查未通过时，不一定意味着会引发游戏引擎层面的异常。
+ * - 实际上，事件脚本文件中可以不声明或者声明多个事件命名空间，事件ID不需要匹配同文件中的先前最后声明的事件命名空间。
  */
 class MismatchedEventIdInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
