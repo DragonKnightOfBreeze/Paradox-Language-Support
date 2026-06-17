@@ -17,10 +17,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 /**
  * （对于本地化文件）检查是否存在不正确的语法。
  *
+ * 检测于文法级别和语义级别。
+ *
  * 包括：
- * - 不正确的对左方括号（[LEFT_BRACKET]）的转义。语法级别。
- * - 悬挂的彩色文本（[COLORFUL_TEXT]）的结束标记（[COLORFUL_TEXT_END]，`§!`）。语法级别。
- * - 悬挂的文本格式（[TEXT_FORMAT]）的结束标记（[TEXT_FORMAT_END]，`#!`）。语法级别。
+ * - 不正确的对左方括号（[LEFT_BRACKET]）的转义。文法级别。
+ * - 悬挂的彩色文本（[COLORFUL_TEXT]）的结束标记（[COLORFUL_TEXT_END]，`§!`）。文法级别。
+ * - 悬挂的文本格式（[TEXT_FORMAT]）的结束标记（[TEXT_FORMAT_END]，`#!`）。文法级别。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

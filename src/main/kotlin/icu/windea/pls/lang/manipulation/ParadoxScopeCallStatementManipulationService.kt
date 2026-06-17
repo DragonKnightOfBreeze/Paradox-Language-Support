@@ -66,7 +66,7 @@ object ParadoxScopeCallStatementManipulationService {
      * 说明：
      * - 必须是显式形式。
      * - 游戏类型必须支持至少一种安全操作符（宽松测试：仅检查游戏类型，不检查游戏版本）。
-     * - 仅检查语法级别（键必须是字符串字面量）。
+     * - 检测于文法级别（键必须是字符串字面量）。
      */
     fun canConvertToSafeForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeSecondProperty: Boolean = true): Boolean {
         if (!isNormalForm(element, canBeExistsProperty, canBeSecondProperty)) return false
@@ -83,7 +83,7 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * 说明：
      * - 对于任意游戏类型和任意安全调用操作符均可用。
-     * - 仅检查语法级别（键必须是字符串字面量）。
+     * - 检测于文法级别（键必须是字符串字面量）。
      */
     fun canConvertToNormalForm(element: ParadoxScriptProperty): Boolean {
         if (!isSafeForm(element)) return false

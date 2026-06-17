@@ -5,14 +5,14 @@
 ## 2.1.10-dev
 
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值操作符）/ Compatible with `? =` (safe assignment operator including blank) that started appearing in Stellaris 4.4 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] [Stellaris] 在语法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在语法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） / If the current cursor is in a complex expression, expand the cursor according to the structure of the complex expression (Extend Selection)
 - [x] 提供动作，以进行定义/定义注入之间的差异比较 / Provide actions to compare differences between definitions and definition injections
 - [x] 完善对作用域字段表达式和值字段表达式的支持：兼容其中嵌套的动态值表达式 / Improve support for scope field expressions and value field expressions: compatible with nested dynamic value expressions ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
 - [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 / Provide description info when inferring game type, and display it in the mod settings dialog
-- [x] 提供意向，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换
-- [x] 提供代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换
+- [x] 提供意向，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 / Provides intentions to convert scope call statement between safe form (`owner ?= ...` or `owner? = ...`) and explicit form (`exists = owner owner = ...`)
+- [x] 提供代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 / Provides inspections to convert scope call statement between safe form (`owner ?= ...` or `owner? = ...`) and explicit form (`exists = owner owner = ...`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 

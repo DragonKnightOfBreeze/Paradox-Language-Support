@@ -12,6 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 将条件化语句转为块形式。
  *
+ * 检测于文法级别。
+ *
  * ```paradox_script
  * # before
  * PARAM = $PARAM|no$

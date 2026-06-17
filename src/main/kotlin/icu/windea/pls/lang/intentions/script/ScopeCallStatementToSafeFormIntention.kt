@@ -13,6 +13,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 将显式作用域调用转换为安全形式。
  *
+ * 检测于文法级别。
+ *
  * ```paradox_script
  * # before
  * exists = owner
