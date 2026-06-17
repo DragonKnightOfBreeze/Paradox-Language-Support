@@ -21,6 +21,7 @@ import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 /**
  * @see TigerLintResult
  * @see TigerLintToolProvider
+ * @see PlsTigerLintInspection
  */
 class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
     data class Info(val file: PsiFile)

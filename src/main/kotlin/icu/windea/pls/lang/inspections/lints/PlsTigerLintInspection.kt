@@ -9,12 +9,19 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.integrations.lints.TigerLintResult
+import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.integrations.settings.TigerHighlightDialog
 import javax.swing.JComponent
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintInspection
 
+/**
+ * @see TigerLintResult
+ * @see TigerLintToolProvider
+ * @see PlsTigerLintAnnotator
+ */
 class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection, DumbAware {
     companion object {
         const val SHORT_NAME = "PlsTigerLint"
