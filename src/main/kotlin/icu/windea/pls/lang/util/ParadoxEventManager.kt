@@ -83,8 +83,9 @@ object ParadoxEventManager {
         return getName(element).substringBefore('.').orNull() // enough
     }
 
-    fun getBoundNamespaceElement(event: ParadoxDefinitionElement): ParadoxScriptProperty? {
-        var current = event.prevSibling ?: return null
+    fun getBoundNamespaceElementFromEventDeclaration(element: ParadoxDefinitionElement): ParadoxScriptProperty? {
+        // TODO #334 support mixed event namespaces
+        var current = element.prevSibling ?: return null
         while (true) {
             if (current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
                 if (current.propertyValue is ParadoxScriptString) {

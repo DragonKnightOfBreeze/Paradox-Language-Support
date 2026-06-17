@@ -12,13 +12,16 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+/**
+ * （位于事件声明中的）事件ID中的事件命名空间引用。
+ */
 class ParadoxEventNamespacePsiReference(
-    element: ParadoxScriptString,
+    element: ParadoxScriptStringExpressionElement,
     rangeInElement: TextRange,
     val event: SmartPsiElementPointer<ParadoxScriptProperty>
-) : PsiPolyVariantReferenceBase<ParadoxScriptString>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
     private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -28,8 +31,7 @@ class ParadoxEventNamespacePsiReference(
     override fun resolve(): PsiElement? {
         val element = element
         val event = event.element ?: return null
-        // val definitionInfo = event.definitionInfo ?: return null
-        val preferredEventNamespace = ParadoxEventManager.getBoundNamespaceElement(event)
+        val preferredEventNamespace = ParadoxEventManager.getBoundNamespaceElementFromEventDeclaration(event)
         if (preferredEventNamespace != null) return preferredEventNamespace
 
         val name = element.value.substringBefore('.')
@@ -41,9 +43,8 @@ class ParadoxEventNamespacePsiReference(
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         val element = element
         val event = event.element ?: return ResolveResult.EMPTY_ARRAY
-        // val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
         val result = mutableSetOf<PsiElement>()
-        val preferredEventNamespace = ParadoxEventManager.getBoundNamespaceElement(event)
+        val preferredEventNamespace = ParadoxEventManager.getBoundNamespaceElementFromEventDeclaration(event)
         if (preferredEventNamespace != null) result.add(preferredEventNamespace)
 
         val name = element.value.substringBefore('.')
