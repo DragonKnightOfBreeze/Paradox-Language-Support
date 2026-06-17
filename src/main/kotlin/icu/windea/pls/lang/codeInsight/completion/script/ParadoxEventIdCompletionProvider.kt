@@ -18,7 +18,7 @@ import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 提供事件ID中的事件命名空间的代码补全。
+ * 提供（位于事件声明中的）事件ID中的事件命名空间的代码补全。
  */
 class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
@@ -29,12 +29,13 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
         val keyword = element.getKeyword(offsetInParent)
         if (keyword.contains('.')) return
 
+        ParadoxCompletionManager.initializeContext(parameters, context)
+
         // 仅提示同文件中绑定的那些事件命名空间
-        val event = ParadoxEventManipulationService.getEventDeclarationElementFromEventId(element) ?: return
+        val event = ParadoxEventManipulationService.getEventDeclarationCandidateFromEventId(element) ?: return
         val boundEventNamespaces = ParadoxEventManipulationService.getBoundNamespaceDeclarationsFromEventDeclaration(event)
         if (boundEventNamespaces.isEmpty()) return
 
-        ParadoxCompletionManager.initializeContext(parameters, context)
         for (eventNamespace in boundEventNamespaces) {
             val name = eventNamespace.value ?: continue
             val typeFile = eventNamespace.containingFile
