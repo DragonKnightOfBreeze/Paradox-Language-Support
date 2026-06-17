@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptParameter
 /**
  * （对于脚本文件）检查是否在不支持的地方使用了参数。
  */
-class UnsupportedParameterUsageInspection : LocalInspectionTool() {
+class UnsupportedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
@@ -40,7 +40,7 @@ class UnsupportedParameterUsageInspection : LocalInspectionTool() {
     private fun checkGeneral(element: PsiElement, holder: ProblemsHolder) {
         if (element !is ParadoxParameter && element !is ParadoxConditionParameter) return
         if (element.reference?.resolve() != null) return
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.1"))
+        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameter.desc.1"))
     }
 
     private fun checkInlineScript(element: PsiElement, holder: ProblemsHolder) {
@@ -49,11 +49,11 @@ class UnsupportedParameterUsageInspection : LocalInspectionTool() {
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
         val fix = getDeleteDefaultValueFix(element)
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.2"), fix)
+        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameter.desc.2"), fix)
     }
 
     private fun getDeleteDefaultValueFix(element: PsiElement): DeleteStringByElementTypeFix {
-        val name = PlsBundle.message("inspection.script.unsupportedParameterUsage.fix.1.name")
+        val name = PlsBundle.message("inspection.script.unsupportedParameter.fix.1.name")
         return DeleteStringByElementTypeFix(element, name, ParadoxScriptElementTypes.PIPE, ParadoxScriptElementTypes.PARAMETER_END)
     }
 }

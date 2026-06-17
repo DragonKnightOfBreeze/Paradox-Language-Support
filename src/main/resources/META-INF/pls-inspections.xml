@@ -109,10 +109,10 @@
                      key="inspection.script.incorrectSyntax" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectSyntaxInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"
-                     key="inspection.script.unsupportedParameterUsage" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameter"
+                     key="inspection.script.unsupportedParameter" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedParameterUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedParameterInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterCondition"
                      key="inspection.script.unsupportedParameterCondition" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
