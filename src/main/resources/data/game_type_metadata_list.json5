@@ -3,7 +3,8 @@
   {
     "gameType": "stellaris",
     "gameMainEntries": [
-      ""
+      "",
+      "dlc/*"
     ],
     "gameExtraEntries": [
       "pdx_launcher/game",
