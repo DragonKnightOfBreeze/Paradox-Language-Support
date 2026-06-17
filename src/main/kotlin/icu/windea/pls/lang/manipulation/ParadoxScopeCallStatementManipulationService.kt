@@ -46,9 +46,9 @@ object ParadoxScopeCallStatementManipulationService {
      * 判断 [element] 是否为显式形式（`exists = x x = y`）。
      * [element] 可以是显式形式中的任意一个属性（`exists = x` 或 `x = y`）。
      */
-    fun isNormalForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeSecondProperty: Boolean = true): Boolean {
-        if (canBeExistsProperty && isExistsPropertyOfNormalForm(element)) return true
-        if (canBeSecondProperty && isSecondPropertyOfNormalForm(element)) return true
+    fun isNormalForm(element: ParadoxScriptProperty, forExistsProperty: Boolean = true, forSecondProperty: Boolean = true): Boolean {
+        if (forExistsProperty && isExistsPropertyOfNormalForm(element)) return true
+        if (forSecondProperty && isSecondPropertyOfNormalForm(element)) return true
         return false
     }
 

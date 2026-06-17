@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -9,6 +10,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.isExactDigit
+import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
@@ -21,6 +23,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.resolve.ParadoxEventService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -28,7 +31,10 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 
@@ -74,16 +80,42 @@ object ParadoxEventManager {
     }
 
     fun getNamespaceFromEventNamespaceDeclaration(element: ParadoxDefinitionElement): String? {
-        if(element !is ParadoxScriptProperty) return null // TODO [inline_definition]
+        if (element !is ParadoxScriptProperty) return null // TODO [inline_definition]
         return element.propertyValue<ParadoxScriptString>()?.stringValue
     }
 
     fun getNamespaceFromEventDeclaration(element: ParadoxDefinitionElement): String? {
-        if(element !is ParadoxScriptProperty) return null // TODO [inline_definition]
+        if (element !is ParadoxScriptProperty) return null // TODO [inline_definition]
         return getName(element).substringBefore('.').orNull() // enough
     }
 
-    fun getBoundNamespaceElementFromEventDeclaration(element: ParadoxDefinitionElement): ParadoxScriptProperty? {
+    fun getEventDeclarationElementFromEventId(element: ParadoxScriptStringExpressionElement): ParadoxScriptProperty? {
+        // if (element.text.isParameterized()) return null // can be parameterized
+        return when (element) {
+            is ParadoxScriptPropertyKey -> {
+                val event = element.parentProperty ?: return null
+                if (event.definitionInfo?.type != ParadoxDefinitionTypes.event) return null
+                event
+            }
+            is ParadoxScriptString -> {
+                val event = selectScope { element.parentOfPath("id", definitionType = ParadoxDefinitionTypes.event) } // 不处理内联的情况
+                if (event !is ParadoxScriptProperty) return null
+                event
+            }
+            else -> null
+        }
+    }
+
+    fun getNamespaceRangeInFromEventId(element: ParadoxScriptString): TextRange? {
+        val text = element.text
+        val dotIndex = text.indexOf('.')
+        if (dotIndex == -1) return null
+        val range = TextRange.create(if (text.isLeftQuoted()) 1 else 0, dotIndex)
+        if (range.isEmpty) return null
+        return range
+    }
+
+    fun getBoundNamespaceDeclarationElementFromEventDeclaration(element: ParadoxDefinitionElement): ParadoxScriptProperty? {
         // TODO #334 support mixed event namespaces
         var current = element.prevSibling ?: return null
         while (true) {

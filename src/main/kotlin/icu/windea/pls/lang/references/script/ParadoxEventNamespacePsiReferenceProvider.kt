@@ -9,13 +9,13 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 /**
  * 解析（位于事件声明中的）事件ID中的事件命名空间引用。
+ *
+ * NOTE 2.1.10 仅支持作为字符串（[ParadoxScriptString]）的事件ID。
  */
 class ParadoxEventNamespacePsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
@@ -23,19 +23,9 @@ class ParadoxEventNamespacePsiReferenceProvider : PsiReferenceProvider() {
 
         if (element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
         if (element.text.isParameterized()) return PsiReference.EMPTY_ARRAY // 不应当带有参数
-        val rangeInElement = getRangeInElement(element) ?: return PsiReference.EMPTY_ARRAY
-        val event = selectScope { element.parentOfPath("id", definitionType = ParadoxDefinitionTypes.event) } // 不处理内联的情况
-        if (event !is ParadoxScriptProperty) return PsiReference.EMPTY_ARRAY
+        val rangeInElement = ParadoxEventManager.getNamespaceRangeInFromEventId(element) ?: return PsiReference.EMPTY_ARRAY
+        val event = ParadoxEventManager.getEventDeclarationElementFromEventId(element) ?: return PsiReference.EMPTY_ARRAY
         val reference = ParadoxEventNamespacePsiReference(element, rangeInElement, event.createPointer())
         return arrayOf(reference)
-    }
-
-    private fun getRangeInElement(element: ParadoxScriptString): TextRange? {
-        val text = element.text
-        val dotIndex = text.indexOf('.')
-        if (dotIndex == -1) return null
-        val range = TextRange.create(if (text.isLeftQuoted()) 1 else 0, dotIndex)
-        if (range.isEmpty) return null
-        return range
     }
 }
