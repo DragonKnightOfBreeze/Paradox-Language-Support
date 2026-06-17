@@ -14,8 +14,8 @@ class CwtAnnotatorTest : BasePlatformTestCase() {
 
     @Test
     fun testAdjacentLiterals_errorAndFix() {
-        val errorMsg = PlsBundle.message("neighboring.literal.not.supported")
-        val openingMsg = PlsBundle.message("missing.opening.quote")
+        val errorMsg = PlsBundle.message("message.neighboring.literal.not.supported")
+        val openingMsg = PlsBundle.message("message.missing.opening.quote")
         myFixture.configureByText(
             "annotator_adjacent_literals.test.cwt",
             // a"b  -> 两个标注：1) a" 缺失开引号；2) b 紧邻字面量
@@ -26,7 +26,7 @@ class CwtAnnotatorTest : BasePlatformTestCase() {
         myFixture.checkHighlighting(true, true, true)
 
         // Quick Fix: 插入空格
-        val fixName = PlsBundle.message("neighboring.literal.not.supported.fix")
+        val fixName = PlsBundle.message("fix.neighboring.literal.not.supported")
         myFixture.configureByText("annotator_adjacent_literals_apply.test.cwt", "a\"<caret>b")
         val intention = myFixture.findSingleIntention(fixName)
         myFixture.launchAction(intention)
@@ -35,8 +35,8 @@ class CwtAnnotatorTest : BasePlatformTestCase() {
 
     @Test
     fun testMissingQuotes_errors() {
-        val openingMsg = PlsBundle.message("missing.opening.quote")
-        val closingMsg = PlsBundle.message("missing.closing.quote")
+        val openingMsg = PlsBundle.message("message.missing.opening.quote")
+        val closingMsg = PlsBundle.message("message.missing.closing.quote")
         myFixture.configureByText(
             "annotator_missing_quotes.test.cwt",
             // 两个标注：value" 缺失开引号；"value 缺失闭引号

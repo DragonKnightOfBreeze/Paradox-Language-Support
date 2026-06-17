@@ -17,7 +17,11 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 /**
- * （对于脚本文件）检查是否在不支持的地方使用了参数。
+ * （脚本文件中的）不支持的参数的代码检查。
+ *
+ * 规则如下：
+ * - 仅支持在支持参数的定义声明中，或者内联脚本文件中使用参数。
+ * - 不支持在内联脚本文件中使用带默认值的参数。
  */
 class UnsupportedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

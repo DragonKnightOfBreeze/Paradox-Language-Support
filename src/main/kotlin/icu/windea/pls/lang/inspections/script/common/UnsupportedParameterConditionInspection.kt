@@ -13,7 +13,10 @@ import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （对于脚本文件）检查是否在不支持的地方使用了参数条件块。
+ * （脚本文件中的）不支持的参数条件块的代码检查。
+ *
+ * 规则如下：
+ * - 不支持在内联脚本文件中使用参数条件块。
  */
 class UnsupportedParameterConditionInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {

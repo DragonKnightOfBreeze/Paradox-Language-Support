@@ -27,7 +27,7 @@ class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
         return "paradox.script"
     }
 
-    // customizing postfix templates is not supported so far
+    // customizing postfix templates are not supported so far
     override fun getPresentableName(): String? {
         return null
     }

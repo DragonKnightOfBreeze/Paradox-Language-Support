@@ -42,8 +42,8 @@ class ParadoxScriptAnnotator : Annotator {
         // TODO 2.0.2+ 由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
         // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("neighboring.literal.not.supported"))
-                .withFix(InsertStringFix(element, PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.neighboring.literal.not.supported"))
+                .withFix(InsertStringFix(element, PlsBundle.message("fix.neighboring.literal.not.supported"), " ", element.startOffset))
                 .create()
         }
 
@@ -80,9 +80,9 @@ class ParadoxScriptAnnotator : Annotator {
             val isLeftQuoted = text.isLeftQuoted()
             val isRightQuoted = text.isRightQuoted()
             if (!isLeftQuoted && isRightQuoted) {
-                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.opening.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.missing.opening.quote")).create()
             } else if (isLeftQuoted && !isRightQuoted) {
-                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.closing.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.missing.closing.quote")).create()
             }
         }
     }
@@ -93,9 +93,9 @@ class ParadoxScriptAnnotator : Annotator {
             val firstChild = element.firstChild
             val leadingAt = firstChild.elementType == ParadoxScriptElementTypes.AT
             if (leadingAt) {
-                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("leading.at.for.svr.in.ime"))
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.leading.at.unexpected"))
                     .range(firstChild)
-                    .withFix(DeleteStringByElementTypeFix(firstChild, PlsBundle.message("leading.at.for.svr.in.ime.fix")))
+                    .withFix(DeleteStringByElementTypeFix(firstChild, PlsBundle.message("fix.leading.at.unexpected")))
                     .create()
             }
         }

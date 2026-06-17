@@ -45,8 +45,8 @@ class ParadoxScriptAnnotatorTest : BasePlatformTestCase() {
 
     @Test
     fun testMissingQuotes_errors() {
-        val openingMsg = PlsBundle.message("missing.opening.quote")
-        val closingMsg = PlsBundle.message("missing.closing.quote")
+        val openingMsg = PlsBundle.message("message.missing.opening.quote")
+        val closingMsg = PlsBundle.message("message.missing.closing.quote")
         myFixture.configureByText(
             "annotator_missing_quotes.test.txt",
             // 两个标注：value" 缺失开引号；"value 缺失闭引号
@@ -60,7 +60,7 @@ class ParadoxScriptAnnotatorTest : BasePlatformTestCase() {
 
     @Test
     fun testInlineMathScriptedVariableReference() {
-        val msg = PlsBundle.message("leading.at.for.svr.in.ime")
+        val msg = PlsBundle.message("message.leading.at.unexpected")
         myFixture.configureByText(
             "annotator_inline_math_scripted_variable_reference.test.txt",
             """

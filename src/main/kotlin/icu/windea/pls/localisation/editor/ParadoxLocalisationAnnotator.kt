@@ -25,8 +25,8 @@ class ParadoxLocalisationAnnotator : Annotator {
         // by @雪丶我
         // 不允许紧邻的图标
         if (element is ParadoxLocalisationIcon && element.prevSibling is ParadoxLocalisationIcon) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("neighboring.icon.not.supported"))
-                .withFix(InsertStringFix(element, PlsBundle.message("neighboring.icon.not.supported.fix"), " ", element.startOffset))
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.neighboring.icon.not.supported"))
+                .withFix(InsertStringFix(element, PlsBundle.message("fix.neighboring.icon.not.supported"), " ", element.startOffset))
                 .create()
         }
     }

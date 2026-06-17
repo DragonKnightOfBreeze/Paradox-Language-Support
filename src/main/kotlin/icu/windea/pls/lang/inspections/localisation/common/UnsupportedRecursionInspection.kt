@@ -15,8 +15,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 
 /**
- * （对于本地化文件）检查是否存在不支持的递归。
+ * （本地化文件中的）不支持的递归的代码检查。
  *
+ * 规则如下：
  * - 对于每个本地化，检查其本地化文本中是否存在递归的本地化引用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {

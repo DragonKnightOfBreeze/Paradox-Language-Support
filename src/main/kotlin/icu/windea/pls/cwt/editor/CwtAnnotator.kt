@@ -30,8 +30,8 @@ class CwtAnnotator : Annotator {
     private fun checkNeighboringLiteral(element: PsiElement, holder: AnnotationHolder) {
         // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("neighboring.literal.not.supported"))
-                .withFix(InsertStringFix(element, PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.neighboring.literal.not.supported"))
+                .withFix(InsertStringFix(element, PlsBundle.message("fix.neighboring.literal.not.supported"), " ", element.startOffset))
                 .create()
         }
     }
@@ -43,9 +43,9 @@ class CwtAnnotator : Annotator {
             val isLeftQuoted = text.isLeftQuoted()
             val isRightQuoted = text.isRightQuoted()
             if (!isLeftQuoted && isRightQuoted) {
-                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.opening.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.missing.opening.quote")).create()
             } else if (isLeftQuoted && !isRightQuoted) {
-                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.closing.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.missing.closing.quote")).create()
             }
         }
     }

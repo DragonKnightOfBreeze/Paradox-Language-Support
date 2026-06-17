@@ -19,14 +19,13 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
- * （对于脚本文件）检查是否存在不正确的语法。
+ * （脚本文件中的）不正确的语法的代码检查。
  *
  * 检测于文法级别和语义级别。
  *
  * 包括：
  * - 不期望的比较运算符。文法级别和语义级别。
- * - 不受游戏类型支持的安全（调用）赋值运算符。
- * - 不期望的安全（调用）赋值运算符。文法级别。
+ * - 不支持的安全（调用）赋值运算符。游戏类型级别和文法级别。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

@@ -12,7 +12,10 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （对于脚本文件）检查是否在不支持的地方使用了内联数学表达式。
+ * （脚本文件中的）不支持的内联数学块的代码检查。
+ *
+ * 规则如下：
+ * - 不支持在资源文件（`.asset`）中使用内联数学块。
  */
 class UnsupportedInlineMathInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
