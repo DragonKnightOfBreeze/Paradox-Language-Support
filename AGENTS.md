@@ -183,7 +183,7 @@ For more details, see: `agents/context/naming-conventions.md`
 Package organization:
 
 - `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
-- `icu.windea.pls.base` Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
+- `icu.windea.pls.base`: Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
 - `icu.windea.pls.ide`: Global codes to handle IDE platform integration. Usually language-free and domain-free.
 - `icu.windea.pls.config`: Codes related to config, config expression and config group. Usually not depend on game or mod files. 
 - `icu.windea.pls.lang`: Codes which are domain specific, or related to semantic match and resolution.
@@ -191,8 +191,8 @@ Package organization:
   - `icu.windea.pls.lang.resolve`: Semantic-level resolution (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.util`: High-level managers and special components.
 - `icu.windea.pls.tools`: Codes related to bundled utilities and integrations. Including game launcher, config generator and others.
-- `icu.windea.pls.integrations` - Provides integrations with third-party tools.
-- `icu.windea.pls.extensions` - Provides integrations and extensions to third-party plugins.
+- `icu.windea.pls.integrations`: Provides integrations with third-party tools.
+- `icu.windea.pls.extensions`: Provides integrations and extensions to third-party plugins.
 
 Service vs Manager vs Util:
 
@@ -209,7 +209,7 @@ Here are some common code patterns:
 - How to get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
 - How to get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
-- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Service`, `...Manager`, `...Util` and so on.
+- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Service`, `...Manager`, `...Util` and so on.
 - How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords. 
 
 ## Domain terminology and guidance
@@ -230,6 +230,7 @@ Here are some common terms:
 - on action → 动作触发
 - define → 定值
 - definition → 定义
+- localisation → 本地化
 
 For more details, see: `agents/context/translation-terms.md`
 

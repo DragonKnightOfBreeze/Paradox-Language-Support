@@ -7,6 +7,8 @@ import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于初始化规则分组中预先定义的那些数据。
+ *
+ * 读取并加入来自 `/data/config_group_data_list.json5` 的 JSON 数据。
  */
 class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
     override suspend fun process(configGroup: CwtConfigGroup) {

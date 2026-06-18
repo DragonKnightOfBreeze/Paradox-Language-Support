@@ -6,6 +6,8 @@ import icu.windea.pls.model.paths.ParadoxPath
 /**
  * 游戏类型的额外的元数据。
  *
+ * 读取并使用来自 `/data/game_type_metadata_list.json5` 的 JSON 数据。
+ *
  * **关于游戏或模组的入口：**
  *
  * - 入口名称即入口目录相对于入口目录的路径。可以使用 `*` 匹配任意子路径。
