@@ -5,10 +5,12 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
@@ -31,7 +33,6 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
  * 用于操作脚本中的作用域调用语句（scope call statement）。
@@ -232,14 +233,14 @@ object ParadoxScopeCallStatementManipulationService {
     private fun isExistsProperty(element: ParadoxScriptProperty): Boolean {
         if (element.name != "exists") return false
         if (element.propertyValue !is ParadoxScriptString) return false
-        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
+        val separatorNode = element.findChild { ParadoxScriptPsiService.isPropertySeparator(it) } ?: return false
         if (separatorNode.elementType != EQUAL_SIGN) return false
         return true
     }
 
     private fun isTargetProperty(element: ParadoxScriptProperty): Boolean {
         if (element.name == "exists") return false
-        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
+        val separatorNode = element.findChild { ParadoxScriptPsiService.isPropertySeparator(it) } ?: return false
         if (separatorNode.elementType != EQUAL_SIGN) return false
         return true
     }
@@ -257,8 +258,8 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     private fun isPropertyOfSafeForm(element: ParadoxScriptProperty): Boolean {
-        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
-        if (separatorNode.elementType !in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS) return false
+        val separator = element.findChild { ParadoxScriptPsiService.isPropertySeparator(it) } ?: return false
+        if (!ParadoxScriptPsiService.isSafeOperator(separator)) return false
         return ParadoxSyntaxService.isSafeOperatorAllowed(element)
     }
 
@@ -364,10 +365,13 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * 说明：
      * - [element] 必须是嵌套形式。参见 [isSafeForm]。
+     * - [element] 的属性分隔符必须是常规的 [EQUAL_SIGN]。
      *
      * @see ParadoxLinkedExpression
      */
     fun canConvertToChainedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        val separatorNode = element.findChild { ParadoxScriptPsiService.isPropertySeparator(it) } ?: return false
+        if (separatorNode.elementType != EQUAL_SIGN) return false
         return isNestedForm(element, gameType)
     }
 
@@ -446,11 +450,15 @@ object ParadoxScopeCallStatementManipulationService {
             moveToInInnerExpression = -1
         }
 
+        val separator = propertyKey.siblings(withSelf = false).find { ParadoxScriptPsiService.isPropertySeparator(it) }
+        val separatorText = separator?.text ?: "="
+
         val wasQuoted = propertyKey.text.isLeftQuoted()
         val newOuterKeyText = if (wasQuoted) outerKey.quote() else outerKey
         val newInnerKeyText = if (wasQuoted) innerKey.quote() else innerKey
+        val newInnerSeparatorText = separatorText
         val newValueText = element.propertyValue?.text.orEmpty() // property value can be null here
-        val newText = "$newOuterKeyText = {\n$newInnerKeyText = $newValueText\n}"
+        val newText = "$newOuterKeyText = {\n$newInnerKeyText $newInnerSeparatorText $newValueText\n}"
         val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
         val replacedElement = element.replace(newElement)
 
@@ -513,11 +521,15 @@ object ParadoxScopeCallStatementManipulationService {
         val outerKey = propertyKey.value
         val innerKey = innerProperty.propertyKey.value
 
+        val innerSeparator = innerPropertyKey.siblings(withSelf = false).find { ParadoxScriptPsiService.isPropertySeparator(it) }
+        val innerSeparatorText = innerSeparator?.text ?: "="
+
         val newKey = "$outerKey.$innerKey"
         val wasQuoted = propertyKey.text.isLeftQuoted()
         val newKeyText = if (wasQuoted) newKey.quote() else newKey
+        val newSeparatorText = innerSeparatorText // NOTE outer separator text will be lost here, if is not `=`
         val newValueText = innerProperty.propertyValue?.text.orEmpty() // property value can be null here
-        val newText = "$newKeyText = $newValueText"
+        val newText = "$newKeyText $newSeparatorText $newValueText"
         val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
         element.replace(newElement)
     }

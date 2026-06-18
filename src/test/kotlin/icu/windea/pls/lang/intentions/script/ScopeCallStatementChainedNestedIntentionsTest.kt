@@ -60,6 +60,27 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testScopeCallToNestedForm_keepSeparator() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToNestedForm")
+        myFixture.configureByText(
+            "chained_nested_stellaris.test.txt",
+            "test_effect = { <caret>root.owner? = { k = v } }"
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            test_effect = {
+                <caret>root = {
+                    owner? = { k = v }
+                }
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Test
     fun testScopeCallToNestedForm_withQuotedKey() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToNestedForm")
@@ -79,7 +100,6 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
             """.trimIndent()
         )
     }
-
 
     @Test
     fun testScopeCallToNestedForm_caretOnSecond() {
@@ -208,6 +228,19 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testScopeCallToChainedForm_keepSeparator() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
+        myFixture.configureByText(
+            "chained_nested_stellaris.test.txt",
+            """test_effect = { <caret>root = { owner? = { k = v } } }"""
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("test_effect = { root.owner? = { k = v } }")
+    }
+
+    @Test
     fun testScopeCallToChainedForm_withQuotedKey() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
@@ -292,7 +325,18 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
             "chained_nested_stellaris.test.txt",
             "test_effect = { <caret>root = yes }"
         )
+        val available = myFixture.availableIntentions
+        assertFalse(available.any { it.text == intentionName })
+    }
 
+    @Test
+    fun testScopeCallToChainedForm_notAvailableWhenOuterSeparatorNotEqual() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
+        myFixture.configureByText(
+            "chained_nested_stellaris.test.txt",
+            """test_effect = { <caret>root? = { owner? = { k = v } } }"""
+        )
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
     }

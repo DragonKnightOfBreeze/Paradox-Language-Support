@@ -15,6 +15,18 @@ object ParadoxScriptPsiService {
         return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
     }
 
+    fun isPropertySeparator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS
+    }
+
+    fun isComparisonOperator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS
+    }
+
+    fun isSafeOperator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS
+    }
+
     fun collectBetweenBounds(element: ParadoxScriptBoundMemberContainer, forward: Boolean = true): Sequence<PsiElement>? {
         val leftBound = element.leftBound ?: return null
         val rightBound = element.rightBound ?: return null
