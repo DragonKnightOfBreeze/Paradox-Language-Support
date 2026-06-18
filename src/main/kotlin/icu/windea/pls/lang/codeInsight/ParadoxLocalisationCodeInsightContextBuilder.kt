@@ -33,7 +33,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.script.psi.isExpression
@@ -87,7 +87,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                             is ParadoxDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                             is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                         }
-                        if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                        if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                         super.visitElement(element)
                     }
                 })

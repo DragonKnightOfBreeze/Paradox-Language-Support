@@ -8,27 +8,12 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
- * 将嵌套作用域调用转换为链式形式。
+ * 将嵌套的作用域调用转换为链式形式。
  *
  * 检测于文法级别和语义级别。
- *
- * 说明：
- * - 保留块中内层属性前后的注释，转换后放到前面。
- * - 光标位置需要放到外层属性的 propertyKey 上。
- *
- * ```paradox_script
- * # before
- * root = {
- *     # comment
- *     owner = { a = 1 }
- * }
- *
- * # after
- * # comment
- * root.owner = { a = 1 }
- * ```
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
@@ -41,10 +26,9 @@ class ScopeCallStatementToChainedFormIntention : PsiUpdateModCommandAction<Parad
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        // 检查光标是否在外层属性的 propertyKey 上
-        val offset = context.offset
-        val textRange = element.propertyKey.textRange
-        if (offset !in textRange.startOffset..<textRange.endOffset) return false
+        // if property value is a block, caret offset should before or at `{`
+        if (!ParadoxScriptPsiService.isBeforeOrAtBlockLeftBound(element, context.offset)) return false
+
         return ParadoxScopeCallStatementManipulationService.canConvertToChainedForm(element)
     }
 

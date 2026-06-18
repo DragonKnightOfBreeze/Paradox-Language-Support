@@ -14,14 +14,6 @@ import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
  *
  * 检测于文法级别。
  *
- * ```paradox_script
- * # before
- * [[PARAM] PARAM = $PARAM$ ]
- *
- * # after
- * PARAM = $PARAM|no$
- * ```
- *
  * @see ParadoxConditionalStatementManipulationService
  */
 @Suppress("UnstableApiUsage")

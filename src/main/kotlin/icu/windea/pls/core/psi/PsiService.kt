@@ -217,4 +217,11 @@ object PsiService {
         val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
         return TextRange.create(startElement.startOffset, endElement.endOffset)
     }
+
+    /**
+     * 收集 [start] 和 [end] 之间的所有作为兄弟节点的注释。通过 [forward] 指定遍历方向，默认向后遍历。
+     */
+    fun collectCommentsBetween(start: PsiElement, end: PsiElement, forward: Boolean = true): Sequence<PsiComment> {
+        return start.siblings(forward, withSelf = false).takeWhile { it !== end }.filterIsInstance<PsiComment>()
+    }
 }

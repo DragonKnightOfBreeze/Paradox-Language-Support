@@ -6,51 +6,32 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
- * 将安全作用域调用转换为显式形式。
+ * 将作用域调用转换为显式形式。
  *
  * 检测于文法级别。
  *
- * [CK3/VIC3/EU5]
- * ```paradox_script
- * # before
- * owner ?= { ... }
- *
- * # after
- * exists = owner
- * owner = { ... }
- * ```
- *
- * Stellaris:
- * ```paradox_script
- * # before
- * owner? = { ... }
- *
- * # after
- * exists = owner
- * owner = { ... }
- * ```
- *
- * 说明：
- * - 对于任意游戏类型和任意安全调用运算符均可用。
+ * 对于任意游戏类型和任意安全调用运算符均可用。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
 @Suppress("UnstableApiUsage")
-class ScopeCallStatementToNormalFormIntention : PsiUpdateModCommandAction<ParadoxScriptProperty>(ParadoxScriptProperty::class.java), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToNormalForm")
+class ScopeCallStatementToExplicitFormIntention : PsiUpdateModCommandAction<ParadoxScriptProperty>(ParadoxScriptProperty::class.java), DumbAware {
+    override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
-        return ParadoxScopeCallStatementManipulationService.convertToNormalForm(element, context.project)
+        return ParadoxScopeCallStatementManipulationService.convertToExplicitForm(element, context.project)
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        return ParadoxScopeCallStatementManipulationService.canConvertToNormalForm(element)
+        // if property value is a block, caret offset should before or at `{`
+        if (!ParadoxScriptPsiService.isBeforeOrAtBlockLeftBound(element, context.offset)) return false
+
+        return ParadoxScopeCallStatementManipulationService.canConvertToExplicitForm(element)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

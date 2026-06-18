@@ -130,6 +130,7 @@ boolean ::= BOOLEAN_TOKEN {
 int ::= INT_TOKEN {
   extends=value
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[getReference getReferences]
@@ -137,6 +138,7 @@ int ::= INT_TOKEN {
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[getReference getReferences]

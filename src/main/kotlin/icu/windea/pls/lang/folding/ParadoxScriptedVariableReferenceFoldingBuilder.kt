@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     object Constants {
@@ -45,7 +45,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
                     inInlineMath = true
                 }
                 val r = when (element.language) {
-                    ParadoxScriptLanguage -> inInlineMath || ParadoxScriptPsiUtil.isMemberContextElement(element)
+                    ParadoxScriptLanguage -> inInlineMath || ParadoxScriptPsiService.isMemberContextElement(element)
                     ParadoxLocalisationLanguage -> ParadoxLocalisationPsiUtil.isRichTextContextElement(element)
                     else -> false
                 }

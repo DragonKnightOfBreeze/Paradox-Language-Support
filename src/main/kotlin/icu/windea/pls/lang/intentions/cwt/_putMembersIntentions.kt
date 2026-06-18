@@ -13,6 +13,7 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtPsiService
 
 sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberContainer>(CwtBoundMemberContainer::class.java), DumbAware {
     protected fun getMemberTextSequence(element: CwtBoundMemberContainer): Sequence<String> {
@@ -21,11 +22,10 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberC
 
     protected fun checkElementAvailable(element: CwtBoundMemberContainer, hasLineBreak: Boolean? = null): Boolean {
         // 块中存在成员元素（包括仅存在一个的情况），且不存在空白以外的非成员元素（如注释）
-        val leftBound = element.leftBound ?: return false
-        val rightBound = element.rightBound ?: return false
+        val collected = CwtPsiService.collectBetweenBounds(element) ?: return false
         var flag = false
         var lineBreakFlag = false
-        for (e in leftBound.siblings(withSelf = false).takeWhile { it != rightBound }) {
+        for (e in collected) {
             when (e) {
                 is PsiWhiteSpace -> {
                     if (hasLineBreak != null && !lineBreakFlag) lineBreakFlag = e.textContains('\n')

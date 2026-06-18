@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.isExpression
 
@@ -86,7 +86,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                if (!inInlineMath && !ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 

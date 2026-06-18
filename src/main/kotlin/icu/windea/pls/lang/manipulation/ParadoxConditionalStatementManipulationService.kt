@@ -2,6 +2,8 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService.isBlockForm
+import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService.isPropertyForm
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -29,24 +31,55 @@ object ParadoxConditionalStatementManipulationService {
     private val propertyTemplate = { p: String -> "$p = $$p|no$" }
     private val blockTemplate = { p: String -> "[[$p] $p = $$p$ ]" }
 
+    /**
+     * 判断 [element] 是否为属性形式。
+     */
     fun isPropertyForm(element: ParadoxScriptProperty): Boolean {
         val text = element.text
         return propertyFormRegex.matches(text)
     }
 
+    /**
+     * 判断 [element] 是否为块形式。
+     */
     fun isBlockForm(element: ParadoxScriptParameterCondition): Boolean {
         val text = element.text
         return blockFormRegex.matches(text)
     }
 
+    /**
+     * 判断 [element] 是否可以转换为属性形式。
+     *
+     * 说明：
+     * - [element] 必须是块形式。参见 [isBlockForm]。
+     */
     fun canConvertToPropertyForm(element: ParadoxScriptParameterCondition): Boolean {
         return isBlockForm(element)
     }
 
+    /**
+     * 判断 [element] 是否可以转换为块形式。
+     *
+     * 说明：
+     * - [element] 必须是属性形式。参见 [isPropertyForm]。
+     */
     fun canConvertToBlockForm(element: ParadoxScriptProperty): Boolean {
         return isPropertyForm(element)
     }
 
+    /**
+     * 将 [element] 从块形式转换为属性形式。
+     *
+     * 示例：
+     *
+     * ```paradox_script
+     * # before
+     * [[PARAM] PARAM = $PARAM$ ]
+     *
+     * # before
+     * PARAM = $PARAM|no$
+     * ```
+     */
     fun convertToPropertyForm(element: ParadoxScriptParameterCondition, project: Project) {
         val text = element.text
         val matchResult = blockFormRegex.matchEntire(text) ?: return
@@ -59,6 +92,19 @@ object ParadoxConditionalStatementManipulationService {
         element.replace(newElement)
     }
 
+    /**
+     * 将 [element] 从属性形式转换为块形式。
+     *
+     * 示例：
+     *
+     * ```paradox_script
+     * # before
+     * PARAM = $PARAM|no$
+     *
+     * # before
+     * [[PARAM] PARAM = $PARAM$ ]
+     * ```
+     */
     fun convertToBlockForm(element: ParadoxScriptProperty, project: Project) {
         val text = element.text
         val matchResult = propertyFormRegex.matchEntire(text) ?: return

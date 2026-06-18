@@ -271,7 +271,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
     }
 
-    private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<out LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()
         result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
         result += ParadoxInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)

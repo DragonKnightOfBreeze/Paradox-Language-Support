@@ -27,7 +27,7 @@ object ParadoxLocalisationPsiUtil {
     }
 
     /**
-     * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
+     * 判断当前位置应当是一个语言区域（[ParadoxLocalisationLocale]），还是一个属性键（[ParadoxLocalisationPropertyKey]）。
      */
     fun isLocalisationLocaleLike(element: PsiElement): Boolean {
         val elementType = element.elementType

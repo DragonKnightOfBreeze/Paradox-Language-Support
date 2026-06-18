@@ -39,7 +39,7 @@ object ParadoxSyntaxInspectionService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getFixes(context: ParadoxSyntaxInspectionContext, element: PsiElement, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<LocalQuickFix> {
+    fun getFixes(context: ParadoxSyntaxInspectionContext, element: PsiElement, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<out LocalQuickFix> {
         if (testResult.strictValue) return LocalQuickFix.EMPTY_ARRAY // 严格匹配 -> 不报错，直接返回
         if (testResult.value) return LocalQuickFix.EMPTY_ARRAY // 游戏版本不匹配，但游戏类型匹配 -> 直接返回
         val result = mutableListOf<LocalQuickFix>()

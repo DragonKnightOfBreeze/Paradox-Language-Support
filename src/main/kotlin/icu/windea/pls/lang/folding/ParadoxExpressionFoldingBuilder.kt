@@ -20,7 +20,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 @WithInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
@@ -42,7 +42,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) visitProperty(element)
-                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 

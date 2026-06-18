@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ScopeCallStatementToNormalFormIntention
+ * @see ScopeCallStatementToExplicitFormIntention
  * @see ScopeCallStatementToSafeFormIntention
  * @see ParadoxScopeCallStatementManipulationService
  */
@@ -33,9 +33,9 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     // region Safe → Normal Form
 
     @Test
-    fun testScopeCallToNormalForm_basic() {
+    fun testScopeCallToExplicitForm_basic() {
         markFileInfo(ParadoxGameType.Ck3, "common/test/to_normal_form_basic.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
         myFixture.configureByText(
             "to_normal_form_basic.ck3.test.txt",
             "k = { <caret>owner ?= { a = 1 } }"
@@ -46,9 +46,9 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToNormalForm_stellaris() {
+    fun testScopeCallToExplicitForm_stellaris() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/to_normal_form_stellaris.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
         myFixture.configureByText(
             "to_normal_form_stellaris.test.txt",
             "k = { <caret>owner? = { a = 1 } }"
@@ -59,9 +59,9 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToNormalForm_withPrecedingComment() {
+    fun testScopeCallToExplicitForm_withPrecedingComment() {
         markFileInfo(ParadoxGameType.Ck3, "common/test/to_normal_form_with_comment.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
         myFixture.configureByText(
             "to_normal_form_with_comment.ck3.test.txt",
             """
@@ -89,9 +89,9 @@ class ScopeCallStatementIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToNormalForm_notAvailableWhenAlreadyNormalForm() {
+    fun testScopeCallToExplicitForm_notAvailableWhenAlreadyExplicitForm() {
         markFileInfo(ParadoxGameType.Ck3, "common/test/to_normal_form_not_available.test.txt")
-        val intentionName = PlsBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
         myFixture.configureByText(
             "to_normal_form_not_available.ck3.test.txt",
             """

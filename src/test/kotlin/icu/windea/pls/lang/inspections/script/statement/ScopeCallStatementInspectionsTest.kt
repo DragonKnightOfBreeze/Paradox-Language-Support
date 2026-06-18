@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ScopeCallStatementToNormalFormInspection
+ * @see ScopeCallStatementToExplicitFormInspection
  * @see ScopeCallStatementToSafeFormInspection
  */
 @RunWith(JUnit4::class)
@@ -27,7 +27,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), InspectionTest
     fun doSetUp() {
         markIntegrationTest()
         myFixture.enableInspections(
-            ScopeCallStatementToNormalFormInspection::class.java,
+            ScopeCallStatementToExplicitFormInspection::class.java,
             ScopeCallStatementToSafeFormInspection::class.java,
         )
     }
@@ -39,7 +39,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), InspectionTest
     // @Test
     // fun safeForm_ck3() {
     //     markFileInfo(ParadoxGameType.Ck3, "common/test/inspection_scope_call.ck3.test.txt")
-    //     val description = PlsBundle.message("inspection.script.scopeCallToNormalForm.desc")
+    //     val description = PlsBundle.message("inspection.script.scopeCallStatementToExplicitForm.desc")
     //     val tag = description.toInfoTag()
     //
     //     myFixture.configureByText("inspection_scope_call.ck3.test.txt", """
@@ -53,9 +53,9 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), InspectionTest
     // }
 
     @Test
-    fun normalForm_ck3() {
+    fun explicitForm_ck3() {
         markFileInfo(ParadoxGameType.Ck3, "common/test/inspection_scope_call.ck3.test.txt")
-        val description = PlsBundle.message("inspection.script.scopeCallToSafeForm.desc")
+        val description = PlsBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
         val tag = description.toWeakWarningTag()
 
         myFixture.configureByText("inspection_scope_call.ck3.test.txt", """
@@ -70,7 +70,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), InspectionTest
     }
 
     @Test
-    fun normalForm_hoi4_noWarning() {
+    fun explicitForm_hoi4_noWarning() {
         markFileInfo(ParadoxGameType.Hoi4, "common/test/inspection_scope_call.hoi4.test.txt")
 
         myFixture.configureByText("inspection_scope_call.hoi4.test.txt", """

@@ -9,27 +9,14 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * 将显式作用域调用转换为安全形式。
  *
  * 检测于文法级别。
  *
- * ```paradox_script
- * # before
- * exists = owner
- * owner = { ... }
- *
- * # after (CK3/VIC3/EU5)
- * owner ?= { ... }
- *
- * # after (Stellaris)
- * owner? = { ... }
- * ```
- *
- * 说明：
- * - 根据 [ParadoxSyntaxConstraint][icu.windea.pls.model.constraints.ParadoxSyntaxConstraint] 来决定使用 `?=` 还是 `? =`。
- * - `exists = x` 和 `x = y` 之间的注释会在转换后移到安全形式之前。
+ * 适用于支持安全（调用）赋值运算符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
@@ -43,6 +30,9 @@ class ScopeCallStatementToSafeFormIntention : PsiUpdateModCommandAction<ParadoxS
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
+        // if property value is a block, caret offset should before or at `{`
+        if (!ParadoxScriptPsiService.isBeforeOrAtBlockLeftBound(element, context.offset)) return false
+
         return ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)
     }
 

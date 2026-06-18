@@ -83,7 +83,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     @Suppress("unused")
-    private fun getFixes(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): Array<LocalQuickFix> {
+    private fun getFixes(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): Array<out LocalQuickFix> {
         val expectedConfigs = listOf(config)
         val result = mutableListOf<LocalQuickFix>()
         result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)

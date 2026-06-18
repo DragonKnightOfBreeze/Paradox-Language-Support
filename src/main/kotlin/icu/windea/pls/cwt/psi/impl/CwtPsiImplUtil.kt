@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
-import icu.windea.pls.cwt.psi.CwtPsiUtil
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
@@ -270,7 +270,7 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getOwner(element: CwtDocComment): PsiElement? {
         val attachingElement = PsiService.getAttachingElement(element) ?: return null
-        if (!CwtPsiUtil.canAttachComment(attachingElement)) return null
+        if (!CwtPsiService.canAttachComment(attachingElement)) return null
         return attachingElement
     }
 

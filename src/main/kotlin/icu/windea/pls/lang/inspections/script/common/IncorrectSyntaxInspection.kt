@@ -61,7 +61,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
         // NOTE 2.1.4 所在属性对应的匹配的规则，不一定在触发器子句规则之内
         // 所在属性对应的匹配的规则，其使用的属性分隔符应是 `==`（而非常规的 `=`）
-        val valid = ParadoxSyntaxService.isComparisonOperatorStrictValid(propertyElement)
+        val valid = ParadoxSyntaxService.isComparisonOperatorValid(propertyElement)
         if (valid == false) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.2")
             context.holder.registerProblem(element, description)
@@ -83,7 +83,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check on grammar level
 
         // 所在属性的键的表达式类型是字符串
-        val allowed = ParadoxSyntaxService.isSafeAssignOperatorAllowed(propertyElement)
+        val allowed = ParadoxSyntaxService.isSafeOperatorAllowed(propertyElement)
         if (!allowed) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.3")
             context.holder.registerProblem(element, description)
@@ -105,7 +105,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check on grammar level
 
         // 所在属性的键的表达式类型是字符串
-        val allowed = ParadoxSyntaxService.isSafeCallAssignOperatorAllowed(propertyElement)
+        val allowed = ParadoxSyntaxService.isSafeOperatorAllowed(propertyElement)
         if (!allowed) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.4")
             context.holder.registerProblem(element, description)

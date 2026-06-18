@@ -13,7 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.quickfix.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -39,7 +39,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                if (!inInlineMath && !ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 

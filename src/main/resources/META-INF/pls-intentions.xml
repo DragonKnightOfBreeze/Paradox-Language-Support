@@ -121,7 +121,7 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ScopeCallStatementToNormalFormIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ScopeCallStatementToExplicitFormIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
