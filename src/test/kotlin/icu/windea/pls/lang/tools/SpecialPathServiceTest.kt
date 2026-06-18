@@ -2,11 +2,14 @@ package icu.windea.pls.lang.tools
 
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.ParallelMethodRunner
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
+@RunWith(ParallelMethodRunner::class)
 class SpecialPathServiceTest {
     private val service = SpecialPathServiceImpl()
     private val gameTypes = ParadoxGameType.getAllSpecific()

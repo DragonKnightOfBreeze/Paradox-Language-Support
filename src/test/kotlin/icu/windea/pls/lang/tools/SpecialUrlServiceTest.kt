@@ -1,11 +1,18 @@
 package icu.windea.pls.lang.tools
 
+import com.intellij.platform.util.coroutines.mapConcurrent
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.ParallelMethodRunner
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.net.HttpURLConnection
 import java.net.URI
 
+@Suppress("UnstableApiUsage")
+@RunWith(ParallelMethodRunner::class)
 class SpecialUrlServiceTest {
     private val service = SpecialUrlServiceImpl()
     private val gameTypes = ParadoxGameType.getAllSpecific()
@@ -66,9 +73,14 @@ class SpecialUrlServiceTest {
     fun getSteamGameStoreUrl() {
         println("=== Steam Game Store URLs (website) ===")
         val failed = mutableListOf<String>()
-        for (gameType in gameTypes) {
-            val url = service.getSteamGameStoreUrl(gameType.steamId)
-            val code = checkUrl(url)
+        val tuple = runBlocking {
+            gameTypes.mapConcurrent { gameType ->
+                val url = service.getSteamGameStoreUrl(gameType.steamId)
+                val code = checkUrl(url)
+                tupleOf(gameType, url, code)
+            }
+        }
+        for ((gameType, url, code) in tuple) {
             printUrlEntry(gameType.title, gameType.id, url, code)
             if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
@@ -79,9 +91,14 @@ class SpecialUrlServiceTest {
     fun getSteamGameWorkshopUrl() {
         println("=== Steam Game Workshop URLs (website) ===")
         val failed = mutableListOf<String>()
-        for (gameType in gameTypes) {
-            val url = service.getSteamGameWorkshopUrl(gameType.steamId)
-            val code = checkUrl(url)
+        val tuple = runBlocking {
+            gameTypes.mapConcurrent { gameType ->
+                val url = service.getSteamGameWorkshopUrl(gameType.steamId)
+                val code = checkUrl(url)
+                tupleOf(gameType, url, code)
+            }
+        }
+        for ((gameType, url, code) in tuple) {
             printUrlEntry(gameType.title, gameType.id, url, code)
             if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
@@ -159,10 +176,15 @@ class SpecialUrlServiceTest {
     fun getParadoxModsGameUrl() {
         println("=== Paradox Mods Game URLs ===")
         val failed = mutableListOf<String>()
-        for (gameType in gameTypes) {
-            val gameId = gameType.gameId.takeIf { it.isNotEmpty() } ?: continue
-            val url = service.getParadoxModsGameUrl(gameId)
-            val code = checkUrl(url)
+        val tuple = runBlocking {
+            gameTypes.mapConcurrent { gameType ->
+                val gameId = gameType.gameId.takeIf { it.isNotEmpty() } ?: return@mapConcurrent null
+                val url = service.getParadoxModsGameUrl(gameId)
+                val code = checkUrl(url)
+                tupleOf(gameType, url, code)
+            }.filterNotNull()
+        }
+        for ((gameType, url, code) in tuple) {
             printUrlEntry(gameType.title, gameType.id, url, code)
             if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
@@ -192,9 +214,14 @@ class SpecialUrlServiceTest {
     fun getGameForumUrl() {
         println("=== Game Forum URLs ===")
         val failed = mutableListOf<String>()
-        for (gameType in gameTypes) {
-            val url = service.getGameForumUrl(gameType) ?: continue
-            val code = checkUrl(url)
+        val tuple = runBlocking {
+            gameTypes.mapConcurrent { gameType ->
+                val url = service.getGameForumUrl(gameType) ?: return@mapConcurrent null
+                val code = checkUrl(url)
+                tupleOf(gameType, url, code)
+            }.filterNotNull()
+        }
+        for ((gameType, url, code) in tuple) {
             printUrlEntry(gameType.title, gameType.id, url, code)
             if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
@@ -205,9 +232,14 @@ class SpecialUrlServiceTest {
     fun getGameWikiUrl() {
         println("=== Game Wiki URLs ===")
         val failed = mutableListOf<String>()
-        for (gameType in gameTypes) {
-            val url = service.getGameWikiUrl(gameType)
-            val code = checkUrl(url)
+        val tuple = runBlocking {
+            gameTypes.mapConcurrent { gameType ->
+                val url = service.getGameWikiUrl(gameType)
+                val code = checkUrl(url)
+                tupleOf(gameType, url, code)
+            }
+        }
+        for ((gameType, url, code) in tuple) {
             printUrlEntry(gameType.title, gameType.id, url, code)
             if (!checkAccessibleOrTolerated(code)) failed += "${gameType.id}: $url (HTTP $code)"
         }
