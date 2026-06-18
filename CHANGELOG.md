@@ -14,6 +14,7 @@
 - [x] 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 / Provides intentions and inspections to convert scope call statements between safe form (`owner ?= ...` or `owner? = ...`) and explicit form (`exists = owner owner = ...`)
 - [x] 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 / Provides intentions and inspections to convert scope call statements between chained form (`root.owner = ...`) and nested form (`root = { owner = ... }`)
 - [x] 支持将数字（而不仅仅是字符串）解析为复杂枚举值 / Support to resolve numbers (rather than only strings) into complex enum values
+- [x] 修复了一个可能导致错误的语义匹配结果，从而引发误报的并发处理问题 / Fixed a concurrency processing issue that could result in incorrect semantic match results, which may cause false positives
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 

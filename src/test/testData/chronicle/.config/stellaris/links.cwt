@@ -1,0 +1,19 @@
+links = {
+    variable = {
+        type = value
+        from_data = yes
+        data_source = value[variable]
+    }
+    modifier = {
+        type = value
+        from_data = yes
+        prefix = modifier:
+        data_source = alias_keys_field[modifier]
+    }
+    trigger = {
+        type = value
+        from_data = yes
+        prefix = trigger:
+        data_source = alias_keys_field[trigger]
+    }
+}

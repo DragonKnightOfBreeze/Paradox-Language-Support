@@ -105,12 +105,3 @@ enums = {
     }
 }
 
-### Do nothing.
-## scopes = { character }
-alias[effect:pass] = bool
-### Revival into the real world.
-## scopes = { character }
-alias[effect:revival] = bool
-### Say hello to the real world.
-## scopes = { character }
-alias[effect:say_hello_world] = bool

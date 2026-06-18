@@ -1,0 +1,66 @@
+types = {
+	## graph_related_types = { special_project anomaly_category }
+	type[event] = {
+		name_field = id
+		path = "game/events"
+		path_extension = .txt
+
+		## group = event_attribute
+		subtype[triggered] = {
+			is_triggered_only = yes
+		}
+		## group = event_attribute
+		subtype[hidden] = {
+			hide_window = yes
+		}
+
+		## group = event_type
+		## type_key_filter = event
+		## push_scope = any
+		subtype[scopeless] = {}
+
+		localisation = {
+			subtype[!hidden] = {
+				title = title
+				desc = desc
+			}
+		}
+		images = {
+			subtype[!hidden] = {
+				## primary
+				picture = picture
+			}
+		}
+	}
+}
+
+event = {
+	id = scalar
+
+    ## cardinality = 0..1
+    is_triggered_only = bool
+
+    subtype[!hidden] = {
+        ## cardinality = 0..1
+        title = localisation
+        ## cardinality = 0..1
+        desc = localisation
+        ## cardinality = 0..1
+        picture = <sprite>
+        ## severity = info
+        ## cardinality = 0..1
+        location = scope_field
+        ## severity = info
+        ## cardinality = 0..1
+        show_sound = <sound_effect>
+    }
+
+	## cardinality = 0..1
+	trigger = single_alias_right[trigger_clause]
+
+	## cardinality = 0..1
+	immediate = single_alias_right[effect_clause]
+
+	## cardinality = 0..1
+	after = single_alias_right[effect_clause]
+}

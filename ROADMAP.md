@@ -65,7 +65,7 @@
   - 例如说明模组目录直接位于游戏创意工坊目录下，因此被推断为对应的游戏类型
   - 此时不允许在模组设置对话框中更改游戏类型
 
-## 附加
+### 附加
 
 - [x] 重构：重命名EP接口 `CwtDataExpressionResolver` 为 `CwtDataExpressionSupport`
 - [x] 重构：将 `icu.windea.pls.ep.match` 中的已有代码全部移到 `icu.windea.pls.ep.match.expression`

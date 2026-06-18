@@ -1,0 +1,456 @@
+## @type string = block
+bitmapfonts = {
+    ## @type string = block
+    textcolors = {
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        M = {
+            ## @type int
+            ## @config_expression int[0..255]
+            163
+            ## @type int
+            ## @config_expression int[0..255]
+            53
+            ## @type int
+            ## @config_expression int[0..255]
+            238
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        L = {
+            ## @type int
+            ## @config_expression int[0..255]
+            195
+            ## @type int
+            ## @config_expression int[0..255]
+            176
+            ## @type int
+            ## @config_expression int[0..255]
+            145
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        G = {
+            ## @type int
+            ## @config_expression int[0..255]
+            41
+            ## @type int
+            ## @config_expression int[0..255]
+            225
+            ## @type int
+            ## @config_expression int[0..255]
+            38
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        R = {
+            ## @type int
+            ## @config_expression int[0..255]
+            252
+            ## @type int
+            ## @config_expression int[0..255]
+            86
+            ## @type int
+            ## @config_expression int[0..255]
+            70
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        B = {
+            ## @type int
+            ## @config_expression int[0..255]
+            51
+            ## @type int
+            ## @config_expression int[0..255]
+            167
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        Y = {
+            ## @type int
+            ## @config_expression int[0..255]
+            247
+            ## @type int
+            ## @config_expression int[0..255]
+            252
+            ## @type int
+            ## @config_expression int[0..255]
+            52
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        H = {
+            ## @type int
+            ## @config_expression int[0..255]
+            251
+            ## @type int
+            ## @config_expression int[0..255]
+            170
+            ## @type int
+            ## @config_expression int[0..255]
+            41
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        C = {
+            ## @type int
+            ## @config_expression int[0..255]
+            31
+            ## @type int
+            ## @config_expression int[0..255]
+            224
+            ## @type int
+            ## @config_expression int[0..255]
+            202
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        K = {
+            ## @type int
+            ## @config_expression int[0..255]
+            251
+            ## @type int
+            ## @config_expression int[0..255]
+            170
+            ## @type int
+            ## @config_expression int[0..255]
+            41
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        I = {
+            ## @type int
+            ## @config_expression int[0..255]
+            247
+            ## @type int
+            ## @config_expression int[0..255]
+            252
+            ## @type int
+            ## @config_expression int[0..255]
+            52
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        T = {
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        t = {
+            ## @type int
+            ## @config_expression int[0..255]
+            198
+            ## @type int
+            ## @config_expression int[0..255]
+            198
+            ## @type int
+            ## @config_expression int[0..255]
+            198
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        E = {
+            ## @type int
+            ## @config_expression int[0..255]
+            135
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            207
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        S = {
+            ## @type int
+            ## @config_expression int[0..255]
+            228
+            ## @type int
+            ## @config_expression int[0..255]
+            156
+            ## @type int
+            ## @config_expression int[0..255]
+            42
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        W = {
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        P = {
+            ## @type int
+            ## @config_expression int[0..255]
+            225
+            ## @type int
+            ## @config_expression int[0..255]
+            110
+            ## @type int
+            ## @config_expression int[0..255]
+            110
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        V = {
+            ## @type int
+            ## @config_expression int[0..255]
+            76
+            ## @type int
+            ## @config_expression int[0..255]
+            138
+            ## @type int
+            ## @config_expression int[0..255]
+            113
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        g = {
+            ## @type int
+            ## @config_expression int[0..255]
+            128
+            ## @type int
+            ## @config_expression int[0..255]
+            128
+            ## @type int
+            ## @config_expression int[0..255]
+            128
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        _ = {
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            0
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        U = {
+            ## @type int
+            ## @config_expression int[0..255]
+            204
+            ## @type int
+            ## @config_expression int[0..255]
+            179
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        A = {
+            ## @type int
+            ## @config_expression int[0..255]
+            225
+            ## @type int
+            ## @config_expression int[0..255]
+            170
+            ## @type int
+            ## @config_expression int[0..255]
+            59
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        c = {
+            ## @type int
+            ## @config_expression int[0..255]
+            60
+            ## @type int
+            ## @config_expression int[0..255]
+            208
+            ## @type int
+            ## @config_expression int[0..255]
+            146
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        v = {
+            ## @type int
+            ## @config_expression int[0..255]
+            139
+            ## @type int
+            ## @config_expression int[0..255]
+            174
+            ## @type int
+            ## @config_expression int[0..255]
+            162
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        d = {
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+            ## @type int
+            ## @config_expression int[0..255]
+            221
+            ## @type int
+            ## @config_expression int[0..255]
+            122
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        r = {
+            ## @type int
+            ## @config_expression int[0..255]
+            163
+            ## @type int
+            ## @config_expression int[0..255]
+            130
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type string = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        l = {
+            ## @type int
+            ## @config_expression int[0..255]
+            178
+            ## @type int
+            ## @config_expression int[0..255]
+            236
+            ## @type int
+            ## @config_expression int[0..255]
+            104
+        }
+        ## @type int = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        0 = {
+            ## @type int
+            ## @config_expression int[0..255]
+            31
+            ## @type int
+            ## @config_expression int[0..255]
+            224
+            ## @type int
+            ## @config_expression int[0..255]
+            202
+        }
+        ## @type int = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        1 = {
+            ## @type int
+            ## @config_expression int[0..255]
+            51
+            ## @type int
+            ## @config_expression int[0..255]
+            167
+            ## @type int
+            ## @config_expression int[0..255]
+            255
+        }
+        ## @type int = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        2 = {
+            ## @type int
+            ## @config_expression int[0..255]
+            163
+            ## @type int
+            ## @config_expression int[0..255]
+            53
+            ## @type int
+            ## @config_expression int[0..255]
+            238
+        }
+        ## @type int = block
+        ## @definition_type text_color
+        ## @config_expression text_color = {...}
+        ## @override_strategy LIOS
+        3 = {
+            ## @type int
+            ## @config_expression int[0..255]
+            251
+            ## @type int
+            ## @config_expression int[0..255]
+            170
+            ## @type int
+            ## @config_expression int[0..255]
+            41
+        }
+    }
+}

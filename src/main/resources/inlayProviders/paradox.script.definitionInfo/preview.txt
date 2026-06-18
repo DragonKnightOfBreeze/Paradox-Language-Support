@@ -15,6 +15,10 @@ windea/*<# : character #>*/ = {
         pass = yes
     }
     on_abandoned = {
+        if = {
+            limit = { always = yes }
+            save_global_event_target_as = the_waked
+        }
         revival = yes
     }
 }

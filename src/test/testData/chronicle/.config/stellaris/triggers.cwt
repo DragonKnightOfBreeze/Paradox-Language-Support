@@ -1,0 +1,42 @@
+# common
+
+alias[trigger:<scripted_trigger>] = bool
+
+## scope = any
+alias[trigger:<scripted_trigger>] = {
+    ## cardinality = 0..inf
+    $parameter = $parameter_value
+}
+
+### Evaluates the triggers if the display_triggers of the limit are met
+## scopes = any
+alias[trigger:if] = {
+    ## cardinality = ~1..1
+    limit = single_alias_right[trigger_clause]
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Evaluates the enclosed triggers if the display_triggers of the preceding `if` or `else_if` is not met and its own display_trigger of the limit is met
+### if = { limit = { <display_triggers> } <triggers> }
+## scopes = any
+alias[trigger:else_if] = {
+    ## cardinality = ~1..1
+    limit = single_alias_right[trigger_clause]
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Evaluates the triggers if the display_triggers of preceding 'if' or 'else_if' is not met
+### if = { limit = { <display_triggers> } <triggers> }
+### else = { <triggers> }
+## scopes = any
+alias[trigger:else] = {
+    ## cardinality = 0..1
+    limit = single_alias_right[trigger_clause]
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+# extra
+
+### Sets trigger to be either always true or false
+## scopes = any
+alias[trigger:always] = bool
