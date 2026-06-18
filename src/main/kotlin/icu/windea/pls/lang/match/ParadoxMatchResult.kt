@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.match
 
+import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.runCatchingCancelable
 
 /**
@@ -63,10 +64,21 @@ sealed interface ParadoxMatchResult {
 
         override fun get(options: ParadoxMatchOptions?): Boolean {
             if (skip(options)) return true
-            if (value is Boolean) return value as Boolean
-            val r = doGetCatching()
-            value = r
-            return r
+
+            val cache = value
+            if(cache is Boolean) return cache
+
+            // NOTE 2.1.1 it's necessary to suppress outputting error logs and throwing exceptions here
+            // - java.lang.Throwable: Indexing process should not rely on non-indexed file data.
+            // - java.lang.AssertionError: Reentrant indexing
+            // - com.intellij.openapi.project.IndexNotReadyException
+
+            @Suppress("UNCHECKED_CAST")
+            val computed = runCatchingCancelable { (cache as () -> Boolean)() }
+                .onFailure { thisLogger().warn(it) } // unexpected to catch an exception here
+                .getOrDefault(false) // by default false
+            this.value = computed
+            return computed
         }
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
@@ -76,19 +88,6 @@ sealed interface ParadoxMatchResult {
                 this is LazyScopeAwareMatch -> ParadoxMatchService.skipScope(options)
                 else -> false
             }
-        }
-
-        private fun doGetCatching(): Boolean {
-            // it should be necessary to suppress outputting error logs and throwing exceptions here
-
-            // java.lang.Throwable: Indexing process should not rely on non-indexed file data.
-            // java.lang.AssertionError: Reentrant indexing
-            // com.intellij.openapi.project.IndexNotReadyException
-
-            return runCatchingCancelable {
-                @Suppress("UNCHECKED_CAST")
-                (value as () -> Boolean)()
-            }.getOrDefault(true)
         }
     }
 
