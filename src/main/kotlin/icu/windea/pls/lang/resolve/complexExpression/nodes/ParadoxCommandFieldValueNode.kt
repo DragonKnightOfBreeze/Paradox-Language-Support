@@ -9,7 +9,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
-import icu.windea.pls.base.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -31,7 +31,7 @@ class ParadoxCommandFieldValueNode(
     companion object {
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandFieldValueNode {
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 

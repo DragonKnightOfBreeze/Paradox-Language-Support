@@ -26,7 +26,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer
 import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
-import icu.windea.pls.base.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -91,7 +91,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        withState(PlsStates.processMergedIndex) {
+        withState(ChronicleThreadContext.processMergedIndex) {
             when (file) {
                 is ParadoxScriptFile -> buildDataForScriptFile(file, fileData)
                 is ParadoxLocalisationFile -> buildDataForLocalisationFile(file, fileData)

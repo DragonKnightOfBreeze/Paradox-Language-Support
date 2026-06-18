@@ -17,7 +17,7 @@ import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
-import icu.windea.pls.base.infra.PlsGitService
+import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
@@ -161,7 +161,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == ParadoxGameType.Core) return "core"
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls[gameType.id]?.orNull()
-            ?.let { PlsGitService.getInstance().getRepositoryPathFromUrl(it) }
+            ?.let { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it) }
         return fromConfig
     }
 
@@ -170,7 +170,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls.entries
-            .find { PlsGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }
+            .find { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }
             ?.key
         return fromConfig
     }

@@ -2,7 +2,7 @@ package icu.windea.pls.base
 
 import icu.windea.pls.core.isClassPresent
 
-object PlsCapacities {
+object ChronicleCapacities {
     /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。 */
     fun includeSqlite() = "org.sqlite.JDBC".isClassPresent()
 

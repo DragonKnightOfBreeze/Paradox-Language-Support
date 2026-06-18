@@ -1,10 +1,10 @@
-package icu.windea.pls.base.infra
+package icu.windea.pls.base.io
 
 import icu.windea.pls.core.io.PathService
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 
-class PlsDataPathServiceImpl : PlsDataPathService {
+class ChronicleDataPathServiceImpl : ChronicleDataPathService {
     // NOTE 2.1.8 改为在需要时才创建目录或文件（不需要经过VFS，不需要在打开应用时异步初始化，应当不会有什么耗时）
 
     private val _path = System.getProperty("user.home").toPath().resolve(".windea/chronicle")

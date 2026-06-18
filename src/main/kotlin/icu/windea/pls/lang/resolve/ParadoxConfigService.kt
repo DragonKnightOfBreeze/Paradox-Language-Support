@@ -46,8 +46,8 @@ import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.base.PlsStates
-import icu.windea.pls.base.annotations.PlsAnnotationManager
+import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
@@ -102,7 +102,7 @@ object ParadoxConfigService {
         val gameType = config.configGroup.gameType
         val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getOverriddenConfigs(contextElement, config).orNull()
                 ?.onEach {
                     it.originalConfig = config
@@ -122,7 +122,7 @@ object ParadoxConfigService {
         val result = mutableSetOf<CwtConfig<*>>()
         val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
@@ -141,7 +141,7 @@ object ParadoxConfigService {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getContext(element, file, configGroup, memberPathFromFile, memberRole)?.also { it.provider = ep }
             if (r != null) return r
         }
@@ -156,7 +156,7 @@ object ParadoxConfigService {
         val gameType = configGroup.gameType
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)?.also { it.provider = ep }
             if (r != null) return r
         }
@@ -175,7 +175,7 @@ object ParadoxConfigService {
         val cache = context.configGroup.configsCache.value.get(rootFile)
         val cached = withRecursionGuard {
             withRecursionCheck(cacheKey) {
-                val resolvingStack = PlsStates.resolvingConfigContextStack.getOrSet { ArrayDeque() }
+                val resolvingStack = ChronicleThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)
                 try {
                     // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
@@ -189,7 +189,7 @@ object ParadoxConfigService {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
                         cache.invalidate(cacheKey)
                     }
-                    if (resolvingStack.isEmpty()) PlsStates.resolvingConfigContextStack.remove()
+                    if (resolvingStack.isEmpty()) ChronicleThreadContext.resolvingConfigContextStack.remove()
                 }
             }
         } ?: return emptyList() // unexpected recursion, return empty list

@@ -22,7 +22,7 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
-import icu.windea.pls.base.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -135,7 +135,7 @@ object ParadoxParameterService {
         val gameType = parameterContextInfo.gameType
         return withRecursionGuard {
             ParadoxParameterInferredConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
                 if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
                 ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             }

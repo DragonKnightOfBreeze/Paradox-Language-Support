@@ -19,7 +19,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
-import icu.windea.pls.base.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.isIdentifier
@@ -669,7 +669,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private inline fun <T> markIncomplete(action: () -> T): T {
-        return withState(PlsStates.incompleteComplexExpression, action)
+        return withState(ChronicleThreadContext.incompleteComplexExpression, action)
     }
 
     private fun isIdentifierKeyword(context: ProcessingContext): Boolean {

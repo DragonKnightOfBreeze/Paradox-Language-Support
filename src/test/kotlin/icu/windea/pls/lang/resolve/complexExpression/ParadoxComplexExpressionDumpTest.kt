@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.base.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -33,37 +33,37 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
 
     private fun parseScope(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxScopeFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        PlsStates.incompleteComplexExpression.remove()
+        ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxScopeFieldExpression.resolve(text, null, configGroup)
     }
 
     private fun parseValue(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxValueFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
+        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxValueFieldExpression.resolve(text, null, configGroup)
     }
 
     private fun parseVariable(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxVariableFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        PlsStates.incompleteComplexExpression.remove()
+        ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxVariableFieldExpression.resolve(text, null, configGroup)
     }
 
     private fun parseDb(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxDatabaseObjectExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        PlsStates.incompleteComplexExpression.remove()
+        ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
     }
 
     private fun parseDefine(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxDefineReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        PlsStates.incompleteComplexExpression.remove()
+        ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
     }
 
     private fun parseCommand(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxCommandExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        PlsStates.incompleteComplexExpression.remove()
+        ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxCommandExpression.resolve(text, null, configGroup)
     }
 

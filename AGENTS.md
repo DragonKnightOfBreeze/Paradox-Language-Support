@@ -151,7 +151,7 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 Here are some common conversions:
 
 - Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
-- Consider using prefix `Pls` for plugin specific class names (e.g., `PlsStates`).
+- prefer using verb form for actions and intentions (e.g, `CopyDefinitionNameIntention`).
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
 
 For more details, see: `agents/context/naming-conventions.md`

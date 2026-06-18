@@ -1,23 +1,9 @@
-package icu.windea.pls.base
+package icu.windea.pls.base.context
 
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import java.util.ArrayDeque
 
-object PlsStates {
-    /**
-     * 用于标记是否正在构建合并索引。
-     *
-     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
-     */
-    val processMergedIndex = ThreadLocal<Boolean>()
-
-    /**
-     * 用于标记是否正在构建合并索引，并且正在解析引用。
-     *
-     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
-     */
-    val resolveForMergedIndex = ThreadLocal<Boolean>()
-
+object ChronicleThreadContext {
     /**
      * 用于标记是否要跳过对选项数据的处理，直接保留所有选项规则列表。
      *
@@ -38,4 +24,18 @@ object PlsStates {
      * @see icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
      */
     val resolvingConfigContextStack = ThreadLocal<ArrayDeque<CwtConfigContext>>()
+
+    /**
+     * 用于标记是否正在构建合并索引。
+     *
+     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+     */
+    val processMergedIndex = ThreadLocal<Boolean>()
+
+    /**
+     * 用于标记是否正在构建合并索引，并且正在解析引用。
+     *
+     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+     */
+    val resolveForMergedIndex = ThreadLocal<Boolean>()
 }

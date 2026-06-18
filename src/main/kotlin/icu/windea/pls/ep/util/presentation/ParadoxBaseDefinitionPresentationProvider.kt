@@ -11,7 +11,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.base.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.base.annotations.WithDefinitionType
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
@@ -31,8 +31,8 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
     override fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean): Boolean {
         if (lenient) return true
         val definitionInfo = element.definitionInfo ?: return false
-        if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
-        if (!PlsAnnotationManager.check(type, definitionInfo)) return false
+        if (!ChronicleAnnotationManager.check(type, definitionInfo.gameType)) return false
+        if (!ChronicleAnnotationManager.check(type, definitionInfo)) return false
         return true
     }
 

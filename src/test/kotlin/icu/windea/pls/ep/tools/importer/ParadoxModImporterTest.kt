@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.base.infra.PlsSqliteService
+import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -78,7 +78,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_import_${UUID.randomUUID()}.sqlite")
-        PlsSqliteService.getInstance().executeSql(dbFile, sql)
+        ChronicleSqliteService.getInstance().executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())
@@ -96,7 +96,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v4_import_${UUID.randomUUID()}.sqlite")
-        PlsSqliteService.getInstance().executeSql(dbFile, sql)
+        ChronicleSqliteService.getInstance().executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())

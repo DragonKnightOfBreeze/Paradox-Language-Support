@@ -1,11 +1,11 @@
-package icu.windea.pls.base.infra
+package icu.windea.pls.base.io
 
 import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.core.execution.CommandLineExecutionException
 import java.io.IOException
 import java.nio.file.Path
 
-interface PlsGitService {
+interface ChronicleGitService {
     fun getRepositoryPathFromUrl(url: String): String
 
     fun isUpdateToDate(message: String?): Boolean
@@ -27,6 +27,6 @@ interface PlsGitService {
 
     companion object {
         @JvmStatic
-        fun getInstance(): PlsGitService = serviceOrNull() ?: PlsGitServiceImpl()
+        fun getInstance(): ChronicleGitService = serviceOrNull() ?: ChronicleGitServiceImpl()
     }
 }

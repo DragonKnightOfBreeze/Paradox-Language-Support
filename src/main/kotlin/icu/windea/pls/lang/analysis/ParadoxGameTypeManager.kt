@@ -1,33 +1,30 @@
 package icu.windea.pls.lang.analysis
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.base.data.ChronicleJsonService
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.data.JsonModuleFactory
-import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
-import icu.windea.pls.model.forParadoxGameTypeById
 import java.nio.file.Path
 
 object ParadoxGameTypeManager {
     private val metadataMap: Map<ParadoxGameType, ParadoxGameTypeMetadata> = createMetadataMap()
 
     private fun createMetadataMap(): Map<ParadoxGameType, ParadoxGameTypeMetadata> {
-        val mapper = JsonService.json5Mapper.copy().apply { registerModule(JsonModuleFactory.forParadoxGameTypeById()) }
-        val url = "/data/game_type_metadata_list.json5".toClasspathUrl()
-        val list = url.openStream().use { mapper.readValue<List<ParadoxGameTypeMetadata>>(it) }
-        val map = list.associateBy { it.gameType }
+        val jsonData = ChronicleJsonService.gameTypeMetadataList
+        val map = jsonData.associateBy { it.gameType }
         val gameTypes = ParadoxGameType.getAll()
         return buildMap {
             for (gameType in gameTypes) {
-                val metadata = map.getOrElse(gameType) { ParadoxGameTypeMetadata(gameType) }
+                val json = map[gameType]
+                val metadata = json?.run {
+                    ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executablePaths)
+                } ?: ParadoxGameTypeMetadata(gameType)
                 put(gameType, metadata)
             }
         }.optimized()

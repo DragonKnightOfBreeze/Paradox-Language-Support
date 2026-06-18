@@ -32,7 +32,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.base.infra.PlsDataPathService
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants
@@ -166,7 +166,7 @@ object ParadoxImageManager {
     }
 
     private fun doResolveImagePath(imageAbsPath: String, imageRelPath: String?, frameInfo: ImageFrameInfo): Path {
-        val imagesPath = PlsDataPathService.getInstance().imagesPath
+        val imagesPath = ChronicleDataPathService.getInstance().imagesPath
         if (imageRelPath != null) {
             // 路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
             // UUID：基于游戏或模组目录的绝对路径

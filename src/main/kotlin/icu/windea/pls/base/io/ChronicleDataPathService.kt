@@ -1,4 +1,4 @@
-package icu.windea.pls.base.infra
+package icu.windea.pls.base.io
 
 import com.intellij.openapi.components.serviceOrNull
 import java.nio.file.Path
@@ -6,7 +6,7 @@ import java.nio.file.Path
 /**
  * 备注：这些路径会在访问时确保创建对应的目录或文件。
  */
-interface PlsDataPathService {
+interface ChronicleDataPathService {
     /** `~/.windea/chronicle` */
     val path: Path
 
@@ -24,6 +24,6 @@ interface PlsDataPathService {
 
     companion object {
         @JvmStatic
-        fun getInstance(): PlsDataPathService = serviceOrNull() ?: PlsDataPathServiceImpl()
+        fun getInstance(): ChronicleDataPathService = serviceOrNull() ?: ChronicleDataPathServiceImpl()
     }
 }

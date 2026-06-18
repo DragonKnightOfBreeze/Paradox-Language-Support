@@ -12,7 +12,7 @@ import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.base.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -58,7 +58,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     }
 
     private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
+        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
         if (resolved !is ParadoxDynamicValueLightElement) return
         for (dynamicValueType in resolved.types) {
             val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
@@ -112,7 +112,7 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
     }
 
     private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
+        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
         if (resolved !is ParadoxParameterLightElement) return
         // note that `element.startOffset` may not equal to actual `parameterElement.startOffset` (e.g. in a script value expression)
         val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
@@ -154,7 +154,7 @@ class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport
     }
 
     private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
+        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
         if (resolved !is ParadoxLocalisationParameterLightElement) return
         val info = ParadoxLocalisationParameterIndexInfo(resolved.name, resolved.localisationName, resolved.gameType)
         addToFileData(info, fileData)

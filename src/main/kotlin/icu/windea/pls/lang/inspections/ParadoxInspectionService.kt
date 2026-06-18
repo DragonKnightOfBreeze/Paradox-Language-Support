@@ -9,7 +9,7 @@ import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
-import icu.windea.pls.base.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
@@ -26,7 +26,7 @@ object ParadoxInspectionService {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
         ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEach { ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@forEach
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@forEach
             result += ep.getSuppressedToolIds(definition, definitionInfo)
         }
         return result
@@ -35,7 +35,7 @@ object ParadoxInspectionService {
     fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val gameType = config.configGroup.gameType
         ParadoxIncorrectExpressionChecker.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.check(element, config, holder)
         }
     }

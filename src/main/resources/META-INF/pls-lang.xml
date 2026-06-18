@@ -379,9 +379,9 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationService serviceInterface="icu.windea.pls.lang.tools.SpecialPathService" serviceImplementation="icu.windea.pls.lang.tools.SpecialPathServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.lang.tools.SpecialUrlService" serviceImplementation="icu.windea.pls.lang.tools.SpecialUrlServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.base.infra.PlsDataPathService" serviceImplementation="icu.windea.pls.base.infra.PlsDataPathServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.base.infra.PlsGitService" serviceImplementation="icu.windea.pls.base.infra.PlsGitServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.base.infra.PlsSqliteService" serviceImplementation="icu.windea.pls.base.infra.PlsSqliteServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleDataPathService" serviceImplementation="icu.windea.pls.base.io.ChronicleDataPathServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleGitService" serviceImplementation="icu.windea.pls.base.io.ChronicleGitServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleSqliteService" serviceImplementation="icu.windea.pls.base.io.ChronicleSqliteServiceImpl"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.search">

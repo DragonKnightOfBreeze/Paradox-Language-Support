@@ -1,13 +1,12 @@
-package icu.windea.pls.lang.tools
+package icu.windea.pls.base.io
 
-import icu.windea.pls.base.infra.PlsDataPathServiceImpl
 import org.junit.Assert
 import org.junit.Test
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
-class PlsDataPathServiceTest {
-    private val service = PlsDataPathServiceImpl()
+class ChronicleDataPathServiceTest {
+    private val service = ChronicleDataPathServiceImpl()
 
     @Test
     fun checkDirectories() {

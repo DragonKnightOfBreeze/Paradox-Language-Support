@@ -7,7 +7,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.CaffeineSpec
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.intellij.openapi.util.ModificationTracker
-import icu.windea.pls.base.PlsCapacities
+import icu.windea.pls.base.ChronicleCapacities
 
 /**
  * 使用 [Caffeine](https://github.com/ben-manes/caffeine) 构建缓存。
@@ -17,7 +17,7 @@ import icu.windea.pls.base.PlsCapacities
  */
 fun CacheBuilder(spec: String = ""): Caffeine<Any, Any> {
     val builder = if (spec.isEmpty()) Caffeine.newBuilder() else Caffeine.from(spec)
-    if (PlsCapacities.recordCacheStats()) builder.recordStats()
+    if (ChronicleCapacities.recordCacheStats()) builder.recordStats()
     return builder
 }
 

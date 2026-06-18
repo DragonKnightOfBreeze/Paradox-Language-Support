@@ -1,30 +1,33 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "game_type_metadata_list.json",
+  "$id": "config_group_data_list.json",
   "type": "array",
   "items": {
-    "$ref": "#/definitions/gameTypeMetadata"
+    "$ref": "#/definitions/configGroupData"
   },
   "definitions": {
-    "gameTypeMetadata": {
+    "configGroupData": {
       "type": "object",
       "properties": {
         "gameType": {
           "$ref": "#/definitions/gameTypeId"
         },
-        "gameMainEntries": {
+        "aliasNamesSupportScope": {
           "$ref": "#/definitions/stringSet"
         },
-        "gameExtraEntries": {
+        "typesSupportScope": {
           "$ref": "#/definitions/stringSet"
         },
-        "modMainEntries": {
+        "typesIndirectSupportScope": {
           "$ref": "#/definitions/stringSet"
         },
-        "modExtraEntries": {
+        "typesSkipCheckSystemScope": {
           "$ref": "#/definitions/stringSet"
         },
-        "executablePaths": {
+        "typesSupportParameters": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "typesSupportScopeContextInference": {
           "$ref": "#/definitions/stringSet"
         },
       },

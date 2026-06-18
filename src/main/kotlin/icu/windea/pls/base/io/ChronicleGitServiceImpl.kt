@@ -1,4 +1,4 @@
-package icu.windea.pls.base.infra
+package icu.windea.pls.base.io
 
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quoteIfNecessary
@@ -6,7 +6,7 @@ import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-class PlsGitServiceImpl : PlsGitService {
+class ChronicleGitServiceImpl : ChronicleGitService {
     override fun getRepositoryPathFromUrl(url: String): String {
         return url.substringAfterLast('/').removeSuffix(".git")
     }
