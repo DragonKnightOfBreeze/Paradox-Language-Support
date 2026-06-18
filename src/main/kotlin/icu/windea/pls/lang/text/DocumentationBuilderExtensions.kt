@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.builders
+package icu.windea.pls.lang.text
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
@@ -8,8 +8,8 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
+import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtLanguage

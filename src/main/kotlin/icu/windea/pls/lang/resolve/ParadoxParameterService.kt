@@ -17,7 +17,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.mergeValue
-import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport

@@ -17,7 +17,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -47,8 +47,8 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.builders.appendPsiLink
-import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.text.appendPsiLink
+import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType

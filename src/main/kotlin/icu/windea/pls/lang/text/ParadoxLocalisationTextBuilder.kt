@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.builders
+package icu.windea.pls.lang.text
 
 @Suppress("unused")
 object ParadoxLocalisationTextBuilder {
