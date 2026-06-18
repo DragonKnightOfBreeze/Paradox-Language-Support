@@ -60,7 +60,7 @@ jobs:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
-          tool-cache: true
+          tool-cache: false
 
       # Gradle cache
       - name: Cache Gradle
@@ -135,6 +135,12 @@ jobs:
       # Check out the current repository
       - name: Checkout
         uses: actions/checkout@v6
+
+      # Free disk space
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
 
       # Gradle cache
       - name: Cache Gradle
