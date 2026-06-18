@@ -100,7 +100,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return null
     }
 
-    private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): Array<out LocalQuickFix> {
+    private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): Array<LocalQuickFix> {
         return arrayOf(
             GenerateLocalisationsFix(element, context),
             GenerateLocalisationsInFileFix(element),

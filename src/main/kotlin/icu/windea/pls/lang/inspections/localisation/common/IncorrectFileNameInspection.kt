@@ -87,7 +87,7 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         return holder.resultsArray
     }
 
-    private fun getFixes(locale: ParadoxLocalisationLocale, expectedFileName: String, localeIdFromFile: String?): Array<out LocalQuickFix> {
+    private fun getFixes(locale: ParadoxLocalisationLocale, expectedFileName: String, localeIdFromFile: String?): Array<LocalQuickFix> {
         return buildList {
             this += RenameFileFix(locale, expectedFileName)
             if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)

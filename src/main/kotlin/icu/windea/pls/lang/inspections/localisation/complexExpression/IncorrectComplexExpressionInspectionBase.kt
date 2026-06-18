@@ -43,7 +43,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
         }
     }
 
-    protected open fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<out LocalQuickFix> {
+    protected open fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {
         return LocalQuickFix.EMPTY_ARRAY
     }
 }

@@ -40,7 +40,7 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
         }
     }
 
-    private fun getFixes(element: ParadoxScriptProperty): Array<out LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
         return arrayOf(Fix(element))
     }
 

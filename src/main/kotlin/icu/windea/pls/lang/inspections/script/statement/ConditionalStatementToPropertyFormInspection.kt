@@ -37,7 +37,7 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
         }
     }
 
-    private fun getFixes(element: ParadoxScriptParameterCondition): Array<out LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptParameterCondition): Array<LocalQuickFix> {
         return arrayOf(Fix(element))
     }
 

@@ -121,7 +121,7 @@ class MissingImageInspection : LocalInspectionTool() {
     }
 
     @Suppress("unused")
-    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<out LocalQuickFix> {
+    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<LocalQuickFix> {
         // nothing now
         return LocalQuickFix.EMPTY_ARRAY
     }

@@ -44,7 +44,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
         return holder.resultsArray
     }
 
-    private fun getFixes(element: ParadoxScriptProperty): Array<out LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
         return buildList {
             if (element.block != null) this += (Fix(element))
         }.toTypedArray()

@@ -39,7 +39,7 @@ class ScopeCallStatementToExplicitFormInspection : LocalInspectionTool(), DumbAw
         }
     }
 
-    private fun getFixes(element: ParadoxScriptProperty): Array<out LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
         return arrayOf(Fix(element))
     }
 
