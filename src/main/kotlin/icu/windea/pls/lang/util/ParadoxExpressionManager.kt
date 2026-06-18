@@ -513,7 +513,7 @@ object ParadoxExpressionManager {
 
         // 尝试解析为复杂枚举值声明
         run {
-            if (element !is ParadoxScriptStringExpressionElement) return@run
+            if (!element.isResolvableExpression()) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
             val textRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
             val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo)

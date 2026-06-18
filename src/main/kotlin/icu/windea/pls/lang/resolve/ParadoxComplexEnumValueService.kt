@@ -15,10 +15,11 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexEnumValueService {
-    fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueInfo? {
+    fun resolveInfo(element: ParadoxScriptExpressionElement, file: PsiFile): ParadoxComplexEnumValueInfo? {
         val name = element.value
         if (name.isParameterized()) return null // 排除可能带参数的情况
         val project = file.project
@@ -44,7 +45,7 @@ object ParadoxComplexEnumValueService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getDependencies(element: ParadoxScriptStringExpressionElement, file: PsiFile): List<Any> {
+    fun getDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
         return listOf(file)
     }
 }

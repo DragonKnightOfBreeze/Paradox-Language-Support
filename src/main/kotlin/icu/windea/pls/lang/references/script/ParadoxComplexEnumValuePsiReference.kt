@@ -7,13 +7,14 @@ import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxComplexEnumValuePsiReference(
-    element: ParadoxScriptStringExpressionElement,
+    element: ParadoxScriptExpressionElement,
     rangeInElement: TextRange,
     val info: ParadoxComplexEnumValueInfo
-) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
     }

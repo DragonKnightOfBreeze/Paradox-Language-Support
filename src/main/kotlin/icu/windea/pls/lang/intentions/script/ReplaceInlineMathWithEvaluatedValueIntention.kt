@@ -12,6 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 
 /**
  * 将内联数学块替换为其求值结果（如果无需提供额外的传参信息）。
@@ -24,7 +25,7 @@ class ReplaceInlineMathWithEvaluatedValueIntention : PsiUpdateModCommandAction<P
         if (element.expression.isEmpty()) return
         val result = getResult(element) ?: return
         val newElement = ParadoxScriptElementFactory.createValue(context.project, result.formatted())
-        if (newElement !is ParadoxScriptInt && newElement !is ParadoxScriptFloat) return // post check
+        if (newElement !is ParadoxScriptNumberExpressionElement) return // post check
         element.replace(newElement)
     }
 

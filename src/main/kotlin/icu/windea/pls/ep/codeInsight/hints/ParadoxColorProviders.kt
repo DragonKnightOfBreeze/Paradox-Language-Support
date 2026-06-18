@@ -22,6 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
@@ -177,7 +178,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         return element.valueList
             .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
             ?.map { it.resolved() ?: return null }
-            ?.takeIf { it.all { v -> v is ParadoxScriptInt || v is ParadoxScriptFloat } }
+            ?.takeIf { it.all { v -> v is ParadoxScriptNumberExpressionElement } }
             ?.map { it.value }
     }
 }

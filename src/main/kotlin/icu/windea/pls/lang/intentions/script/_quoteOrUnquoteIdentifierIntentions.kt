@@ -14,8 +14,7 @@ import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptFloat
-import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
@@ -49,8 +48,7 @@ class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
         return when (element) {
             is ParadoxScriptPropertyKey -> canQuote(element)
             is ParadoxScriptString -> canQuote(element)
-            is ParadoxScriptInt -> true
-            is ParadoxScriptFloat -> true
+            is ParadoxScriptNumberExpressionElement -> true
             else -> false
         }
     }

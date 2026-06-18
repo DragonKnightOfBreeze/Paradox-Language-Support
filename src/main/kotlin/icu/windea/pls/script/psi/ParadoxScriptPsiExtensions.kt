@@ -79,7 +79,7 @@ fun ParadoxScriptExpressionElement.isValidExpression(options: ParadoxMatchOption
 }
 
 fun ParadoxScriptExpressionElement.isResolvableExpression(): Boolean {
-    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptInt || this is ParadoxScriptFloat
+    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumberExpressionElement
 }
 
 fun ParadoxScriptExpressionElement.isDefinitionTypeKeyOrName(): Boolean {

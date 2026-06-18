@@ -204,8 +204,8 @@ object ParadoxScopeCallStatementManipulationService {
         }
 
         // 移动注释到 existsProperty 前面
-        val parent = existsProperty.parent
-        val commentsBetween = PsiService.collectCommentsBetween(targetProperty, existsProperty, forward = false)
+        val parent = existsProperty.parent ?: return // unexpected
+        val commentsBetween = PsiService.collectBetween(targetProperty, true, existsProperty).filterIsInstance<PsiComment>()
         for (comment in commentsBetween) {
             parent.addBefore(comment, existsProperty)
         }
@@ -506,7 +506,7 @@ object ParadoxScopeCallStatementManipulationService {
         // 移动注释到 element 前面
         val parent = element.parent ?: return // unexpected
         val block = element.block ?: return // unexpected
-        val commentsWithin = ParadoxScriptPsiService.collectBetweenBounds(block, forward = false)?.filter { it is PsiComment }.orEmpty()
+        val commentsWithin = ParadoxScriptPsiService.collectBetweenBounds(block)?.filterIsInstance<PsiComment>().orEmpty()
         for (comment in commentsWithin) {
             parent.addBefore(comment, element)
         }

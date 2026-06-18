@@ -19,6 +19,13 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.runSmartReadAction
 
 object PsiService {
+    /**
+     * 收集 [start] 和 [end] 之间的所有兄弟节点。通过 [forward] 指定遍历方向，默认向后遍历。
+     */
+    fun collectBetween(start: PsiElement, forward: Boolean, end: PsiElement): Sequence<PsiElement> {
+        return start.siblings(forward, withSelf = false).takeWhile { it !== end }
+    }
+
     fun toPresentableString(element: PsiElement): String {
         return buildString {
             val type = element.javaClass.simpleName.removeSuffix("Impl")
@@ -216,12 +223,5 @@ object PsiService {
         val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
         val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
         return TextRange.create(startElement.startOffset, endElement.endOffset)
-    }
-
-    /**
-     * 收集 [start] 和 [end] 之间的所有作为兄弟节点的注释。通过 [forward] 指定遍历方向，默认向后遍历。
-     */
-    fun collectCommentsBetween(start: PsiElement, end: PsiElement, forward: Boolean = true): Sequence<PsiComment> {
-        return start.siblings(forward, withSelf = false).takeWhile { it !== end }.filterIsInstance<PsiComment>()
     }
 }
