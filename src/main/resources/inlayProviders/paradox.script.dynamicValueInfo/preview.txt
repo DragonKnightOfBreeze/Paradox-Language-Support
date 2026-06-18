@@ -17,7 +17,7 @@ windea = {
     on_abandoned = {
         if = {
             limit = { always = yes }
-            save_global_event_target_as = the_waked
+            save_global_event_target_as = the_waked/*<# : global_event_target #>*/
         }
         revival = yes
     }
