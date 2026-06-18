@@ -50,7 +50,7 @@ class ParadoxScriptFormattingBlock(
                 .aroundInside(NORMAL_SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
                 .beforeInside(LEADING_SEPARATORS, PROPERTY).spaces(0) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
                 .afterInside(LEADING_SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
-                .around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) // 内联数学表达式操作符周围按情况可能需要空格
+                .around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) // 内联数学表达式运算符周围按情况可能需要空格
                 .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
                 .between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() // 参数条件表达式如果为空则不需要空格（尽管这是语法错误）

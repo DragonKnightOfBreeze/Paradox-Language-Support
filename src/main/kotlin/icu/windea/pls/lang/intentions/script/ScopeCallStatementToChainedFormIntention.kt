@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 将嵌套作用域调用转换为链式形式。
  *
- * 检测于语义级别（需要规则分组数据已初始化）。
+ * 检测于文法级别和语义级别。
  *
  * 说明：
  * - 保留块中内层属性前后的注释，转换后放到前面。

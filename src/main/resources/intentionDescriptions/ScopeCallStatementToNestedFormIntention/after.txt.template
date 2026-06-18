@@ -1,5 +1,5 @@
 example = {
 	<spot>root = {
-		owner = { a = 1 }
+		owner = { k = v }
 	}</spot>
 }

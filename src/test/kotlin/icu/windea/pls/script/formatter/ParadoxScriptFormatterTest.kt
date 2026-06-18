@@ -166,7 +166,7 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region 内联数学操作符周围的空格
+    // region 内联数学运算符周围的空格
 
     @Test
     fun testSpaceAroundInlineMathOperator_addSpaces() {

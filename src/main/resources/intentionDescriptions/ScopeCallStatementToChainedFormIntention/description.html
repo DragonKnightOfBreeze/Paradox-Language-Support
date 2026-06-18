@@ -2,12 +2,11 @@
 <body>
   Convert nested scope call in script files to chained form.
   <p>
-    Check on grammar level. This intention merges a nested scope call like
-    <code>root = { owner = { ... } }</code> into the chained form
-    <code>root.owner = { ... }</code>.
+    Check on grammar level and semantic level.
   </p>
   <p>
-    The cursor should be placed on the key of the outer property.
+    Applicable when the cursor position is a property key, and there is only one property in the inner block.
+    Meanwhile, it is required that these property keys can be resolved to linked expressions (e.g., <code>root</code>> and <code>root.owner</code>>).
   </p>
 </body>
 </html>

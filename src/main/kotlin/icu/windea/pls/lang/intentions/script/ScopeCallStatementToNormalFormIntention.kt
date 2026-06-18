@@ -37,7 +37,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * ```
  *
  * 说明：
- * - 对于任意游戏类型和任意安全调用操作符均可用。
+ * - 对于任意游戏类型和任意安全调用运算符均可用。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */

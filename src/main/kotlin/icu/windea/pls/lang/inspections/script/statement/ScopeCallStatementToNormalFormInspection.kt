@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * 建议将安全作用域调用转换为显式形式。
  *
  * 说明：
- * - 对于任意游戏类型和任意安全调用操作符均适用。
+ * - 对于任意游戏类型和任意安全调用运算符均适用。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */

@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * 建议将显式作用域调用转换为安全形式。
  *
  * 说明：
- * - 适用于支持安全（调用）赋值操作符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
+ * - 适用于支持安全（调用）赋值运算符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */
