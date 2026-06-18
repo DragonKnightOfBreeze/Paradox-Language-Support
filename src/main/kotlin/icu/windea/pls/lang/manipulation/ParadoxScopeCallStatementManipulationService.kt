@@ -3,6 +3,7 @@ package icu.windea.pls.lang.manipulation
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
@@ -205,10 +206,9 @@ object ParadoxScopeCallStatementManipulationService {
 
         // 移动注释到 existsProperty 前面
         val parent = existsProperty.parent ?: return // unexpected
-        val commentsBetween = PsiService.collectBetween(targetProperty, true, existsProperty).filterIsInstance<PsiComment>()
-        for (comment in commentsBetween) {
-            parent.addBefore(comment, existsProperty)
-        }
+        val comments = PsiService.collectBetween(targetProperty, existsProperty, forward = false).filterIsInstance<PsiComment>()
+        var anchor: PsiElement = existsProperty
+        for (comment in comments) anchor = parent.addBefore(comment, anchor)
 
         // 删除 existsProperty 和 targetProperty 之间的所有内容（此时注释已经移走，只余留空白和 targetProperty）
         val firstToDelete = existsProperty.nextSibling
@@ -506,10 +506,9 @@ object ParadoxScopeCallStatementManipulationService {
         // 移动注释到 element 前面
         val parent = element.parent ?: return // unexpected
         val block = element.block ?: return // unexpected
-        val commentsWithin = ParadoxScriptPsiService.collectBetweenBounds(block)?.filterIsInstance<PsiComment>().orEmpty()
-        for (comment in commentsWithin) {
-            parent.addBefore(comment, element)
-        }
+        val comments = ParadoxScriptPsiService.collectBetweenBounds(block, forward = false)?.filterIsInstance<PsiComment>().orEmpty()
+        var anchor: PsiElement = element
+        for (comment in comments) anchor = parent.addBefore(comment, anchor)
 
         val outerKey = propertyKey.value
         val innerKey = innerProperty.propertyKey.value

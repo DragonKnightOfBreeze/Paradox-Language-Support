@@ -22,7 +22,7 @@ object PsiService {
     /**
      * 收集 [start] 和 [end] 之间的所有兄弟节点。通过 [forward] 指定遍历方向，默认向后遍历。
      */
-    fun collectBetween(start: PsiElement, forward: Boolean, end: PsiElement): Sequence<PsiElement> {
+    fun collectBetween(start: PsiElement, end: PsiElement, forward: Boolean = true): Sequence<PsiElement> {
         return start.siblings(forward, withSelf = false).takeWhile { it !== end }
     }
 
