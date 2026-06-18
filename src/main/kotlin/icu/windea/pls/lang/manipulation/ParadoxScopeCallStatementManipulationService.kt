@@ -4,28 +4,30 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
+import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.quote
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isChainedForm
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isExplicitForm
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isSafeForm
-import icu.windea.pls.lang.psi.stringValue
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
@@ -68,12 +70,12 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * 说明：
      * - [element] 默认可以是其中的任一属性（`exists = x` 或 `x = y`）。
-     * - [element] 的属性键（作为 `exists` 属性时）/属性值（作为第二个属性时）必须是字符串字面量。
+     * - [element] 的属性键（作为 `exists` 属性时）/属性值（作为目标属性时）必须是字符串字面量。
      * - `exists = x` 必须在 `x = y` 之前，且两者之间仅能有空白或注释。
      */
-    fun isExplicitForm(element: ParadoxScriptProperty, forExistsProperty: Boolean = true, forSecondProperty: Boolean = true): Boolean {
+    fun isExplicitForm(element: ParadoxScriptProperty, forExistsProperty: Boolean = true, forTargetProperty: Boolean = true): Boolean {
         if (forExistsProperty && isExistsPropertyOfExplicitForm(element)) return true
-        if (forSecondProperty && isSecondPropertyOfExplicitForm(element)) return true
+        if (forTargetProperty && isTargetPropertyOfExplicitForm(element)) return true
         return false
     }
 
@@ -85,9 +87,7 @@ object ParadoxScopeCallStatementManipulationService {
      * - [element] 的属性键必须是字符串字面量。
      */
     fun isSafeForm(element: ParadoxScriptProperty): Boolean {
-        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
-        if (separatorNode.elementType !in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS) return false
-        return ParadoxSyntaxService.isSafeOperatorAllowed(element)
+        return isPropertyOfSafeForm(element)
     }
 
     /**
@@ -108,8 +108,8 @@ object ParadoxScopeCallStatementManipulationService {
      * - 适用于支持安全（调用）赋值运算符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
      * - [element] 必须是显式形式。参见 [isExplicitForm]。
      */
-    fun canConvertToSafeForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeSecondProperty: Boolean = true): Boolean {
-        if (!isExplicitForm(element, canBeExistsProperty, canBeSecondProperty)) return false
+    fun canConvertToSafeForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeTargetProperty: Boolean = true): Boolean {
+        if (!isExplicitForm(element, canBeExistsProperty, canBeTargetProperty)) return false
         val gameType = ParadoxAnalysisManager.selectGameType(element)
         if (gameType == null || gameType == ParadoxGameType.Core) return true
         return ParadoxSyntaxConstraint.SafeAssignOperator.test(gameType) || ParadoxSyntaxConstraint.SafeCallAssignOperator.test(gameType)
@@ -150,12 +150,12 @@ object ParadoxScopeCallStatementManipulationService {
         // 创建 exists 属性和第二属性
         val firstText = "exists = $keyText"
         val secondText = "$keyText = $valueText"
-        val firstProp = ParadoxScriptElementFactory.createProperty(project, firstText)
-        val secondProp = ParadoxScriptElementFactory.createProperty(project, secondText)
+        val firstProperty = ParadoxScriptElementFactory.createProperty(project, firstText)
+        val secondProperty = ParadoxScriptElementFactory.createProperty(project, secondText)
 
         // 用第二属性替换原元素，然后在前面插入 exists
-        val replaced = element.replace(secondProp)
-        parent.addBefore(firstProp, replaced)
+        val replaced = element.replace(secondProperty)
+        parent.addBefore(firstProperty, replaced)
         if (needsNewline) {
             val newline = ParadoxScriptElementFactory.createLine(project)
             parent.addBefore(newline, replaced)
@@ -186,14 +186,16 @@ object ParadoxScopeCallStatementManipulationService {
      * - [element] 可以是其中的任一属性（`exists = x` 或 `x = y`）。
      * - `exists = x` 和 `x = y` 之间的注释会保留，并移到转换后的语句之前。
      */
-    fun convertToSafeForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType?) {
+    fun convertToSafeForm(element: ParadoxScriptProperty, project: Project) {
         val existsProperty = getExistsProperty(element) ?: return
-        val secondProperty = getSecondProperty(element) ?: return
-        if (existsProperty === secondProperty) return
+        val targetProperty = getTargetProperty(element) ?: return
+        if (existsProperty === targetProperty) return
 
-        val valueText = secondProperty.propertyValue?.text ?: return
-        val keyText = secondProperty.propertyKey.text
+        val valueText = targetProperty.propertyValue?.text ?: return
+        val keyText = targetProperty.propertyKey.text
 
+        val gameType = ParadoxAnalysisManager.selectGameType(element)
+        if (gameType == null || gameType == ParadoxGameType.Core) return
         val safeSeparator = when {
             ParadoxSyntaxConstraint.SafeCallAssignOperator.test(gameType) -> "? = "
             else -> " ?= "
@@ -202,18 +204,18 @@ object ParadoxScopeCallStatementManipulationService {
         // 移动注释到 existsProperty 前面
         val parent = existsProperty.parent
         // 从最后一个注释开始移动，确保顺序正确
-        val commentsBetween = PsiService.collectCommentsBetween(secondProperty, existsProperty, forward = false)
+        val commentsBetween = PsiService.collectCommentsBetween(targetProperty, existsProperty, forward = false)
         for (comment in commentsBetween) {
             parent.addBefore(comment, existsProperty)
         }
 
-        // 删除 existsProperty 和 secondProperty 之间的所有内容（此时注释已经移走，只余留空白和 secondProperty）
+        // 删除 existsProperty 和 targetProperty 之间的所有内容（此时注释已经移走，只余留空白和 targetProperty）
         val firstToDelete = existsProperty.nextSibling
-        if (firstToDelete != null && firstToDelete !== secondProperty) {
-            parent.deleteChildRange(firstToDelete, secondProperty)
+        if (firstToDelete != null && firstToDelete !== targetProperty) {
+            parent.deleteChildRange(firstToDelete, targetProperty)
         } else {
-            // 直接删除 secondProperty（两者相邻，中间无内容）
-            secondProperty.delete()
+            // 直接删除 targetProperty（两者相邻，中间无内容）
+            targetProperty.delete()
         }
 
         // 构建安全形式属性文本（仅属性本身）
@@ -228,13 +230,13 @@ object ParadoxScopeCallStatementManipulationService {
 
     private fun isExistsProperty(element: ParadoxScriptProperty): Boolean {
         if (element.name != "exists") return false
-        if (element.propertyValue !is ParadoxScriptProperty) return false
+        if (element.propertyValue !is ParadoxScriptString) return false
         val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
         if (separatorNode.elementType != EQUAL_SIGN) return false
         return true
     }
 
-    private fun isSecondProperty(element: ParadoxScriptProperty): Boolean {
+    private fun isTargetProperty(element: ParadoxScriptProperty): Boolean {
         if (element.name == "exists") return false
         val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
         if (separatorNode.elementType != EQUAL_SIGN) return false
@@ -243,44 +245,52 @@ object ParadoxScopeCallStatementManipulationService {
 
     private fun isExistsPropertyOfExplicitForm(element: ParadoxScriptProperty): Boolean {
         if (!isExistsProperty(element)) return false
-        val next = findSecondPropertyAfter(element) ?: return false
+        val next = findTargetPropertyAfter(element) ?: return false
         return matchesExistsValue(element, next)
     }
 
-    private fun isSecondPropertyOfExplicitForm(element: ParadoxScriptProperty): Boolean {
-        if (!isSecondProperty(element)) return false
+    private fun isTargetPropertyOfExplicitForm(element: ParadoxScriptProperty): Boolean {
+        if (!isTargetProperty(element)) return false
         val prev = findExistsPropertyBefore(element) ?: return false
         return matchesExistsValue(prev, element)
     }
 
+    private fun isPropertyOfSafeForm(element: ParadoxScriptProperty): Boolean {
+        val separatorNode = element.node.findChildByType(ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) ?: return false
+        if (separatorNode.elementType !in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS) return false
+        return ParadoxSyntaxService.isSafeOperatorAllowed(element)
+    }
+
     private fun matchesExistsValue(existsProperty: ParadoxScriptProperty, targetProperty: ParadoxScriptProperty): Boolean {
-        val existsValue = existsProperty.propertyValue?.stringValue() ?: return false
-        val targetKey = targetProperty.propertyKey.stringValue()
-        return targetKey == existsValue
+        val propertyValue = existsProperty.propertyValue ?: return false
+        if (!ParadoxSyntaxService.isSafeOperatorAllowed(propertyValue)) return false
+        val propertyKey = targetProperty.propertyKey
+        if (!ParadoxSyntaxService.isSafeOperatorAllowed(propertyKey)) return false
+        return propertyKey.value == propertyValue.value
     }
 
     private fun getExistsProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
         if (isExistsPropertyOfExplicitForm(element)) return element
-        if (isSecondProperty(element)) {
-            val next = findExistsPropertyBefore(element)
-            if (next != null && matchesExistsValue(element, next)) return next
+        if (isTargetProperty(element)) {
+            val before = findExistsPropertyBefore(element)
+            if (before != null && matchesExistsValue(before, element)) return before
         }
         return null
     }
 
-    private fun getSecondProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
-        if (isSecondPropertyOfExplicitForm(element)) return element
+    private fun getTargetProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
+        if (isTargetPropertyOfExplicitForm(element)) return element
         if (isExistsProperty(element)) {
-            val next = findSecondPropertyAfter(element)
+            val next = findTargetPropertyAfter(element)
             if (next != null && matchesExistsValue(element, next)) return next
         }
         return null
     }
 
-    private fun findSecondPropertyAfter(element: ParadoxScriptProperty): ParadoxScriptProperty? {
+    private fun findTargetPropertyAfter(element: ParadoxScriptProperty): ParadoxScriptProperty? {
         // 跳过（且仅能跳过）空白和注释
         return element.siblings(forward = true, withSelf = false).dropWhile { it is PsiWhiteSpace || it is PsiComment }
-            .firstOrNull()?.castOrNull<ParadoxScriptProperty>()?.takeIf { isSecondProperty(it) }
+            .firstOrNull()?.castOrNull<ParadoxScriptProperty>()?.takeIf { isTargetProperty(it) }
     }
 
     private fun findExistsPropertyBefore(element: ParadoxScriptProperty): ParadoxScriptProperty? {
@@ -301,11 +311,19 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun isNestedForm(element: ParadoxScriptProperty): Boolean {
-        // 属性键不能已经包含点号（即不能已经是链式形式）
-        val expressionText = ParadoxExpressionManager.getExpressionText(element.propertyKey)
-        if (expressionText.contains('.')) return false
-        return findSingleInnerProperty(element) != null
+    fun isNestedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+
+        val propertyKey = element.propertyKey
+        val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
+        if (complexExpression !is ParadoxLinkedExpression) return false
+
+        val innerProperty = element.properties().singleOrNull() ?: return false
+        val innerPropertyKey = innerProperty.propertyKey
+        val innerComplexExpression = ParadoxComplexExpression.resolve(innerPropertyKey, configGroup)
+        if (innerComplexExpression !is ParadoxLinkedExpression) return false
+
+        return true
     }
 
     /**
@@ -316,21 +334,15 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun isChainedForm(element: ParadoxScriptProperty): Boolean {
+    fun isChainedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+
         val propertyKey = element.propertyKey
-        val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
-        // 快速语法检查
-        if (!expressionText.contains('.')) return false
-        // 尝试语义检查（需要规则分组数据）
-        val file = element.containingFile
-        if (file != null && PlsFacade.checkConfigGroupInitialized(file.project, file)) {
-            val resolvedComplexExpression = resolveComplexExpressionFromKey(element)
-            if (resolvedComplexExpression is ParadoxLinkedExpression && resolvedComplexExpression.linkNodes.size >= 2) {
-                return true
-            }
-        }
-        // 回退：语法检查（至少一个点号）
-        return expressionText.count { it == '.' } >= 1
+        val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
+        if (complexExpression !is ParadoxLinkedExpression) return false
+        if (complexExpression.linkNodes.size <= 1) return false
+
+        return true
     }
 
     /**
@@ -341,8 +353,8 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun canConvertToNestedForm(element: ParadoxScriptProperty): Boolean {
-        return isChainedForm(element)
+    fun canConvertToNestedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        return isChainedForm(element, gameType)
     }
 
     /**
@@ -353,8 +365,8 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun canConvertToChainedForm(element: ParadoxScriptProperty): Boolean {
-        return isNestedForm(element)
+    fun canConvertToChainedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        return isNestedForm(element, gameType)
     }
 
     /**
@@ -399,58 +411,39 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, caretOffset: Int) {
+    fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, caretOffset: Int, gameType: ParadoxGameType? = selectGameType(element)) {
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+
         val propertyKey = element.propertyKey
-        val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
+        val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
+        if (complexExpression !is ParadoxLinkedExpression) return
+        if (complexExpression.linkNodes.size <= 1) return
+
         val expressionOffset = ParadoxExpressionManager.getExpressionOffset(propertyKey)
-        val cursorOffsetInExpression = caretOffset - propertyKey.textRange.startOffset - expressionOffset
+        val cursorOffsetInExpression = caretOffset - propertyKey.startOffset - expressionOffset
 
-        // 尝试语义解析
-        val resolvedComplexExpression = resolveComplexExpressionFromKey(element) as? ParadoxLinkedExpression
+        val outerKey: String
+        val innerKey: String
 
-        val outerKeyText: String
-        val innerKeyText: String
-        if (resolvedComplexExpression != null && resolvedComplexExpression.linkNodes.size >= 2) {
-            // 语义级别分割：基于复杂表达式节点
-            val linkNodes = resolvedComplexExpression.linkNodes
-            var lastMarkerBeforeCursor: ParadoxMarkerNode? = null
-            for (node in resolvedComplexExpression.nodes) {
-                if (node is ParadoxMarkerNode && node.rangeInExpression.startOffset < cursorOffsetInExpression) {
-                    lastMarkerBeforeCursor = node
-                }
-            }
-            if (lastMarkerBeforeCursor != null) {
-                val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
-                val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset
-                outerKeyText = expressionText.substring(0, splitStart)
-                innerKeyText = expressionText.substring(splitEnd)
-            } else {
-                val firstLinkEnd = linkNodes.first().rangeInExpression.endOffset
-                outerKeyText = expressionText.substring(0, firstLinkEnd)
-                innerKeyText = expressionText.substring(firstLinkEnd).removePrefix(".")
-            }
+        // 语义级别分割：基于复杂表达式节点
+        val lastMarkerBeforeCursor = complexExpression.nodes.findLast { it is ParadoxOperatorNode && it.rangeInExpression.startOffset < cursorOffsetInExpression }
+        if (lastMarkerBeforeCursor != null) {
+            val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
+            val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset
+            outerKey = complexExpression.text.substring(0, splitStart)
+            innerKey = complexExpression.text.substring(splitEnd)
         } else {
-            // 回退到语法级别分割：基于点号字符位置
-            val dotPositions = expressionText.mapIndexedNotNull { i, c -> if (c == '.') i else null }
-            if (dotPositions.size < 1) return
-            val splitPos = dotPositions.lastOrNull { it < cursorOffsetInExpression }
-            if (splitPos != null) {
-                outerKeyText = expressionText.substring(0, splitPos)
-                innerKeyText = expressionText.substring(splitPos + 1)
-            } else {
-                val firstDot = dotPositions.first()
-                outerKeyText = expressionText.substring(0, firstDot)
-                innerKeyText = expressionText.substring(firstDot + 1)
-            }
+            val firstLink = complexExpression.nodes.first { it is ParadoxLinkNode }
+            val firstLinkEnd = firstLink.rangeInExpression.endOffset
+            outerKey = complexExpression.text.substring(0, firstLinkEnd)
+            innerKey = complexExpression.text.substring(firstLinkEnd).removePrefix(".")
         }
 
-        val wasQuoted = isPropertyKeyQuoted(element)
-        val outerKeyFormatted = if (wasQuoted) "\"$outerKeyText\"" else outerKeyText
-        val innerKeyFormatted = if (wasQuoted) "\"$innerKeyText\"" else innerKeyText
-
-        val valueText = element.propertyValue?.text ?: return
-
-        val newText = "$outerKeyFormatted = {\n$innerKeyFormatted = $valueText\n}"
+        val wasQuoted = propertyKey.text.isLeftQuoted()
+        val newOuterKeyText = if (wasQuoted) outerKey.quote() else outerKey
+        val newInnerKeyText = if (wasQuoted) innerKey.quote() else innerKey
+        val newValueText = element.propertyValue?.text.orEmpty() // property value can be null here
+        val newText = "$newOuterKeyText = {\n$newInnerKeyText = $newValueText\n}"
         val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
         element.replace(newElement)
     }
@@ -478,65 +471,27 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun convertToChainedForm(element: ParadoxScriptProperty, project: Project) {
-        val innerProperty = findSingleInnerProperty(element) ?: return
-        val outerKeyText = element.propertyKey.value
-        val innerKeyText = innerProperty.propertyKey.value
-        val valueText = innerProperty.propertyValue?.text ?: return
+    fun convertToChainedForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType? = selectGameType(element)) {
+        val configGroup = PlsFacade.getConfigGroup(gameType)
 
-        val newText = "$outerKeyText.$innerKeyText = $valueText"
+        val propertyKey = element.propertyKey
+        val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
+        if (complexExpression !is ParadoxLinkedExpression) return
+
+        val innerProperty = element.properties().singleOrNull() ?: return
+        val innerPropertyKey = innerProperty.propertyKey
+        val innerComplexExpression = ParadoxComplexExpression.resolve(innerPropertyKey, configGroup)
+        if (innerComplexExpression !is ParadoxLinkedExpression) return
+
+        val outerKey = propertyKey.value
+        val innerKey = innerProperty.propertyKey.value
+
+        val newKey = "$outerKey.$innerKey"
+        val wasQuoted = propertyKey.text.isLeftQuoted()
+        val newKeyText = if (wasQuoted) newKey.quote() else newKey
+        val newValueText = innerProperty.propertyValue?.text.orEmpty() // property value can be null here
+        val newText = "$newKeyText = $newValueText"
         val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
         element.replace(newElement)
     }
-
-    // region Helpers for Chained/Nested Form
-
-    private fun resolveComplexExpressionFromKey(element: ParadoxScriptProperty): ParadoxComplexExpression? {
-        val propertyKey = element.propertyKey
-        val expressionText = ParadoxExpressionManager.getExpressionText(propertyKey)
-        if (!expressionText.contains('.')) return null
-        val file = element.containingFile ?: return null
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
-        val config = ParadoxConfigManager.getConfigs(propertyKey).firstOrNull() ?: return null
-        return ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config)
-    }
-
-    private fun findSingleInnerProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
-        val block = element.block ?: return null
-        var foundProperty: ParadoxScriptProperty? = null
-        for (child in block.children) {
-            when (child) {
-                is PsiWhiteSpace, is PsiComment -> { /* 允许 */
-                }
-                is ParadoxScriptProperty -> {
-                    if (foundProperty != null) return null // 多于一个属性
-                    foundProperty = child
-                }
-                else -> {
-                    // 块的括号自身也是子节点
-                    if (child.text == "{" || child.text == "}") continue
-                    return null // 意外的节点
-                }
-            }
-        }
-        return foundProperty
-    }
-
-    private fun collectCommentsBeforeInBlock(block: ParadoxScriptBlock?, innerProperty: ParadoxScriptProperty): List<PsiComment> {
-        if (block == null) return emptyList()
-        return block.children.takeWhile { it !== innerProperty }.filterIsInstance<PsiComment>().toList()
-    }
-
-    private fun collectCommentsAfterInBlock(block: ParadoxScriptBlock?, innerProperty: ParadoxScriptProperty): List<PsiComment> {
-        if (block == null) return emptyList()
-        val innerIndex = block.children.indexOf(innerProperty)
-        return block.children.drop(innerIndex + 1).filterIsInstance<PsiComment>().toList()
-    }
-
-    private fun isPropertyKeyQuoted(element: ParadoxScriptProperty): Boolean {
-        val firstChild = element.propertyKey.node.findChildByType(STRING_TOKEN)
-        return firstChild != null
-    }
-
-    // endregion
 }

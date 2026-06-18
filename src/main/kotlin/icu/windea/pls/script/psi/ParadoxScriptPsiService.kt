@@ -1,10 +1,13 @@
 package icu.windea.pls.script.psi
 
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.castOrNull
 
 object ParadoxScriptPsiService {
     fun canAttachComment(element: PsiElement): Boolean {

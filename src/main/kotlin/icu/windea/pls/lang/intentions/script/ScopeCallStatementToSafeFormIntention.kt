@@ -25,8 +25,7 @@ class ScopeCallStatementToSafeFormIntention : PsiUpdateModCommandAction<ParadoxS
     override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToSafeForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
-        val gameType = selectGameType(element)
-        return ParadoxScopeCallStatementManipulationService.convertToSafeForm(element, context.project, gameType)
+        return ParadoxScopeCallStatementManipulationService.convertToSafeForm(element, context.project)
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {

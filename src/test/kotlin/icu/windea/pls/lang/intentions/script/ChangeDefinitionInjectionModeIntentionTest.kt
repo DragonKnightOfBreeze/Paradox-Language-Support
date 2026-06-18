@@ -28,7 +28,7 @@ class ChangeDefinitionInjectionModeIntentionTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/intentions/definition_injection")
+        markRootDirectory("features/intentions/script")
         initConfigGroups(project, gameType)
     }
 

@@ -14,6 +14,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
@@ -26,10 +27,11 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  */
 class ScopeCallStatementToChainedFormInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val gameType = selectGameType(holder.file)
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToExplicitForm(element)) return
+                if (!ParadoxScopeCallStatementManipulationService.canConvertToChainedForm(element, gameType)) return
                 val description = PlsBundle.message("inspection.script.scopeCallStatementToChainedForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element.propertyKey, description, *fixes)
@@ -50,7 +52,8 @@ class ScopeCallStatementToChainedFormInspection : LocalInspectionTool(), DumbAwa
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val element = startElement as? ParadoxScriptProperty ?: return
-            ParadoxScopeCallStatementManipulationService.convertToChainedForm(element, project)
+            val gameType = selectGameType(file)
+            ParadoxScopeCallStatementManipulationService.convertToChainedForm(element, project, gameType)
         }
     }
 }

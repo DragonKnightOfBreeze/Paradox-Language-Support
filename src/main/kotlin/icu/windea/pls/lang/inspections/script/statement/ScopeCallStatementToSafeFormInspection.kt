@@ -13,7 +13,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.inspections.script.statement.ConditionalStatementToBlockFormInspection.Fix
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -54,8 +53,7 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val element = startElement as? ParadoxScriptProperty ?: return
-            val gameType = selectGameType(file)
-            ParadoxScopeCallStatementManipulationService.convertToSafeForm(element, project, gameType)
+            ParadoxScopeCallStatementManipulationService.convertToSafeForm(element, project)
         }
     }
 }

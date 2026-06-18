@@ -7,6 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
@@ -29,7 +30,8 @@ class ScopeCallStatementToNestedFormIntention : PsiUpdateModCommandAction<Parado
         // if property value is a block, caret offset should before or at `{`
         if (!ParadoxScriptPsiService.isBeforeOrAtBlockLeftBound(element, context.offset)) return false
 
-        return ParadoxScopeCallStatementManipulationService.canConvertToNestedForm(element)
+        val gameType = selectGameType(context.file)
+        return ParadoxScopeCallStatementManipulationService.canConvertToNestedForm(element, gameType)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

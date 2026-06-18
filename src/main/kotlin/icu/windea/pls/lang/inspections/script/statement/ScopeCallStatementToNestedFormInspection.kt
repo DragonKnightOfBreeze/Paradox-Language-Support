@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.inspections.script.statement
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
@@ -14,6 +13,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
@@ -26,10 +26,11 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  */
 class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val gameType = selectGameType(holder.file)
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToExplicitForm(element)) return
+                if (!ParadoxScopeCallStatementManipulationService.canConvertToNestedForm(element, gameType)) return
                 val description = PlsBundle.message("inspection.script.scopeCallStatementToNestedForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element.propertyKey, description, *fixes)
@@ -51,7 +52,8 @@ class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAwar
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val element = startElement as? ParadoxScriptProperty ?: return
             val caretOffset = editor?.caretModel?.offset ?: return
-            ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, project, caretOffset)
+            val gameType = selectGameType(file)
+            ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, project, caretOffset, gameType)
         }
     }
 }
