@@ -23,7 +23,8 @@ class ScopeCallStatementToNestedFormIntention : PsiUpdateModCommandAction<Parado
     override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToNestedForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
-        return ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, context.project, context.offset)
+        val moveTo = ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, context.project, context.offset)
+        if (moveTo >= 0) updater.moveCaretTo(moveTo)
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {

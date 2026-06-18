@@ -29,12 +29,12 @@ class IntroduceLocalScriptedVariableFix(
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = startElement
-        val containerElmeent = selectScope { element.parentDefinitionCandidate() } ?: element.containingFile as? ParadoxScriptFile ?: return
+        val containerElement = selectScope { element.parentDefinitionCandidate() } ?: element.containingFile as? ParadoxScriptFile ?: return
 
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) c@{
             // 声明对应名字的封装变量，默认值给0
-            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", containerElmeent, project)
+            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", containerElement, project)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)
             if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改

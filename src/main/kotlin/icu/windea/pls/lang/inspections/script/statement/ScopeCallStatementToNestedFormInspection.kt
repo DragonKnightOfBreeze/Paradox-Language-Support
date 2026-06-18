@@ -53,7 +53,8 @@ class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAwar
             val element = startElement as? ParadoxScriptProperty ?: return
             val caretOffset = editor?.caretModel?.offset ?: return
             val gameType = selectGameType(file)
-            ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, project, caretOffset, gameType)
+            val moveTo = ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, project, caretOffset, gameType)
+            if (moveTo >= 0) editor.caretModel.moveToOffset(moveTo) // NOTE 2.1.10 caretOffset 并不是预期的偏移，最终会移动到外层属性的开始偏移，需要确认是否是设计如此……
         }
     }
 }

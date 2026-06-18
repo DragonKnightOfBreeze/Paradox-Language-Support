@@ -2,6 +2,7 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
@@ -340,7 +341,8 @@ object ParadoxScopeCallStatementManipulationService {
         val propertyKey = element.propertyKey
         val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
         if (complexExpression !is ParadoxLinkedExpression) return false
-        if (complexExpression.linkNodes.size <= 1) return false
+        val linkNodes = complexExpression.linkNodes
+        if (linkNodes.size <= 1) return false
 
         return true
     }
@@ -408,35 +410,40 @@ object ParadoxScopeCallStatementManipulationService {
      * - 找到链式表达式（[ParadoxLinkedExpression]）的直接子节点中，[caretOffset] 之前最后一个（或者链接中第一个）作为分隔符的点号，在此处分隔，
      * - 如果 [element] 的属性键用双引号包围，转换后也保留。反之亦然。
      * - 总是会在 `{` 之后和 `}` 之前自动插入换行。
+     * - 如果返回值为正数，则为转换后需要移动到的光标位置的偏移。
      *
      * @see ParadoxLinkedExpression
      */
-    fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, caretOffset: Int, gameType: ParadoxGameType? = selectGameType(element)) {
+    fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, caretOffset: Int, gameType: ParadoxGameType? = selectGameType(element)): Int {
         val configGroup = PlsFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
-        if (complexExpression !is ParadoxLinkedExpression) return
-        if (complexExpression.linkNodes.size <= 1) return
+        if (complexExpression !is ParadoxLinkedExpression) return -1
+        val linkNodes = complexExpression.linkNodes
+        if (linkNodes.size <= 1) return -1
 
         val expressionOffset = ParadoxExpressionManager.getExpressionOffset(propertyKey)
         val cursorOffsetInExpression = caretOffset - propertyKey.startOffset - expressionOffset
 
         val outerKey: String
         val innerKey: String
+        val moveToInInnerExpression: Int
 
         // 语义级别分割：基于复杂表达式节点
         val lastMarkerBeforeCursor = complexExpression.nodes.findLast { it is ParadoxOperatorNode && it.rangeInExpression.startOffset < cursorOffsetInExpression }
         if (lastMarkerBeforeCursor != null) {
             val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
             val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset
-            outerKey = complexExpression.text.substring(0, splitStart)
-            innerKey = complexExpression.text.substring(splitEnd)
+            outerKey = complexExpression.text.substring(0, splitStart).trimEnd()
+            innerKey = complexExpression.text.substring(splitEnd).trimStart()
+            moveToInInnerExpression = cursorOffsetInExpression - (complexExpression.rangeInExpression.endOffset - innerKey.length)
         } else {
-            val firstLink = complexExpression.nodes.first { it is ParadoxLinkNode }
-            val firstLinkEnd = firstLink.rangeInExpression.endOffset
-            outerKey = complexExpression.text.substring(0, firstLinkEnd)
-            innerKey = complexExpression.text.substring(firstLinkEnd).removePrefix(".")
+            val firstLinkEnd = linkNodes[0].rangeInExpression.endOffset
+            val secondLinkStart = linkNodes[1].rangeInExpression.startOffset
+            outerKey = complexExpression.text.substring(0, firstLinkEnd).trimEnd()
+            innerKey = complexExpression.text.substring(secondLinkStart).trimStart()
+            moveToInInnerExpression = -1
         }
 
         val wasQuoted = propertyKey.text.isLeftQuoted()
@@ -445,7 +452,19 @@ object ParadoxScopeCallStatementManipulationService {
         val newValueText = element.propertyValue?.text.orEmpty() // property value can be null here
         val newText = "$newOuterKeyText = {\n$newInnerKeyText = $newValueText\n}"
         val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
-        element.replace(newElement)
+        val replacedElement = element.replace(newElement)
+
+        // 如果有必要，准备移动光标位置
+        run {
+            if (moveToInInnerExpression < 0) return@run
+            if (replacedElement !is ParadoxScriptProperty) return@run
+            val document = replacedElement.containingFile?.fileDocument ?: return@run
+            PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改（这会重新格式化更改内容）
+            val moveTo = replacedElement.properties().first().startOffset + moveToInInnerExpression + (if (wasQuoted) 1 else 0)
+            return moveTo
+        }
+
+        return -1
     }
 
     /**
@@ -466,8 +485,8 @@ object ParadoxScopeCallStatementManipulationService {
      * ```
      *
      * 说明：
-     * - 内层属性前后的注释会保留，并移到转换后的语句之前。
      * - 如果作为外层属性的 [element] 的属性键用双引号包围，转换后也保留。反之亦然。
+     * - ~~内层属性前后的注释会保留，并移到转换后的语句之前。~~
      *
      * @see ParadoxLinkedExpression
      */
