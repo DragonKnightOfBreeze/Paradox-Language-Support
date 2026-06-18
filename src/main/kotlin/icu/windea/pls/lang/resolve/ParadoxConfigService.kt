@@ -46,8 +46,8 @@ import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.PlsStates
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline

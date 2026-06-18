@@ -24,7 +24,7 @@ import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueInferredScopeContextProvider
 import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueScopeContextProvider
 import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService

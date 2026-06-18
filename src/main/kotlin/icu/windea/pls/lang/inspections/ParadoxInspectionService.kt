@@ -9,7 +9,7 @@ import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix

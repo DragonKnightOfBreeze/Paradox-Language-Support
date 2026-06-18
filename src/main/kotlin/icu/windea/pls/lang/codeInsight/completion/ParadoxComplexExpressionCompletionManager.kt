@@ -19,7 +19,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.isIdentifier

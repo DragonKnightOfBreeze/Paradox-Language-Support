@@ -9,7 +9,7 @@ import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.PlsDocBundle
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil

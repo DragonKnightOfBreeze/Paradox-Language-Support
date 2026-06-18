@@ -13,7 +13,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.annotations.WithInternalConfig
+import icu.windea.pls.base.annotations.WithInternalConfig
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager

@@ -15,7 +15,7 @@ import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.StellarisEventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.StellarisTechTreeDiagramSettings
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.model.ParadoxGameType

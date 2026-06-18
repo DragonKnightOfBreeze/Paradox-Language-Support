@@ -12,8 +12,6 @@ import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.analysis.ParadoxDefaultGameTypeMetadata
-import icu.windea.pls.model.analysis.ParadoxFallbackGameTypeMetadata
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.forParadoxGameTypeById
 import java.nio.file.Path
@@ -24,12 +22,12 @@ object ParadoxGameTypeManager {
     private fun createMetadataMap(): Map<ParadoxGameType, ParadoxGameTypeMetadata> {
         val mapper = JsonService.json5Mapper.copy().apply { registerModule(JsonModuleFactory.forParadoxGameTypeById()) }
         val url = "/data/game_type_metadata_list.json5".toClasspathUrl()
-        val list = url.openStream().use { mapper.readValue<List<ParadoxDefaultGameTypeMetadata>>(it) }
+        val list = url.openStream().use { mapper.readValue<List<ParadoxGameTypeMetadata>>(it) }
         val map = list.associateBy { it.gameType }
         val gameTypes = ParadoxGameType.getAll()
         return buildMap {
             for (gameType in gameTypes) {
-                val metadata = map.getOrElse(gameType) { ParadoxFallbackGameTypeMetadata(gameType) }
+                val metadata = map.getOrElse(gameType) { ParadoxGameTypeMetadata(gameType) }
                 put(gameType, metadata)
             }
         }.optimized()

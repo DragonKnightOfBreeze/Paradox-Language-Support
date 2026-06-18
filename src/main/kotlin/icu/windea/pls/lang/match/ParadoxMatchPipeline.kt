@@ -6,7 +6,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.model.expressions.ParadoxExpression
 

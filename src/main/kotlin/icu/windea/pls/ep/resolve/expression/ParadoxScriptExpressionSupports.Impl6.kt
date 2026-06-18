@@ -14,7 +14,7 @@ import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configs
 import icu.windea.pls.lang.codeInsight.completion.isKey

@@ -12,7 +12,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil

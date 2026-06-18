@@ -26,7 +26,7 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.configGroup

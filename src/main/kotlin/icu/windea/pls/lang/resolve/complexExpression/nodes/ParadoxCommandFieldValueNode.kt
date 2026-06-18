@@ -9,7 +9,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager

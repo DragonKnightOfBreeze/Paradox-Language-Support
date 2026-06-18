@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.tools.PlsSqliteService
+import icu.windea.pls.base.infra.PlsSqliteService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo

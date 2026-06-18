@@ -16,7 +16,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.completion.contextElement

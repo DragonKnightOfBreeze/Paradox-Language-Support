@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.codeInsight.completion.gameType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon

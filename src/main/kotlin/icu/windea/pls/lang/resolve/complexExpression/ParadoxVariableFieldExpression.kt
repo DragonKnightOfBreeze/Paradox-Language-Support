@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.match.TextMatcher
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator

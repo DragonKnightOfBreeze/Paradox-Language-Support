@@ -2,7 +2,7 @@ package icu.windea.pls.integrations.images.providers
 
 import icu.windea.pls.images.ImageInputStreamAdapter
 import icu.windea.pls.integrations.images.ImageToolProvider
-import icu.windea.pls.lang.tools.PlsDataPathService
+import icu.windea.pls.base.infra.PlsDataPathService
 import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream

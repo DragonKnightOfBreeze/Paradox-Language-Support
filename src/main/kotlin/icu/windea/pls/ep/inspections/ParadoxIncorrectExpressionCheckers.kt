@@ -19,7 +19,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue

@@ -9,7 +9,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
 import icu.windea.pls.lang.settings.PlsSettings

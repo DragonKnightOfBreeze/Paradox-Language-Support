@@ -13,7 +13,7 @@ import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.tools.PlsDataPathService
+import icu.windea.pls.base.infra.PlsDataPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.io.path.name

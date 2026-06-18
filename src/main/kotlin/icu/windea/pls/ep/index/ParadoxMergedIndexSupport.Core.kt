@@ -12,7 +12,7 @@ import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement

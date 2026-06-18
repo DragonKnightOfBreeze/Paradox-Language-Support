@@ -12,7 +12,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 

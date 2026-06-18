@@ -8,7 +8,7 @@ import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.tools.PlsDataPathService
+import icu.windea.pls.base.infra.PlsDataPathService
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.name

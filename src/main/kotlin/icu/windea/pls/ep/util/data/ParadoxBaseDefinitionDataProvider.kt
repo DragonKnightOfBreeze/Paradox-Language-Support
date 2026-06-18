@@ -11,9 +11,9 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
-import icu.windea.pls.lang.annotations.WithDefinitionType
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.WithDefinitionType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptData
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver

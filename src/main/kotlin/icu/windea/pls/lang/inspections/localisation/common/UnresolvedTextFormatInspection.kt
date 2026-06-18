@@ -11,7 +11,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor

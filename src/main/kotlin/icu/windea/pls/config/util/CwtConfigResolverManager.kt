@@ -41,7 +41,7 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 
 object CwtConfigResolverManager {
     object Keys : KeyRegistry() {

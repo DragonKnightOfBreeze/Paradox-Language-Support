@@ -18,7 +18,7 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.resolve.parameter.containingContextReference
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.util.ParadoxConfigManager

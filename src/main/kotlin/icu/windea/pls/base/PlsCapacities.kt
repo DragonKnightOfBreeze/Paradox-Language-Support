@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.base
 
 import icu.windea.pls.core.isClassPresent
 

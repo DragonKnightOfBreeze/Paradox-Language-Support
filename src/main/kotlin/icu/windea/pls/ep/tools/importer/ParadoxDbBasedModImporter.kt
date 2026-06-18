@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.tools.importer
 
 import com.intellij.icons.AllIcons
-import icu.windea.pls.PlsCapacities
+import icu.windea.pls.base.PlsCapacities
 import icu.windea.pls.model.ParadoxGameType
 
 /**

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.tools
+package icu.windea.pls.base.infra
 
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quoteIfNecessary

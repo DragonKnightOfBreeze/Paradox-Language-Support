@@ -4,7 +4,7 @@ import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.util.data.StellarisEventData
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

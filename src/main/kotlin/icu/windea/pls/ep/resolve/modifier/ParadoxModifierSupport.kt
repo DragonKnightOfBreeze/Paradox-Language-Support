@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo

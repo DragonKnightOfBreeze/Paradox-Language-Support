@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.isParameterized

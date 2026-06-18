@@ -24,7 +24,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.tools.PlsGitService
+import icu.windea.pls.base.infra.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

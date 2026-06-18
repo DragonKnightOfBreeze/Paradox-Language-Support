@@ -14,7 +14,7 @@ import icu.windea.pls.core.match.AntMatcher
 import icu.windea.pls.core.match.RegexMatcher
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression

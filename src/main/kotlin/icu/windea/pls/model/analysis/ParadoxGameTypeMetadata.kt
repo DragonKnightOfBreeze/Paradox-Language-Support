@@ -22,19 +22,21 @@ import icu.windea.pls.model.paths.ParadoxPath
  *
  * @see ParadoxGameType
  */
-interface ParadoxGameTypeMetadata {
-    val gameType: ParadoxGameType
+data class ParadoxGameTypeMetadata(
+    val gameType: ParadoxGameType,
+    val gameMainEntries: Set<String> = fallbackMainEntries,
+    val gameExtraEntries: Set<String> = emptySet(),
+    val modMainEntries: Set<String> = fallbackMainEntries,
+    val modExtraEntries: Set<String> = emptySet(),
+    val executablePaths: Set<String> = emptySet(),
+) {
+     val gameEntries: Set<String> = gameMainEntries + gameExtraEntries
+     val modEntries: Set<String> = modMainEntries + modExtraEntries
 
-    val gameMainEntries: Set<String>
-    val gameExtraEntries: Set<String>
-    val modMainEntries: Set<String>
-    val modExtraEntries: Set<String>
-
-    val gameEntries: Set<String>
-    val modEntries: Set<String>
-
-    val gameEntryPaths: Set<ParadoxPath>
-    val modEntryPaths: Set<ParadoxPath>
-
-    val executablePaths: Set<String>
+     val gameEntryPaths: Set<ParadoxPath> = gameEntries.toEntryPaths()
+     val modEntryPaths: Set<ParadoxPath> = modEntries.toEntryPaths()
 }
+
+private val fallbackMainEntries = setOf("")
+
+private fun Set<String>.toEntryPaths() = sortedDescending().mapTo(mutableSetOf()) { ParadoxPath.resolve(it) }

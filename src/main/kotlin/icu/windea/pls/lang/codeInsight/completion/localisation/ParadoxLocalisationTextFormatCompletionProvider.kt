@@ -10,7 +10,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.definitionInfo

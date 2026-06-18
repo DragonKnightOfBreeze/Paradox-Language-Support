@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.annotations
+package icu.windea.pls.base.annotations
 
 /**
  * 注明此扩展点仅适用于特定的游戏类型。

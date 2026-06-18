@@ -7,7 +7,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.CaffeineSpec
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.intellij.openapi.util.ModificationTracker
-import icu.windea.pls.PlsCapacities
+import icu.windea.pls.base.PlsCapacities
 
 /**
  * 使用 [Caffeine](https://github.com/ben-manes/caffeine) 构建缓存。

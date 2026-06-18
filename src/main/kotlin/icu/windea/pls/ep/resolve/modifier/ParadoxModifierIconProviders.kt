@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.process
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

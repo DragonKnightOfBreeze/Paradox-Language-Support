@@ -17,7 +17,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.util.data.StellarisEconomicCategoryData
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive

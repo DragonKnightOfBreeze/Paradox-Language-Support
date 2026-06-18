@@ -14,7 +14,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService

@@ -19,7 +19,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext

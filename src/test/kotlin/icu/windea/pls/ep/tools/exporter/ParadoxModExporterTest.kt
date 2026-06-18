@@ -8,7 +8,7 @@ import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsSqliteService
+import icu.windea.pls.base.infra.PlsSqliteService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource

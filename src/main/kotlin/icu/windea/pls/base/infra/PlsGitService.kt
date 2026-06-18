@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.tools
+package icu.windea.pls.base.infra
 
 import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.core.execution.CommandLineExecutionException

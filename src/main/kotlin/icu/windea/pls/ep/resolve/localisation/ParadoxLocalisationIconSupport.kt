@@ -5,7 +5,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**

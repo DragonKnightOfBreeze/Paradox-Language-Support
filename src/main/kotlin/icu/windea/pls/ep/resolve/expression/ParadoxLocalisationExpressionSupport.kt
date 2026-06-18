@@ -9,7 +9,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 

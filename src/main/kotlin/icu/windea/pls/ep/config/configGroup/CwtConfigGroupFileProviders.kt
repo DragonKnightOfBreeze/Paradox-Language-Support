@@ -17,7 +17,7 @@ import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
-import icu.windea.pls.lang.tools.PlsGitService
+import icu.windea.pls.base.infra.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {

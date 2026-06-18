@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.parameter
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxParameterContextInfo
 
 /**

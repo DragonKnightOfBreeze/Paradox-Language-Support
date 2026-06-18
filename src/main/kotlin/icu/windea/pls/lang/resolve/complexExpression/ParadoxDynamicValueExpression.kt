@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator

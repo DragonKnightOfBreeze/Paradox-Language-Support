@@ -10,7 +10,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.codeInsight.completion.gameType
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo

@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 

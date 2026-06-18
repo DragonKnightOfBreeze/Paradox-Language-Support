@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.tools
+package icu.windea.pls.base.infra
 
 import org.ktorm.database.Database
 import java.nio.file.Path

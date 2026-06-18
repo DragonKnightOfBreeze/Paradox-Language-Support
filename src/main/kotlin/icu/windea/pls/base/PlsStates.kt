@@ -1,7 +1,7 @@
-package icu.windea.pls.lang
+package icu.windea.pls.base
 
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import java.util.*
+import java.util.ArrayDeque
 
 object PlsStates {
     /**

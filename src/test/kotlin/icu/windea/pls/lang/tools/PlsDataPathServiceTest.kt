@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools
 
+import icu.windea.pls.base.infra.PlsDataPathServiceImpl
 import org.junit.Assert
 import org.junit.Test
 import kotlin.io.path.isDirectory

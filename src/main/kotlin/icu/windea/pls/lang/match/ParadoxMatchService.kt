@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.match
 
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 
 object ParadoxMatchService {
     fun isDumb(options: ParadoxMatchOptions? = null): Boolean {

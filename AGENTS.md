@@ -183,13 +183,16 @@ For more details, see: `agents/context/naming-conventions.md`
 Package organization:
 
 - `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
+- `icu.windea.pls.base` Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
 - `icu.windea.pls.ide`: Global codes to handle IDE platform integration. Usually language-free and domain-free.
-- `icu.windea.pls.config`: Codes related to config, config expression and config group. Including models, resolvers, services, managers, etc.
-- `icu.windea.pls.tools`: Codes provided as tool APIs. Not necessarily "language features".
+- `icu.windea.pls.config`: Codes related to config, config expression and config group. Usually not depend on game or mod files. 
 - `icu.windea.pls.lang`: Codes which are domain specific, or related to semantic match and resolution.
   - `icu.windea.pls.lang.match`: Semantic-level matching (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.resolve`: Semantic-level resolution (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.util`: High-level managers and special components.
+- `icu.windea.pls.tools`: Codes related to bundled utilities and integrations. Including game launcher, config generator and others.
+- `icu.windea.pls.integrations` - Provides integrations with third-party tools.
+- `icu.windea.pls.extensions` - Provides integrations and extensions to third-party plugins.
 
 Service vs Manager vs Util:
 

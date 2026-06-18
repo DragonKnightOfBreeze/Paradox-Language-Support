@@ -22,7 +22,7 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.base.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.Hoi4EventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
-import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

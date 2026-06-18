@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.annotations
+package icu.windea.pls.base.annotations
 
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 

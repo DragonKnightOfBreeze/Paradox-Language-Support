@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 
 /**
  * 用于基于上下文提供重载后的规则。

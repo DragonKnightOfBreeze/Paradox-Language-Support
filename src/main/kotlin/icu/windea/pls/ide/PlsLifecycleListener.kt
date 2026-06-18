@@ -3,7 +3,7 @@ package icu.windea.pls.ide
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import icu.windea.pls.PlsCapacities
+import icu.windea.pls.base.PlsCapacities
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock

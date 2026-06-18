@@ -26,7 +26,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer
 import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.PlsStates
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
