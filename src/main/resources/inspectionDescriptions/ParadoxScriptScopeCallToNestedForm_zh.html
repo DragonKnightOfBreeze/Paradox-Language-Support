@@ -6,30 +6,30 @@
   </p>
 </body>
 <!-- tooltip end -->
-<p>示例（<code>&lt;caret&gt;</code> 表示光标位置）：</p>
+<p>示例（使用 <code>__</code> 表示光标位置）：</p>
 <pre><code class="language-paradox_script">
 # before
-&lt;caret&gt;root.owner = { a = 1 }
+__root.owner = { a = 1 }
 
 # after
-&lt;caret&gt;root = {
+__root = {
     owner = { a = 1 }
 }
 </code></pre>
 <pre><code class="language-paradox_script"># before
-root.&lt;caret&gt;owner = { a = 1 }
+root.__owner = { a = 1 }
 
 # after
 root = {
-    &lt;caret&gt;owner = { a = 1 }
+    __owner = { a = 1 }
 }
 </code></pre>
 <pre><code class="language-paradox_script"># before
-root.&lt;caret&gt;owner.event_target:x
+root.__owner.event_target:x
 
 # after
 root = {
-    &lt;caret&gt;owner.event_target:x
+    __owner.event_target:x
 }
 </code></pre>
 </html>

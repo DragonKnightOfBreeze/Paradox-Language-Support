@@ -374,35 +374,35 @@ object ParadoxScopeCallStatementManipulationService {
     /**
      * 将 [element] 从链式形式转换为嵌套形式（单步展开）。
      *
-     * 示例（`<caret>` 表示光标位置）：
+     * 示例（使用 `__` 表示光标位置）：
      *
      * ```paradox_script
      * # before
-     * <caret>root.owner = { a = 1 }
+     * __root.owner = { a = 1 }
      *
      * # after
-     * <caret>root = {
+     * __root = {
      *     owner = { a = 1 }
      * }
      * ```
      *
      * ```paradox_script
      * # before
-     * root.<caret>owner = { a = 1 }
+     * root.__owner = { a = 1 }
      *
      * # after
      * root = {
-     *     <caret>owner = { a = 1 }
+     *     __owner = { a = 1 }
      * }
      * ```
      *
      * ```paradox_script
      * # before
-     * root.<caret>owner.event_target:x
+     * root.__owner.event_target:x
      *
      * # after
      * root = {
-     *     <caret>owner.event_target:x
+     *     __owner.event_target:x
      * }
      * ```
      *
