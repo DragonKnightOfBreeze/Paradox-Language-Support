@@ -8,20 +8,20 @@
     适用于支持安全赋值运算符的游戏类型（CK3/VIC3/EU5 使用 <code>?=</code>，Stellaris 使用 <code>? =</code>）。
   </p>
   <!-- tooltip end -->
-  <p>说明：</p>
-  <ul>
-    <li>对于显式形式，要求 <code>exists = x</code> 必须在 <code>x = { ... }</code> 之前，且两者之间仅能有空白或注释。</li>
-  </ul>
-  <p>示例 - 显式形式：</p>
+  <p>示例：</p>
   <pre><code class="language-paradox_script">
+# before
 exists = owner
-owner = { ... }</code></pre>
-  <p>示例 - 安全形式：</p>
-  <p>[CK3/VIC3/EU5]</p>
-  <pre><code class="language-paradox_script">
-owner ?= { ... }</code></pre>
-  <p>[Stellaris]</p>
-  <pre><code class="language-paradox_script">
-owner? = { ... }</code></pre>
+# comment
+owner = { ... }
+
+# [CK3/VIC3/EU5] after
+# comment
+owner ?= { ... }
+
+# [Stellaris] after
+# comment
+owner? = { ... }
+</code></pre>
 </body>
 </html>

@@ -8,20 +8,17 @@
     对于所有游戏类型和任意安全调用运算符（<code>?=</code> 或 <code>? =</code>）均适用。
   </p>
   <!-- tooltip end -->
-  <p>说明：</p>
-  <ul>
-    <li>对于显式形式，要求 <code>exists = x</code> 必须在 <code>x = { ... }</code> 之前，且两者之间仅能有空白或注释。</li>
-  </ul>
-  <p>示例 - 显式形式：</p>
+  <p>示例：</p>
   <pre><code class="language-paradox_script">
+# [CK3/VIC3/EU5] before
+owner ?= { ... }
+
+# [Stellaris] before
+owner? = { ... }
+
+# after
 exists = owner
-owner = { ... }</code></pre>
-  <p>示例 - 安全形式：</p>
-  <p>[CK3/VIC3/EU5]</p>
-  <pre><code class="language-paradox_script">
-owner ?= { ... }</code></pre>
-  <p>[Stellaris]</p>
-  <pre><code class="language-paradox_script">
-owner? = { ... }</code></pre>
+owner = { ... }
+</code></pre>
 </body>
 </html>

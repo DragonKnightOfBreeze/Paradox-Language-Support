@@ -8,20 +8,20 @@
     Applicable for game types that support safe assign operators (<code>?=</code> in CK3/VIC3/EU5, <code>? =</code> in Stellaris).
   </p>
   <!-- tooltip end -->
-<p>Description:</p>
-  <ul>
-    <li>For explicit call form, <code>exists = x</code> must be before <code>x = { ... }</code>, and there can only be blank space or comments between them. </li>
-  </ul>
-  <p>Example - explicit form:</p>
+  <p>Example:</p>
   <pre><code class="language-paradox_script">
+# before
 exists = owner
-owner = { ... }</code></pre>
-  <p>Example - safe form:</p>
-  <p>[CK3/VIC3/EU5]</p>
-  <pre><code class="language-paradox_script">
-owner ?= { ... }</code></pre>
-  <p>[Stellaris]</p>
-  <pre><code class="language-paradox_script">
-owner? = { ... }</code></pre>
+# comment
+owner = { ... }
+
+# [CK3/VIC3/EU5] after
+# comment
+owner ?= { ... }
+
+# [Stellaris] after
+# comment
+owner? = { ... }
+</code></pre>
 </body>
 </html>

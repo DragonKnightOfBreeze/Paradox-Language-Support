@@ -165,6 +165,8 @@ object ParadoxScopeCallStatementManipulationService {
     /**
      * 将 [element] 从显式形式转换为安全形式。
      *
+     * 示例：
+     *
      * ```paradox_script
      * # before
      * exists = owner

@@ -8,20 +8,17 @@
     Supported for all game types with any safe call operator (<code>?=</code> or <code>? =</code>).
   </p>
   <!-- tooltip end -->
-  <p>Description:</p>
-  <ul>
-    <li>For explicit call form, <code>exists = x</code> must be before <code>x = { ... }</code>, and there can only be blank space or comments between them. </li>
-  </ul>
-  <p>Example - explicit form:</p>
+  <p>Example:</p>
   <pre><code class="language-paradox_script">
+# [CK3/VIC3/EU5] before
+owner ?= { ... }
+
+# [Stellaris] before
+owner? = { ... }
+
+# after
 exists = owner
-owner = { ... }</code></pre>
-  <p>Example - safe form:</p>
-  <p>[CK3/VIC3/EU5]</p>
-  <pre><code class="language-paradox_script">
-owner ?= { ... }</code></pre>
-  <p>[Stellaris]</p>
-  <pre><code class="language-paradox_script">
-owner? = { ... }</code></pre>
+owner = { ... }
+</code></pre>
 </body>
 </html>
