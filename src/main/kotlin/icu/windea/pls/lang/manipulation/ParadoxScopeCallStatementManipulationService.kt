@@ -28,6 +28,7 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
@@ -204,7 +205,6 @@ object ParadoxScopeCallStatementManipulationService {
 
         // 移动注释到 existsProperty 前面
         val parent = existsProperty.parent
-        // 从最后一个注释开始移动，确保顺序正确
         val commentsBetween = PsiService.collectCommentsBetween(targetProperty, existsProperty, forward = false)
         for (comment in commentsBetween) {
             parent.addBefore(comment, existsProperty)
@@ -497,10 +497,19 @@ object ParadoxScopeCallStatementManipulationService {
         val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
         if (complexExpression !is ParadoxLinkedExpression) return
 
+
         val innerProperty = element.properties().singleOrNull() ?: return
         val innerPropertyKey = innerProperty.propertyKey
         val innerComplexExpression = ParadoxComplexExpression.resolve(innerPropertyKey, configGroup)
         if (innerComplexExpression !is ParadoxLinkedExpression) return
+
+        // 移动注释到 element 前面
+        val parent = element.parent ?: return // unexpected
+        val block = element.block ?: return // unexpected
+        val commentsWithin = ParadoxScriptPsiService.collectBetweenBounds(block, forward = false)?.filter { it is PsiComment }.orEmpty()
+        for (comment in commentsWithin) {
+            parent.addBefore(comment, element)
+        }
 
         val outerKey = propertyKey.value
         val innerKey = innerProperty.propertyKey.value

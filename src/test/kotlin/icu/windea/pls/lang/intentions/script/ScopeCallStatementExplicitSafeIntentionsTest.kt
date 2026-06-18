@@ -166,15 +166,17 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToSafeForm_withCommentBetween() {
+    fun testScopeCallToSafeForm_withComments() {
         markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_with_comment.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_with_comment.ck3.test.txt",
             """
             k = {
+                # comment1
                 exists = owner
-                # comment between
+                # comment2
+                # comment3
                 <caret>owner = {
                     a = 1
                 }
@@ -186,7 +188,9 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
         myFixture.checkResult(
             """
             k = {
-                # comment between
+                # comment1
+                # comment2
+                # comment3
                 owner ?= {
                     a = 1
                 }

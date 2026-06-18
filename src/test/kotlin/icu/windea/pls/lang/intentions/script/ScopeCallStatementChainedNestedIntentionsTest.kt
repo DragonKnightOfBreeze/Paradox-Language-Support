@@ -234,6 +234,38 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testScopeCallToChainedForm_withComments() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
+        val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
+        myFixture.configureByText(
+            "chained_nested_stellaris.test.txt",
+            """
+            test_effect = {
+                # comment1
+                <caret>root = {
+                    # comment2
+                    owner = { k = v } # comment3
+                    # comment4
+                }
+            }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            test_effect = {
+                # comment1
+                # comment2
+                # comment3
+                # comment4
+                root.owner = { k = v }
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Test
     fun testScopeCallToChainedForm_notAvailableWhenMultipleChildren() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/chained_nested.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToChainedForm")
@@ -243,7 +275,7 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
             test_effect = {
                 <caret>root = {
                     owner = { k = v }
-                    other = { b = 2 }
+                    other = { a = b }
                 }
             }
             """.trimIndent()

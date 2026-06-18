@@ -20,7 +20,7 @@ object CwtPsiService {
         val rightBound = element.rightBound ?: return null
         val start = if (forward) leftBound else rightBound
         val end = if (forward) rightBound else leftBound
-        return start.siblings(withSelf = false).takeWhile { it != end }
+        return start.siblings(forward, withSelf = false).takeWhile { it != end }
     }
 
     @Suppress("unused")
