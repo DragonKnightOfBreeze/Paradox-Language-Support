@@ -46,7 +46,7 @@
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxLocalisationHighContrast.xml"/>
     <additionalTextAttributes scheme="Light" file="colorSchemes/ParadoxLocalisationLight.xml"/>
     <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxLocalisationDark.xml"/>
-    <additionalTextAttributes scheme="Island Dark" file="colorSchemes/ParadoxLocalisationIslandsDark.xml"/>
+    <additionalTextAttributes scheme="Islands Dark" file="colorSchemes/ParadoxLocalisationIslandsDark.xml"/> <!-- should use `Islands Dark` here -->
   </extensions>
 
   <actions>

@@ -52,6 +52,6 @@
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxScriptHighContrast.xml"/>
     <additionalTextAttributes scheme="Light" file="colorSchemes/ParadoxScriptLight.xml"/>
     <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxScriptDark.xml"/>
-    <additionalTextAttributes scheme="Island Dark" file="colorSchemes/ParadoxScriptIslandsDark.xml"/>
+    <additionalTextAttributes scheme="Islands Dark" file="colorSchemes/ParadoxScriptIslandsDark.xml"/> <!-- should use `Islands Dark` here -->
   </extensions>
 </idea-plugin>
