@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.core.getKeyword
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
@@ -14,6 +15,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 data class ParadoxCompletionContext(
     override val globalContext: GlobalCompletionContext,
     val configGroup: CwtConfigGroup,
+    val keyword: String,
     val keywordOffset: Int = 0,
     val expressionOffset: Int = 0,
     val extraFilter: ((PsiElement) -> Boolean)? = null,
@@ -32,7 +34,7 @@ data class ParadoxCompletionContext(
     val argumentNames: MutableSet<String>? = null,
     val node: ParadoxComplexExpressionNode? = null,
     /** 在对多参数动态链接的代码补全中，表示当前光标所处的参数索引（从0开始）。 */
-    val argumentIndex: Int = 0,
+    val linkArgIndex: Int = 0,
 ) : GlobalBasedCompletionContext() {
     val gameType: ParadoxGameType get() = configGroup.gameType
 
@@ -50,10 +52,12 @@ private object ParadoxCompletionContextBuilder {
     fun build(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
         val gameType = selectGameType(globalContext.file)
         val configGroup = PlsFacade.getConfigGroup(globalContext.project, gameType)
+        val keyword = globalContext.contextElement.getKeyword(globalContext.offsetInParent)
 
         return ParadoxCompletionContext(
             globalContext = globalContext,
             configGroup = configGroup,
+            keyword = keyword,
         )
     }
 }

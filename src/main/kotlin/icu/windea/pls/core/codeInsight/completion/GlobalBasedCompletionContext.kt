@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.getKeyword
 import icu.windea.pls.lang.isIdentifier
 
 abstract class GlobalBasedCompletionContext: CompletionContext {
@@ -13,7 +14,6 @@ abstract class GlobalBasedCompletionContext: CompletionContext {
 
     val contextElement: PsiElement get() = globalContext.contextElement
     val offsetInParent: Int get() = globalContext.offsetInParent
-    val keyword: String get() = globalContext.keyword
     val leftQuoted: Boolean get() = globalContext.leftQuoted
     val rightQuoted: Boolean get() = globalContext.rightQuoted
     val quoted: Boolean get() = globalContext.quoted

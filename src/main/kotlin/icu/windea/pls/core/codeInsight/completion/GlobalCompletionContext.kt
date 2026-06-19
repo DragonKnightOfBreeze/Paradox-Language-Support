@@ -18,7 +18,6 @@ data class GlobalCompletionContext(
     override val context: ProcessingContext,
 ) : CompletionContext {
     val offsetInParent: Int = parameters.offset - contextElement.startOffset
-    val keyword: String = contextElement.getKeyword(offsetInParent)
     val leftQuoted: Boolean = contextElement.text.isLeftQuoted()
     val rightQuoted: Boolean = contextElement.text.isRightQuoted()
     val quoted: Boolean get() = leftQuoted

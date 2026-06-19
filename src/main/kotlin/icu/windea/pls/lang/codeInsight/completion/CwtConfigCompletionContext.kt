@@ -13,6 +13,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes
@@ -32,6 +33,7 @@ import icu.windea.pls.cwt.psi.isPropertyValue
 data class CwtConfigCompletionContext(
     override val globalContext: GlobalCompletionContext,
     val configGroup: CwtConfigGroup,
+    val keyword: String,
     val expressionElement: CwtExpressionElement? = null,
     val containerElement: PsiElement? = null,
     val keyToMatch: String? = null,
@@ -64,6 +66,7 @@ private object CwtConfigCompletionContextBuilder {
         val contextElement = globalContext.contextElement
 
         val configGroup = CwtConfigManager.getContainingConfigGroup(globalContext.file) ?: return null
+        val keyword = globalContext.contextElement.getKeyword(globalContext.offsetInParent)
         val expressionElement = getExpressionElement(globalContext.contextElement) ?: return null
         val containerElement = getContainerElement(expressionElement) ?: return null
         val keyToMatch = getKeyToMatch(globalContext.contextElement)
@@ -88,6 +91,7 @@ private object CwtConfigCompletionContextBuilder {
         return CwtConfigCompletionContext(
             globalContext = globalContext,
             configGroup = configGroup,
+            keyword = keyword,
             expressionElement = expressionElement,
             containerElement = containerElement,
             keyToMatch = keyToMatch,
