@@ -20,6 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.codeInsight.completion.CompletionContext
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -31,6 +32,26 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.Icon
+
+fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: CompletionContext) {
+    if (lookupElement == null) return
+    getFinalElement(lookupElement, context)?.let { addElement(it) }
+    lookupElement.extraLookupElements?.forEach { extraLookupElement ->
+        getFinalElement(extraLookupElement, context)?.let { addElement(it) }
+    }
+}
+
+fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, context: CompletionContext) {
+    for (lookupElement in lookupElements) addElement(lookupElement, context)
+}
+
+private fun getFinalElement(lookupElement: LookupElement, context: CompletionContext): LookupElement? {
+    val completionIds = context.completionIds
+    if (lookupElement.completionId?.let { id -> completionIds.add(id) } == false) return null
+    val priority = lookupElement.priority
+    if (priority != null) return PrioritizedLookupElement.withPriority(lookupElement, priority)
+    return lookupElement
+}
 
 fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: ProcessingContext) {
     if (lookupElement == null) return

@@ -6,14 +6,10 @@ import com.intellij.codeInsight.template.ExpressionContext
 import com.intellij.codeInsight.template.Result
 import com.intellij.codeInsight.template.TextResult
 import com.intellij.openapi.util.TextRange
-import com.intellij.util.ProcessingContext
-import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.core.removeSurroundingOrNull
 
-@Suppress("unused")
-sealed class CwtConfigTemplateExpression(
-    val context: ProcessingContext,
-    val schemaExpression: CwtSchemaExpression,
+sealed class CwtConfigCompletionTemplateExpression(
+    val context: CwtConfigCompletionContext,
     val range: TextRange,
     val text: String,
 ) : Expression() {
@@ -34,35 +30,22 @@ sealed class CwtConfigTemplateExpression(
         return false
     }
 
-    class Enum(
-        context: ProcessingContext,
-        schemaExpression: CwtSchemaExpression,
-        range: TextRange,
-        text: String,
-        val name: String
-    ) : CwtConfigTemplateExpression(context, schemaExpression, range, text)
+    class Enum(context: CwtConfigCompletionContext, range: TextRange, text: String, val name: String) : CwtConfigCompletionTemplateExpression(context, range, text)
 
-    class Parameter(
-        context: ProcessingContext,
-        schemaExpression: CwtSchemaExpression,
-        range: TextRange,
-        text: String,
-        val name: String
-    ) : CwtConfigTemplateExpression(context, schemaExpression, range, text)
+    class Parameter(context: CwtConfigCompletionContext, range: TextRange, text: String, val name: String) : CwtConfigCompletionTemplateExpression(context, range, text)
 
-    open class Resolver {
-        fun resolve(context: ProcessingContext, schemaExpression: CwtSchemaExpression, range: TextRange, text: String): CwtConfigTemplateExpression? {
+    companion object  {
+        @JvmStatic
+        fun resolve(context: CwtConfigCompletionContext, range: TextRange, text: String): CwtConfigCompletionTemplateExpression? {
             run {
                 val enumName = text.removeSurroundingOrNull("\$enum:", "$") ?: return@run
-                return Enum(context, schemaExpression, range, text, enumName)
+                return Enum(context, range, text, enumName)
             }
             run {
                 val parameterName = text.removeSurroundingOrNull("$", "$") ?: return@run
-                return Parameter(context, schemaExpression, range, text, parameterName)
+                return Parameter(context, range, text, parameterName)
             }
             return null
         }
     }
-
-    companion object : Resolver()
 }
