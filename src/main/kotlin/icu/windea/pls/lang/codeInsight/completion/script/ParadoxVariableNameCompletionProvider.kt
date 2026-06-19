@@ -30,11 +30,11 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets.STRING_TOKENS
 import icu.windea.pls.script.psi.isBlockMember
 
 object ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
-    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
+    val elementPattern get() = psiElement().withElementType(STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeVariableNames) return

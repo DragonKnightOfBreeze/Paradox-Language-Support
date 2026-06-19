@@ -26,10 +26,10 @@ import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets.SCRIPTED_VARIABLE_NAME_TOKENS
 
 object ParadoxScriptedVariableNameCompletionProvider : ParadoxCompletionProvider() {
-    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_NAME_TOKENS)
+    val elementPattern get() = psiElement().withElementType(SCRIPTED_VARIABLE_NAME_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeScriptedVariableNames) return

@@ -12,10 +12,10 @@ import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets.PARAMETER_TOKENS
 
 object ParadoxParameterCompletionProvider : ParadoxCompletionProvider() {
-    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.PARAMETER_TOKENS)
+    val elementPattern get() = psiElement().withElementType(PARAMETER_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         // 对于定义声明中的 `$PARAM$` 引用和 `[[PARAM]...]` 引用
