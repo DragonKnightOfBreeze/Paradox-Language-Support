@@ -4,13 +4,13 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -53,7 +53,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
         return ParadoxDefinitionSearch.searchElement(text, type, selector).findAll()
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxCompletionManager.completeDefinition(context, result)
     }
 }
@@ -82,7 +82,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         return ParadoxResolutionManager.resolveEnumValue(element, text, config)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxCompletionManager.completeEnumValue(context, result)
     }
 }
@@ -106,7 +106,7 @@ class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase(
         return ParadoxResolutionManager.resolveDynamicValue(element, text, config)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxCompletionManager.completeDynamicValue(context, result)
     }
 }

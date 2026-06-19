@@ -20,7 +20,6 @@ object PlsLookupElementKeys : KeyRegistry()
 
 var LookupElement.completionId: String? by registerKey(PlsLookupElementKeys)
 var LookupElement.extraLookupElements: List<LookupElement>? by registerKey(PlsLookupElementKeys)
-
 var LookupElement.priority: Double? by registerKey(PlsLookupElementKeys)
 var LookupElement.patchableIcon: Icon? by registerKey(PlsLookupElementKeys)
 var LookupElement.patchableTailText: String? by registerKey(PlsLookupElementKeys)
@@ -35,10 +34,10 @@ var ProcessingContext.completionIds: MutableSet<String>? by registerKey(PlsProce
 var ProcessingContext.contextElement: PsiElement? by registerKey(PlsProcessingContextKeys)
 var ProcessingContext.offsetInParent: Int by registerKey(PlsProcessingContextKeys) { 0 }
 var ProcessingContext.keyword: String by registerKey(PlsProcessingContextKeys) { "" }
-var ProcessingContext.keywordOffset: Int by registerKey(PlsProcessingContextKeys) { 0 }
 var ProcessingContext.quoted: Boolean by registerKey(PlsProcessingContextKeys) { false }
 var ProcessingContext.rightQuoted: Boolean by registerKey(PlsProcessingContextKeys) { false }
 
+var ProcessingContext.keywordOffset: Int by registerKey(PlsProcessingContextKeys) { 0 }
 var ProcessingContext.gameType: ParadoxGameType? by registerKey(PlsProcessingContextKeys)
 var ProcessingContext.configGroup: CwtConfigGroup? by registerKey(PlsProcessingContextKeys)
 var ProcessingContext.expressionOffset: Int by registerKey(PlsProcessingContextKeys) { 0 }

@@ -5,13 +5,13 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElements
-import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -21,6 +21,9 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.STRING_TOKENS
 
+/**
+ * 提供关键字的代码补全（要求不在定义声明中提供）。
+ */
 object ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(STRING_TOKENS).withParent(psiElement(ParadoxScriptString::class.java))
 
@@ -30,10 +33,12 @@ object ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
         if (element.text.isLeftQuoted()) return
         if (element.text.isParameterized()) return
 
-        ParadoxCompletionManager.initializeContext(parameters, context)
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
 
-        val configGroup = context.configGroup ?: return
-        val path = parameters.originalFile.fileInfo?.path
+        val configGroup = context.configGroup
+        val file = parameters.originalFile
+        val path = file.fileInfo?.path
 
         // 排除所在文件可能包含定义声明的情况
         if (path != null && ParadoxConfigMatchService.getTypeConfigCandidates(CwtTypeConfigMatchContext(configGroup, path)).isNotEmpty()) return
@@ -42,7 +47,7 @@ object ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
         if (ParadoxConfigManager.getConfigContext(element)?.getConfigs().isNotNullOrEmpty()) return
 
         // 2.1.8 同样排除定值的脚本文件
-        if (ParadoxDefineManager.isDefineFile(parameters.originalFile)) return
+        if (ParadoxDefineManager.isDefineFile(file)) return
 
         result.addElements(PlsLookupElements.keywordLookupElements, context)
     }

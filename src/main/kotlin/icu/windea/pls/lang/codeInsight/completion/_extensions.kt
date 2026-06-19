@@ -132,7 +132,7 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
     return this
 }
 
-fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElementBuilder? {
+fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): LookupElementBuilder? {
     // check whether scope is matched again here
     if ((!scopeMatched || !context.scopeMatched) && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
 

@@ -8,9 +8,10 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
@@ -19,6 +20,9 @@ import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 
+/**
+ * 提供（位于事件声明中的）事件ID中的事件命名空间的代码补全。
+ */
 object ParadoxEventIdCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
@@ -30,7 +34,8 @@ object ParadoxEventIdCompletionProvider : ParadoxCompletionProvider() {
         val keyword = element.getKeyword(offsetInParent)
         if (keyword.contains('.')) return
 
-        ParadoxCompletionManager.initializeContext(parameters, context)
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
 
         // 仅提示同文件中绑定的那些事件命名空间
         val event = ParadoxEventManipulationService.getEventDeclarationCandidateFromEventId(element) ?: return

@@ -37,6 +37,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.argumentNames
@@ -186,7 +187,7 @@ object ParadoxParameterManager {
         return resolved != "no"
     }
 
-    fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
+    fun completeParameters(element: PsiElement, context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         // 向上找到参数上下文
         val parameterContext = ParadoxParameterService.findContext(element) ?: return

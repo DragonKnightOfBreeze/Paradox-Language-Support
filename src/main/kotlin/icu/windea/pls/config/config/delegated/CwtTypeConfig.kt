@@ -70,7 +70,7 @@ import icu.windea.pls.model.ParadoxTagType
  * @property graphRelatedTypes 图相关的关联类型集合。目前并未使用。
  * @property subtypes 对应的子类型规则的集合。
  * @property localisation 对应的本地化展示规则。
- * @property images 对应的的图片展示规则。
+ * @property images 对应的图片展示规则。
  * @property maxRootKeyDepth 顶级键的最大深度。用于规则匹配。
  * @property attributes 综合属性。
  * @property typeKeyPrefixConfig 当以值条目形式声明前缀时，对应的原始值规则。

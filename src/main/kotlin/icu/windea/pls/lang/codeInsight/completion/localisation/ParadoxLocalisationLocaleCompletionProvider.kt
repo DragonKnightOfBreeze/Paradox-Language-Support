@@ -25,9 +25,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
+/**
+ * 提供语言环境的名字的代码补全。
+ */
 object ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() {
-    val elementPattern get() = or(psiElement(LOCALE_TOKEN), psiElement(PROPERTY_KEY_TOKEN))
-
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
         val editor = context.editor
@@ -49,6 +50,8 @@ object ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider()
             EditorModificationUtil.insertStringAtCaret(editor, s)
         }
     }
+
+    val elementPattern get() = or(psiElement(LOCALE_TOKEN), psiElement(PROPERTY_KEY_TOKEN))
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position

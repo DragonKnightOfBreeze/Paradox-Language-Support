@@ -16,7 +16,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object ParadoxExtendedCompletionManager {
-    fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedScriptedVariable(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
@@ -36,7 +36,7 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedDefinition(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
@@ -133,7 +133,7 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedComplexEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
@@ -157,7 +157,7 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 

@@ -4,20 +4,12 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.getKeyword
-import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.expressionOffset
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.offsetInParent
-import icu.windea.pls.lang.codeInsight.completion.quoted
-import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -33,6 +25,9 @@ import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.isPropertyValue
 
+/**
+ * 提供脚本表达式相关的代码补全。基于规则文件。
+ */
 object ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
@@ -40,28 +35,19 @@ object ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
         val element = parameters.position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if (!element.isExpression()) return
 
-        val file = parameters.originalFile
-        val quoted = element.text.isLeftQuoted()
-        val rightQuoted = element.text.isRightQuoted()
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = element.getKeyword(offsetInParent)
-
-        ParadoxCompletionManager.initializeContext(parameters, context)
-        context.contextElement = element
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
-        context.quoted = quoted
-        context.rightQuoted = rightQuoted
-        context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext).copy(
+            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+        )
 
         // 兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
 
-        val parameterValueQuoted = ParadoxConfigManager.getConfigContext(file)?.parameterValueQuoted
+        val parameterValueQuoted = ParadoxConfigManager.getConfigContext(context.file)?.parameterValueQuoted
         val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
         val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())
 
-        val resultToUse = result.withPrefixMatcher(keyword)
+        val resultToUse = result.withPrefixMatcher(context.keyword)
         if (mayBeKey) {
             // 向上得到 block 或者 file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()

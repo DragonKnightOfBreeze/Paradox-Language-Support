@@ -14,6 +14,9 @@ import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElements
 
+/**
+ * 提供关键字的代码补全（要求不在规则文件中提供）。
+ */
 object CwtKeywordCompletionProvider : CwtCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(STRING_TOKENS)
 

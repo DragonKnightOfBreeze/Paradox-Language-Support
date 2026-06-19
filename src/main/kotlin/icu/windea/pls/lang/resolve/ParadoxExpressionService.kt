@@ -17,6 +17,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.completion.contextElement
@@ -257,10 +258,10 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.complete
      */
-    fun completeCsvExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeCsvExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config?.castOrNull<CwtValueConfig>() ?: return
         val configExpression = config.configExpression
-        val gameType = config.configGroup.gameType
+        val gameType = context.gameType
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f

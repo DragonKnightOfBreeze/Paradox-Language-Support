@@ -111,7 +111,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeDynamicValueExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDynamicValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset

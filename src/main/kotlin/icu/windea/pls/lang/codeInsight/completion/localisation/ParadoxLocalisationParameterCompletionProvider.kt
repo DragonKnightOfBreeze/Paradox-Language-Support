@@ -22,6 +22,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 
+/**
+ * 提供本地化参数的名字的代码补全。
+ */
 object ParadoxLocalisationParameterCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement(PARAMETER_TOKEN)
 

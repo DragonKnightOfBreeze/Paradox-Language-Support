@@ -3,21 +3,13 @@ package icu.windea.pls.lang.codeInsight.completion.script
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.getKeyword
-import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.ep.resolve.config.CwtInlineScriptUsageConfigContextProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.expressionOffset
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.offsetInParent
-import icu.windea.pls.lang.codeInsight.completion.quoted
-import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.resolved
@@ -37,6 +29,9 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.propertyValue
 
+/**
+ * 提供内联脚本用法的代码补全。
+ */
 object ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
@@ -73,18 +68,10 @@ object ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() 
         val configContext = ParadoxConfigManager.getConfigContext(element)
         if (configContext != null && configContext.provider is CwtInlineScriptUsageConfigContextProvider) return
 
-        val quoted = element.text.isLeftQuoted()
-        val rightQuoted = element.text.isRightQuoted()
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = element.getKeyword(offsetInParent)
-
-        ParadoxCompletionManager.initializeContext(parameters, context)
-        context.contextElement = element
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
-        context.quoted = quoted
-        context.rightQuoted = rightQuoted
-        context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext).copy(
+            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+        )
 
         ParadoxCompletionManager.completeInlineScriptUsage(context, result)
     }

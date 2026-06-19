@@ -5,14 +5,14 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.getKeyword
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
@@ -30,6 +30,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
+/**
+ * 提供已有的定值命名空间和定值变量的代码补全。
+ */
 object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
@@ -39,14 +42,18 @@ object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
         val file = parameters.originalFile
         if (!ParadoxDefineManager.isDefineFile(file)) return
 
-        val project = file.project
         val element = parameters.position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if (element.text.isParameterized()) return
 
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = element.getKeyword(offsetInParent)
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
 
-        val memberElement = if (element is ParadoxScriptValue) element else element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+        completeDefineName(context, result)
+    }
+
+    private fun completeDefineName(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val element = context.contextElement
+        val memberElement = element as? ParadoxScriptValue ?: element.parent as? ParadoxScriptProperty ?: return
         val blockElement = element.parent
         when (blockElement) {
             // possible define namespace input
@@ -54,8 +61,8 @@ object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
                 // property value must be null or a block
                 if (memberElement is ParadoxScriptProperty && memberElement.propertyValue.let { it != null && it !is ParadoxScriptBlock }) return
 
-                val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive().distinct()
-                    .filterBy { it.name != keyword } // skip if name = input
+                val selector = ParadoxDefineNamespaceSearch.selector(context.project, element).contextSensitive().distinct()
+                    .filterBy { it.name != context.keyword } // skip if name = input
                 ParadoxDefineNamespaceSearch.search(null, selector).processAsync {
                     processDefineNamespace(context, result, it)
                 }
@@ -67,8 +74,8 @@ object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
                 if (parentPropertyElement.parent !is ParadoxScriptRootBlock) return
 
                 val namespace = parentPropertyElement.name
-                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive().distinct()
-                    .filterBy { it.name != keyword } // skip if name = input
+                val selector = ParadoxDefineVariableSearch.selector(context.project, element).contextSensitive().distinct()
+                    .filterBy { it.name != context.keyword } // skip if name = input
                 ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync {
                     processDefineVariable(context, result, it)
                 }
@@ -77,7 +84,7 @@ object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     }
 
     @Suppress("SameReturnValue")
-    private fun processDefineNamespace(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
+    private fun processDefineNamespace(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
         // 不自动插入后面的等号
         ProgressManager.checkCanceled()
         val name = element.name.orNull() ?: return true
@@ -91,7 +98,7 @@ object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     }
 
     @Suppress("SameReturnValue")
-    private fun processDefineVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
+    private fun processDefineVariable(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
         // 不自动插入后面的等号
         ProgressManager.checkCanceled()
         val name = element.name.orNull() ?: return true

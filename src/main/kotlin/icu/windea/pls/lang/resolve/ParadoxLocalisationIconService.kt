@@ -4,11 +4,10 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
-import icu.windea.pls.lang.codeInsight.completion.gameType
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
@@ -40,7 +39,7 @@ object ParadoxLocalisationIconService {
     /**
      * @see ParadoxLocalisationIconSupport.complete
      */
-    fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val gameType = context.gameType
         ParadoxLocalisationIconSupport.EP_NAME.extensionList.forEach f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f

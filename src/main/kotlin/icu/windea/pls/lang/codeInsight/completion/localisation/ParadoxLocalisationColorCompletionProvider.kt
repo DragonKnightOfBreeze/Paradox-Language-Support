@@ -15,6 +15,9 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
+/**
+ * 提供颜色ID的代码补全。
+ */
 object ParadoxLocalisationColorCompletionProvider : ParadoxCompletionProvider() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // delete existing colorId after press enter

@@ -3,17 +3,16 @@ package icu.windea.pls.lang.codeInsight.completion.script
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.getKeyword
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.PARAMETER_TOKENS
 
+/**
+ * 提供参数的名字的代码补全。
+ */
 object ParadoxParameterCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(PARAMETER_TOKENS)
 
@@ -21,13 +20,9 @@ object ParadoxParameterCompletionProvider : ParadoxCompletionProvider() {
         // 对于定义声明中的 `$PARAM$` 引用和 `[[PARAM]...]` 引用
         val tokenElement = parameters.position
         val element = tokenElement.parent
-        val offsetInParent = parameters.offset - tokenElement.startOffset
-        val keyword = tokenElement.getKeyword(offsetInParent)
 
-        ParadoxCompletionManager.initializeContext(parameters, context)
-        context.contextElement = element
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
 
         ParadoxParameterManager.completeParameters(element, context, result)
     }

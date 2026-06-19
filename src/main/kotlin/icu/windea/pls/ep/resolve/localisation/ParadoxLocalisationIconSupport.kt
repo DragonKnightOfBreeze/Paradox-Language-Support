@@ -4,8 +4,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
@@ -17,7 +17,7 @@ interface ParadoxLocalisationIconSupport {
 
     fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement>
 
-    fun complete(context: ProcessingContext, result: CompletionResultSet)
+    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet)
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")

@@ -4,19 +4,19 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.getKeyword
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets.EXPRESSION_TOKENS
 import icu.windea.pls.localisation.psi.isComplexExpression
 
+/**
+ * 提供本地化表达式相关的代码补全。基于规则文件。
+ */
 object ParadoxLocalisationExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(EXPRESSION_TOKENS)
 
@@ -24,13 +24,9 @@ object ParadoxLocalisationExpressionCompletionProvider : ParadoxCompletionProvid
         val element = parameters.position.parentOfType<ParadoxLocalisationExpressionElement>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return
         if (!element.isComplexExpression()) return
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = element.getKeyword(offsetInParent)
 
-        ParadoxCompletionManager.initializeContext(parameters, context)
-        context.contextElement = element
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
 
         ParadoxCompletionManager.completeLocalisationExpression(context, result)
     }

@@ -1,21 +1,16 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigSchemaManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.codeInsight.completion.CompletionContext
+import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.unquote
@@ -35,7 +30,7 @@ import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
 data class CwtConfigCompletionContext(
-    val globalContext: GlobalCompletionContext,
+    override val globalContext: GlobalCompletionContext,
     val configGroup: CwtConfigGroup,
     val expressionElement: CwtExpressionElement? = null,
     val containerElement: PsiElement? = null,
@@ -53,33 +48,18 @@ data class CwtConfigCompletionContext(
     val isKey: Boolean = false,
     val isKeyOnly: Boolean = false,
     val isValueOnly: Boolean = false,
-) : CompletionContext {
-    val contextElement: PsiElement get() = globalContext.contextElement
-    val offsetInParent: Int get() = globalContext.offsetInParent
-    val keyword: String get() = globalContext.keyword
-    val leftQuoted: Boolean get() = globalContext.leftQuoted
-    val rightQuoted: Boolean get() = globalContext.rightQuoted
-    val quoted: Boolean get() = globalContext.quoted
-
-    override val context: ProcessingContext get() = globalContext.context
-    override val parameters: CompletionParameters get() = globalContext.parameters
-    override val completionIds: MutableSet<String> get() = globalContext.completionIds
-    override val file: PsiFile get() = globalContext.file
-    override val offset: Int get() = globalContext.offset
-    override val editor: Editor get() = globalContext.editor
-    override val project: Project get() = globalContext.project
-
+) : GlobalBasedCompletionContext() {
     companion object {
         @JvmStatic
         fun create(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
-            return CwtCompletionContextBuilder.build(globalContext)
+            return CwtConfigCompletionContextBuilder.build(globalContext)
         }
     }
 }
 
 // region Implementations
 
-private object CwtCompletionContextBuilder {
+private object CwtConfigCompletionContextBuilder {
     fun build(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
         val contextElement = globalContext.contextElement
 

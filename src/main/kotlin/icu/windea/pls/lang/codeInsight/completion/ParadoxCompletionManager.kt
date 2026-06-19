@@ -6,7 +6,6 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.StandardPatterns
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
@@ -89,7 +88,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxCompletionManager {
     // region Core Methods
 
-    fun initializeContext(parameters: CompletionParameters, context: ProcessingContext) {
+    fun initializeContext(parameters: CompletionParameters, context: ParadoxCompletionContext) {
         context.parameters = parameters
         context.completionIds = mutableSetOf<String>().synced()
 
@@ -101,7 +100,7 @@ object ParadoxCompletionManager {
         context.configGroup = configGroup
     }
 
-    fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
+    fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ParadoxCompletionContext, result: CompletionResultSet) {
         val contextElement = context.contextElement ?: return
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
@@ -151,7 +150,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addValueCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
+    fun addValueCompletions(memberElement: ParadoxScriptMember, context: ParadoxCompletionContext, result: CompletionResultSet) {
         val contextElement = context.contextElement ?: return
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
@@ -189,7 +188,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
+    fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
 
         if (!configContext.inRoot()) return
@@ -208,9 +207,8 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addColumnCompletions(columnElement: ParadoxCsvColumn, context: ProcessingContext, result: CompletionResultSet) {
-        val file = context.parameters?.originalFile ?: return
-        if (file !is ParadoxCsvFile) return
+    fun addColumnCompletions(columnElement: ParadoxCsvColumn, context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (context.file !is ParadoxCsvFile) return
 
         if (columnElement.isHeaderColumn()) {
             completeHeaderColumn(context, result)
@@ -219,8 +217,10 @@ object ParadoxCompletionManager {
 
         val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
         val config = columnConfig.valueConfig ?: return
-        context.config = config
-        completeCsvExpression(context, result)
+        run {
+            val context = context.copy(config = config)
+            completeCsvExpression(context, result)
+        }
     }
 
     private fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
@@ -253,7 +253,7 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
 
-    fun getExpressionTailText(context: ProcessingContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
+    fun getExpressionTailText(context: ParadoxCompletionContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
         context.expressionTailText?.let { return it }
 
         return buildString {
@@ -276,7 +276,7 @@ object ParadoxCompletionManager {
 
     // region General Completion Methods
 
-    fun completeKey(context: ProcessingContext, result: CompletionResultSet, memberPath: ParadoxMemberPath, rootKeyPrefix: Lazy<String?>) {
+    fun completeKey(context: ParadoxCompletionContext, result: CompletionResultSet, memberPath: ParadoxMemberPath, rootKeyPrefix: Lazy<String?>) {
         // 从以下来源收集需要提示的键（顶级键和类型键）
         // - skip_root_key
         // - type_key_filter
@@ -390,7 +390,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configExpression = context.config!!.configExpression ?: return
         val config = context.config!!
@@ -422,17 +422,17 @@ object ParadoxCompletionManager {
         context.scopeContext = scopeContext
     }
 
-    fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeLocalisationExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         ParadoxExpressionService.completeLocalisationExpression(context, result)
     }
 
-    fun completeCsvExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeCsvExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         ParadoxExpressionService.completeCsvExpression(context, result)
     }
 
-    fun completeLocalisation(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val keyword = context.keyword
 
@@ -469,7 +469,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeSyncedLocalisation(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeSyncedLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val keyword = context.keyword
 
@@ -506,7 +506,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeDefinition(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDefinition(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val scopeContext = context.scopeContext
         val typeExpression = config.configExpression?.value ?: return
@@ -544,7 +544,7 @@ object ParadoxCompletionManager {
         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
     }
 
-    fun completePathReference(context: ProcessingContext, result: CompletionResultSet) {
+    fun completePathReference(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val contextFile = context.parameters?.originalFile ?: return
         val project = contextFile.project
         val config = context.config ?: return
@@ -580,18 +580,18 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         ParadoxModifierManager.completeModifier(context, result)
     }
 
-    fun completeEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         completeStaticEnumValue(context, result)
         completeComplexEnumValue(context, result)
         ParadoxExtendedCompletionManager.completeExtendedComplexEnumValue(context, result)
     }
 
-    fun completeStaticEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeStaticEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val config = context.config ?: return
@@ -615,7 +615,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeComplexEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val config = context.config ?: return
@@ -644,7 +644,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config
         val configs = context.configs
         val finalConfigs = configs.ifEmpty { config.to.singletonListOrEmpty() }
@@ -656,7 +656,7 @@ object ParadoxCompletionManager {
         ParadoxExtendedCompletionManager.completeExtendedDynamicValue(context, result)
     }
 
-    fun completePredefinedDynamicValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>) {
+    fun completePredefinedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtConfig<*>) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val configExpression = config.configExpression ?: return
@@ -678,7 +678,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeIndexedDynamicValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>) {
+    fun completeIndexedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtConfig<*>) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val keyword = context.keyword
@@ -702,7 +702,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeAliasName(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeAliasName(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val config = context.config ?: return
@@ -723,7 +723,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeConstant(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeConstant(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
@@ -757,7 +757,7 @@ object ParadoxCompletionManager {
         result.addElement(lookupElement, context)
     }
 
-    fun completeArgument(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeArgument(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         // 提示参数名（仅限key）
@@ -767,7 +767,7 @@ object ParadoxCompletionManager {
         ParadoxParameterManager.completeArguments(contextElement, context, result)
     }
 
-    fun completeHeaderColumn(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val column = context.contextElement?.castOrNull<ParadoxCsvColumn>() ?: return
         if (!column.isHeaderColumn()) return
@@ -796,11 +796,11 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeShaderEffect(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeShaderEffect(context: ParadoxCompletionContext, result: CompletionResultSet) {
         completeIndexedShaderEffect(context, result)
     }
 
-    fun completeIndexedShaderEffect(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeIndexedShaderEffect(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         val configGroup = context.configGroup ?: return
@@ -823,11 +823,11 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeMeshLocator(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeMeshLocator(context: ParadoxCompletionContext, result: CompletionResultSet) {
         completeIndexedMeshLocator(context, result)
     }
 
-    fun completeIndexedMeshLocator(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeIndexedMeshLocator(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         val configGroup = context.configGroup ?: return
@@ -854,7 +854,7 @@ object ParadoxCompletionManager {
 
     // region Macro Completion Methods
 
-    fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeInlineScriptUsage(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val configs = configGroup.macrosModel.forInlineScripts.orNull() ?: return
@@ -875,7 +875,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeDefinitionInjectionExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDefinitionInjectionExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup ?: return
         val config = configGroup.macrosModel.forDefinitionInjections ?: return
@@ -911,7 +911,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeDefinitionInjectionMode(context: ProcessingContext, result: CompletionResultSet, config: CwtMacroConfig.DefinitionInjection) {
+    fun completeDefinitionInjectionMode(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtMacroConfig.DefinitionInjection) {
         ProgressManager.checkCanceled()
         context.isKey = null
         val modeConfigs = config.modeConfigs.values
@@ -938,7 +938,7 @@ object ParadoxCompletionManager {
 
     // region Process Methods
 
-    fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxDefinitionElement): Boolean {
+    fun processDefinition(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxDefinitionElement): Boolean {
         ProgressManager.checkCanceled()
         val definitionInfo = element.definitionInfo ?: return true
         if (definitionInfo.name.isEmpty()) return true // skip anonymous definitions

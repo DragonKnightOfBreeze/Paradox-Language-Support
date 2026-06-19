@@ -5,15 +5,14 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -51,7 +50,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
         }.orEmpty()
     }
 
-    final override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    final override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         supports.forEach {
             ProgressManager.checkCanceled()
             it.complete(context, result)
@@ -80,11 +79,9 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         return definitions
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
-        val originalFile = context.parameters?.originalFile ?: return
-        val project = originalFile.project
-        val definitionSelector = ParadoxDefinitionSearch.selector(project, originalFile).contextSensitive().distinct()
+        val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -120,16 +117,14 @@ class ParadoxImageFileBasedLocalisationIconSupport(
         return files.mapNotNull { it.toPsiFile(project) }
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val tailText = " from image file"
-        val originalFile = context.parameters?.originalFile ?: return
-        val project = originalFile.project
-        val fileSelector = ParadoxFilePathSearch.selector(project, originalFile).contextSensitive().distinct()
+        val fileSelector = ParadoxFilePathSearch.selector(context.project, context.file).contextSensitive().distinct()
         ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
             ProgressManager.checkCanceled()
             val name = file.nameWithoutExtension
-            val psiFile = file.toPsiFile(project) ?: return@p true
+            val psiFile = file.toPsiFile(context.project) ?: return@p true
 
             val lookupElement = LookupElementBuilder.create(psiFile, name).withIcon(icon)
                 .withTailText(tailText, true)
