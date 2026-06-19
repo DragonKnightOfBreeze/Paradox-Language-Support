@@ -38,10 +38,10 @@ import javax.swing.JComponent
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
-    @JvmField var ignoredByConfigs = false
     @JvmField var ignoredFileNames = "*.lua;*.tga"
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
+    @JvmField var ignoredByConfigs = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
@@ -108,11 +108,6 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            // ignoredByConfigs
-            row {
-                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
-            }
             row {
                 label(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
@@ -130,6 +125,11 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
+            }
+            // ignoredByConfigs
+            row {
+                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
         }
     }

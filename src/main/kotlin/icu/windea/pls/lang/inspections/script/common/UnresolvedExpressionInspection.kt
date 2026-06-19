@@ -56,10 +56,10 @@ import javax.swing.JComponent
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
-    @JvmField var showExpectInfo = true
-    @JvmField var ignoredByConfigs = false
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
+    @JvmField var ignoredByConfigs = false
+    @JvmField var showExpectInfo = true
 
     // 如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
 
@@ -277,16 +277,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            // showExpectInfo
-            row {
-                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
-                    .bindSelected(::showExpectInfo.toAtomicProperty())
-            }
-            // ignoredByConfigs
-            row {
-                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
-            }
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
@@ -296,6 +286,16 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
+            }
+            // ignoredByConfigs
+            row {
+                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
+            }
+            // showExpectInfo
+            row {
+                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
+                    .bindSelected(::showExpectInfo.toAtomicProperty())
             }
         }
     }

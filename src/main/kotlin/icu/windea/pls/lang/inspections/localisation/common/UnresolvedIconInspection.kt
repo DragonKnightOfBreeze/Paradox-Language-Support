@@ -53,8 +53,6 @@ class UnresolvedIconInspection : LocalInspectionTool() {
             // ignoredNames
             row {
                 label(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames"))
-            }
-            row {
                 textField()
                     .bindText(::ignoredNames.toAtomicProperty())
                     .comment(PlsBundle.message("comment.patterns"))
