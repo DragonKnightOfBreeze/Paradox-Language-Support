@@ -4,9 +4,9 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon

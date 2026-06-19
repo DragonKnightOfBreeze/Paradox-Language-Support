@@ -1166,7 +1166,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    private fun completeScriptExpressionFromLinkConfigs(linkConfigs: List<CwtLinkConfig>, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeScriptExpressionFromLinkConfigs(linkConfigs: List<CwtLinkConfig>, context: ParadoxCompletionContext, result: CompletionResultSet) {
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = linkConfig)
@@ -1270,7 +1270,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    private fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
+    fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
         val configGroup = context.configGroup
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return
