@@ -204,13 +204,15 @@ Service vs Manager vs Util:
 
 Here are some common code patterns:
 
-- How to get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
-- How to get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
-- How to get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
-- How to get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
+- Get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
+- Get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
+- Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
+- Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
-- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Service`, `...Manager`, `...Util` and so on.
-- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords. 
+- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Util`, `...Service`, `...Manager` and so on.
+- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
+- Assume and search existing extensions, components, utils, services, managers, etc., **before** reinventing the wheel.
+- Follow the best practice for Kotlin programming and IntelliJ platform development, more importantly, the **conceptual consistency**.
 
 ## Domain terminology and guidance
 
