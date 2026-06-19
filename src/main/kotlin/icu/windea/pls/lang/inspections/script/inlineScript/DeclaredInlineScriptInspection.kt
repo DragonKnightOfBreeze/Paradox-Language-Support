@@ -20,7 +20,7 @@ class DeclaredInlineScriptInspection: InlineScriptInspectionBase() {
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.script.declaredInlineScript.desc", inlineScriptExpression)
-        holder.registerProblem(file, description, GotoInlineScriptUsagesFix())
+        holder.registerProblem(file, description, GotoInlineScriptUsagesFix(file))
         return holder.resultsArray
     }
 }

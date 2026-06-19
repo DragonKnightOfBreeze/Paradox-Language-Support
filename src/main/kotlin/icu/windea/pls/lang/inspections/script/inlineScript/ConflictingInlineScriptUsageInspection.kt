@@ -24,7 +24,7 @@ class ConflictingInlineScriptUsageInspection : InlineScriptInspectionBase() {
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.script.conflictingInlineScriptUsage.desc", inlineScriptExpression)
-        holder.registerProblem(file, description, GotoInlineScriptUsagesFix())
+        holder.registerProblem(file, description, GotoInlineScriptUsagesFix(file))
         return holder.resultsArray
     }
 }

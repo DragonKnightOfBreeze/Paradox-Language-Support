@@ -19,9 +19,9 @@ import icu.windea.pls.model.constants.PlsConstants
 import java.nio.charset.Charset
 
 class ChangeFileEncodingFix(
-    element: PsiElement,
+    element: PsiFile,
     private val charset: Charset,
-    private val addBom: Boolean?
+    private val addBom: Boolean?,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
     override fun getText() = PlsBundle.message("fix.changeFileEncoding.name")
 
