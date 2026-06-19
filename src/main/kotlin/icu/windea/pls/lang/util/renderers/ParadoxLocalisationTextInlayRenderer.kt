@@ -17,10 +17,10 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.PlsHintsUtil
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
@@ -300,7 +300,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         val attributesKey = ParadoxLocalisationHighlighterColors.CONCEPT
         val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
         val finalPresentation = WithAttributesPresentation(basePresentation, attributesKey, editor, attributesFlags)
-            .let { factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }
+            .let { factory.withCursorOnHoverWhenControlDown(it, UiService.getHandCursor()) }
         return finalPresentation
     }
 
