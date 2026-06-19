@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.propertyValue
 /**
  * 提供定义注入的表达式的代码补全。
  */
-object ParadoxDefinitionInjectionExpressionCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxDefinitionInjectionExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

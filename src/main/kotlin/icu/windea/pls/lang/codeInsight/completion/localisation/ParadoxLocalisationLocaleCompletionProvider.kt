@@ -28,7 +28,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 /**
  * 提供语言环境的名字的代码补全。
  */
-object ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
         val editor = context.editor

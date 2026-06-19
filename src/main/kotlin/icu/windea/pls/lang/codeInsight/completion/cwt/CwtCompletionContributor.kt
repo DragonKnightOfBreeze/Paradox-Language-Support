@@ -9,8 +9,8 @@ import icu.windea.pls.model.constants.PlsConstants
 
 class CwtCompletionContributor : CompletionContributor() {
     init {
-        CwtKeywordCompletionProvider.let { extend(CompletionType.BASIC, it.elementPattern, it) }
-        CwtConfigCompletionProvider.let { extend(null, it.elementPattern, it) }
+        CwtKeywordCompletionProvider().let { extend(CompletionType.BASIC, it.elementPattern, it) }
+        CwtConfigCompletionProvider().let { extend(null, it.elementPattern, it) }
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

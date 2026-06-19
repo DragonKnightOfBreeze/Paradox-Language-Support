@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.isDefinitionName
 /**
  * 提供已有的定义的名字的代码补全。
  */
-object ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

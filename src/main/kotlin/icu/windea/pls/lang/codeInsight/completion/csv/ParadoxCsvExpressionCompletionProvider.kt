@@ -15,7 +15,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCsvCompletionManager
 /**
  * 提供 CSV 表达式相关的代码补全。基于规则文件。
  */
-object ParadoxCsvExpressionCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxCsvExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(EXPRESSION_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

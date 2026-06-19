@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets.PARAMETER_TOKENS
 /**
  * 提供参数的名字的代码补全。
  */
-object ParadoxParameterCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxParameterCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(PARAMETER_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

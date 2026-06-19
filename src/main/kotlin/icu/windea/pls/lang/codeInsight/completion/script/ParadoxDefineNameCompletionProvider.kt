@@ -33,7 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 /**
  * 提供已有的定值命名空间和定值变量的代码补全。
  */
-object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets.STRING_TOKENS
 /**
  * 提供关键字的代码补全（要求不在定义声明中提供）。
  */
-object ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(STRING_TOKENS).withParent(psiElement(ParadoxScriptString::class.java))
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

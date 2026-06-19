@@ -8,7 +8,7 @@ import icu.windea.pls.model.constants.PlsConstants
 
 class ParadoxCsvCompletionContributor : CompletionContributor() {
     init {
-        ParadoxCsvExpressionCompletionProvider.let { extend(null, it.elementPattern, it) }
+        ParadoxCsvExpressionCompletionProvider().let { extend(null, it.elementPattern, it) }
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
-object ParadoxLocalisationTextFormatCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationTextFormatCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement(TEXT_FORMAT_TOKEN)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 /**
  * 提供颜色ID的代码补全。
  */
-object ParadoxLocalisationColorCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationColorCompletionProvider : ParadoxCompletionProvider() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // delete existing colorId after press enter
         if (context.completionChar == '\n' || context.completionChar == '\r') {

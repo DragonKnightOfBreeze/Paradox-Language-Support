@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.isComplexExpression
 /**
  * 提供本地化表达式相关的代码补全。基于规则文件。
  */
-object ParadoxLocalisationExpressionCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(EXPRESSION_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

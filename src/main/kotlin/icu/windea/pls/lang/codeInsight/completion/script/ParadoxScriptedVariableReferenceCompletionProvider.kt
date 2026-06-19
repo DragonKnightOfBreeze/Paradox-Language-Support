@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERE
 /**
  * 提供封装变量引用的名字的代码补全。
  */
-object ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets.SCRIPTED_VARIABLE_NAME_T
 /**
  * 提供已有的封装变量的名字的代码补全。
  */
-object ParadoxScriptedVariableNameCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxScriptedVariableNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(SCRIPTED_VARIABLE_NAME_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

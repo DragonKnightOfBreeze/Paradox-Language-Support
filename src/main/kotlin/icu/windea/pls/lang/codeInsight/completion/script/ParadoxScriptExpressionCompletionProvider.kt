@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.isPropertyValue
 /**
  * 提供脚本表达式相关的代码补全。基于规则文件。
  */
-object ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

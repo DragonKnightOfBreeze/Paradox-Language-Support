@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.isBlockMember
  *
  * @see ParadoxVariableOperationExpressionPostfixTemplate
  */
-object ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

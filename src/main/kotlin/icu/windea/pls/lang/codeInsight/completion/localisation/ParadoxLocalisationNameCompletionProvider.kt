@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 /**
  * 提供本地化的名字的代码补全。
  */
-object ParadoxLocalisationNameCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement(PROPERTY_KEY_TOKEN)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

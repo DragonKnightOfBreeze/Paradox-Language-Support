@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 /**
  * 提供图标的名字的代码补全。
  */
-object ParadoxLocalisationIconCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationIconCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement(ICON_TOKEN)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

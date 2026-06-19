@@ -17,7 +17,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-object ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProvider() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // 因为只能在 `$...$` 引用中出现，如果后面没有 `$`，需要自动补充，并将光标移到补充 `$` 之前
         val editor = context.editor

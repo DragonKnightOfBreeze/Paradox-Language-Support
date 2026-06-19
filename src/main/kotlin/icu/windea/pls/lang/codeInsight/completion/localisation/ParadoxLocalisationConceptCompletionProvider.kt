@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 /**
  * 提供概念的名字和别名的代码补全。
  */
-object ParadoxLocalisationConceptCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxLocalisationConceptCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement(CONCEPT_NAME_TOKEN)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

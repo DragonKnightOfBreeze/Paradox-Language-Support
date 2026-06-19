@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 /**
  * 提供（位于事件声明中的）事件ID中的事件命名空间的代码补全。
  */
-object ParadoxEventIdCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxEventIdCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

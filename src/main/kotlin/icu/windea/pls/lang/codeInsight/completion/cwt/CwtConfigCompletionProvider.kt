@@ -17,7 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 
-object CwtConfigCompletionProvider : ParadoxCompletionProvider() {
+class CwtConfigCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

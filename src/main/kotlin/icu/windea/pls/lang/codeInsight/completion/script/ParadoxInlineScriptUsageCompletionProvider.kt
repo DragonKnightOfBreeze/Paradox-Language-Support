@@ -32,7 +32,7 @@ import icu.windea.pls.script.psi.propertyValue
 /**
  * 提供内联脚本用法的代码补全。
  */
-object ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
+class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
