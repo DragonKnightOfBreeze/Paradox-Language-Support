@@ -30,10 +30,10 @@ class ElementsListTable(
         override fun getText(table: JTable, row: Int): String {
             val item = getRowItem(row)
             return when (item) {
-                is ValueDescriptor -> {
+                is ElementDescriptors.Value -> {
                     item.name
                 }
-                is PropertyDescriptor -> {
+                is ElementDescriptors.Property -> {
                     buildString {
                         append(item.name.quoteIfNecessary())
                         append(" ")
@@ -67,13 +67,13 @@ class ElementsListTable(
                     val panel = JPanel(VerticalFlowLayout(VerticalFlowLayout.TOP, 4, 2, true, false))
                     when (columnInfo) {
                         is ElementsTableModel.NameColumn -> {
-                            if (item is ValueDescriptor) {
+                            if (item is ElementDescriptors.Value) {
                                 val nameComboBox = ComboBox(context.descriptorsInfo.allValues)
                                 nameComboBox.selectedItem = item.name
                                 configureNameComboBox(nameComboBox)
                                 this.nameComboBox = nameComboBox
                                 panel.add(nameComboBox)
-                            } else if (item is PropertyDescriptor) {
+                            } else if (item is ElementDescriptors.Property) {
                                 val nameComboBox = ComboBox(context.descriptorsInfo.allKeys)
                                 nameComboBox.selectedItem = item.name
                                 configureNameComboBox(nameComboBox)
@@ -82,7 +82,7 @@ class ElementsListTable(
                             }
                         }
                         is ElementsTableModel.SeparatorColumn -> {
-                            if (item is PropertyDescriptor) {
+                            if (item is ElementDescriptors.Property) {
                                 val separatorComboBox = ComboBox(ParadoxSeparatorType.entries.toTypedArray())
                                 separatorComboBox.selectedItem = item.separator
                                 configureSeparatorComboBox(separatorComboBox)
@@ -91,7 +91,7 @@ class ElementsListTable(
                             }
                         }
                         is ElementsTableModel.ValueColumn -> {
-                            if (item is PropertyDescriptor) {
+                            if (item is ElementDescriptors.Property) {
                                 val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
                                 val items = constantValues
                                 val valueComboBox = ComboBox(items)

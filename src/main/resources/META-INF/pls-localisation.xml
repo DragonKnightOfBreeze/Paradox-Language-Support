@@ -48,28 +48,4 @@
     <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxLocalisationDark.xml"/>
     <additionalTextAttributes scheme="Islands Dark" file="colorSchemes/ParadoxLocalisationIslandsDark.xml"/> <!-- should use `Islands Dark` here -->
   </extensions>
-
-  <actions>
-    <group id="Pls.ParadoxLocalisation.Toolbar.Floating">
-      <action id="Pls.ParadoxLocalisation.Styling.CreateReference" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationProperty">
-        <keyboard-shortcut first-keystroke="control alt r" keymap="$default"/>
-      </action>
-      <action id="Pls.ParadoxLocalisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationIcon">
-        <keyboard-shortcut first-keystroke="control alt i" keymap="$default"/>
-      </action>
-      <action id="Pls.ParadoxLocalisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationCommand">
-        <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
-      </action>
-      <separator/>
-      <group id="Pls.ParadoxLocalisation.Styling.SetColorGroup" class="icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup" searchable="false"/>
-    </group>
-
-    <group id="Pls.ParadoxLocalisation.InsertGroup">
-      <!-- Also add all insert actions into default generate popup -->
-      <add-to-group group-id="GenerateGroup" anchor="last"/>
-      <reference ref="Pls.ParadoxLocalisation.Styling.CreateReference"/>
-      <reference ref="Pls.ParadoxLocalisation.Styling.CreateIcon"/>
-      <reference ref="Pls.ParadoxLocalisation.Styling.CreateCommand"/>
-    </group>
-  </actions>
 </idea-plugin>

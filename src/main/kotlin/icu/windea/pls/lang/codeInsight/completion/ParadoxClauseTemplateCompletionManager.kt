@@ -28,11 +28,10 @@ import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
+import icu.windea.pls.lang.ui.clause.ElementDescriptors
 import icu.windea.pls.lang.ui.clause.ElementsContext
 import icu.windea.pls.lang.ui.clause.ElementsInfo
 import icu.windea.pls.lang.ui.clause.ExpandClauseTemplateDialog
-import icu.windea.pls.lang.ui.clause.PropertyDescriptor
-import icu.windea.pls.lang.ui.clause.ValueDescriptor
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -174,10 +173,10 @@ object ParadoxClauseTemplateCompletionManager {
                     if (!mustBeConstantValue) add("")
                     constantValueExpressions.forEach { add(it.expressionString) }
                 }
-                val descriptor = PropertyDescriptor(name = name, value = value, constantValues = constantValues)
+                val descriptor = ElementDescriptors.Property(name = name, value = value, constantValues = constantValues)
                 descriptors.add(descriptor)
             } else {
-                val descriptor = ValueDescriptor(name = expression.expressionString)
+                val descriptor = ElementDescriptors.Value(name = expression.expressionString)
                 descriptors.add(descriptor)
             }
         }
@@ -190,10 +189,10 @@ object ParadoxClauseTemplateCompletionManager {
             if (multiline) append("\n")
             descriptors.forEach {
                 when (it) {
-                    is ValueDescriptor -> {
+                    is ElementDescriptors.Value -> {
                         append(it.name.quoteIfNecessary())
                     }
-                    is PropertyDescriptor -> {
+                    is ElementDescriptors.Property -> {
                         append(it.name.quoteIfNecessary())
                         if (around) append(" ")
                         append(it.separator)
@@ -213,7 +212,7 @@ object ParadoxClauseTemplateCompletionManager {
             if (e is ParadoxScriptProperty || e is ParadoxScriptValue) {
                 val descriptor = descriptors[i]
                 if (descriptor.editInTemplate) {
-                    if (e is ParadoxScriptProperty && descriptor is PropertyDescriptor) {
+                    if (e is ParadoxScriptProperty && descriptor is ElementDescriptors.Property) {
                         val string = if (descriptor.value.isNotEmpty()) descriptor.value.quoteIfNecessary() else ""
                         val expression = TextExpression(string)
                         templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", expression, true)
