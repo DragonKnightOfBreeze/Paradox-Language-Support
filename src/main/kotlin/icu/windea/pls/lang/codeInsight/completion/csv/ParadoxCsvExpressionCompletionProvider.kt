@@ -2,9 +2,7 @@ package icu.windea.pls.lang.codeInsight.completion.csv
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
