@@ -33,14 +33,17 @@ import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.filePathPatterns
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.processValue
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.model.paths.ParadoxPath
 
 object CwtConfigMatchService {
     fun isAliasEntry(config: CwtPropertyConfig): Boolean {
@@ -212,23 +215,55 @@ object CwtConfigMatchService {
         return when (type) {
             CwtComplexEnumConfig::class.java -> {
                 val source = configGroup.complexEnums
-                source.values.process { if (matchesByFilePath(it, filePath)) processor.process(it.cast()) else true }
+                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it.cast()) else true }
                 true
             }
             CwtRowConfig::class.java -> {
                 val source = configGroup.rows
-                source.values.process { if (matchesByFilePath(it, filePath)) processor.process(it.cast()) else true }
+                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it.cast()) else true }
             }
             CwtTypeConfig::class.java -> {
                 val source = configGroup.types
-                source.values.process { if (matchesByFilePath(it, filePath)) processor.process(it.cast()) else true }
+                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it.cast()) else true }
             }
             else -> throw UnsupportedOperationException()
         }
     }
 
-    fun matchesByFilePath(config: CwtFilePathMatchableConfig<*>, filePath: String?): Boolean {
-        if (filePath.isNullOrEmpty()) return true
-        return config.filePathPatterns.any { pattern -> filePath.matchesAntPattern(pattern) }
+    fun matchesFilePath(config: CwtFilePathMatchableConfig<*>, filePath: String?): Boolean {
+        if (filePath == null) return true
+        return matchesFilePath(config, ParadoxPath.resolve(filePath))
+    }
+
+    @Optimized
+    fun matchesFilePath(config: CwtFilePathMatchableConfig<*>, filePath: ParadoxPath?): Boolean {
+        // 1.4.2 this method should be very fast, so use optimized match logic here, instead of checking `config.filePathPatterns`
+
+        if (filePath == null) return true
+        val pathPatterns = config.pathPatterns
+        if (pathPatterns.isNotEmpty()) {
+            if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
+        }
+        val pathFile = config.pathFile
+        if (pathFile.isNotNullOrEmpty()) {
+            if (pathFile != filePath.fileName) return false
+        } else {
+            val pathExtension = config.pathExtension
+            if (pathExtension.isNotNullOrEmpty()) {
+                if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
+            }
+        }
+        val paths = config.paths
+        if (paths.isNotEmpty()) {
+            val pathStrict = config.pathStrict
+            for (path in paths) {
+                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
+            }
+            return false
+        } else {
+            val pathExtension = config.pathExtension
+            if (pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
+            return true
+        }
     }
 }
