@@ -12,6 +12,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -44,7 +45,7 @@ interface ParadoxScriptExpressionSupport {
         return emptyList()
     }
 
-    fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
 
     }
 

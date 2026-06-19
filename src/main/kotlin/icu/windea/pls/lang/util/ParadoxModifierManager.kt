@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import com.intellij.util.Processor
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
@@ -28,7 +27,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
-import icu.windea.pls.lang.codeInsight.completion.contextElement
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
@@ -83,7 +82,7 @@ object ParadoxModifierManager {
         return modifierInfo?.toPsiElement(element)
     }
 
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val element = context.contextElement!!
         if (element !is ParadoxScriptStringExpressionElement) return
 

@@ -5,7 +5,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtValueConfig
@@ -22,7 +21,6 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -50,7 +48,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxComplexExpressionCompletionManager {
     // region Core Methods
 
-    fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -169,7 +167,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeScopeFieldExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -211,7 +209,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeScriptValueExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeScriptValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -281,7 +279,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeValueFieldExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -333,7 +331,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeVariableFieldExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -385,7 +383,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeCommandExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeCommandExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -437,7 +435,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeDatabaseObjectExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDatabaseObjectExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -488,7 +486,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeDefineReferenceExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDefineReferenceExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -543,7 +541,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeNameFormatExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeNameFormatExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         // TODO 2.0.6+ 并没有基于节点进行代码补全……不过能用就行，暂时不做重构
 
         val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return
@@ -650,11 +648,6 @@ object ParadoxComplexExpressionCompletionManager {
         return withState(ChronicleThreadContext.incompleteComplexExpression, action)
     }
 
-    private fun isIdentifierKeyword(context: ProcessingContext): Boolean {
-        val keyword = context.keyword
-        return keyword.isEmpty() || keyword.isIdentifier()
-    }
-
     // endregion
 
     // region General Completion Methods
@@ -662,7 +655,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForScopeNode(node: ParadoxScopeNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    private fun completeForScopeNode(node: ParadoxScopeNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -717,7 +710,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForValueFieldNode(node: ParadoxValueFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    private fun completeForValueFieldNode(node: ParadoxValueFieldNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -765,7 +758,7 @@ object ParadoxComplexExpressionCompletionManager {
         return inputPrefix
     }
 
-    private fun completeForVariableFieldValueNode(node: ParadoxDataSourceNode, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeForVariableFieldValueNode(node: ParadoxDataSourceNode, context: ParadoxCompletionContext, result: CompletionResultSet) {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
@@ -779,7 +772,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForCommandScopeNode(node: ParadoxCommandScopeNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    private fun completeForCommandScopeNode(node: ParadoxCommandScopeNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -834,7 +827,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForCommandFieldNode(node: ParadoxCommandFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    private fun completeForCommandFieldNode(node: ParadoxCommandFieldNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -882,8 +875,8 @@ object ParadoxComplexExpressionCompletionManager {
         return inputPrefix
     }
 
-    fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeSystemScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -907,8 +900,8 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeStaticScope(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeStaticScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -936,8 +929,8 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeScopePrefix(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeScopePrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -986,7 +979,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeScopeValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?) {
+    fun completeScopeValue(context: ParadoxCompletionContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?) {
         // NOTE 2.0.6 这里需要兼容多传参动态链接，支持正确地对其传参进行代码补全
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
@@ -1018,8 +1011,8 @@ object ParadoxComplexExpressionCompletionManager {
         context.argumentIndex = argIndex
     }
 
-    fun completeStaticValueField(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeStaticValueField(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1047,8 +1040,8 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeValueFieldPrefix(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeValueFieldPrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1096,7 +1089,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeValueFieldValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?, variableOnly: Boolean = false) {
+    fun completeValueFieldValue(context: ParadoxCompletionContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?, variableOnly: Boolean = false) {
         // NOTE 2.0.6 这里需要兼容多传参动态链接，支持正确地对其传参进行代码补全
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
@@ -1129,8 +1122,8 @@ object ParadoxComplexExpressionCompletionManager {
         context.argumentIndex = argIndex
     }
 
-    fun completeSystemCommandScope(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeSystemCommandScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1154,8 +1147,8 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeStaticCommandScope(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeStaticCommandScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1184,8 +1177,8 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeCommandScopePrefix(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeCommandScopePrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1235,7 +1228,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeCommandScopeValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?) {
+    fun completeCommandScopeValue(context: ParadoxCompletionContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?) {
         // NOTE 2.0.6 这里需要兼容多传参动态链接，支持正确地对其传参进行代码补全
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
@@ -1265,8 +1258,8 @@ object ParadoxComplexExpressionCompletionManager {
         context.argumentIndex = argIndex
     }
 
-    fun completeStaticCommandField(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeStaticCommandField(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1314,8 +1307,8 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeCommandFieldPrefix(context: ProcessingContext, result: CompletionResultSet) {
-        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+    fun completeCommandFieldPrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
 
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1363,7 +1356,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeCommandFieldValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?) {
+    fun completeCommandFieldValue(context: ParadoxCompletionContext, result: CompletionResultSet, prefix: String?, argNode: ParadoxComplexExpressionNode?) {
         // NOTE 2.0.6 这里需要兼容多传参动态链接，支持正确地对其传参进行代码补全
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
@@ -1393,7 +1386,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.argumentIndex = argIndex
     }
 
-    private fun completeScriptExpressionFromLinkConfigs(linkConfigs: List<CwtLinkConfig>, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeScriptExpressionFromLinkConfigs(linkConfigs: List<CwtLinkConfig>, context: ParadoxCompletionContext, result: CompletionResultSet) {
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             context.config = linkConfig
@@ -1401,7 +1394,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeDefinePrefix(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDefinePrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val name = "define:"
         val lookupElement = LookupElementBuilder.create(name)
             .withBoldness(true)
@@ -1410,7 +1403,7 @@ object ParadoxComplexExpressionCompletionManager {
         result.addElement(lookupElement, context)
     }
 
-    fun completeDefineNamespace(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDefineNamespace(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
         val tailText = " from define namespaces"
@@ -1428,7 +1421,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeDefineVariable(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDefineVariable(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
         val node = context.node?.castOrNull<ParadoxDefineVariableNode>() ?: return
@@ -1449,7 +1442,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeDatabaseObjectType(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDatabaseObjectType(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val tailText = " from database object types"
@@ -1469,7 +1462,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeDatabaseObject(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val node = context.node?.castOrNull<ParadoxDatabaseObjectNode>()
             ?.nodes?.findIsInstance<ParadoxDatabaseObjectDataNode>()
@@ -1503,7 +1496,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.expressionTailText = oldTailText
     }
 
-    private fun completeForcedBaseDatabaseObject(context: ProcessingContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
+    private fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
         val configGroup = context.configGroup!!
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return

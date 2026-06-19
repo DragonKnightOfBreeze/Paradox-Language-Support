@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.util.ProcessingContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -18,7 +18,7 @@ class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationComplexEx
         return element is ParadoxLocalisationExpressionElement && element.isCommandExpression()
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeCommandExpression(context, result)
     }
 }
@@ -31,7 +31,7 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationCo
         return element is ParadoxLocalisationExpressionElement && element.isDatabaseObjectExpression()
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }

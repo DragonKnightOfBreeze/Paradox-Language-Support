@@ -1,15 +1,11 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.isInt
-import icu.windea.pls.lang.codeInsight.completion.scopeGroupName
-import icu.windea.pls.lang.codeInsight.completion.scopeName
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
@@ -30,7 +26,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSup
         return dataType == CwtDataTypes.TemplateExpression
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)
     }
 }
@@ -44,7 +40,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptComplexExpressio
         return dataType in CwtDataTypeSets.DynamicValue
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeDynamicValueExpression(context, result)
     }
 }
@@ -58,7 +54,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionS
         return dataType in CwtDataTypeSets.ScopeField
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
         when (configExpression.type) {
             CwtDataTypes.Scope -> {
@@ -89,7 +85,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionS
         return dataType in CwtDataTypeSets.ValueField
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
         when (configExpression.type) {
             CwtDataTypes.IntValueField -> {
@@ -114,7 +110,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressi
         return dataType in CwtDataTypeSets.VariableField
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
         when (configExpression.type) {
             CwtDataTypes.IntVariableField -> {
@@ -139,7 +135,7 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpres
         return dataType == CwtDataTypes.DefineReference
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
     }
 }
@@ -153,7 +149,7 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpress
         return dataType == CwtDataTypes.DatabaseObject
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }
@@ -167,7 +163,7 @@ class ParadoxScriptNameFormatExpressionSupport : ParadoxScriptComplexExpressionS
         return dataType == CwtDataTypes.NameFormat
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeNameFormatExpression(context, result)
     }
 }

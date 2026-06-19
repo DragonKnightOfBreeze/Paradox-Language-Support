@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.text.DocumentationBuilder
@@ -10,8 +10,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
-import icu.windea.pls.lang.codeInsight.completion.gameType
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
@@ -43,8 +42,8 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.completeModifier
      */
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val gameType = context.gameType ?: return
+    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val gameType = context.gameType
         ParadoxModifierSupport.EP_NAME.extensionList.forEach f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.completeModifier(context, result, modifierNames)

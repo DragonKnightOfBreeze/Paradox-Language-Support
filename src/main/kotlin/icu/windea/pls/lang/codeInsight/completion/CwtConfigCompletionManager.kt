@@ -41,8 +41,6 @@ import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.type.CwtExpressionType
 
 object CwtConfigCompletionManager {
-    // region Core Methods
-
     fun addConfigCompletions(context: CwtConfigCompletionContext, result: CompletionResultSet) {
         val schema = context.schema!!
         val contextConfigs = context.contextConfigs
@@ -51,10 +49,6 @@ object CwtConfigCompletionManager {
         }
         completeByContextConfigs(context, result, schema, contextConfigs)
     }
-
-    // endregion
-
-    // region Base Methods
 
     private fun completeByDeclarationConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig) {
         val declarationConfig = schema.constraints["declaration"] ?: return
@@ -509,6 +503,4 @@ object CwtConfigCompletionManager {
             }
         }
     }
-
-    // endregion
 }

@@ -11,7 +11,6 @@ import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -42,7 +41,7 @@ object ParadoxClauseTemplateCompletionManager {
     private const val blockFolderText = "{ <generate via template> }"
     private const val blockFolderId = "{$...$}"
 
-    fun buildLookupElement(context: ProcessingContext, config: CwtConfig<*>, lookupElement: LookupElementBuilder): LookupElementBuilder? {
+    fun buildLookupElement(context: ParadoxCompletionContext, config: CwtConfig<*>, lookupElement: LookupElementBuilder): LookupElementBuilder? {
         if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
         val entryConfigs = CwtConfigManager.getEntryConfigs(config)
@@ -60,7 +59,7 @@ object ParadoxClauseTemplateCompletionManager {
         return result
     }
 
-    fun buildBlockLookupElement(context: ProcessingContext, config: CwtConfig<*>): LookupElementBuilder? {
+    fun buildBlockLookupElement(context: ParadoxCompletionContext, config: CwtConfig<*>): LookupElementBuilder? {
         if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
         val entryConfigs = CwtConfigManager.getEntryConfigs(config)
@@ -74,11 +73,11 @@ object ParadoxClauseTemplateCompletionManager {
         return result
     }
 
-    fun getExpandInsertHandler(context: ProcessingContext, entryConfigs: List<CwtMemberConfig<*>>): InsertHandler<LookupElement>? {
+    fun getExpandInsertHandler(context: ParadoxCompletionContext, entryConfigs: List<CwtMemberConfig<*>>): InsertHandler<LookupElement>? {
         // 如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
         // 默认列出且仅允许选择直接的key为常量字符串的属性（忽略需要内联的情况）
 
-        val file = context.parameters?.originalFile ?: return null
+        val file = context.parameters.originalFile
         val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtMemberConfig<*>>>>()
         val hasRemainList = mutableListOf<Boolean>()
         for (entry in entryConfigs) {

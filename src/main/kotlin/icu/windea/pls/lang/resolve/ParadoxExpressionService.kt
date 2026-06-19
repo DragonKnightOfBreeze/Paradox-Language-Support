@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
@@ -18,10 +17,6 @@ import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.configGroup
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -114,7 +109,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.complete
      */
-    fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
@@ -194,7 +189,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.complete
      */
-    fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeLocalisationExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
         val configGroup = context.configGroup ?: return
         val gameType = configGroup.gameType

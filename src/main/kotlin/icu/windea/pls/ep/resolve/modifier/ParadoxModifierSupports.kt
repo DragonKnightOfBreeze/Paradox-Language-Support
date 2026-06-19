@@ -5,7 +5,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
@@ -27,12 +26,10 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.configGroup
-import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
-import icu.windea.pls.lang.codeInsight.completion.scopeContext
 import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNecessary
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
@@ -94,9 +91,9 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         return modifierInfo
     }
 
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val element = context.contextElement!!
-        val configGroup = context.configGroup!!
+    override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement
+        val configGroup = context.configGroup
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.predefinedModifiers
@@ -169,9 +166,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             ?: modifierInfoCandidates.firstOrNull()
     }
 
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val element = context.contextElement!!
-        val configGroup = context.configGroup!!
+    override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement
+        val configGroup = context.configGroup
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.generatedModifiers
@@ -376,9 +373,9 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return null
     }
 
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val element = context.contextElement!!
-        val configGroup = context.configGroup!!
+    override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement
+        val configGroup = context.configGroup
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 

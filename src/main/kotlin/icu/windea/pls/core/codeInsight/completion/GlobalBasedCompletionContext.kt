@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.lang.isIdentifier
 
 abstract class GlobalBasedCompletionContext: CompletionContext {
     abstract val globalContext: GlobalCompletionContext
@@ -24,4 +25,9 @@ abstract class GlobalBasedCompletionContext: CompletionContext {
     override val offset: Int get() = globalContext.offset
     override val editor: Editor get() = globalContext.editor
     override val project: Project get() = globalContext.project
+
+    fun isIdentifierKeyword(): Boolean {
+        val keyword = keyword
+        return keyword.isEmpty() || keyword.isIdentifier()
+    }
 }

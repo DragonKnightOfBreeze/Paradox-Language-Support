@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.StandardPatterns
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -22,11 +20,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
@@ -35,10 +30,6 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -67,11 +58,9 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withFileExtensions
 import icu.windea.pls.lang.search.util.withSearchScopeType
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -88,20 +77,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxCompletionManager {
     // region Core Methods
 
-    fun initializeContext(parameters: CompletionParameters, context: ParadoxCompletionContext) {
-        context.parameters = parameters
-        context.completionIds = mutableSetOf<String>().synced()
-
-        val gameType = selectGameType(parameters.originalFile)
-        context.gameType = gameType
-
-        val project = parameters.originalFile.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        context.configGroup = configGroup
-    }
-
     fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val contextElement = context.contextElement ?: return
+        val contextElement = context.contextElement
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
         // 仅提示不在定义声明中的 key（顶级键和类型键）
@@ -110,8 +87,10 @@ object ParadoxCompletionManager {
             val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
             val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(contextElement) }
-            context.isKey = true
-            completeKey(context, result, memberPath, typeKeyPrefix)
+            run {
+                val context = context.copy(isKey = true)
+                completeKey(context, result, memberPath, typeKeyPrefix)
+            }
             return
         }
 
@@ -128,22 +107,20 @@ object ParadoxCompletionManager {
         if (configs.isEmpty()) return
         val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
 
-        context.isKey = true
-        context.scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
-
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
+        val context = context.copy(isKey = true, scopeContext = scopeContext)
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
                 if (shouldComplete(config, occurrences)) {
                     val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(contextElement, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
-                            context.config = overriddenConfig
+                            val context = context.copy(config = overriddenConfig)
                             completeScriptExpression(context, result)
                         }
                         continue
                     }
-                    context.config = config
-                    context.configs = configsWithSameKey
+                    val context = context.copy(config = config, configs = configsWithSameKey)
                     completeScriptExpression(context, result)
                 }
             }
@@ -151,7 +128,7 @@ object ParadoxCompletionManager {
     }
 
     fun addValueCompletions(memberElement: ParadoxScriptMember, context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val contextElement = context.contextElement ?: return
+        val contextElement = context.contextElement
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
         if (!configContext.inRoot()) return
@@ -169,20 +146,19 @@ object ParadoxCompletionManager {
         if (configs.isEmpty()) return
         val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
 
-        context.isKey = false
-        context.scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
-
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
+        val context = context.copy(isKey = false, scopeContext = scopeContext)
         for (config in configs) {
             if (shouldComplete(config, occurrences)) {
                 val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(contextElement, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
-                        context.config = overriddenConfig
+                        val context = context.copy(config = overriddenConfig)
                         completeScriptExpression(context, result)
                     }
                     continue
                 }
-                context.config = config
+                val context = context.copy(config = config)
                 completeScriptExpression(context, result)
             }
         }
@@ -196,30 +172,13 @@ object ParadoxCompletionManager {
         val configs = configContext.getConfigs()
         if (configs.isEmpty()) return
 
-        context.isKey = false
-        context.scopeContext = ParadoxScopeManager.getScopeContext(propertyElement)
-
+        val scopeContext = ParadoxScopeManager.getScopeContext(propertyElement)
+        val context = context.copy(isKey = false, scopeContext = scopeContext)
         for (config in configs) {
             if (config is CwtValueConfig) {
-                context.config = config
+                val context = context.copy(config = config)
                 completeScriptExpression(context, result)
             }
-        }
-    }
-
-    fun addColumnCompletions(columnElement: ParadoxCsvColumn, context: ParadoxCompletionContext, result: CompletionResultSet) {
-        if (context.file !is ParadoxCsvFile) return
-
-        if (columnElement.isHeaderColumn()) {
-            completeHeaderColumn(context, result)
-            return
-        }
-
-        val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
-        val config = columnConfig.valueConfig ?: return
-        run {
-            val context = context.copy(config = config)
-            completeCsvExpression(context, result)
         }
     }
 
@@ -282,9 +241,9 @@ object ParadoxCompletionManager {
         // - type_key_filter
         // - type_key_prefix
 
-        val originalFile = context.parameters?.originalFile ?: return
+        val originalFile = context.file
         val fileInfo = originalFile.fileInfo ?: return
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val path = fileInfo.path
 
         val typeConfigs = configGroup.types.values
@@ -343,8 +302,7 @@ object ParadoxCompletionManager {
                 typeConfig.name
             }
             val typeFile = config.pointer.containingFile
-            context.isKey = false
-            context.config = config
+            val context = context.copy(isKey = false, config = config)
             val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
@@ -353,8 +311,6 @@ object ParadoxCompletionManager {
                 .withPriority(PlsCompletionPriorities.rootKey)
                 .forExpression(context)
             result.addElement(lookupElement, context)
-            context.isKey = null
-            context.config = null
         }
         for ((key, tuples) in infoMapForKey) {
             if (key == "any") return // skip any wildcard
@@ -368,7 +324,7 @@ object ParadoxCompletionManager {
             val config = when {
                 typeToUse == null -> null
                 typeConfigToUse.typeKeyPrefix != null -> typeConfigToUse.typeKeyPrefixConfig
-                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement!!, typeToUse, subtypesToUse, configGroup)
+                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement, typeToUse, subtypesToUse, configGroup)
             }
             val element = config?.pointer?.element
             val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
@@ -376,7 +332,7 @@ object ParadoxCompletionManager {
                 if (subTypeConfig == null) typeConfig.name else "${typeConfig.name}.${subTypeConfig.name}"
             }
             val typeFile = config?.pointer?.containingFile
-            context.config = config
+            val context = context.copy(config = config)
             val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
@@ -386,40 +342,34 @@ object ParadoxCompletionManager {
                 .withPriority(PlsCompletionPriorities.rootKey)
                 .forExpression(context)
             result.addElement(lookupElement, context)
-            context.config = null
         }
     }
 
     fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configExpression = context.config!!.configExpression ?: return
-        val config = context.config!!
-        val configGroup = context.configGroup!!
-        val scopeMatched = context.scopeMatched
-        val scopeContext = context.scopeContext
 
         if (configExpression.expressionString.isEmpty()) return
 
         // 匹配作用域
-        if (scopeMatched) {
-            val supportedScopes = when {
-                config is CwtPropertyConfig -> config.optionData.supportedScopes
-                config is CwtAliasConfig -> config.supportedScopes
-                config is CwtLinkConfig -> config.inputScopes
-                else -> null
-            }
-            val scopeMatched1 = when {
-                scopeContext == null -> true
-                else -> ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            }
-            if (!scopeMatched1 && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
-            context.scopeMatched = scopeMatched1
-        }
-
+        val nextScopeMatched = nextScopeMatched(context)
+        if (!nextScopeMatched && !PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
+        val context = context.copy(scopeMatched = nextScopeMatched)
         ParadoxExpressionService.completeScriptExpression(context, result)
+    }
 
-        context.scopeMatched = scopeMatched
-        context.scopeContext = scopeContext
+    private fun nextScopeMatched(context: ParadoxCompletionContext): Boolean {
+        if (!context.scopeMatched) return false
+        val supportedScopes = when {
+            context.config is CwtPropertyConfig -> context.config.optionData.supportedScopes
+            context.config is CwtAliasConfig -> context.config.supportedScopes
+            context.config is CwtLinkConfig -> context.config.inputScopes
+            else -> null
+        }
+        return when {
+            context.scopeContext == null -> true
+            else -> ParadoxScopeManager.matchesScope(context.scopeContext, supportedScopes, context.configGroup)
+        }
     }
 
     fun completeLocalisationExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -545,7 +495,7 @@ object ParadoxCompletionManager {
     }
 
     fun completePathReference(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val contextFile = context.parameters?.originalFile ?: return
+        val contextFile = context.file
         val project = contextFile.project
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
@@ -593,7 +543,7 @@ object ParadoxCompletionManager {
 
     fun completeStaticEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
         val tailText = getExpressionTailText(context, config)
@@ -617,10 +567,10 @@ object ParadoxCompletionManager {
 
     fun completeComplexEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
-        val contextElement = context.contextElement!!
+        val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
@@ -658,7 +608,7 @@ object ParadoxCompletionManager {
 
     fun completePredefinedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtConfig<*>) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.value ?: return
         if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return
@@ -680,9 +630,9 @@ object ParadoxCompletionManager {
 
     fun completeIndexedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtConfig<*>) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val keyword = context.keyword
-        val contextElement = context.contextElement!!
+        val contextElement = context.contextElement
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.value ?: return
         val tailText = " by $configExpression"
@@ -704,22 +654,13 @@ object ParadoxCompletionManager {
 
     fun completeAliasName(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val config = context.config ?: return
-        val configs = context.configs
         val aliasName = config.configExpression?.value ?: return
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
         for (aliasConfigs in aliasGroup.values) {
-            if (context.isKey == true) {
-                context.config = aliasConfigs.first()
-                context.configs = aliasConfigs
-                completeScriptExpression(context, result)
-            } else {
-                context.config = aliasConfigs.first()
-                completeScriptExpression(context, result)
-            }
-            context.config = config
-            context.configs = configs
+            val context = context.copy(config = aliasConfigs.first(), configs = aliasConfigs)
+            completeScriptExpression(context, result)
         }
     }
 
@@ -761,39 +702,10 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         // 提示参数名（仅限key）
-        val contextElement = context.contextElement!!
+        val contextElement = context.contextElement
         val isKey = context.isKey
         if (isKey != true || config !is CwtPropertyConfig) return
         ParadoxParameterManager.completeArguments(contextElement, context, result)
-    }
-
-    fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val column = context.contextElement?.castOrNull<ParadoxCsvColumn>() ?: return
-        if (!column.isHeaderColumn()) return
-        val file = context.parameters?.originalFile ?: return
-        if (file !is ParadoxCsvFile) return
-        val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
-        val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
-        val existingHeaderNames = header.children()
-            .mapNotNull { it as? ParadoxCsvColumn }
-            .filterIsInstance<ParadoxCsvColumn> { it != column }
-            .map { it.value }
-            .toSet()
-        val columnConfigs = rowConfig.columns.filterNot { it.key in existingHeaderNames }.values
-        if (columnConfigs.isEmpty()) return
-        columnConfigs.forEach f@{ columnConfig ->
-            ProgressManager.checkCanceled()
-            context.config = columnConfig
-            val name = columnConfig.key
-            val element = columnConfig.pointer.element ?: return@f
-            val typeFile = columnConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Column)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(PlsCompletionPriorities.constant)
-            result.addElement(lookupElement, context)
-        }
     }
 
     fun completeShaderEffect(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -803,9 +715,9 @@ object ParadoxCompletionManager {
     fun completeIndexedShaderEffect(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val keyword = context.keyword
-        val contextElement = context.contextElement!!
+        val contextElement = context.contextElement
         val configExpression = config.configExpression ?: return
         val tailText = " by $configExpression"
         val selector = ParadoxShaderEffectSearch.selector(configGroup.project, contextElement).distinct()
@@ -830,9 +742,9 @@ object ParadoxCompletionManager {
     fun completeIndexedMeshLocator(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val keyword = context.keyword
-        val contextElement = context.contextElement!!
+        val contextElement = context.contextElement
         val configExpression = config.configExpression ?: return
         val tailText = " by $configExpression"
         val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, contextElement).distinct()
@@ -856,12 +768,11 @@ object ParadoxCompletionManager {
 
     fun completeInlineScriptUsage(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val configs = configGroup.macrosModel.forInlineScripts.orNull() ?: return
         for (config in configs) {
             ProgressManager.checkCanceled()
-            context.config = config
-            context.isKey = true
+            val context = context.copy(config = config, isKey = true)
             val name = config.name
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
@@ -877,10 +788,10 @@ object ParadoxCompletionManager {
 
     fun completeDefinitionInjectionExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-        val file = context.parameters?.originalFile ?: return
+        val file = context.file
         val fileInfo = file.fileInfo ?: return
         val path = fileInfo.path
         val matchContext = CwtTypeConfigMatchContext(configGroup, path)
@@ -897,10 +808,7 @@ object ParadoxCompletionManager {
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val type = typeConfig.name
             val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
-            context.config = config
-            context.isKey = true
-            context.expressionTailText = ""
-            context.keyword = keywordToUse
+            val context = context.copy(config = config, isKey = true, expressionTailText = "", keyword = keywordToUse)
             val project = configGroup.project
             val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
             ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
@@ -913,11 +821,11 @@ object ParadoxCompletionManager {
 
     fun completeDefinitionInjectionMode(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtMacroConfig.DefinitionInjection) {
         ProgressManager.checkCanceled()
-        context.isKey = null
+        val context = context.copy(isKey = null)
         val modeConfigs = config.modeConfigs.values
         val tailText = " from definition injection modes"
         for (modeConfig in modeConfigs) {
-            context.config = modeConfig
+            val context = context.copy(config = modeConfig)
             val name = modeConfig.value
             val element = modeConfig.pointer.element ?: continue
             val typeFile = modeConfig.pointer.containingFile

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -20,7 +19,7 @@ object ParadoxExtendedCompletionManager {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         configGroup.extendedScriptedVariables.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
@@ -107,14 +106,14 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedParameter(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val contextKey = context.contextKey ?: return
         val argumentNames = context.argumentNames
-        val contextElement = context.contextElement ?: return
+        val contextElement = context.contextElement
         configGroup.extendedParameters.values.forEach { configs0 ->
             configs0.forEach f@{ config0 ->
                 if (!config0.contextKey.matchesByPattern(contextKey, contextElement, configGroup)) return@f
@@ -188,7 +187,7 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedInlineScript(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
