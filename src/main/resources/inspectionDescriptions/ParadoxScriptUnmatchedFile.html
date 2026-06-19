@@ -2,14 +2,15 @@
 <body>
   Report script files that cannot match any configs.
   <p>
-    This means that the current file is special or ignorable, or that the config files for the current game type is incomplete.
-    Consider excluding specific file paths as needed, or <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support#contributing-config-files">contributing configs</a>.
-  </p>
-  <p>
     The currently checked config types include type configs and complex enum configs.
   </p>
   <p>
     Ignore injected files and temporary files. Additionally, files located directly under the game or entry directory are also ignored.
+  </p>
+  <p>
+    <strong>NOTE:</strong>
+    This code inspection is based on config files, so if a false positive occurs, it indicates that the current file is special or ignorable, or that the config files for current game type is incomplete.
+    Consider disabling this code inspection or excluding file paths as needed, or <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support#contributing-config-files">contributing configs</a>.
   </p>
 </body>
 </html>
