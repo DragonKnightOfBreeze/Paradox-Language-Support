@@ -59,8 +59,6 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
             // ignoredFilePaths
             row {
                 label(PlsBundle.message("unmatchedFile.option.ignoredFilePaths"))
-            }
-            row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
                     .comment(PlsBundle.message("comment.antPatterns"))

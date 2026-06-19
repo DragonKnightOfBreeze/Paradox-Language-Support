@@ -49,8 +49,6 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
             // ignoredFilePaths
             row {
                 label(PlsBundle.message("incorrectFileName.option.ignoredFilePaths"))
-            }
-            row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
                     .comment(PlsBundle.message("comment.antPatterns"))
