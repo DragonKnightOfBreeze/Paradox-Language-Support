@@ -87,10 +87,8 @@ object ParadoxCompletionManager {
             val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
             val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(contextElement) }
-            run {
-                val context = context.copy(isKey = true)
-                completeKey(context, result, memberPath, typeKeyPrefix)
-            }
+            val context = context.copy(isKey = true)
+            completeKey(context, result, memberPath, typeKeyPrefix)
             return
         }
 
@@ -810,6 +808,7 @@ object ParadoxCompletionManager {
             val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
             val context = context.copy(config = config, isKey = true, expressionTailText = "", keyword = keywordToUse)
             val project = configGroup.project
+
             val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
             ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                 processDefinition(context, resultToUse, it)

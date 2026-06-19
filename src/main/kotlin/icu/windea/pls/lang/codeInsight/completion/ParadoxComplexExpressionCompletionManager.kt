@@ -377,17 +377,17 @@ object ParadoxComplexExpressionCompletionManager {
                     val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val keywordOffset = node.rangeInExpression.startOffset
                     val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-                    val resultToUse = result.withPrefixMatcher(context.keyword)
-                    completeDatabaseObjectType(context, resultToUse)
+                    val result = result.withPrefixMatcher(context.keyword)
+                    completeDatabaseObjectType(context, result)
                     break
                 }
             } else if (node is ParadoxDatabaseObjectNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
-                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val keywordOffset = node.rangeInExpression.startOffset
                     val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-                    val result = result.withPrefixMatcher(keywordToUse)
+                    val result = result.withPrefixMatcher(keyword)
                     completeDatabaseObject(context, result)
                     break
                 }
