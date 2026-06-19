@@ -34,8 +34,7 @@ import javax.swing.JComponent
  * @see CwtComplexEnumConfig
  */
 class UnmatchedFileInspection : InlineScriptInspectionBase() {
-    @JvmField
-    var ignoredFilePaths = "common/inline_scripts/**"
+    @JvmField var ignoredFilePaths = "common/inline_scripts/**"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件

@@ -43,14 +43,10 @@ import javax.swing.JComponent
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class TooManyExpressionInspection : LocalInspectionTool() {
-    @JvmField
-    var firstOnly = false
-    @JvmField
-    var firstOnlyOnFile = true
-    @JvmField
-    var ignoredInInjectedFiles = false
-    @JvmField
-    var ignoredInInlineScriptFiles = false
+    @JvmField var firstOnly = false
+    @JvmField var firstOnlyOnFile = true
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕

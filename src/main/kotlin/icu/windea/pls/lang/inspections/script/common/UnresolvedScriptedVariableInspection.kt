@@ -31,10 +31,8 @@ import javax.swing.JComponent
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredInInjectedFiles = false
-    @JvmField
-    var ignoredInInlineScriptFiles = false
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 判断是否需要忽略内联脚本文件

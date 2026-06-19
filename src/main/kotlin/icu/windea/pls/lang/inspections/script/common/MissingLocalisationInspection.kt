@@ -37,32 +37,19 @@ import javax.swing.JComponent
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
-    @JvmField
-    var checkForPreferredLocale = true
-    @JvmField
-    var checkForSpecificLocales = true
-    @JvmField
-    var locales = ""
-    @JvmField
-    var checkForDefinitions = true
-    @JvmField
-    var checkPrimaryForDefinitions = true
-    @JvmField
-    var checkOptionalForDefinitions = false
-    @JvmField
-    var checkGeneratedModifiersForDefinitions = false
-    @JvmField
-    var checkGeneratedModifierNamesForDefinitions = true
-    @JvmField
-    var checkGeneratedModifierDescriptionsForDefinitions = false
-    @JvmField
-    var checkForModifiers = false
-    @JvmField
-    var checkModifierNames = true
-    @JvmField
-    var checkModifierDescriptions = false
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var checkForPreferredLocale = true
+    @JvmField var checkForSpecificLocales = true
+    @JvmField var locales = ""
+    @JvmField var checkForDefinitions = true
+    @JvmField var checkPrimaryForDefinitions = true
+    @JvmField var checkOptionalForDefinitions = false
+    @JvmField var checkGeneratedModifiersForDefinitions = false
+    @JvmField var checkGeneratedModifierNamesForDefinitions = true
+    @JvmField var checkGeneratedModifierDescriptionsForDefinitions = false
+    @JvmField var checkForModifiers = false
+    @JvmField var checkModifierNames = true
+    @JvmField var checkModifierDescriptions = false
+    @JvmField var ignoredInInjectedFiles = false
 
     @Suppress("ktPropBy")
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()

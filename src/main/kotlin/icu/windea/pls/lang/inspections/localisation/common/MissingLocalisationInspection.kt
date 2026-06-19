@@ -31,12 +31,9 @@ import javax.swing.JComponent
  * 缺失的本地化的代码检查。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
-    @JvmField
-    var checkForPreferredLocale = true
-    @JvmField
-    var checkForSpecificLocales = true
-    @JvmField
-    var locales = ""
+    @JvmField var checkForPreferredLocale = true
+    @JvmField var checkForSpecificLocales = true
+    @JvmField var locales = ""
 
     @Suppress("ktPropBy")
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()

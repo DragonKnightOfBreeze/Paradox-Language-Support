@@ -28,8 +28,7 @@ import javax.swing.JComponent
  * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
  */
 class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
-    @JvmField
-    var ignoredFilePaths = "**/languages.yml"
+    @JvmField var ignoredFilePaths = "**/languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件

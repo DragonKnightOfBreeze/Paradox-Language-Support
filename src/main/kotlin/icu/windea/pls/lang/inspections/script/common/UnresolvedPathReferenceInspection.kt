@@ -38,14 +38,10 @@ import javax.swing.JComponent
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredByConfigs = false
-    @JvmField
-    var ignoredFileNames = "*.lua;*.tga"
-    @JvmField
-    var ignoredInInjectedFiles = false
-    @JvmField
-    var ignoredInInlineScriptFiles = false
+    @JvmField var ignoredByConfigs = false
+    @JvmField var ignoredFileNames = "*.lua;*.tga"
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕

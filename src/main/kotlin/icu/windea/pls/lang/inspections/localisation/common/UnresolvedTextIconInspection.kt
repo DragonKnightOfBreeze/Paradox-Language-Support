@@ -26,10 +26,8 @@ import javax.swing.JComponent
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class UnresolvedTextIconInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredNames = ""
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var ignoredNames = ""
+    @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求游戏类型支持文本图标

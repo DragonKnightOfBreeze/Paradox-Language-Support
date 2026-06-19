@@ -28,8 +28,7 @@ import javax.swing.JComponent
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是可接受的本地化文件

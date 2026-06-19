@@ -30,8 +30,7 @@ import javax.swing.JComponent
  * @see CwtRowConfig
  */
 class UnmatchedFileInspection : InlineScriptInspectionBase() {
-    @JvmField
-    var ignoredFilePaths = ""
+    @JvmField var ignoredFilePaths = ""
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件

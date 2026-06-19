@@ -56,14 +56,10 @@ import javax.swing.JComponent
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
-    @JvmField
-    var showExpectInfo = true
-    @JvmField
-    var ignoredByConfigs = false
-    @JvmField
-    var ignoredInInjectedFiles = false
-    @JvmField
-    var ignoredInInlineScriptFiles = false
+    @JvmField var showExpectInfo = true
+    @JvmField var ignoredByConfigs = false
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInlineScriptFiles = false
 
     // 如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
 

@@ -11,13 +11,9 @@ class CwtCodeStyleSettings(
 
     // spacing settings
 
-    @JvmField
-    var SPACE_AROUND_OPTION_SEPARATOR = true
-    @JvmField
-    var SPACE_AROUND_PROPERTY_SEPARATOR = true
+    @JvmField var SPACE_AROUND_OPTION_SEPARATOR = true
+    @JvmField var SPACE_AROUND_PROPERTY_SEPARATOR = true
 
-    @JvmField
-    var SPACE_WITHIN_BRACES = true
-    @JvmField
-    var SPACE_WITHIN_EMPTY_BRACES = true
+    @JvmField var SPACE_WITHIN_BRACES = true
+    @JvmField var SPACE_WITHIN_EMPTY_BRACES = true
 }

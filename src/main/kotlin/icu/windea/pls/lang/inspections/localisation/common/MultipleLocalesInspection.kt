@@ -24,8 +24,7 @@ import javax.swing.JComponent
  * @property ignoredFileNames （配置项）需要忽略的文件名。一组模式，分号分隔，忽略大小写。
  */
 class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
-    @JvmField
-    var ignoredFileNames = "languages.yml"
+    @JvmField var ignoredFileNames = "languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件
