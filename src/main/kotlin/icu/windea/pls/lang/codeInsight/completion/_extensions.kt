@@ -8,7 +8,6 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.ui.JBColor
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -48,26 +47,6 @@ fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, c
 private fun getFinalElement(lookupElement: LookupElement, context: CompletionContext): LookupElement? {
     val completionIds = context.completionIds
     if (lookupElement.completionId?.let { id -> completionIds.add(id) } == false) return null
-    val priority = lookupElement.priority
-    if (priority != null) return PrioritizedLookupElement.withPriority(lookupElement, priority)
-    return lookupElement
-}
-
-fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: ProcessingContext) {
-    if (lookupElement == null) return
-    getFinalElement(lookupElement, context)?.let { addElement(it) }
-    lookupElement.extraLookupElements?.forEach { extraLookupElement ->
-        getFinalElement(extraLookupElement, context)?.let { addElement(it) }
-    }
-}
-
-fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, context: ProcessingContext) {
-    for (lookupElement in lookupElements) addElement(lookupElement, context)
-}
-
-private fun getFinalElement(lookupElement: LookupElement, context: ProcessingContext): LookupElement? {
-    val completionIds = context.completionIds
-    if (completionIds?.let { ids -> lookupElement.completionId?.let { id -> ids.add(id) } } == false) return null
     val priority = lookupElement.priority
     if (priority != null) return PrioritizedLookupElement.withPriority(lookupElement, priority)
     return lookupElement
@@ -169,7 +148,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
         else -> ""
     }
     val completionId = lookupString + withValueText
-    if (context.completionIds?.add(completionId) == false) return null
+    if (!context.completionIds.add(completionId)) return null
 
     var lookupElement = this
 
