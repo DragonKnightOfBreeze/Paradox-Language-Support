@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.ui.actions.styling
+package icu.windea.pls.lang.ui.floating.actions.styling
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -18,12 +18,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
 // org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
-class CreateIconAction : ToggleAction(), DumbAware {
+class CreateReferenceAction : ToggleAction(), DumbAware {
     private val wrapActionName: String
-        get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.text")
+        get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.text")
 
     private val unwrapActionName: String
-        get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.text")
+        get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.unwrap.text")
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -44,13 +44,13 @@ class CreateIconAction : ToggleAction(), DumbAware {
             // wrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = wrapActionName
-            event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.description")
+            event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.description")
             false
         } else {
             // unwrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = unwrapActionName
-            event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.description")
+            event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.unwrap.description")
             true
         }
     }
@@ -71,8 +71,8 @@ class CreateIconAction : ToggleAction(), DumbAware {
         if (state) {
             // wrap
             executeWriteCommand(project, wrapActionName, makeWritable = file) {
-                editor.document.insertString(end, "£")
-                editor.document.insertString(start, "£")
+                editor.document.insertString(end, "$")
+                editor.document.insertString(start, "$")
                 editor.caretModel.moveToOffset(start + 1)
                 editor.selectionModel.setSelection(start + 1, end + 1)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
@@ -110,6 +110,6 @@ class CreateIconAction : ToggleAction(), DumbAware {
         val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
         if (startParent !== endParent) return null
         if (start == end) return false
-        return startElement.elementType == ICON_START && endElement.elementType == ICON_END
+        return startElement.elementType == PARAMETER_START && endElement.elementType == PARAMETER_END
     }
 }

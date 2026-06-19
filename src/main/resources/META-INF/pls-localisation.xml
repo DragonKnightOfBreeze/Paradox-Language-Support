@@ -33,9 +33,9 @@
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
 
     <!-- floating toolbar -->
-    <customizableActionGroupProvider implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
+    <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
     <!--suppress PluginXmlValidity -->
-    <textEditorCustomizer implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
+    <textEditorCustomizer implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
                              implementationClass="icu.windea.pls.localisation.psi.manipulators.ParadoxLocalisationPropertyKeyManipulator"/>
@@ -51,17 +51,17 @@
 
   <actions>
     <group id="Pls.ParadoxLocalisation.Toolbar.Floating">
-      <action id="Pls.ParadoxLocalisation.Styling.CreateReference" class="icu.windea.pls.localisation.ui.actions.styling.CreateReferenceAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationProperty">
+      <action id="Pls.ParadoxLocalisation.Styling.CreateReference" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationProperty">
         <keyboard-shortcut first-keystroke="control alt r" keymap="$default"/>
       </action>
-      <action id="Pls.ParadoxLocalisation.Styling.CreateIcon" class="icu.windea.pls.localisation.ui.actions.styling.CreateIconAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationIcon">
+      <action id="Pls.ParadoxLocalisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationIcon">
         <keyboard-shortcut first-keystroke="control alt i" keymap="$default"/>
       </action>
-      <action id="Pls.ParadoxLocalisation.Styling.CreateCommand" class="icu.windea.pls.localisation.ui.actions.styling.CreateCommandAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationCommand">
+      <action id="Pls.ParadoxLocalisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationCommand">
         <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
       </action>
       <separator/>
-      <group id="Pls.ParadoxLocalisation.Styling.SetColorGroup" class="icu.windea.pls.localisation.ui.actions.styling.SetColorGroup" searchable="false"/>
+      <group id="Pls.ParadoxLocalisation.Styling.SetColorGroup" class="icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup" searchable="false"/>
     </group>
 
     <group id="Pls.ParadoxLocalisation.InsertGroup">

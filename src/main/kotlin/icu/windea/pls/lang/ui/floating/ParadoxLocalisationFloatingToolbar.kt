@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.ui.floating
+package icu.windea.pls.lang.ui.floating
 
 import com.intellij.ide.ui.customization.CustomActionsSchema
 import com.intellij.openapi.actionSystem.ActionGroup
@@ -26,11 +26,11 @@ import kotlinx.coroutines.CoroutineScope
  * - 快速插入命令 - 不会检查插入后语法是否合法
  * - 更改文本颜色（将会列出所有可选的颜色代码）
  *
- * @see icu.windea.pls.localisation.ui.actions.styling.CreateReferenceAction
- * @see icu.windea.pls.localisation.ui.actions.styling.CreateIconAction
- * @see icu.windea.pls.localisation.ui.actions.styling.CreateCommandAction
- * @see icu.windea.pls.localisation.ui.actions.styling.SetColorGroup
- * @see icu.windea.pls.localisation.ui.actions.styling.SetColorAction
+ * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
+ * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
+ * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
+ * @see icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
+ * @see icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
  */
 class ParadoxLocalisationFloatingToolbar(
     editor: Editor,

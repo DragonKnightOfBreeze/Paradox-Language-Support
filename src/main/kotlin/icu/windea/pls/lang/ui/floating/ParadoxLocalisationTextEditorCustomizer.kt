@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.ui.floating
+package icu.windea.pls.lang.ui.floating
 
 import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.lang.LanguageUtil

@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.ui.actions.styling
+package icu.windea.pls.lang.ui.floating.actions.styling
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
