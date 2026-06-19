@@ -5,13 +5,13 @@ import com.intellij.usages.UsageViewSettings
 import com.intellij.usages.impl.FileStructureGroupRuleProvider
 import com.intellij.usages.rules.UsageGroupingRule
 
+// com.intellij.usages.impl.rules.JavaMethodGroupRuleProvider
+// org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
+
 /**
  * 文件结构支持 - 本地化语言环境的用法分组规则。
  */
 class ParadoxLocalisationLocaleFileStructureGroupRuleProvider : FileStructureGroupRuleProvider {
-    // com.intellij.usages.impl.rules.JavaMethodGroupRuleProvider
-    // org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
-
     override fun getUsageGroupingRule(project: Project): UsageGroupingRule {
         return getUsageGroupingRule(project, UsageViewSettings.instance)
     }

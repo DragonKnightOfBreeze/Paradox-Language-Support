@@ -12,14 +12,14 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import javax.swing.Icon
 
+// com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
+
 class ParadoxLocalisationLocaleGroup(
     element: ParadoxLocalisationLocale,
     private val name: String,
     private val project: Project,
     private val usageViewSettings: UsageViewSettings,
 ) : UsageGroup {
-    // com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
-
     private val icon = element.icon
     private val pointer = element.createPointer()
 

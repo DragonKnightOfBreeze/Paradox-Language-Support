@@ -14,12 +14,12 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
+// com.intellij.usages.impl.rules.MethodGroupingRule
+// org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
+
 class ParadoxDefinitionUsageGroupingRule(
     private val usageViewSettings: UsageViewSettings
 ) : SingleParentUsageGroupingRule() {
-    // com.intellij.usages.impl.rules.MethodGroupingRule
-    // org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
-
     override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
         val element = getDefinition(usage) ?: return null
         val info = element.definitionInfo ?: return null
