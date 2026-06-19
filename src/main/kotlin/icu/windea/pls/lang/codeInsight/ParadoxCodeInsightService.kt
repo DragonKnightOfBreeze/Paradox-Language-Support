@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.codeInsight
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import java.awt.Color
