@@ -56,23 +56,12 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionS
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
-        when (configExpression.type) {
-            CwtDataTypes.Scope -> {
-                context.scopeName = configExpression.value
-            }
-            CwtDataTypes.ScopeGroup -> {
-                context.scopeGroupName = configExpression.value
-            }
+        val context = when (configExpression.type) {
+            CwtDataTypes.Scope -> context.copy(scopeName = configExpression.value)
+            CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.value)
+            else -> context
         }
         ParadoxComplexExpressionCompletionManager.completeScopeFieldExpression(context, result)
-        when (configExpression.type) {
-            CwtDataTypes.Scope -> {
-                context.scopeName = null
-            }
-            CwtDataTypes.ScopeGroup -> {
-                context.scopeGroupName = null
-            }
-        }
     }
 }
 
@@ -87,17 +76,11 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionS
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
-        when (configExpression.type) {
-            CwtDataTypes.IntValueField -> {
-                context.isInt = true
-            }
+        val context = when (configExpression.type) {
+            CwtDataTypes.IntValueField -> context.copy(isInt = true)
+            else -> context
         }
         ParadoxComplexExpressionCompletionManager.completeValueFieldExpression(context, result)
-        when (configExpression.type) {
-            CwtDataTypes.IntValueField -> {
-                context.isInt = null
-            }
-        }
     }
 }
 
@@ -112,17 +95,11 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressi
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
-        when (configExpression.type) {
-            CwtDataTypes.IntVariableField -> {
-                context.isInt = true
-            }
+        val context = when (configExpression.type) {
+            CwtDataTypes.IntVariableField -> context.copy(isInt = true)
+            else -> context
         }
         ParadoxComplexExpressionCompletionManager.completeVariableFieldExpression(context, result)
-        when (configExpression.type) {
-            CwtDataTypes.IntVariableField -> {
-                context.isInt = null
-            }
-        }
     }
 }
 

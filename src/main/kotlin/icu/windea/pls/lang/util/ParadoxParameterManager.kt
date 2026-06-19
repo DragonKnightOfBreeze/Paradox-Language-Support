@@ -205,7 +205,7 @@ object ParadoxParameterManager {
         }
 
         val contextKey = ParadoxParameterService.getContextKeyFromContext(parameterContext) ?: return
-        context.contextKey = contextKey
+        val context = context.copy(contextKey = contextKey)
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
@@ -214,7 +214,7 @@ object ParadoxParameterManager {
         if (context.quoted) return // 输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
-        val completionOffset = context.parameters?.offset ?: return
+        val completionOffset = context.offset
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = mutableSetOf<String>()
         for (argument in contextReferenceInfo.arguments) {
@@ -244,8 +244,8 @@ object ParadoxParameterManager {
             true
         }
 
-        context.contextKey = contextReferenceInfo.contextKey
-        context.argumentNames = argumentNames
+        val contextKey = contextReferenceInfo.contextKey
+        val context = context.copy(contextKey = contextKey, argumentNames = argumentNames)
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 

@@ -33,7 +33,7 @@ import icu.windea.pls.cwt.psi.isPropertyValue
 data class CwtConfigCompletionContext(
     override val globalContext: GlobalCompletionContext,
     val configGroup: CwtConfigGroup,
-    val keyword: String,
+    override val keyword: String,
     val expressionElement: CwtExpressionElement? = null,
     val containerElement: PsiElement? = null,
     val keyToMatch: String? = null,

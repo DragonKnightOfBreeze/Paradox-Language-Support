@@ -15,7 +15,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 data class ParadoxCompletionContext(
     override val globalContext: GlobalCompletionContext,
     val configGroup: CwtConfigGroup,
-    val keyword: String,
+    override val keyword: String,
     val keywordOffset: Int = 0,
     val expressionOffset: Int = 0,
     val extraFilter: ((PsiElement) -> Boolean)? = null,
