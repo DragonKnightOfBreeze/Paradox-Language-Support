@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
@@ -9,13 +10,12 @@ import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
+import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
+import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
+import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
-import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionFix
-import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

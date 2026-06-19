@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix.navigation
+package icu.windea.pls.lang.fixes.navigation
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
@@ -7,14 +7,14 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
-class NavigateToRecursionsFix(
+class NavigateToOverridingScriptedVariablesFix(
     private val key: String,
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getText() = PlsBundle.message("fix.navigateTo.recursions.name")
+    override fun getText() = PlsBundle.message("fix.navigateTo.overridingScriptedVariables.name")
 
-    override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.recursions.popup.title", key)
+    override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.overridingScriptedVariables.popup.title", key)
 
     override fun getPopupText(editor: Editor, value: PsiElement): String {
         val file = runSmartReadAction { value.containingFile } ?: return PlsBundle.message("fix.navigate.popup.text.0", key)

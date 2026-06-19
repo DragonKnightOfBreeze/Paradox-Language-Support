@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix
+package icu.windea.pls.lang.fixes
 
 import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
@@ -12,24 +12,35 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileHandler
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
+import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsHandler
 
-class GenerateLocalisationsInFileFix(
+class GenerateLocalisationsFix(
     element: PsiElement,
+    private val context: ParadoxLocalisationCodeInsightContext,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
+
     override fun getPriority() = PriorityAction.Priority.HIGH
 
     override fun getText(): String {
-        val fileName = startElement.containingFile?.name.or.anonymous()
-        return PlsBundle.message("fix.generateLocalisationsInFile.name", fileName)
+        val contextName = context.name.or.anonymous()
+        return when (context.type) {
+            Type.Definition -> PlsBundle.message("fix.generateLocalisations.name.1", contextName)
+            Type.Modifier -> PlsBundle.message("fix.generateLocalisations.name.2", contextName)
+            Type.LocalisationReference -> PlsBundle.message("fix.generateLocalisations.name.3", contextName)
+            Type.SyncedLocalisationReference -> PlsBundle.message("fix.generateLocalisations.name.4", contextName)
+            Type.Localisation -> PlsBundle.message("fix.generateLocalisations.name.5", contextName)
+            else -> throw IllegalStateException()
+        }
     }
 
-    override fun getFamilyName() = PlsBundle.message("fix.generateLocalisationsInFile.familyName")
+    override fun getFamilyName() = PlsBundle.message("fix.generateLocalisations.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return
         runInEdt {
-            val handler = GenerateLocalisationsInFileHandler(fromInspection = true)
+            val handler = GenerateLocalisationsHandler(context, fromInspection = true)
             handler.invoke(project, editor, file)
         }
     }

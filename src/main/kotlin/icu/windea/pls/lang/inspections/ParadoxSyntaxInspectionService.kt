@@ -7,7 +7,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.quickfix.ReplaceStringFix
+import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxGameType

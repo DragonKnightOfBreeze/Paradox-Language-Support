@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.inspections.localisation.complexExpression
 
 import com.intellij.codeInspection.LocalQuickFix
-import icu.windea.pls.lang.quickfix.EscapeCommandFix
+import icu.windea.pls.lang.fixes.EscapeCommandFix
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError

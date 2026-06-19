@@ -5,7 +5,7 @@ import com.intellij.codeInsight.daemon.impl.analysis.ErrorQuickFixProvider
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.lang.quickfix.InsertMissingTokenFix
+import icu.windea.pls.lang.fixes.InsertMissingTokenFix
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter

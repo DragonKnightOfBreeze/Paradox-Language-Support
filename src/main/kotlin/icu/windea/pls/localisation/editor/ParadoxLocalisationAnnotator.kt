@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.InsertStringFix
+import icu.windea.pls.lang.fixes.InsertStringFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**

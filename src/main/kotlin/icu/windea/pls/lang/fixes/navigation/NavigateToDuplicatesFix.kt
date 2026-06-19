@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix.navigation
+package icu.windea.pls.lang.fixes.navigation
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement

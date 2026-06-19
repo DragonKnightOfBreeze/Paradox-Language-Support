@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix.navigation
+package icu.windea.pls.lang.fixes.navigation
 
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement

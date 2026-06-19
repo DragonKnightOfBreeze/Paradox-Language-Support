@@ -9,8 +9,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.model.constants.PlsConstants
 
 // com.intellij.openapi.editor.actions.AddBomAction

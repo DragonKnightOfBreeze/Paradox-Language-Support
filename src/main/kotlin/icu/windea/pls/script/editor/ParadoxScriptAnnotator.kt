@@ -11,8 +11,8 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
-import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
-import icu.windea.pls.lang.quickfix.InsertStringFix
+import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
+import icu.windea.pls.lang.fixes.InsertStringFix
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement

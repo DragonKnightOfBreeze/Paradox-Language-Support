@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix
+package icu.windea.pls.lang.fixes
 
 import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
@@ -8,11 +8,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
-class InsertStringFix(
+class ReplaceStringFix(
     element: PsiElement,
     private val name: String,
     private val string: String,
     private val offset: Int,
+    private val length: Int,
     private val moveCaretToOffset: Int = -1,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption, DumbAware {
     override fun getText() = name
@@ -20,9 +21,9 @@ class InsertStringFix(
     override fun getFamilyName() = text
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-        if (string.isEmpty()) return
+        if (length <= 0) return
         val document = file.fileDocument
-        document.insertString(offset, string)
+        document.replaceString(offset, offset + length, string)
         if (editor != null && moveCaretToOffset > 0) {
             editor.caretModel.moveToOffset(moveCaretToOffset)
         }
@@ -31,6 +32,6 @@ class InsertStringFix(
     override fun startInWriteAction() = true
 
     override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
-        return action is InsertStringFix && action.name == name
+        return action is ReplaceStringFix && action.name == name
     }
 }

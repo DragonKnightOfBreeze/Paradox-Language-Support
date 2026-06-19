@@ -9,8 +9,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
-import icu.windea.pls.lang.quickfix.ReplaceStringFix
+import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
+import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 

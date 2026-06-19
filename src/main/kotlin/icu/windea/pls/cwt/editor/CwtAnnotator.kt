@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.lang.quickfix.InsertStringFix
+import icu.windea.pls.lang.fixes.InsertStringFix
 
 /**
  * 用于在 CWT 文件中提供额外的代码高亮。

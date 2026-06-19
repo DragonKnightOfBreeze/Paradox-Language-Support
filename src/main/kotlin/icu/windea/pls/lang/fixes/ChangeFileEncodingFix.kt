@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix
+package icu.windea.pls.lang.fixes
 
 import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
