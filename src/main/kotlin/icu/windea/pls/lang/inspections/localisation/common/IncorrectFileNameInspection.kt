@@ -81,7 +81,7 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val location = locale // 不要直接注册到文件上
-        val description = PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId)
+        val description = PlsBundle.message("inspection.incorrectFileName.desc", fileName, localeId)
         val fixes = getFixes(locale, expectedFileName, localeIdFromFile)
         holder.registerProblem(location, description, *fixes)
         return holder.resultsArray
@@ -100,9 +100,9 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         element: ParadoxLocalisationLocale,
         private val expectedFileName: String
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.1.name", expectedFileName)
+        override fun getText() = PlsBundle.message("inspection.incorrectFileName.fix.1.name", expectedFileName)
 
-        override fun getFamilyName() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.1.familyName")
+        override fun getFamilyName() = PlsBundle.message("inspection.incorrectFileName.fix.1.familyName")
 
         override fun getPriority() = PriorityAction.Priority.HIGH
 
@@ -129,9 +129,9 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
         override fun getPriority() = PriorityAction.Priority.TOP // 高优先级，如果可用
 
-        override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.2.name", expectedLocaleId)
+        override fun getText() = PlsBundle.message("inspection.incorrectFileName.fix.2.name", expectedLocaleId)
 
-        override fun getFamilyName() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.2.familyName")
+        override fun getFamilyName() = PlsBundle.message("inspection.incorrectFileName.fix.2.familyName")
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return
@@ -143,12 +143,12 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         return panel {
             // ignoredFileNames
             row {
-                label(PlsBundle.message("inspection.localisation.incorrectFileName.option.ignoredFileNames"))
+                label(PlsBundle.message("inspection.incorrectFileName.option.ignoredFileNames"))
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("inspection.localisation.incorrectFileName.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("inspection.incorrectFileName.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

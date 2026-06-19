@@ -33,7 +33,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
     }
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxLocalisationFile) return null
 
         val fileName = file.name

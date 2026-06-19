@@ -77,7 +77,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
-        val name = PlsBundle.message("snippet.syntax.safeAssignOperators")
+        val name = PlsBundle.message("incorrectSyntax.snippet.safeAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(context, element, constraint, name)) return
 
         // check on grammar level
@@ -99,7 +99,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
-        val name = PlsBundle.message("snippet.syntax.safeCallAssignOperators")
+        val name = PlsBundle.message("incorrectSyntax.snippet.safeCallAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(context, element, constraint, name)) return
 
         // check on grammar level

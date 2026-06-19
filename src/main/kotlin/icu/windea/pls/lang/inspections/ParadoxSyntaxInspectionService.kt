@@ -28,8 +28,8 @@ object ParadoxSyntaxInspectionService {
         val testResult = constraint.testResult(context.gameType, context.gameVersion)
         if (!testResult.strictValue) {
             val description = when {
-                testResult.sinceGameVersion == null -> PlsBundle.message("snippet.syntax.in.game", name, context.gameType.title)
-                else -> PlsBundle.message("snippet.syntax.since.gameVersion", name, context.gameType.title, testResult.sinceGameVersion)
+                testResult.sinceGameVersion == null -> PlsBundle.message("incorrectSyntax.snippet.in.game", name, context.gameType.title)
+                else -> PlsBundle.message("incorrectSyntax.snippet.since.gameVersion", name, context.gameType.title, testResult.sinceGameVersion)
             }
             val fixes = getFixes(context, element, constraint, testResult)
             context.holder.registerProblem(element, description, *fixes)

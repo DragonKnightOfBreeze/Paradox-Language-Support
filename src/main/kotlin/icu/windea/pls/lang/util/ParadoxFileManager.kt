@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
@@ -29,6 +30,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
+import javax.swing.Icon
 
 @Suppress("unused")
 object ParadoxFileManager {
@@ -56,6 +58,26 @@ object ParadoxFileManager {
         return resultPath.formatted()
     }
 
+    fun getFileType(fileGroup: ParadoxFileGroup): FileType? {
+        return when (fileGroup) {
+            ParadoxFileGroup.Script -> ParadoxScriptFileType
+            ParadoxFileGroup.Localisation -> ParadoxLocalisationFileType
+            ParadoxFileGroup.Csv -> ParadoxCsvFileType
+            ParadoxFileGroup.ModDescriptor -> ParadoxScriptFileType
+            else -> null
+        }
+    }
+
+    fun getFileTypeIcon(fileGroup: ParadoxFileGroup): Icon? {
+        return when (fileGroup) {
+            ParadoxFileGroup.Script -> PlsIcons.FileTypes.ParadoxScript
+            ParadoxFileGroup.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
+            ParadoxFileGroup.Csv -> PlsIcons.FileTypes.ParadoxCsv
+            ParadoxFileGroup.ModDescriptor -> PlsIcons.FileTypes.ModDescriptor
+            else -> null
+        }
+    }
+
     /**
      * 判断指定的文件能否引用另一个文件中的内容。
      *
@@ -70,8 +92,8 @@ object ParadoxFileManager {
         return true
     }
 
-    fun canOverrideFile(file: PsiFile, fileType: ParadoxFileGroup): Boolean {
-        return when (fileType) {
+    fun canOverrideFile(file: PsiFile, fileGroup: ParadoxFileGroup): Boolean {
+        return when (fileGroup) {
             ParadoxFileGroup.Script -> true
             ParadoxFileGroup.Localisation -> true
             ParadoxFileGroup.Csv -> true
@@ -106,16 +128,6 @@ object ParadoxFileManager {
         if (!PlsFacade.isUnitTestMode()) return false
         val name = file.nameWithoutExtension
         return name.split('_', '.').any { it == "test" }
-    }
-
-    fun getFileType(fileType: ParadoxFileGroup): FileType? {
-        return when (fileType) {
-            ParadoxFileGroup.Script -> ParadoxScriptFileType
-            ParadoxFileGroup.Localisation -> ParadoxLocalisationFileType
-            ParadoxFileGroup.Csv -> ParadoxCsvFileType
-            ParadoxFileGroup.ModDescriptor -> ParadoxScriptFileType
-            else -> null
-        }
     }
 
     fun createTempFile(file: VirtualFile, directoryPath: Path): VirtualFile? {

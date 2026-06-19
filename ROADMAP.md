@@ -78,8 +78,8 @@
 - [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P3/QOL 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换
 - [x] P3/QOL 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换（不检查调用链是否过长）
-- [ ] P3/QOL 提供代码检查（对于脚本文件或CSV文件），以报告当前文件无法匹配到任何 `CwtFilePathMatchableConfig`（默认级别：`TEXT ATTRIBUTES`） - 这意味着当前文件是特殊的，或者缺失相应的规则
-- [x] P3/QOL 将 `ParadoxInlineScriptEditorNotificationProvider` 改为 `DeclaredInlineScriptUsageInspection`（默认级别：`TEXT ATTRIBUTES`） - 为了对齐已有的 `UnusedInlineScriptInspection`
+- [ ] P3/QOL 提供代码检查 `UnmatchedFileInspection`（对于脚本文件或CSV文件），以报告当前文件无法匹配到任何 `CwtFilePathMatchableConfig`（默认级别：`TEXT ATTRIBUTES`） - 这意味着当前文件是特殊的，或者缺失相应的规则
+- [x] P3/QOL 将 `ParadoxInlineScriptEditorNotificationProvider` 改为 `DeclaredInlineScriptInspection`（默认级别：`TEXT ATTRIBUTES`） - 为了对齐已有的 `UnusedInlineScriptInspection`
 
 ## v2.2.0-csv
 

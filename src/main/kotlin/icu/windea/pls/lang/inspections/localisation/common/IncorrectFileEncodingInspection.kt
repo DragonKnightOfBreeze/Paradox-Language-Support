@@ -3,15 +3,11 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
+import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.model.constants.PlsConstants
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction
@@ -34,20 +30,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-        val virtualFile = file.virtualFile ?: return null
-        val charset = virtualFile.charset
-        val hasBom = VirtualFileBomService.hasBom(virtualFile, PlsConstants.utf8Bom)
-        val isValidCharset = charset == Charsets.UTF_8
-        val isValidBom = hasBom
-        if (isValidCharset && isValidBom) return null
-
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val expect = "UTF-8 BOM"
-        val actual = "UTF-8" + if (hasBom) "BOM" else "NO BOM"
-        val description = PlsBundle.message("inspection.localisation.incorrectFileEncoding.desc.1", actual, expect)
-        val fix = ChangeFileEncodingFix(file, Charsets.UTF_8, true)
-        holder.registerProblem(file, description, fix)
-        return holder.resultsArray
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        return ParadoxFileInspectionService.checkFileEncoding(file, manager, isOnTheFly)
     }
 }

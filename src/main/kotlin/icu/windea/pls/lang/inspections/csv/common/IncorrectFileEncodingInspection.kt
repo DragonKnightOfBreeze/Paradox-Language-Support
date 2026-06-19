@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.common
+package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
@@ -9,7 +9,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
@@ -26,7 +25,7 @@ import icu.windea.pls.model.constants.PlsConstants
  * 提供快速修复：
  * - 改为正确的文件编码
  *
- * @see ParadoxUtf8BomOptionProvider
+ * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -34,8 +33,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val virtualFile = file.virtualFile
         if (VirtualFileService.isLightFile(virtualFile)) return false
         if (VirtualFileService.isInjectedFile(virtualFile)) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file)
+        // 要求是可接受的 CSV 文件
+        return ParadoxPsiFileMatcher.isCsvFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

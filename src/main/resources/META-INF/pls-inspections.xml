@@ -39,14 +39,18 @@
 
     <!-- region Paradox Script -->
     <!-- region Paradox Script/Common -->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
-                     key="inspection.script.duplicateScriptedVariables" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
                      key="inspection.script.incorrectFileEncoding" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
+                     key="inspection.script.incorrectFileEncoding" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
+                     key="inspection.script.duplicateScriptedVariables" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
                      key="inspection.script.unresolvedExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
@@ -258,18 +262,18 @@
 
     <!-- region Paradox Localisation -->
     <!-- region Paradox Localisation/Common -->
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
-                     key="inspection.localisation.duplicateProperties" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.DuplicatePropertiesInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileName"
-                     key="inspection.localisation.incorrectFileName" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.IncorrectFileNameInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileEncoding"
                      key="inspection.localisation.incorrectFileEncoding" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileName"
+                     key="inspection.localisation.incorrectFileName" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.IncorrectFileNameInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
+                     key="inspection.localisation.duplicateProperties" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.DuplicatePropertiesInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocales"
                      key="inspection.localisation.multipleLocales" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
@@ -347,6 +351,10 @@
 
     <!-- region Paradox CSV -->
     <!-- region Paradox CSV/Common -->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxCsvIncorrectFileEncoding"
+                     key="inspection.csv.incorrectFileEncoding" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectFileEncodingInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumns"
                      key="inspection.csv.missingColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
