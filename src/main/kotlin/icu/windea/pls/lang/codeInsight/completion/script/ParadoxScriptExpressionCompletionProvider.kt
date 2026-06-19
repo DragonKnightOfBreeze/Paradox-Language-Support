@@ -53,7 +53,7 @@ object ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
-                ParadoxCompletionManager.addKeyCompletions(memberElement, context, resultToUse)
+                ParadoxCompletionManager.addKeyCompletions(context, resultToUse, memberElement)
             }
         }
         if (mayBeValue) {
@@ -61,14 +61,14 @@ object ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
-                ParadoxCompletionManager.addValueCompletions(memberElement, context, resultToUse)
+                ParadoxCompletionManager.addValueCompletions(context, resultToUse, memberElement)
             }
         }
         if (mayBePropertyValue) {
             // 向上得到property
             val propertyElement = element.parentOfType<ParadoxScriptProperty>()
             if (propertyElement != null) {
-                ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
+                ParadoxCompletionManager.addPropertyValueCompletions(context, resultToUse, element, propertyElement)
             }
         }
     }

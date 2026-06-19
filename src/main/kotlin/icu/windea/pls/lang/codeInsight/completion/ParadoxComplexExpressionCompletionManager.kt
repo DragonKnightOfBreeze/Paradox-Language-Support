@@ -48,6 +48,10 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxComplexExpressionCompletionManager {
     // region Core Methods
 
+    private inline fun <T> markIncomplete(action: () -> T): T {
+        return withState(ChronicleThreadContext.incompleteComplexExpression, action)
+    }
+
     fun completeTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
@@ -156,7 +160,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    completeForScopeNode(node, context, result)
+                    completeForScopeNode(context, result, node)
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
@@ -243,7 +247,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    completeForScopeNode(node, context, result)
+                    completeForScopeNode(context, result, node)
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
@@ -253,9 +257,9 @@ object ParadoxComplexExpressionCompletionManager {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
                     val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
-                    val afterPrefix = completeForScopeNode(scopeNode, context, result)
+                    val afterPrefix = completeForScopeNode(context, result, scopeNode)
                     if (afterPrefix) break
-                    completeForValueFieldNode(node, context, result)
+                    completeForValueFieldNode(context, result, node)
                     break
                 }
             }
@@ -289,7 +293,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    completeForScopeNode(node, context, result)
+                    completeForScopeNode(context, result, node)
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
@@ -299,9 +303,9 @@ object ParadoxComplexExpressionCompletionManager {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
                     val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
-                    val afterPrefix = completeForScopeNode(scopeNode, context, result)
+                    val afterPrefix = completeForScopeNode(context, result, scopeNode)
                     if (afterPrefix) break
-                    completeForVariableFieldValueNode(node, context, result)
+                    completeForVariableFieldValueNode(context, result, node)
                     break
                 }
             }
@@ -335,7 +339,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    completeForCommandScopeNode(node, context, result)
+                    completeForCommandScopeNode(context, result, node)
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
@@ -345,9 +349,9 @@ object ParadoxComplexExpressionCompletionManager {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
                     val scopeNode = ParadoxCommandScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
-                    val afterPrefix = completeForCommandScopeNode(scopeNode, context, result)
+                    val afterPrefix = completeForCommandScopeNode(context, result, scopeNode)
                     if (afterPrefix) break
-                    completeForCommandFieldNode(node, context, result)
+                    completeForCommandFieldNode(context, result, node)
                     break
                 }
             }
@@ -517,10 +521,6 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    private inline fun <T> markIncomplete(action: () -> T): T {
-        return withState(ChronicleThreadContext.incompleteComplexExpression, action)
-    }
-
     // endregion
 
     // region General Completion Methods
@@ -528,7 +528,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForScopeNode(node: ParadoxScopeNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
+    private fun completeForScopeNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxScopeNode): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -572,7 +572,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForValueFieldNode(node: ParadoxValueFieldNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
+    private fun completeForValueFieldNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxValueFieldNode): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -610,7 +610,7 @@ object ParadoxComplexExpressionCompletionManager {
         return inputPrefix
     }
 
-    private fun completeForVariableFieldValueNode(node: ParadoxDataSourceNode, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    private fun completeForVariableFieldValueNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDataSourceNode) {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
@@ -624,7 +624,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForCommandScopeNode(node: ParadoxCommandScopeNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
+    private fun completeForCommandScopeNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxCommandScopeNode): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -667,7 +667,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForCommandFieldNode(node: ParadoxCommandFieldNode, context: ParadoxCompletionContext, result: CompletionResultSet): Boolean {
+    private fun completeForCommandFieldNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxCommandFieldNode): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -825,7 +825,7 @@ object ParadoxComplexExpressionCompletionManager {
             is ParadoxDynamicValueExpression -> completeDynamicValueExpression(context, result)
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
             is ParadoxValueFieldExpression -> completeValueFieldExpression(context, result)
-            else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+            else -> completeScriptExpressionFromLinkConfigs(context, result, linkConfigs)
         }
     }
 
@@ -924,7 +924,7 @@ object ParadoxComplexExpressionCompletionManager {
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
             is ParadoxValueFieldExpression -> completeValueFieldExpression(context, result)
             is ParadoxScriptValueExpression -> completeScriptValueExpression(context, result)
-            else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+            else -> completeScriptExpressionFromLinkConfigs(context, result, linkConfigs)
         }
     }
 
@@ -1047,7 +1047,7 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(config = null, configs = linkConfigs)
         when (argNode) {
             is ParadoxCommandExpression -> completeCommandExpression(context, result)
-            else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+            else -> completeScriptExpressionFromLinkConfigs(context, result, linkConfigs)
         }
     }
 
@@ -1162,11 +1162,11 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(config = null, configs = linkConfigs)
         when (argNode) {
             is ParadoxCommandExpression -> completeCommandExpression(context, result)
-            else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+            else -> completeScriptExpressionFromLinkConfigs(context, result, linkConfigs)
         }
     }
 
-    fun completeScriptExpressionFromLinkConfigs(linkConfigs: List<CwtLinkConfig>, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeScriptExpressionFromLinkConfigs(context: ParadoxCompletionContext, result: CompletionResultSet, linkConfigs: List<CwtLinkConfig>) {
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = linkConfig)

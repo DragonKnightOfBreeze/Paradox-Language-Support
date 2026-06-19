@@ -77,7 +77,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxCompletionManager {
     // region Core Methods
 
-    fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun addKeyCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
         val contextElement = context.contextElement
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
@@ -125,7 +125,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addValueCompletions(memberElement: ParadoxScriptMember, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun addValueCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
         val contextElement = context.contextElement
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
@@ -162,7 +162,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun addPropertyValueCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty) {
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
 
         if (!configContext.inRoot()) return
