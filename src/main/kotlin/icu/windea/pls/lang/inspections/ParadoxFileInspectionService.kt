@@ -30,7 +30,6 @@ import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ParadoxFileInspectionService {
@@ -43,7 +42,7 @@ object ParadoxFileInspectionService {
         val charset = virtualFile.charset
         val isValidCharset = charset == expectedCharset
         val useBom = ParadoxFileEncodingManager.useBom(file, fileInfo)
-        val hasBom = VirtualFileBomService.hasBom(virtualFile, PlsConstants.utf8Bom)
+        val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
         val isValidBom = useBom == hasBom
         if (isValidCharset && isValidBom) return null
 

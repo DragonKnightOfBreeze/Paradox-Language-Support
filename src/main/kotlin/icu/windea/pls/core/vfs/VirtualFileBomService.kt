@@ -6,6 +6,8 @@ import com.intellij.util.ArrayUtil
 import java.io.IOException
 
 object VirtualFileBomService {
+    val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
+
     /**
      * 判断当前内虚拟文件是否包含指定 BOM（物理层面）。
      */

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.codeInsight.completion.cwt
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
@@ -12,8 +11,9 @@ import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 
-class CwtConfigCompletionProvider : CompletionProvider<CompletionParameters>() {
+object CwtConfigCompletionProvider : ParadoxCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val contextElement: PsiElement? = when (position.elementType) {

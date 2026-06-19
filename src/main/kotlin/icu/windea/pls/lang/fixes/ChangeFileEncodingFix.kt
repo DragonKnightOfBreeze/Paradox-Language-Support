@@ -15,7 +15,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.vfs.VirtualFileBomService
-import icu.windea.pls.model.constants.PlsConstants
 import java.nio.charset.Charset
 
 class ChangeFileEncodingFix(
@@ -30,14 +29,14 @@ class ChangeFileEncodingFix(
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val virtualFile = file.virtualFile
         val changeCharset = virtualFile.charset != charset
-        val hasBom = VirtualFileBomService.hasBom(virtualFile, PlsConstants.utf8Bom)
+        val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
         if (addBom == true && !hasBom) {
             runCatchingCancelable {
-                VirtualFileBomService.addBom(virtualFile, PlsConstants.utf8Bom)
+                VirtualFileBomService.addBom(virtualFile, VirtualFileBomService.utf8Bom)
             }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e) }
         } else if (addBom == false && hasBom) {
             runCatchingCancelable {
-                VirtualFileBomService.removeBom(virtualFile, PlsConstants.utf8Bom)
+                VirtualFileBomService.removeBom(virtualFile, VirtualFileBomService.utf8Bom)
             }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e) }
         }
         if (changeCharset) virtualFile.charset = charset

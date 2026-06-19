@@ -5,7 +5,7 @@ import icu.windea.pls.PlsBundle
 
 // org.intellij.plugins.markdown.ui.floating.FloatingToolbarCustomizableGroupProvider
 
-class ParadoxLocalisationFloatingToolbarCustomizableGroupProvider : com.intellij.ide.ui.customization.CustomizableActionGroupProvider() {
+class ParadoxLocalisationFloatingToolbarCustomizableGroupProvider : CustomizableActionGroupProvider() {
     override fun registerGroups(registrar: CustomizableActionGroupRegistrar) {
         registrar.addCustomizableActionGroup(
             "Pls.ParadoxLocalisation.Toolbar.Floating",

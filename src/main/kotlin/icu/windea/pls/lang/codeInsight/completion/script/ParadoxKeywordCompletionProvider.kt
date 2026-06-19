@@ -21,6 +21,8 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 
 /**
  * 提供关键字的代码补全（要求不在定义声明中提供）。
+ *
+ * 仅适用于当前文件无法匹配任何规则的场合。
  */
 class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
