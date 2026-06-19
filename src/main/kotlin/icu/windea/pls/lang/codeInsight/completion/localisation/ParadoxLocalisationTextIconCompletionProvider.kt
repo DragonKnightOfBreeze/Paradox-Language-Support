@@ -1,28 +1,32 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
-class ParadoxLocalisationTextIconCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxLocalisationTextIconCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement(TEXT_ICON_TOKEN)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationTextIcon>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return

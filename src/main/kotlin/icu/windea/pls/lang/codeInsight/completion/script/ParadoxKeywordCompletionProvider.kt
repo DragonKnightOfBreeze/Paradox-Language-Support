@@ -1,13 +1,14 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElements
 import icu.windea.pls.lang.codeInsight.completion.configGroup
@@ -18,13 +19,11 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets.STRING_TOKENS
 
-/**
- * 提供关键字的代码补全（要求不在定义声明中提供）。
- *
- * 仅适用于当前文件无法匹配任何规则的场合。
- */
-class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement().withElementType(STRING_TOKENS).withParent(psiElement(ParadoxScriptString::class.java))
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return

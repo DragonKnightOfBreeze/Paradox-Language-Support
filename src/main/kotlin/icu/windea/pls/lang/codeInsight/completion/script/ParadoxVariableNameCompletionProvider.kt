@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
@@ -13,6 +13,7 @@ import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configGroup
@@ -29,17 +30,12 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.isBlockMember
 
-/**
- * 提供已有的变量的名字的代码补全。
- *
- * 适用条件：
- * - 直接位于效果子句中。
- *
- * @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
- */
-class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeVariableNames) return
 

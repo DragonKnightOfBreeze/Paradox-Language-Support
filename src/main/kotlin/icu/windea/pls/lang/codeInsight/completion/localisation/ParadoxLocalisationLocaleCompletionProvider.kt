@@ -2,13 +2,13 @@ package icu.windea.pls.lang.codeInsight.completion.localisation
 
 import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.ui.JBColor
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
@@ -16,17 +16,18 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.PlsCompletionPriorities
 import icu.windea.pls.lang.codeInsight.completion.withPriority
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
-/**
- * 提供语言环境名字的代码补全。
- */
-class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = or(psiElement(LOCALE_TOKEN), psiElement(PROPERTY_KEY_TOKEN))
+
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
         val editor = context.editor

@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
@@ -11,16 +11,17 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
-/**
- * 提供（位于事件声明中的）事件ID中的事件命名空间的代码补全。
- */
-class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxEventIdCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return

@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
@@ -11,6 +11,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.getDefinitionData
@@ -18,13 +19,13 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-/**
- * 提供概念的名字和别名的代码补全。
- */
-class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxLocalisationConceptCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement(CONCEPT_NAME_TOKEN)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationConceptName>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return

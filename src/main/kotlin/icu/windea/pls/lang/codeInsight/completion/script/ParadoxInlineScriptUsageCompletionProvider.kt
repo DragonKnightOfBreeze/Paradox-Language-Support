@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
@@ -11,6 +11,7 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.ep.resolve.config.CwtInlineScriptUsageConfigContextProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.expressionOffset
 import icu.windea.pls.lang.codeInsight.completion.keyword
@@ -32,13 +33,13 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.propertyValue
 
-/**
- * 提供内联脚本用法的代码补全。
- */
-class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeInlineScriptUsages) return
 

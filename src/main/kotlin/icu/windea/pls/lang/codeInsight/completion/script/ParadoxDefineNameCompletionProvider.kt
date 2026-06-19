@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
@@ -13,6 +13,7 @@ import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.isParameterized
@@ -26,12 +27,12 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-/**
- * 提供已有的定值的命名空间和变量的代码补全。
- */
-class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement().withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeDefineNames) return
 
