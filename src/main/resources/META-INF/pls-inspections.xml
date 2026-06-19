@@ -43,10 +43,10 @@
                      key="inspection.script.incorrectFileEncoding" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
-                     key="inspection.script.incorrectFileEncoding" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnmatchedFile"
+                     key="inspection.script.unmatchedFile" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="TEXT ATTRIBUTES"
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnmatchedFileInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
                      key="inspection.script.duplicateScriptedVariables" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
@@ -351,10 +351,14 @@
 
     <!-- region Paradox CSV -->
     <!-- region Paradox CSV/Common -->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxCsvIncorrectFileEncoding"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectFileEncoding"
                      key="inspection.csv.incorrectFileEncoding" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnmatchedFile"
+                     key="inspection.csv.unmatchedFile" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     enabledByDefault="true" level="TEXT ATTRIBUTES"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnmatchedFileInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumns"
                      key="inspection.csv.missingColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"

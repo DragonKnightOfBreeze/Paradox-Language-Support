@@ -21,7 +21,10 @@ import icu.windea.pls.model.constants.PlsConstants
 // com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
- * 不正确的文件编码的代码检查。
+ * 检查当前脚本文件是否使用了正确的文件编码。
+ *
+ * 说明：
+ * - 忽略注入的文件和临时文件。
  *
  * 提供快速修复：
  * - 改为正确的文件编码

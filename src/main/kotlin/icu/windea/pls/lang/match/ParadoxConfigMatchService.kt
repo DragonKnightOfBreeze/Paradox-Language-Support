@@ -2,6 +2,7 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
@@ -30,6 +31,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -74,6 +76,19 @@ object ParadoxConfigMatchService {
             rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
+
+    // region File Level
+
+    fun isMatchedOnFileLevel(file: PsiFile, configGroup: CwtConfigGroup, path: ParadoxPath): Boolean {
+        return when {
+            file is ParadoxScriptFile -> configGroup.types.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+                || configGroup.complexEnums.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+            file is ParadoxCsvFile -> configGroup.rows.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+            else -> true // meaningless, return true here
+        }
+    }
+
+    // endregion
 
     // region Type Config
 
@@ -380,7 +395,7 @@ object ParadoxConfigMatchService {
         val configGroup = propertyConfig.configGroup
         val singleAliasName = propertyConfig.valueExpression.value ?: return false
         val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
-        return matchesPropertyForSubtype(context,definition, property, singleAlias.config)
+        return matchesPropertyForSubtype(context, definition, property, singleAlias.config)
     }
 
     private fun matchesAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {

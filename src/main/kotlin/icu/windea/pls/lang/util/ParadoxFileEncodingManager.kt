@@ -1,8 +1,10 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.model.ParadoxFileGroup
+import com.intellij.psi.PsiFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import java.nio.charset.Charset
 
 object ParadoxFileEncodingManager {
@@ -10,18 +12,17 @@ object ParadoxFileEncodingManager {
         return Charsets.UTF_8
     }
 
-    fun useBom(fileInfo: ParadoxFileInfo): Boolean {
-        val fileType = fileInfo.group
+    fun useBom(file: PsiFile, fileInfo: ParadoxFileInfo): Boolean {
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path
-        return when (fileType) {
+        return when {
             // name list file -> BOM, others -> NO BOM
-            ParadoxFileGroup.Script -> {
+            file is ParadoxScriptFile -> {
                 if (gameType == ParadoxGameType.Stellaris && path.matchesParent("common/name_lists")) return true
                 false
             }
             // always -> BOM
-            ParadoxFileGroup.Localisation -> {
+            file is ParadoxLocalisationFile -> {
                 true
             }
             // other -> NO BOM
