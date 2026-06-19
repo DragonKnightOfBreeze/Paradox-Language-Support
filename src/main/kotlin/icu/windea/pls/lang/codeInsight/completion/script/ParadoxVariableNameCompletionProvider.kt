@@ -12,7 +12,6 @@ import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -46,7 +45,6 @@ object ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
         val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return
         val configGroup = configs.first().configGroup
-        context.configGroup = configGroup
         val matched = configs.any { config ->
             config.configs?.any { childConfig ->
                 childConfig is CwtPropertyConfig && childConfig.key == "alias_name[effect]"
