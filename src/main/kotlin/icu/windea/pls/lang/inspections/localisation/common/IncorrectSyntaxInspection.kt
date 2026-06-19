@@ -29,14 +29,14 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                checkIncorrectLeftBracketEscape(holder, element)
-                checkDanglingColorfulTextEndMarker(holder, element)
-                checkDanglingTextFormatEndMarker(holder, element)
+                checkIncorrectLeftBracketEscape(element, holder)
+                checkDanglingColorfulTextEndMarker(element, holder)
+                checkDanglingTextFormatEndMarker(element, holder)
             }
         }
     }
 
-    private fun checkIncorrectLeftBracketEscape(holder: ProblemsHolder, element: PsiElement) {
+    private fun checkIncorrectLeftBracketEscape(element: PsiElement, holder: ProblemsHolder) {
         val indices = ParadoxSyntaxService.getIncorrectLeftBracketEscapeIndices(element, holder.file)
         if (indices.isEmpty()) return
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.1")
@@ -48,14 +48,14 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         }
     }
 
-    private fun checkDanglingColorfulTextEndMarker(holder: ProblemsHolder, element: PsiElement) {
+    private fun checkDanglingColorfulTextEndMarker(element: PsiElement, holder: ProblemsHolder) {
         if (!ParadoxSyntaxService.isDanglingColorfulTextEndMarker(element)) return
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.2")
         val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.2.name"))
         holder.registerProblem(element, description, fix)
     }
 
-    private fun checkDanglingTextFormatEndMarker(holder: ProblemsHolder, element: PsiElement) {
+    private fun checkDanglingTextFormatEndMarker(element: PsiElement, holder: ProblemsHolder) {
         if (!ParadoxSyntaxService.isDanglingTextFormatEndMarker(element)) return
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.3")
         val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.2.name"))

@@ -28,12 +28,12 @@ class UnsupportedParameterConditionInspection : LocalInspectionTool(), DumbAware
         return object : ParadoxScriptVisitor() {
             override fun visitParameterCondition(element: ParadoxScriptParameterCondition) {
                 ProgressManager.checkCanceled()
-                checkInlineScript(holder, element)
+                checkInlineScript(element, holder)
             }
         }
     }
 
-    private fun checkInlineScript(holder: ProblemsHolder, element: ParadoxScriptParameterCondition) {
+    private fun checkInlineScript(element: ParadoxScriptParameterCondition, holder: ProblemsHolder) {
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
         holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterCondition.desc.1"))

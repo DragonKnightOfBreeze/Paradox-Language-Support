@@ -11,10 +11,13 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
- * 检查内联脚本用法是否存在冲突。
+ * 检查内联脚本是否存在冲突的用法。
  */
 class ConflictingInlineScriptUsageInspection : InlineScriptInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        // still check if `inference.inlineScriptConfig` is not enabled
+        // if (!getSettings().inference.inlineScriptConfig) return null
+
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return null
         if (configContext.inlineScriptHasConflict != true) return null

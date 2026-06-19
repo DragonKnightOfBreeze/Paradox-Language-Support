@@ -33,12 +33,12 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                 if (!element.isCommandExpression()) return
                 val value = element.value
                 val commandExpression = ParadoxCommandExpression.resolve(value, null, configGroup) ?: return
-                checkExpression(holder, element, commandExpression, configGroup)
+                checkExpression(element, commandExpression, configGroup, holder)
             }
         }
     }
 
-    private fun checkExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup) {
+    private fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
         var inputScopeContext = ParadoxScopeContext.resolveAny()
         if (complexExpression !is ParadoxCommandExpression) return
         for (node in complexExpression.nodes) {

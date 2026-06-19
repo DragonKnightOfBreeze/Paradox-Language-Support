@@ -17,6 +17,7 @@ import javax.swing.JComponent
 /**
  * 检查定义注入的用法是否正确。
  *
+ * 说明：
  * - 基于定义注入的模式，定义目标的存在性必须正确。
  */
 class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase() {
@@ -26,17 +27,21 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
-                if (definitionInjectionInfo.target.isNullOrEmpty()) {
-                    val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
-                    holder.registerProblem(element.propertyKey, description)
-                    return
-                }
-                if (definitionInjectionInfo.type.isNullOrEmpty()) return // considered "unsupported"
-                if (definitionInjectionInfo.typeConfig == null) return // considered "unsupported"
-                checkTargetExistence(element, definitionInjectionInfo, holder)
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
+        if (definitionInjectionInfo.target.isNullOrEmpty()) {
+            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
+            holder.registerProblem(element.propertyKey, description)
+            return
+        }
+        if (definitionInjectionInfo.type.isNullOrEmpty()) return // considered "unsupported"
+        if (definitionInjectionInfo.typeConfig == null) return // considered "unsupported"
+        checkTargetExistence(element, definitionInjectionInfo, holder)
     }
 
     private fun checkTargetExistence(element: ParadoxScriptProperty, definitionInjectionInfo: ParadoxDefinitionInjectionInfo, holder: ProblemsHolder) {

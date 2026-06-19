@@ -39,13 +39,13 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                 val config = configs.firstOrNull() ?: return
                 if (config.configExpression.type != CwtDataTypes.ScopeField) return
                 if (config !is CwtPropertyConfig) return
-                checkExpression(holder, element, config)
+                checkExpression(element, config, holder)
                 return
             }
         }
     }
 
-    private fun checkExpression(holder: ProblemsHolder, element: ParadoxScriptProperty, config: CwtPropertyConfig) {
+    private fun checkExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, holder: ProblemsHolder) {
         val resultScopeContext = ParadoxScopeManager.getScopeContext(element) ?: return
         val links = resultScopeContext.links
         if (links.isEmpty()) return

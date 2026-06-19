@@ -40,12 +40,12 @@ class UnsupportedInlineMathInspection : LocalInspectionTool(), DumbAware {
         return object : ParadoxScriptVisitor() {
             override fun visitInlineMath(element: ParadoxScriptInlineMath) {
                 ProgressManager.checkCanceled()
-                if (isAssetFile) checkInAssetFile(holder, element)
+                if (isAssetFile) checkInAssetFile(element, holder)
             }
         }
     }
 
-    private fun checkInAssetFile(holder: ProblemsHolder, element: ParadoxScriptInlineMath) {
+    private fun checkInAssetFile(element: ParadoxScriptInlineMath, holder: ProblemsHolder) {
         holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineMath.desc.1"))
     }
 }
