@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
+import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
 
 // Base
@@ -18,8 +18,8 @@ class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupportBase() {
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        result.addElement(PlsLookupElements.yesLookupElement, context)
-        result.addElement(PlsLookupElements.noLookupElement, context)
+        result.addElement(ChronicleLookupElements.yesLookupElement, context)
+        result.addElement(ChronicleLookupElements.noLookupElement, context)
     }
 }
 

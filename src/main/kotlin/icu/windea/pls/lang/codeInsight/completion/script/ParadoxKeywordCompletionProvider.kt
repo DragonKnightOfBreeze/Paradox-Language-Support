@@ -10,7 +10,7 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
+import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElements
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -49,6 +49,6 @@ object ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
         // 2.1.8 同样排除定值的脚本文件
         if (ParadoxDefineManager.isDefineFile(file)) return
 
-        result.addElements(PlsLookupElements.keywordLookupElements, context)
+        result.addElements(ChronicleLookupElements.keywordLookupElements, context)
     }
 }

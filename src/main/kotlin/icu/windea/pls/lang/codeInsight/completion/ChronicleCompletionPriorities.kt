@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-object PlsCompletionPriorities {
+object ChronicleCompletionPriorities {
     const val pinned = 1000.0
     const val keyword = 10.0
     const val constant = 90.0

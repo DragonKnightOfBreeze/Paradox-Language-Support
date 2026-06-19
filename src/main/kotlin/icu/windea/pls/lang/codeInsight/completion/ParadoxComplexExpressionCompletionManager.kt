@@ -725,7 +725,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
-                .withPriority(PlsCompletionPriorities.systemScope)
+                .withPriority(ChronicleCompletionPriorities.systemScope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -754,7 +754,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(PlsCompletionPriorities.scope)
+                .withPriority(ChronicleCompletionPriorities.scope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -782,8 +782,8 @@ object ParadoxComplexExpressionCompletionManager {
                 .withIcon(PlsIcons.Nodes.DynamicScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withInsertHandler(ChronicleInsertHandlers.addParentheses())
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -804,7 +804,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -880,8 +880,8 @@ object ParadoxComplexExpressionCompletionManager {
                 .withIcon(PlsIcons.Nodes.DynamicValueField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withInsertHandler(ChronicleInsertHandlers.addParentheses())
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -901,7 +901,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withIcon(PlsIcons.Nodes.DynamicValueField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -947,7 +947,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
-                .withPriority(PlsCompletionPriorities.systemScope)
+                .withPriority(ChronicleCompletionPriorities.systemScope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -977,7 +977,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(PlsCompletionPriorities.scope)
+                .withPriority(ChronicleCompletionPriorities.scope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1005,8 +1005,8 @@ object ParadoxComplexExpressionCompletionManager {
                 .withIcon(PlsIcons.Nodes.DynamicCommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withInsertHandler(ChronicleInsertHandlers.addParentheses())
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1028,7 +1028,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1122,8 +1122,8 @@ object ParadoxComplexExpressionCompletionManager {
                 .withIcon(PlsIcons.Nodes.DynamicCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withInsertHandler(ChronicleInsertHandlers.addParentheses())
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1143,7 +1143,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withIcon(PlsIcons.Nodes.DynamicCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1178,7 +1178,7 @@ object ParadoxComplexExpressionCompletionManager {
         val name = "define:"
         val lookupElement = LookupElementBuilder.create(name)
             .withBoldness(true)
-            .withPriority(PlsCompletionPriorities.keyword)
+            .withPriority(ChronicleCompletionPriorities.keyword)
             .withCompletionId()
         result.addElement(lookupElement, context)
     }
@@ -1235,7 +1235,7 @@ object ParadoxComplexExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.DatabaseObjectType)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(PlsCompletionPriorities.prefix)
+                .withPriority(ChronicleCompletionPriorities.prefix)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)

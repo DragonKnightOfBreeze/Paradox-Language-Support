@@ -17,7 +17,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.PlsCompletionPriorities
+import icu.windea.pls.lang.codeInsight.completion.ChronicleCompletionPriorities
 import icu.windea.pls.lang.codeInsight.completion.withPriority
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -77,7 +77,7 @@ object ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider()
                     it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
                 }
                 .letIf(matched == true) {
-                    it.withPriority(PlsCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
+                    it.withPriority(ChronicleCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
                 }
             lookupElements.add(lookupElement)
         }

@@ -56,7 +56,7 @@ fun <T : LookupElement> T.withPriority(priority: Double?): T {
     val scopeMatched = this.scopeMatched
     if (priority == null && scopeMatched) return this
     var finalPriority = priority ?: 0.0
-    if (!scopeMatched) finalPriority += PlsCompletionPriorities.scopeMismatchOffset
+    if (!scopeMatched) finalPriority += ChronicleCompletionPriorities.scopeMismatchOffset
     this.priority = finalPriority
     return this
 }
@@ -159,7 +159,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
     if (!isKeyElement && !isStringElement) return lookupElement // not in a key or value position
     if (isKey == null) return lookupElement // not complete full key or value
 
-    val params = PlsInsertHandlers.Params(
+    val params = ChronicleInsertHandlers.Params(
         quoted = context.quoted,
         isKey = context.isKey,
         insertCurlyBraces = insertCurlyBraces,
@@ -167,9 +167,9 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
     )
 
     if (isKeyElement || isStringElement && !isKey) { // key or value only
-        lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyOrValue(params))
+        lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
     } else if (isKey) { // key with value
-        lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyWithValue(params))
+        lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
     }
 
     val extraLookupElements = mutableListOf<LookupElement>()

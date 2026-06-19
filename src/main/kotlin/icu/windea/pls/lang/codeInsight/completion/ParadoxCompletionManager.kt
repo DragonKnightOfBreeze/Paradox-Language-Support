@@ -306,7 +306,7 @@ object ParadoxCompletionManager {
                 .withCaseSensitivity(false)
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
-                .withPriority(PlsCompletionPriorities.rootKey)
+                .withPriority(ChronicleCompletionPriorities.rootKey)
                 .forExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -337,7 +337,7 @@ object ParadoxCompletionManager {
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
-                .withPriority(PlsCompletionPriorities.rootKey)
+                .withPriority(ChronicleCompletionPriorities.rootKey)
                 .forExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -555,7 +555,7 @@ object ParadoxCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withPriority(PlsCompletionPriorities.enumValue)
+                .withPriority(ChronicleCompletionPriorities.enumValue)
                 .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
@@ -583,7 +583,7 @@ object ParadoxCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
-                .withPriority(PlsCompletionPriorities.complexEnumValue)
+                .withPriority(ChronicleCompletionPriorities.complexEnumValue)
                 .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
@@ -675,12 +675,12 @@ object ParadoxCompletionManager {
             // 常量的值也可能是yes/no
             if (name == "yes") {
                 if (context.quoted) return
-                result.addElement(PlsLookupElements.yesLookupElement, context)
+                result.addElement(ChronicleLookupElements.yesLookupElement, context)
                 return
             }
             if (name == "no") {
                 if (context.quoted) return
-                result.addElement(PlsLookupElements.noLookupElement, context)
+                result.addElement(ChronicleLookupElements.noLookupElement, context)
                 return
             }
         }
@@ -689,7 +689,7 @@ object ParadoxCompletionManager {
         val lookupElement = LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCaseSensitivity(false)
-            .withPriority(PlsCompletionPriorities.constant)
+            .withPriority(ChronicleCompletionPriorities.constant)
             .withPatchableIcon(icon)
             .withScopeMatched(context.scopeMatched)
             .forExpression(context)
@@ -778,7 +778,7 @@ object ParadoxCompletionManager {
                 .withIcon(PlsIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withPriority(PlsCompletionPriorities.constant)
+                .withPriority(ChronicleCompletionPriorities.constant)
                 .forExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -833,8 +833,8 @@ object ParadoxCompletionManager {
                 .withIcon(PlsIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withInsertHandler(PlsInsertHandlers.addColon())
-                .withPriority(PlsCompletionPriorities.macro)
+                .withInsertHandler(ChronicleInsertHandlers.addColon())
+                .withPriority(ChronicleCompletionPriorities.macro)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)

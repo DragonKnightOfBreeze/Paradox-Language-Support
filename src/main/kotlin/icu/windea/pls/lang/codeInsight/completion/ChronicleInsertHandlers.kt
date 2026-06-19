@@ -6,7 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.EditorModificationUtil
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 
-object PlsInsertHandlers {
+object ChronicleInsertHandlers {
     fun addParentheses(): InsertHandler<LookupElement> {
         return InsertHandler { c, _ ->
             // 按照当前的字符来决定是要插入左括号和右括号，还是仅插入左括号，还是什么都不做
@@ -96,9 +96,9 @@ object PlsInsertHandlers {
     }
 
     data class Params(
-        var quoted: Boolean = false,
-        var isKey: Boolean? = null,
-        var insertCurlyBraces: Boolean = false,
-        var constantValue: String? = null,
+        val quoted: Boolean = false,
+        val isKey: Boolean? = null,
+        val insertCurlyBraces: Boolean = false,
+        val constantValue: String? = null,
     )
 }

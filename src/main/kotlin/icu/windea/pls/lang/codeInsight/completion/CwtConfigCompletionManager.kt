@@ -95,7 +95,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -105,7 +105,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -145,7 +145,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -155,7 +155,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -187,7 +187,7 @@ object CwtConfigCompletionManager {
                 val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withIcon(icon)
-                    .withPriority(PlsCompletionPriorities.constant)
+                    .withPriority(ChronicleCompletionPriorities.constant)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Enum -> {
@@ -200,7 +200,7 @@ object CwtConfigCompletionManager {
                     val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withIcon(icon)
-                        .withPriority(PlsCompletionPriorities.enumValue)
+                        .withPriority(ChronicleCompletionPriorities.enumValue)
                         .withPatchableTailText(tailText)
                     processor.process(lookupElement)
                 }
@@ -219,14 +219,14 @@ object CwtConfigCompletionManager {
                 val typeName = schemaExpression.name
                 when (typeName) {
                     "any" -> {
-                        PlsLookupElements.keywordLookupElements.forEach { processor.process(it) }
+                        ChronicleLookupElements.keywordLookupElements.forEach { processor.process(it) }
                     }
                     "bool" -> {
-                        processor.process(PlsLookupElements.yesLookupElement)
-                        processor.process(PlsLookupElements.noLookupElement)
+                        processor.process(ChronicleLookupElements.yesLookupElement)
+                        processor.process(ChronicleLookupElements.noLookupElement)
                     }
                     "cardinality" -> {
-                        PlsLookupElements.cardinalityElements.forEach { processor.process(it) }
+                        ChronicleLookupElements.cardinalityElements.forEach { processor.process(it) }
                     }
                 }
                 true
@@ -422,7 +422,7 @@ object CwtConfigCompletionManager {
 
     private fun LookupElementBuilder.forConfig(context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
         var lookupElement = this
-        if (lookupElement in PlsLookupElements.keywordLookupElements) return lookupElement
+        if (lookupElement in ChronicleLookupElements.keywordLookupElements) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
         val insertCurlyBraces = when {
@@ -444,17 +444,17 @@ object CwtConfigCompletionManager {
         }
         lookupElement = lookupElement.withTailText(tailText, true)
 
-        val params = PlsInsertHandlers.Params(
+        val params = ChronicleInsertHandlers.Params(
             quoted = context.quoted,
             isKey = context.isKey,
             insertCurlyBraces = insertCurlyBraces,
         )
 
         if (context.isKeyOnly || context.isValueOnly) { // key or value only
-            lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyOrValue(params))
+            lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
         }
         if (isKeyConfig && context.isKey && !context.isKeyOnly) { // key with value
-            lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyWithValue(params))
+            lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
         }
 
         if (schemaExpression is CwtSchemaExpression.Template) {

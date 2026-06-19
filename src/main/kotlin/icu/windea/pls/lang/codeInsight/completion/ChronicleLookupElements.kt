@@ -3,24 +3,24 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import icu.windea.pls.model.constants.PlsStrings
 
-object PlsLookupElements {
+object ChronicleLookupElements {
     val yesLookupElement = LookupElementBuilder.create("yes").bold()
-        .withPriority(PlsCompletionPriorities.keyword)
+        .withPriority(ChronicleCompletionPriorities.keyword)
         .withCompletionId()
     val noLookupElement = LookupElementBuilder.create("no").bold()
-        .withPriority(PlsCompletionPriorities.keyword)
+        .withPriority(ChronicleCompletionPriorities.keyword)
         .withCompletionId()
     val blockLookupElement = LookupElementBuilder.create("")
         .withPresentableText(PlsStrings.blockFolder)
-        .withPriority(PlsCompletionPriorities.keyword)
+        .withPriority(ChronicleCompletionPriorities.keyword)
         .withCompletionId(PlsStrings.blockFolder)
-        .withInsertHandler(PlsInsertHandlers.block())
+        .withInsertHandler(ChronicleInsertHandlers.block())
 
     val keywordLookupElements = listOf(yesLookupElement, noLookupElement, blockLookupElement)
 
     val cardinalityElements = listOf("0..1", "1..1", "0..inf", "1..inf").map {
         LookupElementBuilder.create(it)
-            .withPriority(PlsCompletionPriorities.constant)
+            .withPriority(ChronicleCompletionPriorities.constant)
             .withCompletionId()
     }
 }

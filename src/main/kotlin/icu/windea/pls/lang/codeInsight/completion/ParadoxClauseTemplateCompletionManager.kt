@@ -69,7 +69,7 @@ object ParadoxClauseTemplateCompletionManager {
             .withPresentableText(extraTailText)
             .withInsertHandler(insertHandler)
             .withCompletionId(blockFolderId)
-            .withPriority(PlsCompletionPriorities.keyword)
+            .withPriority(ChronicleCompletionPriorities.keyword)
         return result
     }
 
@@ -97,13 +97,17 @@ object ParadoxClauseTemplateCompletionManager {
         val config = context.config!!
         val propertyName = CwtConfigManager.getEntryName(config)
 
-        val params = PlsInsertHandlers.Params(quoted = context.quoted, isKey = context.isKey, insertCurlyBraces = true)
+        val params = ChronicleInsertHandlers.Params(
+            quoted = context.quoted,
+            isKey = context.isKey,
+            insertCurlyBraces = true,
+        )
 
         return InsertHandler { c, _ ->
             if (params.isKey == true) {
-                PlsInsertHandlers.applyKeyWithValue(c, params)
+                ChronicleInsertHandlers.applyKeyWithValue(c, params)
             } else {
-                PlsInsertHandlers.applyBlock(c)
+                ChronicleInsertHandlers.applyBlock(c)
             }
 
             c.laterRunnable = Runnable {

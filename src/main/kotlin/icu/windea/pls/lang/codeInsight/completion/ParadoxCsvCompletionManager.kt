@@ -56,7 +56,7 @@ object ParadoxCsvCompletionManager {
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withIcon(PlsIcons.Nodes.Column)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPriority(PlsCompletionPriorities.constant)
+                    .withPriority(ChronicleCompletionPriorities.constant)
                 result.addElement(lookupElement, context)
             }
         }
