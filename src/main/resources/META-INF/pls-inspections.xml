@@ -205,10 +205,10 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.event.NonTriggeredEventInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Inline scripts -->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
-                     key="inspection.script.unsupportedInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDeclaredInlineScript"
+                     key="inspection.script.declaredInlineScript" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="TEXT ATTRIBUTES"
+                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.DeclaredInlineScriptInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedInlineScript"
                      key="inspection.script.unusedInlineScript" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
@@ -221,6 +221,10 @@
                      key="inspection.script.recursiveInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.RecursiveInlineScriptUsageInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
+                     key="inspection.script.unsupportedInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Definition injections -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedDefinitionInjectionUsage"
