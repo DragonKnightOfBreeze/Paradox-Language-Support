@@ -150,20 +150,20 @@ class TextMatcherTest {
     // region matchesPercentageField
 
     @Test
-    fun matchesPercentageField_basic() {
-        Assert.assertTrue(TextMatcher.matchesPercentageField("100%"))
-        Assert.assertTrue(TextMatcher.matchesPercentageField("0%"))
-        Assert.assertTrue(TextMatcher.matchesPercentageField("+50%"))
-        Assert.assertTrue(TextMatcher.matchesPercentageField("-25%"))
-        Assert.assertTrue(TextMatcher.matchesPercentageField("12.5%"))
+    fun matchesFloatPercentageField_basic() {
+        Assert.assertTrue(TextMatcher.matchesFloatPercentageField("100%"))
+        Assert.assertTrue(TextMatcher.matchesFloatPercentageField("0%"))
+        Assert.assertTrue(TextMatcher.matchesFloatPercentageField("+50%"))
+        Assert.assertTrue(TextMatcher.matchesFloatPercentageField("-25%"))
+        Assert.assertTrue(TextMatcher.matchesFloatPercentageField("12.5%"))
     }
 
     @Test
-    fun matchesPercentageField_invalid() {
-        Assert.assertFalse(TextMatcher.matchesPercentageField("abc%"))
-        Assert.assertFalse(TextMatcher.matchesPercentageField("%"))
-        Assert.assertFalse(TextMatcher.matchesPercentageField("100"))
-        Assert.assertFalse(TextMatcher.matchesPercentageField("")) // 长度不足
+    fun matchesFloatPercentageField_invalid() {
+        Assert.assertFalse(TextMatcher.matchesFloatPercentageField("abc%"))
+        Assert.assertFalse(TextMatcher.matchesFloatPercentageField("%"))
+        Assert.assertFalse(TextMatcher.matchesFloatPercentageField("100"))
+        Assert.assertFalse(TextMatcher.matchesFloatPercentageField("")) // 长度不足
     }
 
     // endregion
@@ -195,6 +195,14 @@ class TextMatcherTest {
     fun matchesDateField_customPatternInvalid() {
         Assert.assertFalse(TextMatcher.matchesDateField("2024.01.15", "yyyy-MM-dd"))
         Assert.assertFalse(TextMatcher.matchesDateField("abc", "yyyy"))
+    }
+
+    @Test
+    fun matchesDateField_checkUnary() {
+        Assert.assertTrue(TextMatcher.matchesDateField("2200.1.1", leadingUnary = false))
+        Assert.assertTrue(TextMatcher.matchesDateField("2200.1.1", leadingUnary = true))
+        Assert.assertFalse(TextMatcher.matchesDateField("-2200.1.1", leadingUnary = false))
+        Assert.assertTrue(TextMatcher.matchesDateField("-2200.1.1", leadingUnary = true))
     }
 
     // endregion
