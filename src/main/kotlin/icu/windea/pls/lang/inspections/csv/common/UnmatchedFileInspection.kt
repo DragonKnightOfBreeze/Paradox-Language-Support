@@ -2,19 +2,20 @@ package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.fixes.GotoInlineScriptUsagesFix
-import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
+import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
+import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import javax.swing.JComponent
 
 /**
  * 检查当前脚本文件是否无法匹配任何规则（包括：行规则）。
@@ -23,10 +24,15 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
  * - 忽略注入的文件和临时文件。
  * - 忽略直接位于游戏或入口目录下的文件。
  *
+ * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
+ *
  * @see CwtFilePathMatchableConfig
  * @see CwtRowConfig
  */
 class UnmatchedFileInspection : InlineScriptInspectionBase() {
+    @JvmField
+    var ignoredFilePaths = ""
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
         val virtualFile = file.virtualFile
@@ -41,6 +47,22 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        return ParadoxFileInspectionService.checkFileMatched(file, manager, isOnTheFly)
+        return ParadoxFileInspectionService.checkFileMatched(file, manager, isOnTheFly, ignoredFilePaths)
+    }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            // ignoredFilePaths
+            row {
+                label(PlsBundle.message("unmatchedFile.option.ignoredFilePaths"))
+            }
+            row {
+                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                    .bindText(::ignoredFilePaths.toAtomicProperty())
+                    .comment(PlsBundle.message("comment.antPatterns"))
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
+        }
     }
 }

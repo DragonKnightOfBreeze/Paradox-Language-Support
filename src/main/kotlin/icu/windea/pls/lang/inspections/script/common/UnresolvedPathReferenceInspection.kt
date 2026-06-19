@@ -33,7 +33,7 @@ import javax.swing.JComponent
 /**
  * 无法解析的路径引用的代码检查。
  *
- * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
+ * @property ignoredFileNames （配置项）需要忽略的文件名。一组模式，分号分隔，忽略大小写。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
@@ -121,7 +121,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 label(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

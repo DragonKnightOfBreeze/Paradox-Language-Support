@@ -21,7 +21,7 @@ import javax.swing.JComponent
 /**
  * 检查本地化文件中是否包含多个语言环境声明。
  *
- * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
+ * @property ignoredFileNames （配置项）需要忽略的文件名。一组模式，分号分隔，忽略大小写。
  */
 class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     @JvmField
@@ -56,7 +56,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

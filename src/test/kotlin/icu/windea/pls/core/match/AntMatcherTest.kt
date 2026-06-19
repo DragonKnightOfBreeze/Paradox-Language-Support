@@ -65,6 +65,9 @@ class AntMatcherTest {
         Assert.assertTrue(AntMatcher.matches("foo/bar/name", "foo/**/name", false))
         Assert.assertTrue(AntMatcher.matches("foo/bar/name", "foo/**/bar/**/name", false))
         Assert.assertFalse(AntMatcher.matches("foo/bar/name", "foo/**/baz", false))
+        Assert.assertFalse(AntMatcher.matches("foo/bar/name", "name", false))
+        Assert.assertFalse(AntMatcher.matches("foo/bar/name", "*/name", false))
+        Assert.assertTrue(AntMatcher.matches("foo/bar/name", "**/name", false))
 
         // 边界与特殊情况
         Assert.assertTrue(AntMatcher.matches("foo", "foo", false))

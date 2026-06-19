@@ -1,36 +1,18 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInsight.intention.PriorityAction
-import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.refactoring.RefactoringSettings
-import com.intellij.refactoring.rename.RenameProcessor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import javax.swing.JComponent
 
 /**
@@ -43,11 +25,11 @@ import javax.swing.JComponent
  * - 改为正确的文件名
  * - 改为正确的语言环境名
  *
- * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
+ * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
  */
 class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     @JvmField
-    var ignoredFileNames = "languages.yml"
+    var ignoredFilePaths = "**/languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
@@ -59,99 +41,19 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (file !is ParadoxLocalisationFile) return null
-
-        val fileName = file.name
-        if (fileName.matchesPatterns(ignoredFileNames, ignoreCase = true)) return null // 忽略
-
-        // 仅对于存在且仅存在一个locale的本地化文件
-        var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
-        file.children().filterIsInstance<ParadoxLocalisationPropertyList>().process {
-            if (theOnlyPropertyList == null) {
-                theOnlyPropertyList = it
-                true
-            } else {
-                false
-            }
-        }
-
-        val locale = theOnlyPropertyList?.locale ?: return null
-        if (!locale.isValid) return null // locale尚未填写完成时也跳过检查
-        val localeConfig = selectLocale(locale) ?: return null // locale不支持时也跳过检查
-        val localeId = localeConfig.id
-        val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
-        if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
-        val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val location = locale // 不要直接注册到文件上
-        val description = PlsBundle.message("incorrectFileName.desc", fileName, localeId)
-        val fixes = getFixes(locale, expectedFileName, localeIdFromFile)
-        holder.registerProblem(location, description, *fixes)
-        return holder.resultsArray
-    }
-
-    private fun getFixes(locale: ParadoxLocalisationLocale, expectedFileName: String, localeIdFromFile: String?): Array<LocalQuickFix> {
-        return buildList {
-            this += RenameFileFix(locale, expectedFileName)
-            if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
-        }.toTypedArray()
-    }
-
-    // org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention
-
-    private class RenameFileFix(
-        element: ParadoxLocalisationLocale,
-        private val expectedFileName: String
-    ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getText() = PlsBundle.message("incorrectFileName.fix.1.name", expectedFileName)
-
-        override fun getFamilyName() = PlsBundle.message("incorrectFileName.fix.1.familyName")
-
-        override fun getPriority() = PriorityAction.Priority.HIGH
-
-        override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            RenameProcessor(
-                project,
-                file,
-                expectedFileName,
-                RefactoringSettings.getInstance().RENAME_SEARCH_IN_COMMENTS_FOR_FILE,
-                RefactoringSettings.getInstance().RENAME_SEARCH_FOR_TEXT_FOR_FILE
-            ).run()
-        }
-
-        override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
-
-        override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-
-        override fun startInWriteAction() = false
-    }
-
-    private class RenameLocaleFix(
-        element: ParadoxLocalisationLocale,
-        private val expectedLocaleId: String
-    ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getPriority() = PriorityAction.Priority.TOP // 高优先级，如果可用
-
-        override fun getText() = PlsBundle.message("incorrectFileName.fix.2.name", expectedLocaleId)
-
-        override fun getFamilyName() = PlsBundle.message("incorrectFileName.fix.2.familyName")
-
-        override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return
-            locale.name = expectedLocaleId
-        }
+        return ParadoxFileInspectionService.checkFileName(file, manager, isOnTheFly, ignoredFilePaths)
     }
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            // ignoredFileNames
+            // ignoredFilePaths
             row {
-                label(PlsBundle.message("incorrectFileName.option.ignoredFileNames"))
+                label(PlsBundle.message("incorrectFileName.option.ignoredFilePaths"))
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-                    .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("incorrectFileName.option.ignoredFileNames.comment"))
+                    .bindText(::ignoredFilePaths.toAtomicProperty())
+                    .comment(PlsBundle.message("comment.antPatterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }
