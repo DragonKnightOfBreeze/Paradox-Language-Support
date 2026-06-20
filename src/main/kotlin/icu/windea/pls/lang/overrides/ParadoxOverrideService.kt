@@ -4,10 +4,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo

@@ -2,8 +2,8 @@ package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

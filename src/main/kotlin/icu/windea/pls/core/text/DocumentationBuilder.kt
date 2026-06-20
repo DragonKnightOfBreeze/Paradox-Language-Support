@@ -4,7 +4,6 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toFileUrl
 import java.util.*
-import kotlin.collections.iterator
 
 fun buildDocumentation(): DocumentationBuilder {
     return DocumentationBuilderImpl()

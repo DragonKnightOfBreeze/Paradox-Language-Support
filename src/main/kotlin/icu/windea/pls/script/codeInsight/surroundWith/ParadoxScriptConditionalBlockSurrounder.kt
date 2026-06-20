@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 
 class ParadoxScriptConditionalBlockSurrounder : ParadoxScriptSurrounder() {
     override fun getTemplateDescription() = "[[PARAM]...]"

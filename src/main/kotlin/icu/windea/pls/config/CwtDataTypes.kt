@@ -1,5 +1,6 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataTypes.AliasMatchLeft
 import icu.windea.pls.config.CwtDataTypes.AliasName
 import icu.windea.pls.config.CwtDataTypes.Definition
@@ -14,7 +15,6 @@ import icu.windea.pls.core.match.AntMatcher
 import icu.windea.pls.core.match.RegexMatcher
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression

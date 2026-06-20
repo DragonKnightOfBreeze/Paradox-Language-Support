@@ -7,12 +7,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil

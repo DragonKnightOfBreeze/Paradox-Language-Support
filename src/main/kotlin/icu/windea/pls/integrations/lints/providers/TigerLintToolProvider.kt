@@ -3,6 +3,7 @@ package icu.windea.pls.integrations.lints.providers
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quote
@@ -13,7 +14,6 @@ import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.io.path.name

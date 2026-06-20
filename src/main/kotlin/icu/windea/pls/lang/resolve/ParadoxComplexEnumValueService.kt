@@ -16,7 +16,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexEnumValueService {
     fun resolveInfo(element: ParadoxScriptExpressionElement, file: PsiFile): ParadoxComplexEnumValueInfo? {

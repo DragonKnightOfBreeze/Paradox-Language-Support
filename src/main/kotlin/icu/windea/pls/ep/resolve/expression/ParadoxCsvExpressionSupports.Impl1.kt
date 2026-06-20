@@ -3,8 +3,8 @@ package icu.windea.pls.ep.resolve.expression
 import com.intellij.codeInsight.completion.CompletionResultSet
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.addElement
 
 // Base

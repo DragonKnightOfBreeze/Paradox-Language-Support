@@ -15,7 +15,6 @@ import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 @Suppress("unused")
 object ParadoxComplexEnumValueManager {

@@ -2,13 +2,13 @@ package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.base.io.ChronicleDataPathService
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.name

@@ -7,7 +7,6 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 

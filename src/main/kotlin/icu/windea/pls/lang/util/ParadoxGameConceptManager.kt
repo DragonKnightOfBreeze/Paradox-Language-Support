@@ -2,9 +2,9 @@ package icu.windea.pls.lang.util
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
-import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

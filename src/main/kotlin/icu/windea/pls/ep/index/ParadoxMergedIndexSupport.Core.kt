@@ -2,6 +2,7 @@ package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
@@ -12,7 +13,6 @@ import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement

@@ -5,9 +5,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
-import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.withConstraint

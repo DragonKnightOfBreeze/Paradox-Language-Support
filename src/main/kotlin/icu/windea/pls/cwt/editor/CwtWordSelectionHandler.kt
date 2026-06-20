@@ -8,7 +8,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 
 // com.intellij.json.editor.selection.JsonStringLiteralSelectionHandler

@@ -7,7 +7,6 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer

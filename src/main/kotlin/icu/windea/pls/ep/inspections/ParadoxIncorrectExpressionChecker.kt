@@ -2,8 +2,8 @@ package icu.windea.pls.ep.inspections
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**

@@ -1,7 +1,7 @@
 package icu.windea.pls.base.context
 
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import java.util.ArrayDeque
+import java.util.*
 
 object ChronicleThreadContext {
     /**

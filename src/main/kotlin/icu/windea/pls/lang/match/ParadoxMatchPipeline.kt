@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.model.expressions.ParadoxExpression
 

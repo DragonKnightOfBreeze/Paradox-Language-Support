@@ -14,6 +14,7 @@ import com.intellij.util.application
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.collections.orNull
@@ -24,7 +25,6 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

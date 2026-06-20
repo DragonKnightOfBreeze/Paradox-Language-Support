@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * 将条件化语句转为块形式。

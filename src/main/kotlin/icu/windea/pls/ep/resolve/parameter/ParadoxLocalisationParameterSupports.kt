@@ -15,8 +15,8 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unknown
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ReferenceLinkType

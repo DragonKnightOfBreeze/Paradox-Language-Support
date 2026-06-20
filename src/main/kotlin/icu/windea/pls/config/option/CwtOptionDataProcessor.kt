@@ -1,6 +1,7 @@
 package icu.windea.pls.config.option
 
 import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -18,7 +19,6 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.type.CwtSeparatorType

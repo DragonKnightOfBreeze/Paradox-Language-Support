@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.settings.PlsConfigSettings
@@ -17,7 +18,6 @@ import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
-import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {

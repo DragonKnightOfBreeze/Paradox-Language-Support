@@ -8,7 +8,6 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxComplexEnumValuePsiReference(
     element: ParadoxScriptExpressionElement,

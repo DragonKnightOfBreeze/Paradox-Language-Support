@@ -26,9 +26,6 @@ import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.match.CwtConfigMatchService
-import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.matchesAntPattern
-import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -48,7 +45,6 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.paths.ParadoxPath
-import org.jetbrains.kotlin.DeprecatedCompilerApi
 import kotlin.io.path.name
 
 object CwtConfigManager {

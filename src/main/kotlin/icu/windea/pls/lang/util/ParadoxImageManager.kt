@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.util.io.fileSizeSafe
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
@@ -32,7 +33,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants

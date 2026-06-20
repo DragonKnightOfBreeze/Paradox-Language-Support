@@ -5,7 +5,7 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.toCapitalizedWords
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 object ParadoxScopeResolver {
     private val cache = CacheBuilder("expireAfterAccess=30m").build<String, ParadoxScope> { ParadoxScope.Default(it) }
