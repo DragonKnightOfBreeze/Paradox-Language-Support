@@ -9,7 +9,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -44,7 +44,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeArgument(context, result)
+        ParadoxExpressionCompletionManager.completeArgument(context, result)
     }
 }
 

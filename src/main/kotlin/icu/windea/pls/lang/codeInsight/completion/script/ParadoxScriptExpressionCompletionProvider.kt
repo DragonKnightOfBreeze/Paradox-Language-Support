@@ -8,7 +8,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -53,7 +53,7 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
-                ParadoxCompletionManager.addKeyCompletions(context, resultToUse, memberElement)
+                ParadoxExpressionCompletionManager.addKeyCompletions(context, resultToUse, memberElement)
             }
         }
         if (mayBeValue) {
@@ -61,14 +61,14 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
-                ParadoxCompletionManager.addValueCompletions(context, resultToUse, memberElement)
+                ParadoxExpressionCompletionManager.addValueCompletions(context, resultToUse, memberElement)
             }
         }
         if (mayBePropertyValue) {
             // 向上得到property
             val propertyElement = element.parentOfType<ParadoxScriptProperty>()
             if (propertyElement != null) {
-                ParadoxCompletionManager.addPropertyValueCompletions(context, resultToUse, element, propertyElement)
+                ParadoxExpressionCompletionManager.addPropertyValueCompletions(context, resultToUse, element, propertyElement)
             }
         }
     }

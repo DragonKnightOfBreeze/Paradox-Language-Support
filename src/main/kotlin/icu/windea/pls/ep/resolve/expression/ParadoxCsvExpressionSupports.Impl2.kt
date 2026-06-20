@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -54,7 +54,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeDefinition(context, result)
+        ParadoxExpressionCompletionManager.completeDefinition(context, result)
     }
 }
 
@@ -83,7 +83,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeEnumValue(context, result)
+        ParadoxExpressionCompletionManager.completeEnumValue(context, result)
     }
 }
 
@@ -107,6 +107,6 @@ class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase(
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeDynamicValue(context, result)
+        ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
     }
 }

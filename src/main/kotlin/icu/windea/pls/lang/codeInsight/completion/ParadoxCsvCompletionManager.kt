@@ -26,7 +26,7 @@ object ParadoxCsvCompletionManager {
         val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
         val config = columnConfig.valueConfig ?: return
         val context = context.copy(isKey = null, config = config)
-        ParadoxCompletionManager.completeCsvExpression(context, result)
+        ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
     }
 
     fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {

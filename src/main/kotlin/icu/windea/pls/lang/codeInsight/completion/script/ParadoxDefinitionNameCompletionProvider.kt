@@ -8,7 +8,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.definitionInfo
@@ -75,7 +75,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionManager.processDefinition(context, result, it)
+                            ParadoxExpressionCompletionManager.processDefinition(context, result, it)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
@@ -99,7 +99,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionManager.processDefinition(context, result, it)
+                            ParadoxExpressionCompletionManager.processDefinition(context, result, it)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)

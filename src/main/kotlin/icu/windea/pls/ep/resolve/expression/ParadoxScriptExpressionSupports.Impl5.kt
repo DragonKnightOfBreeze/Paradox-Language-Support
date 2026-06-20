@@ -9,7 +9,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -41,7 +41,7 @@ class ParadoxShaderEffectExpressionSupport: ParadoxScriptExpressionSupportBase()
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeShaderEffect(context, result)
+        ParadoxExpressionCompletionManager.completeShaderEffect(context, result)
     }
 }
 
@@ -67,6 +67,6 @@ class ParadoxMeshLocatorExpressionSupport: ParadoxScriptExpressionSupportBase() 
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeMeshLocator(context, result)
+        ParadoxExpressionCompletionManager.completeMeshLocator(context, result)
     }
 }

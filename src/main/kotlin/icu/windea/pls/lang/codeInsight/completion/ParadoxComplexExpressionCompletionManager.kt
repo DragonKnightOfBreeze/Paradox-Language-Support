@@ -73,7 +73,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val config = node.config
                     val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
                     val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxCompletionManager.completeScriptExpression(context, result)
+                    ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
                     break
                 }
             } else if (node is ParadoxTemplateSnippetConstantNode) {
@@ -85,7 +85,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val config = CwtValueConfig.createMock(context.configGroup, node.text)
                     val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
                     val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxCompletionManager.completeConstant(context, result)
+                    ParadoxExpressionCompletionManager.completeConstant(context, result)
                     break
                 }
             }
@@ -116,7 +116,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val keywordOffset = node.rangeInExpression.startOffset
                     val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
                     val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxCompletionManager.completeDynamicValue(context, result)
+                    ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
                     break
                 }
             } else if (node is ParadoxScopeFieldExpression) {
@@ -189,7 +189,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val config = expression.config
                     val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
                     val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxCompletionManager.completeScriptExpression(context, result)
+                    ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
                 }
             } else if (node is ParadoxScriptValueArgumentNode) {
                 if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
@@ -210,7 +210,7 @@ object ParadoxComplexExpressionCompletionManager {
                         val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run
                         val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = inferredConfig, configs = emptyList())
                         val result = result.withPrefixMatcher(context.keyword)
-                        ParadoxCompletionManager.completeScriptExpression(context, result)
+                        ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
                     }
                 }
             }
@@ -474,7 +474,7 @@ object ParadoxComplexExpressionCompletionManager {
                 val config = CwtValueConfig.createMock(config.configGroup, "<${type}>")
                 val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, isKey = null)
                 val result = result.withPrefixMatcher(context.keyword)
-                ParadoxCompletionManager.completeDefinition(context, result)
+                ParadoxExpressionCompletionManager.completeDefinition(context, result)
                 return
             }
         }
@@ -492,7 +492,7 @@ object ParadoxComplexExpressionCompletionManager {
             val config = CwtValueConfig.createMock(config.configGroup, "localisation")
             val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, isKey = null)
             val result = result.withPrefixMatcher(context.keyword)
-            ParadoxCompletionManager.completeLocalisation(context, result)
+            ParadoxExpressionCompletionManager.completeLocalisation(context, result)
         }
     }
 
@@ -1120,7 +1120,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = linkConfig)
-            ParadoxCompletionManager.completeScriptExpression(context, result)
+            ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
         }
     }
 
@@ -1212,9 +1212,9 @@ object ParadoxComplexExpressionCompletionManager {
             val extraFilter = { e: PsiElement -> node.isValidDatabaseObject(e, typeToSearch) }
             val context = context.copy(config = mockConfig, extraFilter = extraFilter)
             if (config.localisation != null) {
-                ParadoxCompletionManager.completeLocalisation(context, result)
+                ParadoxExpressionCompletionManager.completeLocalisation(context, result)
             } else {
-                ParadoxCompletionManager.completeDefinition(context, result)
+                ParadoxExpressionCompletionManager.completeDefinition(context, result)
             }
         }
     }
@@ -1225,7 +1225,7 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
-            ParadoxCompletionManager.processDefinition(context, result, it)
+            ParadoxExpressionCompletionManager.processDefinition(context, result, it)
         }
     }
 
