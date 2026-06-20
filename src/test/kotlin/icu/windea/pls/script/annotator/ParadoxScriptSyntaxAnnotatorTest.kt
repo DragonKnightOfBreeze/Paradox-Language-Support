@@ -45,9 +45,31 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), HighlightingTes
     }
 
     @Test
-    fun testInlineMathScriptedVariableReference() {
-        val msg = PlsBundle.message("message.leading.at.unexpected")
+    fun testOperator() {
+        val msg = PlsBundle.message("message.leading.blank.unexpected.1")
         val msgTag = msg.toErrorTag()
+
+        myFixture.configureByText(
+            "annotator_operator.test.txt",
+            """
+            key? =value
+            key${msgTag.start} ${msgTag.end}? =value
+            key? = value
+            key${msgTag.start} ${msgTag.end}? = value
+            key?=value
+            key ?=value
+            key?= value
+            key ?= value
+            """.trimIndent()
+        )
+        myFixture.checkHighlighting(true, true, true)
+    }
+
+    @Test
+    fun testInlineMathScriptedVariableReference() {
+        val msg = PlsBundle.message("message.leading.at.unexpected.1")
+        val msgTag = msg.toErrorTag()
+
         myFixture.configureByText(
             "annotator_inline_math_scripted_variable_reference.test.txt",
             """

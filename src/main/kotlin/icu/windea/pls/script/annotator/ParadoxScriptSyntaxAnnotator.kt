@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
+import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
@@ -18,6 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkMissingQuote(element, holder)
+        checkOperator(element, holder)
         checkInlineMathScriptedVariableReference(element, holder)
     }
 
@@ -37,15 +39,28 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
         }
     }
 
+    private fun checkOperator(element: PsiElement, holder: AnnotationHolder) {
+        val elementType = element.elementType ?: return
+        if (elementType == ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) {
+            // 2.1.10 #331 对于安全调用赋值运算符，不允许前导空白
+            val leadingBlank = element.prevSibling?.takeIf { it == TokenType.WHITE_SPACE }
+            if (leadingBlank != null) {
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.leading.blank.unexpected.1"))
+                    .range(leadingBlank)
+                    .withFix(DeleteStringByElementTypeFix(leadingBlank, PlsBundle.message("fix.leading.blank.unexpected")))
+                    .create()
+            }
+        }
+    }
+
     private fun checkInlineMathScriptedVariableReference(element: PsiElement, holder: AnnotationHolder) {
         // 2.1.8 对于内联数学表达式中的封装变量引用，不需要也不允许前导的 `@`
         if (element !is ParadoxScriptInlineMathScriptedVariableReference) return
-        val firstChild = element.firstChild
-        val leadingAt = firstChild.elementType == ParadoxScriptElementTypes.AT
-        if (leadingAt) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.leading.at.unexpected"))
-                .range(firstChild)
-                .withFix(DeleteStringByElementTypeFix(firstChild, PlsBundle.message("fix.leading.at.unexpected")))
+        val leadingAt = element.firstChild?.takeIf { it.elementType == ParadoxScriptElementTypes.AT }
+        if (leadingAt != null) {
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.leading.at.unexpected.1"))
+                .range(leadingAt)
+                .withFix(DeleteStringByElementTypeFix(leadingAt, PlsBundle.message("fix.leading.at.unexpected")))
                 .create()
         }
     }
