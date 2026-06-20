@@ -39,7 +39,7 @@
 - [x] 优化：可以从复杂表达式节点所在位置导航到相关规则 / OP: Allow to navigate to related configs from the position of complex expression nodes
 - [x] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
 - [x] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言环境的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files
-- [x] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数化快与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported conditional blocks and parameter usages (with the default value) in inline script files
+- [x] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数条件块与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported parameter condition blocks and parameter usages (with the default value) in inline script files
 - [x] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本格式（示例：`#v text#!`，其中`v`对应规则表达式`<text_format>`，`text`是富文本的组合） / NEW: [VIC3/CK3] Basic support for text formats in localisation text (e.g., `#v text#!`, where `v` corresponds to the config expression `<text_format>`, and `text` is a combination of rich text)
 - [x] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本图标（示例：`@icon!`，其中`icon`对应规则表达式`<text_icon>`） / NEW: [VIC3/CK3] Basic support for text icons in localisation text (e.g., `@icon!`, where `icon` corresponds to the config expression `<text_icon>`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -137,7 +137,7 @@
 - [x] There is a problem with the new ?= operator when it is directly on a value. ([#104](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/104))
 - [x] 优化`IncorrectFileEncodingInspection` (参见 #102) / Optimize `IncorrectFileEncodingInspection` (See #102)
 - [x] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field` / Optimize rule match logic to match and differ `scope_field` and `value_field` more exactly
-- [x] 兼容在复杂表达式中使用内联的参数化快表达式（如，`value:xxx|P|[[P1]$V$]V|`）/ Compatible with inline conditional block expressions in complex expressions (e.g., `value:xxx|P|[[P1]$V$]V|`)
+- [x] 兼容在复杂表达式中使用内联的参数条件表达式（如，`value:xxx|P|[[P1]$V$]V|`）/ Compatible with inline parameter condition expressions in complex expressions (e.g., `value:xxx|P|[[P1]$V$]V|`)
 - [x] 修复查询修正相关本地化时没有忽略大小写的问题 / Fixed the issue that case was not ignored when searching modifier-related localisations
 - [x] Victoria 3 link Comparisons - 兼容传参格式的连接（如，`relations(root.owner)`）/ Compatible with argument-style links (e.g., `relations(root.owner)`) ([#101](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/101))
 - [x] Read access is allowed from inside read-action only - 相关优化 / Related optimizations ([#105](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/105))
