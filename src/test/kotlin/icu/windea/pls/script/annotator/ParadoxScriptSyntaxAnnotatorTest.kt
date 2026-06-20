@@ -53,9 +53,9 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), HighlightingTes
             "annotator_operator.test.txt",
             """
             key? =value
-            key${msgTag.start} ${msgTag.end}? =value
+            key ${msgTag.start}? =${msgTag.end}value
             key? = value
-            key${msgTag.start} ${msgTag.end}? = value
+            key ${msgTag.start}? =${msgTag.end} value
             key?=value
             key ?=value
             key?= value

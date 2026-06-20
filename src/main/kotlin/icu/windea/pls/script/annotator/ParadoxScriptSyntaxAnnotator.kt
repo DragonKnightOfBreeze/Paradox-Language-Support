@@ -43,10 +43,10 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
         val elementType = element.elementType ?: return
         if (elementType == ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) {
             // 2.1.10 #331 对于安全调用赋值运算符，不允许前导空白
-            val leadingBlank = element.prevSibling?.takeIf { it == TokenType.WHITE_SPACE }
+            val leadingBlank = element.prevSibling?.takeIf { it.elementType == TokenType.WHITE_SPACE }
             if (leadingBlank != null) {
                 holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.leading.blank.unexpected.1"))
-                    .range(leadingBlank)
+                    .range(element)
                     .withFix(DeleteStringByElementTypeFix(leadingBlank, PlsBundle.message("fix.leading.blank.unexpected")))
                     .create()
             }
