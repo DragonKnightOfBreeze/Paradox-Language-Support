@@ -90,7 +90,7 @@ class CwtDeclarationConfigAttributesEvaluator {
             if (r) involvesInferredScopeContextAwareDefinitionReference = true
         }
         if (!involvesExternalReference) {
-            val r = CwtConfigExpressionMatchService.matchesMeshLocator(dataExpression)
+            val r = CwtConfigExpressionMatchService.matchesExternalReference(dataExpression)
             if (r) involvesExternalReference = true
         }
     }
