@@ -1873,16 +1873,16 @@ title
 
 （TODO 2.1.10 待实现）
 
-#### DynamicValueSet {#data-type-dynamic-value-set}
+#### Tags {#data-type-tags}
 
-动态值集合表达式类型。
+标签集表达式类型。
 
-匹配动态值集合表达式（由逗号分隔的一组动态值节点组成，如 `flag` `flag1,flag2`）。
-在条件变体下，可对其中的动态值节点进行取反（如 `flag1,not(flag2)`）。
+匹配标签集表达式（由逗号分隔的一组动态值节点组成，如 `tag` `tag1,tag2`），或者空字符串。
+在条件变体下，可对其中的动态值节点进行取反（如 `tag1,not(tag2)`）。
 
 对应的数据表达式的格式：
-- `$dynamic_value_set[{name}]` - 其中 `{name}` 匹配动态值类型。
-- `$dynamic_value_set_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型。
+- `$tags[{name}]` - 其中 `{name}` 匹配动态值类型。
+- `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型。
 
 （TODO 2.1.10 待实现）
 

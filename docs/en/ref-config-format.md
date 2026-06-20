@@ -1858,16 +1858,16 @@ Format of corresponding data expressions:
 
 (To be implemented in 2.1.10)
 
-#### DynamicValueSet {#data-type-dynamic-value-set}
+#### Tags {#data-type-tags}
 
 Dynamic value set expression type.
 
-Matches a dynamic value set expression (consisting of a group of dynamic value nodes separated by commas, e.g., `flag`, `flag1,flag2`).  
-In the condition variant, individual dynamic value nodes can be negated (e.g., `flag1,not(flag2)`).
+Matches a dynamic value set expression (consisting of a group of dynamic value nodes separated by commas, e.g., `tag`, `tag1,tag2`), or an empty string.  
+In the condition variant, individual dynamic value nodes can be negated (e.g., `tag1,not(tag2)`).
 
 Format of corresponding data expressions:
-- `$dynamic_value_set[{name}]` – where `{name}` matches a dynamic value type.
-- `$dynamic_value_set_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type.
+- `$tags[{name}]` – where `{name}` matches a dynamic value type.
+- `$tags_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type.
 
 (To be implemented in 2.1.10)
 

@@ -50,10 +50,11 @@
   - [ ] 创建单独的 Issue。
   - [ ] 补充评估器。
   - [ ] 补充基于评估器的那些语言功能（代码检查、代码折叠、意向动作）。
-- [ ] P2 [CK3/VIC3?/EU5?] 完善对动态值集合表达式（dynamicValueSetExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
-  - 示例：`flag1,flag2` - 写访问。`flag1` 和 `flag2` 视为标识符（作为动态值节点）。
-  - 示例：`flag1,not(flag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
-  - 对应的规则表达式（数据表达式）：`$dynamic_value_set[{name}]` 和 `$dynamic_value_set_condition[{name}]`（条件变体）。
+- [ ] P2 [CK3/VIC3?/EU5?] 完善对标签集表达式（tagsExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
+  - 示例：`tag1,tag2` - 写访问。`tag1` 和 `tag2` 视为标识符（作为动态值节点）。
+  - 示例：`tag1,not(tag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
+  - 对应的规则表达式（数据表达式）：`$tags[{name}]` 和 `$tags_condition[{name}]`（条件变体）。
+  - 匹配时兼容空字符串。
   - 忽略表达式中的多余空白。
   - 需要用双引号括起，否则给出警告。
   - 需要进一步确认格式和语义。
