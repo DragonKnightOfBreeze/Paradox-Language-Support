@@ -7,7 +7,7 @@ import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
- * 字面量字符串节点（用于括号参数中的单引号包裹文本）。
+ * 字面量字符串节点（用于括号参数中的单引号包围文本）。
  */
 class ParadoxStringLiteralNode(
     override val text: String,

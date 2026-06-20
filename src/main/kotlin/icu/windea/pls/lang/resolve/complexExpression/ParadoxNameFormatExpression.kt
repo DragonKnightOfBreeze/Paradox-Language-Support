@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * 命名格式表达式。
  *
  * 说明：
- * - 用于解析 Stellaris 中以花括号包裹的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
+ * - 用于解析 Stellaris 中以花括号包围的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  * - 对应的规则数据类型为 [CwtDataTypes.NameFormat]。
  *
  * 示例：
@@ -37,7 +37,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * ### 语法与结构
  *
  * - 整体形态：
- *   - 顶层仅识别由花括号包裹的“闭包段”`{...}`。若字符串中不含任何`{`，则非空白部分整体被视为错误片段，其前后空白会作为空白节点保留。
+ *   - 顶层仅识别由花括号包围的“闭包段”`{...}`。若字符串中不含任何`{`，则非空白部分整体被视为错误片段，其前后空白会作为空白节点保留。
  *
  * - 闭包段的内容由一系列节点顺序拼接而成，空白会被保留为空白节点。按优先级识别如下节点类型：
  *   1) 定义占位：形如`<name>`。

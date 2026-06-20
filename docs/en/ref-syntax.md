@@ -3,7 +3,7 @@
 <!--
 @doc-meta
 This document is the syntax reference for the four languages supported by the Paradox Language Support plugin.
-The content reflects the plugin's parsing implementation, not the game engine's underlying behavior — the two are consistent in most cases, but differences may exist.
+The content reflects the plugin's parsing implementation, not the game engine's underlying behavior - the two are consistent in most cases, but differences may exist.
 
 @see src/test/testData/cwt/example.test.cwt
 @see src/test/testData/script/example.test.txt
@@ -18,10 +18,10 @@ The content is based on the parsing implementation of the Paradox Language Suppo
 
 This document covers the following four languages:
 
-- **CWT** (`*.cwt`) — Used for writing CWT config files. Supports line comments `#`, option comments `##`, and documentation comments `###`. Code block language ID: `cwt`.
-- **Paradox Script** (`*.txt`, `*.gfx`, `*.gui`, etc.) — Used for writing game scripts. Supports line comments `#`. Code block language ID: `paradox_script`.
-- **Paradox Localisation** (`*.yml`) — Used for writing localisation text. Supports line comments `#`. Code block language ID: `paradox_localisation`.
-- **Paradox CSV** (`*.csv`) — Semicolon-delimited CSV format. Supports line comments `#`. Code block language ID: `paradox_csv`.
+- **CWT** (`*.cwt`) - Used for writing CWT config files. Supports line comments `#`, option comments `##`, and documentation comments `###`. Code block language ID: `cwt`.
+- **Paradox Script** (`*.txt`, `*.gfx`, `*.gui`, etc.) - Used for writing game scripts. Supports line comments `#`. Code block language ID: `paradox_script`.
+- **Paradox Localisation** (`*.yml`) - Used for writing localisation text. Supports line comments `#`. Code block language ID: `paradox_localisation`.
+- **Paradox CSV** (`*.csv`) - Semicolon-delimited CSV format. Supports line comments `#`. Code block language ID: `paradox_csv`.
 
 Among these, CWT and Paradox Script share a similar base syntax structure (properties, values, blocks), but differ in separator types, comment systems, and advanced syntax. This document covers each separately.
 
@@ -40,30 +40,44 @@ Language id: `CWT`; default extension: `.cwt`
 
 CWT is a domain-specific language used for writing CWT config files. The file extension is `.cwt`.
 
-CWT config files provide the plugin with a declarative specification, based on which the plugin offers advanced language features — such as code highlighting, code completion, and code inspections — for game and mod files (script files, localisation files, and CSV files). CWT is to Paradox Script roughly what JSON Schema is to JSON.
+CWT config files provide the plugin with a declarative specification, based on which the plugin offers advanced language features - such as code highlighting, code completion, and code inspections - for game and mod files (script files, localisation files, and CSV files). CWT is to Paradox Script roughly what JSON Schema is to JSON.
 
 CWT's syntax is similar to Paradox Script, but additionally supports option comments and documentation comments.
 
 ### Basic Elements {#cwt-basics}
 
-A CWT file is composed of three basic elements: **properties**, **values**, and **blocks**. Whitespace and line breaks serve as token separators, and blank lines may appear freely.
+CWT files are composed of three basic elements: **properties**, **values**, and **blocks**.
+Whitespace and line breaks serve as token separators, and blank lines may appear freely.
+Support line comments starting with `#`, and various `#`-based comment variants.
 
-A **property** has the structure `<key> <sep> <value>`, where the separator `<sep>` can be one of:
+其中：
+- **属性**和**块值**（即非属性值的值）被统称为**成员**（member），它们可以多次出现在文件顶层或者块中，并且可以重复出现和混合出现。
+- **属性的键**和**值**被统称为**表达式**（expression），它们在不同的位置和上下文中拥有不同的语义。
 
-- `=` logical equals
-- `!=` or `<>` logical not-equals (the two are equivalent)
-- `==` match comparison operator — indicates that the corresponding script property may use comparison operators (`<`, `>`, `<=`, `>=`, `!=`) as separators, rather than only `=` or `?=`
+A **property** has the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
 
-The `==` separator is a semantic feature specific to CWT config files and does not appear in script files. The plugin does not currently enforce strict checks on this.
+- `=` - logical equals / assign.
+- `!=` `<>` - logical not-equals.
+- `==` - similar to `=`, but indicates the matched script property should use comparison operators (e.g., `=`, `!=`, `>=`), rather than assignment operators (e.g., `=`, `?=`).
 
-Keys can be unquoted or wrapped in double quotes. Unquoted keys must not contain `#`, `=`, `{`, `}`, `"`, or whitespace characters.
+If `==` is used in config files, the plugin will not strictly check whether the separator of the matching script property is correct by default.
+This check can be enabled explicitly in the settings page, however, depending on how complete the configs are, this may cause additional false positives
+
+**字符串表达式** （键和字符串）可以用双引号包围（字面量形式），也可以不用（标识符形式）。
+
+- 未用双引号包围时，不能包含空白以及一些特殊字符（`#` `=` `{` `}` `"`）。
+- 可以包含特定的转义字符（如 `\"` `\n`）。
+
+Example:
 
 ```cwt
-playable = yes
-cost = 10
-acceleration = 20.0
-class = some_shipsize_class
+status = yes
+value = 10
+type = some_type
 "quoted key" = "line\nnext line"
+block = {
+    inner_key = value
+}
 ```
 
 ### Value Types {#cwt-values}
@@ -74,23 +88,11 @@ CWT supports the following value types:
 
 **Integers** such as `10`, `-5`, `042`. Leading signs and leading zeros are allowed.
 
-**Floats** such as `1.0`, `-0.5`, `.25`. The integer part may be omitted.
+**Floats** such as `1.0`, `-0.5`, `.25`. The integer part or floating part may be omitted.
 
-**Strings** can be unquoted or wrapped in double quotes. Unquoted strings must not contain `#`, `=`, `{`, `}`, `"`, or whitespace characters. Double-quoted strings support backslash escape sequences (e.g. `\"`, `\n`).
+**Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters.
 
-**Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of properties, values, and comments. Blocks can be nested.
-
-```cwt
-ship_size = {
-    ### The base cost of this ship_size
-    ## cardinality = 0..1
-    cost = int
-
-    modifier = {
-        alias_name[modifier] = alias_match_left[modifier]
-    }
-}
-```
+**Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of expressions (properties and values) and comments. Can be nested multiple levels.
 
 ### Comment System {#cwt-comments}
 
@@ -98,17 +100,22 @@ CWT features a three-level comment system, which is one of its main distinctions
 
 **Line comments** start with `#` and extend to the end of the line, used for regular comments.
 
-**Option comments** start with `##` and attach metadata to the immediately following member (property, value, or block). The content syntax is the same as a property, in the form `<optionKey> <sep> <optionValue>`. Common option comments include `## cardinality = 0..1` (declaring cardinality constraints), `## severity = warning` (declaring inspection severity level), `## push_scope = country` (declaring the pushed scope), etc.
+**Option comments** start with `##` and attach metadata to the immediately following member (property, value, or block).
+The content syntax is the same as a property, in the form `<optionKey> <separator> <optionValue>`.
+Common option comments include `## cardinality = 0..1` (declaring cardinality constraints), `## severity = warning` (declaring inspection severity level), `## push_scope = country` (declaring the pushed scope), etc.
 
-**Documentation comments** start with `###` and provide descriptive text for members. This text is displayed in code completion and quick documentation. In particular, for documentation comments starting with `####` (or more `#`), the comment text is treated as Markdown text by the plugin.
+**Documentation comments** start with `###` and provide descriptive text for members.
+This text is displayed in code completion and quick documentation.
+In particular, for documentation comments starting with `####` (or more `#`), the comment text is treated as Markdown text by the plugin.
 
 ### Escaping {#cwt-escaping}
 
-Use `\` to escape special characters in keys and strings. Common escape sequences include `\"` (double quote), `\n` (newline), and `\\` (backslash itself). Escaping is generally not needed in unquoted keys and strings.
+Use `\` to escape special characters in keys and strings.
+Common escape sequences include `\"` (double quote), `\n` (newline), and `\\` (backslash itself).
 
 ### Comprehensive Example {#cwt-example}
 
-The following example is from the plugin's syntax test file, demonstrating typical CWT usage:
+The following example is from the plugin's test data file, demonstrating typical CWT usage:
 
 ```cwt
 boolean_value = yes
@@ -151,54 +158,76 @@ Language id: `PARADOX_SCRIPT`; extensions: `.txt`, `.gfx`, `.gui`, etc.
 @see icu.windea.pls.model.ParadoxSeparatorType
 @see src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf
 @see src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex
-
-Note on unquoted key/string character restrictions:
-The first character additionally excludes `@` (to avoid ambiguity with scripted variable references),
-but subsequent characters allow `@`. The document simplifies this to "@ is not allowed" for practical guidance.
 -->
 
 Paradox Script is the scripting language used by Paradox games. The file extension is typically `.txt`, but files in certain locations may also use `.gfx`, `.gui`, or other extensions.
 
-The base syntax of the script language is similar to CWT — also composed of properties, values, and blocks — but differs notably in separator types, value types, and advanced syntax, as detailed below.
+The base syntax of the script language is similar to CWT - also composed of properties, values, and blocks, but differs notably in separator types, value types, and advanced syntax, as detailed below.
 
 ### Basic Elements {#script-basics}
 
-Script files are likewise composed of **properties**, **values**, and **blocks**, and support line comments starting with `#`.
+Script files are mainly composed of three basic elements: **properties**, **values**, and **blocks**.
+Whitespace and line breaks serve as token separators, and blank lines may appear freely.
+Support line comments starting with `#`.
 
-A **property** still has the structure `<key> <sep> <value>`, but the available separators are richer than in CWT:
+其中：
+- **属性**和**块值**（即非属性值的值）被统称为**成员**（member），它们可以多次出现在文件顶层、块或者参数条件块中，并且可以重复出现和混合出现。
+- **属性的键**和**值**被统称为**表达式**（expression），它们在不同的位置和上下文中拥有不同的语义。
 
-- `=` assignment
-- `!=` or `<>` not-equals
-- `?=` safe assignment (CK3/VIC3/EU5 only)
-- `<`, `>`, `<=`, `>=` comparison operators
+A **property** has the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
 
-The `?=` operator means "assign only if the target does not exist". For example, in a trigger context, `owner ?= { ... }` is equivalent to first checking `exists = owner` and then executing `owner = { ... }`.
+- `=` - logical equals / assign.
+- `!=` `<>` - logical not-equals.
+- `<` `>` `<=` `>=` comparison operators.
+- `?=` - safe assign, a safe variant of assignment operators (only supported by CK3/VIC3/EU5).
+- `? =` - safe call assign, a safe variant of assignment operators (only supported by Stellaris v4.4+, and spaces are not allowed between it and the preceding property key).
 
-Keys can be unquoted or wrapped in double quotes. Unquoted keys must not contain `@`, `#`, `$`, `=`, `<`, `>`, `!`, `?`, `{`, `}`, `[`, `]`, `"`, or whitespace characters. Double-quoted keys may contain parameters (see the Advanced Syntax section).
+Semantically, when the preceding property key (`owner` in the example) of the separator represents a scope:
+
+- `owner ?= v` is equivalent to `exists = owner owner = v`
+- `owner? = v` is equivalent to `exists = owner owner = v`
+
+**字符串表达式** （键和字符串）可以用双引号包围（字面量形式），也可以不用（标识符形式）。
+
+- 未用双引号包围时，不能包含空白以及一些特殊字符（`@` `#` `$` `=` `<` `>` `!` `?` `{` `}` `[` `]` `"`）。
+- 可以包含特定的转义字符（如 `\"` `\n`）。
+- 另外，也可以包含参数（如 `$PARAM$`）和内联参数条件块（如 `[[PARAM]v]`），详见[进阶语法](#script-advanced)一节。
+
+Example:
 
 ```paradox_script
-enabled = yes
-level >= 2
-size ?= @my_var
+status = yes
+value = 10
+type = some_type
+description = "line\nnext line"
+dynamic_description = "line [[PARAM]\nnext line]"
+effect = { some_effect = value }
 ```
 
 ### Value Types {#script-values}
 
 Paradox Script extends CWT's base value types with several additional types.
 
-**Boolean** values are `yes` or `no`, same as CWT.
+**Boolean** values are `yes` or `no`.
 
-**Integers** such as `10`, `-5`. **Floats** such as `1.0`, `-0.5`. Both allow leading signs and leading zeros.
+**Integers** such as `10`, `-5`, `042`. Leading signs and leading zeros are allowed.
 
-**Strings** can be unquoted or wrapped in double quotes. Unquoted strings must not contain `@`, `#`, `$`, `=`, `<`, `>`, `!`, `?`, `{`, `}`, `[`, `]`, `"`, or whitespace characters — note the additional reserved characters `@`, `$`, `<`, `>`, `!`, `?`, `[`, `]` compared to CWT. Double-quoted strings support backslash escaping and may contain parameters and inline parameter conditions (see the Advanced Syntax section).
+**Floats** such as `1.0`, `-0.5`, `.25`. The integer part or floating part may be omitted.
+
+**Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters, parameters, and inline parameter condition blocks.
 
 **Colors** are composite values in the format of a color type keyword followed by whitespace-separated numbers enclosed in curly braces, such as `rgb { 255 128 0 }`, `hsv { 0.5 0.8 1.0 }`, `hsv360 { 180 80 100 }`. Only numbers and whitespace are allowed inside the curly braces.
 
-**Blocks** are enclosed in curly braces `{ ... }` and may contain comments, properties, values, scripted variables, and parameter condition blocks.
+**Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of expressions (properties and values), scripted variables, parameter condition blocks and comments. Can be nested multiple levels.
 
-**Scripted variable references** start with `@` followed by the variable name, such as `@my_var`, and are used to reference previously declared scripted variables. Scripted variable references can appear in multiple contexts: as standalone values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case). Scripted variable references can also be used within localisation text parameters (`$@my_var$`).
+**Scripted variable references** start with `@` followed by the variable name, such as `@my_var`, and are used to reference previously declared scripted variables.
+Scripted variable references can appear in multiple contexts: as standalone values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case).
+Scripted variable references can also be used within localisation text parameters (`$@my_var$`).
+与字符串表达式（键和字符串）一样，封装变量引用也可以包含参数（`$PARAM$`）和内联参数条件块（`[[PARAM]v]`），详见[进阶语法](#script-advanced)一节。
 
-**Inline math expressions** start with `@[` and end with `]`, such as `@[ 1 + 2 * var ]`. Supported operators include `+`, `-`, `*`, `/`, `%`, as well as unary signs, absolute value `|expr|`, and parentheses `(expr)`. Factors in the expression can be numbers, scripted variable references (without the `@` prefix), or parameters.
+**Inline math expressions** start with `@[` (or `@\[`) and end with `]`, such as `@[ 1 + 2 * var ]`.
+Supported operators include `+`, `-`, `*`, `/`, `%`, as well as unary signs, absolute value `|expr|`, and parentheses `(expr)`.
+Factors in the expression can be numbers, scripted variable references (without the `@` prefix), or parameters.
 
 ### Scripted Variables {#script-scripted-variables}
 
@@ -210,19 +239,23 @@ Scripted variable names start with `@`, and the name portion consists of letters
 
 The following syntax typically only takes effect or is evaluated by the game engine within the declaration context of certain definitions (such as scripted effects, scripted triggers, and script values).
 
-**Parameters** use the syntax `$name$` or `$name|default_value$` (with default value). Parameter names must start with a letter or underscore, followed by letters, digits, and underscores (i.e. matching `[A-Za-z_][A-Za-z0-9_]*`). Parameters can appear in scripted variable names, scripted variable reference names, property keys, string values, and inline math expressions.
+**Parameters** use the syntax `$name$` or `$name|default_value$` (with default value).
+Parameter names must start with a letter or underscore, followed by letters, digits, and underscores.
+Parameters can appear in scripted variable names, scripted variable reference names, property keys, string values, and inline math expressions.
 
-**Parameter condition blocks** use the syntax `[[<expression>] <members...> ]`, where `<expression>` can be a parameter name or `!<parameter_name>` (negation). They are used to conditionally include a group of members based on whether a parameter is present.
+**Parameter condition blocks** use the syntax `[[<expression>] <members...> ]`, where `<expression>` can be a parameter name or `!<parameter_name>` (negation).
+They are used to conditionally include a group of members based on whether a parameter is present.
 
-**Inline parameter conditions** are used for conditional fragments inside double-quoted strings. For example, in `"prefix[[PARAM]_$PARAM$]_suffix"`, the `[[PARAM]_$PARAM$]` portion is only expanded when the parameter `PARAM` is present.
+**Inline parameter conditions** are used for conditional fragments inside string expressions (keys and strings) and scriped variable references.
+For example, in `"prefix[[PARAM]_$PARAM$]_suffix"`, the `[[PARAM]_$PARAM$]` portion is only expanded when the parameter `PARAM` is present.
 
 ### Escaping {#script-escaping}
 
-Use `\` to escape special characters in keys and strings. Common escape sequences include `\"` (double quote), `\n` (newline), and `\\` (backslash itself). Escaping is generally not needed in unquoted keys and strings.
+Use `\` to escape special characters in string expressions (keys and strings). Common escape sequences include `\"` (double quote), `\n` (newline), and `\\` (backslash itself).
 
 ### Comprehensive Example {#script-example}
 
-The following example is from the plugin's syntax test file, demonstrating typical Paradox Script usage:
+The following example is from the plugin's test data file, demonstrating typical Paradox Script usage:
 
 ```paradox_script
 @var = 1
@@ -301,7 +334,7 @@ add additional resolution strategies (e.g., job, swapped_job, resource definitio
 @see icu.windea.pls.ep.resolve.localisation.ParadoxBaseLocalisationIconSupport.Stellaris
 -->
 
-Paradox Localisation is used to provide internationalizable rich text content for games. The file extension is `.yml`, but it is not valid YAML — it merely borrows YAML's visual style. Localisation files must use **UTF-8 WITH BOM** encoding (the plugin can detect encoding issues and automatically correct them).
+Paradox Localisation is used to provide internationalizable rich text content for games. The file extension is `.yml`, but it is not valid YAML - it merely borrows YAML's visual style. Localisation files must use **UTF-8 WITH BOM** encoding (the plugin can detect encoding issues and automatically correct them).
 
 ### File Structure {#loc-structure}
 
@@ -312,6 +345,8 @@ The **locale identifier line** is optional, in the format `<locale>:`, e.g. `l_e
 **Key-value pairs** form the main body of the file. Each key-value pair occupies one line, in the format `<key>:<number?> "<text>"`. The number after the colon is an optional internal tracking number (used only for Paradox's internal translation tracking; in mods it is typically omitted or set to `0`). Property keys consist of letters, digits, underscores, dots, hyphens, and apostrophes.
 
 **Comments** start with `#` and extend to the end of the line.
+
+Example:
 
 ```paradox_localisation
 l_english:
@@ -326,7 +361,7 @@ The text inside double quotes supports various inline markup for effects such as
 
 **Color markup** uses the syntax `§<id><text>§!`, where `<id>` is a single letter or digit representing a predefined color code. For example, `§RRed text§!` renders "Red text" in red. Color markup can be nested.
 
-**Parameters** use the syntax `$<name>$` or `$<name>|<argument>$`, where the `|<argument>` portion is a formatting argument (e.g. for specifying display format), distinct from the default-value semantics of parameters in the script language. The most common form of `<name>` is a localisation key name (referencing another localisation entry), consisting of letters, digits, underscores, dots, hyphens, and apostrophes. Besides localisation key names, `<name>` can also be a variable or parameter passed in from script, a game-predefined macro or variable. At the parsing level, `<name>` can also be a command expression or a scripted variable reference — for example, `$@my_var$` references the value of the scripted variable `my_var`.
+**Parameters** use the syntax `$<name>$` or `$<name>|<argument>$`, where the `|<argument>` portion is a formatting argument (e.g. for specifying display format), distinct from the default-value semantics of parameters in the script language. The most common form of `<name>` is a localisation key name (referencing another localisation entry), consisting of letters, digits, underscores, dots, hyphens, and apostrophes. Besides localisation key names, `<name>` can also be a variable or parameter passed in from script, a game-predefined macro or variable. At the parsing level, `<name>` can also be a command expression or a scripted variable reference - for example, `$@my_var$` references the value of the scripted variable `my_var`.
 
 **Icons** use the syntax `£<icon>£` or `£<icon>|<frame>£`. `<icon>` typically corresponds to the name of a sprite definition, but may also resolve to an image file under a specific path (`gfx/interface/icons/`), or to a definition of a specific type (e.g. resources, jobs in Stellaris). `<frame>` is an optional frame index. Both the icon name and frame index can be parameterized (containing `$...$`).
 
@@ -342,13 +377,14 @@ The text inside double quotes supports various inline markup for effects such as
 
 Normally, use `\` to escape special characters in localisation text. Common escape sequences include `\$` (rich text markup), `\n` (newline), and `\\` (backslash itself).
 
-Double quotes within localisation text generally do not need escaping. The plugin uses a heuristic rule to determine whether a quote is a closing quote: if there is another `"` character later on the current line, the current `"` is treated as text content; otherwise it is treated as the closing quote.
+Double quotes within localisation text generally do not need escaping.
+The plugin uses a heuristic rule to determine whether a quote is a closing quote: if there is another `"` character later on the current line, the current `"` is treated as text content; otherwise it is treated as the closing quote.
 
 The square bracket `[` is the start marker for commands. To output a literal `[` in text, use `[[` to escape it.
 
 ### Comprehensive Example {#loc-example}
 
-The following example is from the plugin's syntax test file, demonstrating various rich text markup in localisation files:
+The following example is from the plugin's test data file, demonstrating various rich text markup in localisation files:
 
 ```paradox_localisation
 l_english:
@@ -404,11 +440,13 @@ Column values can be unquoted or wrapped in double quotes. Empty columns (i.e. n
 
 ### Escaping {#csv-escaping}
 
-Use `\` to escape special characters in columns. Common escape sequences include `\"` (double quote), `\n` (newline), and `\\` (backslash itself). Escaping is generally not needed in unquoted columns.
+Use `\` to escape special characters in columns. Common escape sequences include `\"` (double quote), `\n` (newline), and `\\` (backslash itself).
 
-Note: Since `#` is also used as a comment marker — a syntax not supported by standard CSV — the plugin assumes the same backslash `\` escaping as script files (e.g. `\"`), rather than the double-quote escaping (`""`) common in standard CSV.
+Note: Since `#` is also used as a comment marker - a syntax not supported by standard CSV - the plugin assumes the same backslash `\` escaping as script files (e.g. `\"`), rather than the double-quote escaping (`""`) common in standard CSV.
 
 ### Example {#csv-example}
+
+Here is a simple example:
 
 ```paradox_csv
 # Unit definitions

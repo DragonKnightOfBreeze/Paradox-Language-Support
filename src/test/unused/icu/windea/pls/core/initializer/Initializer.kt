@@ -36,7 +36,7 @@ class Initializer(
         }
     }
 
-    /** 返回直接包裹值 [value] 的懒对象（不注册初始化任务）。 */
+    /** 返回直接包围值 [value] 的懒对象（不注册初始化任务）。 */
     fun <T> await(value: T): Lazy<T> {
         return lazyOf(value)
     }

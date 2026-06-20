@@ -108,12 +108,12 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
 inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 
-/** 判断是否以指定前缀/后缀包裹（基于单个字符）。 */
+/** 判断是否以指定前缀/后缀包围（基于单个字符）。 */
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
     return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
 }
 
-/** 判断是否以指定前缀/后缀包裹（先匹配后缀以略微优化）。 */
+/** 判断是否以指定前缀/后缀包围（先匹配后缀以略微优化）。 */
 fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): Boolean {
     return endsWith(suffix, ignoreCase) && startsWith(prefix, ignoreCase) // 先匹配后缀，这样可能会提高性能
 }
@@ -276,7 +276,7 @@ fun String.isRightQuoted(quote: Char = '"'): Boolean {
     return length > 1 && endsWith(quote) && !isEscapedCharAt(lastIndex)
 }
 
-/** 是否左右被 [quote] 包裹。 */
+/** 是否左右被 [quote] 包围。 */
 fun String.isQuoted(quote: Char = '"'): Boolean {
     return isLeftQuoted(quote) || isRightQuoted(quote)
 }

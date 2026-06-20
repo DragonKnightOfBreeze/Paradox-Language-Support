@@ -192,7 +192,7 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
 /**
  * 将 [original] 中 [this] 范围替换为 [replacement]，必要时自动加引号。
  *
- * 当替换段长度与整体长度关系满足条件时，避免重复包裹引号并保留必要的转义。
+ * 当替换段长度与整体长度关系满足条件时，避免重复包围引号并保留必要的转义。
  */
 fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
     if (this.length >= original.length - 1) {
