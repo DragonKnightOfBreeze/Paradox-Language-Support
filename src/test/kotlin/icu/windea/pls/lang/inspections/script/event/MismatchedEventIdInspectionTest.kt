@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.InspectionTestScope
+import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class MismatchedEventIdInspectionTest : BasePlatformTestCase(), InspectionTestScope {
+class MismatchedEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

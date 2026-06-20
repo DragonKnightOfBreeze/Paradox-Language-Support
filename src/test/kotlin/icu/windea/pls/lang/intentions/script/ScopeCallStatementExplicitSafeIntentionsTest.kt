@@ -243,11 +243,11 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScopeCallToSafeForm_notAvailableWhenNotNeighboring() {
-        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_not_available_notNeighboring.test.txt")
+    fun testScopeCallToSafeForm_notAvailableWhenNotAdjacent() {
+        markFileInfo(ParadoxGameType.Ck3, "common/test/to_safe_form_not_available_notAdjacent.test.txt")
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
-            "to_safe_form_not_available_notNeighboring.ck3.test.txt",
+            "to_safe_form_not_available_notAdjacent.ck3.test.txt",
             """
             k = {
                 exists = owner

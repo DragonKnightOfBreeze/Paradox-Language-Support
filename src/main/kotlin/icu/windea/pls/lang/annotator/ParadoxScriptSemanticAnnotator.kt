@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.editor
+package icu.windea.pls.lang.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
@@ -27,7 +27,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.editor.ParadoxScriptAnnotator
+import icu.windea.pls.script.annotator.ParadoxScriptSyntaxAnnotator
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -39,7 +39,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isResolvableExpression
 
 /**
- * @see ParadoxScriptAnnotator
+ * @see ParadoxScriptSyntaxAnnotator
  */
 class ParadoxScriptSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

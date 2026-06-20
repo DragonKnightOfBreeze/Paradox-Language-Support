@@ -20,9 +20,9 @@ import javax.swing.JComponent
 /**
  * @see TigerLintResult
  * @see TigerLintToolProvider
- * @see PlsTigerLintAnnotator
+ * @see ChronicleTigerLintAnnotator
  */
-class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection, DumbAware {
+class ChronicleTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection, DumbAware {
     companion object {
         const val SHORT_NAME = "PlsTigerLint"
     }

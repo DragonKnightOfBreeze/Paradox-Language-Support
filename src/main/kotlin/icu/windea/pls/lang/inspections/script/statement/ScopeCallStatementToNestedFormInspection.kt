@@ -44,7 +44,7 @@ class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAwar
 
     private class Fix(
         element: PsiElement
-    ) : LocalQuickFixAndIntentionActionOnPsiElement(element)/*NOT*//*, IntentionActionWithFixAllOption*/ {
+    ) : LocalQuickFixAndIntentionActionOnPsiElement(element)/*not:*//*, IntentionActionWithFixAllOption*/ {
         override fun getText() = PlsBundle.message("inspection.script.scopeCallStatementToNestedForm.fix.1.name")
 
         override fun getFamilyName() = text

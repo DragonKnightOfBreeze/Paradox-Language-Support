@@ -1,4 +1,4 @@
-package icu.windea.pls.csv.editor
+package icu.windea.pls.csv.annotator
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestDataPath
@@ -11,9 +11,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxCsvSyntaxAnnotator
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxCsvAnnotatorTest : BasePlatformTestCase() {
+class ParadoxCsvSyntaxAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

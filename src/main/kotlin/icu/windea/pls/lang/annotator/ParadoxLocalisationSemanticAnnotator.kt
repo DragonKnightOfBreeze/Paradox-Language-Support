@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.editor
+package icu.windea.pls.lang.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
@@ -6,11 +6,12 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator
+import icu.windea.pls.localisation.annotator.ParadoxLocalisationSyntaxAnnotator
 import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -20,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 /**
- * @see ParadoxLocalisationAnnotator
+ * @see ParadoxLocalisationSyntaxAnnotator
  */
 class ParadoxLocalisationSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

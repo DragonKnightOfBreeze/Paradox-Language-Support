@@ -48,6 +48,11 @@
     <qualifiedNameProvider implementation="icu.windea.pls.lang.actions.ParadoxQualifiedNameProvider"/>
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxEntryCreateDirectoryCompletionContributor"/>
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
+
+    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.annotator.ParadoxScriptSemanticAnnotator"/>
+    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.annotator.ParadoxLocalisationSemanticAnnotator"/>
+    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.annotator.ParadoxCsvSemanticAnnotator"/>
+
     <codeInsight.containerProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxContainerProvider"/>
     <targetElementEvaluator language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTargetElementEvaluator"/>
     <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
@@ -243,10 +248,6 @@
     <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtInlineDocumentationProvider"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationLinkHandler"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationLinkHandler"/>
-
-    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.ParadoxScriptSemanticAnnotator"/>
-    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticAnnotator"/>
-    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.editor.ParadoxCsvSemanticAnnotator"/>
 
     <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxScriptSemanticWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticWordSelectionHandler"/>

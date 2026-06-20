@@ -21,12 +21,12 @@ import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 /**
  * @see TigerLintResult
  * @see TigerLintToolProvider
- * @see PlsTigerLintInspection
+ * @see ChronicleTigerLintInspection
  */
-class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
+class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
     data class Info(val file: PsiFile)
 
-    override fun getPairedBatchInspectionShortName() = PlsTigerLintInspection.SHORT_NAME
+    override fun getPairedBatchInspectionShortName() = ChronicleTigerLintInspection.SHORT_NAME
 
     override fun collectInformation(file: PsiFile): Info? {
         if (!TigerLintToolService.getInstance().checkAvailableFor(file)) return null

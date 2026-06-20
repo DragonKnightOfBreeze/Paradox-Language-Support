@@ -387,11 +387,11 @@
     <!-- endregion -->
 
     <!-- region Linting Tools -->
-    <externalAnnotator language="PARADOX" implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator"/>
+    <externalAnnotator language="PARADOX" implementationClass="icu.windea.pls.lang.inspections.lints.ChronicleTigerLintAnnotator"/>
     <localInspection language="PARADOX" shortName="PlsTigerLint"
                      key="inspection.lints.tiger" groupKey="inspection.lints.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.lints.ChronicleTigerLintInspection"/>
     <!-- endregion -->
   </extensions>
 </idea-plugin>

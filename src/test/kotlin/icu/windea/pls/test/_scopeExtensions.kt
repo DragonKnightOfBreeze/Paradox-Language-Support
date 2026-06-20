@@ -106,7 +106,7 @@ fun VirtualFile.injectFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: S
     ParadoxAnalysisInjectionManager.injectFileInfo(this, rootInfo, path, entry, group)
 }
 
-interface InspectionTestScope {
+interface HighlightingTestScope {
     data class Tag(val start: String, val end: String)
 
     fun String.toTag(level: String) = Tag("<$level descr=\"${this.replace("\"", "\\\\\"")}\">", "</$level>")
