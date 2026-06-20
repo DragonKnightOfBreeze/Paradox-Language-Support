@@ -36,18 +36,15 @@ class ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        val configGroup = context.configGroup
-        val file = parameters.originalFile
-        val path = file.fileInfo?.path
-
         // 排除所在文件可能包含定义声明的情况
-        if (path != null && ParadoxConfigMatchService.getTypeConfigCandidates(CwtTypeConfigMatchContext(configGroup, path)).isNotEmpty()) return
+        val path = context.file.fileInfo?.path
+        if (path != null && ParadoxConfigMatchService.getTypeConfigCandidates(CwtTypeConfigMatchContext(context.configGroup, path)).isNotEmpty()) return
 
         // 排除存在上下文规则的情况
         if (ParadoxConfigManager.getConfigContext(element)?.getConfigs().isNotNullOrEmpty()) return
 
         // 2.1.8 同样排除定值的脚本文件
-        if (ParadoxDefineManager.isDefineFile(file)) return
+        if (ParadoxDefineManager.isDefineFile(context.file)) return
 
         result.addElements(ChronicleLookupElements.keywordLookupElements, context)
     }

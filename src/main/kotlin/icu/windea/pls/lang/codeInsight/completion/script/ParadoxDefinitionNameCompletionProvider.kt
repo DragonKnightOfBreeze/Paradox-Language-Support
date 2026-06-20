@@ -47,8 +47,8 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
-                expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
-            )
+            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+        )
 
         when {
             // key_
@@ -69,7 +69,8 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                     val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = context.configGroup)
 
                     run {
-                        val context = context.copy(config = config, isKey = true, expressionTailText = "")
+                        val context = context.copy(isKey = true, config = config, expressionTailText = "")
+
                         // 仅限作为属性的定义
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
@@ -91,7 +92,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                     val config = definitionInfo.declaration ?: return
 
                     run {
-                        val context = context.copy(config = config, isKey = false, expressionTailText = "")
+                        val context = context.copy(isKey = false, config = config, expressionTailText = "")
 
                         // 排除与正在输入的同名的定义
                         // 仅限作为属性的定义

@@ -78,7 +78,6 @@ object ParadoxCompletionManager {
     // region Core Methods
 
     fun addKeyCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
-        val contextElement = context.contextElement
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
         // 仅提示不在定义声明中的 key（顶级键和类型键）
@@ -86,7 +85,7 @@ object ParadoxCompletionManager {
             // 忽略 rootKeys 深度超出限制，或者带参数的情况
             val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
             val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
-            val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(contextElement) }
+            val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(context.contextElement) }
             val context = context.copy(isKey = true)
             completeKey(context, result, memberPath, typeKeyPrefix)
             return
@@ -110,7 +109,7 @@ object ParadoxCompletionManager {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
                 if (shouldComplete(config, occurrences)) {
-                    val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(contextElement, config)
+                    val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
                             val context = context.copy(config = overriddenConfig)
@@ -126,7 +125,6 @@ object ParadoxCompletionManager {
     }
 
     fun addValueCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
-        val contextElement = context.contextElement
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
         if (!configContext.inRoot()) return
@@ -148,7 +146,7 @@ object ParadoxCompletionManager {
         val context = context.copy(isKey = false, scopeContext = scopeContext)
         for (config in configs) {
             if (shouldComplete(config, occurrences)) {
-                val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(contextElement, config)
+                val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
                         val context = context.copy(config = overriddenConfig)
@@ -239,12 +237,10 @@ object ParadoxCompletionManager {
         // - type_key_filter
         // - type_key_prefix
 
-        val originalFile = context.file
-        val fileInfo = originalFile.fileInfo ?: return
-        val configGroup = context.configGroup
+        val fileInfo = context.file.fileInfo ?: return
         val path = fileInfo.path
 
-        val typeConfigs = configGroup.types.values
+        val typeConfigs = context.configGroup.types.values
         val infoMapForTag = mutableMapOf<String, MutableList<CwtTypeConfig>>()
         val infoMapForKey = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for (typeConfig in typeConfigs) {
@@ -252,12 +248,12 @@ object ParadoxCompletionManager {
                 val typeKeyPrefix = typeConfig.typeKeyPrefix
                 if (typeKeyPrefix == null) return@run
                 if (rootKeyPrefix.value != null) return@run // avoid complete prefix again after an existing prefix
-                val matchContext = CwtTypeConfigMatchContext(configGroup, path)
+                val matchContext = CwtTypeConfigMatchContext(context.configGroup, path)
                 if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) return@run
                 infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
             }
 
-            val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKeyPrefix = rootKeyPrefix)
+            val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, typeKeyPrefix = rootKeyPrefix)
             if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isEmpty()) {
@@ -322,7 +318,7 @@ object ParadoxCompletionManager {
             val config = when {
                 typeToUse == null -> null
                 typeConfigToUse.typeKeyPrefix != null -> typeConfigToUse.typeKeyPrefixConfig
-                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement, typeToUse, subtypesToUse, configGroup)
+                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement, typeToUse, subtypesToUse, context.configGroup)
             }
             val element = config?.pointer?.element
             val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
@@ -382,19 +378,15 @@ object ParadoxCompletionManager {
 
     fun completeLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
-        val keyword = context.keyword
 
         // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(keyword)) return
+        if (context.keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(context.keyword)) return
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = ParadoxLocalisationSearch.selector(project, contextElement)
+        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
@@ -412,26 +404,22 @@ object ParadoxCompletionManager {
             true
         }
         // 保证索引在此 readAction 中可用
-        runSmartReadAction(project, inSmartMode = true) {
+        runSmartReadAction(context.project, inSmartMode = true) {
             ParadoxLocalisationSearch.processVariantsNormal(result.prefixMatcher, selector, processor)
         }
     }
 
     fun completeSyncedLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
-        val keyword = context.keyword
 
         // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(keyword)) return
+        if (context.keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(context.keyword)) return
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = ParadoxLocalisationSearch.selector(project, contextElement)
+        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ syncedLocalisation ->
@@ -449,7 +437,7 @@ object ParadoxCompletionManager {
             true
         }
         // 保证索引在此 readAction 中可用
-        runSmartReadAction(project, inSmartMode = true) {
+        runSmartReadAction(context.project, inSmartMode = true) {
             ParadoxLocalisationSearch.processVariantsSynced(result.prefixMatcher, selector, processor)
         }
     }
@@ -459,10 +447,8 @@ object ParadoxCompletionManager {
         val scopeContext = context.scopeContext
         val typeExpression = config.configExpression?.value ?: return
         val configGroup = config.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
+        val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -493,11 +479,8 @@ object ParadoxCompletionManager {
     }
 
     fun completePathReference(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val contextFile = context.file
-        val project = contextFile.project
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
-        val contextElement = context.contextElement
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if (pathReferenceExpressionSupport != null) {
             val tailText = getExpressionTailText(context, config)
@@ -506,13 +489,13 @@ object ParadoxCompletionManager {
                 else -> emptySet()
             }
             // 仅提示匹配 `file_extensions` 选项指定的扩展名的，如果存在
-            val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive().distinct()
+            val selector = ParadoxFilePathSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
                 .withFileExtensions(fileExtensions)
             ParadoxFilePathSearch.search(null, configExpression, selector).processAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
-                val file = virtualFile.toPsiFile(project) ?: return@p true
+                val file = virtualFile.toPsiFile(context.project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
-                val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
+                val name = pathReferenceExpressionSupport.extract(configExpression, context.file, filePath) ?: return@p true
                 val lookupElement = LookupElementBuilder.create(file, name)
                     .withTypeText(file.name, file.icon, true)
                     .withPatchableIcon(PlsIcons.Nodes.PathReference(config.configExpression))
@@ -568,18 +551,17 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
-        val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
         val searchScopeType = complexEnumConfig.searchScopeType
-        val selector = ParadoxComplexEnumValueSearch.selector(configGroup.project, contextElement).contextSensitive().distinct()
+        val selector = ParadoxComplexEnumValueSearch.selector(configGroup.project, context.contextElement).contextSensitive().distinct()
             .withSearchScopeType(searchScopeType)
         ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync { info ->
             ProgressManager.checkCanceled()
             val name = info.name
             val readWriteAccess = Access.Write // write (declaration)
-            val element = ParadoxComplexEnumValueLightElement(contextElement, name, enumName, readWriteAccess, configGroup.gameType, configGroup.project)
+            val element = ParadoxComplexEnumValueLightElement(context.contextElement, name, enumName, readWriteAccess, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
@@ -629,18 +611,16 @@ object ParadoxCompletionManager {
     fun completeIndexedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtConfig<*>) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
-        val keyword = context.keyword
-        val contextElement = context.contextElement
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.value ?: return
         val tailText = " by $configExpression"
-        val selector = ParadoxDynamicValueSearch.selector(configGroup.project, contextElement).distinct()
+        val selector = ParadoxDynamicValueSearch.selector(configGroup.project, context.contextElement).distinct()
         ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
-            if (name == keyword) return@p true // 排除和当前输入的同名的
+            if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val readWriteAccess = info.readWriteAccess
-            val element = ParadoxDynamicValueLightElement(contextElement, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
+            val element = ParadoxDynamicValueLightElement(context.contextElement, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                 .withPatchableTailText(tailText)
@@ -700,10 +680,8 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         // 提示参数名（仅限key）
-        val contextElement = context.contextElement
-        val isKey = context.isKey
-        if (isKey != true || config !is CwtPropertyConfig) return
-        ParadoxParameterManager.completeArguments(contextElement, context, result)
+        if (context.isKey != true || config !is CwtPropertyConfig) return
+        ParadoxParameterManager.completeArguments(context, result, context.contextElement)
     }
 
     fun completeShaderEffect(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -714,16 +692,14 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         val configGroup = context.configGroup
-        val keyword = context.keyword
-        val contextElement = context.contextElement
         val configExpression = config.configExpression ?: return
         val tailText = " by $configExpression"
-        val selector = ParadoxShaderEffectSearch.selector(configGroup.project, contextElement).distinct()
+        val selector = ParadoxShaderEffectSearch.selector(configGroup.project, context.contextElement).distinct()
         ParadoxShaderEffectSearch.search(null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
-            if (name == keyword) return@p true // 排除和当前输入的同名的
-            val element = ParadoxShaderEffectLightElement(contextElement, name, configGroup.gameType, configGroup.project)
+            if (name == context.keyword) return@p true // 排除和当前输入的同名的
+            val element = ParadoxShaderEffectLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withPatchableIcon(PlsIcons.Nodes.ShaderEffect)
                 .withPatchableTailText(tailText)
@@ -741,16 +717,14 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         val configGroup = context.configGroup
-        val keyword = context.keyword
-        val contextElement = context.contextElement
         val configExpression = config.configExpression ?: return
         val tailText = " by $configExpression"
-        val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, contextElement).distinct()
+        val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, context.contextElement).distinct()
         ParadoxMeshLocatorSearch.search(null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
-            if (name == keyword) return@p true // 排除和当前输入的同名的
-            val element = ParadoxMeshLocatorLightElement(contextElement, name, configGroup.gameType, configGroup.project)
+            if (name == context.keyword) return@p true // 排除和当前输入的同名的
+            val element = ParadoxMeshLocatorLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withPatchableIcon(PlsIcons.Nodes.MeshLocator)
                 .withPatchableTailText(tailText)
@@ -789,27 +763,24 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup
         val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-        val file = context.file
-        val fileInfo = file.fileInfo ?: return
+        val fileInfo = context.file.fileInfo ?: return
         val path = fileInfo.path
         val matchContext = CwtTypeConfigMatchContext(configGroup, path)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return
-        val keyword = context.keyword
-        val index = keyword.indexOf(':')
+        val index = context.keyword.indexOf(':')
         if (index == -1) {
             // complete mode
             completeDefinitionInjectionMode(context, result, config)
         } else {
             // complete definition reference
             ProgressManager.checkCanceled()
-            val keywordToUse = keyword.substring(index + 1)
+            val keywordToUse = context.keyword.substring(index + 1)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val type = typeConfig.name
             val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
             val context = context.copy(config = config, isKey = true, expressionTailText = "", keyword = keywordToUse)
-            val project = configGroup.project
 
-            val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
+            val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
             ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                 processDefinition(context, resultToUse, it)
             }

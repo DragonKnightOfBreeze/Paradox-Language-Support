@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.lang.isIdentifier
 
+@Suppress("unused")
 abstract class GlobalBasedCompletionContext : CompletionContext {
     abstract val globalContext: GlobalCompletionContext
     abstract val keyword: String
@@ -18,13 +19,13 @@ abstract class GlobalBasedCompletionContext : CompletionContext {
     val rightQuoted: Boolean get() = globalContext.rightQuoted
     val quoted: Boolean get() = globalContext.quoted
 
-    override val context: ProcessingContext get() = globalContext.context
-    override val parameters: CompletionParameters get() = globalContext.parameters
-    override val completionIds: MutableSet<String> get() = globalContext.completionIds
-    override val file: PsiFile get() = globalContext.file
-    override val offset: Int get() = globalContext.offset
-    override val editor: Editor get() = globalContext.editor
-    override val project: Project get() = globalContext.project
+    final override val context: ProcessingContext get() = globalContext.context
+    final override val parameters: CompletionParameters get() = globalContext.parameters
+    final override val completionIds: MutableSet<String> get() = globalContext.completionIds
+    final override val file: PsiFile get() = globalContext.file
+    final override val offset: Int get() = globalContext.offset
+    final override val editor: Editor get() = globalContext.editor
+    final override val project: Project get() = globalContext.project
 
     fun isIdentifierKeyword(): Boolean {
         val keyword = keyword

@@ -24,6 +24,6 @@ class ParadoxParameterCompletionProvider : ParadoxCompletionProvider() {
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxParameterManager.completeParameters(element, context, result)
+        ParadoxParameterManager.completeParameters(context, result, element)
     }
 }

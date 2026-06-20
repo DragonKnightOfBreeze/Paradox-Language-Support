@@ -137,7 +137,7 @@ object ParadoxInlineScriptService {
     private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?, fast: Boolean): List<CwtMemberConfig<*>> {
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
-        val project = context.configGroup.project
+        val project = context.project
         val selector = ParadoxInlineScriptUsageSearch.selector(project, contextElement)
         ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
             if (!ParadoxInlineScriptManager.isMatched(p.name)) return@p true // 再次确认

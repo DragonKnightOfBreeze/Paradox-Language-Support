@@ -20,7 +20,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return null
-        val project = configContext.configGroup.project
+        val project = configContext.project
         return ParadoxInlineScriptManager.getInlineScriptFile(inlineScriptExpression, project, element)
     }
 }

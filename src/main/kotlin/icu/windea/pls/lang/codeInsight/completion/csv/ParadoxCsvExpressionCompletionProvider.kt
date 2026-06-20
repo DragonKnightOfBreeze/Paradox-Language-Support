@@ -24,6 +24,6 @@ class ParadoxCsvExpressionCompletionProvider : ParadoxCompletionProvider() {
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxCsvCompletionManager.addColumnCompletions(element, context, result)
+        ParadoxCsvCompletionManager.addColumnCompletions(context, result, element)
     }
 }

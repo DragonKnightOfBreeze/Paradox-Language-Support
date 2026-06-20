@@ -15,7 +15,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.util.ParadoxCsvManager
 
 object ParadoxCsvCompletionManager {
-    fun addColumnCompletions(columnElement: ParadoxCsvColumn, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun addColumnCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, columnElement: ParadoxCsvColumn) {
         if (context.file !is ParadoxCsvFile) return
 
         if (columnElement.isHeaderColumn()) {
@@ -25,10 +25,8 @@ object ParadoxCsvCompletionManager {
 
         val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
         val config = columnConfig.valueConfig ?: return
-        run {
-            val context = context.copy(config = config)
-            ParadoxCompletionManager.completeCsvExpression(context, result)
-        }
+        val context = context.copy(isKey = null, config = config)
+        ParadoxCompletionManager.completeCsvExpression(context, result)
     }
 
     fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -46,19 +44,17 @@ object ParadoxCsvCompletionManager {
             .toSet()
         val columnConfigs = rowConfig.columns.filterNot { it.key in existingHeaderNames }.values
         if (columnConfigs.isEmpty()) return
-        columnConfigs.forEach f@{ columnConfig ->
+        for (columnConfig in columnConfigs) {
             ProgressManager.checkCanceled()
-            run {
-                val context = context.copy(config = columnConfig)
-                val name = columnConfig.key
-                val element = columnConfig.pointer.element ?: return@f
-                val typeFile = columnConfig.pointer.containingFile
-                val lookupElement = LookupElementBuilder.create(element, name)
-                    .withIcon(PlsIcons.Nodes.Column)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPriority(ChronicleCompletionPriorities.constant)
-                result.addElement(lookupElement, context)
-            }
+            val context = context.copy(config = columnConfig)
+            val name = columnConfig.key
+            val element = columnConfig.pointer.element ?: continue
+            val typeFile = columnConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.Column)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ChronicleCompletionPriorities.constant)
+            result.addElement(lookupElement, context)
         }
     }
 }

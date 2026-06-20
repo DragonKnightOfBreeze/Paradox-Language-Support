@@ -181,7 +181,7 @@ object ParadoxParameterManager {
         return resolved != "no"
     }
 
-    fun completeParameters(element: PsiElement, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeParameters(context: ParadoxCompletionContext, result: CompletionResultSet, element: PsiElement) {
         ProgressManager.checkCanceled()
         // 向上找到参数上下文
         val parameterContext = ParadoxParameterService.findContext(element) ?: return
@@ -209,7 +209,7 @@ object ParadoxParameterManager {
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
-    fun completeArguments(element: PsiElement, context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeArguments(context: ParadoxCompletionContext, result: CompletionResultSet, element: PsiElement) {
         ProgressManager.checkCanceled()
         if (context.quoted) return // 输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument

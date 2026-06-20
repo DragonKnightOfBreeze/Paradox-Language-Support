@@ -65,7 +65,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxTemplateExpression.resolve(context.keyword, textRange, context.configGroup, finalConfig) } ?: return
 
         // skip check scope context here
-        val context = context.copy(scopeContext = null)
+        val context = context.copy(isKey = null, scopeContext = null)
         for (node in expression.nodes) {
             ProgressManager.checkCanceled()
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
@@ -109,7 +109,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(context.keyword, textRange, context.configGroup, finalConfigs) } ?: return
 
         // skip check scope context here
-        val context = context.copy(config = expression.configs.first(), configs = expression.configs, scopeContext = null, isKey = null)
+        val context = context.copy(isKey = null, config = expression.configs.first(), configs = expression.configs, scopeContext = null)
         for (node in expression.nodes) {
             ProgressManager.checkCanceled()
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
@@ -198,9 +198,10 @@ object ParadoxComplexExpressionCompletionManager {
             } else if (node is ParadoxScriptValueArgumentNode) {
                 if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
                     val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val context = context.copy(keyword = keyword)
+                    val keywordOffset = node.rangeInExpression.startOffset
+                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
                     val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxParameterManager.completeArguments(element, context, result)
+                    ParadoxParameterManager.completeArguments(context, result, element)
                 }
             } else if (node is ParadoxScriptValueArgumentValueNode && PlsSettings.getInstance().state.inference.configContextForParameters) {
                 if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
@@ -226,12 +227,8 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val configGroup = context.configGroup
-
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
+        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val expression = markIncomplete { ParadoxValueFieldExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
@@ -256,7 +253,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, context.configGroup)
                     val afterPrefix = completeForScopeNode(context, result, scopeNode)
                     if (afterPrefix) break
                     completeForValueFieldNode(context, result, node)
@@ -272,12 +269,8 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val configGroup = context.configGroup
-
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
+        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val expression = markIncomplete { ParadoxVariableFieldExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
@@ -302,7 +295,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, context.configGroup)
                     val afterPrefix = completeForScopeNode(context, result, scopeNode)
                     if (afterPrefix) break
                     completeForVariableFieldValueNode(context, result, node)
@@ -318,12 +311,8 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val configGroup = context.configGroup
-
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxCommandExpression.resolve(keyword, textRange, configGroup) } ?: return
+        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val expression = markIncomplete { ParadoxCommandExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         val scopeContext = context.scopeContext ?: ParadoxScopeContext.resolveAny()
@@ -348,7 +337,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val context = context.copy(scopeContext = scopeContextInExpression)
-                    val scopeNode = ParadoxCommandScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeNode = ParadoxCommandScopeNode.resolve(node.text, node.rangeInExpression, context.configGroup)
                     val afterPrefix = completeForCommandScopeNode(context, result, scopeNode)
                     if (afterPrefix) break
                     completeForCommandFieldNode(context, result, node)
@@ -360,16 +349,11 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeDatabaseObjectExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val configGroup = context.configGroup
-
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxDatabaseObjectExpression.resolve(keyword, textRange, configGroup) } ?: return
+        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val expression = markIncomplete { ParadoxDatabaseObjectExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
@@ -401,16 +385,11 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeDefineReferenceExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val configGroup = context.configGroup
-
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxDefineReferenceExpression.resolve(keyword, textRange, configGroup) } ?: return
+        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val expression = markIncomplete { ParadoxDefineReferenceExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
@@ -543,7 +522,6 @@ object ParadoxComplexExpressionCompletionManager {
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
-
             val keywordNode = currentArgNode ?: valueNode
             val keywordOffset = keywordNode.rangeInExpression.startOffset
             val keyword = keywordNode.text.substring(0, offset - keywordOffset)
@@ -708,12 +686,10 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeSystemScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
 
         // 总是提示，无论作用域是否匹配
-        val systemScopeConfigs = configGroup.systemScopes
+        val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
             val name = systemScopeConfig.id
@@ -733,15 +709,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeStaticScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linksConfigs = configGroup.linksModel.forScopeStatic
+        val linksConfigs = context.configGroup.linksModel.forScopeStatic
         for (linkConfig in linksConfigs) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
@@ -762,15 +735,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeScopePrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linkConfigsFromArgument = configGroup.linksModel.forScopeFromArgumentSorted
+        val linkConfigsFromArgument = context.configGroup.linksModel.forScopeFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
@@ -788,10 +758,10 @@ object ParadoxComplexExpressionCompletionManager {
             result.addElement(lookupElement, context)
         }
 
-        val linkConfigsFromData = configGroup.linksModel.forScopeFromDataSorted
+        val linkConfigsFromData = context.configGroup.linksModel.forScopeFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
@@ -831,16 +801,13 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeStaticValueField(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linkConfigs = configGroup.linksModel.forValueStatic
+        val linkConfigs = context.configGroup.linksModel.forValueStatic
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             // 排除 input_scopes 不匹配前一个 scope 的 output_scope 的情况
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
@@ -860,15 +827,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeValueFieldPrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linkConfigsFromArgument = configGroup.linksModel.forValueFromArgumentSorted
+        val linkConfigsFromArgument = context.configGroup.linksModel.forValueFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
@@ -886,10 +850,10 @@ object ParadoxComplexExpressionCompletionManager {
             result.addElement(lookupElement, context)
         }
 
-        val linkConfigsFromData = configGroup.linksModel.forValueFromDataSorted
+        val linkConfigsFromData = context.configGroup.linksModel.forValueFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
@@ -930,12 +894,10 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeSystemCommandScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
 
         // 总是提示，无论作用域是否匹配
-        val systemScopeConfigs = configGroup.systemScopes
+        val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
             val name = systemScopeConfig.id
@@ -955,15 +917,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeStaticCommandScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linkConfigs = configGroup.localisationLinksModel.forScopeStatic
+        val linkConfigs = context.configGroup.localisationLinksModel.forScopeStatic
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             // optimize: make first char uppercase (e.g., owner -> Owner)
@@ -985,15 +944,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeCommandScopePrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linkConfigsFromArgument = configGroup.localisationLinksModel.forScopeFromArgumentSorted
+        val linkConfigsFromArgument = context.configGroup.localisationLinksModel.forScopeFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
@@ -1011,11 +967,11 @@ object ParadoxComplexExpressionCompletionManager {
             result.addElement(lookupElement, context)
         }
 
-        val linkConfigsFromData = configGroup.localisationLinksModel.forScopeFromDataSorted
-            .sortedByPriority({ it.configExpression }, { configGroup })
+        val linkConfigsFromData = context.configGroup.localisationLinksModel.forScopeFromDataSorted
+            .sortedByPriority({ it.configExpression }, { context.configGroup })
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
@@ -1053,15 +1009,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeStaticCommandField(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val localisationCommands = configGroup.localisationCommands
+        val localisationCommands = context.configGroup.localisationCommands
         for (localisationCommand in localisationCommands.values) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, localisationCommand.supportedScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = localisationCommand.name
@@ -1078,11 +1031,11 @@ object ParadoxComplexExpressionCompletionManager {
             result.addElement(lookupElement, context)
         }
 
-        val linkConfigs = configGroup.localisationLinksModel.forValueStatic
+        val linkConfigs = context.configGroup.localisationLinksModel.forValueStatic
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             // 排除 input_scopes 不匹配前一个 scope 的 output_scope 的情况
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
@@ -1102,15 +1055,12 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeCommandFieldPrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
-
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val scopeContext = context.scopeContext
 
-        val linkConfigsFromArgument = configGroup.localisationLinksModel.forValueFromArgumentSorted
+        val linkConfigsFromArgument = context.configGroup.localisationLinksModel.forValueFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
@@ -1128,10 +1078,10 @@ object ParadoxComplexExpressionCompletionManager {
             result.addElement(lookupElement, context)
         }
 
-        val linkConfigsFromData = configGroup.localisationLinksModel.forValueFromDataSorted
+        val linkConfigsFromData = context.configGroup.localisationLinksModel.forValueFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
@@ -1224,9 +1174,8 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeDatabaseObjectType(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
         val tailText = " from database object types"
-        val configs = configGroup.databaseObjectTypes.values
+        val configs = context.configGroup.databaseObjectTypes.values
         for (config in configs) {
             ProgressManager.checkCanceled()
             val name = config.name
@@ -1271,13 +1220,10 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
-        val configGroup = context.configGroup
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return
         val valueNode = dsNode.expression.valueNode ?: return
-        val project = configGroup.project
-        val contextElement = context.contextElement
-        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
+        val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)
         }
