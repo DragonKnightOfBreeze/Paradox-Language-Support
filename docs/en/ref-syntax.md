@@ -50,11 +50,11 @@ CWT files are composed of three basic elements: **properties**, **values**, and 
 Whitespace and line breaks serve as token separators, and blank lines may appear freely.
 Support line comments starting with `#`, and various `#`-based comment variants.
 
-其中：
-- **属性**和**块值**（即非属性值的值）被统称为**成员**（member），它们可以多次出现在文件顶层或者块中，并且可以重复出现和混合出现。
-- **属性的键**和**值**被统称为**表达式**（expression），它们在不同的位置和上下文中拥有不同的语义。
+Among them:
+- **Properties** and **Block Values** (aka non-property values) are collectively called **members**. They can appear multiple times at the top level of a file or in a block, and can appear repeatedly or mixedly.
+- **Property keys** and **values** are collectively called **expressions**. They have different semantics in different locations and contexts.
 
-A **property** has the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
+**Properties** have the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
 
 - `=` - logical equals / assign.
 - `!=` `<>` - logical not-equals.
@@ -63,10 +63,10 @@ A **property** has the structure `<key> <separator> <value>`, where the separato
 If `==` is used in config files, the plugin will not strictly check whether the separator of the matching script property is correct by default.
 This check can be enabled explicitly in the settings page, however, depending on how complete the configs are, this may cause additional false positives
 
-**字符串表达式** （键和字符串）可以用双引号包围（字面量形式），也可以不用（标识符形式）。
+**String expressions** (keys and strings) can be enclosed in double quotes (literal form) or not (identifier form).
 
-- 未用双引号包围时，不能包含空白以及一些特殊字符（`#` `=` `{` `}` `"`）。
-- 可以包含特定的转义字符（如 `\"` `\n`）。
+- When not quoted by double quotes, they cannot contain whitespace and some special characters (`#` `=` `{` `}` `"`).
+- Can contain specific escape characters (e.g. `\"` `\n`).
 
 Example:
 
@@ -170,11 +170,11 @@ Script files are mainly composed of three basic elements: **properties**, **valu
 Whitespace and line breaks serve as token separators, and blank lines may appear freely.
 Support line comments starting with `#`.
 
-其中：
-- **属性**和**块值**（即非属性值的值）被统称为**成员**（member），它们可以多次出现在文件顶层、块或者参数条件块中，并且可以重复出现和混合出现。
-- **属性的键**和**值**被统称为**表达式**（expression），它们在不同的位置和上下文中拥有不同的语义。
+Among them:
+- **Properties** and **Block Values** (aka non-property values) are collectively called **members**. They can appear multiple times at the top level of a file or in a block (or a parameter condition block), and can appear repeatedly or mixedly.
+- **Property keys** and **values** are collectively called **expressions**. They have different semantics in different locations and contexts.
 
-A **property** has the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
+**Properties** have the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
 
 - `=` - logical equals / assign.
 - `!=` `<>` - logical not-equals.
@@ -187,11 +187,11 @@ Semantically, when the preceding property key (`owner` in the example) of the se
 - `owner ?= v` is equivalent to `exists = owner owner = v`
 - `owner? = v` is equivalent to `exists = owner owner = v`
 
-**字符串表达式** （键和字符串）可以用双引号包围（字面量形式），也可以不用（标识符形式）。
+**String expressions** (keys and strings) can be enclosed in double quotes (literal form) or not (identifier form).
 
-- 未用双引号包围时，不能包含空白以及一些特殊字符（`@` `#` `$` `=` `<` `>` `!` `?` `{` `}` `[` `]` `"`）。
-- 可以包含特定的转义字符（如 `\"` `\n`）。
-- 另外，也可以包含参数（如 `$PARAM$`）和内联参数条件块（如 `[[PARAM]v]`），详见[进阶语法](#script-advanced)一节。
+- When not quoted by double quotes, they cannot contain whitespace and some special characters (`@` `#` `$` `=` `<` `>` `!` `?` `{` `}` `[` `]` `"`).
+- Can contain specific escape characters (e.g. `\"` `\n`).
+- In addition, can also contain parameters (e.g., `$PARAM$`) and inline parameter condition blocks (e.g., `[[PARAM]v]`). See the [Advanced Syntax](#script-advanced) section for details.
 
 Example:
 
@@ -222,8 +222,8 @@ Paradox Script extends CWT's base value types with several additional types.
 
 **Scripted variable references** start with `@` followed by the variable name, such as `@my_var`, and are used to reference previously declared scripted variables.
 Scripted variable references can appear in multiple contexts: as standalone values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case).
-Scripted variable references can also be used within localisation text parameters (`$@my_var$`).
-与字符串表达式（键和字符串）一样，封装变量引用也可以包含参数（`$PARAM$`）和内联参数条件块（`[[PARAM]v]`），详见[进阶语法](#script-advanced)一节。
+Like string expressions (keys and strings), they can also contain parameters (e.g., `$PARAM$`) and inline parameter condition blocks (e.g., `[[PARAM]v]`), see the [Advanced Syntax](#script-advanced) section for details.
+Additionally, scripted variable references can also be used in parameters in localisation text (e.g., `$@my_var$`).
 
 **Inline math expressions** start with `@[` (or `@\[`) and end with `]`, such as `@[ 1 + 2 * var ]`.
 Supported operators include `+`, `-`, `*`, `/`, `%`, as well as unary signs, absolute value `|expr|`, and parentheses `(expr)`.
