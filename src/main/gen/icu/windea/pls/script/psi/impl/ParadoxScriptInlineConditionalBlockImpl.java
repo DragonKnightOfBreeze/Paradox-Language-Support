@@ -4,11 +4,14 @@ package icu.windea.pls.script.psi.impl;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
@@ -30,6 +33,12 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
+  @Nullable
+  public ParadoxScriptConditionalBlockExpression getConditionalBlockExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalBlockExpression.class);
+  }
+
+  @Override
   @NotNull
   public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
@@ -39,12 +48,6 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   @NotNull
   public List<ParadoxScriptParameter> getParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptConditionalBlockExpression getConditionalBlockExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalBlockExpression.class);
   }
 
   @Override

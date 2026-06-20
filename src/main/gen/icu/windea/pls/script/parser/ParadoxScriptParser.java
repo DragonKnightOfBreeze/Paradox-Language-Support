@@ -1,18 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.parser;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-
-import static com.intellij.lang.WhitespacesBinders.GREEDY_LEFT_BINDER;
-import static com.intellij.lang.WhitespacesBinders.GREEDY_RIGHT_BINDER;
-import static icu.windea.pls.script.parser.ParadoxScriptParserUtil.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import static icu.windea.pls.script.parser.ParadoxScriptParserUtil.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
+import com.intellij.lang.LightPsiParser;
+import static com.intellij.lang.WhitespacesBinders.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -136,6 +134,109 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LEFT_BRACKET conditional_block_expr conditional_block_item * RIGHT_BRACKET
+  public static boolean conditional_block(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_BLOCK, "<conditional block>");
+    r = consumeToken(b, LEFT_BRACKET);
+    p = r; // pin = 1
+    r = r && report_error_(b, conditional_block_expr(b, l + 1));
+    r = p && report_error_(b, conditional_block_2(b, l + 1)) && r;
+    r = p && consumeToken(b, RIGHT_BRACKET) && r;
+    exit_section_(b, l, m, r, p, conditional_block_auto_recover_);
+    return r || p;
+  }
+
+  // conditional_block_item *
+  private static boolean conditional_block_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!conditional_block_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "conditional_block_2", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET
+  static boolean conditional_block_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_expr")) return false;
+    if (!nextTokenIs(b, NESTED_LEFT_BRACKET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, NESTED_LEFT_BRACKET);
+    p = r; // pin = 1
+    r = r && report_error_(b, conditional_block_expression(b, l + 1));
+    r = p && consumeToken(b, NESTED_RIGHT_BRACKET) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // NOT_SIGN ? conditional_block_parameter
+  public static boolean conditional_block_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_expression")) return false;
+    if (!nextTokenIs(b, "<conditional block expression>", CONDITION_PARAMETER_TOKEN, NOT_SIGN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_BLOCK_EXPRESSION, "<conditional block expression>");
+    r = conditional_block_expression_0(b, l + 1);
+    r = r && conditional_block_parameter(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // NOT_SIGN ?
+  private static boolean conditional_block_expression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_expression_0")) return false;
+    consumeToken(b, NOT_SIGN);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // COMMENT | conditional_block_value | property | conditional_block
+  static boolean conditional_block_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_item")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, COMMENT);
+    if (!r) r = conditional_block_value(b, l + 1);
+    if (!r) r = property(b, l + 1);
+    if (!r) r = conditional_block(b, l + 1);
+    exit_section_(b, l, m, r, false, conditional_block_item_auto_recover_);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // CONDITION_PARAMETER_TOKEN
+  public static boolean conditional_block_parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_parameter")) return false;
+    if (!nextTokenIs(b, CONDITION_PARAMETER_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CONDITION_PARAMETER_TOKEN);
+    exit_section_(b, m, CONDITIONAL_BLOCK_PARAMETER, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+  static boolean conditional_block_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_block_value")) return false;
+    boolean r;
+    r = scripted_variable_reference(b, l + 1);
+    if (!r) r = boolean_$(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
+    if (!r) r = string(b, l + 1);
+    if (!r) r = color(b, l + 1);
+    if (!r) r = block(b, l + 1);
+    if (!r) r = inline_math(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
   // FLOAT_TOKEN
   public static boolean float_$(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "float_$")) return false;
@@ -144,6 +245,81 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, FLOAT_TOKEN);
     exit_section_(b, m, FLOAT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LEFT_BRACKET <<processInlineConditionalBlock>> conditional_block_expr inline_conditional_block_item RIGHT_BRACKET
+  public static boolean inline_conditional_block(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block")) return false;
+    if (!nextTokenIs(b, LEFT_BRACKET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, INLINE_CONDITIONAL_BLOCK, null);
+    r = consumeToken(b, LEFT_BRACKET);
+    r = r && processInlineConditionalBlock(b, l + 1);
+    p = r; // pin = 2
+    r = r && report_error_(b, conditional_block_expr(b, l + 1));
+    r = p && report_error_(b, inline_conditional_block_item(b, l + 1)) && r;
+    r = p && consumeToken(b, RIGHT_BRACKET) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
+  static boolean inline_conditional_block_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block_item")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = processInlineConditionalBlockItem(b, l + 1);
+    r = r && inline_conditional_block_snippet(b, l + 1);
+    r = r && postProcessInlineConditionalBlockItem(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ARGUMENT_TOKEN | parameter | inline_conditional_block
+  static boolean inline_conditional_block_item_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block_item_part")) return false;
+    boolean r;
+    r = consumeToken(b, ARGUMENT_TOKEN);
+    if (!r) r = parameter(b, l + 1);
+    if (!r) r = inline_conditional_block(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // inline_conditional_block_item_part (<<processSnippet>> inline_conditional_block_item_part) *
+  static boolean inline_conditional_block_snippet(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block_snippet")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = inline_conditional_block_item_part(b, l + 1);
+    r = r && inline_conditional_block_snippet_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (<<processSnippet>> inline_conditional_block_item_part) *
+  private static boolean inline_conditional_block_snippet_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block_snippet_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!inline_conditional_block_snippet_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "inline_conditional_block_snippet_1", c)) break;
+    }
+    return true;
+  }
+
+  // <<processSnippet>> inline_conditional_block_item_part
+  private static boolean inline_conditional_block_snippet_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block_snippet_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = processSnippet(b, l + 1);
+    r = r && inline_conditional_block_item_part(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -439,81 +615,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET <<processInlineConditionalBlock>> conditional_block_expr inline_conditional_block_item RIGHT_BRACKET
-  public static boolean inline_conditional_block(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_conditional_block")) return false;
-    if (!nextTokenIs(b, LEFT_BRACKET)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INLINE_CONDITIONAL_BLOCK, null);
-    r = consumeToken(b, LEFT_BRACKET);
-    r = r && processInlineConditionalBlock(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, conditional_block_expr(b, l + 1));
-    r = p && report_error_(b, inline_conditional_block_item(b, l + 1)) && r;
-    r = p && consumeToken(b, RIGHT_BRACKET) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
-  static boolean inline_conditional_block_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_conditional_block_item")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processInlineConditionalBlockItem(b, l + 1);
-    r = r && inline_conditional_block_snippet(b, l + 1);
-    r = r && postProcessInlineConditionalBlockItem(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // ARGUMENT_TOKEN | parameter | inline_conditional_block
-  static boolean inline_conditional_block_item_part(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_conditional_block_item_part")) return false;
-    boolean r;
-    r = consumeToken(b, ARGUMENT_TOKEN);
-    if (!r) r = parameter(b, l + 1);
-    if (!r) r = inline_conditional_block(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // inline_conditional_block_item_part (<<processSnippet>> inline_conditional_block_item_part) *
-  static boolean inline_conditional_block_snippet(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_conditional_block_snippet")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = inline_conditional_block_item_part(b, l + 1);
-    r = r && inline_conditional_block_snippet_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (<<processSnippet>> inline_conditional_block_item_part) *
-  private static boolean inline_conditional_block_snippet_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_conditional_block_snippet_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!inline_conditional_block_snippet_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "inline_conditional_block_snippet_1", c)) break;
-    }
-    return true;
-  }
-
-  // <<processSnippet>> inline_conditional_block_item_part
-  private static boolean inline_conditional_block_snippet_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_conditional_block_snippet_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
-    r = r && inline_conditional_block_item_part(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // INT_TOKEN
   public static boolean int_$(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "int_$")) return false;
@@ -578,109 +679,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "parameter_argument_part_1")) return false;
     parameter_argument(b, l + 1);
     return true;
-  }
-
-  /* ********************************************************** */
-  // LEFT_BRACKET conditional_block_expr conditional_block_item * RIGHT_BRACKET
-  public static boolean conditional_block(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_BLOCK, "<conditional block>");
-    r = consumeToken(b, LEFT_BRACKET);
-    p = r; // pin = 1
-    r = r && report_error_(b, conditional_block_expr(b, l + 1));
-    r = p && report_error_(b, conditional_block_2(b, l + 1)) && r;
-    r = p && consumeToken(b, RIGHT_BRACKET) && r;
-    exit_section_(b, l, m, r, p, conditional_block_auto_recover_);
-    return r || p;
-  }
-
-  // conditional_block_item *
-  private static boolean conditional_block_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!conditional_block_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "conditional_block_2", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET
-  static boolean conditional_block_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_expr")) return false;
-    if (!nextTokenIs(b, NESTED_LEFT_BRACKET)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, NESTED_LEFT_BRACKET);
-    p = r; // pin = 1
-    r = r && report_error_(b, conditional_block_expression(b, l + 1));
-    r = p && consumeToken(b, NESTED_RIGHT_BRACKET) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // NOT_SIGN ? conditional_block_parameter
-  public static boolean conditional_block_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_expression")) return false;
-    if (!nextTokenIs(b, "<conditional block expression>", CONDITION_PARAMETER_TOKEN, NOT_SIGN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_BLOCK_EXPRESSION, "<conditional block expression>");
-    r = conditional_block_expression_0(b, l + 1);
-    r = r && conditional_block_parameter(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // NOT_SIGN ?
-  private static boolean conditional_block_expression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_expression_0")) return false;
-    consumeToken(b, NOT_SIGN);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // COMMENT | conditional_block_value | property | conditional_block
-  static boolean conditional_block_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_item")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, COMMENT);
-    if (!r) r = conditional_block_value(b, l + 1);
-    if (!r) r = property(b, l + 1);
-    if (!r) r = conditional_block(b, l + 1);
-    exit_section_(b, l, m, r, false, conditional_block_item_auto_recover_);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // CONDITION_PARAMETER_TOKEN
-  public static boolean conditional_block_parameter(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_parameter")) return false;
-    if (!nextTokenIs(b, CONDITION_PARAMETER_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, CONDITION_PARAMETER_TOKEN);
-    exit_section_(b, m, CONDITIONAL_BLOCK_PARAMETER, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // scripted_variable_reference | boolean | int | float | string | color | block | inline_math
-  static boolean conditional_block_value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_value")) return false;
-    boolean r;
-    r = scripted_variable_reference(b, l + 1);
-    if (!r) r = boolean_$(b, l + 1);
-    if (!r) r = int_$(b, l + 1);
-    if (!r) r = float_$(b, l + 1);
-    if (!r) r = string(b, l + 1);
-    if (!r) r = color(b, l + 1);
-    if (!r) r = block(b, l + 1);
-    if (!r) r = inline_math(b, l + 1);
-    return r;
   }
 
   /* ********************************************************** */
