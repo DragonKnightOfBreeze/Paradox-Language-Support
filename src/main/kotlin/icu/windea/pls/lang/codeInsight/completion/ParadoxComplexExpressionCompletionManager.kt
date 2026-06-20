@@ -48,10 +48,6 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxComplexExpressionCompletionManager {
     // region Core Methods
 
-    private inline fun <T> markIncomplete(action: () -> T): T {
-        return withState(ChronicleThreadContext.incompleteComplexExpression, action)
-    }
-
     fun completeTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
@@ -61,7 +57,7 @@ object ParadoxComplexExpressionCompletionManager {
         val finalConfig = context.configs.firstOrNull() ?: context.config
         if (finalConfig == null) return
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxTemplateExpression.resolve(context.keyword, textRange, context.configGroup, finalConfig) } ?: return
 
         // skip check scope context here
@@ -105,7 +101,7 @@ object ParadoxComplexExpressionCompletionManager {
         val finalConfigs = if (context.configs.isNotEmpty()) context.configs.toListOrThis() else context.config.to.singletonListOrEmpty()
         if (finalConfigs.isEmpty()) return
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(context.keyword, textRange, context.configGroup, finalConfigs) } ?: return
 
         // skip check scope context here
@@ -143,7 +139,7 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxScopeFieldExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
@@ -176,7 +172,7 @@ object ParadoxComplexExpressionCompletionManager {
         if (offset < 0) return // unexpected
 
         val config = context.config ?: return
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxScriptValueExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
@@ -227,7 +223,7 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxValueFieldExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
@@ -269,7 +265,7 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxVariableFieldExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
@@ -311,7 +307,7 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxCommandExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
@@ -352,7 +348,7 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxDatabaseObjectExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val context = context.copy(isKey = null)
@@ -388,7 +384,7 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.create(context.keywordOffset, context.keywordOffset + context.keyword.length)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
         val expression = markIncomplete { ParadoxDefineReferenceExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val context = context.copy(isKey = null)
@@ -500,9 +496,9 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    // endregion
-
-    // region General Completion Methods
+    private inline fun <T> markIncomplete(action: () -> T): T {
+        return withState(ChronicleThreadContext.incompleteComplexExpression, action)
+    }
 
     /**
      * @return 是否已经输入了前缀。
@@ -683,6 +679,10 @@ object ParadoxComplexExpressionCompletionManager {
 
         return inputPrefix
     }
+
+    // endregion
+
+    // region General Completion Methods
 
     fun completeSystemScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
