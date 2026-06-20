@@ -129,6 +129,8 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.AliasMatchLeft -> ParadoxMatchResult.NotMatch // 不在这里处理
             CwtDataTypes.Command -> null // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
             CwtDataTypes.DefineReference -> matchDefineReferenceExpression(context)
+            CwtDataTypes.ArrayDefineReference -> matchArrayDefineReferenceExpression(context)
+            CwtDataTypes.Tags -> matchTagsExpression(context)
             CwtDataTypes.DatabaseObject -> matchDatabaseObjectExpression(context)
             CwtDataTypes.NameFormat -> matchNameFormatExpression(context)
             CwtDataTypes.Parameter -> matchParameter(context)
@@ -290,6 +292,19 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResultProvider.forDefineReferenceExpression(context.configGroup, context.expression.value)
     }
 
+    private fun matchArrayDefineReferenceExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        return ParadoxMatchResultProvider.forArrayDefineReferenceExpression(context.configGroup, context.expression.value)
+    }
+
+    private fun matchTagsExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        if (context.expression.value.isEmpty()) return ParadoxMatchResult.FallbackMatch // 2.1.10 compatible
+        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        return ParadoxMatchResultProvider.forTagsExpression(context.configGroup, context.expression.value)
+    }
+
     private fun matchNameFormatExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -304,7 +319,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchMeshLocator(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        if(context.expression.value.isEmpty()) return ParadoxMatchResult.FallbackMatch // NOTE 2.1.9 empty string is specially allowed
+        if (context.expression.value.isEmpty()) return ParadoxMatchResult.FallbackMatch // NOTE 2.1.9 empty string is specially allowed
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResult.FallbackMatch

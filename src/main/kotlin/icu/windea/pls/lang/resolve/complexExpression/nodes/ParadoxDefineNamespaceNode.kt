@@ -13,7 +13,6 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
@@ -24,7 +23,6 @@ class ParadoxDefineNamespaceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val expression: ParadoxDefineReferenceExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.defineNamespace()
@@ -50,8 +48,7 @@ class ParadoxDefineNamespaceNode(
         rangeInElement: TextRange,
         private val node: ParadoxDefineNamespaceNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        private val expression get() = node.expression
-        private val project get() = expression.configGroup.project
+        private val project get() = node.configGroup.project
         private val namespace get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -91,8 +88,8 @@ class ParadoxDefineNamespaceNode(
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineNamespaceNode {
-            return ParadoxDefineNamespaceNode(text, textRange, configGroup, expression)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDefineNamespaceNode {
+            return ParadoxDefineNamespaceNode(text, textRange, configGroup)
         }
     }
 }

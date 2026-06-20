@@ -13,8 +13,6 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
-import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -25,7 +23,7 @@ class ParadoxDefineVariableNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val expression: ParadoxDefineReferenceExpression
+    val namespaceNode: ParadoxDefineNamespaceNode?,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.defineVariable()
@@ -43,17 +41,17 @@ class ParadoxDefineVariableNode(
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val offset = ParadoxExpressionManager.getExpressionOffset(element)
-        return Reference(element, rangeInExpression.shiftRight(offset), this)
+        return Reference(element, rangeInExpression.shiftRight(offset), this, namespaceNode)
     }
 
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: ParadoxDefineVariableNode
+        private val node: ParadoxDefineVariableNode,
+        private val namespaceNode: ParadoxDefineNamespaceNode?,
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        private val expression get() = node.expression
-        private val project get() = expression.configGroup.project
-        private val namespace get() = expression.namespaceNode?.text
+        private val project get() = node.configGroup.project
+        private val namespace get() = namespaceNode?.text
         private val variableName get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -95,8 +93,8 @@ class ParadoxDefineVariableNode(
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineVariableNode {
-            return ParadoxDefineVariableNode(text, textRange, configGroup, expression)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, namespaceNode: ParadoxDefineNamespaceNode?): ParadoxDefineVariableNode {
+            return ParadoxDefineVariableNode(text, textRange, configGroup, namespaceNode)
         }
     }
 }

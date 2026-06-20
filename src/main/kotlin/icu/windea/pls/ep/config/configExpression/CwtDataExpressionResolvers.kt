@@ -3,6 +3,7 @@ package icu.windea.pls.ep.config.configExpression
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.condition
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
@@ -96,6 +97,9 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
 
         fromLiteral(CwtDataTypes.Command, "\$command")
         fromLiteral(CwtDataTypes.DefineReference, "\$define_reference")
+        fromLiteral(CwtDataTypes.ArrayDefineReference, "\$array_define_reference")
+        fromParameterized(CwtDataTypes.Tags, "\$tags[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.Tags, "\$tags_condition[", "]") { value = it.orNull(); condition = true }
         fromLiteral(CwtDataTypes.DatabaseObject, "\$database_object")
         fromParameterized(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
 

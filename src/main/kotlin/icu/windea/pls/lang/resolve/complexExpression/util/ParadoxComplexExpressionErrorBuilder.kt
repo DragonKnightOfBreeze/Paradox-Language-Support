@@ -125,6 +125,18 @@ object ParadoxComplexExpressionErrorBuilder {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
+    fun malformedArrayDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = Codes.MALFORMED_ARRAY_DEFINE_REFERENCE_EXPRESSION
+        val description = PlsBundle.message("complexExpression.malformedArrayDefineReferenceExpression", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun malformedTagsExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = Codes.MALFORMED_TAGS_EXPRESSION
+        val description = PlsBundle.message("complexExpression.malformedTagsExpression", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
     fun malformedNameFormatExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = Codes.MALFORMED_NAME_FORMAT_EXPRESSION
         val description = PlsBundle.message("complexExpression.malformedNameFormatExpression", text)

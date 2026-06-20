@@ -7,6 +7,7 @@ import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -102,6 +103,23 @@ object ParadoxComplexExpressionValidator {
         return errors
     }
 
+    fun validate(expression: ParadoxDefineReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val malformed = !result || expression.nodes.size != 3
+        if (malformed) errors += ErrorBuilder.malformedDefineReferenceExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+
+    fun validate(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val malformed = !result || expression.nodes.size != 5
+        if (malformed) errors += ErrorBuilder.malformedArrayDefineReferenceExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+
+
     fun validate(expression: ParadoxDatabaseObjectExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val config = expression.typeNode?.config
@@ -118,20 +136,6 @@ object ParadoxComplexExpressionValidator {
         }
         val malformed = !result || (expression.nodes.size != 3 && expression.nodes.size != 5)
         if (malformed) errors += ErrorBuilder.malformedDatabaseObjectExpression(expression.rangeInExpression, expression.text)
-        return errors
-    }
-
-    fun validate(expression: ParadoxDefineReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) {
-            when {
-                it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
-                it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
-                else -> true
-            }
-        }
-        val malformed = !result || expression.nodes.size != 4
-        if (malformed) errors += ErrorBuilder.malformedDefineReferenceExpression(expression.rangeInExpression, expression.text)
         return errors
     }
 

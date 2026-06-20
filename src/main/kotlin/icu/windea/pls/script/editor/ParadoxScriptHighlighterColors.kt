@@ -34,6 +34,7 @@ object ParadoxScriptHighlighterColors {
     @JvmField val SEMANTIC_KEYWORD = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val SEMANTIC_ARGUMENT = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_ARGUMENT") // KOTLIN_NAMED_ARGUMENT
     @JvmField val SEMANTIC_STRING = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_STRING", DefaultLanguageHighlighterColors.STRING)
+    @JvmField val SEMANTIC_NUMBER = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
 
     @JvmField val DEFINITION = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY) // underscored
     @JvmField val DEFINITION_NAME = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") // background #223C23
