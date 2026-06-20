@@ -39,7 +39,7 @@
 - [x] 优化：可以从复杂表达式节点所在位置导航到相关规则 / OP: Allow to navigate to related configs from the position of complex expression nodes
 - [x] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
 - [x] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言环境的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files
-- [x] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数化快与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported conditional block blocks and parameter usages (with the default value) in inline script files
+- [x] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数化快与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported conditional blocks and parameter usages (with the default value) in inline script files
 - [x] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本格式（示例：`#v text#!`，其中`v`对应规则表达式`<text_format>`，`text`是富文本的组合） / NEW: [VIC3/CK3] Basic support for text formats in localisation text (e.g., `#v text#!`, where `v` corresponds to the config expression `<text_format>`, and `text` is a combination of rich text)
 - [x] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本图标（示例：`@icon!`，其中`icon`对应规则表达式`<text_icon>`） / NEW: [VIC3/CK3] Basic support for text icons in localisation text (e.g., `@icon!`, where `icon` corresponds to the config expression `<text_icon>`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes

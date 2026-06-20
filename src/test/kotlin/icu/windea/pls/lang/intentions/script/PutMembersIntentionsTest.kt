@@ -193,7 +193,7 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     }
 
     @Test
-    fun testPutMembersOnOneLine_conditionalBlockBlock() {
+    fun testPutMembersOnOneLine_conditionalBlock() {
         val intentionName = PlsBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
             "put_members_on_one_line_conditional_block_block.test.txt",
@@ -218,7 +218,7 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     }
 
     @Test
-    fun testPutMembersOnSeparateLines_conditionalBlockBlock() {
+    fun testPutMembersOnSeparateLines_conditionalBlock() {
         val intentionName = PlsBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_on_separate_lines_conditional_block_block.test.txt",

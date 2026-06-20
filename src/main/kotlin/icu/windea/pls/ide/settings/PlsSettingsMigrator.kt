@@ -23,10 +23,12 @@ class PlsSettingsMigrator : AppLifecycleListener {
     private val optionNameMap = mapOf(
         "comment" to "comments",
         "commentByDefault" to "commentsByDefault",
-        "conditionalBlockBlocks" to "conditionalBlocks",
-        "conditionalBlockBlocksByDefault" to "conditionalBlocksByDefault",
+        "parameterConditionBlocks" to "parameterConditions",
+        "parameterConditionBlocksByDefault" to "parameterConditionsByDefault",
         "inlineMathBlocks" to "inlineMaths",
         "inlineMathBlocksByDefault" to "inlineMathsByDefault",
+        "parameterConditions" to "conditionalBlocks",
+        "parameterConditionsByDefault" to "conditionalBlocksByDefault",
     )
 
     private val replacementMap = buildMap {

@@ -73,7 +73,7 @@
 - [x] 重构：重构 `ParadoxAnalysisInjector` 中的方法并重命名为 `ParadoxAnalysisInjectionManager`
 - [x] 重构：变更 `ParadoxGameType` 中的静态方法，提供 `ParadoxGameTypeConstraint`
 - [x] 重构：将 `icu.windea.pls.lang.quickfix` 中的已有代码全部移到 `icu.windea.pls.lang.fixes`
-- [ ] 重构：将 `参数化快/参数化快/conditionalBlock/conditionalBlockBlock` 对应地重命名为 `参数化块/conditionalBlock`
+- [x] 重构：将 `参数化快/参数化快/conditionalBlock/conditionalBlock` 对应地重命名为 `参数化块/conditionalBlock`
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符） ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P1 [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))

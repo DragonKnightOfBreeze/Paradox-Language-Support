@@ -243,7 +243,7 @@ Paradox Script 支持以下值类型：
 参数名必须以字母或下划线开头，后续可包含字母、数字和下划线。
 参数可以出现在封装变量名、封装变量引用名、属性键、字符串值和内联数学表达式中。
 
-**参数化快**（conditional block block）的语法为 `[[<expression>] <members...> ]`，其中 `<expression>` 可以是参数名或 `!<参数名>`（取反）。
+**参数化快**（conditional block）的语法为 `[[<expression>] <members...> ]`，其中 `<expression>` 可以是参数名或 `!<参数名>`（取反）。
 它用于根据参数是否存在来条件化地包含一组成员。
 
 **内联参数化快**（inline conditional block）用于字符串表达式（键和字符串）或封装变量引用内部的条件片段。
