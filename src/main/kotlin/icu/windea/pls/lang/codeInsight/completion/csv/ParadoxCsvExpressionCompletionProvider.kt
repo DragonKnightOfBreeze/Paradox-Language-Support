@@ -9,8 +9,8 @@ import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets.EXPRESSION_TOKENS
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCsvCompletionManager
 
 /**
  * 提供 CSV 表达式相关的代码补全。基于规则文件。
@@ -24,6 +24,6 @@ class ParadoxCsvExpressionCompletionProvider : ParadoxCompletionProvider() {
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxCsvCompletionManager.addColumnCompletions(context, result, element)
+        ParadoxCompletionManager.addColumnCompletions(context, result, element)
     }
 }

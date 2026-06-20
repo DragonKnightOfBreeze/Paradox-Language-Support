@@ -7,8 +7,8 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets.EXPRESSION_TOKENS

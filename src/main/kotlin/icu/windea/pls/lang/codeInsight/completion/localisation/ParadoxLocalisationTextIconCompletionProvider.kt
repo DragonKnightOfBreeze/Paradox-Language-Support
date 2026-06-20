@@ -8,8 +8,8 @@ import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.ParadoxLocalisationCompletionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
@@ -26,6 +26,6 @@ class ParadoxLocalisationTextIconCompletionProvider : ParadoxCompletionProvider(
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxLocalisationCompletionManager.completeTextIcon(context, result)
+        ParadoxCompletionManager.completeTextIcon(context, result)
     }
 }

@@ -27,7 +27,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNecessary
@@ -107,7 +107,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val tailText = ParadoxExpressionCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
@@ -181,7 +181,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val tailText = ParadoxExpressionCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile

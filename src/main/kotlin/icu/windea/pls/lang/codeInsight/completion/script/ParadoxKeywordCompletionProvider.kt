@@ -8,9 +8,9 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElements
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized

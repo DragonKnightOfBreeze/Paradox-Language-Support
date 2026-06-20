@@ -7,7 +7,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -65,6 +65,6 @@ class ParadoxDefinitionInjectionExpressionCompletionProvider : ParadoxCompletion
             expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
         )
 
-        ParadoxExpressionCompletionManager.completeDefinitionInjectionExpression(context, result)
+        ParadoxCompletionManager.completeDefinitionInjectionExpression(context, result)
     }
 }

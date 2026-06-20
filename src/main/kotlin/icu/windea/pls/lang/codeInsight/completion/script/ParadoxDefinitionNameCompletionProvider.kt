@@ -8,8 +8,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -69,13 +69,13 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                     val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = context.configGroup)
 
                     run {
-                        val context = context.copy(isKey = true, config = config, expressionTailText = "")
+                        val context = context.copy(isKey = true, config = config, patchableTailText = "")
 
                         // 仅限作为属性的定义
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxExpressionCompletionManager.processDefinition(context, result, it)
+                            ParadoxCompletionUtil.processDefinition(context, result, it)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
@@ -92,14 +92,14 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                     val config = definitionInfo.declaration ?: return
 
                     run {
-                        val context = context.copy(isKey = false, config = config, expressionTailText = "")
+                        val context = context.copy(isKey = false, config = config, patchableTailText = "")
 
                         // 排除与正在输入的同名的定义
                         // 仅限作为属性的定义
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxExpressionCompletionManager.processDefinition(context, result, it)
+                            ParadoxCompletionUtil.processDefinition(context, result, it)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)

@@ -10,43 +10,23 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.resolved
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.match.ParadoxMatchOccurrence
-import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
-import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -58,9 +38,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withFileExtensions
 import icu.windea.pls.lang.search.util.withSearchScopeType
-import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -68,302 +46,20 @@ import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxExpressionCompletionManager {
-    // region Core Methods
-
-    fun addKeyCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
-        val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
-
-        // 仅提示不在定义声明中的 key（顶级键和类型键）
-        if (!configContext.inRoot()) {
-            // 忽略 rootKeys 深度超出限制，或者带参数的情况
-            val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
-            val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(context.contextElement) }
-            val context = context.copy(isKey = true)
-            completeKey(context, result, memberPath, typeKeyPrefix)
-            return
-        }
-
-        // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, lenient = true))
-        val configs = mutableListOf<CwtPropertyConfig>()
-        parentConfigs.forEach { c1 ->
-            c1.configs?.forEach { c2 ->
-                if (c2 is CwtPropertyConfig) {
-                    configs += CwtConfigManipulationService.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
-                }
-            }
-        }
-        if (configs.isEmpty()) return
-        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
-
-        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
-        val context = context.copy(isKey = true, scopeContext = scopeContext)
-        configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
-            for (config in configsWithSameKey) {
-                if (shouldComplete(config, occurrences)) {
-                    val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
-                    if (overriddenConfigs.isNotEmpty()) {
-                        for (overriddenConfig in overriddenConfigs) {
-                            val context = context.copy(config = overriddenConfig)
-                            completeScriptExpression(context, result)
-                        }
-                        continue
-                    }
-                    val context = context.copy(config = config, configs = configsWithSameKey)
-                    completeScriptExpression(context, result)
-                }
-            }
-        }
-    }
-
-    fun addValueCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
-        val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
-
-        if (!configContext.inRoot()) return
-
-        // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, lenient = true))
-        val configs = mutableListOf<CwtValueConfig>()
-        parentConfigs.forEach { c1 ->
-            c1.configs?.forEach { c2 ->
-                if (c2 is CwtValueConfig) {
-                    configs += c2
-                }
-            }
-        }
-        if (configs.isEmpty()) return
-        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
-
-        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
-        val context = context.copy(isKey = false, scopeContext = scopeContext)
-        for (config in configs) {
-            if (shouldComplete(config, occurrences)) {
-                val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
-                if (overriddenConfigs.isNotEmpty()) {
-                    for (overriddenConfig in overriddenConfigs) {
-                        val context = context.copy(config = overriddenConfig)
-                        completeScriptExpression(context, result)
-                    }
-                    continue
-                }
-                val context = context.copy(config = config)
-                completeScriptExpression(context, result)
-            }
-        }
-    }
-
-    fun addPropertyValueCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty) {
-        val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
-
-        if (!configContext.inRoot()) return
-
-        val configs = configContext.getConfigs()
-        if (configs.isEmpty()) return
-
-        val scopeContext = ParadoxScopeManager.getScopeContext(propertyElement)
-        val context = context.copy(isKey = false, scopeContext = scopeContext)
-        for (config in configs) {
-            if (config is CwtValueConfig) {
-                val context = context.copy(config = config)
-                completeScriptExpression(context, result)
-            }
-        }
-    }
-
-    private fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
-        val expression = config.keyExpression
-        // 如果类型是 `aliasName`，则无论 `cardinality` 如何定义，都应该提供补全（某些规则文件未正确编写）
-        if (expression.type == CwtDataTypes.AliasName) return true
-        val actualCount = occurrences[expression]?.actual ?: 0
-        // 如果写明了 `cardinality`，则为 `cardinality.max` ，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
-        // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
-        val cardinality = config.optionData.cardinality
-        val maxCount = when {
-            cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.optionData.cardinalityMaxDefine != null -> null
-            else -> cardinality.max
-        }
-        return maxCount == null || actualCount < maxCount
-    }
-
-    private fun shouldComplete(config: CwtValueConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
-        val expression = config.valueExpression
-        val actualCount = occurrences[expression]?.actual ?: 0
-        // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
-        // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
-        val cardinality = config.optionData.cardinality
-        val maxCount = when {
-            cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.optionData.cardinalityMaxDefine != null -> null
-            else -> cardinality.max
-        }
-        return maxCount == null || actualCount < maxCount
-    }
-
-    fun getExpressionTailText(context: ParadoxCompletionContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
-        context.expressionTailText?.let { return it }
-
-        return buildString {
-            if (withConfigExpression) {
-                val configExpression = config?.configExpression
-                if (configExpression != null) {
-                    append(" by ").append(configExpression)
-                }
-            }
-            if (withFileName) {
-                val fileName = config?.resolved()?.pointer?.containingFile?.name
-                if (fileName != null) {
-                    append(" in ").append(fileName)
-                }
-            }
-        }
-    }
-
-    // endregion
-
-    // region General Completion Methods
-
-    fun completeKey(context: ParadoxCompletionContext, result: CompletionResultSet, memberPath: ParadoxMemberPath, rootKeyPrefix: Lazy<String?>) {
-        // 从以下来源收集需要提示的键（顶级键和类型键）
-        // - skip_root_key
-        // - type_key_filter
-        // - type_key_prefix
-
-        val fileInfo = context.file.fileInfo ?: return
-        val path = fileInfo.path
-
-        val typeConfigs = context.configGroup.types.values
-        val infoMapForTag = mutableMapOf<String, MutableList<CwtTypeConfig>>()
-        val infoMapForKey = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
-        for (typeConfig in typeConfigs) {
-            run {
-                val typeKeyPrefix = typeConfig.typeKeyPrefix
-                if (typeKeyPrefix == null) return@run
-                if (rootKeyPrefix.value != null) return@run // avoid complete prefix again after an existing prefix
-                val matchContext = CwtTypeConfigMatchContext(context.configGroup, path)
-                if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) return@run
-                infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
-            }
-
-            val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, typeKeyPrefix = rootKeyPrefix)
-            if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
-            val skipRootKeyConfig = typeConfig.skipRootKey
-            if (skipRootKeyConfig.isEmpty()) {
-                if (memberPath.isEmpty()) {
-                    typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
-                        infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
-                    }
-                    typeConfig.subtypes.values.forEach { subtypeConfig ->
-                        subtypeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
-                            infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
-                        }
-                    }
-                }
-            } else {
-                for (skipConfig in skipRootKeyConfig) {
-                    val relative = PathMatcher.relative(memberPath.subPaths, skipConfig, ignoreCase = true, usePattern = true, useAny = true) ?: continue
-                    if (relative.isEmpty()) {
-                        typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
-                            infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
-                        }
-                        typeConfig.subtypes.values.forEach { subtypeConfig ->
-                            subtypeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
-                                infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
-                            }
-                        }
-                    } else {
-                        infoMapForKey.getOrPut(relative) { mutableListOf() }
-                    }
-                    break
-                }
-            }
-        }
-
-        for ((key, typeConfigsToUse) in infoMapForTag) {
-            val typeConfigToUse = typeConfigsToUse.firstOrNull() ?: continue
-            val config = typeConfigToUse.typeKeyPrefixConfig ?: continue
-            val element = config.pointer.element
-            val icon = PlsIcons.Nodes.Tag
-            val tailText = typeConfigsToUse.joinToString(", ", " for ") { typeConfig ->
-                typeConfig.name
-            }
-            val typeFile = config.pointer.containingFile
-            val context = context.copy(isKey = false, config = config)
-            val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPatchableIcon(icon)
-                .withPatchableTailText(tailText)
-                .withPriority(ChronicleCompletionPriorities.rootKey)
-                .forExpression(context)
-            result.addElement(lookupElement, context)
-        }
-        for ((key, tuples) in infoMapForKey) {
-            if (key == "any") return // skip any wildcard
-            val typeConfigToUse = tuples.map { it.first }.distinctBy { it.name }.singleOrNull()
-            val typeToUse = typeConfigToUse?.name
-            // 需要考虑不指定子类型的情况
-            val subtypesToUse = when {
-                typeConfigToUse == null || tuples.isEmpty() -> null
-                else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
-            }
-            val config = when {
-                typeToUse == null -> null
-                typeConfigToUse.typeKeyPrefix != null -> typeConfigToUse.typeKeyPrefixConfig
-                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement, typeToUse, subtypesToUse, context.configGroup)
-            }
-            val element = config?.pointer?.element
-            val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
-            val tailText = if (tuples.isEmpty()) null else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
-                if (subTypeConfig == null) typeConfig.name else "${typeConfig.name}.${subTypeConfig.name}"
-            }
-            val typeFile = config?.pointer?.containingFile
-            val context = context.copy(config = config)
-            val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPatchableIcon(icon)
-                .withPatchableTailText(tailText)
-                .withForceInsertCurlyBraces(tuples.isEmpty())
-                .withPriority(ChronicleCompletionPriorities.rootKey)
-                .forExpression(context)
-            result.addElement(lookupElement, context)
-        }
-    }
+    // region Entry Completion Methods
 
     fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configExpression = context.config!!.configExpression ?: return
-
+        // 要求规则表达式不为空
+        val configExpression = context.config?.configExpression ?: return
         if (configExpression.expressionString.isEmpty()) return
-
-        // 匹配作用域
-        val nextScopeMatched = nextScopeMatched(context)
+        // 要求匹配作用域
+        val nextScopeMatched = ParadoxCompletionUtil.isNextScopeMatched(context)
         if (!nextScopeMatched && !PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
         val context = context.copy(scopeMatched = nextScopeMatched)
         ParadoxExpressionService.completeScriptExpression(context, result)
-    }
-
-    private fun nextScopeMatched(context: ParadoxCompletionContext): Boolean {
-        if (!context.scopeMatched) return false
-        val supportedScopes = when {
-            context.config is CwtPropertyConfig -> context.config.optionData.supportedScopes
-            context.config is CwtAliasConfig -> context.config.supportedScopes
-            context.config is CwtLinkConfig -> context.config.inputScopes
-            else -> null
-        }
-        return when {
-            context.scopeContext == null -> true
-            else -> ParadoxScopeManager.matchesScope(context.scopeContext, supportedScopes, context.configGroup)
-        }
     }
 
     fun completeLocalisationExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -376,6 +72,10 @@ object ParadoxExpressionCompletionManager {
         ParadoxExpressionService.completeCsvExpression(context, result)
     }
 
+    // endregion
+
+    // region General Completion Methods
+
     fun completeLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
 
@@ -385,7 +85,7 @@ object ParadoxExpressionCompletionManager {
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val tailText = getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -418,7 +118,7 @@ object ParadoxExpressionCompletionManager {
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val tailText = getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -447,7 +147,7 @@ object ParadoxExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val typeExpression = config.configExpression?.value ?: return
         val configGroup = config.configGroup
-        val tailText = getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
@@ -483,7 +183,7 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if (pathReferenceExpressionSupport != null) {
-            val tailText = getExpressionTailText(context, config)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
             val fileExtensions = when (config) {
                 is CwtMemberConfig<*> -> config.optionData.fileExtensions.orEmpty()
                 else -> emptySet()
@@ -527,7 +227,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
-        val tailText = getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val enumConfig = configGroup.enums[enumName] ?: return
         val enumValueConfigs = enumConfig.valueConfigMap.values
         if (enumValueConfigs.isEmpty()) return
@@ -551,7 +251,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
-        val tailText = getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
         val searchScopeType = complexEnumConfig.searchScopeType
@@ -592,7 +292,7 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.value ?: return
         if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return
-        val tailText = getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
         val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
         for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
@@ -732,104 +432,6 @@ object ParadoxExpressionCompletionManager {
             result.addElement(lookupElement, context)
             true
         }
-    }
-
-    // endregion
-
-    // region Macro Completion Methods
-
-    fun completeInlineScriptUsage(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val configs = configGroup.macrosModel.forInlineScripts.orNull() ?: return
-        for (config in configs) {
-            ProgressManager.checkCanceled()
-            val context = context.copy(config = config, isKey = true)
-            val name = config.name
-            val element = config.pointer.element ?: continue
-            val typeFile = config.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Macro)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPriority(ChronicleCompletionPriorities.constant)
-                .forExpression(context)
-            result.addElement(lookupElement, context)
-        }
-    }
-
-    fun completeDefinitionInjectionExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return
-        val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-        val fileInfo = context.file.fileInfo ?: return
-        val path = fileInfo.path
-        val matchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return
-        val index = context.keyword.indexOf(':')
-        if (index == -1) {
-            // complete mode
-            completeDefinitionInjectionMode(context, result, config)
-        } else {
-            // complete definition reference
-            ProgressManager.checkCanceled()
-            val keywordToUse = context.keyword.substring(index + 1)
-            val resultToUse = result.withPrefixMatcher(keywordToUse)
-            val type = typeConfig.name
-            val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
-            val context = context.copy(config = config, isKey = true, expressionTailText = "", keyword = keywordToUse)
-
-            val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
-            ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                processDefinition(context, resultToUse, it)
-            }
-
-            ParadoxExtendedCompletionManager.completeExtendedDefinition(context, resultToUse)
-        }
-    }
-
-    fun completeDefinitionInjectionMode(context: ParadoxCompletionContext, result: CompletionResultSet, config: CwtMacroConfig.DefinitionInjection) {
-        ProgressManager.checkCanceled()
-        val context = context.copy(isKey = null)
-        val modeConfigs = config.modeConfigs.values
-        val tailText = " from definition injection modes"
-        for (modeConfig in modeConfigs) {
-            val context = context.copy(config = modeConfig)
-            val name = modeConfig.value
-            val element = modeConfig.pointer.element ?: continue
-            val typeFile = modeConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.Macro)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withInsertHandler(ChronicleInsertHandlers.addColon())
-                .withPriority(ChronicleCompletionPriorities.macro)
-                .withPatchableTailText(tailText)
-                .forExpression(context)
-            result.addElement(lookupElement, context)
-        }
-    }
-
-    // endregion
-
-    // region Process Methods
-
-    fun processDefinition(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxDefinitionElement): Boolean {
-        ProgressManager.checkCanceled()
-        val definitionInfo = element.definitionInfo ?: return true
-        if (definitionInfo.name.isEmpty()) return true // skip anonymous definitions
-        val name = definitionInfo.name
-        val typeFile = element.containingFile
-        val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withPatchableTailText(context.expressionTailText)
-            .withDefinitionLocalizedNamesIfNecessary(element)
-            .forExpression(context)
-        result.addElement(lookupElement, context)
-        return true
     }
 
     // endregion

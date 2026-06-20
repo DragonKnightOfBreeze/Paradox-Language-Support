@@ -8,7 +8,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.ep.resolve.config.CwtInlineScriptUsageConfigContextProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -73,6 +73,6 @@ class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
             expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
         )
 
-        ParadoxExpressionCompletionManager.completeInlineScriptUsage(context, result)
+        ParadoxCompletionManager.completeInlineScriptUsage(context, result)
     }
 }

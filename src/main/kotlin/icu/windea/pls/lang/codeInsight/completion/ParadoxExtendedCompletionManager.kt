@@ -48,7 +48,7 @@ object ParadoxExtendedCompletionManager {
             else -> contextConfig
         }
         val typeExpression = config.configExpression?.value ?: return
-        val tailText = ParadoxExpressionCompletionManager.getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         run r1@{
             configGroup.extendedDefinitions.values.forEach { configs0 ->
                 configs0.forEach f@{ config0 ->
@@ -139,7 +139,7 @@ object ParadoxExtendedCompletionManager {
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxExpressionCompletionManager.getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
@@ -167,7 +167,7 @@ object ParadoxExtendedCompletionManager {
         for (config in finalConfigs) {
             val dynamicValueType = config.configExpression?.value ?: continue
             val configGroup = config.configGroup
-            val tailText = ParadoxExpressionCompletionManager.getExpressionTailText(context, config)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
 
             configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
@@ -193,7 +193,7 @@ object ParadoxExtendedCompletionManager {
 
         val config = context.config ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxExpressionCompletionManager.getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name

@@ -46,7 +46,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexExpressionCompletionManager {
-    // region Core Methods
+    // region Entry Completion Methods
 
     fun completeTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
@@ -1202,7 +1202,7 @@ object ParadoxComplexExpressionCompletionManager {
         if (typeToSearch == null) return
 
         val expressionTailText = " from database object type ${config.name}"
-        val context = context.copy(expressionTailText = expressionTailText)
+        val context = context.copy(patchableTailText = expressionTailText)
 
         // complete forced base database object
         completeForcedBaseDatabaseObject(context, result, node)
@@ -1225,7 +1225,7 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
-            ParadoxExpressionCompletionManager.processDefinition(context, result, it)
+            ParadoxCompletionUtil.processDefinition(context, result, it)
         }
     }
 

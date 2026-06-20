@@ -219,7 +219,7 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
 }
 
 private fun LookupElementBuilder.patchTailText(withValueText: String): LookupElementBuilder {
-    val patchableTailText = patchableTailText
+    val patchableTailText = this@patchTailText.patchableTailText
     val finalTailText = buildString {
         append(withValueText)
         if (patchableTailText != null) append(patchableTailText)
