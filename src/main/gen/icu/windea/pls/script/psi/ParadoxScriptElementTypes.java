@@ -23,13 +23,13 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_ROOT = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_ROOT");
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE");
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
-  IElementType INLINE_PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("INLINE_PARAMETER_CONDITION");
+  IElementType INLINE_CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("INLINE_CONDITIONAL_BLOCK");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_ARGUMENT");
-  IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
-  IElementType PARAMETER_CONDITION_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_EXPRESSION");
-  IElementType PARAMETER_CONDITION_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_PARAMETER");
+  IElementType CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK");
+  IElementType CONDITIONAL_BLOCK_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK_EXPRESSION");
+  IElementType CONDITIONAL_BLOCK_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK_PARAMETER");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");
@@ -127,8 +127,8 @@ public interface ParadoxScriptElementTypes {
       else if (type == INLINE_MATH_UNARY_EXPRESSION) {
         return new ParadoxScriptInlineMathUnaryExpressionImpl(node);
       }
-      else if (type == INLINE_PARAMETER_CONDITION) {
-        return new ParadoxScriptInlineParameterConditionImpl(node);
+      else if (type == INLINE_CONDITIONAL_BLOCK) {
+        return new ParadoxScriptInlineConditionalBlockImpl(node);
       }
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);
@@ -139,14 +139,14 @@ public interface ParadoxScriptElementTypes {
       else if (type == PARAMETER_ARGUMENT) {
         return new ParadoxScriptParameterArgumentImpl(node);
       }
-      else if (type == PARAMETER_CONDITION) {
-        return new ParadoxScriptParameterConditionImpl(node);
+      else if (type == CONDITIONAL_BLOCK) {
+        return new ParadoxScriptConditionalBlockImpl(node);
       }
-      else if (type == PARAMETER_CONDITION_EXPRESSION) {
-        return new ParadoxScriptParameterConditionExpressionImpl(node);
+      else if (type == CONDITIONAL_BLOCK_EXPRESSION) {
+        return new ParadoxScriptConditionalBlockExpressionImpl(node);
       }
-      else if (type == PARAMETER_CONDITION_PARAMETER) {
-        return new ParadoxScriptParameterConditionParameterImpl(node);
+      else if (type == CONDITIONAL_BLOCK_PARAMETER) {
+        return new ParadoxScriptConditionalBlockParameterImpl(node);
       }
       else if (type == PROPERTY) {
         return new ParadoxScriptPropertyImpl(node);

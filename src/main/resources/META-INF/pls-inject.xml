@@ -61,7 +61,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$String"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Color"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$InlineMath"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$ParameterConditionParameter"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$ConditionalBlockParameter"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Parameter"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$InlineMathParameter"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$Locale"/>

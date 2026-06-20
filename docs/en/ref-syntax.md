@@ -171,7 +171,7 @@ Whitespace and line breaks serve as token separators, and blank lines may appear
 Support line comments starting with `#`.
 
 Among them:
-- **Properties** and **Block Values** (aka non-property values) are collectively called **members**. They can appear multiple times at the top level of a file or in a block (or a parameter condition block), and can appear repeatedly or mixedly.
+- **Properties** and **Block Values** (aka non-property values) are collectively called **members**. They can appear multiple times at the top level of a file or in a block (or a conditional block block), and can appear repeatedly or mixedly.
 - **Property keys** and **values** are collectively called **expressions**. They have different semantics in different locations and contexts.
 
 **Properties** have the structure `<key> <separator> <value>`, where the separator `<separator>` can be one of:
@@ -191,7 +191,7 @@ Semantically, when the preceding property key (`owner` in the example) of the se
 
 - When not quoted by double quotes, they cannot contain whitespace and some special characters (`@` `#` `$` `=` `<` `>` `!` `?` `{` `}` `[` `]` `"`).
 - Can contain specific escape characters (e.g. `\"` `\n`).
-- In addition, can also contain parameters (e.g., `$PARAM$`) and inline parameter condition blocks (e.g., `[[PARAM]v]`). See the [Advanced Syntax](#script-advanced) section for details.
+- In addition, can also contain parameters (e.g., `$PARAM$`) and inline conditional block blocks (e.g., `[[PARAM]v]`). See the [Advanced Syntax](#script-advanced) section for details.
 
 Example:
 
@@ -214,15 +214,15 @@ Paradox Script extends CWT's base value types with several additional types.
 
 **Floats** such as `1.0`, `-0.5`, `.25`. The integer part or floating part may be omitted.
 
-**Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters, parameters, and inline parameter condition blocks.
+**Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters, parameters, and inline conditional block blocks.
 
 **Colors** are composite values in the format of a color type keyword followed by whitespace-separated numbers enclosed in curly braces, such as `rgb { 255 128 0 }`, `hsv { 0.5 0.8 1.0 }`, `hsv360 { 180 80 100 }`. Only numbers and whitespace are allowed inside the curly braces.
 
-**Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of expressions (properties and values), scripted variables, parameter condition blocks and comments. Can be nested multiple levels.
+**Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of expressions (properties and values), scripted variables, conditional block blocks and comments. Can be nested multiple levels.
 
 **Scripted variable references** start with `@` followed by the variable name, such as `@my_var`, and are used to reference previously declared scripted variables.
 Scripted variable references can appear in multiple contexts: as standalone values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case).
-Like string expressions (keys and strings), they can also contain parameters (e.g., `$PARAM$`) and inline parameter condition blocks (e.g., `[[PARAM]v]`), see the [Advanced Syntax](#script-advanced) section for details.
+Like string expressions (keys and strings), they can also contain parameters (e.g., `$PARAM$`) and inline conditional block blocks (e.g., `[[PARAM]v]`), see the [Advanced Syntax](#script-advanced) section for details.
 Additionally, scripted variable references can also be used in parameters in localisation text (e.g., `$@my_var$`).
 
 **Inline math expressions** start with `@[` (or `@\[`) and end with `]`, such as `@[ 1 + 2 * var ]`.
@@ -243,10 +243,10 @@ The following syntax typically only takes effect or is evaluated by the game eng
 Parameter names must start with a letter or underscore, followed by letters, digits, and underscores.
 Parameters can appear in scripted variable names, scripted variable reference names, property keys, string values, and inline math expressions.
 
-**Parameter condition blocks** use the syntax `[[<expression>] <members...> ]`, where `<expression>` can be a parameter name or `!<parameter_name>` (negation).
+**Conditional block blocks** use the syntax `[[<expression>] <members...> ]`, where `<expression>` can be a parameter name or `!<parameter_name>` (negation).
 They are used to conditionally include a group of members based on whether a parameter is present.
 
-**Inline parameter conditions** are used for conditional fragments inside string expressions (keys and strings) and scriped variable references.
+**Inline conditional blocks** are used for conditional fragments inside string expressions (keys and strings) and scriped variable references.
 For example, in `"prefix[[PARAM]_$PARAM$]_suffix"`, the `[[PARAM]_$PARAM$]` portion is only expanded when the parameter `PARAM` is present.
 
 ### Escaping {#script-escaping}
@@ -271,12 +271,12 @@ examples = {
     values = { foo = bar }
     color = rgb { 142 188 241 }
     parameter = $PARAM$
-    [[!PARAM] parameter_condition = $PARAM$ ]
+    [[!PARAM] conditional_block = $PARAM$ ]
     inline_math = @[ var + ($NUM|1$ * 2) ]
 }
 ```
 
-The following is a more complete example, further demonstrating combined usage of separators, scripted variables, parameters, and parameter conditions:
+The following is a more complete example, further demonstrating combined usage of separators, scripted variables, parameters, and conditional blocks:
 
 ```paradox_script
 # Scripted variables
@@ -295,7 +295,7 @@ apply_research_bonus = {
         energy = @[ base_cost * bonus_factor ]
     }
 
-    # Parameters and parameter conditions
+    # Parameters and conditional blocks
     set_variable = {
         which = research_$category$
         value = $amount|10$

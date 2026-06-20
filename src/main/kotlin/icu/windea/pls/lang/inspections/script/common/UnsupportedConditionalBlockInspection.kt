@@ -9,16 +9,16 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （脚本文件中的）不支持的参数条件块的代码检查。
+ * （脚本文件中的）不支持的参数化快的代码检查。
  *
  * 规则如下：
- * - 不支持在内联脚本文件中使用参数条件块。
+ * - 不支持在内联脚本文件中使用参数化快。
  */
-class UnsupportedParameterConditionInspection : LocalInspectionTool(), DumbAware {
+class UnsupportedConditionalBlockInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是可接受的脚本文件
         return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
@@ -26,16 +26,16 @@ class UnsupportedParameterConditionInspection : LocalInspectionTool(), DumbAware
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
-            override fun visitParameterCondition(element: ParadoxScriptParameterCondition) {
+            override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
                 ProgressManager.checkCanceled()
                 checkInlineScript(element, holder)
             }
         }
     }
 
-    private fun checkInlineScript(element: ParadoxScriptParameterCondition, holder: ProblemsHolder) {
+    private fun checkInlineScript(element: ParadoxScriptConditionalBlock, holder: ProblemsHolder) {
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterCondition.desc.1"))
+        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedConditionalBlock.desc.1"))
     }
 }

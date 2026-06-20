@@ -246,11 +246,11 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
 
         val membersConditionalFalse = selectScope { settings.members(conditional = false).all() }
         Assert.assertEquals(2, membersConditionalFalse.size)
-        Assert.assertTrue(membersConditionalFalse.none { it is ParadoxScriptProperty && it.name == "parameter_condition" })
+        Assert.assertTrue(membersConditionalFalse.none { it is ParadoxScriptProperty && it.name == "conditional_block" })
 
         val membersConditionalTrue = selectScope { settings.members(conditional = true).all() }
         Assert.assertEquals(3, membersConditionalTrue.size)
-        Assert.assertTrue(membersConditionalTrue.any { it is ParadoxScriptProperty && it.name == "parameter_condition" })
+        Assert.assertTrue(membersConditionalTrue.any { it is ParadoxScriptProperty && it.name == "conditional_block" })
     }
 
     @Test
@@ -281,19 +281,19 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun parentMemberContainer_insideParameterCondition() {
+    fun parentMemberContainer_insideConditionalBlock() {
         val file = configureScriptFile("features/select/select_conditional.test.txt")
         val settings = selectScope { file.ofPath("settings").asProperty().one() }!!
-        val parameterConditionProperty = selectScope {
+        val conditionalBlockProperty = selectScope {
             settings.members(conditional = true)
                 .asProperty()
-                .ofKey("parameter_condition", ignoreCase = true, usePattern = false)
+                .ofKey("conditional_block", ignoreCase = true, usePattern = false)
                 .one()
         }!!
 
-        val container = selectScope { parameterConditionProperty.parentMemberContainer(withSelf = false) }
+        val container = selectScope { conditionalBlockProperty.parentMemberContainer(withSelf = false) }
         Assert.assertNotNull(container)
-        Assert.assertTrue(container!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "parameter_condition" })
+        Assert.assertTrue(container!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "conditional_block" })
     }
 
     @Test

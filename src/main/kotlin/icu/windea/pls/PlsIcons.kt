@@ -40,7 +40,7 @@ object PlsIcons {
         @JvmField val Value = getIcon("/icons/nodes/value.svg")
         @JvmField val Block = getIcon("/icons/nodes/block.svg")
         @JvmField val Parameter = getIcon("/icons/nodes/parameter.svg")
-        @JvmField val ParameterCondition = getIcon("/icons/nodes/parameterCondition.svg")
+        @JvmField val ConditionalBlock = getIcon("/icons/nodes/conditionalBlock.svg")
         @JvmField val LocalisationLocale = getIcon("/icons/nodes/localisationLocale.svg")
         @JvmField val LocalisationProperty = getIcon("/icons/nodes/localisationProperty.svg")
         @JvmField val LocalisationIcon = getIcon("/icons/nodes/localisationIcon.svg")

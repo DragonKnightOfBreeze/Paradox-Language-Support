@@ -14,7 +14,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
 class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
-            override fun visitParameterCondition(element: ParadoxScriptParameterCondition) {
+            override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
                 ProgressManager.checkCanceled()
                 if (!ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)) return
                 val description = PlsBundle.message("inspection.script.conditionalStatementToPropertyForm.desc")
@@ -37,7 +37,7 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
         }
     }
 
-    private fun getFixes(element: ParadoxScriptParameterCondition): Array<LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptConditionalBlock): Array<LocalQuickFix> {
         return arrayOf(Fix(element))
     }
 
@@ -49,7 +49,7 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
         override fun getFamilyName() = text
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            val element = startElement as? ParadoxScriptParameterCondition ?: return
+            val element = startElement as? ParadoxScriptConditionalBlock ?: return
             ParadoxConditionalStatementManipulationService.convertToPropertyForm(element, project)
         }
     }

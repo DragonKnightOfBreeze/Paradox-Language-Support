@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
 /**
@@ -41,7 +41,7 @@ class ParadoxScriptMover : ContainerBasedMover() {
                 val end = containerElement.children(forward = false).find { it.elementType == RIGHT_BRACE } ?: return null
                 getLineRangeInExclusive(editor, containerElement, start.endOffset, end.startOffset)
             }
-            containerElement is ParadoxScriptParameterCondition -> {
+            containerElement is ParadoxScriptConditionalBlock -> {
                 val start = containerElement.children(forward = true).find { it.elementType == NESTED_RIGHT_BRACKET } ?: return null
                 val end = containerElement.children(forward = false).find { it.elementType == RIGHT_BRACKET } ?: return null
                 getLineRangeInExclusive(editor, containerElement, start.endOffset, end.startOffset)

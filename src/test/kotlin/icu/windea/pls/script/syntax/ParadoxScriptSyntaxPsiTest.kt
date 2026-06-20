@@ -41,9 +41,9 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     @Test
     fun error_unclosed_brace() = doTest(true)
     @Test
-    fun parameter_conditions() = doTest(true)
+    fun conditional_blocks() = doTest(true)
     @Test
-    fun inline_parameter_conditions() = doTest(true)
+    fun inline_conditional_blocks() = doTest(true)
     @Test
     fun advanced_nested() = doTest(true)
     @Test

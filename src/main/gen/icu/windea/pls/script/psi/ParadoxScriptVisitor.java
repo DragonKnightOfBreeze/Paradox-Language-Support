@@ -4,7 +4,6 @@ package icu.windea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -79,7 +78,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitInlineMathExpression(o);
   }
 
-  public void visitInlineParameterCondition(@NotNull ParadoxScriptInlineParameterCondition o) {
+  public void visitInlineConditionalBlock(@NotNull ParadoxScriptInlineConditionalBlock o) {
     visitPsiElement(o);
   }
 
@@ -98,15 +97,15 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitArgument(o);
   }
 
-  public void visitParameterCondition(@NotNull ParadoxScriptParameterCondition o) {
+  public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {
     visitBoundMemberContainer(o);
   }
 
-  public void visitParameterConditionExpression(@NotNull ParadoxScriptParameterConditionExpression o) {
+  public void visitConditionalBlockExpression(@NotNull ParadoxScriptConditionalBlockExpression o) {
     visitPsiElement(o);
   }
 
-  public void visitParameterConditionParameter(@NotNull ParadoxScriptParameterConditionParameter o) {
+  public void visitConditionalBlockParameter(@NotNull ParadoxScriptConditionalBlockParameter o) {
     visitParadoxConditionParameter(o);
   }
 

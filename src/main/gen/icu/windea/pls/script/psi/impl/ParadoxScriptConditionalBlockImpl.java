@@ -7,22 +7,21 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {
+public class ParadoxScriptConditionalBlockImpl extends ASTWrapperPsiElement implements ParadoxScriptConditionalBlock {
 
-  public ParadoxScriptBlockImpl(@NotNull ASTNode node) {
+  public ParadoxScriptConditionalBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitBlock(this);
+    visitor.visitConditionalBlock(this);
   }
 
   @Override
@@ -38,15 +37,15 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
+  @Nullable
+  public ParadoxScriptConditionalBlockExpression getConditionalBlockExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalBlockExpression.class);
   }
 
   @Override
   @NotNull
-  public List<ParadoxScriptScriptedVariable> getScriptedVariableList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
+  public List<ParadoxScriptProperty> getPropertyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
   }
 
   @Override
@@ -61,27 +60,17 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public @Nullable String getConditionExpression() {
+    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
   }
 
   @Override
-  public @NotNull String getExpression() {
-    return ParadoxScriptPsiImplUtil.getExpression(this);
+  public @Nullable String getPresentationText() {
+    return ParadoxScriptPsiImplUtil.getPresentationText(this);
   }
 
   @Override
-  public @Nullable PsiReference getReference() {
-    return ParadoxScriptPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  public @NotNull PsiReference @NotNull [] getReferences() {
-    return ParadoxScriptPsiImplUtil.getReferences(this);
-  }
-
-  @Override
-  public @NotNull ParadoxScriptBlock getMembersRoot() {
+  public @NotNull ParadoxScriptConditionalBlock getMembersRoot() {
     return ParadoxScriptPsiImplUtil.getMembersRoot(this);
   }
 

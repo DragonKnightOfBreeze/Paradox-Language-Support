@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 
 // Context Builders
 
-/** 如果包含参数条件块，是否需要处理其中的子节点。默认为 `false`。 */
+/** 如果包含参数化快，是否需要处理其中的子节点。默认为 `false`。 */
 var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
 
 /** @see WalkingContext.conditional */

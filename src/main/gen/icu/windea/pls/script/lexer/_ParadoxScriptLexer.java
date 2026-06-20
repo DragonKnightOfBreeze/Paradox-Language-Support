@@ -45,9 +45,9 @@ public class _ParadoxScriptLexer implements FlexLexer {
   public static final int IN_PARAMETER = 24;
   public static final int IN_PARAMETER_ARGUMENT = 26;
   public static final int IN_PARAMETER_ARGUMENT_END = 28;
-  public static final int IN_PARAMETER_CONDITION = 30;
-  public static final int IN_PARAMETER_CONDITION_EXPRESSION = 32;
-  public static final int IN_PARAMETER_CONDITION_BODY = 34;
+  public static final int IN_CONDITIONAL_BLOCK = 30;
+  public static final int IN_CONDITIONAL_BLOCK_EXPRESSION = 32;
+  public static final int IN_CONDITIONAL_BLOCK_BODY = 34;
   public static final int IN_INLINE_MATH = 36;
 
   /**
@@ -57,8 +57,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15,
     16, 16, 17, 17, 18, 18
   };
 
@@ -839,7 +839,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 63: break;
           case 10:
-            { enterState(stack, YYINITIAL); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
+            { enterState(stack, YYINITIAL); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET;
             }
           // fall through
           case 64: break;
@@ -872,7 +872,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 69: break;
           case 16:
-            { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
+            { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET;
             }
           // fall through
           case 70: break;
@@ -965,7 +965,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 86: break;
           case 33:
-            { yybegin(IN_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;
+            { yybegin(IN_CONDITIONAL_BLOCK_EXPRESSION); return NESTED_LEFT_BRACKET;
             }
           // fall through
           case 87: break;
@@ -985,17 +985,17 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 90: break;
           case 37:
-            { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET;
+            { yybegin(IN_CONDITIONAL_BLOCK_BODY); return NESTED_RIGHT_BRACKET;
             }
           // fall through
           case 91: break;
           case 38:
-            { enterState(stack, IN_PARAMETER_CONDITION_BODY); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
+            { enterState(stack, IN_CONDITIONAL_BLOCK_BODY); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET;
             }
           // fall through
           case 92: break;
           case 39:
-            { enterState(stack, IN_PARAMETER_CONDITION_BODY); return LEFT_BRACE;
+            { enterState(stack, IN_CONDITIONAL_BLOCK_BODY); return LEFT_BRACE;
             }
           // fall through
           case 93: break;

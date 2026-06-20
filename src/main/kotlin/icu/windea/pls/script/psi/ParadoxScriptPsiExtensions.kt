@@ -52,7 +52,7 @@ val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
 // region Predicates
 
 fun ParadoxScriptMember.isBlockMember(): Boolean {
-    return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
+    return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptConditionalBlock }
 }
 
 fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
@@ -66,7 +66,7 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
 fun ParadoxScriptExpressionElement.isExpression(): Boolean {
     return when {
         this is ParadoxScriptPropertyKey -> true
-        this is ParadoxScriptValue -> parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
+        this is ParadoxScriptValue -> parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement || it is ParadoxScriptConditionalBlock }
         else -> false
     }
 }

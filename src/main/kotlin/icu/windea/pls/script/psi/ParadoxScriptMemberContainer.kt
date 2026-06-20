@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
  * @see ParadoxScriptFile
  * @see ParadoxScriptMember
  * @see ParadoxScriptBlockElement
- * @see ParadoxScriptParameterCondition
+ * @see ParadoxScriptConditionalBlock
  */
 interface ParadoxScriptMemberContainer : PsiElement, NavigatablePsiElement {
     val membersRoot: ParadoxScriptMemberContainer? get() = null

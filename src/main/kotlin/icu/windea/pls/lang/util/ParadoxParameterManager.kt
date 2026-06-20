@@ -55,7 +55,7 @@ import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -160,7 +160,7 @@ object ParadoxParameterManager {
         if (parameterInfo.defaultValue != null) return true
         // 如果是条件参数，则为可选
         if (parameterInfo.conditionExpressions == null) return true
-        // 如果从参数条件表达式的堆栈来看是可选的，则为可选
+        // 如果从参数化快表达式的堆栈来看是可选的，则为可选
         if (!parameterInfo.conditionExpressions.all { it.matches(argumentNames) }) return true
         // 如果作为传入参数的值，则认为是可选的
         if (isPassingParameterValue(parameterInfo)) return true
@@ -360,9 +360,9 @@ object ParadoxParameterManager {
             element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                 override fun elementFinished(element: PsiElement) {
                     run {
-                        if (element !is ParadoxScriptParameterCondition) return@run
-                        val conditionExpression = element.parameterConditionExpression ?: return@run
-                        val parameter = conditionExpression.parameterConditionParameter
+                        if (element !is ParadoxScriptConditionalBlock) return@run
+                        val conditionExpression = element.conditionalBlockExpression ?: return@run
+                        val parameter = conditionExpression.conditionalBlockParameter
                         val name = parameter.name
                         val v = argMap[name] ?: return@run
                         val revert = v.equals("no", true)

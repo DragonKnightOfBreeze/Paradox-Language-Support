@@ -1,1 +1,1 @@
-settings = { a = b [[!PARAM] parameter_condition = $PARAM$ ] c }
+settings = { a = b [[!PARAM] conditional_block = $PARAM$ ] c }

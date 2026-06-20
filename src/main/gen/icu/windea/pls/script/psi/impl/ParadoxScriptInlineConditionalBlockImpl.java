@@ -4,26 +4,23 @@ package icu.windea.pls.script.psi.impl;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterCondition {
+public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineConditionalBlock {
 
-  public ParadoxScriptParameterConditionImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineConditionalBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitParameterCondition(this);
+    visitor.visitInlineConditionalBlock(this);
   }
 
   @Override
@@ -34,26 +31,20 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
 
   @Override
   @NotNull
-  public List<ParadoxScriptParameterCondition> getParameterConditionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameterCondition.class);
+  public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }
 
   @Override
   @Nullable
-  public ParadoxScriptParameterConditionExpression getParameterConditionExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameterConditionExpression.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  public ParadoxScriptConditionalBlockExpression getConditionalBlockExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalBlockExpression.class);
   }
 
   @Override
@@ -69,31 +60,6 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   @Override
   public @Nullable String getPresentationText() {
     return ParadoxScriptPsiImplUtil.getPresentationText(this);
-  }
-
-  @Override
-  public @NotNull ParadoxScriptParameterCondition getMembersRoot() {
-    return ParadoxScriptPsiImplUtil.getMembersRoot(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull ParadoxScriptMember> getMembers() {
-    return ParadoxScriptPsiImplUtil.getMembers(this);
-  }
-
-  @Override
-  public @Nullable PsiElement getLeftBound() {
-    return ParadoxScriptPsiImplUtil.getLeftBound(this);
-  }
-
-  @Override
-  public @Nullable PsiElement getRightBound() {
-    return ParadoxScriptPsiImplUtil.getRightBound(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override

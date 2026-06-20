@@ -7,7 +7,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
@@ -32,8 +31,8 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public List<ParadoxScriptParameterCondition> getParameterConditionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameterCondition.class);
+  public List<ParadoxScriptConditionalBlock> getConditionalBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptConditionalBlock.class);
   }
 
   @Override

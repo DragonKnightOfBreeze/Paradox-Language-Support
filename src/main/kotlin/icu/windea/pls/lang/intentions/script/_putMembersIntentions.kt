@@ -10,9 +10,9 @@ import com.intellij.psi.PsiWhiteSpace
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBoundMemberContainer>(ParadoxScriptBoundMemberContainer::class.java), DumbAware {
@@ -41,7 +41,7 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBo
 }
 
 /**
- * 将成员放到同一行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptParameterCondition]。
+ * 将成员放到同一行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptConditionalBlock]。
  *
  * ```paradox_script
  * # before
@@ -70,10 +70,10 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newElement = when (element) {
-            is ParadoxScriptParameterCondition -> {
+            is ParadoxScriptConditionalBlock -> {
                 val conditionExpression = element.conditionExpression ?: return
                 val newText = "[[${conditionExpression}] ${membersText} ]"
-                ParadoxScriptElementFactory.createParameterConditionFromText(context.project, newText)
+                ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
             }
             else -> {
                 val newText = "{ ${membersText} }"
@@ -89,7 +89,7 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
 }
 
 /**
- * 将成员放到不同的行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptParameterCondition]。
+ * 将成员放到不同的行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptConditionalBlock]。
  *
  * ```paradox_script
  * # before
@@ -118,10 +118,10 @@ class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newElement = when (element) {
-            is ParadoxScriptParameterCondition -> {
+            is ParadoxScriptConditionalBlock -> {
                 val conditionExpression = element.conditionExpression ?: return
                 val newText = "[[${conditionExpression}]\n${membersText}\n]"
-                ParadoxScriptElementFactory.createParameterConditionFromText(context.project, newText)
+                ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
             }
             else -> {
                 val newText = "{\n${membersText}\n}"

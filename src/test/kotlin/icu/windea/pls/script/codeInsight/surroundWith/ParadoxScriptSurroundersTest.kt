@@ -19,7 +19,7 @@ import org.junit.runners.JUnit4
  * @see ParadoxScriptSurrounder
  * @see ParadoxScriptPropertySurrounder
  * @see ParadoxScriptBlockSurrounder
- * @see ParadoxScriptParameterConditionSurrounder
+ * @see ParadoxScriptConditionalBlockSurrounder
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -76,22 +76,22 @@ class ParadoxScriptSurroundersTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testParameterConditionSurrounder_singleElement() {
+    fun testConditionalBlockSurrounder_singleElement() {
         CodeInsightTestUtil.doSurroundWithTest(
             myFixture,
-            ParadoxScriptParameterConditionSurrounder(),
-            "script/surroundWith/parameter_condition_single_before.test.txt",
-            "script/surroundWith/parameter_condition_single_after.test.txt"
+            ParadoxScriptConditionalBlockSurrounder(),
+            "script/surroundWith/conditional_block_single_before.test.txt",
+            "script/surroundWith/conditional_block_single_after.test.txt"
         )
     }
 
     @Test
-    fun testParameterConditionSurrounder_multipleElements() {
+    fun testConditionalBlockSurrounder_multipleElements() {
         CodeInsightTestUtil.doSurroundWithTest(
             myFixture,
-            ParadoxScriptParameterConditionSurrounder(),
-            "script/surroundWith/parameter_condition_multiple_before.test.txt",
-            "script/surroundWith/parameter_condition_multiple_after.test.txt"
+            ParadoxScriptConditionalBlockSurrounder(),
+            "script/surroundWith/conditional_block_multiple_before.test.txt",
+            "script/surroundWith/conditional_block_multiple_after.test.txt"
         )
     }
 
@@ -126,12 +126,12 @@ class ParadoxScriptSurroundersTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testParameterConditionSurrounder_nestedElement() {
+    fun testConditionalBlockSurrounder_nestedElement() {
         CodeInsightTestUtil.doSurroundWithTest(
             myFixture,
-            ParadoxScriptParameterConditionSurrounder(),
-            "script/surroundWith/parameter_condition_nested_before.test.txt",
-            "script/surroundWith/parameter_condition_nested_after.test.txt"
+            ParadoxScriptConditionalBlockSurrounder(),
+            "script/surroundWith/conditional_block_nested_before.test.txt",
+            "script/surroundWith/conditional_block_nested_after.test.txt"
         )
     }
 }

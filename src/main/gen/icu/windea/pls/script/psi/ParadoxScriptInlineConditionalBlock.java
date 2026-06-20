@@ -1,25 +1,26 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxScriptInlineParameterCondition extends PsiElement {
+import javax.swing.*;
+import java.util.List;
+
+public interface ParadoxScriptInlineConditionalBlock extends PsiElement {
 
   @NotNull
-  List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
+  List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
 
   @Nullable
-  ParadoxScriptParameterConditionExpression getParameterConditionExpression();
+  ParadoxScriptConditionalBlockExpression getConditionalBlockExpression();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

@@ -24,7 +24,7 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -40,7 +40,7 @@ object ParadoxScriptNavigationManager {
             is ParadoxScriptProperty -> true
             is ParadoxScriptValue -> element.isBlockMember()
             is ParadoxScriptScriptedVariable -> true
-            is ParadoxScriptParameterCondition -> true
+            is ParadoxScriptConditionalBlock -> true
             else -> false
         }
     }
@@ -134,7 +134,7 @@ object ParadoxScriptNavigationManager {
             // 名字
             is ParadoxScriptScriptedVariable -> "@" + element.name.or.unresolved()
             // 表达式
-            is ParadoxScriptParameterCondition -> element.conditionExpression?.let { "[$it]" }
+            is ParadoxScriptConditionalBlock -> element.conditionExpression?.let { "[$it]" }
             // 回退
             is NavigatablePsiElement -> element.name
             else -> null

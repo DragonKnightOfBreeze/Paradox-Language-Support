@@ -57,7 +57,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -136,7 +136,7 @@ object ParadoxPsiManager {
                     ?.find { it.elementType != TokenType.WHITE_SPACE }
                 e1 to e2
             }
-            is ParadoxScriptParameterCondition -> {
+            is ParadoxScriptConditionalBlock -> {
                 val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
                     ?.dropWhile { it.elementType != ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET }?.drop(1)
                     ?.find { it.elementType != TokenType.WHITE_SPACE }

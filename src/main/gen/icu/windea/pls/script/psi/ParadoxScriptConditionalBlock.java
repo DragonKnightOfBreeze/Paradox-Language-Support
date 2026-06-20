@@ -1,22 +1,23 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxScriptParameterCondition extends ParadoxScriptBoundMemberContainer {
+import javax.swing.*;
+import java.util.List;
+
+public interface ParadoxScriptConditionalBlock extends ParadoxScriptBoundMemberContainer {
 
   @NotNull
-  List<ParadoxScriptParameterCondition> getParameterConditionList();
+  List<ParadoxScriptConditionalBlock> getConditionalBlockList();
 
   @Nullable
-  ParadoxScriptParameterConditionExpression getParameterConditionExpression();
+  ParadoxScriptConditionalBlockExpression getConditionalBlockExpression();
 
   @NotNull
   List<ParadoxScriptProperty> getPropertyList();
@@ -30,7 +31,7 @@ public interface ParadoxScriptParameterCondition extends ParadoxScriptBoundMembe
 
   @Nullable String getPresentationText();
 
-  @NotNull ParadoxScriptParameterCondition getMembersRoot();
+  @NotNull ParadoxScriptConditionalBlock getMembersRoot();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 

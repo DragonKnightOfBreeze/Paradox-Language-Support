@@ -11,7 +11,7 @@ import com.intellij.psi.search.SearchScope;
 public interface ParadoxScriptScriptedVariableName extends ParadoxParameterAwareElement {
 
   @NotNull
-  List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
+  List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();
 
   @Nullable PsiElement getIdElement();
 

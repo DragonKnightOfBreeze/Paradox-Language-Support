@@ -19,7 +19,7 @@ class ParadoxScriptSurroundDescriptor : SurroundDescriptor {
     private val _surrounders = arrayOf(
         ParadoxScriptPropertySurrounder(),
         ParadoxScriptBlockSurrounder(),
-        ParadoxScriptParameterConditionSurrounder()
+        ParadoxScriptConditionalBlockSurrounder()
     )
 
     override fun getElementsToSurround(file: PsiFile, startOffset: Int, endOffset: Int): Array<out PsiElement> {

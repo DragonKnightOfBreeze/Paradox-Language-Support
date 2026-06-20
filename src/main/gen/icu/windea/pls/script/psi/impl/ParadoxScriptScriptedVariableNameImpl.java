@@ -7,7 +7,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
@@ -32,8 +31,8 @@ public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement 
 
   @Override
   @NotNull
-  public List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineParameterCondition.class);
+  public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
   }
 
   @Override

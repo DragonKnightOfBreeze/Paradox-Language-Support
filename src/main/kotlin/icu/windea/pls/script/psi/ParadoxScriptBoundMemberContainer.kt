@@ -5,7 +5,7 @@ import com.intellij.psi.PsiListLikeElement
 
 /**
  * @see ParadoxScriptBlock
- * @see ParadoxScriptParameterCondition
+ * @see ParadoxScriptConditionalBlock
  */
 interface ParadoxScriptBoundMemberContainer : ParadoxScriptMemberContainer, PsiListLikeElement {
     override val membersRoot: ParadoxScriptBoundMemberContainer get() = this

@@ -309,13 +309,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 .bindSelected(settings::commentsByDefault)
                 .enabledIf(cb.selected)
         }
-        // parameterConditions & parameterConditionsByDefault
+        // conditionalBlocks & conditionalBlocksByDefault
         row {
-            checkBox(PlsBundle.message("settings.folding.parameterConditions"))
-                .bindSelected(settings::parameterConditions)
+            checkBox(PlsBundle.message("settings.folding.conditionalBlocks"))
+                .bindSelected(settings::conditionalBlocks)
                 .enabled(false)
             checkBox(PlsBundle.message("settings.folding.byDefault"))
-                .bindSelected(settings::parameterConditionsByDefault)
+                .bindSelected(settings::conditionalBlocksByDefault)
         }
         // inlineMaths & inlineMathsByDefault
         row {
