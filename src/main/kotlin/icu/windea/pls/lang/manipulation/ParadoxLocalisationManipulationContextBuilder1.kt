@@ -8,7 +8,7 @@ import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 
-object ParadoxLocalisationManipulationContextBuilder {
+object ParadoxLocalisationManipulationContextBuilder1 {
     fun from(element: ParadoxLocalisationProperty): ParadoxLocalisationManipulationContext {
         val name = element.name
         val elementText = element.text

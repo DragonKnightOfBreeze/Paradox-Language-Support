@@ -18,7 +18,6 @@ import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
-import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.selectLocale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,8 +52,8 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
 
                 files.forEachConcurrent { file ->
                     val elements = findElements(e, file)
-                    val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
-                    val contextsToHandle = contexts.filter { context -> context.shouldHandle }
+                    val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
+                    val contextsToHandle = contexts.filter { context -> context.needProcess }
                     allContexts.addAll(contextsToHandle)
 
                     runCatchingCancelable r@{

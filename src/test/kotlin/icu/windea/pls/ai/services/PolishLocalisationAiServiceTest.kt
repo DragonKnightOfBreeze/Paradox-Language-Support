@@ -6,7 +6,7 @@ import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -47,7 +47,7 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
         myFixture.configureByFile("ai/wilderness_l_simp_chinese_stellaris.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
         val elements = ParadoxPsiSequenceBuilder.localisations(file)
-        val contexts = runSmartReadAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) } }.toList()
+        val contexts = runSmartReadAction { elements.map { ParadoxLocalisationManipulationContext.create(it) } }.toList()
         val description = "用华丽而夸张的文字，强调生体荒野（即共生智能）是完美的"
         val request = PolishLocalisationAiRequest(file.project, file, contexts, description)
         val aiService = PolishLocalisationAiService.getInstance()
