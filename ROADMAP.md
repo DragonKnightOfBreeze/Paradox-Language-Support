@@ -78,10 +78,11 @@
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符） ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P1 [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] P3/QOL 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换
-- [x] P3/QOL 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换（不检查调用链是否过长）
 - [x] P3/QOL 提供代码检查 `UnmatchedFileInspection`（对于脚本文件或CSV文件），以报告当前文件无法匹配到任何 `CwtFilePathMatchableConfig`（默认级别：`WARNING`） - 这意味着当前文件是特殊的，或者缺失相应的规则
 - [x] P3/QOL 将 `ParadoxInlineScriptEditorNotificationProvider` 改为 `DeclaredInlineScriptInspection`（默认级别：`TEXT ATTRIBUTES`） - 为了对齐已有的 `UnusedInlineScriptInspection`
+- [x] P3/QOL 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 - 需要同时检测于文法级别和语义级别
+- [ ] P3/QOL 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 - 需要同时检测于文法级别和语义级别
+- [ ] P3/QOL 完善作用域调用的普通形式/安全形式之间的转换逻辑 - 存在更多细节，需要修复和改进
 
 ## v2.2.0-csv
 

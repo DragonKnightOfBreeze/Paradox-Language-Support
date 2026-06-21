@@ -21,6 +21,8 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * 复杂表达式。
  *
  * 对应脚本语言与本地化语言中的一段特定的表达式文本，它们可能包含数个节点，且允许嵌套包含。
+ *
+ * @see ParadoxComplexExpressionNode
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     fun getErrors(element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> = emptyList()
