@@ -149,7 +149,7 @@ private object ParadoxValueFieldExpressionValidator : ParadoxComplexExpressionVa
         }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedValueFieldExpression(expression.rangeInExpression, expression.text)
-        processLinkedExpression(expression, element, errors)
+        checkQuotesForLinkedExpression(element, expression, errors)
         return errors
     }
 }

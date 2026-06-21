@@ -8,6 +8,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope

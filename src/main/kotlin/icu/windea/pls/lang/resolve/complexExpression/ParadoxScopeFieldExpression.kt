@@ -125,7 +125,7 @@ private object ParadoxScopeFieldExpressionValidator: ParadoxComplexExpressionVal
         }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedScopeFieldExpression(expression.rangeInExpression, expression.text)
-        processLinkedExpression(expression, element, errors)
+        checkQuotesForLinkedExpression(element, expression, errors)
         return errors
     }
 }

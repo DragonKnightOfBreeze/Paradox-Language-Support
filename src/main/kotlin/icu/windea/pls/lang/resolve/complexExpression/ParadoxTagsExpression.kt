@@ -75,6 +75,7 @@ private object ParadoxTagsExpressionValidator : ParadoxComplexExpressionValidato
         val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedTagsExpression(expression.rangeInExpression, expression.text)
+        checkQuotesForTagsExpression(element, expression, errors)
         return errors
     }
 }

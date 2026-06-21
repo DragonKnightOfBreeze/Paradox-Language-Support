@@ -5,14 +5,15 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 interface ParadoxComplexExpressionValidatorScope {
-     fun validateAllNodes(expression: ParadoxComplexExpression, errors: MutableList<ParadoxComplexExpressionError>, processor: Processor<ParadoxComplexExpressionNode>): Boolean {
+    fun validateAllNodes(expression: ParadoxComplexExpression, errors: MutableList<ParadoxComplexExpressionError>, processor: Processor<ParadoxComplexExpressionNode>): Boolean {
         var result = true
         expression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
@@ -30,23 +31,29 @@ interface ParadoxComplexExpressionValidatorScope {
         return result
     }
 
-     fun processLinkedExpression(expression: ParadoxLinkedExpression, element: ParadoxExpressionElement?, errors: MutableList<ParadoxComplexExpressionError>) {
-        // 如果链式表达式使用包含前缀的嵌套的链式表达式和前缀作为其传参，则需要用双引号括起
-        checkQuotes(element, expression, errors)
+    fun checkQuotesForLinkedExpression(element: ParadoxExpressionElement?, expression: ParadoxLinkedExpression, errors: MutableList<ParadoxComplexExpressionError>) {
+        // 如果脚本文件中的链式表达式使用包含前缀的嵌套的链式表达式和前缀作为其传参，则需要用双引号括起
+        if (element !is ParadoxScriptExpressionElement) return // 仅适用于脚本文件中的
+        if (!element.text.let { !it.isLeftQuoted() || !it.isRightQuoted() }) return
+        val r = expression.acceptChildren(object : ParadoxComplexExpressionRecursiveVisitor() {
+            override fun visit(node: ParadoxComplexExpressionNode): Boolean {
+                if(node is ParadoxMarkerNode) return false
+                return super.visit(node)
+            }
+        })
+        if (!r) errors += ParadoxComplexExpressionErrors.linkExpressionNotQuoted(expression.rangeInExpression)
     }
 
-     fun checkQuotes(element: ParadoxExpressionElement?, expression: ParadoxLinkedExpression, errors: MutableList<ParadoxComplexExpressionError>) {
-        if (expression is ParadoxCommandExpression) return // 2.1.1 目前直接跳过
-        if (element == null || !element.text.let { !it.isLeftQuoted() || !it.isRightQuoted() }) return
-        val r = expression.linkNodes.process p@{ linkNode ->
-            val prefixNode = linkNode.nodes.getOrNull(0)?.takeIf { it is ParadoxLinkPrefixNode }
-            if (prefixNode == null) return@p true
-            val leftParNode = linkNode.nodes.getOrNull(1)?.takeIf { it is ParadoxMarkerNode && it.text == "(" }
-            if (leftParNode == null) return@p true
-            val valueNode = linkNode.nodes.getOrNull(2)?.takeIf { it is ParadoxLinkValueNode }
-            if (valueNode == null) return@p true
-            ":" !in valueNode.text
-        }
-        if (!r) errors += ParadoxComplexExpressionErrors.notQuotedNestedWithPrefixes(expression.rangeInExpression)
+    fun checkQuotesForTagsExpression(element: ParadoxExpressionElement?, expression: ParadoxTagsExpression, errors: MutableList<ParadoxComplexExpressionError>) {
+        // 如果脚本文件中的标签集合表达式包含括号或逗号，则需要用双引号括起
+        if(element !is ParadoxScriptExpressionElement) return // 仅适用于脚本文件中的
+        if (!element.text.let { !it.isLeftQuoted() || !it.isRightQuoted() }) return
+        val r = expression.acceptChildren(object : ParadoxComplexExpressionRecursiveVisitor() {
+            override fun visit(node: ParadoxComplexExpressionNode): Boolean {
+                if(node is ParadoxMarkerNode) return false
+                return super.visit(node)
+            }
+        })
+        if (!r) errors += ParadoxComplexExpressionErrors.tagsExpressionNotQuoted(expression.rangeInExpression)
     }
 }
