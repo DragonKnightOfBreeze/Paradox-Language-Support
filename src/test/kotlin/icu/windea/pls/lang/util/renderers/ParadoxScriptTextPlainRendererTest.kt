@@ -194,7 +194,7 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     fun block_customIndent() {
         assertResult(
             "key = {\n  a = 1\n}",
-            "key = { a = 1 }"
+            "key = v"
         ) {
             indent = "  "
         }
@@ -207,7 +207,7 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun block_renderInBlock_false_shouldRenderUnresolved() {
-        assertResult("key = $blockFolder", "key = { a = 1 }") {
+        assertResult("key = $blockFolder", "key = v") {
             renderInBlock = false
         }
     }

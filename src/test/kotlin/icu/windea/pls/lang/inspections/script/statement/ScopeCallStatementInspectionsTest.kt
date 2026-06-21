@@ -44,7 +44,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), HighlightingTe
     //
     //     myFixture.configureByText("inspection_scope_call.ck3.test.txt", """
     //         k = {
-    //             ${tag.start}owner${tag.end} ?= { a = 1 }
+    //             ${tag.start}owner${tag.end} ?= v
     //         }
     //     """.trimIndent())
     //
@@ -61,7 +61,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), HighlightingTe
         myFixture.configureByText("inspection_scope_call.ck3.test.txt", """
             k = {
                 exists = owner
-                ${tag.start}owner${tag.end} = { a = 1 }
+                ${tag.start}owner${tag.end} = v
             }
         """.trimIndent())
 
@@ -76,7 +76,7 @@ class ScopeCallStatementInspectionsTest : BasePlatformTestCase(), HighlightingTe
         myFixture.configureByText("inspection_scope_call.hoi4.test.txt", """
             k = {
                 exists = owner
-                owner = { a = 1 }
+                owner = v
             }
         """.trimIndent())
 

@@ -6,30 +6,23 @@
   </p>
 </body>
 <!-- tooltip end -->
-<p>示例（使用 <code>__</code> 表示光标位置）：</p>
+<p>示例：</p>
 <pre><code class="language-paradox_script">
 # before
-__root.owner = { a = 1 }
-
-# after
-__root = {
-    owner = { a = 1 }
-}
-</code></pre>
-<pre><code class="language-paradox_script"># before
-root.__owner = { a = 1 }
+root.owner = v
 
 # after
 root = {
-    __owner = { a = 1 }
+    owner = v
 }
 </code></pre>
-<pre><code class="language-paradox_script"># before
-root.__owner.event_target:x
+<pre><code class="language-paradox_script">
+# before
+root.owner =? v
 
 # after
-root = {
-    __owner.event_target:x
+root ?= {
+    owner ?= v
 }
 </code></pre>
 </html>

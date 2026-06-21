@@ -38,11 +38,11 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
         myFixture.configureByText(
             "to_normal_form_basic.ck3.test.txt",
-            "k = { <caret>owner ?= { a = 1 } }"
+            "k = { <caret>owner ?= v }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { exists = owner owner = { a = 1 } }")
+        myFixture.checkResult("k = { exists = owner owner = v }")
     }
 
     @Test
@@ -51,11 +51,11 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToExplicitForm")
         myFixture.configureByText(
             "to_normal_form_stellaris.test.txt",
-            "k = { <caret>owner? = { a = 1 } }"
+            "k = { <caret>owner? = v }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { exists = owner owner = { a = 1 } }")
+        myFixture.checkResult("k = { exists = owner owner = v }")
     }
 
     @Test
@@ -96,7 +96,7 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             "to_normal_form_not_available.ck3.test.txt",
             """
             k = { exists = owner
-            <caret>owner = { a = 1 } }
+            <caret>owner = v }
             """.trimIndent()
         )
         val available = myFixture.availableIntentions
@@ -115,12 +115,12 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             "to_safe_form_basic.ck3.test.txt",
             """
             k = { exists = owner
-            <caret>owner = { a = 1 } }
+            <caret>owner = v }
             """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { owner ?= { a = 1 } }")
+        myFixture.checkResult("k = { owner ?= v }")
     }
 
     @Test
@@ -131,12 +131,12 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             "to_safe_form_basic_stellaris.test.txt",
             """
             k = { exists = owner
-            <caret>owner = { a = 1 } }
+            <caret>owner = v }
             """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { owner? = { a = 1 } }")
+        myFixture.checkResult("k = { owner? = v }")
     }
 
     @Test
@@ -145,11 +145,11 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_basic.ck3.test.txt",
-            "k = { exists = owner <caret>owner = { a = 1 } }"
+            "k = { exists = owner <caret>owner = v }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { owner ?= { a = 1 } }")
+        myFixture.checkResult("k = { owner ?= v }")
     }
 
     @Test
@@ -158,11 +158,11 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_basic.ck3.test.txt",
-            "k = { exists = \"owner\" <caret>owner = { a = 1 } }"
+            "k = { exists = \"owner\" <caret>owner = v }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { owner ?= { a = 1 } }")
+        myFixture.checkResult("k = { owner ?= v }")
     }
 
     @Test
@@ -207,12 +207,12 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             "to_safe_form_quoted.ck3.test.txt",
             """
             k = { exists = owner
-            <caret>"owner" = { a = 1 } }
+            <caret>"owner" = v }
             """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("""k = { "owner" ?= { a = 1 } }""")
+        myFixture.checkResult("""k = { "owner" ?= v }""")
     }
 
     @Test
@@ -221,7 +221,7 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
         val intentionName = PlsBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "to_safe_form_not_available_already_safe.ck3.test.txt",
-            "k = { <caret>owner ?= { a = 1 } }"
+            "k = { <caret>owner ?= v }"
         )
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -235,7 +235,7 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             "to_safe_form_not_available_mismatch.ck3.test.txt",
             """
             k = { exists = owner
-            <caret>other = { a = 1 } }
+            <caret>other = v }
             """.trimIndent()
         )
         val available = myFixture.availableIntentions
@@ -252,7 +252,7 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             k = {
                 exists = owner
                 key = value
-                <caret>owner = { a = 1 }
+                <caret>owner = v
             }
             """.trimIndent()
         )
@@ -268,7 +268,7 @@ class ScopeCallStatementExplicitSafeIntentionsTest : BasePlatformTestCase() {
             "to_safe_form_not_available_notBefore.ck3.test.txt",
             """
             k = {
-                <caret>owner = { a = 1 }
+                <caret>owner = v
                 exists = owner
             }
             """.trimIndent()

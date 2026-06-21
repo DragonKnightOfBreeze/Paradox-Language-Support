@@ -9,12 +9,18 @@
   <pre><code class="language-paradox_script">
 # before
 root = {
-    # comment
-    owner = { a = 1 }
+    owner = v
 }
 # after
-# comment
-root.owner = { a = 1 }
+root.owner = v
+</code></pre>
+  <pre><code class="language-paradox_script">
+# before
+root = {
+    owner ?= v
+}
+# after
+root.owner += v
 </code></pre>
 </body>
 </html>

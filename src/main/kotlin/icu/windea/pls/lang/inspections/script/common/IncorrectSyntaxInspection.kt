@@ -7,16 +7,14 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * （脚本文件中的）不正确的语法的代码检查。
@@ -35,14 +33,13 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
                 ProgressManager.checkCanceled()
                 checkComparisonOperator(context, element)
                 checkSafeAssignOperator(context, element)
-                checkSafeCallAssignOperator(context, element)
             }
         }
     }
 
     private fun checkComparisonOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
         if (context.rootFile == null) return
-        if (element.elementType !in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS) return
+        if (!ParadoxScriptPsiService.isComparisonOperator(element)) return
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 
         // check on grammar level
@@ -71,9 +68,14 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
     private fun checkSafeAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
         if (context.rootFile == null) return
-        if (element.elementType != ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN) return
+        if (!ParadoxScriptPsiService.isSafeAssignOperator(element)) return
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+        checkForSafeAssignOperator(context, element, propertyElement)
+        checkForSafeCallAssignOperator(context, element, propertyElement)
 
+    }
+
+    private fun checkForSafeAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
@@ -91,11 +93,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         }
     }
 
-    private fun checkSafeCallAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
-        if (context.rootFile == null) return
-        if (element.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) return
-        val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
-
+    private fun checkForSafeCallAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
