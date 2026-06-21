@@ -43,16 +43,29 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Namespace|Name"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpressionStub<ParadoxDefineReferenceExpression>("TODO 2.1.10")
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("Namespace|Name", 0, 14) {
+            node<ParadoxDefineNamespaceNode>("Namespace", 0, 9)
+            node<ParadoxMarkerNode>("|", 9, 10)
+            node<ParadoxDefineVariableNode>("Name", 10, 14)
+        }
         exp.check(dsl)
     }
 
     @Test
     fun test_missingPipe() {
         val s = "Namespace"
-        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)
+        assertNull(exp)
+    }
+
+    @Test
+    fun test_missingPipe_incomplete() {
+        val s = "Namespace"
+        val exp = resolve(s, ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpressionStub<ParadoxDefineReferenceExpression>("TODO 2.1.10")
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("Namespace", 0, 9) {
+            node<ParadoxDefineNamespaceNode>("Namespace", 0, 9)
+        }
         exp.check(dsl)
     }
 
@@ -61,7 +74,11 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Namespace|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpressionStub<ParadoxDefineReferenceExpression>("TODO 2.1.10")
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("Namespace|", 0, 10) {
+            node<ParadoxDefineNamespaceNode>("Namespace", 0, 9)
+            node<ParadoxMarkerNode>("|", 9, 10)
+            node<ParadoxDefineVariableNode>("", 10, 10)
+        }
         exp.check(dsl)
     }
 
@@ -71,7 +88,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0, 0) {
-            node<ParadoxErrorTokenNode>("", 0, 0)
+            node<ParadoxDefineNamespaceNode>("", 0, 0)
         }
         exp.check(dsl)
     }

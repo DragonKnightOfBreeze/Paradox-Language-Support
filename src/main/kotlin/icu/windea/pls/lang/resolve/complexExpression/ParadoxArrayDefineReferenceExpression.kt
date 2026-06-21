@@ -73,6 +73,7 @@ private object ParadoxArrayDefineReferenceExpressionResolver {
                 nodes += node
             }
             val pipeIndex2 = text.indexOf('|', pipeIndex1 + 1)
+            if (pipeIndex2 == -1 && !incomplete) return null
             run r2@{
                 val nodeText = if (pipeIndex2 == -1) text.substring(pipeIndex1 + 1) else text.substring(pipeIndex1 + 1, pipeIndex2)
                 val nodeTextRange = TextRange.from(offset + pipeIndex1 + 1, nodeText.length)
