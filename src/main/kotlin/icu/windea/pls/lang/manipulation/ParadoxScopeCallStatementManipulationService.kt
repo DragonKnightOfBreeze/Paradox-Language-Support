@@ -518,7 +518,7 @@ object ParadoxScopeCallStatementManipulationService {
         // 移动注释到 element 前面
         val parent = element.parent ?: return // unexpected
         val block = element.block ?: return // unexpected
-        val comments = ParadoxScriptPsiService.collectBetweenBounds(block, forward = false)?.filterIsInstance<PsiComment>().orEmpty()
+        val comments = PsiService.collectBetweenBounds(block, forward = false)?.filterIsInstance<PsiComment>().orEmpty()
         var anchor: PsiElement = element
         for (comment in comments) anchor = parent.addBefore(comment, anchor)
 

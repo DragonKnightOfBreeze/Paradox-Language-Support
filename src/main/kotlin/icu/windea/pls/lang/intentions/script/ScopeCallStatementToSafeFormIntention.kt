@@ -28,8 +28,8 @@ class ScopeCallStatementToSafeFormIntention : PsiUpdateModCommandAction<ParadoxS
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        // if property value is a block, caret offset should before or at `{`
-        if (!ParadoxScriptPsiService.isBeforeOrAtBlockLeftBound(element, context.offset)) return false
+        // if property value is a block, caret offset should before or at `{`, so do inline math blocks
+        if (!ParadoxScriptPsiService.isBeforeValueLeftBoundEnd(element, context.offset)) return false
 
         return ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)
     }

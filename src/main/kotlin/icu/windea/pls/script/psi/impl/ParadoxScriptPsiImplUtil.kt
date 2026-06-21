@@ -404,6 +404,17 @@ object ParadoxScriptPsiImplUtil {
         return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
     }
 
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
+        // use simple implementation is enough here
+        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
+    }
+
     // endregion
 
     // region ParadoxScriptConditionalBlockParameter
@@ -464,6 +475,16 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
         return element.findChild { it.elementType == INLINE_MATH_TOKEN }
+    }
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == INLINE_MATH_START }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == INLINE_MATH_END }
     }
 
     // endregion

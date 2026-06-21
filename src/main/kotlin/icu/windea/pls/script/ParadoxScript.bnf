@@ -263,7 +263,10 @@ private conditional_block_value ::= scripted_variable_reference | boolean | int 
 // used in, such as, dynamic strings (e.g. "a[[b]c]d")
 inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> conditional_block_expr inline_conditional_block_item RIGHT_BRACKET {
   pin=2
-  methods=[getIcon getConditionExpression getPresentationText]
+  implements=[
+    "icu.windea.pls.core.psi.PsiBoundElement"
+  ]
+  methods=[getIcon getConditionExpression getPresentationText getLeftBound getRightBound]
 }
 private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
 private inline_conditional_block_snippet ::= inline_conditional_block_item_part (<<processSnippet>> inline_conditional_block_item_part) *
@@ -282,7 +285,10 @@ private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | parameter | inli
 inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END { // lazy-parsing INLINE_MATH_TOKEN
   pin=1
   extends=value
-  methods=[getValue getExpression getInlineMathExpression getTokenElement]
+  implements=[
+    "icu.windea.pls.core.psi.PsiBoundElement"
+  ]
+  methods=[getValue getExpression getInlineMathExpression getTokenElement getLeftBound getRightBound]
 }
 
 // ------

@@ -27,8 +27,8 @@ class ScopeCallStatementToChainedFormIntention : PsiUpdateModCommandAction<Parad
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        // if property value is a block, caret offset should before or at `{`
-        if (!ParadoxScriptPsiService.isBeforeOrAtBlockLeftBound(element, context.offset)) return false
+        // if property value is a block, caret offset should before or at `{`, so do inline math blocks
+        if (!ParadoxScriptPsiService.isBeforeValueLeftBoundEnd(element, context.offset)) return false
 
         val gameType = selectGameType(context.file)
         return ParadoxScopeCallStatementManipulationService.canConvertToChainedForm(element, gameType)

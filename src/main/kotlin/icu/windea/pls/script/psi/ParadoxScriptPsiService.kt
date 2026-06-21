@@ -2,9 +2,9 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.endOffset
-import com.intellij.psi.util.siblings
-import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.psi.PsiBoundElement
+import icu.windea.pls.core.psi.PsiService
 
 object ParadoxScriptPsiService {
     fun canAttachComment(element: PsiElement): Boolean {
@@ -31,19 +31,13 @@ object ParadoxScriptPsiService {
         return element.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS
     }
 
-    fun collectBetweenBounds(element: ParadoxScriptBoundMemberContainer, forward: Boolean = true): Sequence<PsiElement>? {
-        val leftBound = element.leftBound ?: return null
-        val rightBound = element.rightBound ?: return null
-        val start = if (forward) leftBound else rightBound
-        val end = if (forward) rightBound else leftBound
-        return start.siblings(forward, withSelf = false).takeWhile { it != end }
+    fun isBeforeValueLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
+        val value = element.propertyValue?.castOrNull<PsiBoundElement>() ?: return true
+        return PsiService.isBeforeLeftBoundEnd(value, offset)
     }
 
-    fun isBeforeOrAtBlockLeftBound(element: ParadoxScriptProperty, offset: Int): Boolean {
-        if (offset < element.startOffset) return false
-        val block = element.propertyValue<ParadoxScriptBlock>() ?: return true
-        val leftBound = block.leftBound ?: return false
-        if (offset > leftBound.endOffset) return false
-        return true
+    fun isBeforeBlockLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
+        val block = element.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return true
+        return PsiService.isBeforeLeftBoundEnd(block, offset)
     }
 }
