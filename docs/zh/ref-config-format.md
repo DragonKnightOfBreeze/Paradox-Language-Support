@@ -1687,7 +1687,7 @@ title
 匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
 
 对应的数据表达式的格式：
-- `enum[{name}]` - 其中 `{name}` 匹配枚举名。
+- `enum[{name}]` - 其中 `{name}` 匹配枚举的名字。
 
 对应的数据表达式的示例：
 - `enum[weight_or_base]`
@@ -1701,7 +1701,7 @@ title
 动态值的名字须为合法标识符（允许 `.`）。
 
 对应的数据表达式的格式：
-- `value[{name}]` - 其中 `{name}` 匹配动态值类型。
+- `value[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
 
 对应的数据表达式的示例：
 - `value[event_target]`
@@ -1714,7 +1714,7 @@ title
 动态值的名字须为合法标识符（允许 `.`）。
 
 对应的数据表达式的格式：
-- `value_set[{name}]` - 其中 `{name}` 匹配动态值类型。
+- `value_set[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
 
 对应的数据表达式的示例：
 - `value_set[event_target]`
@@ -1727,7 +1727,7 @@ title
 动态值的名字须为合法标识符（允许 `.`）。
 
 对应的数据表达式的格式：
-- `dynamic_value[{name}]` - 其中 `{name}` 匹配动态值类型。
+- `dynamic_value[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
 
 对应的数据表达式的示例：
 - `dynamic_value[event_target]`
@@ -1762,7 +1762,7 @@ title
 匹配作用域字段表达式（由多个作用域节点组成，通过点号分隔并形成链接，如 `root` `root.owner` `root.event_target:target`），同时约束输出作用域属于指定的作用域组。
 
 对应的数据表达式的格式：
-- `scope_group[{name}]` - 其中 `{name}` 匹配作用域分组名。
+- `scope_group[{name}]` - 其中 `{name}` 匹配作用域分组的名字。
 
 对应的数据表达式的示例：
 - `scope_group[economic_categories]`
@@ -1881,8 +1881,8 @@ title
 在条件变体下，可对其中的动态值节点进行取反（如 `tag1,not(tag2)`）。
 
 对应的数据表达式的格式：
-- `$tags[{name}]` - 其中 `{name}` 匹配动态值类型。
-- `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型。
+- `$tags[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
+- `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型的名字。
 
 （TODO 2.1.10 待实现）
 
@@ -1902,7 +1902,7 @@ title
 匹配命名格式表达式（如 `{alpha}` `{<adj> {<noun>}}`）。
 
 对应的数据表达式的格式：
-- `name_format[{type}]`
+- `name_format[{type}]` - 其中 `{name}` 匹配格式类型，对应的定义类型为 `{name}_name_format`。
 
 #### ShaderEffect {#data-type-shader-effect}
 
@@ -2009,16 +2009,6 @@ title
 
 以下数据类型用于匹配文件路径引用，匹配时验证路径引用的文件是否存在。
 
-#### AbsoluteFilePath {#data-type-absolute-file-path}
-
-绝对文件路径类型。
-
-匹配绝对文件路径字符串。
-匹配时仅验证为字符串类型（通配匹配）。
-
-对应的数据表达式的格式：
-- `abs_filepath`
-
 #### Icon {#data-type-icon}
 
 图标路径类型。
@@ -2078,6 +2068,16 @@ title
 对应的数据表达式的示例：
 - `filename`
 - `filename[gfx/models]`
+
+#### AbsoluteFilePath {#data-type-absolute-file-path}
+
+绝对文件路径类型。
+
+匹配绝对文件路径字符串。
+匹配时仅验证为字符串类型（通配匹配）。
+
+对应的数据表达式的格式：
+- `abs_filepath`
 
 ### 模式感知的数据类型 {#data-types-pattern-aware}
 

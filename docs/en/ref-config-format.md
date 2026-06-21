@@ -1686,7 +1686,7 @@ Matches a dynamic value expression (e.g., `target`, `target@root`, `target@root.
 The dynamic value name must be a valid identifier (`.` is allowed).
 
 Format of corresponding data expressions:
-- `value[{name}]` – where `{name}` matches a dynamic value type.
+- `value[{name}]` – where `{name}` matches a dynamic value type name.
 
 Examples of corresponding data expressions:
 - `value[event_target]`
@@ -1699,7 +1699,7 @@ Matches a dynamic value expression (e.g., `target`, `target@root`, `target@root.
 The dynamic value name must be a valid identifier (`.` is allowed).
 
 Format of corresponding data expressions:
-- `value_set[{name}]` – where `{name}` matches a dynamic value type.
+- `value_set[{name}]` – where `{name}` matches a dynamic value type name.
 
 Examples of corresponding data expressions:
 - `value_set[event_target]`
@@ -1712,7 +1712,7 @@ Matches a dynamic value expression (e.g., `target`, `target@root`, `target@root.
 The dynamic value name must be a valid identifier (`.` is allowed).
 
 Format of corresponding data expressions:
-- `dynamic_value[{name}]` – where `{name}` matches a dynamic value type.
+- `dynamic_value[{name}]` – where `{name}` matches a dynamic value type name.
 
 Examples of corresponding data expressions:
 - `dynamic_value[event_target]`
@@ -1860,14 +1860,14 @@ Format of corresponding data expressions:
 
 #### Tags {#data-type-tags}
 
-Dynamic value set expression type.
+Tag set expression type.
 
-Matches a dynamic value set expression (consisting of a group of dynamic value nodes separated by commas, e.g., `tag`, `tag1,tag2`), or an empty string.  
+Matches a tag set expression (consisting of a group of dynamic value nodes separated by commas, e.g., `tag`, `tag1,tag2`), or an empty string.  
 In the condition variant, individual dynamic value nodes can be negated (e.g., `tag1,not(tag2)`).
 
 Format of corresponding data expressions:
-- `$tags[{name}]` – where `{name}` matches a dynamic value type.
-- `$tags_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type.
+- `$tags[{name}]` – where `{name}` matches a dynamic value type name.
+- `$tags_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type name.
 
 (To be implemented in 2.1.10)
 
@@ -1887,7 +1887,7 @@ Name format expression type.
 Matches a name format expression (e.g., `{alpha}`, `{<adj> {<noun>}}`).
 
 Format of corresponding data expressions:
-- `name_format[{type}]`
+- `name_format[{type}]` - where `{name}` matches the format name (the corresponding definition type is `{name}_name_format`).
 
 #### ShaderEffect {#data-type-shader-effect}
 
@@ -1961,7 +1961,7 @@ Single alias right type.
 Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values.
 
 Format of corresponding data expressions:
-- `single_alias_right[{name}]` – where `{name}` matches the name of a single alias.
+- `single_alias_right[{name}]` – where `{name}` matches a single alias name.
 
 #### AliasKeysField {#data-type-alias-keys-field}
 
@@ -1970,7 +1970,7 @@ Alias keys field type.
 When matching, resolves alias sub-keys and matches recursively.
 
 Format of corresponding data expressions:
-- `alias_keys_field[{name}]` – where `{name}` matches the name of an alias.
+- `alias_keys_field[{name}]` – where `{name}` matches an alias name.
 
 #### AliasName {#data-type-alias-name}
 
@@ -1979,7 +1979,7 @@ Alias name type.
 When matching, resolves alias sub-keys and matches recursively. Can only be used to match property keys, and must be combined with [AliasMatchLeft](#data-type-alias-match-left).
 
 Format of corresponding data expressions:
-- `alias_name[{name}]` – where `{name}` matches the name of an alias.
+- `alias_name[{name}]` – where `{name}` matches an alias name.
 
 #### AliasMatchLeft {#data-type-alias-match-left}
 
@@ -1988,21 +1988,11 @@ Alias match left type.
 Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values, and must be combined with [AliasName](#data-type-alias-name).
 
 Format of corresponding data expressions:
-- `alias_match_left[{name}]` – where `{name}` matches the name of an alias.
+- `alias_match_left[{name}]` – where `{name}` matches an alias name.
 
 ### Path Reference Data Types {#data-types-path-reference}
 
 The following data types are used to match file path references, and validate whether the referenced file exists when matching.
-
-#### AbsoluteFilePath {#data-type-absolute-file-path}
-
-Absolute file path type.
-
-Matches an absolute file path string.  
-When matching, only validates as a string type (wildcard match).
-
-Format of corresponding data expressions:
-- `abs_filepath`
 
 #### Icon {#data-type-icon}
 
@@ -2063,6 +2053,16 @@ Corresponding data expression format:
 Corresponding data expression examples:
 - `filename`
 - `filename[gfx/models]`
+
+#### AbsoluteFilePath {#data-type-absolute-file-path}
+
+Absolute file path type.
+
+Matches an absolute file path string.  
+When matching, only validates as a string type (wildcard match).
+
+Format of corresponding data expressions:
+- `abs_filepath`
 
 ### Pattern-Aware Data Types {#data-types-pattern-aware}
 

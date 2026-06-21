@@ -127,7 +127,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     // DefineReference samples
     @Test
     fun test_defineReference_basicSamples() {
-        val s = "define:NPortrait|GRACEFUL_AGING_START"
+        val s = "Namepace|Name"
         val exp = parseDefine(s)!!
         val out = exp.render()
         println(out)

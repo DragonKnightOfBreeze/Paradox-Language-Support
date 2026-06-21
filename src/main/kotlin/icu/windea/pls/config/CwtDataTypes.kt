@@ -253,7 +253,7 @@ object CwtDataTypes {
      * 匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
      *
      * 对应的数据表达式的格式：
-     * - `enum[{name}]` - 其中 `{name}` 匹配枚举名。
+     * - `enum[{name}]` - 其中 `{name}` 匹配枚举的名字。
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference().build {
         withPriority { configExpression, configGroup ->
@@ -271,7 +271,7 @@ object CwtDataTypes {
      * 动态值的名字须为合法标识符（允许 `.`）。
      *
      * 对应的数据表达式的格式：
-     * - `value[{name}]` - 其中 `{name}` 匹配动态值类型。
+     * - `value[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
      *
      * @see ParadoxDynamicValueExpression
      */
@@ -285,7 +285,7 @@ object CwtDataTypes {
      * 动态值的名字须为合法标识符（允许 `.`）。
      *
      * 对应的数据表达式的格式：
-     * - `value_set[{name}]` - 其中 `{name}` 匹配动态值类型。
+     * - `value_set[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
      *
      * @see ParadoxDynamicValueExpression
      */
@@ -299,7 +299,7 @@ object CwtDataTypes {
      * 动态值的名字须为合法标识符（允许 `.`）。
      *
      * 对应的数据表达式的格式：
-     * - `dynamic_value[{name}]` - 其中 `{name}` 匹配动态值类型。
+     * - `dynamic_value[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
      *
      * @see ParadoxDynamicValueExpression
      */
@@ -342,7 +342,7 @@ object CwtDataTypes {
      * 匹配作用域字段表达式（由多个作用域节点组成，通过点号分隔并形成链接，如 `root` `root.owner` `root.event_target:target`），同时约束输出作用域属于指定的作用域组。
      *
      * 对应的数据表达式的格式：
-     * - `scope_group[{name}]` - 其中 `{name}` 匹配作用域分组名。
+     * - `scope_group[{name}]` - 其中 `{name}` 匹配作用域分组的名字。
      *
      * @see ParadoxScopeFieldExpression
      * @see CwtScopeGroupConfig
@@ -483,8 +483,8 @@ object CwtDataTypes {
      * 在条件变体下，可对其中的动态值节点进行取反（如 `flag1,not(flag2)`）。
      *
      * 对应的数据表达式的格式：
-     * - `$tags[{name}]` - 其中 `{name}` 匹配动态值类型。
-     * - `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型。
+     * - `$tags[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
+     * - `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型的名字。
      *
      * （TODO 2.1.10 待实现）
      *
@@ -514,7 +514,7 @@ object CwtDataTypes {
      * 匹配命名格式表达式（如 `{alpha}` `{<adj> {<noun>}}`）。
      *
      * 对应的数据表达式的格式：
-     * - `name_format[{type}]`
+     * - `name_format[{type}]` - 其中 `{name}` 匹配格式的名字（对应的定义类型为 `{name}_name_format`）。
      *
      * @see ParadoxNameFormatExpression
      */
@@ -642,18 +642,6 @@ object CwtDataTypes {
     // Path Reference Data Types
 
     /**
-     * 绝对文件路径类型。
-     *
-     * 匹配绝对文件路径字符串。
-     * 匹配时仅验证为字符串类型（通配匹配）。
-     *
-     * 对应的数据表达式的格式：
-     * - `abs_filepath`
-     */
-    val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
-        withPriority(70.0)
-    }
-    /**
      * 图标路径类型。
      *
      * 匹配对图标文件的路径引用。
@@ -704,6 +692,18 @@ object CwtDataTypes {
      * - `filename[{path}]` - 其中 `{path}` 匹配路径模式。
      */
     val FileName = CwtDataType.builder("FileName").reference().build {
+        withPriority(70.0)
+    }
+    /**
+     * 绝对文件路径类型。
+     *
+     * 匹配绝对文件路径字符串。
+     * 匹配时仅验证为字符串类型（通配匹配）。
+     *
+     * 对应的数据表达式的格式：
+     * - `abs_filepath`
+     */
+    val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
         withPriority(70.0)
     }
 

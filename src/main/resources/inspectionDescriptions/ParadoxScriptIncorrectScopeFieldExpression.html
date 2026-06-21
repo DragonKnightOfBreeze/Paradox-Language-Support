@@ -3,11 +3,17 @@
   Reports incorrect scope field expressions.
   <!-- tooltip end -->
   <p>
-    A scope field expression is a script expression matching expression data type
-    <code>scope</code>, <code>scope_field</code> or <code>scope_group</code>.
+    A scope field expression is a script expression matching data type
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-scope-field">ScopeField</a>,
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-scope">Scope</a>, or
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-scope-group">ScopeGroup</a>.
   </p>
-  <p>
-    Example: <code>root</code>, <code>root.owner</code>, <code>event_target:some_target</code>, <code>root.owner.event_target:some_target</code>.
-  </p>
+  <p>Example:</p>
+  <ul>
+    <li><code>root</code></li>
+    <li><code>root.owner</code></li>
+    <li><code>event_target:some_target</code></li>
+    <li><code>root.owner.event_target:some_target</code></li>
+  </ul>
 </body>
 </html>

@@ -55,13 +55,13 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromLiteral(CwtDataTypes.SyncedLocalisation, "localisation_synced")
         fromLiteral(CwtDataTypes.InlineLocalisation, "localisation_inline")
 
-        fromLiteral(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
         fromLiteral(CwtDataTypes.FileName, "filename")
         fromParameterized(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() }
         fromLiteral(CwtDataTypes.FilePath, "filepath")
         fromLiteral(CwtDataTypes.FilePath, "filepath[./]") { value = "./" } // fixed (should keep `"./"`)
         fromParameterized(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() }
         fromParameterized(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
+        fromLiteral(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
 
         fromLiteral(CwtDataTypes.Modifier, "<modifier>")
         fromParameterized(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }

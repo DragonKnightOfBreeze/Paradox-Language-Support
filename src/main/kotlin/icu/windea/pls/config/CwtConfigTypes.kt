@@ -169,7 +169,7 @@ object CwtConfigTypes {
      * 动态值。
      *
      * 路径定位：
-     * - `values/value[{type}]/-`。其中 {type} 匹配动态值类型。
+     * - `values/value[{type}]/-`。其中 {type} 匹配动态值类型名。
      *
      * @see CwtDynamicValueTypeConfig
      *  */

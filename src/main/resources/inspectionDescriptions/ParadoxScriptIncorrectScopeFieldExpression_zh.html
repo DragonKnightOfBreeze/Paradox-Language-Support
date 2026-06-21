@@ -3,10 +3,18 @@
   报告不正确的检查作用域字段表达式。
   <!-- tooltip end -->
   <p>
-    作用域字段表达式（ScopeFieldExpression）是指匹配表达式数据类型 <code>scope</code>、<code>scope_field</code> 或 <code>scope_group</code> 的脚本表达式。
+    作用域字段表达式（ScopeFieldExpression）是指匹配数据类型
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-scope-field">ScopeField</a>、
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-scope">Scope</a> 或
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-scope-group">ScopeGroup</a>
+    的脚本表达式。
   </p>
-  <p>
-    示例：<code>root</code>，<code>root.owner</code>，<code>event_target:some_target</code>，<code>root.owner.event_target:some_target</code>。
-  </p>
+  <p>示例：</p>
+  <ul>
+    <li><code>root</code></li>
+    <li><code>root.owner</code></li>
+    <li><code>event_target:some_target</code></li>
+    <li><code>root.owner.event_target:some_target</code></li>
+  </ul>
 </body>
 </html>

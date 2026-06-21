@@ -30,10 +30,10 @@ object CwtDataTypeSets {
     )
     /** 路径引用类型]。 */
     val PathReference = arrayOf(
-        CwtDataTypes.AbsoluteFilePath,
         CwtDataTypes.FileName,
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
+        CwtDataTypes.AbsoluteFilePath,
     )
 
     /** 动态值相关类型。 */
