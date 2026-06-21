@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 
 /**
- * 不正确的 [ParadoxNameFormatExpression] 的代码检查。
+ * 不正确的命名格式表达式（[ParadoxNameFormatExpression]）的代码检查。
  */
 class IncorrectNameFormatExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {

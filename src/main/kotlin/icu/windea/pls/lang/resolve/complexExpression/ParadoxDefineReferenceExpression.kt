@@ -14,10 +14,11 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
  * - 引用的定值变量的值应当是一个字面量（通常是数字、颜色或日期）。
+ * - 评估结果应是一个字面量（目前兼容数字字面量和字符串字面量）。
  *
  * 节点组成：
- * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间。
- * - [ParadoxDefineVariableNode] - 标识符节点，匹配定值变量。
+ * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间（来自脚本文件）。
+ * - [ParadoxDefineVariableNode] - 标识符节点，匹配定值变量（来自脚本文件）。
  * - [ParadoxMarkerNode] - 对应其中的 `|`。
  *
  * 示例：
@@ -76,6 +77,7 @@ private object ParadoxDefineReferenceExpressionResolver {
                 nodes += node
             }
         }
+
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()
         return expression

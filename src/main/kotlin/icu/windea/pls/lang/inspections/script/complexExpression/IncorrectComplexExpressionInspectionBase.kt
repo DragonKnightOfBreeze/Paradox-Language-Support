@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 
 /**
- * 不正确的复杂表达式的代码检查的基类。
+ * 不正确的复杂表达式（[ParadoxComplexExpression]）的代码检查的基类。
  */
 abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

@@ -17,7 +17,9 @@ import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression

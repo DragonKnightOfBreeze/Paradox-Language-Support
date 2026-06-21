@@ -14,7 +14,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * 变量字段表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypeSets.ValueField]。
+ * - 对应的规则数据类型为 [CwtDataTypeSets.VariableField]。
  * - 作为 [ParadoxValueFieldExpression] 的子集。相较之下，仅支持调用变量。
  * - 由零个或多个作用域链接节点（[ParadoxScopeNode]）以及一个数据源节点（[ParadoxDataSourceNode]）组成。之间用点号分隔。
  * - 作用域链接节点可以是系统链接（[[ParadoxSystemScopeNode]]）、静态链接（[ParadoxStaticScopeNode]）、动态链接（[ParadoxDynamicScopeNode]）或者带参数的链接（[ParadoxParameterizedScopeNode]）。

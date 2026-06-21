@@ -13,7 +13,7 @@ class ParadoxStringLiteralNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxLiteralNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.string(element.language)
     }

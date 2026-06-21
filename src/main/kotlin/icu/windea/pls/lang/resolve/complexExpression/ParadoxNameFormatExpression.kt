@@ -14,8 +14,8 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * 命名格式表达式。
  *
  * 说明：
- * - 用于解析 Stellaris 中以花括号包围的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  * - 对应的规则数据类型为 [CwtDataTypes.NameFormat]。
+ * - 用于解析 Stellaris 中以花括号包围的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  *
  * 示例：
  * ```

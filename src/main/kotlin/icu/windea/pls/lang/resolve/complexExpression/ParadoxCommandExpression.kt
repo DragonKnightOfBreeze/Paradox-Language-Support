@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * （本地化）命令表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypes.DatabaseObject]。目前不支持用来匹配脚本表达式。
+ * - 对应的规则数据类型为 [CwtDataTypes.Command]。目前不支持用来匹配脚本表达式。
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
  * - 由零个或多个命令作用域链接节点（[ParadoxCommandScopeNode]）以及一个命令字段节点（[ParadoxCommandFieldNode]）组成。之间用点号分隔。之后可能还有其他额外的后缀节点。
  * - 命令作用域节点可以是系统链接（[ParadoxSystemCommandScopeNode]）、静态链接（ [ParadoxStaticCommandScopeNode]）、动态链接（[ParadoxDynamicCommandScopeNode]）或者带参数的链接（[ParadoxParameterizedCommandScopeNode]）。

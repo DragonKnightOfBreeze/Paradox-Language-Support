@@ -15,10 +15,11 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - 对应的规则数据类型为 [CwtDataTypes.ArrayDefineReference]。
  * - 引用的定值变量的值应当是数组（对应索引的值通常是数字字面量）。
  * - 索引从0开始。
+ * - 评估结果应是一个字面量（目前兼容数字字面量和字符串字面量）。
  *
  * 节点组成：
- * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间。
- * - [ParadoxDefineVariableNode] - 标识符节点，匹配定值变量。
+ * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间（来自脚本文件）。
+ * - [ParadoxDefineVariableNode] - 标识符节点，匹配定值变量（来自脚本文件）。
  * - [ParadoxMarkerNode] - 对应其中的 `|`。
  * - [ParadoxNumberLiteralNode] - 对应其中作为索引的字符串字面量。
  *
@@ -29,7 +30,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 语法：
  * ```bnf
- * array_define_reference_expression ::= define_namespace "|" define_variable "|" NUMBER
+ * array_define_reference_expression ::= define_namespace "|" define_variable "|" NUMBER_LITERAL
  * ```
  */
 interface ParadoxArrayDefineReferenceExpression : ParadoxComplexExpression {
@@ -91,6 +92,7 @@ private object ParadoxArrayDefineReferenceExpressionResolver {
                 nodes += node
             }
         }
+
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()
         return expression

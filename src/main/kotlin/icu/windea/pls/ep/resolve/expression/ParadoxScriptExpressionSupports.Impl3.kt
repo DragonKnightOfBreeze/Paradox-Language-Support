@@ -6,11 +6,13 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
@@ -114,6 +116,34 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpres
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypes.ArrayDefineReference
+ * @see ParadoxArrayDefineReferenceExpression
+ */
+class ParadoxScriptArrayDefineReferenceExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.ArrayDefineReference
+    }
+
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ParadoxComplexExpressionCompletionManager.completeArrayDefineReferenceExpression(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypes.Tags
+ * @see ParadoxTagsExpression
+ */
+class ParadoxScriptTagsExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Tags
+    }
+
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ParadoxComplexExpressionCompletionManager.completeTagsExpression(context, result)
     }
 }
 

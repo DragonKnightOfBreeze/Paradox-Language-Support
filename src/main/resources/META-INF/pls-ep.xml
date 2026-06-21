@@ -219,6 +219,8 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptValueFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptVariableFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDefineReferenceExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptArrayDefineReferenceExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTagsExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDatabaseObjectExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptNameFormatExpressionSupport"/>
 

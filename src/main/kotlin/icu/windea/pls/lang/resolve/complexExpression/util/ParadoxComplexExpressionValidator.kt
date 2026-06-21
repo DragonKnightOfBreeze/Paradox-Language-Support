@@ -17,6 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
@@ -119,7 +120,6 @@ object ParadoxComplexExpressionValidator {
         return errors
     }
 
-
     fun validate(expression: ParadoxDatabaseObjectExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val config = expression.typeNode?.config
@@ -136,6 +136,14 @@ object ParadoxComplexExpressionValidator {
         }
         val malformed = !result || (expression.nodes.size != 3 && expression.nodes.size != 5)
         if (malformed) errors += ErrorBuilder.malformedDatabaseObjectExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+
+    fun validate(expression: ParadoxTagsExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val malformed = !result
+        if (malformed) errors += ErrorBuilder.malformedTagsExpression(expression.rangeInExpression, expression.text)
         return errors
     }
 

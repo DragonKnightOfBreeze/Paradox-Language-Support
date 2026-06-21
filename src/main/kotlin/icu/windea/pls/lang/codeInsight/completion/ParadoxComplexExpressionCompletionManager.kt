@@ -22,16 +22,17 @@ import icu.windea.pls.core.withState
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.valueNode
@@ -65,70 +66,22 @@ object ParadoxComplexExpressionCompletionManager {
         for (node in expression.nodes) {
             ProgressManager.checkCanceled()
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            if (!inRange) continue
             if (node is ParadoxTemplateSnippetNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val config = node.config
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
-                    val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
-                    break
-                }
+                val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                val keywordOffset = node.rangeInExpression.startOffset
+                val config = node.config
+                val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
+                val result = result.withPrefixMatcher(context.keyword)
+                ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
             } else if (node is ParadoxTemplateSnippetConstantNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    // 一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val config = CwtValueConfig.createMock(context.configGroup, node.text)
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
-                    val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxExpressionCompletionManager.completeConstant(context, result)
-                    break
-                }
-            }
-        }
-    }
-
-    fun completeDynamicValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-
-        val offset = context.offsetInParent - context.expressionOffset
-        if (offset < 0) return // unexpected
-
-        val finalConfigs = if (context.configs.isNotEmpty()) context.configs.toListOrThis() else context.config.to.singletonListOrEmpty()
-        if (finalConfigs.isEmpty()) return
-
-        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(context.keyword, textRange, context.configGroup, finalConfigs) } ?: return
-
-        // skip check scope context here
-        val context = context.copy(isKey = null, config = expression.configs.first(), configs = expression.configs, scopeContext = null)
-        for (node in expression.nodes) {
-            ProgressManager.checkCanceled()
-            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if (node is ParadoxDynamicValueNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
-                    val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
-                    break
-                }
-            } else if (node is ParadoxScopeFieldExpression) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
-                    val result = result.withPrefixMatcher(context.keyword)
-                    completeScopeFieldExpression(context, result)
-                    break
-                }
+                // 一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
+                val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                val keywordOffset = node.rangeInExpression.startOffset
+                val config = CwtValueConfig.createMock(context.configGroup, node.text)
+                val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
+                val result = result.withPrefixMatcher(context.keyword)
+                ParadoxExpressionCompletionManager.completeConstant(context, result)
             }
         }
     }
@@ -160,58 +113,6 @@ object ParadoxComplexExpressionCompletionManager {
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
-                }
-            }
-        }
-    }
-
-    fun completeScriptValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-
-        val offset = context.offsetInParent - context.expressionOffset
-        if (offset < 0) return // unexpected
-
-        val config = context.config ?: return
-        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxScriptValueExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
-
-        val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
-        // skip check scope context here
-        val context = context.copy(isKey = null, scopeContext = null)
-        for (node in expression.nodes) {
-            ProgressManager.checkCanceled()
-            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if (node is ParadoxScriptValueNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val config = expression.config
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
-                    val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
-                }
-            } else if (node is ParadoxScriptValueArgumentNode) {
-                if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
-                    val result = result.withPrefixMatcher(context.keyword)
-                    ParadoxParameterManager.completeArguments(context, result, element)
-                }
-            } else if (node is ParadoxScriptValueArgumentValueNode && PlsSettings.getInstance().state.inference.configContextForParameters) {
-                if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
-                    // 尝试提示传入参数的值
-                    run {
-                        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                        val keywordOffset = node.rangeInExpression.startOffset
-                        val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
-                        val inferredContextConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
-                        val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run
-                        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = inferredConfig, configs = emptyList())
-                        val result = result.withPrefixMatcher(context.keyword)
-                        ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
-                    }
                 }
             }
         }
@@ -343,37 +244,87 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeDatabaseObjectExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeDynamicValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxDatabaseObjectExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
+        val finalConfigs = if (context.configs.isNotEmpty()) context.configs.toListOrThis() else context.config.to.singletonListOrEmpty()
+        if (finalConfigs.isEmpty()) return
 
-        val context = context.copy(isKey = null)
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(context.keyword, textRange, context.configGroup, finalConfigs) } ?: return
+
+        // skip check scope context here
+        val context = context.copy(isKey = null, config = expression.configs.first(), configs = expression.configs, scopeContext = null)
         for (node in expression.nodes) {
             ProgressManager.checkCanceled()
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if (node is ParadoxDatabaseObjectTypeNode) {
+            if (!inRange) continue
+            if (node is ParadoxDynamicValueNode) {
+                val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                val keywordOffset = node.rangeInExpression.startOffset
+                val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
+                val result = result.withPrefixMatcher(context.keyword)
+                ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
+            } else if (node is ParadoxScopeFieldExpression) {
+                val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                val keywordOffset = node.rangeInExpression.startOffset
+                val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
+                val result = result.withPrefixMatcher(context.keyword)
+                completeScopeFieldExpression(context, result)
+            }
+        }
+    }
+
+    fun completeScriptValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+
+        val offset = context.offsetInParent - context.expressionOffset
+        if (offset < 0) return // unexpected
+
+        val config = context.config ?: return
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxScriptValueExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
+
+        val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
+        // skip check scope context here
+        val context = context.copy(isKey = null, scopeContext = null)
+        for (node in expression.nodes) {
+            ProgressManager.checkCanceled()
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            if (node is ParadoxScriptValueNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+                    val config = expression.config
+                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
                     val result = result.withPrefixMatcher(context.keyword)
-                    completeDatabaseObjectType(context, result)
-                    break
+                    ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
                 }
-            } else if (node is ParadoxDatabaseObjectNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
+            } else if (node is ParadoxScriptValueArgumentNode) {
+                if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
                     val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-                    val result = result.withPrefixMatcher(keyword)
-                    completeDatabaseObject(context, result)
-                    break
+                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
+                    val result = result.withPrefixMatcher(context.keyword)
+                    ParadoxParameterManager.completeArguments(context, result, element)
+                }
+            } else if (node is ParadoxScriptValueArgumentValueNode && PlsSettings.getInstance().state.inference.configContextForParameters) {
+                if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
+                    // 尝试提示传入参数的值
+                    run {
+                        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                        val keywordOffset = node.rangeInExpression.startOffset
+                        val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
+                        val inferredContextConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
+                        val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run
+                        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = inferredConfig, configs = emptyList())
+                        val result = result.withPrefixMatcher(context.keyword)
+                        ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
+                    }
                 }
             }
         }
@@ -390,32 +341,68 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
             ProgressManager.checkCanceled()
-            if (node is ParadoxErrorNode && expression.nodes.size == 1) {
-                ProgressManager.checkCanceled()
-                completeDefinePrefix(context, result)
-                break
-            }
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if (node is ParadoxDefineNamespaceNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-                    val result = result.withPrefixMatcher(context.keyword)
-                    completeDefineNamespace(context, result)
-                    break
-                }
-            } else if (node is ParadoxDefineVariableNode) {
-                if (inRange) {
-                    ProgressManager.checkCanceled()
-                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val keywordOffset = node.rangeInExpression.startOffset
-                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-                    val result = result.withPrefixMatcher(context.keyword)
-                    completeDefineVariable(context, result)
-                    break
-                }
+            if (!inRange) continue
+            when (node) {
+                is ParadoxDefineNamespaceNode -> completeForDefineNamespaceNode(context, result, node, offset)
+                is ParadoxDefineVariableNode -> completeForDefineVariableNode(context, result, node, offset)
+            }
+        }
+    }
+
+    fun completeArrayDefineReferenceExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val offset = context.offsetInParent - context.expressionOffset
+        if (offset < 0) return // unexpected
+
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxArrayDefineReferenceExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
+
+        val context = context.copy(isKey = null)
+        for (node in expression.nodes) {
+            ProgressManager.checkCanceled()
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            if (!inRange) continue
+            when (node) {
+                is ParadoxDefineNamespaceNode -> completeForDefineNamespaceNode(context, result, node, offset)
+                is ParadoxDefineVariableNode -> completeForDefineVariableNode(context, result, node, offset)
+            }
+        }
+    }
+
+    fun completeTagsExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val offset = context.offsetInParent - context.expressionOffset
+        if (offset < 0) return // unexpected
+
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxTagsExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
+
+        val context = context.copy(isKey = null)
+        for (node in expression.nodes) {
+            ProgressManager.checkCanceled()
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            if (!inRange) continue
+            // TODO 2.1.10
+        }
+    }
+
+    fun completeDatabaseObjectExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val offset = context.offsetInParent - context.expressionOffset
+        if (offset < 0) return // unexpected
+
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxDatabaseObjectExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
+
+        val context = context.copy(isKey = null)
+        for (node in expression.nodes) {
+            ProgressManager.checkCanceled()
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            if (!inRange) continue
+            when (node) {
+                is ParadoxDatabaseObjectTypeNode -> completeForDatabaseObjectTypeNode(context, result, node, offset)
+                is ParadoxDatabaseObjectNode -> completeForDatabaseObjectNode(context, result, node, offset)
             }
         }
     }
@@ -678,6 +665,38 @@ object ParadoxComplexExpressionCompletionManager {
         }
 
         return inputPrefix
+    }
+
+    private fun completeForDefineNamespaceNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDefineNamespaceNode, offset: Int) {
+        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+        val keywordOffset = node.rangeInExpression.startOffset
+        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+        val result = result.withPrefixMatcher(context.keyword)
+        completeDefineNamespace(context, result)
+    }
+
+    private fun completeForDefineVariableNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDefineVariableNode, offset: Int) {
+        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+        val keywordOffset = node.rangeInExpression.startOffset
+        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+        val result = result.withPrefixMatcher(context.keyword)
+        completeDefineVariable(context, result)
+    }
+
+    private fun completeForDatabaseObjectTypeNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDatabaseObjectTypeNode, offset: Int) {
+        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+        val keywordOffset = node.rangeInExpression.startOffset
+        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+        val result = result.withPrefixMatcher(context.keyword)
+        completeDatabaseObjectType(context, result)
+    }
+
+    private fun completeForDatabaseObjectNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDatabaseObjectNode, offset: Int) {
+        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+        val keywordOffset = node.rangeInExpression.startOffset
+        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+        val result = result.withPrefixMatcher(keyword)
+        completeDatabaseObject(context, result)
     }
 
     // endregion
@@ -1122,15 +1141,6 @@ object ParadoxComplexExpressionCompletionManager {
             val context = context.copy(config = linkConfig)
             ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
         }
-    }
-
-    fun completeDefinePrefix(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val name = "define:"
-        val lookupElement = LookupElementBuilder.create(name)
-            .withBoldness(true)
-            .withPriority(ChronicleCompletionPriorities.keyword)
-            .withCompletionId()
-        result.addElement(lookupElement, context)
     }
 
     fun completeDefineNamespace(context: ParadoxCompletionContext, result: CompletionResultSet) {

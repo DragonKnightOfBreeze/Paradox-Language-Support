@@ -8,7 +8,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 /**
- * 不正确的 [ParadoxCommandExpression] 的代码检查。
+ * 不正确的（本地化）命令表达式（[ParadoxCommandExpression]）的代码检查。
  */
 class IncorrectCommandExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {

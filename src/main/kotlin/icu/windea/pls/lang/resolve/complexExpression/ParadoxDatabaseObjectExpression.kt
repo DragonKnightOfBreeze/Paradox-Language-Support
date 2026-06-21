@@ -16,11 +16,17 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * - 对应的规则数据类型为 [CwtDataTypes.DatabaseObject]。
  * - 可以在本地化文件中作为概念名称（[ParadoxLocalisationConceptName]）使用。
  *
+ * 节点组成：
+ * - [ParadoxDatabaseObjectTypeNode] - 标识符节点，匹配数据库对象类型（来自规则文件）。
+ * - [ParadoxDatabaseObjectNode] - 复合节点，可包含数据节点。
+ * - [ParadoxDatabaseObjectDataNode] - 标识符节点，匹配定义、切换后的定义或者本地化（基于数据库对象类型）。
+ * - [ParadoxMarkerNode] - 对应其中的 `:`。
+ *
  * 示例：
  * ```
- * civic:some_civic
- * civic:some_civic:some_swapped_civic
- * job:job_soldier
+ * civic:some_civic # definition
+ * civic:some_civic:some_swapped_civic # definition + swapped definition
+ * job:job_soldier # localisation
  * ```
  *
  * 语法：
@@ -28,17 +34,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * database_object_expression ::= database_object_type ":" database_object (":" database_object)?
  * database_object ::= database_object_data
  * ```
- *
- * ### 语法与结构
- *
- * #### 整体形态
- * - 形如：`<type>:<value>`，或 `<type>:<baseValue>:<swappedValue>`（允许一个可选的“替换值”段）。
- * - `<type>` 与 `<value>` 均来自规则中预定义的数据库对象类型与对象名。
- *
- * #### 节点组成
- * - 类型节点：[ParadoxDatabaseObjectTypeNode]（第 1 段）。
- * - 值节点：[ParadoxDatabaseObjectNode]（第 2 段，基础值）。
- * - 可选替换值节点：[ParadoxDatabaseObjectNode]（第 3 段，替换值）。
  */
 interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {
     companion object {
@@ -96,6 +91,7 @@ private object ParadoxDataObjectExpressionResolver {
                 nodes += node
             }
         }
+
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()
         return expression
