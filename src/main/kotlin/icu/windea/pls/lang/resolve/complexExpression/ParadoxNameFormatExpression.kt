@@ -8,7 +8,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 
 /**
  * 命名格式表达式。
@@ -411,6 +413,23 @@ private object ParadoxNameFormatExpressionResolver {
     }
 }
 
+private object ParadoxNameFormatExpressionValidator: ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxNameFormatExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, errors) {
+            when (it) {
+                is ParadoxNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
+                is ParadoxNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier(".-'")
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedNameFormatExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+}
+
 private class ParadoxNameFormatExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
@@ -418,7 +437,7 @@ private class ParadoxNameFormatExpressionImpl(
     override val config: CwtConfig<*>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxNameFormatExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxNameFormatExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxNameFormatExpression && text == other.text
     override fun hashCode() = text.hashCode()

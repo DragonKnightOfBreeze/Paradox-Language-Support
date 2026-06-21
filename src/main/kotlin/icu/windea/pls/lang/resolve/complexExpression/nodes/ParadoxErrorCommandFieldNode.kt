@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 
 class ParadoxErrorCommandFieldNode(
     override val text: String,
@@ -15,6 +15,6 @@ class ParadoxErrorCommandFieldNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedCommandField(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedCommandField(rangeInExpression, text)
     }
 }

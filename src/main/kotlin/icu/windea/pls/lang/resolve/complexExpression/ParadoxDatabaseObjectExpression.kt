@@ -4,9 +4,12 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 
 /**
@@ -98,13 +101,35 @@ private object ParadoxDataObjectExpressionResolver {
     }
 }
 
+private object ParadoxDatabaseObjectExpressionValidator: ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxDatabaseObjectExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val config = expression.typeNode?.config
+        val result = validateAllNodes(expression, errors) {
+            when {
+                it is ParadoxDatabaseObjectDataNode -> {
+                    when {
+                        config?.localisation != null -> it.text.isParameterAwareIdentifier(".-'")
+                        else -> it.text.isParameterAwareIdentifier()
+                    }
+                }
+                else -> true
+            }
+        }
+        val malformed = !result || (expression.nodes.size != 3 && expression.nodes.size != 5)
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDatabaseObjectExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+}
+
 private class ParadoxDatabaseObjectExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDatabaseObjectExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxDatabaseObjectExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxDatabaseObjectExpression && text == other.text
     override fun hashCode() = text.hashCode()

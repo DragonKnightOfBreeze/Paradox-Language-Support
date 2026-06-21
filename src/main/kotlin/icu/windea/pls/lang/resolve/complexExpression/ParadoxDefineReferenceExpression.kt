@@ -4,9 +4,12 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 
 /**
  * 定值引用表达式。
@@ -84,13 +87,24 @@ private object ParadoxDefineReferenceExpressionResolver {
     }
 }
 
+private object ParadoxDefineReferenceExpressionValidator : ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxDefineReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val malformed = !result || expression.nodes.size != 3
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+}
+
 private class ParadoxDefineReferenceExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDefineReferenceExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxDefineReferenceExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxDefineReferenceExpression && text == other.text
     override fun hashCode() = text.hashCode()
