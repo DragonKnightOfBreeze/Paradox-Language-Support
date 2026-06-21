@@ -1155,7 +1155,7 @@ object ParadoxComplexExpressionCompletionManager {
         val project = context.parameters.originalFile.project
         val contextElement = context.contextElement
         val node = context.node?.castOrNull<ParadoxDefineVariableNode>() ?: return
-        val namespaceNode = node.expression.namespaceNode ?: return
+        val namespaceNode = node.namespaceNode ?: return
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"
         val selector = ParadoxDefineVariableSearch.selector(project, contextElement).distinct()
