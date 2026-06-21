@@ -7,12 +7,14 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
@@ -76,6 +78,8 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun checkForSafeAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
+        if (element.elementType != ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN) return
+
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
@@ -94,6 +98,8 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun checkForSafeCallAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
+        if (element.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) return
+
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
