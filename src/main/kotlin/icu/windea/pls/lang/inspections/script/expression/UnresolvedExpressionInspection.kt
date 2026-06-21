@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.common
+package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession

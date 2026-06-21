@@ -51,26 +51,6 @@
                      key="inspection.script.duplicateScriptedVariables" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
-                     key="inspection.script.unresolvedExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingResolvedExpression"
-                     key="inspection.script.conflictingResolvedExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
-                     key="inspection.script.missingExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression"
-                     key="inspection.script.tooManyExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectExpression"
-                     key="inspection.script.incorrectExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      bundle="messages.PlsBundle"
                      enabledByDefault="true" level="WEAK WARNING"
@@ -155,6 +135,28 @@
                      key="inspection.script.scopeCallStatementToChainedForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="INFORMATION"
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToChainedFormInspection"/>
+    <!-- endregion -->
+    <!-- region Paradox Script/Exnressions -->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+                     key="inspection.script.unresolvedExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingResolvedExpression"
+                     key="inspection.script.conflictingResolvedExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
+                     key="inspection.script.missingExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression"
+                     key="inspection.script.tooManyExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectExpression"
+                     key="inspection.script.incorrectExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Complex expressions -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
@@ -375,14 +377,16 @@
                      key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectColumnSizeInspection"/>
+    <!-- endregion -->
+    <!-- region Paradox CSV/Expressions -->
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpression"
-                     key="inspection.csv.unresolvedExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     key="inspection.csv.unresolvedExpression" groupKey="inspection.csv.expression.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedExpressionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectExpression"
-                     key="inspection.csv.incorrectExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     key="inspection.csv.incorrectExpression" groupKey="inspection.csv.expression.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectExpressionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.csv.expression.IncorrectExpressionInspection"/>
     <!-- endregion -->
     <!-- endregion -->
 

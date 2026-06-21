@@ -1,25 +1,17 @@
-package icu.windea.pls.lang.inspections.csv.common
+package icu.windea.pls.lang.inspections.csv.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
-import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
@@ -30,7 +22,7 @@ import javax.swing.JComponent
 /**
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
-class UnresolvedExpressionInspection : LocalInspectionTool() {
+class IncorrectExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -52,42 +44,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             override fun visitColumn(element: ParadoxCsvColumn) {
                 ProgressManager.checkCanceled()
                 if (element.isHeaderColumn()) return // skip header columns
+                if (element.isEmptyColumn()) return // skip empty columns
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
-                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+                if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
-                val location = when {
-                    // special handle for empty columns
-                    element.isEmptyColumn() -> {
-                        val isFirst = element.getColumnIndex() == 0
-                        element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR } ?: return
-                    }
-                    else -> element
-                }
-                val description = getDescription(element, columnConfig, config)
-                val highlightType = getHighlightType(element, columnConfig, config)
-                val fixes = getFixes(element, columnConfig, config)
-                holder.registerProblem(location, description, highlightType, *fixes)
+                // 开始检查
+                ParadoxInspectionService.checkIncorrectExpression(element, config, holder)
             }
         }
-    }
-
-    private fun getDescription(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): String {
-        return PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
-    }
-
-    @Suppress("unused")
-    private fun getHighlightType(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): ProblemHighlightType {
-        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-    }
-
-    @Suppress("unused")
-    private fun getFixes(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): Array<LocalQuickFix> {
-        val expectedConfigs = listOf(config)
-        val result = mutableListOf<LocalQuickFix>()
-        result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
     }
 
     override fun createOptionsPanel(): JComponent {

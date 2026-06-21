@@ -27,14 +27,14 @@ interface CwtOverriddenConfigProvider {
     /**
      * 是否跳过缺失的表达式的代码检查。
      *
-     * @see icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
+     * @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
      */
     fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
     /**
      * 是否跳过过多的表达式的代码检查。
      *
-     * @see icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
+     * @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
      */
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 

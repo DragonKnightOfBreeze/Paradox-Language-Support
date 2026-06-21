@@ -8,11 +8,11 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
-import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest

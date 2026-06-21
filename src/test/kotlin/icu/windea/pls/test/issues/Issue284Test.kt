@@ -2,7 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups

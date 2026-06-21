@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.common
+package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -7,7 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.panel
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
