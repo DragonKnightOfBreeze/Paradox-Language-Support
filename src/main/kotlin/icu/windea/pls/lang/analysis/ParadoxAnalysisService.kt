@@ -20,6 +20,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
 
 object ParadoxAnalysisService {
     /**
@@ -35,6 +36,7 @@ object ParadoxAnalysisService {
      * @see ParadoxRootMetadataProvider.getRootMetadata
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
+        if (!rootPath.isDirectory()) return null
         return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.getRootMetadata(rootPath)
         }
@@ -44,6 +46,7 @@ object ParadoxAnalysisService {
      * @see ParadoxInferredGameTypeProvider.getInferredGameTypeInfo
      */
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
+        if (!rootPath.isDirectory()) return null
         return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.getInferredGameTypeInfo(rootPath)
         }

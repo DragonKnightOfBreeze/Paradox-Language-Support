@@ -34,6 +34,7 @@ class ParadoxExecutableFileBasedGameMetadataProvider : ParadoxRootMetadataProvid
         // 尝试查找游戏的可执行文件
         // 如果找到，再尝试查找游戏的分支标记文件，并尝试从中获取游戏版本信息
 
+        if (ParadoxGameManager.isBinariesPath(rootPath)) return null
         for (gameType in allowedGameTypes) {
             val executablePath = ParadoxGameManager.getExecutablePath(gameType, rootPath) ?: continue
             val branchPath = ParadoxGameManager.getBranchPath(gameType, rootPath)
