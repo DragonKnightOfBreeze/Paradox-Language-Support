@@ -16,8 +16,29 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.Tags]。
+ * - 由逗号分隔的一组动态值节点组成（如 `tag` `tag1,tag2`），在条件变体下，可对其中的动态值节点进行取反（如 `tag1,not(tag2)`）。
+ * - 兼容空白，也兼容逗号之间不存在任何字符或仅存在空白的情况。
+ * - 需要用双引号括起，否则会给出警告。
  *
- * TODO 2.1.10
+ * 节点组成：
+ * - [ParadoxDynamicValueNode] - 标识符节点，匹配动态值，通常是某种标签（tag）。
+ * - [ParadoxInvertDynamicValueNode] - 复合节点，可包含动态值节点。形如 `not(tag)`。
+ * - [ParadoxMarkerNode] - 对应其中的 `,` `(` `)`。
+ * - [ParadoxBlankNode] - 对应其中的空白。
+ *
+ * 示例：
+ * ```
+ * tag
+ * tag1,tag2
+ * tag1,not(tag2)
+ * ```
+ *
+ * 语法：
+ * ```bnf
+ * tags_expression ::= tag ("," tag)?
+ * private tag ::= dynamic_value | invert_dynamic_value
+ * invert_dynamic_value ::= "(" dynamic_value ")"
+ * ```
  */
 interface ParadoxTagsExpression : ParadoxComplexExpression {
     companion object {

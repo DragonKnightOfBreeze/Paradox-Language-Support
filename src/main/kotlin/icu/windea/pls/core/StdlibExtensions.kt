@@ -432,6 +432,15 @@ fun String.toCapitalizedWords(): String {
     }
 }
 
+/** 查找从 [startIndex] 开始第一个非空白的字符。 */
+fun CharSequence.indexOfNonBlank(startIndex: Int): Int {
+    for (i in startIndex until length) {
+        val c = this[i]
+        if (!c.isWhitespace()) return i
+    }
+    return -1
+}
+
 /** 查找字符 [char] 在当前序列中的所有出现位置下标。 */
 fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false, limit: Int = 0): List<Int> {
     var indices: MutableList<Int>? = null
