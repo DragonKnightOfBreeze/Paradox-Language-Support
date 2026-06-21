@@ -25,7 +25,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 示例：
  * ```
- * Namespace|Variable|0
+ * Namespace|Name|0
  * ```
  *
  * 语法：

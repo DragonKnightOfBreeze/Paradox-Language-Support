@@ -1842,7 +1842,7 @@ Format of corresponding data expressions:
 
 Define reference expression type.
 
-Matches a define reference expression (e.g., `define:Namespace|Variable`).
+Matches a define reference expression (e.g., `define:Namespace|Name`).
 
 Format of corresponding data expressions:
 - `$define_reference`
@@ -1851,7 +1851,7 @@ Format of corresponding data expressions:
 
 Array define reference expression type.
 
-Matches an array define reference expression (e.g., `array_define:Namespace|Variable|0`).
+Matches an array define reference expression (e.g., `array_define:Namespace|Name|0`).
 
 Format of corresponding data expressions:
 - `$array_define_reference`

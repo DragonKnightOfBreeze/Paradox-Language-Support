@@ -38,6 +38,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpre
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
@@ -298,12 +299,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forTagsExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        // TODO 2.1.10
-        return ParadoxMatchResult.NotMatch
-
-        // val complexExpression = ParadoxTagsExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
-        // if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        // return forComplexExpressionFromAttributes(complexExpression)
+        val complexExpression = ParadoxTagsExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
+        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
+        return forComplexExpressionFromAttributes(complexExpression)
     }
 
     fun forNameFormatExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {

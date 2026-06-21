@@ -31,7 +31,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDynamicValueExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxDynamicValueExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val configs = configGroup.links.values.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
@@ -42,7 +42,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_withoutScopeSuffix() {
         val s = "some_variable"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
             node<ParadoxDynamicValueNode>(s, 0, 13)
@@ -53,7 +53,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_withScopeSuffix() {
         val s = "some_variable@root"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
@@ -68,7 +68,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_withScopeSuffix_chained() {
         val s = "some_variable@root.owner"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0, s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
@@ -85,7 +85,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_incomplete_withFollowingAt() {
         val s = "some_variable@"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@", 0, 14) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
@@ -98,7 +98,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_incomplete_withFollowingDot() {
         val s = "some_variable@root."
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("some_variable@root.", 0, 19) {
             node<ParadoxDynamicValueNode>("some_variable", 0, 13)
@@ -113,9 +113,9 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty_incompleteDiff() {
-        Assert.assertNull(resolve("", incomplete = false))
-        val exp = resolve("", incomplete = true)!!
+    fun test_empty() {
+        Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
+        val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>("", 0, 0) {
             node<ParadoxDynamicValueNode>("", 0, 0)

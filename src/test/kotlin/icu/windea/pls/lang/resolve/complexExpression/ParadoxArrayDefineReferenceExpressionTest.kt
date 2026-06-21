@@ -19,7 +19,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
+class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -32,15 +32,15 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxDefineReferenceExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxArrayDefineReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        return ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
+        return ParadoxArrayDefineReferenceExpression.resolve(text, null, configGroup)
     }
 
     @Test
     fun test_basic() {
-        val s = "Namespace|Name"
+        val s = "Namespace|Name|0"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpressionStub<ParadoxDefineReferenceExpression>("TODO 2.1.10")
@@ -52,16 +52,43 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Namespace"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpressionStub<ParadoxDefineReferenceExpression>("TODO 2.1.10")
+        val dsl = buildComplexExpressionStub<ParadoxArrayDefineReferenceExpression>("TODO 2.1.10")
         exp.check(dsl)
     }
 
     @Test
-    fun test_trailingPipe() {
+    fun test_trailingPipe1() {
         val s = "Namespace|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpressionStub<ParadoxDefineReferenceExpression>("TODO 2.1.10")
+        val dsl = buildComplexExpressionStub<ParadoxArrayDefineReferenceExpression>("TODO 2.1.10")
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_trailingPipe2() {
+        val s = "Namespace|Name|"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpressionStub<ParadoxArrayDefineReferenceExpression>("TODO 2.1.10")
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_notLiteralCompatibleButInvalid() {
+        val s = "Namespace|Name|foo123"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpressionStub<ParadoxArrayDefineReferenceExpression>("TODO 2.1.10")
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_notNumberLiteralCompatibleButInvalid() {
+        val s = "Namespace|Name|foo"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpressionStub<ParadoxArrayDefineReferenceExpression>("TODO 2.1.10")
         exp.check(dsl)
     }
 
@@ -70,7 +97,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0, 0) {
+        val dsl = buildComplexExpression<ParadoxArrayDefineReferenceExpression>("", 0, 0) {
             node<ParadoxErrorTokenNode>("", 0, 0)
         }
         exp.check(dsl)

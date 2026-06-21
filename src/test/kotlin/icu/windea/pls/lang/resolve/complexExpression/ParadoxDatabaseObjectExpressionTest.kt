@@ -16,6 +16,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxDatabaseObjectExpression
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
@@ -30,7 +33,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun resolve(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDatabaseObjectExpression? {
+    private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxDatabaseObjectExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
         return ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
@@ -39,7 +42,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_twoSegments() {
         val s = "civic:some_civic"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0, 5)
@@ -54,7 +57,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_threeSegments() {
         val s = "civic:some_civic:some_swapped_civic"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0, 5)
@@ -73,7 +76,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_job() {
         val s = "job:job_soldier"
-        val exp = resolve(s)!!
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("job", 0, 3)
@@ -86,9 +89,9 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty_incompleteDiff() {
-        Assert.assertNull(resolve("", incomplete = false))
-        val exp = resolve("", incomplete = true)!!
+    fun test_empty() {
+        Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
+        val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>("", 0, 0) {
             node<ParadoxDatabaseObjectTypeNode>("", 0, 0)

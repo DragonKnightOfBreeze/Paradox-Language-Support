@@ -449,7 +449,7 @@ object CwtDataTypes {
     /**
      * 定值引用表达式类型。
      *
-     * 匹配定值引用表达式（如 `define:Namespace|Variable`）。
+     * 匹配定值引用表达式（如 `define:Namespace|Name`）。
      *
      * 对应的数据表达式的格式：
      * - `$define_reference`
@@ -463,12 +463,10 @@ object CwtDataTypes {
     /**
      * 数组定值引用表达式类型。
      *
-     * 匹配数组定值引用表达式（如 `array_define:Namespace|Variable|0`）。
+     * 匹配数组定值引用表达式（如 `array_define:Namespace|Name|0`）。
      *
      * 对应的数据表达式的格式：
      * - `$array_define_reference`
-     *
-     * （TODO 2.1.10 待实现）
      *
      * @see ParadoxArrayDefineReferenceExpression
      * @since 2.1.10
@@ -485,8 +483,6 @@ object CwtDataTypes {
      * 对应的数据表达式的格式：
      * - `$tags[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
      * - `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型的名字。
-     *
-     * （TODO 2.1.10 待实现）
      *
      * @see ParadoxTagsExpression
      * @since 2.1.10
