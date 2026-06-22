@@ -27,7 +27,7 @@ This document aims to:
 - **Establish mappings from documentation to implementation**: Annotate corresponding interfaces and resolvers where necessary, facilitating source code tracing and behavior verification.
 - **Guide to practice**: Outline the purpose, format, and considerations for various config types, laying the foundation for correctly writing and maintaining config files.
 
-The plugin parses config files when opening a project or on application startup, reading and computing config group data to build config groups.
+The plugin resolves config files when opening a project or on application startup, reading and computing config group data to build config groups.
 The config group data stores structured config objects, and other types of data.
 They drive the core semantic matching and resolution logic, and are widely used in language features such as code highlighting, code completion, and code inspection.
 
@@ -35,7 +35,7 @@ Among these:
 
 - **Config**: A unified domain model that corresponds syntactically to a config file or nodes within it (such as properties or values).
 - **Config expression**: A structured syntax used in config fields, corresponding syntactically to string literals with special semantics in config files.
-- **Data expression**: The most common type of config expression, determining the matching and parsing logic of an expression.
+- **Data expression**: The most common type of config expression, determining the matching and resolving logic of an expression.
 - **Data type**: The type of data expression; different data types often imply expressions with different semantics.
 - **Expression**: Distinct from config expressions / data expressions, this corresponds syntactically to various expression nodes in script files, localisation files, or CSV files – for example, properties and values in script files, command text in localisation files, or columns in CSV files.
 - **Complex expression**: Distinguished from simple expressions, this is a lightweight syntax tree where each node has its own semantics – for example, the scope field expression `root.owner`, or the localisation command expression `Root.GetName`.
@@ -218,9 +218,9 @@ Path location:
 
 Type fields:
 
-- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
+- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
 - `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
-- `path_extension`: Restricts the file extension (automatically normalized during parsing, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
+- `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
 - `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
 - `type_per_file`: When set to `yes`, indicates "one type instance per file" (the definition corresponds to the entire script file rather than a property within it).
@@ -395,7 +395,7 @@ Declaration configs describe the structure of "definition entries" and serve as 
 Path location:
 
 - `{name}`, where `{name}` is the config name.
-- Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being parsed as declaration configs.
+- Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being resolved as declaration configs.
 
 The processing flow of declaration configs is roughly as follows: First, only top-level properties with valid identifier keys are treated as declaration configs. If the root-level value of the declaration is `single_alias_right[...]`, inline expansion is performed first. Then, the plugin trims and flattens the config tree by subtypes — `subtype[...]` blocks matching the current context subtypes are expanded to sibling-level sub-configs, while non-matching ones are skipped. The resulting config tree is used to drive completion, inspection, and other features.
 
@@ -434,7 +434,7 @@ building = {
 Notes:
 
 - `subtype[...]` only takes effect when it matches the context subtypes; non-matching ones are ignored (no error is reported).
-- Root-level `single_alias_right[...]` is expanded first, then participates in subsequent parsing and inspection.
+- Root-level `single_alias_right[...]` is expanded first, then participates in subsequent resolving and inspection.
 - To ensure that downstream features can "trace back upward", generated config nodes maintain parent config references.
 
 #### Alias Config and Single Alias Config {#config-alias}
@@ -507,9 +507,9 @@ Path location:
 
 - `rows/row[{name}]`, where `{name}` is the config name.
 
-- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
+- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
 - `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
-- `path_extension`: Restricts the file extension (automatically normalized during parsing, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
+- `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
 - `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
 - `columns`: Declares the mapping from column names to column configs
@@ -599,9 +599,9 @@ enums = {
 
 Complex enums dynamically collect enum values from script files based on path and anchor points.
 
-- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
+- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
 - `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
-- `path_extension`: Restricts the file extension (automatically normalized during parsing, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
+- `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
 - `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
 - `start_from_root`: Specifies whether to start searching for anchor points from the file top (rather than the next level below top-level properties).
@@ -627,7 +627,7 @@ enums = {
 
 Notes:
 
-- Simple enums currently only support constant values; template expressions will not be parsed as templates.
+- Simple enums currently only support constant values; template expressions will not be resolved as templates.
 - If a complex enum lacks a `name` section or no `enum_name` anchors are found in matching files, the enum will be empty.
 - Simple enum values are case-insensitive by default; complex enum values are case-sensitive by default.
 
@@ -780,7 +780,7 @@ Modifier fields: `name` is a templated name (e.g. `job_<job>_add`), supporting m
 
 Modifier category fields: `name` is the category name (e.g. `Pops`), and `supported_scopes` is the set of scopes allowed for that category.
 
-Modifier configs work in conjunction with the `modifiers` section of [type configs](#config-type): Modifier names declared in type configs use `$` as a placeholder, which is replaced with `<{type}>` or `<{type}.{subtype}>` during parsing, thereby deriving type-bound modifier configs.
+Modifier configs work in conjunction with the `modifiers` section of [type configs](#config-type): Modifier names declared in type configs use `$` as a placeholder, which is replaced with `<{type}>` or `<{type}.{subtype}>` during resolving, thereby deriving type-bound modifier configs.
 
 Example:
 
@@ -816,7 +816,7 @@ Notes:
 
 - Modifier entries missing `categories` will be skipped (not effective).
 - Modifier names in type configs use `$` as a placeholder; ensure they correspond to the type / subtype expression.
-- `supported_scopes` within categories should use standard scope IDs; case is automatically normalized during parsing.
+- `supported_scopes` within categories should use standard scope IDs; case is automatically normalized during resolving.
 
 #### Scope Config and Scope Group Config {#config-scope}
 
@@ -857,7 +857,7 @@ scope_groups = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-Database object type configs are used to describe the type and format of database object expressions. Such expressions can be used as concept names in localisation files (e.g. `['civic:some_civic', ...]`). They are eventually parsed into a definition or localisation and rendered into UI hints.
+Database object type configs are used to describe the type and format of database object expressions. Such expressions can be used as concept names in localisation files (e.g. `['civic:some_civic', ...]`). They are eventually resolved into a definition or localisation and rendered into UI hints.
 
 Path location:
 
@@ -896,12 +896,12 @@ database_object_types = {
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-Macro configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script parser, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
+Macro configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script resolver, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
 
 Currently involved directives include:
 
-- **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during parsing, with parameters support.
-- **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during parsing, with mode support to determine specific behavior.
+- **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during resolving, with parameters support.
+- **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during resolving, with mode support to determine specific behavior.
 
 Path location:
 
@@ -1259,9 +1259,9 @@ Schema configs provide declarations for the right-side value forms of "config fi
 
 Schema configs originate only from the built-in file `internal/schema.cwt` and cannot be overridden by external files. Their structure contains three types of entries:
 
-- **Properties** (`properties`): Keys parsed as constant, type, or template forms.
-- **Enums** (`enums`): Keys parsed as enum expressions (e.g. `$enum:NAME$`).
-- **Constraints** (`constraints`): Keys parsed as constraint expressions (e.g. `$$NAME`).
+- **Properties** (`properties`): Keys resolved as constant, type, or template forms.
+- **Enums** (`enums`): Keys resolved as enum expressions (e.g. `$enum:NAME$`).
+- **Constraints** (`constraints`): Keys resolved as constraint expressions (e.g. `$$NAME`).
 
 #### Folding Settings Config {#config-internal-folding}
 
@@ -1309,7 +1309,7 @@ Configs expressions are structured syntax used in config fields.
 
 This chapter covers the following config expressions:
 
-- **[Data Expression](#config-expression-data)**: Describes the value form and matching patterns of expressions, yielding a specific data type after parsing.
+- **[Data Expression](#config-expression-data)**: Describes the value form and matching patterns of expressions, yielding a specific data type after resolving.
 - **[Template Expression](#config-expression-template)**: A pattern composed of constants and dynamic fragments concatenated, used for more flexible matching.
 - **[Cardinality Expression](#config-expression-cardinality)**: Constrains the number of occurrences of definition members.
 - **[Location Expression](#config-expression-location)**: Locates the source of resources such as images and localisation.
@@ -1319,9 +1319,9 @@ This chapter covers the following config expressions:
 
 <!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
-Data expressions are used to describe the value forms and matching patterns of various expressions, which determine their matching logic and parsing logic.
+Data expressions are used to describe the value forms and matching patterns of various expressions, which determine their matching logic and resolving logic.
 
-The data expression will get the specific [data type] (#data-types) after parsing, and can be accompanied by metadata. The data type, along with this metadata, determines which expressions in script files, localisation files, and CSV files can be matched by data expressions.
+The data expression will get the specific [data type] (#data-types) after resolving, and can be accompanied by metadata. The data type, along with this metadata, determines which expressions in script files, localisation files, and CSV files can be matched by data expressions.
 
 **Default and boundary behaviors**:
 
@@ -1348,12 +1348,12 @@ pre_<opinion_modifier>_suf  # template expression (with definition reference fra
 
 Template expressions are composed of multiple fragments concatenated — constant fragments and dynamic fragments alternating — used to describe value forms more complex than a single data expression. Each dynamic fragment is itself a restricted data expression (such as definition reference, enum reference, dynamic value reference, etc.).
 
-**Parsing constraints**:
+**Resolving constraints**:
 
 - Text containing whitespace characters is treated as an invalid template.
 - When only one fragment exists (purely constant or purely a single dynamic), it is not treated as a template but as a regular data expression.
 - Multiple fragments use a "leftmost earliest match" splitting strategy.
-- Each fragment ultimately delegates to data expression parsing; when no known type is matched, it degrades to a constant fragment.
+- Each fragment ultimately delegates to data expression resolving; when no known type is matched, it degrades to a constant fragment.
 
 Example:
 
@@ -1369,7 +1369,7 @@ For example, `job_<job>_add` can match `job_researcher_add`, `job_farmer_add`, e
 
 **Notes**:
 
-- When constant fragments and dynamic config names are adjacent, the parser prioritizes correct identification of dynamic configs.
+- When constant fragments and dynamic config names are adjacent, the resolver prioritizes correct identification of dynamic configs.
 - Template expressions do not support whitespace characters; if whitespace matching is needed, use [ANT path patterns](#faq-ant) or [regular expressions](#faq-regex) instead.
 
 ### Cardinality Expression {#config-expression-cardinality}
@@ -2365,12 +2365,12 @@ texture = filename[gfx/models]
 file = filepath[./]
 ```
 
-#### How to Perform Config Injection in Config Files {#faq-config-injection}
+#### How to Inject Configs in Config Files {#faq-config-inject}
 
 <!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
-Starting from plugin version 2.1.0, config injection can be performed during the config parsing phase by using the option `## inject`.
+Starting from plugin version 2.1.0, injecting configs is supported by using the option `## inject`, during the config resolving phase.
 
 If there is an existing config fragment
 
@@ -2416,5 +2416,5 @@ Notes:
 - The part before `@` is the config file path relative to the config group directory (e.g. the `config/stellaris` directory inside the plugin's JAR), and must match exactly (no wildcards, case-sensitive).
 - The part after `@` is the config path; the sub-path `-` matches all standalone values, while other cases serve as wildcards (case-insensitive, using `any` or `*` to match any character, `?` to match a single character) matching all properties with the corresponding key.
 - Only applicable to configs with clause values (i.e. `k = {...}` or `{...}`); matched configs are injected at the end of the clause as sub-configs of the target config.
-- Config injection is processed only once during the config file parsing phase, so injection can be performed at any location in any config file.
+- Config injection is processed only once during the config file resolving phase, so injection can be performed at any location in any config file.
 - If the injection fails (the matching config does not exist, there is recursion, etc.), it will be ignored directly and a warning log will be printed.

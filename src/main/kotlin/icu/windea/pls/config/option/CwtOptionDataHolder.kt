@@ -535,7 +535,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 用于约束路径引用，从而提供代码检查与过滤代码补全。
      *
-     * 需要注意的是，某些数据类型（如 [Icon][CwtDataTypes.Icon]）与格式（如已制定了扩展名信息）的路径引用不会携带扩展名信息，
+     * 需要注意的是，某些数据类型（如 [Icon][CwtDataTypes.Icon]）与格式（如已指定了扩展名信息的情况）的路径引用不会携带扩展名信息，
      * 因此也不应使用此选项。
      *
      * ### 适用对象

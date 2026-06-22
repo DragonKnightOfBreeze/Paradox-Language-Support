@@ -2362,7 +2362,7 @@ color_field_hsv = hsv { 208 0.849 0.882 }
 
 通过指定允许的扩展名，可以限制路径引用可匹配的文件扩展名，从而提供代码检查与过滤代码补全。
 
-需要注意的是，某些数据类型（如 [Icon](#data-type-icon)）与格式（如已制定了扩展名信息）的路径引用不会携带扩展名信息，因此也不应使用此选项。
+需要注意的是，某些数据类型（如 [Icon](#data-type-icon)）与格式（如已指定了扩展名信息的情况）的路径引用不会携带扩展名信息，因此也不应使用此选项。
 
 示例：
 
@@ -2377,12 +2377,12 @@ texture = filename[gfx/models]
 file = filepath[./]
 ```
 
-#### 如何在规则文件中进行规则注入 {#faq-config-injection}
+#### 如何在规则文件中注入规则 {#faq-config-inject}
 
 <!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
-从插件版本 2.1.0 开始，可以通过使用选项 `## inject` 在规则的解析阶段进行规则注入。
+从插件版本 2.1.0 开始，可以通过使用选项 `## inject` 在规则的解析阶段注入规则。
 
 如果已存在规则片段
 
