@@ -18,8 +18,6 @@ val ParadoxDatabaseObjectExpression.typeNode: ParadoxDatabaseObjectTypeNode?
 val ParadoxDatabaseObjectExpression.valueNode: ParadoxDatabaseObjectNode?
     get() = nodes.getOrNull(2)?.castOrNull()
 
-val ParadoxDefineReferenceExpression.namespaceNode: ParadoxDefineNamespaceNode?
-    get() = nodes.getOrNull(1)?.cast()
 val ParadoxDefineReferenceExpression.variableNode: ParadoxDefineVariableNode?
     get() = nodes.getOrNull(3)?.cast()
 

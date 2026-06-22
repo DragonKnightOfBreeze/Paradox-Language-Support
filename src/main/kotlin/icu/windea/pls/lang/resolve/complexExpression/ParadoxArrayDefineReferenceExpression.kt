@@ -4,12 +4,14 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
+import icu.windea.pls.lang.util.ParadoxDefineManager
 
 /**
  * 数组定值引用表达式。
@@ -25,7 +27,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间（来自脚本文件）。
  * - [ParadoxDefineVariableNode] - 标识符节点，匹配定值变量（来自脚本文件）。
  * - [ParadoxMarkerNode] - 对应其中的 `|`。
- * - [ParadoxNumberLiteralNode] - 对应其中作为索引的字符串字面量。
+ * - [ParadoxNumberLiteralNode] - 对应其中作为索引的数字字面量。应当是一个正整数。
  *
  * 示例：
  * ```
@@ -93,6 +95,7 @@ private object ParadoxArrayDefineReferenceExpressionResolver {
                 nodes += node
             }
             run r2@{
+                // compatible with no-number literals
                 val nodeText = text.substring(pipeIndex2 + 1)
                 val nodeTextRange = TextRange.from(offset + pipeIndex2 + 1, nodeText.length)
                 val node = ParadoxNumberLiteralNode(nodeText, nodeTextRange, configGroup)
@@ -113,7 +116,30 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
         val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result || expression.nodes.size != 5
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedArrayDefineReferenceExpression(expression.rangeInExpression, expression.text)
+        validateArrayDefine(expression, element, errors)
         return errors
+    }
+
+    private fun validateArrayDefine(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
+        val variableNode = expression.nodes.findIsInstance<ParadoxDefineVariableNode>()
+        val resolved = if (element == null) null else variableNode?.getReference(element)?.resolve()
+
+        if (variableNode != null && resolved != null) {
+            if (!ParadoxDefineManager.isArrayDefine(resolved)) {
+                errors += ParadoxComplexExpressionErrors.notArrayDefine(variableNode.rangeInExpression, variableNode.text)
+            }
+        }
+
+        val indexNode = expression.nodes.findIsInstance<ParadoxNumberLiteralNode>() ?: return
+        val index = indexNode.text.toIntOrNull()
+        if (index == null) {
+            errors += ParadoxComplexExpressionErrors.indexNotInt(indexNode.rangeInExpression, indexNode.text)
+        } else {
+            val arrayLength = if (resolved == null) null else ParadoxDefineManager.getArrayLength(resolved)
+            if (index < 0 || (arrayLength != null && index >= arrayLength)) {
+                errors += ParadoxComplexExpressionErrors.indexOutOfBounds(indexNode.rangeInExpression, index, arrayLength)
+            }
+        }
     }
 }
 

@@ -22,6 +22,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxDefineNamespaceNode(
     override val text: String,
@@ -66,7 +67,7 @@ class ParadoxDefineNamespaceNode(
 
         // 缓存解析结果以优化性能
 
-        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
+        private object Resolver : ResolveCache.AbstractResolver<Reference, ParadoxScriptProperty> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
         }
 
@@ -74,7 +75,7 @@ class ParadoxDefineNamespaceNode(
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doMultiResolve()
         }
 
-        override fun resolve(): PsiElement? {
+        override fun resolve(): ParadoxScriptProperty? {
             return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
         }
 
@@ -82,7 +83,7 @@ class ParadoxDefineNamespaceNode(
             return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
         }
 
-        private fun doResolve(): PsiElement? {
+        private fun doResolve(): ParadoxScriptProperty? {
             val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).find()
             return resolved

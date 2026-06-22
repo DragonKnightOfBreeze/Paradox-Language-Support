@@ -30,6 +30,9 @@ object ParadoxComplexExpressionErrors {
     const val MALFORMED_NAME_FORMAT_EXPRESSION = 110
     const val MALFORMED_COMMAND_EXPRESSION = 151
 
+    const val ARRAY_DEFINE_REFERENCE_FORM = 190
+    const val ARRAY_DEFINE_REFERENCE_INDEX = 191
+
     const val EXPRESSION_NOT_QUOTED = 201
 
     fun unresolvedTemplateSnippet(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
@@ -173,6 +176,30 @@ object ParadoxComplexExpressionErrors {
     fun malformedCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_COMMAND_EXPRESSION
         val description = PlsBundle.message("complexExpression.malformedCommandExpression", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun notLiteralDefine(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ARRAY_DEFINE_REFERENCE_FORM
+        val description = PlsBundle.message("complexExpression.notLiteralDefine", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun notArrayDefine(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ARRAY_DEFINE_REFERENCE_FORM
+        val description = PlsBundle.message("complexExpression.notArrayDefine", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun indexNotInt(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ARRAY_DEFINE_REFERENCE_INDEX
+        val description = PlsBundle.message("complexExpression.indexNotInt", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun indexOutOfBounds(rangeInExpression: TextRange, index: Int, length: Int?): ParadoxComplexExpressionError {
+        val code = ARRAY_DEFINE_REFERENCE_INDEX
+        val description = PlsBundle.message("complexExpression.indexOutOfBounds", index, length ?: "?")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 

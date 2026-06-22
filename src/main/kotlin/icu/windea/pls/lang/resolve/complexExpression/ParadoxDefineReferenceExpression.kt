@@ -4,12 +4,14 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
+import icu.windea.pls.lang.util.ParadoxDefineManager
 
 /**
  * 定值引用表达式。
@@ -97,7 +99,19 @@ private object ParadoxDefineReferenceExpressionValidator : ParadoxComplexExpress
         val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result || expression.nodes.size != 3
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(expression.rangeInExpression, expression.text)
+        validateDefine(expression, element, errors)
         return errors
+    }
+
+    private fun validateDefine(expression: ParadoxDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
+        val variableNode = expression.nodes.findIsInstance<ParadoxDefineVariableNode>()
+        val resolved = if (element == null) null else variableNode?.getReference(element)?.resolve()
+
+        if (variableNode != null && resolved != null) {
+            if (!ParadoxDefineManager.isLiteralDefine(resolved)) {
+                errors += ParadoxComplexExpressionErrors.notLiteralDefine(variableNode.rangeInExpression, variableNode.text)
+            }
+        }
     }
 }
 

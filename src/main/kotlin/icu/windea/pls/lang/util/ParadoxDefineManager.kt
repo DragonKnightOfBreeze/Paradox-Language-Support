@@ -15,6 +15,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.ParadoxDefineService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -25,8 +27,13 @@ import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptFloat
+import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
@@ -97,5 +104,27 @@ object ParadoxDefineManager {
         val (namespace, variable) = splitExpression(expression)
         if (variable == null) return null
         return findDefineVariableElement(namespace, variable, contextElement, project)
+    }
+
+    fun isLiteralDefine(element: ParadoxScriptProperty): Boolean {
+        val propertyValue = element.propertyValue ?: return false
+        return isLiteralDefineValue(propertyValue)
+    }
+
+    fun isArrayDefine(element: ParadoxScriptProperty): Boolean {
+        val propertyValue = element.propertyValue ?: return false
+        return isBlockDefineValue(propertyValue) && propertyValue.members().all { isLiteralDefineValue(it) } ?: false
+    }
+
+    private fun isLiteralDefineValue(propertyValue: PsiElement): Boolean {
+        return propertyValue is ParadoxScriptInt || propertyValue is ParadoxScriptFloat || propertyValue is ParadoxScriptString
+    }
+
+    private fun isBlockDefineValue(propertyValue: PsiElement): Boolean {
+        return propertyValue is ParadoxScriptBlock
+    }
+
+    fun getArrayLength(element: ParadoxScriptProperty): Int? {
+        return element.block?.values()?.count()
     }
 }
