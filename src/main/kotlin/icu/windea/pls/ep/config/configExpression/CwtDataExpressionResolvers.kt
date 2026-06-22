@@ -96,6 +96,7 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromParameterized(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
 
         fromLiteral(CwtDataTypes.Command, "\$command")
+        fromLiteral(CwtDataTypes.ScriptValueReference, "\$script_value_reference")
         fromLiteral(CwtDataTypes.DefineReference, "\$define_reference")
         fromLiteral(CwtDataTypes.ArrayDefineReference, "\$array_define_reference")
         fromParameterized(CwtDataTypes.Tags, "\$tags[", "]") { value = it.orNull() }
