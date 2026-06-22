@@ -9,6 +9,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionComple
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -102,6 +103,20 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressi
             else -> context
         }
         ParadoxComplexExpressionCompletionManager.completeVariableFieldExpression(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypes.ScriptValueReference
+ * @see ParadoxScriptValueReferenceExpression
+ */
+class ParadoxScriptScriptValueReferenceExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.ScriptValueReference
+    }
+
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ParadoxComplexExpressionCompletionManager.completeScriptValueReferenceExpression(context, result)
     }
 }
 

@@ -700,7 +700,7 @@ links = {
         from_data = yes
         type = value
         prefix = value:
-        data_source = <script_value>
+        data_source = $script_value_reference
     }
 }
 ```
@@ -1843,6 +1843,15 @@ Command expressions are widely used in localisation files (`[...]`); however, cu
 
 Format of corresponding data expressions:
 - `$command`
+
+#### ScriptValueReference {#data-type-script-value-reference}
+
+Script value reference expression type.
+
+Matches a script value reference expression（如 `some_sv|PARAM|VALUE|`）。
+
+Format of corresponding data expressions:
+- `$script_value_reference`
 
 #### DefineReference {#data-type-define-reference}
 

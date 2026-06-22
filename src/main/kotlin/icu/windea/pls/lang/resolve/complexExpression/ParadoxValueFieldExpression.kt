@@ -35,7 +35,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ScopeField]，则解析为 [ParadoxScopeFieldExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ValueField]，则解析为 [ParadoxValueFieldExpression]。
- * - 如果数据源表达式是 `<script_value>`，则解析为 [ParadoxScriptValueExpression]。
+ * - 如果数据源表达式是 `$scipt_value_reference`，即数据类型是 [CwtDataTypes.ScriptValueReference]，则解析为 [ParadoxScriptValueReferenceExpression]。
  * - 如果数据源表达式是 `$define_reference`，即数据类型是 [CwtDataTypes.DefineReference]，则解析为 [ParadoxDefineReferenceExpression]。
  * - 如果数据源表达式是 `$array_define_reference`，即数据类型是 [CwtDataTypes.ArrayDefineReference]，则解析为 [ParadoxArrayDefineReferenceExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
@@ -64,7 +64,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * private value_field_with_args ::= value_field_prefix "(" value_field_args ")"
  * private value_field_args ::= value_field_arg ("," value_field_arg)* // = value_field_value
  * private value_field_arg ::= value_field_value
- * value_field_value ::= dynamic_value_expression | scope_field_expression | value_field_expression | script_value_expression | data_source
+ * value_field_value ::= dynamic_value_expression | scope_field_expression | value_field_expression
+ *   | script_value_reference_expression | define_reference_expression | array_define_reference_expression
+ *   | data_source
  * ```
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {

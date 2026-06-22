@@ -19,6 +19,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
@@ -447,6 +448,20 @@ object CwtDataTypes {
         withPriority(45.0)
     }
     /**
+     * 脚本值引用表达式类型。
+     *
+     * 匹配脚本值引用表达式（如 `some_sv|PARAM|VALUE|`）。
+     *
+     * 对应的数据表达式的格式：
+     * - `$script_value_reference`
+     *
+     * @see ParadoxScriptValueReferenceExpression
+     * @since 2.1.10
+     */
+    val ScriptValueReference = CwtDataType.builder("ScriptValueReference").reference().build {
+        withPriority(60.0)
+    }
+    /**
      * 定值引用表达式类型。
      *
      * 匹配定值引用表达式（如 `Namespace|Name`）。
@@ -455,7 +470,7 @@ object CwtDataTypes {
      * - `$define_reference`
      *
      * @see ParadoxDefineReferenceExpression
-     * @since 1.3.25
+     * @since 2.1.10
      */
     val DefineReference = CwtDataType.builder("DefineReference").reference().build {
         withPriority(60.0)

@@ -701,10 +701,10 @@ links = {
     
     # Dynamic value link (with prefix)
     script_value = {
-        from_data = yes
-        type = value
-        prefix = value:
-        data_source = <script_value>
+		    from_data = yes
+		    type = value
+		    prefix = value:
+		    data_source = $script_value_reference
     }
 }
 ```
@@ -1858,6 +1858,15 @@ title
 
 对应的数据表达式的格式：
 - `$command`
+
+#### ScriptValueReference {#data-type-script-value-reference}
+
+脚本值引用表达式类型。
+
+匹配脚本值引用表达式（如 `some_sv|PARAM|VALUE|`）。
+
+对应的数据表达式的格式：
+- `$script_value_reference`
 
 #### DefineReference {#data-type-define-reference}
 

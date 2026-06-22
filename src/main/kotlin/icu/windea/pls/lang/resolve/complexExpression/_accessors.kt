@@ -34,9 +34,9 @@ val ParadoxLinkedExpression.linkNodes: List<ParadoxLinkNode>
 val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeNode>
     get() = nodes.filterIsInstance<ParadoxScopeNode>()
 
-val ParadoxScriptValueExpression.scriptValueNode: ParadoxScriptValueNode
+val ParadoxScriptValueReferenceExpression.scriptValueNode: ParadoxScriptValueNode
     get() = nodes.first().cast()
-val ParadoxScriptValueExpression.argumentNodes: List<Pair<ParadoxScriptValueArgumentNode, ParadoxScriptValueArgumentValueNode?>>
+val ParadoxScriptValueReferenceExpression.argumentNodes: List<Pair<ParadoxScriptValueArgumentNode, ParadoxScriptValueArgumentValueNode?>>
     get() = buildList {
         var argumentNode: ParadoxScriptValueArgumentNode? = null
         for (node in nodes) {
@@ -56,8 +56,8 @@ val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeNode>
     get() = nodes.filterIsInstance<ParadoxScopeNode>()
 val ParadoxValueFieldExpression.fieldNode: ParadoxValueFieldNode
     get() = nodes.last().cast()
-val ParadoxValueFieldExpression.nestedScriptValueExpression: ParadoxScriptValueExpression?
-    get() = fieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.valueNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
+val ParadoxValueFieldExpression.nestedScriptValueReferenceExpression: ParadoxScriptValueReferenceExpression?
+    get() = fieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.valueNode?.nodes?.findIsInstance<ParadoxScriptValueReferenceExpression>()
 
 val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeNode>
     get() = nodes.filterIsInstance<ParadoxScopeNode>()

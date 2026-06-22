@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReference
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -147,15 +147,15 @@ class ParadoxValueFieldValueNode(
             configs.filter { it.configExpression?.type in CwtDataTypeSets.ValueField }.orNull()
                 ?.let { ParadoxValueFieldExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
-            run {
-                if (!text.contains('|')) return@run
-                val scriptValueConfig = configs.find { it.name == "script_value" } ?: return@run
-                return ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig) ?: return@run
+            if (text.contains('|')) { // optimize
+                configs.find { it.configExpression?.type == CwtDataTypes.ScriptValueReference }
+                    ?.let { ParadoxScriptValueReferenceExpression.resolve(text, textRange, configGroup, it) }
+                    ?.let { return it }
             }
-            configs.filter { it.configExpression?.type == CwtDataTypes.DefineReference }.orNull()
+            configs.find { it.configExpression?.type == CwtDataTypes.DefineReference }
                 ?.let { ParadoxDefineReferenceExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
-            configs.filter { it.configExpression?.type == CwtDataTypes.ArrayDefineReference }.orNull()
+            configs.find { it.configExpression?.type == CwtDataTypes.ArrayDefineReference }
                 ?.let { ParadoxArrayDefineReferenceExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
             return ParadoxDataSourceNode.resolve(text, textRange, configGroup, configs)

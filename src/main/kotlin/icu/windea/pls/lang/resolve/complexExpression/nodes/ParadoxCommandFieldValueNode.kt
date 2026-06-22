@@ -10,7 +10,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -139,6 +141,12 @@ class ParadoxCommandFieldValueNode(
                 ?.let { return it }
             configs.filter { it.configExpression?.type == CwtDataTypes.Command }.orNull()
                 ?.let { ParadoxCommandExpression.resolve(text, textRange, configGroup) }
+                ?.let { return it }
+            configs.filter { it.configExpression?.type == CwtDataTypes.DefineReference }.orNull()
+                ?.let { ParadoxDefineReferenceExpression.resolve(text, textRange, configGroup) }
+                ?.let { return it }
+            configs.filter { it.configExpression?.type == CwtDataTypes.ArrayDefineReference }.orNull()
+                ?.let { ParadoxArrayDefineReferenceExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
             return ParadoxDataSourceNode.resolve(text, textRange, configGroup, configs)
         }

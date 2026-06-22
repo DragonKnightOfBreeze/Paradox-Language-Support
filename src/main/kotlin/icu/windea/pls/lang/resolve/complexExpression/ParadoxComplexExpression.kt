@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * - [ParadoxVariableFieldExpression] - 变量字段表达式。规则数据类型：[CwtDataTypeSets.ValueField]。
  * - [ParadoxCommandExpression] - （本地化）命令表达式。规则数据类型：[CwtDataTypes.Command]。
  * - [ParadoxDynamicValueExpression] - 变量值表达式。规则数据类型：[CwtDataTypeSets.DynamicValue]。
- * - [ParadoxScriptValueExpression] - 脚本值表达式。
+ * - [ParadoxScriptValueReferenceExpression] - 脚本值引用表达式。
  * - [ParadoxDefineReferenceExpression] - 定值引用表达式。规则数据类型：[CwtDataTypes.DefineReference]。
  * - [ParadoxArrayDefineReferenceExpression] - 数组定值引用表达式。规则数据类型：[CwtDataTypes.ArrayDefineReference]。
  * - [ParadoxTagsExpression] - 标签集合表达式。规则数据类型：[CwtDataTypes.Tags]。

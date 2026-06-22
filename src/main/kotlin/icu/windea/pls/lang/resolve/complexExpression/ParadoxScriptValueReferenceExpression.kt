@@ -2,6 +2,8 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.CwtDataTypes.DefineReference
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isIdentifier
@@ -14,20 +16,23 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
- * 脚本值表达式。
+ * 脚本值引用表达式。
  *
  * 说明：
- * - 作为 [ParadoxValueFieldExpression] 的一部分。
+ * - 对应的规则数据类型为 [CwtDataTypes.ScriptValueReference]。
+ * - 通常作为链接 `script_value` 的数据源使用。
+ * - 评估结果应是一个数字字面量。
  *
  * 示例：
  * ```
  * some_sv
  * some_sv|PARAM|VALUE|
+ * some_sv|P1|V1|P2|V2|
  * ```
  *
  * 语法：
  * ```bnf
- * script_value_expression ::= script_value script_value_args?
+ * script_value_reference_expression ::= script_value script_value_args?
  * private script_value_args ::= "|" (script_value_argument "|" script_value_argument_value "|")+
  * ```
  *
@@ -45,21 +50,21 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 参数名需为合法标识符；脚本值名需为可识别的标识符（允许参数变量）。
  * - 管道数量应为 0 或奇数（≥3）。仅 1 个或非零偶数个 `|` 将被视为格式错误。
  */
-interface ParadoxScriptValueExpression : ParadoxComplexExpression {
+interface ParadoxScriptValueReferenceExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
-            return ParadoxScriptValueExpressionResolver.resolve(text, range, configGroup, config)
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueReferenceExpression? {
+            return ParadoxScriptValueReferenceExpressionResolver.resolve(text, range, configGroup, config)
         }
     }
 }
 
 // region Implementations
 
-private object ParadoxScriptValueExpressionResolver {
-    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+private object ParadoxScriptValueReferenceExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueReferenceExpression? {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
@@ -67,7 +72,7 @@ private object ParadoxScriptValueExpressionResolver {
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
-        val expression = ParadoxScriptValueExpressionImpl(text, range, configGroup, config, nodes)
+        val expression = ParadoxScriptValueReferenceExpressionImpl(text, range, configGroup, config, nodes)
 
         val offset = range.startOffset
         var n = 0
@@ -121,7 +126,7 @@ private object ParadoxScriptValueExpressionResolver {
 
 private object ParadoxScriptExpressionValidator : ParadoxComplexExpressionValidatorScope {
     @Suppress("UNUSED_PARAMETER")
-    fun validate(expression: ParadoxScriptValueExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+    fun validate(expression: ParadoxScriptValueReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(expression, errors) {
             when {
@@ -139,21 +144,21 @@ private object ParadoxScriptExpressionValidator : ParadoxComplexExpressionValida
                 malformed = true
             }
         }
-        if (malformed) errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(expression.rangeInExpression, expression.text)
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedScriptValueReferenceExpression(expression.rangeInExpression, expression.text)
         return errors
     }
 }
 
-private class ParadoxScriptValueExpressionImpl(
+private class ParadoxScriptValueReferenceExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val config: CwtConfig<*>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
-) : ParadoxComplexExpressionBase(), ParadoxScriptValueExpression {
+) : ParadoxComplexExpressionBase(), ParadoxScriptValueReferenceExpression {
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxScriptExpressionValidator.validate(this, element)
 
-    override fun equals(other: Any?) = this === other || other is ParadoxScriptValueExpression && text == other.text
+    override fun equals(other: Any?) = this === other || other is ParadoxScriptValueReferenceExpression && text == other.text
     override fun hashCode() = text.hashCode()
     override fun toString() = text
 }

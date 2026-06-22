@@ -22,11 +22,11 @@ object ParadoxComplexExpressionErrors {
     const val MALFORMED_VALUE_FIELD_EXPRESSION = 102
     const val MALFORMED_VARIABLE_FIELD_EXPRESSION = 103
     const val MALFORMED_DYNAMIC_VALUE_EXPRESSION = 104
-    const val MALFORMED_SCRIPT_VALUE_EXPRESSION = 105
-    const val MALFORMED_DATABASE_OBJECT_EXPRESSION = 106
-    const val MALFORMED_DEFINE_REFERENCE_EXPRESSION = 107
-    const val MALFORMED_ARRAY_DEFINE_REFERENCE_EXPRESSION = 108
-    const val MALFORMED_TAGS_EXPRESSION = 109
+    const val MALFORMED_SCRIPT_VALUE_REFERENCE_EXPRESSION = 105
+    const val MALFORMED_DEFINE_REFERENCE_EXPRESSION = 106
+    const val MALFORMED_ARRAY_DEFINE_REFERENCE_EXPRESSION = 107
+    const val MALFORMED_TAGS_EXPRESSION = 108
+    const val MALFORMED_DATABASE_OBJECT_EXPRESSION = 109
     const val MALFORMED_NAME_FORMAT_EXPRESSION = 110
     const val MALFORMED_COMMAND_EXPRESSION = 151
 
@@ -134,9 +134,9 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
-    fun malformedScriptValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = MALFORMED_SCRIPT_VALUE_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedScriptValueExpression", text)
+    fun malformedScriptValueReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = MALFORMED_SCRIPT_VALUE_REFERENCE_EXPRESSION
+        val description = PlsBundle.message("complexExpression.malformedScriptValueReferenceExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 

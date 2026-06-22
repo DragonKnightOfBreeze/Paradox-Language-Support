@@ -16,6 +16,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.ArrayDefineReference]。
+ * - 通常作为链接 `array_define` 的数据源使用。
  * - 引用的定值变量的值应当是数组（对应索引的值通常是数字字面量）。
  * - 索引从0开始。
  * - 评估结果应是一个字面量（目前兼容数字字面量和字符串字面量）。

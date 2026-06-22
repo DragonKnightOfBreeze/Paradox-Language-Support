@@ -28,7 +28,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
@@ -263,7 +263,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeScriptValueExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeScriptValueReferenceExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
         val offset = context.offsetInParent - context.expressionOffset
@@ -271,7 +271,7 @@ object ParadoxComplexExpressionCompletionManager {
 
         val config = context.config ?: return
         val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxScriptValueExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
+        val expression = markIncomplete { ParadoxScriptValueReferenceExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         // skip check scope context here
@@ -669,7 +669,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private fun completeForScriptValueArgumentNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxScriptValueArgumentNode, offset: Int, element: ParadoxExpressionElement) {
-        val expression = node.parent as? ParadoxScriptValueExpression ?: return // unexpected
+        val expression = node.parent as? ParadoxScriptValueReferenceExpression ?: return // unexpected
         if (expression.scriptValueNode.text.isEmpty()) return
 
         val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
@@ -682,7 +682,7 @@ object ParadoxComplexExpressionCompletionManager {
     private fun completeForScopeValueArgumentValueNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxScriptValueArgumentValueNode, offset: Int, element: ParadoxExpressionElement) {
         if (!PlsSettings.getInstance().state.inference.configContextForParameters) return
 
-        val expression = node.parent as? ParadoxScriptValueExpression ?: return // unexpected
+        val expression = node.parent as? ParadoxScriptValueReferenceExpression ?: return // unexpected
         if (!expression.scriptValueNode.text.isNotEmpty()) return
 
         // 尝试提示传入参数的值
@@ -935,7 +935,7 @@ object ParadoxComplexExpressionCompletionManager {
             is ParadoxDynamicValueExpression -> completeDynamicValueExpression(context, result)
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
             is ParadoxValueFieldExpression -> completeValueFieldExpression(context, result)
-            is ParadoxScriptValueExpression -> completeScriptValueExpression(context, result)
+            is ParadoxScriptValueReferenceExpression -> completeScriptValueReferenceExpression(context, result)
             is ParadoxDefineReferenceExpression -> completeDefineReferenceExpression(context, result)
             is ParadoxArrayDefineReferenceExpression -> completeArrayDefineReferenceExpression(context, result)
             else -> completeScriptExpressionFromLinkConfigs(context, result, linkConfigs)
