@@ -26,7 +26,7 @@ import java.awt.Color
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
     object Constants {
         const val ID = "Stellaris.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture")
+        val itemPropertyKeys = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -37,7 +37,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 
     override fun getDiagramSettings(project: Project) = project.service<StellarisEventTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class DataModel(
         project: Project,
@@ -60,8 +60,8 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxGameType.Stellaris) {
     object Constants {
         const val ID = "Stellaris.TechTree"
-        val ITEM_PROPERTY_KEYS = listOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
-        val ITEM_PROPERTY_KEYS_IN_DETAIL = listOf("category")
+        val itemPropertyKeys = listOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
+        val itemPropertyKeys_IN_DETAIL = listOf("category")
     }
 
     private val _colorManager = ColorManager()
@@ -76,9 +76,9 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     override fun getDiagramSettings(project: Project) = project.service<StellarisTechTreeDiagramSettings>()
 
-    override fun getItemPropertyKeysInDetail() = Constants.ITEM_PROPERTY_KEYS_IN_DETAIL
+    override fun getItemPropertyKeysInDetail() = Constants.itemPropertyKeys_IN_DETAIL
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {

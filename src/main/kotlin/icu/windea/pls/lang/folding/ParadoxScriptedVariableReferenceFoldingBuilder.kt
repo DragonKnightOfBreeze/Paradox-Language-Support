@@ -18,8 +18,8 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     object Constants {
-        const val GROUP_NAME = "scripted_variable_references"
-        val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
+        const val groupName = "scripted_variable_references"
+        val foldingGroup = FoldingGroup.newGroup(groupName)
     }
 
     override fun getPlaceholderText(node: ASTNode): String {
@@ -33,7 +33,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
         if (!PlsSettings.getInstance().state.folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
-        val foldingGroup = Constants.FOLDING_GROUP
+        val foldingGroup = Constants.foldingGroup
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             var inInlineMath = false

@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 class Ck2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ck2) {
     object Constants {
         const val ID = "Ck2.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture")
+        val itemPropertyKeys = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -28,7 +28,7 @@ class Ck2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
 
     override fun getDiagramSettings(project: Project) = project.service<Ck2EventTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class DataModel(
         project: Project,

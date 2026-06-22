@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Eu4) {
     object Constants {
         const val ID = "Eu4.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture")
+        val itemPropertyKeys = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -28,7 +28,7 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
 
     override fun getDiagramSettings(project: Project) = project.service<Eu4EventTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class DataModel(
         project: Project,

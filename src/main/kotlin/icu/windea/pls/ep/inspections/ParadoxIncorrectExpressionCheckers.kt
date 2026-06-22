@@ -131,21 +131,21 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
 
 class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
-        val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
+        val triggerKeys = setOf("trigger", "on_trigger")
+        val contextNames = setOf("switch", "inverted_switch")
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        // switch = {...}和inverted_switch = {...}中指定的应当是一个simple_trigger
+        // `switch = {...}` 和 `inverted_switch = {...}` 中指定的应当是一个 `simple_trigger`
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
         val propertyConfig = config.propertyConfig ?: return
-        if (propertyConfig.key !in Constants.TRIGGER_KEYS) return
+        if (propertyConfig.key !in Constants.triggerKeys) return
         val aliasConfig = config.memberConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
-        if (aliasConfig.subName !in Constants.CONTEXT_NAMES) return
+        if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
@@ -158,21 +158,21 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
 
 class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
-        const val TRIGGER_KEY = "trigger"
-        val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+        const val triggerKey = "trigger"
+        val contextNames = setOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        // complex_trigger_modifier = {...}中指定的应当是一个simple_trigger（如果不带参数）或者complex_trigger（如果带参数）
+        // `complex_trigger_modifier = {...}` 中指定的应当是一个 `simple_trigger`（如果不带参数）或者 `complex_trigger`（如果带参数）
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
         val propertyConfig = config.propertyConfig ?: return
-        if (propertyConfig.key != Constants.TRIGGER_KEY) return
+        if (propertyConfig.key != Constants.triggerKey) return
         val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
-        if (aliasConfig.subName !in Constants.CONTEXT_NAMES) return
+        if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup

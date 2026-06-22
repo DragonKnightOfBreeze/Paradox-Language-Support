@@ -13,7 +13,7 @@ class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
             val postfixTemplateSettings = PlsFacade.getConfigGroup().postfixTemplateSettings
             for ((groupName, settings) in postfixTemplateSettings) {
                 when (groupName) {
-                    ParadoxVariableOperationExpressionPostfixTemplate.Constants.GROUP_NAME -> {
+                    ParadoxVariableOperationExpressionPostfixTemplate.Constants.groupName -> {
                         for (setting in settings.values) {
                             add(ParadoxVariableOperationExpressionPostfixTemplate(setting, provider))
                         }

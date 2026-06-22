@@ -30,10 +30,10 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
     provider: PostfixTemplateProvider
 ) : ParadoxExpressionEditablePostfixTemplate(setting, provider) {
     object Constants {
-        const val GROUP_NAME = "variable_operation_expressions"
+        const val groupName = "variable_operation_expressions"
     }
 
-    override val groupName: String get() = Constants.GROUP_NAME
+    override val groupName: String get() = Constants.groupName
 
     override fun getExpressions(context: PsiElement, document: Document, offset: Int): List<PsiElement> {
         if (!ParadoxScriptTokenSets.VARIABLE_VALUE_TOKENS.contains(context.elementType)) return emptyList()

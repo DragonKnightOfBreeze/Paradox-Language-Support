@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forEachReversedIndexedFast
 
 /**
- * 用于基于表达式字符串注入规则。
+ * 用于基于规则表达式的字符串注入规则。
  */
 abstract class CwtExpressionStringBasedInjectedConfigProvider : CwtInjectedConfigProvider {
     @Optimized

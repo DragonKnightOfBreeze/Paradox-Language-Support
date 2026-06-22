@@ -10,14 +10,19 @@ import icu.windea.pls.core.collections.orNull
 
 // Builders
 
-inline fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
+fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
     return configs?.orNull()?.asSequence().orEmpty()
 }
 
-inline fun CwtMemberContainerConfig<*>.properties(): Sequence<CwtPropertyConfig> {
+fun CwtMemberContainerConfig<*>.properties(): Sequence<CwtPropertyConfig> {
     return properties?.orNull()?.asSequence().orEmpty()
 }
 
-inline fun CwtMemberContainerConfig<*>.values(): Sequence<CwtValueConfig> {
+fun CwtMemberContainerConfig<*>.values(): Sequence<CwtValueConfig> {
     return values?.orNull()?.asSequence().orEmpty()
+}
+
+fun CwtMemberConfig<*>.parents(withSelf: Boolean = true): Sequence<CwtMemberConfig<*>> {
+    val current = if(withSelf) this else this.parentConfig
+    return generateSequence(current) { it.parentConfig }
 }

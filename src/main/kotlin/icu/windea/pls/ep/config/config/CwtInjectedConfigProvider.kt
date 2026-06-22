@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
  *
  * 说明：
  * - 基于规则的上下文，有时需要在特定位置注入规则。
- * - 这里得到的规则可能覆盖原始的规则，并且一般与其使用相同的文件位置。
+ * - 这里得到的规则可能覆盖原始的规则，并且在引用解析时，一般使用相同的文件位置。
  */
 interface CwtInjectedConfigProvider {
     fun supports(parentConfig: CwtMemberConfig<*>): Boolean = true
