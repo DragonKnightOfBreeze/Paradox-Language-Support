@@ -30,8 +30,7 @@ object ParadoxComplexExpressionErrors {
     const val MALFORMED_NAME_FORMAT_EXPRESSION = 110
     const val MALFORMED_COMMAND_EXPRESSION = 151
 
-    const val LINKED_EXPRESSION_NOT_QUOTED = 201
-    const val TAG_EXPRESSION_NOT_QUOTED = 202
+    const val EXPRESSION_NOT_QUOTED = 201
 
     fun unresolvedTemplateSnippet(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_TEMPLATE_SNIPPET
@@ -177,15 +176,9 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
-    fun linkExpressionNotQuoted(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = LINKED_EXPRESSION_NOT_QUOTED
-        val description = PlsBundle.message("complexExpression.linkedExpressionNotQuoted")
-        return ParadoxComplexExpressionError(code, rangeInExpression, description)
-    }
-
-    fun tagsExpressionNotQuoted(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = TAG_EXPRESSION_NOT_QUOTED
-        val description = PlsBundle.message("complexExpression.tagsExpressionNotQuoted")
+    fun notQuoted(rangeInExpression: TextRange): ParadoxComplexExpressionError {
+        val code = EXPRESSION_NOT_QUOTED
+        val description = PlsBundle.message("complexExpression.notQuoted")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 }

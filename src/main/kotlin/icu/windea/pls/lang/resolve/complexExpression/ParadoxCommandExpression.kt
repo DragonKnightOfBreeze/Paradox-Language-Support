@@ -185,7 +185,7 @@ private object ParadoxCommandExpressionValidator: ParadoxComplexExpressionValida
         }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedCommandExpression(expression.rangeInExpression, expression.text)
-        checkQuotesForLinkedExpression(element, expression, errors)
+        checkQuotes(element, expression, errors)
         return errors
     }
 }

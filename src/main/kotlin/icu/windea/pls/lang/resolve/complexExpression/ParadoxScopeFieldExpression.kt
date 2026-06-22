@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -126,7 +125,7 @@ private object ParadoxScopeFieldExpressionValidator: ParadoxComplexExpressionVal
         }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedScopeFieldExpression(expression.rangeInExpression, expression.text)
-        checkQuotesForLinkedExpression(element, expression, errors)
+        checkQuotes(element, expression, errors)
         return errors
     }
 }
