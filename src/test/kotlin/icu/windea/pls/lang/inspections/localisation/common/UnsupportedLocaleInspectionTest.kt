@@ -40,7 +40,6 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), HighlightingTest
     @Test
     fun smokeTest_success() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
-
         myFixture.configureByText("test.yml", """
             l_english:
               message: "Hello world"
@@ -52,12 +51,11 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), HighlightingTest
 
     @Test
     fun smokeTest_failed() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
-
         val key = "l_neko"
         val description = PlsBundle.message("inspection.localisation.unsupportedLocale.desc.1", key)
         val tag = description.toErrorTag()
 
+        markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """
             ${tag.start}l_neko${tag.end}:
               message: "Meo~ Meo~"
@@ -69,12 +67,11 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), HighlightingTest
 
     @Test
     fun smokeTest_failed_forGameType() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
-
         val key = "l_turkish"
         val description = PlsBundle.message("inspection.localisation.unsupportedLocale.desc.2", key, ParadoxGameType.Stellaris)
         val tag = description.toErrorTag()
 
+        markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """
             ${tag.start}l_turkish${tag.end}:
               message: "..."

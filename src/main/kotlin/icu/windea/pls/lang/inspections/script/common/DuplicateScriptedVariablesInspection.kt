@@ -55,7 +55,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
             ProgressManager.checkCanceled()
             if (values.size <= 1) continue
             for (value in values) {
-                // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
+                // 第一个元素指定为 file，则是在文档头部弹出，否则从 psiElement 上通过 contextActions 显示
                 val location = value.scriptedVariableName
                 val description = PlsBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
                 val fix = NavigateToDuplicatesFix(name, value, values)
