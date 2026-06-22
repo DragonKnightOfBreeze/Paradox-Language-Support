@@ -119,7 +119,7 @@ object ParadoxScopeService {
             if (message == null) {
                 message = ep.getMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("script.annotator.scopeContext", definitionInfo.name)
+                return PlsBundle.message("scopeContext.inference", definitionInfo.name)
             }
         }
         return message
@@ -139,7 +139,7 @@ object ParadoxScopeService {
             if (errorMessage == null) {
                 errorMessage = ep.getErrorMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("script.annotator.scopeContext.conflict", definitionInfo.name)
+                return PlsBundle.message("scopeContext.inference.conflict", definitionInfo.name)
             }
         }
         return errorMessage
