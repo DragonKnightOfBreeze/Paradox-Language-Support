@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 
@@ -32,12 +33,13 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 
     override fun getExpressionAccess(expression: PsiElement): Access {
         // find usages use this method finally
-        if (expression.language !is ParadoxLanguage) return Access.ReadWrite
+        if (expression.language != ParadoxLanguage) return Access.ReadWrite
+        val results = mutableSetOf<ReadWriteAccess>()
         for (reference in expression.references) {
             ProgressManager.checkCanceled()
             val resolved = reference.resolveFirst() ?: continue
-            if (resolved is PsiReadWriteAccessAwareElement) return resolved.readWriteAccess
+            if (resolved is PsiReadWriteAccessAwareElement) results += resolved.readWriteAccess
         }
-        return Access.ReadWrite
+        return results.singleOrNull() ?: ReadWriteAccess.ReadWrite
     }
 }
