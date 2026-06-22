@@ -25,7 +25,7 @@ import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.ParadoxFileEncodingManager
+import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -38,15 +38,15 @@ object ParadoxFileInspectionService {
         val virtualFile = file.virtualFile ?: return null
         val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
 
-        val expectedCharset = ParadoxFileEncodingManager.useCharset()
+        val expectedCharset = ParadoxFileEncodingService.useCharset()
         val charset = virtualFile.charset
         val isValidCharset = charset == expectedCharset
-        val useBom = ParadoxFileEncodingManager.useBom(file, fileInfo)
+        val useBom = ParadoxFileEncodingService.useBom(file, fileInfo)
         val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
-        val isValidBom = useBom == hasBom
+        val isValidBom = useBom == null || useBom == hasBom
         if (isValidCharset && isValidBom) return null
 
-        val expect = expectedCharset.displayName() + if (useBom) " BOM" else " NO BOM"
+        val expect = expectedCharset.displayName() + if (useBom == null) "" else if (useBom) " BOM" else " NO BOM"
         val actual = charset.displayName() + if (hasBom) " BOM" else " NO BOM"
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)

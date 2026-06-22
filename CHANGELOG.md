@@ -18,6 +18,7 @@
 - [x] 修复 Islands Dark 主题的自定义配色方案未被正确应用的回归BUG / Fix a regression bug where the custom color scheme of the Islands Dark theme was not applied correctly
 - [x] [VIC3/EU5] Add support for turkish language or respect locales config ([#343](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/343))
 - [x] [Jomini] On action event type validation wrong ([#344](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/344))
+- [x] Improve inspections for file charset and file encoding, fix false positives ([#345](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/345))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 
