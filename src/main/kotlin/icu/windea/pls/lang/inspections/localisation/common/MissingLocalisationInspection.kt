@@ -12,7 +12,10 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
@@ -31,8 +34,11 @@ import javax.swing.JComponent
 
 /**
  * 缺失的本地化的代码检查。
+ *
+ * @property ignoredFileNames （配置项）需要忽略检查的文件名。一组模式，分号分隔，忽略大小写。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
+    @JvmField var ignoredFileNames = "languages.yml"
     @JvmField var checkForPreferredLocale = true
     @JvmField var checkForSpecificLocales = true
     @JvmField var locales = ""
@@ -41,8 +47,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 跳过需要忽略的文件
+        if (isIgnoredFile(file)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file)
+    }
+
+    private fun isIgnoredFile(file: PsiFile): Boolean {
+        return file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -110,6 +122,15 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
+            // ignoredFileNames
+            row {
+                label(PlsBundle.message("inspection.localisation.missingLocalisation.option.ignoredFileNames"))
+                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                    .bindText(::ignoredFileNames.toAtomicProperty())
+                    .comment(PlsBundle.message("comment.patterns"))
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
             // checkForPreferredLocale
             row {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
