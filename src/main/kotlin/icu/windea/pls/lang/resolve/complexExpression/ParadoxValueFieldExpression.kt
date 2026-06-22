@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -35,6 +36,8 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ScopeField]，则解析为 [ParadoxScopeFieldExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ValueField]，则解析为 [ParadoxValueFieldExpression]。
  * - 如果数据源表达式是 `<script_value>`，则解析为 [ParadoxScriptValueExpression]。
+ * - 如果数据源表达式是 `$define_reference`，即数据类型是 [CwtDataTypes.DefineReference]，则解析为 [ParadoxDefineReferenceExpression]。
+ * - 如果数据源表达式是 `$array_define_reference`，即数据类型是 [CwtDataTypes.ArrayDefineReference]，则解析为 [ParadoxArrayDefineReferenceExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：

@@ -104,6 +104,46 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
+    fun test_nested_defineReference() {
+        val s = "define:Namespace|Name"
+        val exp = resolve(s, ParadoxGameType.Vic3)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("define:Namespace|Name", 0, 21) {
+            node<ParadoxDynamicValueFieldNode>("define:Namespace|Name", 0, 21) {
+                node<ParadoxValueFieldPrefixNode>("define:", 0, 7)
+                node<ParadoxValueFieldValueNode>("Namespace|Name", 7, 21) {
+                    node<ParadoxDefineReferenceExpression>("Namespace|Name", 7, 21) {
+                        node<ParadoxDefineNamespaceNode>("Namespace", 7, 16)
+                        node<ParadoxMarkerNode>("|", 16, 17)
+                        node<ParadoxDefineVariableNode>("Name", 17, 21)
+                    }
+                }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_nested_arrayDefineReference() {
+        val s = "define:Namespace|Name|Variable"
+        val exp = resolve(s, ParadoxGameType.Vic3)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("define:Namespace|Name|Variable", 0, 30) {
+            node<ParadoxDynamicValueFieldNode>("define:Namespace|Name|Variable", 0, 30) {
+                node<ParadoxValueFieldPrefixNode>("define:", 0, 7)
+                node<ParadoxValueFieldValueNode>("Namespace|Name|Variable", 7, 30) {
+                    node<ParadoxDefineReferenceExpression>("Namespace|Name|Variable", 7, 30) {
+                        node<ParadoxDefineNamespaceNode>("Namespace", 7, 16)
+                        node<ParadoxMarkerNode>("|", 16, 17)
+                        node<ParadoxDefineVariableNode>("Name|Variable", 17, 30)
+                    }
+                }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
     fun test_variable_inChain() {
         val s = "root.owner.some_variable"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!

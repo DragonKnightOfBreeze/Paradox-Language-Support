@@ -936,6 +936,8 @@ object ParadoxComplexExpressionCompletionManager {
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
             is ParadoxValueFieldExpression -> completeValueFieldExpression(context, result)
             is ParadoxScriptValueExpression -> completeScriptValueExpression(context, result)
+            is ParadoxDefineReferenceExpression -> completeDefineReferenceExpression(context, result)
+            is ParadoxArrayDefineReferenceExpression -> completeArrayDefineReferenceExpression(context, result)
             else -> completeScriptExpressionFromLinkConfigs(context, result, linkConfigs)
         }
     }

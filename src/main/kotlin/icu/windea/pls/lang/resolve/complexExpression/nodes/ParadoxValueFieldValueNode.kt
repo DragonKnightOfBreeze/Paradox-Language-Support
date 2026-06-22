@@ -3,12 +3,15 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
@@ -149,6 +152,12 @@ class ParadoxValueFieldValueNode(
                 val scriptValueConfig = configs.find { it.name == "script_value" } ?: return@run
                 return ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig) ?: return@run
             }
+            configs.filter { it.configExpression?.type == CwtDataTypes.DefineReference }.orNull()
+                ?.let { ParadoxDefineReferenceExpression.resolve(text, textRange, configGroup) }
+                ?.let { return it }
+            configs.filter { it.configExpression?.type == CwtDataTypes.ArrayDefineReference }.orNull()
+                ?.let { ParadoxArrayDefineReferenceExpression.resolve(text, textRange, configGroup) }
+                ?.let { return it }
             return ParadoxDataSourceNode.resolve(text, textRange, configGroup, configs)
         }
     }

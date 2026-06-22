@@ -35,6 +35,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * [ParadoxDynamicCommandFieldNode] 的数据源的解析优先级：
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypes.DefineReference]，则解析为 [ParadoxDefineReferenceExpression]。
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypes.ArrayDefineReference]，则解析为 [ParadoxArrayDefineReferenceExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
