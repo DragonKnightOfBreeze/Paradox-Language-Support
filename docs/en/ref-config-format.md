@@ -40,7 +40,7 @@ Among these:
 - **Expression**: Distinct from config expressions / data expressions, this corresponds syntactically to various expression nodes in script files, localisation files, or CSV files – for example, properties and values in script files, command text in localisation files, or columns in CSV files.
 - **Complex expression**: Distinguished from simple expressions, this is a lightweight syntax tree where each node has its own semantics – for example, the scope field expression `root.owner`, or the localisation command expression `Root.GetName`.
 
-For an overall introduction to the config system (such as config groups, config overriding, custom configs, etc.), please refer to the [Configs](config.md) documentation.
+For an overall introduction to the config system (such as config groups, config overriding, custom configs, etc.), please refer to the [Config System](config.md) documentation.
 
 ## Configs {#configs}
 
@@ -72,7 +72,7 @@ The overall processing flow of configs can be simplified into three stages:
 2. Use the corresponding resolver for each config category to transform syntax tree nodes into structured config objects.
 3. In each language feature, query and apply these config objects based on the current context (scope, type name, declaration context, etc.).
 
-The source and overriding mechanisms for configs are detailed in the "Config Groups" and "Override Methods" sections of [Config](config.md).
+The source and overriding mechanisms for configs are detailed in the "Config Groups" and "Override Methods" sections of [Config System](config.md).
 
 #### Category {#config-category}
 

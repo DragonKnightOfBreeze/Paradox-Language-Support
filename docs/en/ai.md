@@ -11,7 +11,7 @@ These features primarily focus on translating and polishing localisation text, a
 <!-- @see icu.windea.pls.ai.settings.PlsAiSettingsConfigurable -->
 <!-- @see icu.windea.pls.ai.settings.PlsAiSettings -->
 
-In the IDE settings, navigate to `Languages & Frameworks > Paradox Language Support > AI` to open the AI settings page.
+In the IDE settings, navigate to `Languages & Frameworks > Paradox Language Support > AI` to open the settings page for AI.
 
 Here you can configure whether to enable AI integration, specific settings for relevant features (such as chunk size and memory size for localisation entries), and the AI service provider (supporting OpenAI-compatible interfaces, Anthropic-compatible interfaces, and local models like Ollama).
 
