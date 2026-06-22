@@ -61,8 +61,7 @@ interface CwtConfigGroupDataHolder {
 
     val priorities: Map<String, ParadoxOverrideStrategy>
     val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig>
-    val localisationLocalesById: Map<String, CwtLocaleConfig>
-    val localisationLocalesByCode: Map<String, CwtLocaleConfig>
+    val locales: Map<String, CwtLocaleConfig>
 
     // type - typeConfig
     val types: Map<String, CwtTypeConfig>
@@ -131,6 +130,11 @@ interface CwtConfigGroupDataHolder {
     // endregion
 
     // region Computed
+
+    /** 全局的语言环境规则的列表。其中部分可能不受当前游戏类型支持。 */
+    val globalLocales: List<CwtLocaleConfig>
+    /** 支持的语言环境规则的列表。 */
+    val supportedLocales: List<CwtLocaleConfig>
 
     /** 预定义的修正规则的映射。 */
     val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>

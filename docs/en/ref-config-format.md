@@ -174,7 +174,12 @@ system_scopes = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-Locale configs declare basic information about locales, facilitating identification of the project / user's preferred locale and improving UI display and localisation validation.
+Locale rules.
+
+Used to provide locale-related information (quick documentation, ID, language code, etc.).
+
+Based on these configs, the plugin identifies and infers available locales, preferred locales, and locales in contexts (such as localisation files), thereby improving UI presentation, hint information, and localisation verification logic.
+All global locales should be declared in the general config group, some of which may not be supported by the current game type.
 
 Path location:
 
@@ -182,8 +187,9 @@ Path location:
 
 Field meanings:
 
-- `id`: Locale ID.
-- `codes: string[]`: Language codes included in this locale (e.g. `en`, `zh-CN`).
+- `id`: locale ID (e.g. `l_english`).
+- `codes: string[]`: List of language codes contained in this locale (e.g. `en`, `zh-CN`). Default is empty.
+- `supports: boolean`: Whether this locale is supported by the current game type. Default is `yes`.
 
 Example:
 
@@ -851,7 +857,7 @@ scope_groups = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-Database object type configs are used to describe the type and format of database object expressions. Such expressions can be used as concept names in localization files (e.g. `['civic:some_civic', ...]`). They are eventually parsed into a definition or localization and rendered into UI hints.
+Database object type configs are used to describe the type and format of database object expressions. Such expressions can be used as concept names in localisation files (e.g. `['civic:some_civic', ...]`). They are eventually parsed into a definition or localisation and rendered into UI hints.
 
 Path location:
 
@@ -1315,7 +1321,7 @@ This chapter covers the following config expressions:
 
 Data expressions are used to describe the value forms and matching patterns of various expressions, which determine their matching logic and parsing logic.
 
-The data expression will get the specific [data type] (#data-types) after parsing, and can be accompanied by metadata. The data type, along with this metadata, determines which expressions in script files, localization files, and CSV files can be matched by data expressions.
+The data expression will get the specific [data type] (#data-types) after parsing, and can be accompanied by metadata. The data type, along with this metadata, determines which expressions in script files, localisation files, and CSV files can be matched by data expressions.
 
 **Default and boundary behaviors**:
 
@@ -1630,7 +1636,7 @@ Localisation reference type.
 
 Matches a reference to a localisation key. The expression must be a valid identifier (`.`, `-`, `'` are allowed).  
 Validates that the referenced localisation exists when matching.  
-The localisation file containing the referenced key must be located in the `localisation` or `localization` directory (or its subdirectories).
+The localisation file containing the referenced key must be located in the `localisation` or `localisation` directory (or its subdirectories).
 
 Format of corresponding data expressions:
 - `localisation`
@@ -1640,7 +1646,7 @@ Format of corresponding data expressions:
 Synced localisation reference type.
 
 Similar to [Localisation](#data-type-localisation), but points to a synced localisation key.  
-The localisation file containing the referenced key must be located in the `localisation_synced` or `localization_synced` directory (or its subdirectories).
+The localisation file containing the referenced key must be located in the `localisation_synced` or `localisation_synced` directory (or its subdirectories).
 
 Format of corresponding data expressions:
 - `localisation_synced`

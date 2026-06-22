@@ -184,12 +184,9 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 key == "locales" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val localeConfig = CwtLocaleConfig.resolve(config)
+                        val localeConfig = CwtLocaleConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(localeConfig)) continue
-                        initializer.localisationLocalesById[localeConfig.id] = localeConfig
-                        for (code in localeConfig.codes) {
-                            initializer.localisationLocalesByCode[code] = localeConfig
-                        }
+                        initializer.locales[localeConfig.id] = localeConfig
                     }
                 }
                 key == "types" -> {

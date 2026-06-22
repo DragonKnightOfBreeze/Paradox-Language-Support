@@ -109,7 +109,7 @@ object CwtConfigMatchService {
                 source.processValue(id) { processor.process(it.cast()) }
             }
             CwtLocaleConfig::class.java -> {
-                val source = configGroup.localisationLocalesById
+                val source = configGroup.locales
                 source.processValue(id) { processor.process(it.cast()) }
             }
             CwtLocalisationCommandConfig -> {

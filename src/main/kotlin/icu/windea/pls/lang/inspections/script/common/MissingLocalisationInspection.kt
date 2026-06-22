@@ -21,6 +21,7 @@ import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
 import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -62,10 +63,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
+        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        val supportedLocaleMap = supportedLocales.associateBy { it.id }
         val locales = mutableSetOf<CwtLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
-        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { allLocaleMap.get(it) }
+        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { supportedLocaleMap.get(it) }
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -77,7 +80,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
             private fun visitDefinitionElement(element: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(element, locales, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(element, locales = locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }
@@ -85,7 +88,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if (!element.isExpression()) return
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, locales, forReference = false, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, forReference = false, locales = supportedLocales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }
@@ -162,9 +165,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(PlsBundle.message("link.configure")) {
-                    val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
-                    val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }
-                    val dialog = ParadoxLocaleCheckBoxDialog(allLocaleMap.values, selectedLocales)
+                    val configGroup = PlsFacade.getConfigGroup()
+                    val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
+                    val globalLocaleMap = globalLocales.associateBy { it.id }
+                    val selectedLocales = localeSet.mapNotNull { globalLocaleMap.get(it) }
+                    val dialog = ParadoxLocaleCheckBoxDialog(globalLocaleMap.values, selectedLocales)
                     if (dialog.showAndGet()) {
                         val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
                         localeSet = newLocaleSet

@@ -5,8 +5,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
@@ -15,8 +17,9 @@ class GenerateLocalisationsInFileHandler(
     val fromInspection: Boolean = false,
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        val localePopup = ParadoxLocaleListPopup(allLocales)
+        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        val localePopup = ParadoxLocaleListPopup(supportedLocales)
         localePopup.onSelected { selectedValue ->
             updateContext(file)
             ParadoxLocalisationGenerationManager.handleGeneration(file, editor, context, selectedValue)
@@ -25,7 +28,9 @@ class GenerateLocalisationsInFileHandler(
     }
 
     fun updateContext(file: PsiFile) {
-        val locales = ParadoxLocaleManager.getLocaleConfigs()
-        context = ParadoxLocalisationCodeInsightContextBuilder.fromFile(file, locales, fromInspection)
+        val project = file.project
+        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        context = ParadoxLocalisationCodeInsightContextBuilder.fromFile(file, supportedLocales, fromInspection)
     }
 }

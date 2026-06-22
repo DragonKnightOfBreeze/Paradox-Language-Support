@@ -9,6 +9,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
@@ -20,9 +22,9 @@ import javax.swing.Action
 import javax.swing.JComponent
 
 class ParadoxLocalisationGenerationChooser(
-    elements: Array<out ParadoxLocalisationGenerationElement.Item>,
+    elements: List<ParadoxLocalisationGenerationElement.Item>,
     project: Project,
-) : MemberChooser<ParadoxLocalisationGenerationElement.Item>(elements, true, true, project) {
+) : MemberChooser<ParadoxLocalisationGenerationElement.Item>(elements.toTypedArray(), true, true, project) {
     // NOTE 2.1.8 这里不能直接通过构造参数传入上下文对象
     val context get() = ParadoxLocalisationGenerationManager.currentContext.get()
 
@@ -59,6 +61,8 @@ class ParadoxLocalisationGenerationChooser(
 
     private fun Panel.configureOptionsGroup() {
         val settings = PlsSettings.getInstance().state.generation
+        val configGroup = context.locales.firstOrNull()?.configGroup ?: PlsFacade.getConfigGroup()
+        val locales = ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
 
         // localisationStrategy
         row {
@@ -69,7 +73,7 @@ class ParadoxLocalisationGenerationChooser(
                 .bindItem(property)
             textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
                 .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
-            localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
+            localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
                 .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
         }
         // blankLineBetweenLocalisationGroups

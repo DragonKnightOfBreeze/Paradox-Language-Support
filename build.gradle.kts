@@ -442,6 +442,11 @@ tasks {
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
+
+        // systemProperty("chronicle.capacities.recordCacheStats", "true")
+        // systemProperty("chronicle.capacities.recordIndexStats", "true")
+        // systemProperty("chronicle.capacities.refreshBuiltInConfigDirectories", "true")
+        // systemProperty("chronicle.capacities.keepOptionConfigs", "true")
     }
     withType<Test> {
         useJUnit()

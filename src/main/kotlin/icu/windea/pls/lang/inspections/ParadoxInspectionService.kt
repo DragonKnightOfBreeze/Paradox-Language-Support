@@ -71,10 +71,10 @@ object ParadoxInspectionService {
     }
 
     fun getLocalisationReferenceFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
+        if (expectedConfigs.isEmpty()) return emptyList()
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val locales = ParadoxLocaleManager.getLocaleConfigs()
         val context = expectedConfigs.firstNotNullOfOrNull {
-            ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, locales, fromInspection = true)
+            ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, fromInspection = true)
         }
         if (context == null) return emptyList()
         return listOf(

@@ -282,7 +282,7 @@ object CwtConfigCompletionManager {
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "localisation_locale" -> {
-                        val finalConfigs = configGroup.localisationLocalesById
+                        val finalConfigs = configGroup.locales
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "type" -> {

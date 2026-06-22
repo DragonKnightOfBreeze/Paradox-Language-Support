@@ -33,6 +33,8 @@ locales = {
     $locale$ = {
         #### The language codes included in this locale (e.g., `en`, `zh-CN`).
         codes = { $scalar }
+        #### Whether the locale is supported by current game type.
+        supports = $bool
     }
 }
 

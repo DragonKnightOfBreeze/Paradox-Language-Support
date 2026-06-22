@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 @Suppress("CanBeParameter")
 class ParadoxLocaleCheckBoxDialog(
     val allLocales: Collection<CwtLocaleConfig>,
-    val selectedLocales: Collection<CwtLocaleConfig>
+    val selectedLocales: Collection<CwtLocaleConfig>,
 ) : DialogWrapper(null, false) {
     val localeStatusMap = allLocales.associateWithTo(mutableMapOf()) { it in selectedLocales }
 

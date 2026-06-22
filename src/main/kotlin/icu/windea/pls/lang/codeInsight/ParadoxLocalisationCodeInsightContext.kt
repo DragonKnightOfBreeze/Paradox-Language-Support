@@ -1,10 +1,14 @@
 package icu.windea.pls.lang.codeInsight
 
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+
 data class ParadoxLocalisationCodeInsightContext(
     val type: Type,
     val name: String,
     val infos: List<ParadoxLocalisationCodeInsightInfo> = emptyList(),
     val children: List<ParadoxLocalisationCodeInsightContext> = emptyList(),
+    val locales: Collection<CwtLocaleConfig> = ParadoxLocaleManager.getSupportedLocales(),
     val fromInspection: Boolean = false,
 ) {
     enum class Type {

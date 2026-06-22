@@ -1,8 +1,13 @@
 package icu.windea.pls.lang.codeInsight.completion
 
+import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.InsertHandler
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.ui.JBColor
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -18,6 +23,7 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
@@ -48,7 +54,9 @@ import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
@@ -59,6 +67,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxCompletionManager {
+    // region Entry Completion Methods
+
     fun addKeyCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, memberElement: ParadoxScriptMember) {
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
@@ -204,6 +214,10 @@ object ParadoxCompletionManager {
         val context = context.copy(isKey = null, config = config)
         completeColumn(context, result)
     }
+
+    // endregion
+
+    // region General Completion Methods
 
     fun completeKey(context: ParadoxCompletionContext, result: CompletionResultSet, memberPath: ParadoxMemberPath, rootKeyPrefix: Lazy<String?>) {
         // 从以下来源收集需要提示的键（顶级键和类型键）
@@ -387,6 +401,33 @@ object ParadoxCompletionManager {
         }
     }
 
+    fun completeLocale(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val localeIdFromFileName = context.file.castOrNull<ParadoxLocalisationFile>()?.let { ParadoxLocalisationFileManager.getLocaleIdFromFileName(it) }
+
+        // 批量提示
+        val lookupElements = mutableSetOf<LookupElement>()
+        val locales = context.configGroup.supportedLocales
+        for (locale in locales) {
+            ProgressManager.checkCanceled()
+            val element = locale.pointer.element ?: continue
+            val typeFile = locale.pointer.containingFile
+            val matched = localeIdFromFileName?.let { it == locale.id }
+            val lookupElement = LookupElementBuilder.create(element, locale.id)
+                .withIcon(PlsIcons.Nodes.LocalisationLocale)
+                .withTailText(" " + locale.text) // 前面需要加一个空格
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withInsertHandler(localisationLocaleInsertHandler)
+                .letIf(matched == false) {
+                    it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
+                }
+                .letIf(matched == true) {
+                    it.withPriority(ChronicleCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
+                }
+            lookupElements.add(lookupElement)
+        }
+        result.addAllElements(lookupElements)
+    }
+
     fun completeLocalisationName(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val file = context.file as? ParadoxLocalisationFile ?: return
         val type = ParadoxLocalisationType.resolve(file) ?: return
@@ -528,4 +569,32 @@ object ParadoxCompletionManager {
     fun completeColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
     }
+
+    // endregion
+
+    // region Insert Handlers
+
+    private val localisationLocaleInsertHandler = InsertHandler<LookupElement> { context, _ ->
+        // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
+        val editor = context.editor
+        val chars = editor.document.charsSequence
+        val colonIndex = chars.indexOf(':', context.startOffset)
+        if (colonIndex != -1) {
+            editor.caretModel.moveToOffset(colonIndex + 1)
+        } else {
+            val settings = CodeStyle.getSettings(context.file)
+            val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
+            val insertLineBreak = editor.document.getLineNumber(editor.caretModel.offset) == editor.document.lineCount - 1
+            val s = buildString {
+                append(":")
+                if (insertLineBreak) {
+                    append("\n")
+                    repeat(indentOptions.INDENT_SIZE) { append(" ") }
+                }
+            }
+            EditorModificationUtil.insertStringAtCaret(editor, s)
+        }
+    }
+
+    // endregion
 }

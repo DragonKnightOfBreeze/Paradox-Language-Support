@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -210,7 +211,10 @@ object ParadoxAnalysisManager {
     }
 
     private fun doResolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        return ParadoxAnalysisService.resolveLocaleConfig(file, project)
+        val localeId = ParadoxAnalysisService.resolveLocaleId(file, project) ?: return null
+        val gameType = selectGameType(file)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        return configGroup.locales.get(localeId)
     }
 
     fun getSliceInfos(file: VirtualFile): MutableSet<String> {
@@ -284,9 +288,11 @@ object ParadoxAnalysisManager {
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
             from is ParadoxLocalisationLocale -> {
-                val id = runSmartReadAction { from.name }
+                val localeId = runSmartReadAction { from.name }
                 val project = from.project
-                ParadoxAnalysisService.resolveLocaleConfigById(id, project)
+                val gameType = selectGameType(from)
+                val configGroup = PlsFacade.getConfigGroup(project, gameType)
+                configGroup.locales.get(localeId)
             }
             from is ParadoxLocalisationPropertyList -> {
                 val nextFrom = runSmartReadAction { from.locale } ?: return null
@@ -301,9 +307,12 @@ object ParadoxAnalysisManager {
                 selectLocale(nextFrom)
             }
             from is ParadoxLocaleAwareStub<*> -> {
-                val id = from.locale ?: return null
-                val project = from.containingFileStub?.psi?.project ?: return null
-                ParadoxAnalysisService.resolveLocaleConfigById(id, project)
+                val localeId = from.locale ?: return null
+                val file = from.containingFileStub?.psi ?: return null
+                val project = file.project
+                val gameType = selectGameType(from)
+                val configGroup = PlsFacade.getConfigGroup(project, gameType)
+                configGroup.locales.get(localeId)
             }
             else -> ParadoxLocaleManager.getPreferredLocaleConfig()
         }

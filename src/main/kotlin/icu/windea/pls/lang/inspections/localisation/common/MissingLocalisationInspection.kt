@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
@@ -19,6 +20,7 @@ import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
 import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -44,10 +46,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
+        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        val supportedLocaleMap = supportedLocales.associateBy { it.id }
         val locales = mutableSetOf<CwtLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
-        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { allLocaleMap.get(it) }
+        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { supportedLocaleMap.get(it) }
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxLocalisationVisitor() {
             override fun visitProperty(element: ParadoxLocalisationProperty) {
@@ -122,9 +126,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(PlsBundle.message("link.configure")) {
-                    val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
-                    val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }
-                    val dialog = ParadoxLocaleCheckBoxDialog(allLocaleMap.values, selectedLocales)
+                    val configGroup = PlsFacade.getConfigGroup()
+                    val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
+                    val globalLocaleMap = globalLocales.associateBy { it.id }
+                    val selectedLocales = localeSet.mapNotNull { globalLocaleMap.get(it) }
+                    val dialog = ParadoxLocaleCheckBoxDialog(globalLocaleMap.values, selectedLocales)
                     if (dialog.showAndGet()) {
                         val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
                         localeSet = newLocaleSet

@@ -17,6 +17,7 @@ import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
 
@@ -55,6 +56,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         val groupName = "general"
         val settings = PlsSettings.getInstance().state
         val gameTypes = ParadoxGameType.getAllSpecific()
+        val locales = ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
 
         // defaultGameType
         row {
@@ -99,7 +101,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupName)
                 .comment(PlsBundle.message("settings.general.preferredLocale.comment"))
             var preferredLocale = settings.preferredLocale
-            localeComboBox(withAuto = true)
+            localeComboBox(locales)
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     val oldPreferredLocale = preferredLocale.orEmpty()
@@ -409,6 +411,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
     private fun Panel.configureGroupForGeneration() {
         val settings = PlsSettings.getInstance().state.generation
+        val locales = ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
 
         // localisationStrategy
         row {
@@ -419,7 +422,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 .bindItem(property)
             textField().bindText(settings::localisationStrategyText.toNonNullableProperty(""))
                 .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
-            localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toNullableProperty())
+            localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toNullableProperty())
                 .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
         }
         // blankLineBetweenLocalisationGroups

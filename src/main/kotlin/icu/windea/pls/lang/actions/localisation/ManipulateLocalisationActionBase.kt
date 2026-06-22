@@ -109,8 +109,9 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     abstract class WithLocalePopup : ManipulateLocalisationActionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
-            val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-            return ParadoxLocaleListPopup(allLocales)
+            val configGroup = PlsFacade.getConfigGroup(e)
+            val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+            return ParadoxLocaleListPopup(supportedLocales)
         }
 
         final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
@@ -147,8 +148,9 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationActionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
-            val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-            return ParadoxLocaleListPopup(allLocales)
+            val configGroup = PlsFacade.getConfigGroup(e)
+            val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+            return ParadoxLocaleListPopup(supportedLocales)
         }
 
         protected abstract fun createPopup(e: AnActionEvent, project: Project, callback: (T) -> Unit): JBPopup?

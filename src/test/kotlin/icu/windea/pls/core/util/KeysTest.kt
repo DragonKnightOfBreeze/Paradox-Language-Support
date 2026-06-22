@@ -148,7 +148,7 @@ class KeysTest {
     }
 
     @Test
-    fun testRegisterKey_withDefault_delegateAndDefaultValue() {
+    fun testRegisterKey_includeDefault_delegateAndDefaultValue() {
         class Registry : KeyRegistry() {
             val k by registerKey(this, "d")
         }
@@ -161,7 +161,7 @@ class KeysTest {
     }
 
     @Test
-    fun testRegisterNamedKey_withDefault_usesExactNameAndDefaultValue() {
+    fun testRegisterNamedKey_includeDefault_usesExactNameAndDefaultValue() {
         class Registry : KeyRegistry() {
             val k by registerNamedKey(this, "named.key", "d")
         }
