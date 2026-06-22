@@ -1886,8 +1886,6 @@ title
 对应的数据表达式的格式：
 - `$array_define_reference`
 
-（TODO 2.1.10 待实现）
-
 #### Tags {#data-type-tags}
 
 标签集表达式类型。
