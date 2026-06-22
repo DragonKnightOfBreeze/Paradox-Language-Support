@@ -21,7 +21,7 @@ class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConf
 
     override fun doInject(parentConfig: CwtMemberConfig<*>, config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         if (expressionString != expression) return null
-        val rootConfig = parentConfig.parents(withSelf = true).lastOrNull() ?: return null
+        val rootConfig = config.parents(withSelf = false).lastOrNull() ?: return null
         val declarationConfigContext = rootConfig.declarationConfigContext ?: return null
         val onActionConfig = declarationConfigContext.onActionConfig ?: return null
         val eventType = onActionConfig.eventType
@@ -31,7 +31,7 @@ class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConf
             logger.warn("Applied config injection in declaration of on action `${onActionConfig.name}` failed: unknown event type `$eventType`")
             return null
         }
-        val withinTriggerOrEffectClause = CwtConfigScopeAwareManipulationService.withinTriggerOrEffectClause(parentConfig, withSelf = true) // lenient check
+        val withinTriggerOrEffectClause = CwtConfigScopeAwareManipulationService.withinTriggerOrEffectClause(config) // lenient check
         if (withinTriggerOrEffectClause) return null
         val result = buildList {
             if ("scopeless" in allEventTypes) this += expressionScopeless
