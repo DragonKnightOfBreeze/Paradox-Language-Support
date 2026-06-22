@@ -134,6 +134,7 @@ class ParadoxScopeValueNode(
         }
 
         private fun resolveDsNode(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtLinkConfig>): ParadoxComplexExpressionNode {
+            // NOTE 2.1.10 nested expressions here may not be valid (return null) even if the data source expression is single, and then fallback to data source node
             configs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
                 ?.let { ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, it) }
                 ?.let { return it }
@@ -143,6 +144,7 @@ class ParadoxScopeValueNode(
             configs.filter { it.configExpression?.type in CwtDataTypeSets.ValueField }.orNull()
                 ?.let { ParadoxValueFieldExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
+
             return ParadoxDataSourceNode.resolve(text, textRange, configGroup, configs)
         }
     }

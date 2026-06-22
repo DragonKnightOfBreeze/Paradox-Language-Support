@@ -37,7 +37,7 @@
   - [x] 补充实现代码。
   - [x] 补充测试。
   - [x] 创建单独的 Issue。
-- [ ] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
+- [x] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
   - 示例：`Namespace|Name` - 定值引用表达式。引用字面量（通常是数字、颜色或日期）。
   - 示例：`Namespace|Name|0` - 数组定值引用表达式。引用字面量（通常是数字）。索引从0开始。
   - 对应的规则表达式（数据表达式）：`$define_reference` 和 `$array_define_reference`

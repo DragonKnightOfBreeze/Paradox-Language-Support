@@ -30,10 +30,6 @@ class ParadoxScriptValueNode(
     override val configGroup: CwtConfigGroup,
     val config: CwtConfig<*>
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.to.singletonSet()
-    }
-
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.definitionReference(element.language)
     }

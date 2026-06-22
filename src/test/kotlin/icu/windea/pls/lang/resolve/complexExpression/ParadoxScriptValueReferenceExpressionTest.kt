@@ -33,8 +33,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxScriptValueReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        val linkConfig = configGroup.links["script_value"] ?: error("script_value link not found in config group")
-        return ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup, linkConfig)
+        return ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup)
     }
 
     @Test

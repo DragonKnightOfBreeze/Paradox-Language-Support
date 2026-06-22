@@ -269,9 +269,8 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
-        val config = context.config ?: return
         val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxScriptValueReferenceExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
+        val expression = markIncomplete { ParadoxScriptValueReferenceExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
 
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         // skip check scope context here

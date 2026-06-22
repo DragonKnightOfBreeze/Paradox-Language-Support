@@ -7,9 +7,13 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -25,6 +29,12 @@ class ParadoxDefineVariableNode(
     override val configGroup: CwtConfigGroup,
     val namespaceNode: ParadoxDefineNamespaceNode?,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        val namespace = namespaceNode?.text?.orNull() ?: return emptySet()
+        val variable = text.orNull() ?: return emptySet()
+        return configGroup.defineNamespaces.get(namespace)?.variables?.get(variable).to.singletonSetOrEmpty()
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.defineVariable()
     }

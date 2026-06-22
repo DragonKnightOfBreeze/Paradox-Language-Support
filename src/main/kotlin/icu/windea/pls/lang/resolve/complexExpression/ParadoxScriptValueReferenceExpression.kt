@@ -3,9 +3,9 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.CwtDataTypes.DefineReference
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.mockScriptValueConfig
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -55,8 +55,8 @@ interface ParadoxScriptValueReferenceExpression : ParadoxComplexExpression {
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueReferenceExpression? {
-            return ParadoxScriptValueReferenceExpressionResolver.resolve(text, range, configGroup, config)
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScriptValueReferenceExpression? {
+            return ParadoxScriptValueReferenceExpressionResolver.resolve(text, range, configGroup)
         }
     }
 }
@@ -64,12 +64,13 @@ interface ParadoxScriptValueReferenceExpression : ParadoxComplexExpression {
 // region Implementations
 
 private object ParadoxScriptValueReferenceExpressionResolver {
-    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueReferenceExpression? {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScriptValueReferenceExpression? {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
+        val config = configGroup.mockScriptValueConfig
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxScriptValueReferenceExpressionImpl(text, range, configGroup, config, nodes)
