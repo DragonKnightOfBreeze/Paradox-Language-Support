@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigContext
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.manipulation.CwtConfigScopeAwareManipulationService
 import icu.windea.pls.config.parents
 import icu.windea.pls.lang.resolve.onActionConfig
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -12,16 +12,16 @@ import icu.windea.pls.model.ParadoxGameType
 
 class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
     // 如果可以确定 on_action 的事件类型，直接位于其中的 `<event>` 需要替换为 `<event.scopeless>` 和 `<event.{eventType}>`，其中 `{eventType}` 为事件类型
-    // 2.1.10 #344 对于基于 Jomini 的游戏类型，需要排除 `effect = {...}`（以及 `trigger = {...}`）中的 `<event>`
+    // 2.1.10 #344 对于基于 Jomini 的游戏类型，需要排除 `effect = {...}`（以及 `trigger = {...}`）中的 `<event>` - 宽松检测：实现代码中不检测游戏类型
 
     private val logger = thisLogger()
     private val expression = "<event>"
     private fun expression(eventType: String) = "<event.$eventType>"
     private val expressionScopeless = "<event.scopeless>"
 
-    override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
+    override fun doInject(parentConfig: CwtMemberConfig<*>, config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         if (expressionString != expression) return null
-        val rootConfig = config.memberConfig.parents().lastOrNull() ?: return null
+        val rootConfig = parentConfig.parents(withSelf = true).lastOrNull() ?: return null
         val declarationConfigContext = rootConfig.declarationConfigContext ?: return null
         val onActionConfig = declarationConfigContext.onActionConfig ?: return null
         val eventType = onActionConfig.eventType
@@ -31,6 +31,8 @@ class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConf
             logger.warn("Applied config injection in declaration of on action `${onActionConfig.name}` failed: unknown event type `$eventType`")
             return null
         }
+        val withinTriggerOrEffectClause = CwtConfigScopeAwareManipulationService.withinTriggerOrEffectClause(parentConfig, withSelf = true) // lenient check
+        if (withinTriggerOrEffectClause) return null
         val result = buildList {
             if ("scopeless" in allEventTypes) this += expressionScopeless
             this += expression(eventType)
@@ -50,12 +52,11 @@ class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInj
     private val expressions = listOf("<technology>", "<technology.repeatable>")
     private val injectedExpressions = listOf("\$technology_with_level")
 
-    override fun supports(parentConfig: CwtMemberConfig<*>): Boolean {
-        val gameType = parentConfig.configGroup.gameType
+    override fun supports(gameType: ParadoxGameType): Boolean {
         return gameType == ParadoxGameType.Stellaris
     }
 
-    override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
+    override fun doInject(parentConfig: CwtMemberConfig<*>, config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         if (expressionString !in expressions) return null
         val result = injectedExpressions
         logger.debug { "Applied config injection: replace `${expressionString}` with ${result.joinToString()}`" }

@@ -2,6 +2,7 @@ package icu.windea.pls.ep.config.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于基于上下文注入规则。
@@ -11,16 +12,19 @@ import icu.windea.pls.config.config.CwtMemberConfig
  * - 这里得到的规则可能覆盖原始的规则，并且在引用解析时，一般使用相同的文件位置。
  */
 interface CwtInjectedConfigProvider {
-    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = true
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
+    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = supports(parentConfig.configGroup.gameType)
 
     /**
      * 注入规则。
      *
-     * @param parentConfig 作为 [configs] 的父节点的规则。
-     * @param configs 将会加入 [parentConfig] 的子规则列表的一组规则。
+     * @param parentConfig 原始的父规则。
+     * @param containerConfig 新的容器规则。
+     * @param configs 将会加入入作为 [containerConfig] 的子规则的一组规则。
      * @return 是否进行了注入。
      */
-    fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean
+    fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtInjectedConfigProvider>("icu.windea.pls.injectedConfigProvider")

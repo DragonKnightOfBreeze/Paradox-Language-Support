@@ -16,6 +16,7 @@
 - [x] 支持将数字（而不仅仅是字符串）解析为复杂枚举值 / Support to resolve numbers (rather than only strings) into complex enum values
 - [x] 修复了一个可能导致错误的语义匹配结果，从而引发误报的并发处理问题 / Fix a concurrency processing issue that could result in incorrect semantic match results, which may cause false positives
 - [x] 修复 Islands Dark 主题的自定义配色方案未被正确应用的回归BUG / Fix a regression bug where the custom color scheme of the Islands Dark theme was not applied correctly
+- [x] [Jomini] On action event type validation wrong ([#344](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/344))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 

@@ -22,7 +22,7 @@ fun CwtMemberContainerConfig<*>.values(): Sequence<CwtValueConfig> {
     return values?.orNull()?.asSequence().orEmpty()
 }
 
-fun CwtMemberConfig<*>.parents(withSelf: Boolean = true): Sequence<CwtMemberConfig<*>> {
+fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberConfig<*>> {
     val current = if(withSelf) this else this.parentConfig
     return generateSequence(current) { it.parentConfig }
 }

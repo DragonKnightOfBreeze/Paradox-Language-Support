@@ -174,8 +174,8 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         val recursionPrevented = AtomicBoolean(false)
 
         val provider = object : CwtInjectedConfigProvider {
-            override fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
-                val r = CwtConfigManipulationService.deepCopyConfigs(parentConfig)
+            override fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
+                val r = CwtConfigManipulationService.deepCopyConfigs(containerConfig)
                 if (r == emptyList<CwtMemberConfig<*>>()) recursionPrevented.set(true)
                 return false
             }
