@@ -28,7 +28,7 @@ import javax.swing.JComponent
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class UnresolvedTextFormatInspection : LocalInspectionTool() {
     // aka predefined format styles, or color expressions, or combined
-    @JvmField var ignoredNames = "bold;semibold;extrabold;italic;underline;strikethrough;indent_newline;tooltip"
+    @JvmField var ignoredNames = "bold;semibold;extrabold;italic;underline;strikethrough;indent_newline;tooltip:"
     @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
