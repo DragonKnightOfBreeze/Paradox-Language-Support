@@ -42,18 +42,18 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_sv"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxScriptValueExpression>(s, 0, s.length) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv", 0, 7) {
             node<ParadoxScriptValueNode>("some_sv", 0, 7)
         }
         exp.check(dsl)
     }
 
     @Test
-    fun test_basic_withArgs() {
+    fun test_basic_withSimpleArg() {
         val s = "some_sv|PARAM|VALUE|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxScriptValueExpression>(s, 0, s.length) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|PARAM|VALUE|", 0, 20) {
             node<ParadoxScriptValueNode>("some_sv", 0, 7)
             node<ParadoxMarkerNode>("|", 7, 8)
             node<ParadoxScriptValueArgumentNode>("PARAM", 8, 13)
@@ -65,13 +65,46 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_malformed_singlePipe_incompleteAccepted() {
+    fun test_basic_withMultipleArgs() {
+        val s = "some_sv|P1|V1|P2|V2"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|P1|V1|P2|V2", 0, 19) {
+            node<ParadoxScriptValueNode>("some_sv", 0, 7)
+            node<ParadoxMarkerNode>("|", 7, 8)
+            node<ParadoxScriptValueArgumentNode>("P1", 8, 10)
+            node<ParadoxMarkerNode>("|", 10, 11)
+            node<ParadoxScriptValueArgumentValueNode>("V1", 11, 13)
+            node<ParadoxMarkerNode>("|", 13, 14)
+            node<ParadoxScriptValueArgumentNode>("P2", 14, 16)
+            node<ParadoxMarkerNode>("|", 16, 17)
+            node<ParadoxScriptValueArgumentValueNode>("V2", 17, 19)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_trailingPipe1_accepted() {
         val s = "some_sv|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|", 0, s.length) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|", 0, 8) {
             node<ParadoxScriptValueNode>("some_sv", 0, 7)
             node<ParadoxMarkerNode>("|", 7, 8)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_trailingPipe2_accepted() {
+        val s = "some_sv|P|"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|P|", 0, 10) {
+            node<ParadoxScriptValueNode>("some_sv", 0, 7)
+            node<ParadoxMarkerNode>("|", 7, 8)
+            node<ParadoxScriptValueArgumentNode>("P", 8, 9)
+            node<ParadoxMarkerNode>("|", 9, 10)
         }
         exp.check(dsl)
     }

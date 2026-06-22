@@ -70,9 +70,22 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_trailingPipe() {
+    fun test_trailingPipe1() {
         val s = "Namespace|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("Namespace|", 0, 10) {
+            node<ParadoxDefineNamespaceNode>("Namespace", 0, 9)
+            node<ParadoxMarkerNode>("|", 9, 10)
+            node<ParadoxDefineVariableNode>("", 10, 10)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_trailingPipe1_incomplete() {
+        val s = "Namespace|"
+        val exp = resolve(s, ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("Namespace|", 0, 10) {
             node<ParadoxDefineNamespaceNode>("Namespace", 0, 9)
