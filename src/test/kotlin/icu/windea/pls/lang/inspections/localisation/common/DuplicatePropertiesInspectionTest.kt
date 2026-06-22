@@ -18,20 +18,18 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see UnsupportedLocaleInspection
+ * @see DuplicatePropertiesInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), HighlightingTestScope {
+class DuplicatePropertiesInspectionTest : BasePlatformTestCase(), HighlightingTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/inspections")
-        markConfigDirectory("features/inspections/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
-        myFixture.enableInspections(UnsupportedLocaleInspection::class.java)
+        myFixture.enableInspections(DuplicatePropertiesInspection::class.java)
     }
 
     @After
@@ -51,16 +49,13 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), HighlightingTest
     }
 
     @Test
-    fun smokeTest_failed() {
+    fun smokeTest_differentKeys() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
 
-        val key = "l_neko"
-        val description = PlsBundle.message("inspection.localisation.unsupportedLocale.desc.1", key)
-        val tag = description.toErrorTag()
-
         myFixture.configureByText("test.yml", """
-            ${tag.start}l_neko${tag.end}:
-              message: "Meo~ Meo~"
+            l_english:
+              message: "Hello world"
+              new_message: "Hello the real world"
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -68,16 +63,17 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), HighlightingTest
     }
 
     @Test
-    fun smokeTest_failed_forGameType() {
+    fun smokeTest_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
 
-        val key = "l_turkish"
-        val description = PlsBundle.message("inspection.localisation.unsupportedLocale.desc.2", key, ParadoxGameType.Stellaris)
+        val key = "l_neko"
+        val description = PlsBundle.message("inspection.localisation.duplicateProperties.desc", key)
         val tag = description.toErrorTag()
 
         myFixture.configureByText("test.yml", """
-            ${tag.start}l_turkish${tag.end}:
-              message: "..."
+            l_english:
+              ${tag.start}message${tag.end}: "Hello world"
+              ${tag.start}message${tag.end}: "Hello the real world"
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)

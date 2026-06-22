@@ -7,6 +7,7 @@ import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationSer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import icu.windea.pls.test.markRootDirectory
@@ -29,7 +30,8 @@ class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/intentions/script") // necessary here
+        markRootDirectory("features/intentions")
+        markConfigDirectory("features/intentions/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Eu5)
     }
 

@@ -7,6 +7,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import icu.windea.pls.test.markRootDirectory
@@ -30,7 +31,8 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/intentions/localisation")
+        markRootDirectory("features/intentions")
+        markConfigDirectory("features/intentions/.config")
         initConfigGroups(project, gameType)
     }
 
@@ -39,7 +41,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase() {
 
     private fun configureColorFile() {
         markFileInfo(gameType, "interface/fonts.gfx")
-        myFixture.configureByFile("features/intentions/localisation/interface/fonts.gfx")
+        myFixture.configureByFile("features/intentions/interface/fonts.gfx")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
     }
 
