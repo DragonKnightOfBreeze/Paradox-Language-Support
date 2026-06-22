@@ -38,7 +38,7 @@
   - [x] 补充测试。
   - [x] 创建单独的 Issue。
 - [x] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
-  - 示例：`Namespace|Name` - 定值引用表达式。引用字面量（通常是数字、颜色或日期）。
+  - 示例：`Namespace|Name` - 定值引用表达式。引用字面量或数组（通常是数字、颜色或日期）。
   - 示例：`Namespace|Name|0` - 数组定值引用表达式。引用字面量（通常是数字）。索引从0开始。
   - 对应的规则表达式（数据表达式）：`$define_reference` 和 `$array_define_reference`
   - 需要补充规范化的链接规则 `define` 和 `array_define`（`type = value`）。
@@ -60,7 +60,6 @@
   - [ ] 补充实现代码。
   - [ ] 补充测试。
   - [ ] 更新相关规则文件。
-  - [ ] 补充评估器。
 - [x] P2/FAST 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
   - 例如说明模组目录直接位于游戏创意工坊目录下，因此被推断为对应的游戏类型
   - 此时不允许在模组设置对话框中更改游戏类型

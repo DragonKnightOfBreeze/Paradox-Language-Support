@@ -72,7 +72,7 @@ private object ParadoxTagsExpressionValidator : ParadoxComplexExpressionValidato
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxTagsExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val result = validateAllNodes(expression, element, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedTagsExpression(expression.rangeInExpression, expression.text)
         checkQuotes(element, expression, errors)

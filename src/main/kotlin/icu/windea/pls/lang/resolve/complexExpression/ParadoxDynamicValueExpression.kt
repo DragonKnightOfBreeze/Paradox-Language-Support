@@ -125,7 +125,7 @@ private object ParadoxDynamicValueExpressionValidator : ParadoxComplexExpression
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxDynamicValueExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) {
+        val result = validateAllNodes(expression, element, errors) {
             when {
                 it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier(".") // 兼容点号
                 else -> true

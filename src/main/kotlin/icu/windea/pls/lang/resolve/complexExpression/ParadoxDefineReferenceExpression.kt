@@ -4,14 +4,12 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
-import icu.windea.pls.lang.util.ParadoxDefineManager
 
 /**
  * 定值引用表达式。
@@ -19,8 +17,8 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
  * - 通常作为链接 `define` 的数据源使用。
- * - 引用的定值变量的值应当是一个字面量（通常是数字、颜色或日期）。
- * - 评估结果应是一个字面量（目前兼容数字字面量和字符串字面量）。
+ * - 引用的定值变量的值应当是一个字面量或数组（通常是数字、颜色或日期）。
+ * - 评估结果应是一个字面量或数组。
  *
  * 节点组成：
  * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间（来自脚本文件）。
@@ -96,22 +94,10 @@ private object ParadoxDefineReferenceExpressionValidator : ParadoxComplexExpress
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxDefineReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val result = validateAllNodes(expression, element, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result || expression.nodes.size != 3
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(expression.rangeInExpression, expression.text)
-        validateDefine(expression, element, errors)
         return errors
-    }
-
-    private fun validateDefine(expression: ParadoxDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
-        val variableNode = expression.nodes.findIsInstance<ParadoxDefineVariableNode>()
-        val resolved = if (element == null) null else variableNode?.getReference(element)?.resolve()
-
-        if (variableNode != null && resolved != null) {
-            if (!ParadoxDefineManager.isLiteralDefine(resolved)) {
-                errors += ParadoxComplexExpressionErrors.notLiteralDefine(variableNode.rangeInExpression, variableNode.text)
-            }
-        }
     }
 }
 

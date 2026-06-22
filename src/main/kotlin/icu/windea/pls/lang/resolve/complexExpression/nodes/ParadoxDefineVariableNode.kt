@@ -41,14 +41,16 @@ class ParadoxDefineVariableNode(
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
+        if (namespaceNode == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDefineVariable(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedDefineVariable(rangeInExpression, text, namespaceNode.text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
+        if (namespaceNode == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val offset = ParadoxExpressionManager.getExpressionOffset(element)

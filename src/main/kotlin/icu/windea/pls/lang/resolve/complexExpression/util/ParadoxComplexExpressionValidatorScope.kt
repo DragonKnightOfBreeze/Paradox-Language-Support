@@ -9,12 +9,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 interface ParadoxComplexExpressionValidatorScope {
-    fun validateAllNodes(expression: ParadoxComplexExpression, errors: MutableList<ParadoxComplexExpressionError>, processor: Processor<ParadoxComplexExpressionNode>): Boolean {
+    fun validateAllNodes(expression: ParadoxComplexExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>, processor: Processor<ParadoxComplexExpressionNode>): Boolean {
         var result = true
         expression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (node is ParadoxComplexExpression && node !== expression) {
-                    errors += node.getErrors()
+                    errors += node.getErrors(element)
                     return true
                 }
                 if (node is ParadoxErrorTokenNode || node.text.isEmpty()) {

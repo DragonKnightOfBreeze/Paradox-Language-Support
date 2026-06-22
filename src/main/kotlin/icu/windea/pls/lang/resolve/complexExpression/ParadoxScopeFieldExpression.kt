@@ -117,7 +117,7 @@ private object ParadoxScopeFieldExpressionResolver {
 private object ParadoxScopeFieldExpressionValidator: ParadoxComplexExpressionValidatorScope {
     fun validate(expression: ParadoxScopeFieldExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) {
+        val result = validateAllNodes(expression, element, errors) {
             when {
                 it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
                 else -> true

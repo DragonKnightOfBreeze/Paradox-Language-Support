@@ -83,9 +83,9 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
-    fun unresolvedDefineVariable(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+    fun unresolvedDefineVariable(rangeInExpression: TextRange, value: String, namespace: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_DEFINE_VARIABLE
-        val description = PlsBundle.message("complexExpression.unresolvedDefineVariable", value)
+        val description = PlsBundle.message("complexExpression.unresolvedDefineVariable", value, namespace)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
@@ -176,12 +176,6 @@ object ParadoxComplexExpressionErrors {
     fun malformedCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_COMMAND_EXPRESSION
         val description = PlsBundle.message("complexExpression.malformedCommandExpression", text)
-        return ParadoxComplexExpressionError(code, rangeInExpression, description)
-    }
-
-    fun notLiteralDefine(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ARRAY_DEFINE_REFERENCE_FORM
-        val description = PlsBundle.message("complexExpression.notLiteralDefine", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 

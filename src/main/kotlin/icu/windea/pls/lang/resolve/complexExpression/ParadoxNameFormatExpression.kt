@@ -418,7 +418,7 @@ private object ParadoxNameFormatExpressionValidator: ParadoxComplexExpressionVal
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxNameFormatExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) {
+        val result = validateAllNodes(expression, element, errors) {
             when (it) {
                 is ParadoxNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
                 is ParadoxNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier(".-'")

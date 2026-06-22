@@ -29,10 +29,7 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptFloat
-import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxDefineManager {
@@ -106,22 +103,9 @@ object ParadoxDefineManager {
         return findDefineVariableElement(namespace, variable, contextElement, project)
     }
 
-    fun isLiteralDefine(element: ParadoxScriptProperty): Boolean {
-        val propertyValue = element.propertyValue ?: return false
-        return isLiteralDefineValue(propertyValue)
-    }
-
     fun isArrayDefine(element: ParadoxScriptProperty): Boolean {
         val propertyValue = element.propertyValue ?: return false
-        return isBlockDefineValue(propertyValue) && propertyValue.members().all { isLiteralDefineValue(it) } ?: false
-    }
-
-    private fun isLiteralDefineValue(propertyValue: PsiElement): Boolean {
-        return propertyValue is ParadoxScriptInt || propertyValue is ParadoxScriptFloat || propertyValue is ParadoxScriptString
-    }
-
-    private fun isBlockDefineValue(propertyValue: PsiElement): Boolean {
-        return propertyValue is ParadoxScriptBlock
+        return propertyValue is ParadoxScriptBlock && propertyValue.members().all { it is ParadoxScriptValue }
     }
 
     fun getArrayLength(element: ParadoxScriptProperty): Int? {

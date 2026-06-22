@@ -179,7 +179,7 @@ private object ParadoxCommandExpressionValidator: ParadoxComplexExpressionValida
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxCommandExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) {
+        val result = validateAllNodes(expression, element, errors) {
             when {
                 it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
                 else -> true

@@ -19,9 +19,9 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.ArrayDefineReference]。
  * - 通常作为链接 `array_define` 的数据源使用。
- * - 引用的定值变量的值应当是数组（对应索引的值通常是数字字面量）。
+ * - 引用的定值变量的值应当是数组（对应索引的值通常是数字）。
  * - 索引从0开始。
- * - 评估结果应是一个字面量（目前兼容数字字面量和字符串字面量）。
+ * - 评估结果应是一个字面量或数组。
  *
  * 节点组成：
  * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间（来自脚本文件）。
@@ -113,7 +113,7 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(expression, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
+        val result = validateAllNodes(expression, element, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result || expression.nodes.size != 5
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedArrayDefineReferenceExpression(expression.rangeInExpression, expression.text)
         validateArrayDefine(expression, element, errors)

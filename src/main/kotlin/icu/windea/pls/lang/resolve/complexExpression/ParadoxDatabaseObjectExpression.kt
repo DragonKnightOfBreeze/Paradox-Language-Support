@@ -106,7 +106,7 @@ private object ParadoxDatabaseObjectExpressionValidator: ParadoxComplexExpressio
     fun validate(expression: ParadoxDatabaseObjectExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val config = expression.typeNode?.config
-        val result = validateAllNodes(expression, errors) {
+        val result = validateAllNodes(expression, element, errors) {
             when {
                 it is ParadoxDatabaseObjectDataNode -> {
                     when {
