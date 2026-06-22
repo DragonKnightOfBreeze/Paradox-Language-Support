@@ -22,7 +22,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 节点组成：
  * - [ParadoxDynamicValueNode] - 标识符节点，匹配动态值，通常是某种标签（tag）。
- * - [ParadoxInvertDynamicValueNode] - 复合节点，可包含动态值节点。形如 `not(tag)`。
+ * - [ParadoxNegatedDynamicValueNode] - 复合节点，可包含动态值节点。形如 `not(tag)`。
  * - [ParadoxMarkerNode] - 对应其中的 `,` `(` `)`。
  * - [ParadoxBlankNode] - 对应其中的空白。
  *

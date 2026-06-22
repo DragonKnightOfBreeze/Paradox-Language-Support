@@ -1857,7 +1857,7 @@ Format of corresponding data expressions:
 
 Array define reference expression type.
 
-Matches an array define reference expression (e.g., `array_define:Namespace|Name|0`).
+Matches an array define reference expression (e.g., `array_define:Namespace|Name|0`, index is 0-based).
 
 Format of corresponding data expressions:
 - `$array_define_reference`
@@ -1866,9 +1866,9 @@ Format of corresponding data expressions:
 
 #### Tags {#data-type-tags}
 
-Tag set expression type.
+Tags expression type.
 
-Matches a tag set expression (consisting of a group of dynamic value nodes separated by commas, e.g., `tag`, `tag1,tag2`), or an empty string.  
+Matches a tags expression (consisting of a group of comma-delimited dynamic value nodes, e.g., `tag`, `tag1,tag2`), or an empty string.  
 In the condition variant, individual dynamic value nodes can be negated (e.g., `tag1,not(tag2)`).
 
 Format of corresponding data expressions:

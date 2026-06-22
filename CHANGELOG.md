@@ -12,7 +12,7 @@
 - [x] 完善对作用域字段表达式和值字段表达式的支持：兼容其中嵌套的动态值表达式 / Improve support for scope field expressions and value field expressions: compatible with nested dynamic value expressions ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
 - [ ] [CK3/VIC3/EU5] 完善对定值引用表达式的支持 / Improve support for define reference expressions ([#341](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/341))
 - [ ] [CK3/VIC3/EU5] 完善对数组定值引用表达式的支持 / Improve support for array define reference expressions ([#341](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/341))
-- [ ] [CK3/VIC3/EU5] 完善对标签集合表达式的支持 / Improve support for tags expressions
+- [ ] [CK3/VIC3/EU5] 完善对标签集合表达式的支持 / Improve support for tags expressions ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
 - [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 / Provide description info when inferring game type, and display it in the mod settings dialog
 - [ ] 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 / Provide intentions and inspections to convert scope call statements between safe form (`owner ?= ...` or `owner? = ...`) and explicit form (`exists = owner owner = ...`)
 - [x] 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 / Provide intentions and inspections to convert scope call statements between chained form (`root.owner = ...`) and nested form (`root = { owner = ... }`)

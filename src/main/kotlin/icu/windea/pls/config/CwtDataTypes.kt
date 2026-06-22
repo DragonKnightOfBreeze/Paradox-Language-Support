@@ -449,7 +449,7 @@ object CwtDataTypes {
     /**
      * 定值引用表达式类型。
      *
-     * 匹配定值引用表达式（如 `define:Namespace|Name`）。
+     * 匹配定值引用表达式（如 `Namespace|Name`）。
      *
      * 对应的数据表达式的格式：
      * - `$define_reference`
@@ -463,7 +463,7 @@ object CwtDataTypes {
     /**
      * 数组定值引用表达式类型。
      *
-     * 匹配数组定值引用表达式（如 `array_define:Namespace|Name|0`）。
+     * 匹配数组定值引用表达式（如 `Namespace|Name|0`，索引从0开始）。
      *
      * 对应的数据表达式的格式：
      * - `$array_define_reference`

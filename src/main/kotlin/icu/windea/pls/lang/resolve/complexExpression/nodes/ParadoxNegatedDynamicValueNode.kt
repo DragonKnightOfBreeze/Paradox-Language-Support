@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.indexOfNonBlank
 
-class ParadoxInvertDynamicValueNode(
+class ParadoxNegatedDynamicValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -18,7 +18,7 @@ class ParadoxInvertDynamicValueNode(
         private const val NOT_TOKEN_LENGTH = NOT_TOKEN.length
 
         @JvmStatic
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxInvertDynamicValueNode? {
+        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxNegatedDynamicValueNode? {
             if (text.isEmpty()) return null
             if (!text.startsWith(NOT_TOKEN)) return null
 
@@ -74,13 +74,13 @@ class ParadoxInvertDynamicValueNode(
                     nodes += ParadoxMarkerNode(")", TextRange.create(start, current), configGroup)
                 }
 
-                return ParadoxInvertDynamicValueNode(text, range, configGroup, nodes, configs)
+                return ParadoxNegatedDynamicValueNode(text, range, configGroup, nodes, configs)
             }
 
             // fallback
             if (!incomplete) return null
             nodes += ParadoxErrorTokenNode(text.substring(start), TextRange.create(start, range.endOffset), configGroup)
-            return ParadoxInvertDynamicValueNode(text, range, configGroup, nodes, configs)
+            return ParadoxNegatedDynamicValueNode(text, range, configGroup, nodes, configs)
         }
     }
 }
