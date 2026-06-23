@@ -4,6 +4,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.configExpression.condition
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.indexOf
 import icu.windea.pls.core.lastIndexOf
@@ -46,15 +48,12 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * ```
  */
 interface ParadoxTagsExpression : ParadoxComplexExpression {
+    val config: CwtConfig<*>
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTagsExpression? {
             return ParadoxTagsExpressionResolver.resolve(text, range, configGroup, config)
-        }
-
-        @JvmStatic
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxTagsExpression? {
-            return ParadoxTagsExpressionResolver.resolve(text, range, configGroup, configs)
         }
     }
 }
@@ -63,12 +62,13 @@ interface ParadoxTagsExpression : ParadoxComplexExpression {
 
 private object ParadoxTagsExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTagsExpression? {
-        return resolve(text, range, configGroup, config.to.singletonList())
-    }
-
-    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxTagsExpression? {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
+
+        val type = config.configExpression?.value ?: return null
+        val condition = config.configExpression?.condition ?: false
+        val dynamicValueConfigText = if (condition) "value[$type]" else "value_set[$type]"
+        val dynamicValueConfigs = CwtValueConfig.createMock(configGroup, dynamicValueConfigText).to.singletonList()
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         var start = 0
@@ -84,8 +84,8 @@ private object ParadoxTagsExpressionResolver {
                 if (start == current && !incomplete) return@run
                 val nodeText = text.substring(start, current)
                 val nodeRange = TextRange.create(start, current)
-                val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
-                    ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
+                val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
+                    ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
                     ?: ParadoxErrorTokenNode(nodeText, nodeRange, configGroup)
                 nodes += node
             }
@@ -118,8 +118,8 @@ private object ParadoxTagsExpressionResolver {
                     if (start == current && !incomplete) return@run
                     val nodeText = text.substring(start, current)
                     val nodeRange = TextRange.create(start, current)
-                    val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
-                        ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
+                    val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
+                        ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
                         ?: ParadoxErrorTokenNode(nodeText, nodeRange, configGroup)
                     nodes += node
                 }
@@ -133,7 +133,7 @@ private object ParadoxTagsExpressionResolver {
 
         if (!incomplete && nodes.isEmpty()) return null
         val range = range ?: TextRange.create(0, text.length)
-        val expression = ParadoxTagsExpressionImpl(text, range, configGroup, nodes)
+        val expression = ParadoxTagsExpressionImpl(text, range, configGroup, nodes, config)
         expression.finishResolution()
         return expression
     }
@@ -146,8 +146,19 @@ private object ParadoxTagsExpressionValidator : ParadoxComplexExpressionValidato
         val result = validateAllNodes(expression, element, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedTagsExpression(expression.rangeInExpression, expression.text)
+        checkNegated(expression, errors)
         checkQuotes(element, expression, errors)
         return errors
+    }
+
+    private fun checkNegated(expression: ParadoxTagsExpression, errors: MutableList<ParadoxComplexExpressionError>) {
+        val condition = expression.config.configExpression?.condition ?: false
+        if (condition) return
+        for (node in expression.nodes) {
+            if (node is ParadoxNegatedDynamicValueNode) {
+                errors += ParadoxComplexExpressionErrors.notCondition(node.rangeInExpression)
+            }
+        }
     }
 }
 
@@ -156,6 +167,7 @@ private class ParadoxTagsExpressionImpl(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
+    override val config: CwtConfig<*>,
 ) : ParadoxComplexExpressionBase(), ParadoxTagsExpression {
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxTagsExpressionValidator.validate(this, element)
 

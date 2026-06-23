@@ -32,6 +32,7 @@ object ParadoxComplexExpressionErrors {
 
     const val ARRAY_DEFINE_REFERENCE_FORM = 190
     const val ARRAY_DEFINE_REFERENCE_INDEX = 191
+    const val NEGATED_TAG = 192
 
     const val EXPRESSION_NOT_QUOTED = 201
 
@@ -194,6 +195,12 @@ object ParadoxComplexExpressionErrors {
     fun indexOutOfBounds(rangeInExpression: TextRange, index: Int, length: Int?): ParadoxComplexExpressionError {
         val code = ARRAY_DEFINE_REFERENCE_INDEX
         val description = PlsBundle.message("complexExpression.indexOutOfBounds", index, length ?: "?")
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun notCondition(rangeInExpression: TextRange): ParadoxComplexExpressionError {
+        val code = NEGATED_TAG
+        val description = PlsBundle.message("complexExpression.notCondition")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 

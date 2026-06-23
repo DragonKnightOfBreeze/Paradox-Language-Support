@@ -125,11 +125,11 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
         val result = validateAllNodes(expression, element, errors) { if (it is ParadoxIdentifierNode) it.text.isParameterAwareIdentifier() else true }
         val malformed = !result || expression.nodes.size != 5
         if (malformed) errors += ParadoxComplexExpressionErrors.malformedArrayDefineReferenceExpression(expression.rangeInExpression, expression.text)
-        validateArrayDefine(expression, element, errors)
+        checkArrayDefine(expression, element, errors)
         return errors
     }
 
-    private fun validateArrayDefine(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
+    private fun checkArrayDefine(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
         val variableNode = expression.nodes.findIsInstance<ParadoxDefineVariableNode>()
         val resolved = if (element == null) null else variableNode?.getReference(element)?.resolve()
 

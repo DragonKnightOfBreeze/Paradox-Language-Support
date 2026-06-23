@@ -58,7 +58,7 @@
   - 需要用双引号括起，否则给出警告。
   - 需要进一步确认格式和语义。
   - [ ] 补充实现代码。
-  - [ ] 补充测试。
+  - [x] 补充测试。
   - [ ] 更新相关规则文件。
 - [x] P2/FAST 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
   - 例如说明模组目录直接位于游戏创意工坊目录下，因此被推断为对应的游戏类型
@@ -78,7 +78,7 @@
 - [x] P3/QoL 提供代码检查 `UnmatchedFileInspection`（对于脚本文件或CSV文件），以报告当前文件无法匹配到任何 `CwtFilePathMatchableConfig`（默认级别：`WARNING`） - 这意味着当前文件是特殊的，或者缺失相应的规则
 - [x] P3/QoL 将 `ParadoxInlineScriptEditorNotificationProvider` 改为 `DeclaredInlineScriptInspection`（默认级别：`TEXT ATTRIBUTES`） - 为了对齐已有的 `UnusedInlineScriptInspection`
 - [x] P3/QoL 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 - 需要同时检测于文法级别和语义级别
-- [ ] P3/QoL 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 - 需要同时检测于文法级别和语义级别
+- [x] P3/QoL 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与显式形式（`exists = owner owner = ...`）之间进行转换 - 需要同时检测于文法级别和语义级别
 - [ ] P3/QoL 完善作用域调用的普通形式/安全形式之间的转换逻辑 - 存在更多细节，需要修复和改进
 - [x] P3 在工具菜单中新增规则系统相关的动作，并且另外提供动作，以强制刷新内置规则目录、强制刷新规则分组数据
 
