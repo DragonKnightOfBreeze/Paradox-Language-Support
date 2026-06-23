@@ -7,6 +7,8 @@ import kotlin.math.pow
 
 /**
  * 默认的数学表达式的评估器。
+ *
+ * @see MathExpressionEvaluator
  */
 class DefaultMathExpressionEvaluator(
     override var precision: Int? = null,

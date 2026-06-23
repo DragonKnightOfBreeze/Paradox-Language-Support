@@ -4,6 +4,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -36,6 +38,9 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * ```
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
+    val namespaceNode: ParadoxDefineNamespaceNode?
+    val variableNode: ParadoxDefineVariableNode?
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
@@ -107,6 +112,11 @@ private class ParadoxDefineReferenceExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDefineReferenceExpression {
+    override val namespaceNode: ParadoxDefineNamespaceNode?
+        get() = nodes.getOrNull(0)?.castOrNull()
+    override val variableNode: ParadoxDefineVariableNode?
+        get() = nodes.getOrNull(2)?.castOrNull()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxDefineReferenceExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxDefineReferenceExpression && text == other.text

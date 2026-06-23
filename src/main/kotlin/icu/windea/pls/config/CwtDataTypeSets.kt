@@ -105,6 +105,24 @@ object CwtDataTypeSets {
         CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
 
+    /** 所有可评估脚本值引用的类型。 */
+    val ScriptValueReferenceEvaluatable = arrayOf(
+        CwtDataTypes.ScriptValueReference,
+        *ValueField,
+    )
+    /** 所有可评估定值引用的类型。 */
+    val DefineReferenceEvaluatable = arrayOf(
+        CwtDataTypes.DefineReference,
+        *ValueField,
+        CwtDataTypes.Command,
+    )
+    /** 所有可评估数组定值引用的类型。 */
+    val ArrayDefineReferenceEvaluatable = arrayOf(
+        CwtDataTypes.ArrayDefineReference,
+        *ValueField,
+        CwtDataTypes.Command,
+    )
+
     /** 所有涉及动态值的类型。 */
     val DynamicValueInvolved = arrayOf(
         *DynamicValue,

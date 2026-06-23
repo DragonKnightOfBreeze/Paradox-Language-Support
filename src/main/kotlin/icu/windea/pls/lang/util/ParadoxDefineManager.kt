@@ -31,6 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.propertyValue
 
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
@@ -104,11 +105,17 @@ object ParadoxDefineManager {
     }
 
     fun isArrayDefine(element: ParadoxScriptProperty): Boolean {
-        val propertyValue = element.propertyValue ?: return false
-        return propertyValue is ParadoxScriptBlock && propertyValue.members().all { it is ParadoxScriptValue }
+        val propertyValue = element.propertyValue<ParadoxScriptBlock>() ?: return false
+        return propertyValue.members().all { it is ParadoxScriptValue }
+    }
+
+    fun getArrayValue(element: ParadoxScriptProperty, index: Int): ParadoxScriptValue? {
+        val propertyValue = element.propertyValue<ParadoxScriptBlock>() ?: return null
+        return propertyValue.values().elementAtOrNull(index)
     }
 
     fun getArrayLength(element: ParadoxScriptProperty): Int? {
-        return element.block?.values()?.count()
+        val propertyValue = element.propertyValue<ParadoxScriptBlock>() ?: return null
+        return propertyValue.values().count()
     }
 }

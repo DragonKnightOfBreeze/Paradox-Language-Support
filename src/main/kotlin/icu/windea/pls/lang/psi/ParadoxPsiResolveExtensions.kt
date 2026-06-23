@@ -40,8 +40,15 @@ fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScripte
     return scriptedVariableReference?.reference?.castOrNull<ParadoxScriptedVariablePsiReference>()?.resolve()
 }
 
-fun ParadoxScriptedVariableReference.resolved(): ParadoxScriptValue? {
+fun <T : ParadoxScriptedVariableReference> T.resolved(): ParadoxScriptValue? {
     return this.resolveScriptedVariable()?.scriptedVariableValue
+}
+
+fun <T : ParadoxScriptValue> T.resolved(): ParadoxScriptValue? {
+    return when (this) {
+        is ParadoxScriptScriptedVariableReference -> this.resolveScriptedVariable()?.scriptedVariableValue
+        else -> this
+    }
 }
 
 fun <T : ParadoxScriptExpressionElement> T.resolved(): ParadoxScriptExpressionElement? {

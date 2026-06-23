@@ -4,7 +4,9 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -40,6 +42,10 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * ```
  */
 interface ParadoxArrayDefineReferenceExpression : ParadoxComplexExpression {
+    val namespaceNode: ParadoxDefineNamespaceNode?
+    val variableNode: ParadoxDefineVariableNode?
+    val indexNode: ParadoxNumberLiteralNode?
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxArrayDefineReferenceExpression? {
@@ -98,7 +104,10 @@ private object ParadoxArrayDefineReferenceExpressionResolver {
                 // compatible with no-number literals
                 val nodeText = text.substring(pipeIndex2 + 1)
                 val nodeTextRange = TextRange.from(offset + pipeIndex2 + 1, nodeText.length)
-                val node = ParadoxNumberLiteralNode(nodeText, nodeTextRange, configGroup)
+                val node = when {
+                    TextMatcher.matchesFloat(nodeText) -> ParadoxNumberLiteralNode(nodeText, nodeTextRange, configGroup)
+                    else -> ParadoxStringLiteralNode(nodeText, nodeTextRange, configGroup)
+                }
                 nodes += node
             }
         }
@@ -130,7 +139,7 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
             }
         }
 
-        val indexNode = expression.nodes.findIsInstance<ParadoxNumberLiteralNode>() ?: return
+        val indexNode = expression.nodes.findIsInstance<ParadoxLiteralNode>() ?: return
         val index = indexNode.text.toIntOrNull()
         if (index == null) {
             errors += ParadoxComplexExpressionErrors.indexNotInt(indexNode.rangeInExpression, indexNode.text)
@@ -149,6 +158,13 @@ private class ParadoxArrayDefineReferenceExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxArrayDefineReferenceExpression {
+    override val namespaceNode: ParadoxDefineNamespaceNode?
+        get() = nodes.getOrNull(0)?.castOrNull()
+    override val variableNode: ParadoxDefineVariableNode?
+        get() = nodes.getOrNull(2)?.castOrNull()
+    override val indexNode: ParadoxNumberLiteralNode?
+        get() = nodes.getOrNull(4)?.castOrNull()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxArrayDefineReferenceExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxArrayDefineReferenceExpression && text == other.text

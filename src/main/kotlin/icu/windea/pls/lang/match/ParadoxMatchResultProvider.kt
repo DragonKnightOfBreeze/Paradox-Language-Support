@@ -43,7 +43,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
-import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -281,12 +280,6 @@ object ParadoxMatchResultProvider {
         return forComplexExpressionFromAttributes(complexExpression)
     }
 
-    fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
-        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return forComplexExpressionFromAttributes(complexExpression)
-    }
-
     fun forScriptValueReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
         val complexExpression = ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
@@ -307,6 +300,12 @@ object ParadoxMatchResultProvider {
 
     fun forTagsExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
         val complexExpression = ParadoxTagsExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
+        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
+        return forComplexExpressionFromAttributes(complexExpression)
+    }
+
+    fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
+        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forComplexExpressionFromAttributes(complexExpression)
     }
