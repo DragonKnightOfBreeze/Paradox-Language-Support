@@ -28,7 +28,7 @@ class ParadoxDefineReferenceEvaluator(
     }
 
     fun evaluate(element: ParadoxExpressionElement, rootExpression: ParadoxComplexExpression): ParadoxScriptValue? {
-        // ignore prev link nodes
+        // NOTE 2.1.10 ignore prev link nodes
         val expression = when {
             rootExpression is ParadoxDefineReferenceExpression -> rootExpression
             rootExpression is ParadoxLinkedExpression -> {

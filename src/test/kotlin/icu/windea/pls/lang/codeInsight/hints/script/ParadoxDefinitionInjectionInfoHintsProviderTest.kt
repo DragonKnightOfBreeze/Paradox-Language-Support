@@ -29,7 +29,7 @@ class ParadoxDefinitionInjectionInfoHintsProviderTest: DeclarativeInlayHintsProv
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
-        markConfigDirectory("features/inlayHints/.config")
+        markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Vic3)
     }
 

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util.evaluators
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.psi.properties
@@ -32,8 +33,8 @@ class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/inlayHints")
-        markConfigDirectory("features/inlayHints/.config")
+        markRootDirectory("features/evaluators")
+        markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
@@ -43,7 +44,9 @@ class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
     @Test
     fun simple() {
         markFileInfo(ParadoxGameType.Stellaris, "common/defines/00_defines.txt")
-        myFixture.configureByFile("features/inlayHints/common/defines/00_defines.txt")
+        myFixture.configureByFile("chronicle/common/defines/00_defines.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
         myFixture.configureByFile("features/evaluators/define_reference_simple.test.txt")
@@ -52,7 +55,7 @@ class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
         val evaluator = ParadoxDefineReferenceEvaluator()
 
         assertResult("here_we_introduce") { evaluator.evaluate(list[0]) }
-        assertResult(null) { evaluator.evaluate(list[0]) }
+        assertResult(null) { evaluator.evaluate(list[1]) }
     }
 
     private fun toStringList(file: ParadoxScriptFile): List<ParadoxScriptString> {
@@ -60,6 +63,6 @@ class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
     }
 
     private fun assertResult(expect: String?, expression: () -> ParadoxScriptValue?) {
-        Assert.assertEquals(expect, expression()?.stringValue())
+        Assert.assertEquals(expect, expression()?.value)
     }
 }

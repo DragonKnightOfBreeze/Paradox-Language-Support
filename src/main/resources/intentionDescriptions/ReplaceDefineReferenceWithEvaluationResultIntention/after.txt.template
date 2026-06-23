@@ -1,4 +1,4 @@
 description = <spot>here_we_introduce</spot>
 description = define:NEntrance|INTRODUCE_UNDEFINED
-tips = array_define:NEntrance|WELCOMES
-tips = array_define:NEntrance|WELCOMES_UNDEFINED
+tips = array_define:NEntrance|WELCOMES|0
+tips = array_define:NEntrance|WELCOMES_UNDEFINED|0

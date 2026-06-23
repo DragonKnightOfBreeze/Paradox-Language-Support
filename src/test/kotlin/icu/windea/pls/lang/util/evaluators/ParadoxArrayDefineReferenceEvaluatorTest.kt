@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util.evaluators
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.psi.properties
@@ -34,7 +35,7 @@ class ParadoxArrayDefineReferenceEvaluatorTest : BasePlatformTestCase() {
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
-        markConfigDirectory("features/inlayHints/.config")
+        markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
@@ -44,7 +45,9 @@ class ParadoxArrayDefineReferenceEvaluatorTest : BasePlatformTestCase() {
     @Test
     fun simple() {
         markFileInfo(ParadoxGameType.Stellaris, "common/defines/00_defines.txt")
-        myFixture.configureByFile("features/inlayHints/common/defines/00_defines.txt")
+        myFixture.configureByFile("chronicle/common/defines/00_defines.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
         myFixture.configureByFile("features/evaluators/array_define_reference_simple.test.txt")
@@ -52,8 +55,8 @@ class ParadoxArrayDefineReferenceEvaluatorTest : BasePlatformTestCase() {
         val list = toStringList(file)
         val evaluator = ParadoxArrayDefineReferenceEvaluator()
 
-        assertResult(PlsStrings.blockFolder) { evaluator.evaluate(list[0]) }
-        assertResult(null) { evaluator.evaluate(list[0]) }
+        assertResult("here_we_send_greetings") { evaluator.evaluate(list[0]) }
+        assertResult(null) { evaluator.evaluate(list[1]) }
     }
 
     private fun toStringList(file: ParadoxScriptFile): List<ParadoxScriptString> {
@@ -61,6 +64,6 @@ class ParadoxArrayDefineReferenceEvaluatorTest : BasePlatformTestCase() {
     }
 
     private fun assertResult(expect: String?, expression: () -> ParadoxScriptValue?) {
-        Assert.assertEquals(expect, expression()?.stringValue())
+        Assert.assertEquals(expect, expression()?.value)
     }
 }

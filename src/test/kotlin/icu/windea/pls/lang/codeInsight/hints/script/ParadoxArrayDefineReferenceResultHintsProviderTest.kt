@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.hints.csv
+package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
@@ -18,11 +18,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxDefinitionReferenceInfoHintsProvider
+ * @see ParadoxArrayDefineReferenceResultHintsProvider
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestCase() {
+class ParadoxArrayDefineReferenceResultHintsProviderTest : DeclarativeInlayHintsProviderTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -38,18 +38,18 @@ class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestC
 
     @Test
     fun preview() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/chapters/00_chapters.txt")
-        myFixture.configureByFile("features/inlayHints/common/chapters/00_chapters.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/chapters/categories/00_chapter_categories.txt")
-        myFixture.configureByFile("features/inlayHints/common/chapters/categories/00_chapter_categories.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/defines/00_defines.txt")
+        myFixture.configureByFile("chronicle/common/defines/00_defines.txt")
 
-        markFileInfo(ParadoxGameType.Stellaris, "common/chapters/00_chapter_pages.csv")
-        val text = loadText("/inlayProviders/paradox.csv.definitionReferenceInfo/preview.csv")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
+        val text = loadText("/inlayProviders/paradox.script.arrayDefineReferenceResult/preview.txt")
         doTest(text)
     }
 
     private fun doTest(text: String) {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        doTestProvider("test.csv", text, ParadoxDefinitionReferenceInfoHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
+        doTestProvider("test.txt", text, ParadoxArrayDefineReferenceResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }
