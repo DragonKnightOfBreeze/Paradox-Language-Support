@@ -10,9 +10,11 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.fixes.QuoteLiteralFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -59,6 +61,11 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
     protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean
 
     protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {
-        return LocalQuickFix.EMPTY_ARRAY
+        val result = mutableListOf<LocalQuickFix>()
+        for (error in errors) {
+            if (error.code == ParadoxComplexExpressionErrors.EXPRESSION_NOT_QUOTED) result += QuoteLiteralFix()
+        }
+        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
+        return result.toTypedArray()
     }
 }
