@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -35,8 +34,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxDatabaseObjectExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        return ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
+        return mark(incomplete) { ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) }
     }
 
     @Test

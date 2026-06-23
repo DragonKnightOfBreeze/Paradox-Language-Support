@@ -33,9 +33,8 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, formatName: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxNameFormatExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        val cfg = CwtValueConfig.createMock(configGroup, "name_format[$formatName]")
-        return ParadoxNameFormatExpression.resolve(text, null, configGroup, cfg)
+        val config = CwtValueConfig.createMock(configGroup, "name_format[$formatName]")
+        return mark(incomplete) { ParadoxNameFormatExpression.resolve(text, null, configGroup, config) }
     }
 
     @Test

@@ -330,8 +330,11 @@ object ParadoxComplexExpressionCompletionManager {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
 
+        val finalConfigs = if (context.configs.isNotEmpty()) context.configs.toListOrThis() else context.config.to.singletonListOrEmpty()
+        if (finalConfigs.isEmpty()) return
+
         val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxTagsExpression.resolve(context.keyword, textRange, context.configGroup) } ?: return
+        val expression = markIncomplete { ParadoxTagsExpression.resolve(context.keyword, textRange, context.configGroup, finalConfigs) } ?: return
 
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {

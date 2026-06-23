@@ -303,7 +303,8 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.value.isEmpty()) return ParadoxMatchResult.FallbackMatch // 2.1.10 compatible
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        return ParadoxMatchResultProvider.forTagsExpression(context.configGroup, context.expression.value)
+        if (context.config == null) return ParadoxMatchResult.NotMatch
+        return ParadoxMatchResultProvider.forTagsExpression(context.configGroup, context.expression.value, context.config)
     }
 
     private fun matchDatabaseObjectExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

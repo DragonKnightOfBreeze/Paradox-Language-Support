@@ -32,8 +32,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxScriptValueReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        return ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup)
+        return mark(incomplete) { ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup) }
     }
 
     @Test

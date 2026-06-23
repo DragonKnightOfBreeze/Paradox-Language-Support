@@ -1884,8 +1884,6 @@ Format of corresponding data expressions:
 - `$tags[{name}]` – where `{name}` matches a dynamic value type name.
 - `$tags_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type name.
 
-(To be implemented in 2.1.10)
-
 #### DatabaseObject {#data-type-database-object}
 
 Database object expression type.

@@ -34,8 +34,7 @@ class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxArrayDefineReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        return ParadoxArrayDefineReferenceExpression.resolve(text, null, configGroup)
+        return mark(incomplete) { ParadoxArrayDefineReferenceExpression.resolve(text, null, configGroup) }
     }
 
     @Test

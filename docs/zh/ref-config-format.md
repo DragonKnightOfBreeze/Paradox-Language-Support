@@ -1897,8 +1897,6 @@ title
 - `$tags[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
 - `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型的名字。
 
-（TODO 2.1.10 待实现）
-
 #### DatabaseObject {#data-type-database-object}
 
 数据库对象表达式类型。

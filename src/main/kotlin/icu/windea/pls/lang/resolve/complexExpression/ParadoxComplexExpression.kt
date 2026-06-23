@@ -100,7 +100,7 @@ private object ParadoxComplexExpressionResolver {
             dataType in CwtDataTypeSets.DynamicValue -> ParadoxDynamicValueExpression.resolve(text, range, configGroup, config)
             dataType == CwtDataTypes.DefineReference -> ParadoxDefineReferenceExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.ArrayDefineReference -> ParadoxArrayDefineReferenceExpression.resolve(text, range, configGroup)
-            dataType == CwtDataTypes.Tags -> ParadoxTagsExpression.resolve(text, range, configGroup)
+            dataType == CwtDataTypes.Tags -> ParadoxTagsExpression.resolve(text, range, configGroup, config)
             dataType == CwtDataTypes.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.NameFormat -> ParadoxNameFormatExpression.resolve(text, range, configGroup, config)
             else -> null

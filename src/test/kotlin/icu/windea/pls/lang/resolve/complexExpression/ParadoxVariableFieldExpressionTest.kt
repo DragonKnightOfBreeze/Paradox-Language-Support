@@ -32,8 +32,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxVariableFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        return ParadoxVariableFieldExpression.resolve(text, null, configGroup)
+        return mark(incomplete) { ParadoxVariableFieldExpression.resolve(text, null, configGroup) }
     }
 
     @Test

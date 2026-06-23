@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -35,8 +34,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val configs = configGroup.links.values.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
-        if (incomplete) ChronicleThreadContext.incompleteComplexExpression.set(true) else ChronicleThreadContext.incompleteComplexExpression.remove()
-        return ParadoxDynamicValueExpression.resolve(text, null, configGroup, configs)
+        return mark(incomplete) { ParadoxDynamicValueExpression.resolve(text, null, configGroup, configs) }
     }
 
     @Test

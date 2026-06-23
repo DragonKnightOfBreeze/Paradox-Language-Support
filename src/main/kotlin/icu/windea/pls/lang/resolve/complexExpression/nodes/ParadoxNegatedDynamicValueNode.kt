@@ -22,61 +22,67 @@ class ParadoxNegatedDynamicValueNode(
             val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-            var start: Int
+            var start = 0
             var current = 0
             run fallback@{
                 run {
                     // expect: KEYWORD
-                    start = current
-                    current = "not".length
+                    // start = current
+                    current = 3
                     val node = ParadoxKeywordNode("not", TextRange.from(start, current), configGroup)
                     nodes += node
                 }
                 run {
                     // expect: optional blank
+                    if (current == text.length) return@run
                     start = current
-                    current = text.indexOf(start) { !it.isWhitespace() }
+                    current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
                     nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start, current), configGroup)
+                    if (current == text.length) return@fallback
                 }
                 run {
                     // expect: "("
+                    if (current == text.length) return@run
                     start = current
-                    current = if (text[current] == '(') current + 1 else -1
-                    if (current == -1) return@fallback
+                    current = if (text[current] == '(') current + 1 else return@fallback
                     nodes += ParadoxMarkerNode("(", TextRange.create(start, current), configGroup)
                 }
                 run {
                     // expect: optional blank
+                    if (current == text.length) return@run
                     start = current
-                    current = text.indexOf(start) { !it.isWhitespace() }
+                    current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
                     nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start, current), configGroup)
                 }
                 run {
                     // expect: dynamic_value
+                    if (current == text.length) return@run
                     start = current
-                    current = text.indexOf(start) { it.isWhitespace() || it in "()," }
-                    if (current == -1) return@fallback
+                    current = text.indexOf(start) { it in "()," || it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
+                    if (start == current && !incomplete) return@run
                     nodes += ParadoxDynamicValueNode.resolve(text.substring(start, current), TextRange.create(start, current), configGroup, configs) ?: return@fallback
                 }
                 run {
                     // expect optional blank
+                    if (current == text.length) return@run
                     start = current
-                    current = text.indexOf(start) { !it.isWhitespace() }
+                    current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
                     nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start, current), configGroup)
+                    if (current == text.length) return@fallback
                 }
                 run {
                     // expect: ")"
+                    if (current == text.length) return@run
                     start = current
-                    current = if (text[current] == ')') current + 1 else -1
-                    if (current == -1) return@fallback
+                    current = if (text[current] == ')') current + 1 else return@fallback
                     nodes += ParadoxMarkerNode(")", TextRange.create(start, current), configGroup)
                 }
                 run {
                     // check error
-                    if(current == text.length) return@run
+                    if (current == text.length) return@run
                     nodes += ParadoxErrorTokenNode(text.substring(current), TextRange.create(current, text.length), configGroup)
                 }
 

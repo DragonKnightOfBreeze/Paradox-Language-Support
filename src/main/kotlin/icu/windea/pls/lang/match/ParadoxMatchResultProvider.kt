@@ -298,8 +298,8 @@ object ParadoxMatchResultProvider {
         return forComplexExpressionFromAttributes(complexExpression)
     }
 
-    fun forTagsExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxTagsExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
+    fun forTagsExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
+        val complexExpression = ParadoxTagsExpression.resolve(text, null, configGroup, config) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forComplexExpressionFromAttributes(complexExpression)
     }

@@ -432,9 +432,18 @@ fun String.toCapitalizedWords(): String {
     }
 }
 
-/** 查找从 [startIndex] 开始第一个符合条件 [predicate] 的字符。 */
+/** 查找从 [startIndex] 开始向后第一个符合条件 [predicate] 的字符。 */
 fun CharSequence.indexOf(startIndex: Int, predicate: (Char) -> Boolean): Int {
     for (i in startIndex until length) {
+        val c = this[i]
+        if (predicate(c)) return i
+    }
+    return -1
+}
+
+/** 查找从 [startIndex] 开始向前第一个符合条件 [predicate] 的字符。 */
+fun CharSequence.lastIndexOf(startIndex: Int, predicate: (Char) -> Boolean): Int {
+    for (i in startIndex downTo 0) {
         val c = this[i]
         if (predicate(c)) return i
     }

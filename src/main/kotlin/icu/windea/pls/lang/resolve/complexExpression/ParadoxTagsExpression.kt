@@ -6,6 +6,9 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.indexOf
+import icu.windea.pls.core.lastIndexOf
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -37,13 +40,18 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * 语法：
  * ```bnf
- * tags_expression ::= tag ("," tag)*
+ * tags_expression ::= tag? ("," tag?)*
  * private tag ::= dynamic_value | invert_dynamic_value
  * invert_dynamic_value ::= KEYWORD "(" dynamic_value ")"
  * ```
  */
 interface ParadoxTagsExpression : ParadoxComplexExpression {
     companion object {
+        @JvmStatic
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTagsExpression? {
+            return ParadoxTagsExpressionResolver.resolve(text, range, configGroup, config)
+        }
+
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxTagsExpression? {
             return ParadoxTagsExpressionResolver.resolve(text, range, configGroup, configs)
@@ -54,51 +62,65 @@ interface ParadoxTagsExpression : ParadoxComplexExpression {
 // region Implementations
 
 private object ParadoxTagsExpressionResolver {
+    fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTagsExpression? {
+        return resolve(text, range, configGroup, config.to.singletonList())
+    }
+
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxTagsExpression? {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        var start: Int
+        var start = 0
         var current = 0
         run fallback@{
-            // expect: ("," tag)*
             run {
-                // expect: optional blank
+                // expect: dynamic_value | invert_dynamic_value
+                if (current == text.length && !incomplete) return@run
                 start = current
-                current = text.indexOf(start) { !it.isWhitespace() }
-                if (start == current) return@run
-                nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start, current), configGroup)
+                current = text.indexOf(',', start)
+                if (current > start) current = text.lastIndexOf(current - 1) { !it.isWhitespace() } + 1
+                if (current < 0) current = text.length
+                if (start == current && !incomplete) return@run
+                val nodeText = text.substring(start, current)
+                val nodeRange = TextRange.create(start, current)
+                val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
+                    ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
+                    ?: ParadoxErrorTokenNode(nodeText, nodeRange, configGroup)
+                nodes += node
             }
-            while (current <= text.length) {
+            while (current < text.length) {
+                // expect: ("," tag)*
                 run {
                     // expect: ","
-                    start = current
-                    current = if (text[current] == ',') current + 1 else -1
-                    if (current == -1) return@run
+                    if (current == text.length) return@run
+                    // start = current
+                    current = if (text[current] == ',') current + 1 else return@run
                     nodes += ParadoxMarkerNode(",", TextRange.create(start, current), configGroup)
+                    if (current == text.length) return@fallback
                 }
                 run {
                     // expect: optional blank
+                    if (current == text.length) return@run
                     start = current
-                    current = text.indexOf(start) { !it.isWhitespace() }
+                    current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
                     nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start, current), configGroup)
+                    if (current == text.length) return@fallback
                 }
                 run {
                     // expect: dynamic_value | invert_dynamic_value
-                    var marker = true
+                    if (current == text.length && !incomplete) return@run
                     start = current
-                    current = text.indexOf(start) {
-                        if (it == '(') marker = false else if (it == ')') marker = true
-                        marker && (it.isWhitespace() || it == ',')
-                    }
-                    if (current == -1) return@run
+                    current = text.indexOf(',', start)
+                    if (current > start) current = text.lastIndexOf(current - 1) { !it.isWhitespace() } + 1
+                    if (current < 0) current = text.length
+                    if (start == current && !incomplete) return@run
                     val nodeText = text.substring(start, current)
                     val nodeRange = TextRange.create(start, current)
                     val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
                         ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, configs)
-                        ?: return@fallback
+                        ?: ParadoxErrorTokenNode(nodeText, nodeRange, configGroup)
                     nodes += node
                 }
             }
@@ -107,11 +129,6 @@ private object ParadoxTagsExpressionResolver {
                 if (current == text.length) return@run
                 nodes += ParadoxErrorTokenNode(text.substring(current), TextRange.create(current, text.length), configGroup)
             }
-
-            val range = range ?: TextRange.create(0, text.length)
-            val expression = ParadoxTagsExpressionImpl(text, range, configGroup, nodes)
-            expression.finishResolution()
-            return expression
         }
 
         if (!incomplete && nodes.isEmpty()) return null
