@@ -27,15 +27,17 @@
   <!-- ExternalSystem.ProjectRefreshActionGroup -->
   <actions>
     <group id="Pls.ConfigGroupRefreshActionGroup">
-      <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.ConfigGroupRefreshAction">
+      <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.config.actions.ConfigGroupRefreshAction">
         <keyboard-shortcut first-keystroke="control shift g" keymap="$default"/>
       </action>
-      <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.HideConfigGroupRefreshAction"/>
+      <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.config.actions.HideConfigGroupRefreshAction"/>
     </group>
 
-    <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">
+    <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.actions.ConfigGroupSyncFromRemoteAction">
       <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </action>
+    <action id="Pls.ConfigGroupForceRefreshAction" class="icu.windea.pls.config.actions.ConfigGroupForceRefreshAction"/>
+    <action id="Pls.ConfigGroupForcePlusRefreshAction" class="icu.windea.pls.config.actions.ConfigGroupForcePlusRefreshAction"/>
   </actions>
 </idea-plugin>

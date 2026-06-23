@@ -52,6 +52,8 @@
         <reference ref="Pls.HideConfigGroupRefreshAction"/>
         <separator/>
         <reference ref="Pls.SyncConfigGroupFromRemote"/>
+        <reference ref="Pls.ConfigGroupForceRefreshAction"/>
+        <reference ref="Pls.ConfigGroupForcePlusRefreshAction"/>
       </group>
       <group id="Pls.Tools.ConfigGeneration" popup="true">
         <reference ref="Pls.ConfigGeneration"/>

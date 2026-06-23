@@ -1,20 +1,22 @@
-package icu.windea.pls.config.configGroup
+package icu.windea.pls.config.actions
 
-import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
 
-// com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions
+// com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
 
-class HideConfigGroupRefreshAction : DumbAwareAction() {
+class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
     init {
-        templatePresentation.icon = AllIcons.Actions.Close
-        templatePresentation.hoveredIcon = AllIcons.Actions.CloseHovered
-        templatePresentation.text = PlsBundle.message("configGroup.refresh.action.hide.text")
+        templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroups
+        templatePresentation.text = PlsBundle.message("configGroup.action.refresh.text")
+        templatePresentation.description = PlsBundle.message("configGroup.action.refresh.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -36,6 +38,6 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
         val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
         configGroups.forEach { configGroup -> configGroup.changed = false }
-        configGroupService.updateRefreshStatus()
+        configGroupService.refreshConfigGroupsAsync(configGroups)
     }
 }

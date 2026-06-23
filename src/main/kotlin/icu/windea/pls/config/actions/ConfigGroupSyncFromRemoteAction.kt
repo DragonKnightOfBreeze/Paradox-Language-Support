@@ -1,4 +1,4 @@
-package icu.windea.pls.config.configGroup
+package icu.windea.pls.config.actions
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -12,7 +12,8 @@ import icu.windea.pls.lang.fileInfo
 class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
     init {
         templatePresentation.icon = PlsIcons.Actions.SyncConfigGroupsFromRemote
-        templatePresentation.text = PlsBundle.message("configGroup.syncFromRemote.action.text")
+        templatePresentation.text = PlsBundle.message("configGroup.action.syncFromRemote.text")
+        templatePresentation.description = PlsBundle.message("configGroup.action.syncFromRemote.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

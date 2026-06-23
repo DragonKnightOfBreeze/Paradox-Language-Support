@@ -167,6 +167,7 @@ object PlsIcons {
         @JvmField val ModSettings = getIcon("/icons/actions/modSettings.svg") // from general/gear.svg, fill #5D8DC3
         @JvmField val RefreshConfigGroups = getIcon("/icons/actions/refreshConfigGroups.svg") // from icons/refresh.svg, fill #5D8DC3
         @JvmField val SyncConfigGroupsFromRemote = getIcon("/icons/actions/syncConfigGroupsFromRemote.svg") // from icons/clone.svg, fill #5D8DC3
+        @JvmField val ForceRefreshConfigGroups = getIcon("/icons/actions/forceRefreshConfigGroups.svg") // from icons/refresh.svg, fill #B91919
     }
 
     object EditorActions {
