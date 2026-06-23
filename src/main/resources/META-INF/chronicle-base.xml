@@ -1,0 +1,7 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleDataPathService" serviceImplementation="icu.windea.pls.base.io.ChronicleDataPathServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleGitService" serviceImplementation="icu.windea.pls.base.io.ChronicleGitServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleSqliteService" serviceImplementation="icu.windea.pls.base.io.ChronicleSqliteServiceImpl"/>
+  </extensions>
+</idea-plugin>

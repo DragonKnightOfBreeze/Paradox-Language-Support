@@ -19,6 +19,7 @@
   <!-- Needs to be placed at the very front -->
   <xi:include href="/META-INF/chronicle-inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+  <xi:include href="/META-INF/chronicle-base.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-ide.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
