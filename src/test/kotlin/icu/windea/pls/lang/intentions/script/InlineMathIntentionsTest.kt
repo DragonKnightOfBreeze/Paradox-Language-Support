@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4
 import icu.windea.pls.lang.text.ParadoxScriptTextBuilder.parameter as p
 
 /**
- * @see ReplaceInlineMathWithEvaluatedValueIntention
+ * @see ReplaceInlineMathWithEvaluationResultIntention
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -28,7 +28,7 @@ class InlineMathIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testReplaceInlineMathWithEvaluatedValue_constant() {
-        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluatedValue")
+        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + 1 ]")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -37,7 +37,7 @@ class InlineMathIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testReplaceInlineMathWithEvaluatedValue_parameterWithDefaultValue() {
-        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluatedValue")
+        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + ${p("NUM", "1")} ]")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -46,7 +46,7 @@ class InlineMathIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testReplaceInlineMathWithEvaluatedValue_dynamic_notAvailable() {
-        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluatedValue")
+        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + ${p("NUM")} ]")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
     }

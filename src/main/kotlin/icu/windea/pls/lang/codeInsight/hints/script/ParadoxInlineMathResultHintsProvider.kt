@@ -7,16 +7,17 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
+import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 
 /**
- * 通过内嵌提示显示内联数学表达式的求值结果（如果无需提供额外的传参信息）。
+ * 通过内嵌提示显示内联数学表达式的评估结果（如果无需提供额外的传参信息）。
  */
 class ParadoxInlineMathResultHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptInlineMath) return
-        if (element.expression.isEmpty()) return
+        if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
 
         val evaluator = ParadoxInlineMathEvaluator()
         val result = runCatchingCancelable { evaluator.evaluate(element) }.getOrNull() ?: return

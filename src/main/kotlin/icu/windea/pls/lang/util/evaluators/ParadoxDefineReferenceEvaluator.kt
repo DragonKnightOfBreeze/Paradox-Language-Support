@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  *
  * @see ParadoxDefineReferenceExpression
  */
-class ParadoxDefineReferenceExpressionEvaluator(
+class ParadoxDefineReferenceEvaluator(
     var resolve: Boolean = true,
 ) {
     fun evaluateFromRoot(element: ParadoxExpressionElement): ParadoxScriptValue? {

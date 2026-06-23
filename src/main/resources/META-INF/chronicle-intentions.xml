@@ -91,6 +91,11 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.ReplaceScriptedVariableReferenceWithResolvedValueIntention</className>
     </intentionAction>
     <intentionAction>
@@ -101,12 +106,17 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ReplaceInlineMathWithEvaluatedValueIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceInlineMathWithEvaluationResultIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceDefineReferenceWithEvaluatedValueIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceArrayDefineReferenceWithEvaluatedValueIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>

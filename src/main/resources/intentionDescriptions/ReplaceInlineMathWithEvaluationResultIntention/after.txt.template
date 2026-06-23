@@ -1,2 +1,3 @@
 key = <spot>2</spot>
+key = @[ 1 + $NUM$ ]
 key = <spot>2</spot>

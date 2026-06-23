@@ -7,20 +7,22 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 
 /**
- * 将内联数学块替换为其求值结果（如果无需提供额外的传参信息）。
+ * 将内联数学块替换为评估结果（如果无需提供额外的传参信息）。
+ *
+ * @see ParadoxInlineMathEvaluator
  */
 @Suppress("UnstableApiUsage")
-class ReplaceInlineMathWithEvaluatedValueIntention : PsiUpdateModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceInlineMathWithEvaluatedValue")
+class ReplaceInlineMathWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
+    override fun getFamilyName() = PlsBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptInlineMath, updater: ModPsiUpdater) {
-        if (element.expression.isEmpty()) return
         val result = getResult(element) ?: return
         val newElement = ParadoxScriptElementFactory.createValue(context.project, result.formatted())
         if (newElement !is ParadoxScriptNumberExpressionElement) return // post check
@@ -28,7 +30,7 @@ class ReplaceInlineMathWithEvaluatedValueIntention : PsiUpdateModCommandAction<P
     }
 
     override fun isElementApplicable(element: ParadoxScriptInlineMath, context: ActionContext): Boolean {
-        return element.expression.isNotEmpty() && getResult(element) != null
+        return getResult(element) != null
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
@@ -36,6 +38,8 @@ class ReplaceInlineMathWithEvaluatedValueIntention : PsiUpdateModCommandAction<P
     }
 
     private fun getResult(element: ParadoxScriptInlineMath): MathResult? {
+        if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return null
+
         val evaluator = ParadoxInlineMathEvaluator()
         return runCatchingCancelable { evaluator.evaluate(element) }.getOrNull()
     }

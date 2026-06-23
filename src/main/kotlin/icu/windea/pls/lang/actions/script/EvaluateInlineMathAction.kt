@@ -10,6 +10,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
+import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ class EvaluateInlineMathAction : AnAction() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         presentation.isVisible = true
-        if (element.expression.isEmpty()) return
+        if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
         presentation.isEnabled = true
     }
 
@@ -40,8 +41,7 @@ class EvaluateInlineMathAction : AnAction() {
         if (file !is ParadoxScriptFile) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        if (!element.isValid) return // precheck
-        if (element.expression.isEmpty()) return
+        if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
