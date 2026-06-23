@@ -5,6 +5,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -45,6 +46,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 作用域字段表达式：[ParadoxScopeFieldExpression]（可选）。
  */
 interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
+    val dynamicValueNode: ParadoxDynamicValueNode
+    val scopeFieldExpression: ParadoxScopeFieldExpression?
+
     val configs: List<CwtConfig<*>>
 
     companion object {
@@ -144,6 +148,11 @@ private class ParadoxDynamicValueExpressionImpl(
     override val configs: List<CwtConfig<*>>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDynamicValueExpression {
+    override val dynamicValueNode: ParadoxDynamicValueNode
+        get() = nodes.get(0).cast()
+    override val scopeFieldExpression: ParadoxScopeFieldExpression?
+        get() = nodes.getOrNull(2)?.cast()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxDynamicValueExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxDynamicValueExpression && text == other.text

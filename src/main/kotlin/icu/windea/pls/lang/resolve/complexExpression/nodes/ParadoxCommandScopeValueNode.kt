@@ -4,7 +4,6 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
@@ -18,16 +17,9 @@ class ParadoxCommandScopeValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val linkConfigs: List<CwtLinkConfig>,
+    override val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxLinkValueNode {
-    override val argumentNodes: List<ParadoxComplexExpressionNode>
-        get() = nodes.filter { it !is ParadoxBlankNode && it !is ParadoxMarkerNode }
-
-    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return linkConfigs
-    }
-
     companion object {
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeValueNode {

@@ -6,6 +6,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -68,6 +69,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+    val fieldNode: ParadoxCommandFieldNode
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
@@ -175,7 +179,7 @@ private object ParadoxCommandExpressionResolver {
     }
 }
 
-private object ParadoxCommandExpressionValidator: ParadoxComplexExpressionValidatorScope {
+private object ParadoxCommandExpressionValidator : ParadoxComplexExpressionValidatorScope {
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxCommandExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
@@ -198,6 +202,13 @@ private class ParadoxCommandExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxCommandExpression {
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+    override val fieldNode: ParadoxCommandFieldNode
+        get() = nodes.last().cast()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxCommandExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxCommandExpression && text == other.text

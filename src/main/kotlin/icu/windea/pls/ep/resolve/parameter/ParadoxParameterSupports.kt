@@ -39,10 +39,7 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.argumentNodes
-import icu.windea.pls.lang.resolve.complexExpression.nestedScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
@@ -359,8 +356,9 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val gameType = configGroup.gameType
         val project = configGroup.project
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-        val scriptValueReferenceExpression = valueFieldExpression.nestedScriptValueReferenceExpression ?: return null
-        val definitionName = scriptValueReferenceExpression.scriptValueNode.text.orNull() ?: return null
+        val scriptValueReferenceExpression = valueFieldExpression.fieldNode.asDynamic()?.valueNode?.dataSourceNode?.castOrNull<ParadoxScriptValueReferenceExpression>() ?: return null
+        val scriptValueNode = scriptValueReferenceExpression.scriptValueNode
+        val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
         val contextName = definitionName
@@ -410,17 +408,17 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if (!expressionString.contains("value:")) return null // 快速判断
         val configGroup = config.configGroup
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-        val scriptValueReferenceExpression = valueFieldExpression.nestedScriptValueReferenceExpression ?: return null
+        val scriptValueReferenceExpression = valueFieldExpression.fieldNode.asDynamic()?.valueNode?.dataSourceNode?.castOrNull<ParadoxScriptValueReferenceExpression>() ?: return null
         val scriptValueNode = scriptValueReferenceExpression.scriptValueNode
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
         val offset = ParadoxExpressionManager.getExpressionOffset(element)
         val argumentNode = scriptValueReferenceExpression.nodes.find f@{
-            if (it !is ParadoxScriptValueArgumentNode) return@f false
+            if (it !is ParadoxScriptValueArgumentNameNode) return@f false
             if (it.rangeInExpression.shiftRight(offset) != rangeInElement) return@f false
             true
-        } as? ParadoxScriptValueArgumentNode ?: return null
+        } as? ParadoxScriptValueArgumentNameNode ?: return null
         val name = argumentNode.text.orNull() ?: return null
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])

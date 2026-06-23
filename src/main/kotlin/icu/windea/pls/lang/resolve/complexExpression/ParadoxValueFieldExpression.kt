@@ -5,6 +5,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -70,6 +71,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+    val fieldNode: ParadoxValueFieldNode
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
@@ -165,6 +169,13 @@ private class ParadoxValueFieldExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxValueFieldExpression {
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+    override val fieldNode: ParadoxValueFieldNode
+        get() = nodes.last().cast()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxValueFieldExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxValueFieldExpression && text == other.text

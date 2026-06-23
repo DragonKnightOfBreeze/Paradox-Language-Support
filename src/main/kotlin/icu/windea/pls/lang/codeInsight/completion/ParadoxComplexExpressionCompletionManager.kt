@@ -34,8 +34,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
-import icu.windea.pls.lang.resolve.complexExpression.valueNode
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -281,7 +279,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) continue
             when (node) {
                 is ParadoxScriptValueNode -> completeForScriptValueNode(context, result, node, offset)
-                is ParadoxScriptValueArgumentNode -> completeForScriptValueArgumentNode(context, result, node, offset, element)
+                is ParadoxScriptValueArgumentNameNode -> completeForScriptValueArgumentNode(context, result, node, offset, element)
                 is ParadoxScriptValueArgumentValueNode -> completeForScopeValueArgumentValueNode(context, result, node, offset, element)
             }
         }
@@ -362,7 +360,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) continue
             when (node) {
                 is ParadoxDatabaseObjectTypeNode -> completeForDatabaseObjectTypeNode(context, result, node, offset)
-                is ParadoxDatabaseObjectNode -> completeForDatabaseObjectNode(context, result, node, offset)
+                is ParadoxDatabaseObjectValueNode -> completeForDatabaseObjectNode(context, result, node, offset)
             }
         }
     }
@@ -667,7 +665,7 @@ object ParadoxComplexExpressionCompletionManager {
         ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
     }
 
-    private fun completeForScriptValueArgumentNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxScriptValueArgumentNode, offset: Int, element: ParadoxExpressionElement) {
+    private fun completeForScriptValueArgumentNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxScriptValueArgumentNameNode, offset: Int, element: ParadoxExpressionElement) {
         val expression = node.parent as? ParadoxScriptValueReferenceExpression ?: return // unexpected
         if (expression.scriptValueNode.text.isEmpty()) return
 
@@ -719,7 +717,7 @@ object ParadoxComplexExpressionCompletionManager {
         completeDatabaseObjectType(context, result)
     }
 
-    private fun completeForDatabaseObjectNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDatabaseObjectNode, offset: Int) {
+    private fun completeForDatabaseObjectNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDatabaseObjectValueNode, offset: Int) {
         val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
         val keywordOffset = node.rangeInExpression.startOffset
         val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
@@ -1233,8 +1231,8 @@ object ParadoxComplexExpressionCompletionManager {
 
     fun completeDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val node = context.node?.castOrNull<ParadoxDatabaseObjectNode>()
-            ?.nodes?.findIsInstance<ParadoxDatabaseObjectDataNode>()
+        val node = context.node?.castOrNull<ParadoxDatabaseObjectValueNode>()
+            ?.nodes?.findIsInstance<ParadoxDatabaseObjectNode>()
             ?: return
         val config = node.config ?: return
 
@@ -1259,7 +1257,7 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
+    fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectNode) {
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return
         val valueNode = dsNode.expression.valueNode ?: return

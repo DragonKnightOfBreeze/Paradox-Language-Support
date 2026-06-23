@@ -66,7 +66,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxScriptValueReferenceExpression>("some_sv|PARAM|VALUE|", 6, 26) {
                         node<ParadoxScriptValueNode>("some_sv", 6, 13)
                         node<ParadoxMarkerNode>("|", 13, 14)
-                        node<ParadoxScriptValueArgumentNode>("PARAM", 14, 19)
+                        node<ParadoxScriptValueArgumentNameNode>("PARAM", 14, 19)
                         node<ParadoxMarkerNode>("|", 19, 20)
                         node<ParadoxScriptValueArgumentValueNode>("VALUE", 20, 25)
                         node<ParadoxMarkerNode>("|", 25, 26)
@@ -91,11 +91,11 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxScriptValueReferenceExpression>("some_sv|A|B|.owner", 11, 29) {
                         node<ParadoxScriptValueNode>("some_sv", 11, 18)
                         node<ParadoxMarkerNode>("|", 18, 19)
-                        node<ParadoxScriptValueArgumentNode>("A", 19, 20)
+                        node<ParadoxScriptValueArgumentNameNode>("A", 19, 20)
                         node<ParadoxMarkerNode>("|", 20, 21)
                         node<ParadoxScriptValueArgumentValueNode>("B", 21, 22)
                         node<ParadoxMarkerNode>("|", 22, 23)
-                        node<ParadoxScriptValueArgumentNode>(".owner", 23, 29)
+                        node<ParadoxScriptValueArgumentNameNode>(".owner", 23, 29)
                     }
                 }
             }

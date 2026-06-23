@@ -47,8 +47,8 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0, 5)
             node<ParadoxMarkerNode>(":", 5, 6)
-            node<ParadoxDatabaseObjectNode>("some_civic", 6, 16) {
-                node<ParadoxDatabaseObjectDataNode>("some_civic", 6, 16)
+            node<ParadoxDatabaseObjectValueNode>("some_civic", 6, 16) {
+                node<ParadoxDatabaseObjectNode>("some_civic", 6, 16)
             }
         }
         exp.check(dsl)
@@ -62,12 +62,12 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0, 5)
             node<ParadoxMarkerNode>(":", 5, 6)
-            node<ParadoxDatabaseObjectNode>("some_civic", 6, 16) {
-                node<ParadoxDatabaseObjectDataNode>("some_civic", 6, 16)
+            node<ParadoxDatabaseObjectValueNode>("some_civic", 6, 16) {
+                node<ParadoxDatabaseObjectNode>("some_civic", 6, 16)
             }
             node<ParadoxMarkerNode>(":", 16, 17)
-            node<ParadoxDatabaseObjectNode>("some_swapped_civic", 17, 35) {
-                node<ParadoxDatabaseObjectDataNode>("some_swapped_civic", 17, 35)
+            node<ParadoxDatabaseObjectValueNode>("some_swapped_civic", 17, 35) {
+                node<ParadoxDatabaseObjectNode>("some_swapped_civic", 17, 35)
             }
         }
         exp.check(dsl)
@@ -81,8 +81,8 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0, s.length) {
             node<ParadoxDatabaseObjectTypeNode>("job", 0, 3)
             node<ParadoxMarkerNode>(":", 3, 4)
-            node<ParadoxDatabaseObjectNode>("job_soldier", 4, 15) {
-                node<ParadoxDatabaseObjectDataNode>("job_soldier", 4, 15)
+            node<ParadoxDatabaseObjectValueNode>("job_soldier", 4, 15) {
+                node<ParadoxDatabaseObjectNode>("job_soldier", 4, 15)
             }
         }
         exp.check(dsl)

@@ -6,6 +6,9 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockScriptValueConfig
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -33,7 +36,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * 语法：
  * ```bnf
  * script_value_reference_expression ::= script_value script_value_args?
- * private script_value_args ::= "|" (script_value_argument "|" script_value_argument_value "|")+
+ * private script_value_args ::= "|" (script_value_argument_name "|" script_value_argument_value "|")+
  * ```
  *
  * ### 语法与结构
@@ -44,13 +47,16 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  *
  * #### 节点组成
  * - 脚本值名：[ParadoxScriptValueNode]（第 1 段）。
- * - 参数名/参数值：成对出现，分别为 [ParadoxScriptValueArgumentNode] 与 [ParadoxScriptValueArgumentValueNode]（后续各段）。
+ * - 参数名/参数值：成对出现，分别为 [ParadoxScriptValueArgumentNameNode] 与 [ParadoxScriptValueArgumentValueNode]（后续各段）。
  *
  * #### 解析与约束
  * - 参数名需为合法标识符；脚本值名需为可识别的标识符（允许参数变量）。
  * - 管道数量应为 0 或奇数（≥3）。仅 1 个或非零偶数个 `|` 将被视为格式错误。
  */
 interface ParadoxScriptValueReferenceExpression : ParadoxComplexExpression {
+    val scriptValueNode: ParadoxScriptValueNode
+    val argumentNodes: List<Tuple2<ParadoxScriptValueArgumentNameNode, ParadoxScriptValueArgumentValueNode?>>
+
     val config: CwtConfig<*>
 
     companion object {
@@ -78,7 +84,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
         val offset = range.startOffset
         var n = 0
         var valueNode: ParadoxScriptValueNode? = null
-        var argumentNode: ParadoxScriptValueArgumentNode? = null
+        var argumentNode: ParadoxScriptValueArgumentNameNode? = null
         var index: Int
         var tokenIndex = -1
         var startIndex = 0
@@ -107,7 +113,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
                         .also { valueNode = it }
                 }
                 n % 2 == 1 -> {
-                    ParadoxScriptValueArgumentNode.resolve(nodeText, nodeRange, configGroup, valueNode)
+                    ParadoxScriptValueArgumentNameNode.resolve(nodeText, nodeRange, configGroup, valueNode)
                         .also { argumentNode = it }
                 }
                 n % 2 == 0 -> {
@@ -132,7 +138,7 @@ private object ParadoxScriptExpressionValidator : ParadoxComplexExpressionValida
         val result = validateAllNodes(expression, element, errors) {
             when {
                 it is ParadoxScriptValueNode -> it.text.isParameterAwareIdentifier()
-                it is ParadoxScriptValueArgumentNode -> it.text.isIdentifier()
+                it is ParadoxScriptValueArgumentNameNode -> it.text.isIdentifier()
                 it is ParadoxScriptValueArgumentValueNode -> true
                 else -> true
             }
@@ -157,6 +163,24 @@ private class ParadoxScriptValueReferenceExpressionImpl(
     override val config: CwtConfig<*>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxScriptValueReferenceExpression {
+    override val scriptValueNode: ParadoxScriptValueNode
+        get() = nodes.first().cast()
+    override val argumentNodes: List<Pair<ParadoxScriptValueArgumentNameNode, ParadoxScriptValueArgumentValueNode?>>
+        get() = buildList {
+            var argumentNode: ParadoxScriptValueArgumentNameNode? = null
+            for (node in nodes) {
+                if (node is ParadoxScriptValueArgumentNameNode) {
+                    argumentNode = node
+                } else if (node is ParadoxScriptValueArgumentValueNode && argumentNode != null) {
+                    add(tupleOf(argumentNode, node))
+                    argumentNode = null
+                }
+            }
+            if (argumentNode != null) {
+                add(tupleOf(argumentNode, null))
+            }
+        }
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxScriptExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxScriptValueReferenceExpression && text == other.text

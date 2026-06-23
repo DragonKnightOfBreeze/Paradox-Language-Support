@@ -4,6 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -50,6 +51,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+    val variableNode: ParadoxDataSourceNode
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
@@ -145,6 +149,13 @@ private class ParadoxVariableFieldExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxVariableFieldExpression {
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+    override val variableNode: ParadoxDataSourceNode
+        get() = nodes.last().cast()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxVariableFieldExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxVariableFieldExpression && text == other.text

@@ -48,6 +48,8 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
@@ -114,7 +116,7 @@ private object ParadoxScopeFieldExpressionResolver {
     }
 }
 
-private object ParadoxScopeFieldExpressionValidator: ParadoxComplexExpressionValidatorScope {
+private object ParadoxScopeFieldExpressionValidator : ParadoxComplexExpressionValidatorScope {
     fun validate(expression: ParadoxScopeFieldExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(expression, element, errors) {
@@ -136,6 +138,11 @@ private class ParadoxScopeFieldExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxScopeFieldExpression {
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxScopeFieldExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxScopeFieldExpression && text == other.text

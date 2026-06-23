@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-class ParadoxScriptValueArgumentNode(
+class ParadoxScriptValueArgumentNameNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -62,8 +62,8 @@ class ParadoxScriptValueArgumentNode(
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?): ParadoxScriptValueArgumentNode {
-            return ParadoxScriptValueArgumentNode(text, textRange, configGroup, valueNode)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?): ParadoxScriptValueArgumentNameNode {
+            return ParadoxScriptValueArgumentNameNode(text, textRange, configGroup, valueNode)
         }
     }
 }
