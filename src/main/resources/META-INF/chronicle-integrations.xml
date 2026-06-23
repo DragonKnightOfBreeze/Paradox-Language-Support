@@ -9,7 +9,7 @@
     <imageToolProvider implementation="icu.windea.pls.integrations.images.providers.TexconvToolProvider"/>
     <imageToolProvider implementation="icu.windea.pls.integrations.images.providers.MagickToolProvider"/>
 
-    <!-- see pls-extension-translation.xml -->
+    <!-- see chronicle-extension-translation.xml -->
     <!-- <translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.TranslationPluginToolProvider"/> -->
 
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Ck3"/>

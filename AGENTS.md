@@ -270,7 +270,7 @@ For the documents and examples, see:
 
 ### IntelliJ plugin specifics
 
-- Many registrations live under `src/main/resources/META-INF/pls-*.xml` included by `plugin.xml`.
+- Many registrations live under `src/main/resources/META-INF/chronicle-*.xml` included by `plugin.xml`.
 - Optional dependencies (enabled only when present): Markdown, Diagrams (Ultimate), Translation plugin.
 - There is an internal code injection subsystem, avoid changing it casually unless you understand the impact.
 
