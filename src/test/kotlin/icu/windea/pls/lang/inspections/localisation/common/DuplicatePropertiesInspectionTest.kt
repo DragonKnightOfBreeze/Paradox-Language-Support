@@ -7,10 +7,8 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
-import icu.windea.pls.test.markRootDirectory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

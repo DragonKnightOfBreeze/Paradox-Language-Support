@@ -3,9 +3,7 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markIntegrationTest
-import icu.windea.pls.test.markRootDirectory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

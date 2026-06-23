@@ -18,16 +18,16 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 class ParadoxDefineReferenceEvaluator(
     var resolve: Boolean = true,
 ) {
-    fun evaluateFromRoot(element: ParadoxExpressionElement): ParadoxScriptValue? {
+    fun evaluate(element: ParadoxExpressionElement): ParadoxScriptValue? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.DefineReferenceEvaluatable) return null
         val value = element.value
         val configGroup = config.configGroup
         val rootExpression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
-        return evaluateFromRoot(element, rootExpression)
+        return evaluate(element, rootExpression)
     }
 
-    fun evaluateFromRoot(element: ParadoxExpressionElement, rootExpression: ParadoxComplexExpression): ParadoxScriptValue? {
+    fun evaluate(element: ParadoxExpressionElement, rootExpression: ParadoxComplexExpression): ParadoxScriptValue? {
         // ignore prev link nodes
         val expression = when {
             rootExpression is ParadoxDefineReferenceExpression -> rootExpression
@@ -40,10 +40,10 @@ class ParadoxDefineReferenceEvaluator(
             else -> null
         }
         if (expression !is ParadoxDefineReferenceExpression) return null
-        return evaluate(element, expression)
+        return evaluateExpression(element, expression)
     }
 
-    fun evaluate(element: ParadoxExpressionElement, expression: ParadoxDefineReferenceExpression): ParadoxScriptValue? {
+    fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxDefineReferenceExpression): ParadoxScriptValue? {
         val variableNode = expression.variableNode ?: return null
         val resolved = variableNode.getReference(element)?.resolve() ?: return null
         val value = resolved.propertyValue ?: return null

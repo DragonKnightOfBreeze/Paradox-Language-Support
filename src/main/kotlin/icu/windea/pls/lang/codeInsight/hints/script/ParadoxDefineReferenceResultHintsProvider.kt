@@ -8,7 +8,6 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.evaluators.ParadoxDefineReferenceEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -22,7 +21,7 @@ class ParadoxDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsProvide
         if (!ParadoxEvaluationService.isEvaluableForDefineReference(element)) return
 
         val evaluator = ParadoxDefineReferenceEvaluator()
-        val result = runCatching { evaluator.evaluateFromRoot(element) }.getOrNull() ?: return
+        val result = runCatching { evaluator.evaluate(element) }.getOrNull() ?: return
         val value = result.value
         sink.addInlinePresentation(element.endOffset) {
             text("=> ${value}".optimized())

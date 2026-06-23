@@ -38,6 +38,6 @@ class ReplaceArrayDefineReferenceWithEvaluationResultIntention : PsiUpdateModCom
         if (!ParadoxEvaluationService.isEvaluableForArrayDefineReference(element)) return null
 
         val evaluator = ParadoxArrayDefineReferenceEvaluator(resolve = false) // NOTE 2.1.10 do not resolve scripted variables here
-        return runCatching { evaluator.evaluateFromRoot(element) }.getOrNull()
+        return runCatching { evaluator.evaluate(element) }.getOrNull()
     }
 }

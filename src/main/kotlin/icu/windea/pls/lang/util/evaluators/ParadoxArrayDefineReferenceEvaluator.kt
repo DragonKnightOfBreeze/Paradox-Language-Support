@@ -19,16 +19,16 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 class ParadoxArrayDefineReferenceEvaluator(
     var resolve: Boolean = true,
 ) {
-    fun evaluateFromRoot(element: ParadoxExpressionElement): ParadoxScriptValue? {
+    fun evaluate(element: ParadoxExpressionElement): ParadoxScriptValue? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ArrayDefineReferenceEvaluatable) return null
         val value = element.value
         val configGroup = config.configGroup
         val rootExpression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
-        return evaluateFromRoot(element, rootExpression)
+        return evaluate(element, rootExpression)
     }
 
-    fun evaluateFromRoot(element: ParadoxExpressionElement, rootExpression: ParadoxComplexExpression): ParadoxScriptValue? {
+    fun evaluate(element: ParadoxExpressionElement, rootExpression: ParadoxComplexExpression): ParadoxScriptValue? {
         // ignore prev link nodes
         val expression = when {
             rootExpression is ParadoxArrayDefineReferenceExpression -> rootExpression
@@ -41,10 +41,10 @@ class ParadoxArrayDefineReferenceEvaluator(
             else -> null
         }
         if (expression !is ParadoxArrayDefineReferenceExpression) return null
-        return evaluate(element, expression)
+        return evaluateExpression(element, expression)
     }
 
-    fun evaluate(element: ParadoxExpressionElement, expression: ParadoxArrayDefineReferenceExpression): ParadoxScriptValue? {
+    fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxArrayDefineReferenceExpression): ParadoxScriptValue? {
         val variableNode = expression.variableNode ?: return null
         val resolved = variableNode.getReference(element)?.resolve() ?: return null
         if (!ParadoxDefineManager.isArrayDefine(resolved)) return null // check if it's an array define

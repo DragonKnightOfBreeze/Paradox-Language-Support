@@ -38,6 +38,6 @@ class ReplaceDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandA
         if (!ParadoxEvaluationService.isEvaluableForDefineReference(element)) return null
 
         val evaluator = ParadoxDefineReferenceEvaluator(resolve = false) // NOTE 2.1.10 do not resolve scripted variables here
-        return evaluator.evaluateFromRoot(element)
+        return evaluator.evaluate(element)
     }
 }

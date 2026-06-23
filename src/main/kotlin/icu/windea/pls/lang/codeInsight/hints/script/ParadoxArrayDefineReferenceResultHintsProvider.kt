@@ -21,7 +21,7 @@ class ParadoxArrayDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsPr
         if (!ParadoxEvaluationService.isEvaluableForArrayDefineReference(element)) return
 
         val evaluator = ParadoxArrayDefineReferenceEvaluator()
-        val result = runCatching { evaluator.evaluateFromRoot(element) }.getOrNull() ?: return
+        val result = runCatching { evaluator.evaluate(element) }.getOrNull() ?: return
         val value = result.value
         sink.addInlinePresentation(element.endOffset) {
             text("=> ${value}".optimized())

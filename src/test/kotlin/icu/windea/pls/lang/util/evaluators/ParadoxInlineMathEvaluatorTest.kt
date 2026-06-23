@@ -15,6 +15,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxInlineMathEvaluator
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
@@ -28,7 +31,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
 
     @Test
     fun simple() {
-        myFixture.configureByFile("features/evaluators/evaluator_simple.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_simple.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
@@ -54,7 +57,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
 
     @Test
     fun basicOps() {
-        myFixture.configureByFile("features/evaluators/evaluator_basic_ops.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_basic_ops.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
@@ -72,7 +75,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
 
     @Test
     fun complex() {
-        myFixture.configureByFile("features/evaluators/evaluator_complex.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_complex.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
@@ -90,7 +93,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
 
     @Test
     fun paramsEdge() {
-        myFixture.configureByFile("features/evaluators/evaluator_params_edge.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_params_edge.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
@@ -112,7 +115,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
 
     @Test
     fun errors() {
-        myFixture.configureByFile("features/evaluators/evaluator_errors.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_errors.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
@@ -126,7 +129,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
 
     @Test
     fun edgeCases() {
-        myFixture.configureByFile("features/evaluators/evaluator_edge_cases.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_edge_cases.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
