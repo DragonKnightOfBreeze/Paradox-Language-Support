@@ -24,6 +24,10 @@ types = {
             name = name
         }
     }
+    type[entrance] = {
+        path_file = entrance.txt
+        type_per_file = yes
+    }
 }
 
 character = {
@@ -57,6 +61,13 @@ chapter = {
     category = enum[chapter_category]
 }
 
+entrance = {
+    ## cardinality = 0..inf
+    description = value_field # localisation
+    ## cardinality = 0..inf
+    tips = value_field # localisation array
+}
+
 defines = {
     NStory = {
         MODE = scalar
@@ -65,6 +76,13 @@ defines = {
         GREETS = {
             ## cardinality = 0..inf
             scalar
+        }
+    }
+    NEntrance = {
+        INTRODUCE = localisation
+        WELCOMES = {
+            ## cardinality = 0..inf
+            localisation
         }
     }
 }
@@ -105,12 +123,3 @@ enums = {
     }
 }
 
-### Do nothing.
-## scopes = { character }
-alias[effect:pass] = bool
-### Revival into the real world.
-## scopes = { character }
-alias[effect:revival] = bool
-### Say hello to the real world.
-## scopes = { character }
-alias[effect:say_hello_world] = bool

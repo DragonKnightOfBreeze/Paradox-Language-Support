@@ -1,0 +1,12 @@
+## @type string = string
+## @config_expression description = value_field
+description = define:NEntrance|INTRODUCE
+## @type string = string
+## @config_expression description = value_field
+description = define:NEntrance|INTRODUCE_UNDEFINED
+## @type string = string
+## @config_expression tips = value_field
+tips = array_define:NEntrance|WELCOMES
+## @type string = string
+## @config_expression tips = value_field
+tips = array_define:NEntrance|WELCOMES_UNDEFINED

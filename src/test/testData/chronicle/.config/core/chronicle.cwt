@@ -24,6 +24,10 @@ types = {
             name = name
         }
     }
+    type[entrance] = {
+        path_file = entrance.txt
+        type_per_file = yes
+    }
 }
 
 character = {
@@ -55,6 +59,13 @@ chapter = {
     name = localisation
     page = int
     category = enum[chapter_category]
+}
+
+entrance = {
+    ## cardinality = 0..inf
+    description = value_field # localisation
+    ## cardinality = 0..inf
+    tips = value_field # localisation array
 }
 
 defines = {

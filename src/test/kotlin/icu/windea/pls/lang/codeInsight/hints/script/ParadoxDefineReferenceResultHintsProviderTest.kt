@@ -18,11 +18,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxDynamicValueInfoHintsProvider
+ * @see ParadoxDefineReferenceResultHintsProvider
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxDynamicValueInfoHintsProviderTest: DeclarativeInlayHintsProviderTestCase() {
+class ParadoxDefineReferenceResultHintsProviderTest : DeclarativeInlayHintsProviderTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -38,13 +38,16 @@ class ParadoxDynamicValueInfoHintsProviderTest: DeclarativeInlayHintsProviderTes
 
     @Test
     fun preview() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/characters/00_characters.txt")
-        val text = loadText("/inlayProviders/paradox.script.dynamicValueInfo/preview.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/defines/00_defines.txt")
+        myFixture.configureByFile("features/inlayHints/common/defines/00_defines.txt")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
+        val text = loadText("/inlayProviders/paradox.script.defineReferenceResult/preview.txt")
         doTest(text)
     }
 
     private fun doTest(text: String) {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        doTestProvider("test.txt", text, ParadoxDynamicValueInfoHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
+        doTestProvider("test.txt", text, ParadoxDefineReferenceResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }
