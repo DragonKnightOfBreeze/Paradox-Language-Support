@@ -6,20 +6,19 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.util.evaluators.ParadoxArrayDefineReferenceEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxDefineReferenceEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 将数组定值引用表达式所在的表达式替换为其求值结果。
+ * 将定值引用表达式所在的表达式替换为其求值结果。
  *
  * @see ParadoxDefineReferenceEvaluator
  */
 @Suppress("UnstableApiUsage")
-class ReplaceArrayDefineReferenceWithEvaluatedValueIntention : PsiUpdateModCommandAction<ParadoxExpressionElement>(ParadoxExpressionElement::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
+class ReplaceDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxExpressionElement>(ParadoxExpressionElement::class.java) {
+    override fun getFamilyName() = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
 
     override fun invoke(context: ActionContext, element: ParadoxExpressionElement, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
@@ -36,9 +35,9 @@ class ReplaceArrayDefineReferenceWithEvaluatedValueIntention : PsiUpdateModComma
     }
 
     private fun getResult(element: ParadoxExpressionElement): ParadoxScriptValue? {
-        if (!ParadoxEvaluationService.isEvaluableForArrayDefineReference(element)) return null
+        if (!ParadoxEvaluationService.isEvaluableForDefineReference(element)) return null
 
-        val evaluator = ParadoxArrayDefineReferenceEvaluator(resolve = false) // NOTE 2.1.10 do not resolve scripted variables here
+        val evaluator = ParadoxDefineReferenceEvaluator(resolve = false) // NOTE 2.1.10 do not resolve scripted variables here
         return evaluator.evaluateFromRoot(element)
     }
 }

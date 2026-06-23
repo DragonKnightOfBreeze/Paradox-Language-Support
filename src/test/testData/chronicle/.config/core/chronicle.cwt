@@ -58,13 +58,20 @@ chapter = {
 }
 
 defines = {
-    STORY_SETTINGS = {
+    NStory = {
         MODE = scalar
         INITIAL_LEVEL = int
         EXPERIENCE_RATIO = float
         GREETS = {
             ## cardinality = 0..inf
             scalar
+        }
+    }
+    NEntrance = {
+        INTRODUCE = localisation
+        WELCOMES = {
+            ## cardinality = 0..inf
+            localisation
         }
     }
 }

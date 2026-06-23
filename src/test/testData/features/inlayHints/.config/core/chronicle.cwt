@@ -58,7 +58,7 @@ chapter = {
 }
 
 defines = {
-    STORY_SETTINGS = {
+    NStory = {
         MODE = scalar
         INITIAL_LEVEL = int
         EXPERIENCE_RATIO = float

@@ -111,12 +111,12 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ReplaceDefineReferenceWithEvaluatedValueIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceDefineReferenceWithEvaluationResultIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.ReplaceArrayDefineReferenceWithEvaluatedValueIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceArrayDefineReferenceWithEvaluationResultIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>

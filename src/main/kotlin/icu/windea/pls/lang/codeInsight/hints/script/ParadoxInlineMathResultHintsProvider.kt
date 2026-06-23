@@ -13,6 +13,8 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 
 /**
  * 通过内嵌提示显示内联数学表达式的评估结果（如果无需提供额外的传参信息）。
+ *
+ * @see ParadoxInlineMathEvaluator
  */
 class ParadoxInlineMathResultHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {

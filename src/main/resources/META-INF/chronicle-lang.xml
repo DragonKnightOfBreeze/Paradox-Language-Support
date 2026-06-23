@@ -154,13 +154,13 @@
         descriptionKey="script.hints.dynamicValueInfo.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxInlineMathResultHintsProvider"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInjectionInfoHintsProvider"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
-        providerId="paradox.script.inlineMathResult"
+        providerId="paradox.script.definitionInjectionInfo"
         bundle="messages.PlsBundle"
-        nameKey="script.hints.inlineMathResult"
-        descriptionKey="script.hints.inlineMathResult.description"/>
+        nameKey="script.hints.definitionInjectionInfo"
+        descriptionKey="script.hints.definitionInjectionInfo.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableReferenceValueHintsProvider"
@@ -172,13 +172,33 @@
         descriptionKey="script.hints.scriptedVariableReferenceValue.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInjectionInfoHintsProvider"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxInlineMathResultHintsProvider"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
-        providerId="paradox.script.definitionInjectionInfo"
+        providerId="paradox.script.inlineMathResult"
         bundle="messages.PlsBundle"
-        nameKey="script.hints.definitionInjectionInfo"
-        descriptionKey="script.hints.definitionInjectionInfo.description"/>
+        nameKey="script.hints.inlineMathResult"
+        descriptionKey="script.hints.inlineMathResult.description"/>
+
+    <codeInsight.declarativeInlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefineReferenceResultHintsProvider"
+        isEnabledByDefault="true"
+        group="OTHER_GROUP"
+        providerId="paradox.script.defineReferenceResult"
+        bundle="messages.PlsBundle"
+        nameKey="script.hints.defineReferenceResult"
+        descriptionKey="script.hints.defineReferenceResult.description"/>
+    <codeInsight.declarativeInlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxArrayDefineReferenceResultHintsProvider"
+        isEnabledByDefault="true"
+        group="OTHER_GROUP"
+        providerId="paradox.script.arrayDefineReferenceResult"
+        bundle="messages.PlsBundle"
+        nameKey="script.hints.arrayDefineReferenceResult"
+        descriptionKey="script.hints.arrayDefineReferenceResult.description"/>
+
     <codeInsight.declarativeInlayProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxScriptedVariableReferenceValueHintsProvider"

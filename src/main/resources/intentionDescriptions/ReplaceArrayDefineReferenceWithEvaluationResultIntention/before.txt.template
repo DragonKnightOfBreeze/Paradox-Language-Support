@@ -1,0 +1,4 @@
+description = define:NEntrance|INTRODUCE
+description = define:NEntrance|INTRODUCE_UNDEFINED
+tips = <spot>array_define:NEntrance|WELCOMES</spot>
+tips = array_define:NEntrance|WELCOMES_UNDEFINED

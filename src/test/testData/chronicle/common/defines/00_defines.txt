@@ -1,4 +1,4 @@
-STORY_SETTINGS = {
+NStory = {
     MODE = normal
     INITIAL_LEVEL = 0
     EXPERIENCE_RATIO = 1.0
@@ -6,4 +6,9 @@ STORY_SETTINGS = {
         "hello world"
         "hello the real world"
     }
+}
+
+NEntrance = {
+    INTRODUCE = here_we_introduce
+    WELCOMES = { here_we_send_greetings here_we_guide }
 }
