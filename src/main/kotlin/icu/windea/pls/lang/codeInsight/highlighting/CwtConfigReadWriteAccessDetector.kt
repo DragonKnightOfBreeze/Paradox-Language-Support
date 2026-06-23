@@ -8,7 +8,6 @@ import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
 
 /**

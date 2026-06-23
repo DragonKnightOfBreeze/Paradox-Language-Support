@@ -17,9 +17,6 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.data.MarkdownService
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.propertyValue
 
 object PsiService {
     fun toPresentableString(element: PsiElement): String {

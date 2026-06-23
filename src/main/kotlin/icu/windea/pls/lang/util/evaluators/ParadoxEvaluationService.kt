@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util.evaluators
 
-import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath

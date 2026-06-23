@@ -20,12 +20,12 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.matchesAntPatterns
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
