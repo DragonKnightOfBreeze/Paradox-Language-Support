@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.core.runOnce
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
@@ -16,6 +17,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Path
+import java.util.concurrent.atomic.AtomicBoolean
 
 /** @see com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots */
 context(_: UsefulTestCase)
@@ -38,13 +40,15 @@ private fun doAddAdditionalAllowedRoots(additionalAllowedRoots: List<String>) {
     System.setProperty("vfs.additional-allowed-roots", newValue)
 }
 
+private val refreshBuiltInConfigFilesFlag = AtomicBoolean()
+
 context(_: UsefulTestCase)
 fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
     val configGroupService = CwtConfigGroupService.getInstance(project)
     val configGroups = configGroupService.getConfigGroups().values
         .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
     runBlocking {
-        configGroupService.refreshBuiltInConfigFiles(project)
+        runOnce(refreshBuiltInConfigFilesFlag) { configGroupService.refreshBuiltInConfigFiles(project) }
         configGroupService.init(configGroups, project)
     }
 }
