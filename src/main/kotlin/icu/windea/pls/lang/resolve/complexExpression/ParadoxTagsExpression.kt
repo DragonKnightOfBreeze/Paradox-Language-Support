@@ -44,7 +44,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * ```bnf
  * tags_expression ::= tag? ("," tag?)*
  * private tag ::= dynamic_value | invert_dynamic_value
- * invert_dynamic_value ::= KEYWORD "(" dynamic_value ")"
+ * invert_dynamic_value ::= KEYWORD "(" dynamic_value? ")"
  * ```
  */
 interface ParadoxTagsExpression : ParadoxComplexExpression {
@@ -98,7 +98,7 @@ private object ParadoxTagsExpressionResolver {
                     // start = current
                     current = if (text[current] == ',') current + 1 else return@run
                     nodes += ParadoxMarkerNode(",", TextRange.create(start + offset, current + offset), configGroup)
-                    if (current == text.length) return@fallback
+                    if (current == text.length && !incomplete) return@fallback
                 }
                 run {
                     // expect: optional blank
@@ -107,7 +107,7 @@ private object ParadoxTagsExpressionResolver {
                     current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
                     nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start + offset, current + offset), configGroup)
-                    if (current == text.length) return@fallback
+                    if (current == text.length && !incomplete) return@fallback
                 }
                 run {
                     // expect: dynamic_value | invert_dynamic_value

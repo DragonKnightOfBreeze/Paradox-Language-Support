@@ -129,6 +129,8 @@ object CwtDataTypeSets {
         *ScopeField,
         *ValueField,
         *VariableField,
+        CwtDataTypes.Command,
+        CwtDataTypes.Tags
     )
     /** 所有涉及参数的类型。 */
     val ParameterInvolved = arrayOf(

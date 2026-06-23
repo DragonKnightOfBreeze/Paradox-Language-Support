@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -212,6 +213,47 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxTagsExpression>("", 0, 0) {
             node<ParadoxDynamicValueNode>("", 0, 0)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_empty_incomplete_1() {
+        val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpressionStub<ParadoxTagsExpression>("TODO")
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_empty_incomplete_2() {
+        val exp = resolve(",", ParadoxGameType.Stellaris, incomplete = true)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxTagsExpression>(",", 0, 1) {
+            node<ParadoxDynamicValueNode>("", 0, 0)
+            node<ParadoxMarkerNode>(",", 0, 1)
+            node<ParadoxDynamicValueNode>("", 1, 1)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_empty_incomplete_3() {
+        val exp = resolve(",not(),,", ParadoxGameType.Stellaris, incomplete = true)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxTagsExpression>(",not(),,", 0, 8) {
+            node<ParadoxDynamicValueNode>("", 0, 0)
+            node<ParadoxMarkerNode>(",", 0, 1)
+            node<ParadoxNegatedDynamicValueNode>("not()", 1, 6) {
+                node<ParadoxKeywordNode>("not", 1, 4)
+                node<ParadoxMarkerNode>("(", 4, 5)
+                node<ParadoxDynamicValueNode>("", 5, 5)
+                node<ParadoxMarkerNode>(")", 5, 6)
+            }
+            node<ParadoxMarkerNode>(",", 1, 7)
+            node<ParadoxDynamicValueNode>("", 7, 7)
+            node<ParadoxMarkerNode>(",", 7, 8)
+            node<ParadoxDynamicValueNode>("", 8, 8)
         }
         exp.check(dsl)
     }

@@ -41,7 +41,7 @@ class ParadoxNegatedDynamicValueNode(
                     current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
                     nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start + offset, current + offset), configGroup)
-                    if (current == text.length) return@fallback
+                    if (current == text.length && !incomplete) return@fallback
                 }
                 run {
                     // expect: "("

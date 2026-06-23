@@ -344,19 +344,21 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) continue
             when (node) {
                 is ParadoxDynamicValueNode -> {
+                    val context = context.copy(config = node.configs.firstOrNull(), configs = node.configs)
                     completeForNegatedNode(context, result, node, offset)
                     completeForDynamicValueNode(context, result, node, offset)
                 }
                 is ParadoxNegatedDynamicValueNode -> {
                     val condition = expression.config.configExpression?.condition ?: false
                     if (!condition) continue // skip if is not a condition variant
-                    for(node1 in node.nodes) {
+                    for (node in node.nodes) {
                         ProgressManager.checkCanceled()
-                        val inRange = offset >= node1.rangeInExpression.startOffset && offset <= node1.rangeInExpression.endOffset
+                        val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
                         if (!inRange) continue
-                        when (node1) {
+                        when (node) {
                             is ParadoxDynamicValueNode -> {
-                                completeForNegatedNode(context, result, node1, offset)
+                                val context = context.copy(config = node.configs.firstOrNull(), configs = node.configs)
+                                completeForDynamicValueNode(context, result, node, offset)
                             }
                         }
                     }
