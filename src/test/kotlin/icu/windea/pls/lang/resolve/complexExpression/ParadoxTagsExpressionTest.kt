@@ -90,10 +90,10 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicValueNode>("tag1", 0, 4)
             node<ParadoxMarkerNode>(",", 0, 5)
             node<ParadoxNegatedDynamicValueNode>("not(tag2)", 5, 14) {
-                node<ParadoxKeywordNode>("not", 0, 3)
-                node<ParadoxMarkerNode>("(", 3, 4)
-                node<ParadoxDynamicValueNode>("tag2", 4, 8)
-                node<ParadoxMarkerNode>(")", 8, 9)
+                node<ParadoxKeywordNode>("not", 5, 8)
+                node<ParadoxMarkerNode>("(", 8, 9)
+                node<ParadoxDynamicValueNode>("tag2", 9, 13)
+                node<ParadoxMarkerNode>(")", 13, 14)
             }
         }
 
@@ -114,10 +114,10 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
             }
             node<ParadoxMarkerNode>(",", 0, 10)
             node<ParadoxNegatedDynamicValueNode>("not(tag2)", 10, 19) {
-                node<ParadoxKeywordNode>("not", 0, 3)
-                node<ParadoxMarkerNode>("(", 3, 4)
-                node<ParadoxDynamicValueNode>("tag2", 4, 8)
-                node<ParadoxMarkerNode>(")", 8, 9)
+                node<ParadoxKeywordNode>("not", 10, 13)
+                node<ParadoxMarkerNode>("(", 13, 14)
+                node<ParadoxDynamicValueNode>("tag2", 14, 18)
+                node<ParadoxMarkerNode>(")", 18, 19)
             }
         }
         exp.check(dsl)
@@ -132,13 +132,13 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicValueNode>("tag1", 0, 4)
             node<ParadoxMarkerNode>(",", 0, 5)
             node<ParadoxNegatedDynamicValueNode>("not (   tag2 )", 5, 19) {
-                node<ParadoxKeywordNode>("not", 0, 3)
-                node<ParadoxBlankNode>(" ", 3, 4)
-                node<ParadoxMarkerNode>("(", 4, 5)
-                node<ParadoxBlankNode>("   ", 5, 8)
-                node<ParadoxDynamicValueNode>("tag2", 8, 12)
-                node<ParadoxBlankNode>(" ", 12, 13)
-                node<ParadoxMarkerNode>(")", 13, 14)
+                node<ParadoxKeywordNode>("not", 5, 8)
+                node<ParadoxBlankNode>(" ", 8, 9)
+                node<ParadoxMarkerNode>("(", 9, 10)
+                node<ParadoxBlankNode>("   ", 10, 13)
+                node<ParadoxDynamicValueNode>("tag2", 13, 17)
+                node<ParadoxBlankNode>(" ", 17, 18)
+                node<ParadoxMarkerNode>(")", 18, 19)
             }
         }
         exp.check(dsl)
@@ -154,10 +154,10 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxMarkerNode>(",", 0, 4)
             node<ParadoxMarkerNode>(",", 4, 5)
             node<ParadoxNegatedDynamicValueNode>("not(tag2)", 5, 14) {
-                node<ParadoxKeywordNode>("not", 0, 3)
-                node<ParadoxMarkerNode>("(", 3, 4)
-                node<ParadoxDynamicValueNode>("tag2", 4, 8)
-                node<ParadoxMarkerNode>(")", 8, 9)
+                node<ParadoxKeywordNode>("not", 5, 8)
+                node<ParadoxMarkerNode>("(", 8, 9)
+                node<ParadoxDynamicValueNode>("tag2", 9, 13)
+                node<ParadoxMarkerNode>(")", 13, 14)
             }
         }
 
@@ -192,12 +192,12 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxMarkerNode>(",", 0, 5)
             node<ParadoxBlankNode>("   ", 5, 8)
             node<ParadoxNegatedDynamicValueNode>("not( tag2  )", 8, 20) {
-                node<ParadoxKeywordNode>("not", 0, 3)
-                node<ParadoxMarkerNode>("(", 3, 4)
-                node<ParadoxBlankNode>(" ", 4, 5)
-                node<ParadoxDynamicValueNode>("tag2", 5, 9)
-                node<ParadoxBlankNode>("  ", 9, 11)
-                node<ParadoxMarkerNode>(")", 11, 12)
+                node<ParadoxKeywordNode>("not", 8, 11)
+                node<ParadoxMarkerNode>("(", 11, 12)
+                node<ParadoxBlankNode>(" ", 12, 13)
+                node<ParadoxDynamicValueNode>("tag2", 13, 17)
+                node<ParadoxBlankNode>("  ", 17, 19)
+                node<ParadoxMarkerNode>(")", 19, 20)
             }
             node<ParadoxMarkerNode>(",", 8, 21)
             node<ParadoxDynamicValueNode>("tag3", 21, 25)

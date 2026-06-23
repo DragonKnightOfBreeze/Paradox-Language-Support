@@ -103,7 +103,7 @@ class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest()
             node<ParadoxMarkerNode>("|", 9, 10)
             node<ParadoxDefineVariableNode>("Name", 10, 14)
             node<ParadoxMarkerNode>("|", 14, 15)
-            node<ParadoxNumberLiteralNode>("", 15, 15)
+            node<ParadoxStringLiteralNode>("", 15, 15)
         }
         exp.check(dsl)
     }
@@ -118,7 +118,7 @@ class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest()
             node<ParadoxMarkerNode>("|", 9, 10)
             node<ParadoxDefineVariableNode>("Name", 10, 14)
             node<ParadoxMarkerNode>("|", 14, 15)
-            node<ParadoxNumberLiteralNode>("", 15, 15)
+            node<ParadoxStringLiteralNode>("", 15, 15)
         }
         exp.check(dsl)
     }
@@ -133,7 +133,7 @@ class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest()
             node<ParadoxMarkerNode>("|", 9, 10)
             node<ParadoxDefineVariableNode>("Name", 10, 14)
             node<ParadoxMarkerNode>("|", 14, 15)
-            node<ParadoxNumberLiteralNode>("foo123", 15, 21)
+            node<ParadoxStringLiteralNode>("foo123", 15, 21)
         }
         exp.check(dsl)
     }
@@ -148,7 +148,7 @@ class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest()
             node<ParadoxMarkerNode>("|", 9, 10)
             node<ParadoxDefineVariableNode>("Name", 10, 14)
             node<ParadoxMarkerNode>("|", 14, 15)
-            node<ParadoxNumberLiteralNode>("foo", 15, 18)
+            node<ParadoxStringLiteralNode>("foo", 15, 18)
         }
         exp.check(dsl)
     }

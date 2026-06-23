@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
  */
 @Suppress("UnstableApiUsage")
 class ReplaceInlineMathWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
+    override fun getFamilyName() = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptInlineMath, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return

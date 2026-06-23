@@ -32,7 +32,7 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 
     override fun getExpressionAccess(expression: PsiElement): Access {
         // find usages use this method finally
-        if (expression.language != ParadoxLanguage) return Access.ReadWrite
+        if (expression.language !is ParadoxLanguage) return Access.ReadWrite
         val results = mutableSetOf<ReadWriteAccess>()
         for (reference in expression.references) {
             ProgressManager.checkCanceled()

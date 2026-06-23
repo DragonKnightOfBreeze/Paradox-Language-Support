@@ -32,7 +32,7 @@ class CwtConfigReadWriteAccessDetector : ReadWriteAccessDetector() {
 
     override fun getExpressionAccess(expression: PsiElement): Access {
         // find usages use this method finally
-        if (expression.language != CwtLanguage) return Access.ReadWrite
+        if (expression.language !is CwtLanguage) return Access.ReadWrite
         val results = mutableSetOf<ReadWriteAccess>()
         for (reference in expression.references) {
             ProgressManager.checkCanceled()

@@ -71,6 +71,7 @@ private object ParadoxTagsExpressionResolver {
         val dynamicValueConfigs = CwtValueConfig.createMock(configGroup, dynamicValueConfigText).to.singletonList()
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val offset = range?.startOffset ?: 0
         var start = 0
         var current = 0
         run fallback@{
@@ -83,7 +84,7 @@ private object ParadoxTagsExpressionResolver {
                 if (current < 0) current = text.length
                 if (start == current && !incomplete) return@run
                 val nodeText = text.substring(start, current)
-                val nodeRange = TextRange.create(start, current)
+                val nodeRange = TextRange.create(start + offset, current + offset)
                 val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
                     ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
                     ?: ParadoxErrorTokenNode(nodeText, nodeRange, configGroup)
@@ -96,7 +97,7 @@ private object ParadoxTagsExpressionResolver {
                     if (current == text.length) return@run
                     // start = current
                     current = if (text[current] == ',') current + 1 else return@run
-                    nodes += ParadoxMarkerNode(",", TextRange.create(start, current), configGroup)
+                    nodes += ParadoxMarkerNode(",", TextRange.create(start + offset, current + offset), configGroup)
                     if (current == text.length) return@fallback
                 }
                 run {
@@ -105,7 +106,7 @@ private object ParadoxTagsExpressionResolver {
                     start = current
                     current = text.indexOf(start) { !it.isWhitespace() }.takeIf { it >= 0 } ?: text.length
                     if (start == current) return@run
-                    nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start, current), configGroup)
+                    nodes += ParadoxBlankNode(text.substring(start, current), TextRange.create(start + offset, current + offset), configGroup)
                     if (current == text.length) return@fallback
                 }
                 run {
@@ -117,7 +118,7 @@ private object ParadoxTagsExpressionResolver {
                     if (current < 0) current = text.length
                     if (start == current && !incomplete) return@run
                     val nodeText = text.substring(start, current)
-                    val nodeRange = TextRange.create(start, current)
+                    val nodeRange = TextRange.create(start + offset, current + offset)
                     val node = ParadoxNegatedDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
                         ?: ParadoxDynamicValueNode.resolve(nodeText, nodeRange, configGroup, dynamicValueConfigs)
                         ?: ParadoxErrorTokenNode(nodeText, nodeRange, configGroup)
@@ -127,7 +128,7 @@ private object ParadoxTagsExpressionResolver {
             run {
                 // check error
                 if (current == text.length) return@run
-                nodes += ParadoxErrorTokenNode(text.substring(current), TextRange.create(current, text.length), configGroup)
+                nodes += ParadoxErrorTokenNode(text.substring(current), TextRange.create(current + offset, text.length + offset), configGroup)
             }
         }
 

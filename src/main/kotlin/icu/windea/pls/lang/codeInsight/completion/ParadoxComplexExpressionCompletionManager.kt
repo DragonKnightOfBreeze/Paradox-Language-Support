@@ -10,6 +10,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.prefixFromArgument
+import icu.windea.pls.config.configExpression.condition
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -326,6 +327,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeTagsExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        // 2.1.10 compatible with `not(...)`
+
         ProgressManager.checkCanceled()
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return // unexpected
@@ -340,8 +343,24 @@ object ParadoxComplexExpressionCompletionManager {
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (!inRange) continue
             when (node) {
-                is ParadoxScriptValueNode -> completeForScriptValueNode(context, result, node, offset)
-                // TODO 2.1.10 compatible with `not(...)`
+                is ParadoxDynamicValueNode -> {
+                    completeForNegatedNode(context, result, node, offset)
+                    completeForDynamicValueNode(context, result, node, offset)
+                }
+                is ParadoxNegatedDynamicValueNode -> {
+                    val condition = expression.config.configExpression?.condition ?: false
+                    if (!condition) continue // skip if is not a condition variant
+                    for(node1 in node.nodes) {
+                        ProgressManager.checkCanceled()
+                        val inRange = offset >= node1.rangeInExpression.startOffset && offset <= node1.rangeInExpression.endOffset
+                        if (!inRange) continue
+                        when (node1) {
+                            is ParadoxDynamicValueNode -> {
+                                completeForNegatedNode(context, result, node1, offset)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -467,6 +486,14 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, configs = emptyList())
         val result = result.withPrefixMatcher(context.keyword)
         ParadoxExpressionCompletionManager.completeConstant(context, result)
+    }
+
+    private fun completeForNegatedNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDynamicValueNode, offset: Int) {
+        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+        val keywordOffset = node.rangeInExpression.startOffset
+        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
+        val result = result.withPrefixMatcher(context.keyword)
+        completeNegated(context, result)
     }
 
     /**
@@ -729,6 +756,18 @@ object ParadoxComplexExpressionCompletionManager {
     // endregion
 
     // region General Completion Methods
+
+    fun completeNegated(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val name = "not"
+        val tailText = "(...)"
+        val lookupElement = LookupElementBuilder.create(name)
+            .withBoldness(true)
+            .withTailText(tailText, true)
+            .withInsertHandler(ChronicleInsertHandlers.addParentheses())
+            .withPriority(ChronicleCompletionPriorities.keyword)
+            .withCompletionId()
+        result.addElement(lookupElement, context)
+    }
 
     fun completeSystemScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
