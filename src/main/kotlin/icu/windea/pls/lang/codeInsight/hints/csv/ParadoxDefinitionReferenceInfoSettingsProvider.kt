@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.smaller
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoSettingsProvider.*
 import javax.swing.JComponent
@@ -19,33 +20,38 @@ import javax.swing.JComponent
 class ParadoxDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsProvider<Settings> {
     data class Settings(
         val showSubtypes: Boolean,
-        val truncateSubtypes: Boolean,
+        val truncateSubtypes: Int,
     )
 
     private val showSubtypesProperty = AtomicProperty(true)
-    private val truncateSubtypesProperty = AtomicProperty(false)
+    private val truncateSubtypesProperty = AtomicProperty(-1)
     private var showSubtypes by showSubtypesProperty
     private var truncateSubtypes by truncateSubtypesProperty
 
     private val component by lazy {
         panel {
             row {
-                checkBox(PlsBundle.message("hints.settings.showDefinitionType")).selected(true).enabled(false)
-                checkBox(PlsBundle.message("hints.settings.showDefinitionSubtypes")).bindSelected(showSubtypesProperty)
-                checkBox(PlsBundle.message("hints.settings.truncateDefinitionSubtypes")).bindSelected(truncateSubtypesProperty)
+                checkBox(PlsBundle.message("hints.settings.showDefinitionType")).selected(true).enabled(false).smaller()
+            }
+            row {
+                checkBox(PlsBundle.message("hints.settings.showDefinitionSubtypes")).bindSelected(showSubtypesProperty).smaller()
+            }
+            row(PlsBundle.message("hints.settings.truncateDefinitionSubtypes")) {
+                intTextField().bindIntText(truncateSubtypesProperty).smaller()
             }
         }.also { it.border = JBUI.Borders.empty(5) }
     }
 
     override fun createComponent(project: Project, language: Language): JComponent {
-        val s = getSettingsInstance(project)
-        showSubtypes = s.showSubtypesForCsvDefinitionReference
-        truncateSubtypes = s.truncateSubtypesForCsvDefinitionReference
+        val s = ParadoxDeclarativeHintsSettings.getInstance(project)
+        showSubtypes = s.showDefinitionSubtypesForReferences
+        truncateSubtypes = s.truncateDefinitionSubtypesForReferences
         return component
     }
 
     override fun isDifferentFrom(project: Project, settings: Settings): Boolean {
-        return settings.showSubtypes != showSubtypes && settings.truncateSubtypes != truncateSubtypes
+        return settings.showSubtypes != showSubtypes
+            && settings.truncateSubtypes != truncateSubtypes
     }
 
     override fun getSettingsCopy(): Settings {
@@ -58,13 +64,9 @@ class ParadoxDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsP
     }
 
     override fun persistSettings(project: Project, settings: Settings, language: Language) {
-        val s = getSettingsInstance(project)
-        s.showSubtypesForCsvDefinitionReference = settings.showSubtypes
-        s.truncateSubtypesForCsvDefinitionReference = settings.truncateSubtypes
-    }
-
-    private fun getSettingsInstance(project: Project): ParadoxDeclarativeHintsSettings {
-        return ParadoxDeclarativeHintsSettings.getInstance(project)
+        val s = ParadoxDeclarativeHintsSettings.getInstance(project)
+        s.showDefinitionSubtypesForReferences = settings.showSubtypes
+        s.truncateDefinitionSubtypesForReferences = settings.truncateSubtypes
     }
 }
 

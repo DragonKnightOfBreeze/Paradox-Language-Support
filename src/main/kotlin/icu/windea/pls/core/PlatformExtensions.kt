@@ -194,11 +194,11 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
  *
  * 当替换段长度与整体长度关系满足条件时，避免重复包围引号并保留必要的转义。
  */
-fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
+fun TextRange.replaceAndQuoteIfNeeded(original: String, replacement: String, quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true): String {
     if (this.length >= original.length - 1) {
-        return replacement.quoteIfNecessary(quote, extraChars, blank)
+        return replacement.quoteIfNeeded(quote, containAnyChar, containBlank)
     } else {
-        var replacement0 = replacement.quoteIfNecessary(quote, extraChars, blank)
+        var replacement0 = replacement.quoteIfNeeded(quote, containAnyChar, containBlank)
         if (replacement0.isLeftQuoted(quote) && replacement0.isRightQuoted(quote)) {
             replacement0 = replacement0.substring(1, replacement0.length - 1)
         }

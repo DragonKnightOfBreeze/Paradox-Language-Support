@@ -22,7 +22,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
@@ -337,7 +337,7 @@ object ParadoxPsiManager {
      */
     fun introduceLocalScriptedVariable(name: String, value: String, containerElement: ParadoxDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = containerElement.findParentAndAnchorToIntroduceLocalScriptedVariable()
-        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNeeded())
         val newLine = ParadoxScriptElementFactory.createLine(project)
         newVariable = parent.addAfter(newVariable, anchor).cast()
         if (anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
@@ -366,7 +366,7 @@ object ParadoxPsiManager {
      */
     fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
-        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNeeded())
         val newLine = ParadoxScriptElementFactory.createLine(project)
         newVariable = parent.addAfter(newVariable, anchor).cast()
         parent.addBefore(newLine, newVariable)

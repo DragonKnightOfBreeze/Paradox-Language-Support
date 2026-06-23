@@ -17,7 +17,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
@@ -167,7 +167,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        val newValue = value.quoteIfNecessary()
+        val newValue = value.quoteIfNeeded()
         val newElement = CwtElementFactory.createPropertyKey(element.project, newValue)
         return element.replace(newElement).cast()
     }
@@ -214,7 +214,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        val newValue = value.quoteIfNecessary()
+        val newValue = value.quoteIfNeeded()
         val newElement = CwtElementFactory.createString(element.project, newValue)
         return element.replace(newElement).cast()
     }

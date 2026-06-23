@@ -1,7 +1,7 @@
 package icu.windea.pls.base.io
 
 import icu.windea.pls.core.executeCommandLine
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -31,18 +31,18 @@ class ChronicleGitServiceImpl : ChronicleGitService {
     }
 
     override fun lsRemote(url: String): String {
-        val url = url.quoteIfNecessary()
+        val url = url.quoteIfNeeded()
         return executeCommandLine("git ls-remote $url")
     }
 
     override fun clone(url: String, workDirectory: Path): String {
-        val url = url.quoteIfNecessary()
+        val url = url.quoteIfNeeded()
         val wd = workDirectory.normalize().toAbsolutePath().toFile()
         return executeCommandLine("git clone $url", workDirectory = wd)
     }
 
     override fun pull(url: String, workDirectory: Path): String {
-        val url = url.quoteIfNecessary()
+        val url = url.quoteIfNeeded()
         val wd = workDirectory.normalize().toAbsolutePath().toFile()
         return executeCommandLine("git pull $url", workDirectory = wd)
     }

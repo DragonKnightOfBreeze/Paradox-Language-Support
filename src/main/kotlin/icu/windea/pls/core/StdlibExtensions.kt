@@ -316,9 +316,9 @@ fun String.unquote(quote: Char = '"'): String {
     }
 }
 
-/** 若包含空白/引号/额外字符，则自动加引号。 */
-fun String.quoteIfNecessary(quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
-    val shouldQuote = this.any { it == quote || (blank && it.isWhitespace()) || it in extraChars }
+/** 在必要时自动加引号。 */
+fun String.quoteIfNeeded(quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true, isBlank: Boolean = true): String {
+    val shouldQuote = (isBlank && isBlank()) || any { it == quote || (containBlank && it.isWhitespace()) || it in containAnyChar }
     return if (shouldQuote) this.quote(quote) else this
 }
 

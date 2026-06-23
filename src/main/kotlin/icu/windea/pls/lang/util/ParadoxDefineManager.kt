@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -14,6 +15,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.values

@@ -10,7 +10,7 @@ import com.intellij.util.ui.table.JBTableRow
 import com.intellij.util.ui.table.JBTableRowEditor
 import com.intellij.util.ui.table.JBTableRowRenderer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.model.type.ParadoxSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import javax.swing.BoxLayout
@@ -35,14 +35,14 @@ class ElementsListTable(
                 }
                 is ElementDescriptors.Property -> {
                     buildString {
-                        append(item.name.quoteIfNecessary())
+                        append(item.name.quoteIfNeeded())
                         append(" ")
                         append(item.separator)
                         append(" ")
                         if (item.value.isEmpty()) {
                             append("\"\"").append(" # ").append(PlsBundle.message("ui.table.element.column.tooltip.editInTemplate"))
                         } else {
-                            append(item.value.quoteIfNecessary())
+                            append(item.value.quoteIfNeeded())
                         }
                     }
                 }

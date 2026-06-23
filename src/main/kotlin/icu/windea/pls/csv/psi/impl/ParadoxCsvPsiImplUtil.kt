@@ -13,7 +13,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -62,7 +62,7 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxCsvColumn, value: String): ParadoxCsvColumn {
         val extraChars = ParadoxCsvManager.getSeparator().toString()
-        val newValue = value.quoteIfNecessary(extraChars = extraChars, blank = false)
+        val newValue = value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
         val newElement = ParadoxCsvElementFactory.createColumn(element.project, newValue)
         return element.replace(newElement).cast()
     }

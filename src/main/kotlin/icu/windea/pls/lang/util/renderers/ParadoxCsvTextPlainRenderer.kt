@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -78,7 +78,7 @@ open class ParadoxCsvTextPlainRenderContext(
         if (needQuoteBecauseBoundaryBlank) return value.quote()
 
         val extraChars = ParadoxCsvManager.getSeparator().toString() + "#"
-        return value.quoteIfNecessary(extraChars = extraChars, blank = false)
+        return value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
     }
 
     fun hasTrailingSeparator(element: ParadoxCsvRowElement): Boolean {

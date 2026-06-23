@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  */
 @Suppress("UnstableApiUsage")
 class ReplaceDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxExpressionElement>(ParadoxExpressionElement::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
+    override fun getFamilyName() = PlsBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
 
     override fun invoke(context: ActionContext, element: ParadoxExpressionElement, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return

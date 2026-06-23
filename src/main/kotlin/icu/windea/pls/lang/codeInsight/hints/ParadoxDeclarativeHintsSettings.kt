@@ -11,44 +11,44 @@ import icu.windea.pls.model.constants.PlsConstants
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDeclarativeHintsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<ParadoxDeclarativeHintsSettings.State>(State()) {
-    var showNameForDefinition: Boolean // region
-        get() = state.showNameForDefinition
-        set(value) = run { updateState { it.copy(showNameForDefinition = value) } } // endregion
-    var showSubtypesForDefinition: Boolean // region
-        get() = state.showSubtypesForDefinition
-        set(value) = run { updateState { it.copy(showSubtypesForDefinition = value) } } // endregion
-    var truncateSubtypesForDefinition: Boolean // region
-        get() = state.truncateSubtypesForDefinition
-        set(value) = run { updateState { it.copy(truncateSubtypesForDefinition = value) } } // endregion
-    var showSubtypesForDefinitionReference: Boolean // region
-        get() = state.showSubtypesForDefinitionReference
-        set(value) = run { updateState { it.copy(showSubtypesForDefinitionReference = value) } } // endregion
-    var truncateSubtypesForDefinitionReference: Boolean // region
-        get() = state.truncateSubtypesForDefinitionReference
-        set(value) = run { updateState { it.copy(truncateSubtypesForDefinitionReference = value) } } // endregion
-    var showSubtypesForCsvDefinitionReference: Boolean // region
-        get() = state.showSubtypesForCsvDefinitionReference
-        set(value) = run { updateState { it.copy(showSubtypesForCsvDefinitionReference = value) } } // endregion
-    var truncateSubtypesForCsvDefinitionReference: Boolean // region
-        get() = state.truncateSubtypesForCsvDefinitionReference
-        set(value) = run { updateState { it.copy(truncateSubtypesForCsvDefinitionReference = value) } } // endregion
-    var showSubtypesForDefinitionInjection: Boolean // region
-        get() = state.showSubtypesForDefinitionInjection
-        set(value) = run { updateState { it.copy(showSubtypesForDefinitionInjection = value) } } // endregion
-    var truncateSubtypesForDefinitionInjection: Boolean // region
-        get() = state.truncateSubtypesForDefinitionInjection
-        set(value) = run { updateState { it.copy(truncateSubtypesForDefinitionInjection = value) } } // endregion
+    var showDefinitionName: Boolean // region
+        get() = state.showDefinitionName
+        set(value) = run { updateState { it.copy(showDefinitionName = value) } } // endregion
+    var showDefinitionSubtypes: Boolean // region
+        get() = state.showDefinitionSubtypes
+        set(value) = run { updateState { it.copy(showDefinitionSubtypes = value) } } // endregion
+    var truncateDefinitionSubtypes: Int // region
+        get() = state.truncateDefinitionSubtypes
+        set(value) = run { updateState { it.copy(truncateDefinitionSubtypes = value) } } // endregion
+    var showDefinitionSubtypesForReferences: Boolean // region
+        get() = state.showDefinitionSubtypesForReferences
+        set(value) = run { updateState { it.copy(showDefinitionSubtypesForReferences = value) } } // endregion
+    var truncateDefinitionSubtypesForReferences: Int // region
+        get() = state.truncateDefinitionSubtypesForReferences
+        set(value) = run { updateState { it.copy(truncateDefinitionSubtypesForReferences = value) } } // endregion
+    var showDefinitionSubtypesForInjections: Boolean // region
+        get() = state.showDefinitionSubtypesForInjections
+        set(value) = run { updateState { it.copy(showDefinitionSubtypesForInjections = value) } } // endregion
+    var truncateDefinitionSubtypesForInjections: Int // region
+        get() = state.truncateDefinitionSubtypesForInjections
+        set(value) = run { updateState { it.copy(truncateDefinitionSubtypesForInjections = value) } } // endregion
+    var showArrayValueForDefines: Boolean // region
+        get() = state.showArrayValueForDefine
+        set(value) = run { updateState { it.copy(showArrayValueForDefine = value) } } // endregion
+    var truncateArrayValueForDefines: Int // region
+        get() = state.truncateArrayValueForDefine
+        set(value) = run { updateState { it.copy(truncateArrayValueForDefine = value) } } // endregion
 
     data class State(
-        @JvmField val showNameForDefinition: Boolean = true,
-        @JvmField val showSubtypesForDefinition: Boolean = true,
-        @JvmField val truncateSubtypesForDefinition: Boolean = false,
-        @JvmField val showSubtypesForDefinitionReference: Boolean = true,
-        @JvmField val truncateSubtypesForDefinitionReference: Boolean = false,
-        @JvmField val showSubtypesForCsvDefinitionReference: Boolean = true,
-        @JvmField val truncateSubtypesForCsvDefinitionReference: Boolean = false,
-        @JvmField val showSubtypesForDefinitionInjection: Boolean = true,
-        @JvmField val truncateSubtypesForDefinitionInjection: Boolean = false,
+        @JvmField val showDefinitionName: Boolean = true,
+        @JvmField val showDefinitionSubtypes: Boolean = true,
+        @JvmField val truncateDefinitionSubtypes: Int = -1,
+        @JvmField val showDefinitionSubtypesForReferences: Boolean = true,
+        @JvmField val truncateDefinitionSubtypesForReferences: Int = -1,
+        @JvmField val showDefinitionSubtypesForInjections: Boolean = true,
+        @JvmField val truncateDefinitionSubtypesForInjections: Int = -1,
+        @JvmField val showArrayValueForDefine: Boolean = true,
+        @JvmField val truncateArrayValueForDefine: Int = -1,
     )
 
     companion object {

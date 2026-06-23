@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
@@ -81,7 +81,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
 
         val fullExePath = toolPath.toPath()
         val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name.quoteIfNecessary('\'')
+        val exe = fullExePath.name.quoteIfNeeded('\'')
         val input = path.toString().quote('\'')
         val output = outputPath.toString().quote('\'')
 

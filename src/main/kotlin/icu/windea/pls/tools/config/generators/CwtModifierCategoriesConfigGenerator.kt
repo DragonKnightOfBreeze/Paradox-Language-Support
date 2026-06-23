@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
@@ -95,7 +95,7 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
             if (missingNames.isNotEmpty()) {
                 appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
                 for (name in missingNames.sorted()) {
-                    val key = name.quoteIfNecessary()
+                    val key = name.quoteIfNeeded()
                     appendLine("${key} = {")
                     appendLine("# TODO choose supported scopes".prependIndent())
                     appendLine("supported_scopes = {}".prependIndent())

@@ -204,7 +204,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-        val newValue = value.quoteIfNecessary()
+        val newValue = value.quoteIfNeeded()
         val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newValue)
         return element.replace(newElement).cast()
     }
@@ -247,7 +247,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptString {
-        val newValue = value.quoteIfNecessary()
+        val newValue = value.quoteIfNeeded()
         val newElement = ParadoxScriptElementFactory.createString(element.project, newValue)
         return element.replace(newElement).cast()
     }

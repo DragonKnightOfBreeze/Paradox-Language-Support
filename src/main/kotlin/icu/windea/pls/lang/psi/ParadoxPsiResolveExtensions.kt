@@ -4,6 +4,7 @@ package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.math.MathResult
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
@@ -68,7 +69,6 @@ fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
 }
 
 fun ParadoxScriptExpressionElement.booleanValue(strict: Boolean = false, valid: Boolean = false): Boolean? {
-    if (this !is ParadoxScriptValue) return null
     val resolved = resolved() ?: return null
     if (strict && resolved !is ParadoxScriptBoolean) return null
     val r = when (resolved) {
@@ -136,7 +136,7 @@ fun ParadoxScriptValue.inlineMathValue(valid: Boolean = false): MathResult? {
     return r
 }
 
-fun ParadoxScriptValue.evaluateValue(strict: Boolean = false, valid: Boolean = false): Any? {
+fun ParadoxScriptValue.evaluatedValue(strict: Boolean = false, valid: Boolean = false): Any? {
     val resolved = resolved() ?: return null
     val r = when (resolved) {
         is ParadoxScriptBoolean -> resolved.booleanValue(strict, valid)
@@ -146,6 +146,14 @@ fun ParadoxScriptValue.evaluateValue(strict: Boolean = false, valid: Boolean = f
         is ParadoxScriptColor -> resolved.colorValue(valid)
         is ParadoxScriptInlineMath -> resolved.inlineMathValue(valid)
         else -> null // unsupported
+    }
+    return r
+}
+
+fun ParadoxScriptValue.formattedValue(): String {
+    val r = when (this) {
+        is ParadoxScriptString -> this.value.quoteIfNeeded()
+        else -> this.value
     }
     return r
 }

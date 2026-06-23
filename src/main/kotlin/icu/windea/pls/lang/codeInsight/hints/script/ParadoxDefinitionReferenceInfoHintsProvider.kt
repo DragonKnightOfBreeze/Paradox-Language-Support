@@ -36,14 +36,16 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvi
             text(typeConfig.name, typeConfig.pointer)
             run {
                 if (subtypeConfigs.isEmpty()) return@run
-                if (!settings.showSubtypesForDefinitionReference) return@run
-                if (!settings.truncateSubtypesForDefinitionReference) {
-                    for (subtypeConfig in subtypeConfigs) {
-                        text(", ")
-                        text(subtypeConfig.name, subtypeConfig.pointer)
+                if (!settings.showDefinitionSubtypesForReferences) return@run
+                val limit = settings.truncateDefinitionSubtypesForReferences
+                for (i in 0 until subtypeConfigs.size) {
+                    if (limit >= 0 && limit <= i) {
+                        text(", ...")
+                        break
                     }
-                } else {
-                    text(", ...")
+                    val subtypeConfig = subtypeConfigs[i]
+                    text(", ")
+                    text(subtypeConfig.name, subtypeConfig.pointer)
                 }
             }
         }

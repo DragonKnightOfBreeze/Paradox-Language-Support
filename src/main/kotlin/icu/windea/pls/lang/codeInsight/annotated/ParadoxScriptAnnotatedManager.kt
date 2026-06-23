@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.annotated
 
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -78,12 +78,12 @@ object ParadoxScriptAnnotatedManager {
                 if (config !is CwtPropertyConfig) return null
                 val key = config.key
                 val value = config.value
-                "## $configExpressionPrefix ${key.quoteIfNecessary()} = ${value.quoteIfNecessary()}"
+                "## $configExpressionPrefix ${key.quoteIfNeeded()} = ${value.quoteIfNeeded()}"
             }
             is ParadoxScriptValue -> {
                 if (config !is CwtValueConfig) return null
                 val value = config.value
-                "## $configExpressionPrefix ${value.quoteIfNecessary()}"
+                "## $configExpressionPrefix ${value.quoteIfNeeded()}"
             }
             else -> null
         }

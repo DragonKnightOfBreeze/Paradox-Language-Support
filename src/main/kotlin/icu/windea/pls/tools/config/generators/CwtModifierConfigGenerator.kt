@@ -8,7 +8,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.toFile
@@ -169,7 +169,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                     val categories = filteredInfos[name]?.categories.orEmpty().sorted()
                     val valueText = when {
                         categories.isEmpty() -> "{}"
-                        else -> categories.joinToString(" ", "{ ", " }") { it.quoteIfNecessary() }
+                        else -> categories.joinToString(" ", "{ ", " }") { it.quoteIfNeeded() }
                     }
                     appendLine("${name} = ${valueText}")
                 }
