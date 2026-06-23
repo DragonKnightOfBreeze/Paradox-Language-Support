@@ -26,16 +26,16 @@
 
   <!-- ExternalSystem.ProjectRefreshActionGroup -->
   <actions>
-    <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">
-      <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
-      <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
-    </action>
-
     <group id="Pls.ConfigGroupRefreshActionGroup">
       <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.ConfigGroupRefreshAction">
         <keyboard-shortcut first-keystroke="control shift g" keymap="$default"/>
       </action>
       <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.HideConfigGroupRefreshAction"/>
     </group>
+
+    <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">
+      <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
+      <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
+    </action>
   </actions>
 </idea-plugin>

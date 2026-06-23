@@ -1,11 +1,4 @@
 <idea-plugin>
-  <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls.integrations" groupWeight="80" parentId="pls" bundle="messages.PlsIntegrationsBundle" key="settings.integrations"
-                             instance="icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable"/>
-
-    <vfs.asyncListener implementation="icu.windea.pls.integrations.lints.TigerConfFileListener"/>
-  </extensions>
-
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.integrations.imageToolProvider" interface="icu.windea.pls.integrations.images.ImageToolProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.integrations.translationToolProvider" interface="icu.windea.pls.integrations.translation.TranslationToolProvider" dynamic="true"/>
@@ -24,5 +17,11 @@
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Hoi4"/>
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Ir"/>
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Vic3"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="pls.integrations" groupWeight="80" parentId="pls" bundle="messages.PlsIntegrationsBundle" key="settings.integrations"
+                             instance="icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable"/>
+    <vfs.asyncListener implementation="icu.windea.pls.integrations.lints.TigerConfFileListener"/>
   </extensions>
 </idea-plugin>

@@ -4,6 +4,14 @@
   </extensions>
 
   <actions resource-bundle="messages.PlsToolsBundle">
+    <group id="Pls.LaunchGame">
+      <action id="Pls.LaunchGame.InSteam" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteam" icon="AllIcons.Actions.Execute">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt F10"/>
+        <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenModSettings" anchor="after"/>
+      </action>
+      <action id="Pls.LaunchGame.InSteam.WithExit" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteamWithExit" icon="AllIcons.Actions.Execute"/>
+    </group>
+
     <group id="Pls.ConfigGeneration">
       <action id="Pls.Generation.GenerateTriggerConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Trigger"/>
       <action id="Pls.Generation.GenerateEffectConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Effect"/>
@@ -12,14 +20,6 @@
       <action id="Pls.Generation.GenerateModifierCategoryConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$ModifierCategory"/>
       <action id="Pls.Generation.GenerateGameRuleConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$GameRule"/>
       <action id="Pls.Generation.GenerateOnActionConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$OnAction"/>
-    </group>
-
-    <group id="Pls.LaunchGame">
-      <action id="Pls.LaunchGame.InSteam" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteam" icon="AllIcons.Actions.Execute">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt F10"/>
-        <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenModSettings" anchor="after"/>
-      </action>
-      <action id="Pls.LaunchGame.InSteam.WithExit" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteamWithExit" icon="AllIcons.Actions.Execute"/>
     </group>
 
     <group id="Pls.Tools" popup="true">
@@ -31,7 +31,6 @@
       <group id="Pls.Tools.LaunchGame" popup="true">
         <reference ref="Pls.LaunchGame"/>
       </group>
-
       <group id="Pls.Tools.PathAndUrl" popup="true">
         <reference ref="Pls.PathAndUrl"/>
       </group>
@@ -48,6 +47,12 @@
         <reference ref="Pls.LocalisationGeneration"/>
       </group>
 
+      <group id="Pls.Tools.Config" popup="true">
+        <reference ref="Pls.ConfigGroupRefreshAction"/>
+        <reference ref="Pls.HideConfigGroupRefreshAction"/>
+        <separator/>
+        <reference ref="Pls.SyncConfigGroupFromRemote"/>
+      </group>
       <group id="Pls.Tools.ConfigGeneration" popup="true">
         <reference ref="Pls.ConfigGeneration"/>
       </group>

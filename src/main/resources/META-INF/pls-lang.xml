@@ -20,6 +20,26 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.targetByTextSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
   </extensionPoints>
 
+  <extensions defaultExtensionNs="icu.windea.pls.search">
+    <configSearch implementation="icu.windea.pls.lang.search.searchers.CwtConfigSearcher"/>
+    <configSymbolSearch implementation="icu.windea.pls.lang.search.searchers.CwtConfigSymbolSearcher"/>
+    <scriptedVariableSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxScriptedVariableSearcher"/>
+    <definitionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionSearcher"/>
+    <localisationSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher"/>
+    <filePathSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher"/>
+    <complexEnumValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher"/>
+    <dynamicValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDynamicValueSearcher"/>
+    <defineNamespaceSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineNamespaceSearcher"/>
+    <defineVariableSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher"/>
+    <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher"/>
+    <definitionInjectionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher"/>
+    <parameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxParameterSearcher"/>
+    <localisationParameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationParameterSearcher"/>
+    <shaderEffectSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher"/>
+    <meshLocatorSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher"/>
+    <targetByTextSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxTargetFromSubstringTextSearcher"/>
+  </extensions>
+
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings"
                              instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
@@ -384,31 +404,6 @@
     <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleSqliteService" serviceImplementation="icu.windea.pls.base.io.ChronicleSqliteServiceImpl"/>
   </extensions>
 
-  <extensions defaultExtensionNs="icu.windea.pls.search">
-    <configSearch implementation="icu.windea.pls.lang.search.searchers.CwtConfigSearcher"/>
-    <configSymbolSearch implementation="icu.windea.pls.lang.search.searchers.CwtConfigSymbolSearcher"/>
-    <scriptedVariableSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxScriptedVariableSearcher"/>
-    <definitionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionSearcher"/>
-    <localisationSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher"/>
-    <filePathSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher"/>
-    <complexEnumValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher"/>
-    <dynamicValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDynamicValueSearcher"/>
-    <defineNamespaceSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineNamespaceSearcher"/>
-    <defineVariableSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher"/>
-    <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher"/>
-    <definitionInjectionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher"/>
-    <parameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxParameterSearcher"/>
-    <localisationParameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationParameterSearcher"/>
-    <shaderEffectSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher"/>
-    <meshLocatorSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxMeshLocatorSearcher"/>
-    <targetByTextSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxTargetFromSubstringTextSearcher"/>
-  </extensions>
-
-  <projectListeners>
-    <listener class="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor$Listener"
-              topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
-  </projectListeners>
-
   <applicationListeners>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnDefaultGameDirectoriesChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
@@ -429,6 +424,11 @@
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>
+
+  <projectListeners>
+    <listener class="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor$Listener"
+              topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+  </projectListeners>
 
   <actions resource-bundle="messages.PlsBundle">
     <group id="Pls.Documentation.PrimaryGroup">
