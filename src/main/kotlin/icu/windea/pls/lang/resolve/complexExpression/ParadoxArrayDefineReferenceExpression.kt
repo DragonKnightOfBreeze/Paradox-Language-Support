@@ -101,7 +101,7 @@ private object ParadoxArrayDefineReferenceExpressionResolver {
                 nodes += node
             }
             run r2@{
-                // compatible with no-number literals
+                // compatible with string literals
                 val nodeText = text.substring(pipeIndex2 + 1)
                 val nodeTextRange = TextRange.from(offset + pipeIndex2 + 1, nodeText.length)
                 val node = when {

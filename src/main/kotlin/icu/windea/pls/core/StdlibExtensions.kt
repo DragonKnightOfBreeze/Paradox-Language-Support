@@ -432,11 +432,11 @@ fun String.toCapitalizedWords(): String {
     }
 }
 
-/** 查找从 [startIndex] 开始第一个非空白的字符。 */
-fun CharSequence.indexOfNonBlank(startIndex: Int): Int {
+/** 查找从 [startIndex] 开始第一个符合条件 [predicate] 的字符。 */
+fun CharSequence.indexOf(startIndex: Int, predicate: (Char) -> Boolean): Int {
     for (i in startIndex until length) {
         val c = this[i]
-        if (!c.isWhitespace()) return i
+        if (predicate(c)) return i
     }
     return -1
 }
