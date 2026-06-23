@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-sealed class QuoteOrUnquoteIdentifierIntentionBase : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
+sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxScriptExpressionElement
     }
@@ -34,7 +34,7 @@ sealed class QuoteOrUnquoteIdentifierIntentionBase : PsiUpdateModCommandAction<P
     }
 }
 
-class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
+class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
@@ -54,7 +54,7 @@ class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
     }
 }
 
-class UnquoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
+class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）

@@ -16,7 +16,7 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 
-sealed class QuoteOrUnquoteIdentifierIntentionBase : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
+sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxCsvExpressionElement
     }
@@ -32,7 +32,7 @@ sealed class QuoteOrUnquoteIdentifierIntentionBase : PsiUpdateModCommandAction<P
     }
 }
 
-class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
+class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
@@ -44,7 +44,7 @@ class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
     }
 }
 
-class UnquoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
+class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {

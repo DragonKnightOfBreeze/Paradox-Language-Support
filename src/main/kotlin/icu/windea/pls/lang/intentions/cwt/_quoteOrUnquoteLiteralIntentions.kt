@@ -22,7 +22,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
-sealed class QuoteOrUnquoteIdentifierIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is CwtExpressionElement
     }
@@ -38,7 +38,7 @@ sealed class QuoteOrUnquoteIdentifierIntentionBase : PsiUpdateModCommandAction<C
     }
 }
 
-class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
+class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
@@ -58,7 +58,7 @@ class QuoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
     }
 }
 
-class UnquoteIdentifierIntention : QuoteOrUnquoteIdentifierIntentionBase() {
+class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {

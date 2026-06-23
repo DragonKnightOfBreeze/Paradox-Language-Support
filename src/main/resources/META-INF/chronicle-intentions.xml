@@ -4,26 +4,26 @@
     <intentionAction>
       <language>CWT</language>
       <categoryKey>intention.cwt.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.cwt.QuoteIdentifierIntention</className>
-      <descriptionDirectoryName>CwtQuoteIdentifierIntention</descriptionDirectoryName>
+      <className>icu.windea.pls.lang.intentions.cwt.QuoteLiteralIntention</className>
+      <descriptionDirectoryName>QuoteLiteralIntentionForCwt</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>CWT</language>
       <categoryKey>intention.cwt.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.cwt.UnquoteIdentifierIntention</className>
-      <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
+      <className>icu.windea.pls.lang.intentions.cwt.UnquoteLiteralIntention</className>
+      <descriptionDirectoryName>UnquoteLiteralIntentionForCwt</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>CWT</language>
       <categoryKey>intention.cwt.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.cwt.PutMembersOnOneLineIntention</className>
-      <descriptionDirectoryName>CwtPutMembersOnOneLineIntention</descriptionDirectoryName>
+      <descriptionDirectoryName>PutMembersOnOneLineIntentionForCwt</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>CWT</language>
       <categoryKey>intention.cwt.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.cwt.PutMembersOnSeparateLinesIntention</className>
-      <descriptionDirectoryName>CwtPutMembersOnSeparateLinesIntention</descriptionDirectoryName>
+      <descriptionDirectoryName>PutMembersOnSeparateLinesIntentionForCwt</descriptionDirectoryName>
     </intentionAction>
     <!-- endregion -->
 
@@ -31,22 +31,26 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.QuoteIdentifierIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.QuoteLiteralIntention</className>
+      <descriptionDirectoryName>QuoteLiteralIntentionForScript</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.UnquoteIdentifierIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.UnquoteLiteralIntention</className>
+      <descriptionDirectoryName>UnquoteLiteralIntentionForScript</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.PutMembersOnOneLineIntention</className>
+      <descriptionDirectoryName>PutMembersOnOneLineIntentionForScript</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.PutMembersOnSeparateLinesIntention</className>
+      <descriptionDirectoryName>PutMembersOnOneLineIntentionForScript</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
@@ -257,14 +261,14 @@
     <intentionAction>
       <language>PARADOX_CSV</language>
       <categoryKey>intention.csv.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.csv.QuoteIdentifierIntention</className>
-      <descriptionDirectoryName>CsvQuoteIdentifierIntention</descriptionDirectoryName>
+      <className>icu.windea.pls.lang.intentions.csv.QuoteLiteralIntention</className>
+      <descriptionDirectoryName>QuoteLiteralIntentionForCsv</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_CSV</language>
       <categoryKey>intention.csv.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.csv.UnquoteIdentifierIntention</className>
-      <descriptionDirectoryName>CsvUnquoteIdentifierIntention</descriptionDirectoryName>
+      <className>icu.windea.pls.lang.intentions.csv.UnquoteLiteralIntention</className>
+      <descriptionDirectoryName>UnquoteLiteralIntentionForCsv</descriptionDirectoryName>
     </intentionAction>
     <!-- endregion -->
   </extensions>

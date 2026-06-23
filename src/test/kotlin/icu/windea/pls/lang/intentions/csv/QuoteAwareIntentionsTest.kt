@@ -12,9 +12,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see QuoteOrUnquoteIdentifierIntentionBase
- * @see QuoteIdentifierIntention
- * @see UnquoteIdentifierIntention
+ * @see QuoteOrUnquoteLiteralIntentionBase
+ * @see QuoteLiteralIntention
+ * @see UnquoteLiteralIntention
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
