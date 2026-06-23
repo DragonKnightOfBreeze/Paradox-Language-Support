@@ -49,7 +49,7 @@
   - [x] 更新相关规则文件。
   - [x] 补充评估器。
   - [x] 补充基于评估器的那些语言功能（~~代码检查~~、~~代码折叠~~、内嵌提示、意向动作）。
-- [ ] P2 [CK3/VIC3?/EU5?] 完善对标签集表达式（tagsExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
+- [x] P2 [CK3/VIC3?/EU5?] 完善对标签集表达式（tagsExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
   - 示例：`tag1,tag2` - 写访问。`tag1` 和 `tag2` 视为标识符（作为动态值节点）。
   - 示例：`tag1,not(tag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
   - 对应的规则表达式（数据表达式）：`$tags[{name}]` 和 `$tags_condition[{name}]`（条件变体）。
