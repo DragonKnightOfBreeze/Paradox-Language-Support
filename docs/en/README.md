@@ -70,7 +70,7 @@ For a detailed guidance for contributing, please see [`CONTRIBUTING.md`](https:/
 
 For a detailed list of contributors, please see [`CONTRIBUTORS.md`](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md).
 
-### Contributing to Documentation
+### Contributing Documentation
 
 The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/documents) directory), and reference documentation (located in the [docs](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/docs) directory).
 These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.

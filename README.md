@@ -153,7 +153,7 @@ Config files define the semantic information (definitions, corrections, scopes, 
 
 For reference, please read the [documentation for the config system](https://windea.icu/Paradox-Language-Support/en/config.html), the [syntax reference manual](https://windea.icu/Paradox-Language-Support/en/ref-syntax.html), and the [config format reference manual](https://windea.icu/Paradox-Language-Support/en/ref-config-format.html).
 
-### Contributing to Documentation
+### Contributing Documentation
 
 The project documentation is mainly divided into general documentation (such as `README.md`), maintainer documentation (located in the [documents](documents) directory), and reference documentation (located in the [docs](docs) directory).
 These documents inevitably contain errors, shortcomings, missing details, and areas needing supplementation. Contributions to improve documentation quality are welcome, especially for the project's reference documentation.
