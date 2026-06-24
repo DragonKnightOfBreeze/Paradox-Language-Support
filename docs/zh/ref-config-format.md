@@ -143,7 +143,7 @@ priorities = {
 路径定位：
 - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
 
-字段含义：
+字段说明：
 
 - `id`：系统作用域 ID。
 - `base_id`：基底作用域 ID，未指定时默认为 `id`。用于将同族系统作用域（如 `Prev` / `PrevPrev`、`From` / `FromFrom`）归类。
@@ -176,7 +176,7 @@ system_scopes = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-用于提供语言环境（locale）的相关信息（快速文档、ID、语言代码等）。
+语言环境规则用于提供语言环境（locale）的相关信息（快速文档、ID、语言代码等）。
 
 插件基于这些规则，识别和推断可用的语言环境、偏好的语言环境以及上下文（如本地化文件）中的语言环境，从而改进 UI 展示、提示信息以及本地化校验逻辑。
 通用的规则分组中应声明所有全局的语言环境，其中部分可能不受当前游戏类型支持。
@@ -184,7 +184,7 @@ system_scopes = {
 路径定位：
 - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
 
-字段含义：
+字段说明：
 
 - `id`：语言环境 ID（如 `l_english`）。
 - `codes: string[]`：此语言环境包含的语言代码列表（如 `en`、`zh-CN`）。默认为空。
@@ -510,7 +510,7 @@ some_definition = {
 路径定位：
 - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
 
-字段含义：
+字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
 - `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
@@ -580,7 +580,7 @@ defines = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 
-用于描述简单枚举，并提供一组可选项，作为固定的枚举值。
+枚举规则用于描述简单枚举，并提供一组可选项，作为固定的枚举值。
 简单枚举的枚举值必须是常量，且会忽略大小写。
 
 路径定位：
@@ -601,14 +601,14 @@ CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
 <!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-用于描述复杂枚举，并基于锚点动态定位可选项，作为动态的枚举值。
+复杂枚举规则用于描述复杂枚举，并基于锚点动态定位可选项，作为动态的枚举值。
 按照路径模式匹配脚本文件，并在其中进一步匹配锚点。
 复杂枚举的枚举值默认不忽略大小写。
 
 路径定位：
 - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
 
-字段含义：
+字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
 - `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
@@ -649,7 +649,7 @@ enums = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 
-用于为对应的动态值类型提供一组可选项，作为预定义的动态值。
+动态值类型规则用于为对应的动态值类型提供一组可选项，作为预定义的动态值。
 这里预定义的动态值必须是常量，且不会忽略大小写。
 
 动态值是一组不固定的可选项，通常是合法的标识符，使用同名本地化的文本作为 UI 显示。
@@ -714,10 +714,10 @@ links = {
     
     # Dynamic value link (with prefix)
     script_value = {
-		    from_data = yes
-		    type = value
-		    prefix = value:
-		    data_source = $script_value_reference
+        from_data = yes
+        type = value
+        prefix = value:
+        data_source = $script_value_reference
     }
 }
 ```
@@ -838,7 +838,6 @@ types = {
 - 类型规则中的修正名称使用 `$` 占位，请确保与类型 / 子类型表达式对应。
 - 类别中的 `supported_scopes` 应使用标准作用域 ID，解析时会自动归一化大小写。
 
-
 > CWTools 兼容性：兼容。
 
 #### 作用域规则与作用域分组规则 {#config-scope}
@@ -888,7 +887,7 @@ scope_groups = {
 路径定位：
 - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。
 
-字段含义：
+字段说明：
 
 - `type`：若存在，将 `prefix:object` 的 `object` 作为该类型的定义引用。
 - `swap_type`：若存在，将 `prefix:object:swap` 的 `swap` 作为切换类型的定义引用。
@@ -1018,7 +1017,6 @@ definitions = {
 
 - `type` 为必填；缺失将导致该条目被跳过。
 - 此扩展用于"提示与上下文增强"，并不直接改变[声明规则](#config-declaration)的结构。
-
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1470,7 +1468,7 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
-用于定位定义的相关本地化。位置部分可以是包含 `$` 占位符的本地化键模式（如 `$_desc`），也可以是属性键名（如 `title`）。
+本地化位置表达式用于定位定义的相关本地化。位置部分可以是包含 `$` 占位符的本地化键模式（如 `$_desc`），也可以是属性键名（如 `title`）。
 
 参数约定：
 
@@ -1494,7 +1492,7 @@ title
 
 <!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
-用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。若为属性键名，则会继续解析该属性值所指向的图片。
+图片位置表达式用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。若为属性键名，则会继续解析该属性值所指向的图片。
 
 参数约定：
 
