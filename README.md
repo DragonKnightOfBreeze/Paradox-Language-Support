@@ -103,7 +103,9 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
 - Feedback is welcome through GitHub, Discord and other channels.
 
-## Technical Details
+## Technical Information
+
+### Technical Details
 
 - Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
 - Built on the [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html), implementing deep semantic analysis and rich language features based on [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)).
@@ -114,7 +116,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - Built-in tool integration module (image processing, translation, inspection tools) for optimizing and extending plugin capabilities.
 - Built-in AI integration module (preliminary, MVP status) for translating and polishing localisation text.
 
-## Known Limitations
+### Known Limitations
 
 <!-- TODO: updating -->
 
@@ -210,7 +212,7 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 
 ### Developed by
 
-**Windea** - the dragon knight who with the title of breeze.
+**Windea** - The dragon knight who with the title of breeze.
 
 ### Powered by
 

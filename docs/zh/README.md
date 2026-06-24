@@ -35,7 +35,9 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ![](../assets/preview_1_zh.png)
 
-## 技术细节
+## 技术信息
+
+### 技术细节
 
 - 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
 - 基于 [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html) 构建，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语义分析与丰富的语言功能。
@@ -46,7 +48,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 内置工具集成模块（图片处理、翻译、检查工具），用于优化和扩展插件能力。
 - 内置 AI 集成模块（初步，MVP 状态），用于翻译和润色本地化文本。
 
-## 已知限制
+### 已知限制
 
 <!-- TODO: updating -->
 
@@ -54,7 +56,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
   目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
   其他游戏（如 Crusader Kings III、Hearts of Iron IV）的规则可能已过时，这会导致误报警告或缺少补全。
-  欢迎向[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)贡献。
+  欢迎向[各个规则仓库](cwt/README.md)贡献。
 - 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
 
 ## 贡献与支持
