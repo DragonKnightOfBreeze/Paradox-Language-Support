@@ -182,10 +182,10 @@ Among them:
 - `?=` - safe assign, a safe variant of assignment operators (only supported by CK3/VIC3/EU5).
 - `? =` - safe call assign, a safe variant of assignment operators (only supported by Stellaris v4.4+, and spaces are not allowed between it and the preceding property key).
 
-Semantically, when the preceding property key (`owner` in the example) of the separator represents a scope:
+Semantically, when the preceding property key of the separator represents a scope:
 
-- `owner ?= v` is equivalent to `exists = owner owner = v`
-- `owner? = v` is equivalent to `exists = owner owner = v`
+- `from.owner ?= v` will check whether the scopes corresponding to `from` and `from.owner` exist (`exists = x`) before executing the scope call.
+- `from.owner? = v` will check whether the scopes corresponding to `from` and `from.owner` exist (`exists = x`) before executing the scope call.
 
 **String expressions** (keys and strings) can be enclosed in double quotes (literal form) or not (identifier form).
 

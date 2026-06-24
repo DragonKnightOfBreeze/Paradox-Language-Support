@@ -119,10 +119,10 @@
                      key="inspection.script.conditionalStatementToBlockForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="INFORMATION"
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ConditionalStatementToBlockFormInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToExplicitForm"
-                     key="inspection.script.scopeCallStatementToExplicitForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToNormalForm"
+                     key="inspection.script.scopeCallStatementToNormalForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="INFORMATION"
-                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToExplicitFormInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNormalFormInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToSafeForm"
                      key="inspection.script.scopeCallStatementToSafeForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"

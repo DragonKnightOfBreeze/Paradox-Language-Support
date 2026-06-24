@@ -16,7 +16,7 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isChainedForm
-import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isExplicitForm
+import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isNormalForm
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isSafeForm
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 /**
  * 用于操作脚本中的作用域调用语句（scope call statement）。
  *
- * 示例 - 显式形式：
+ * 示例 - 普通形式：
  *
  * ```paradox_script
  * exists = owner
@@ -71,16 +71,16 @@ import icu.windea.pls.script.psi.ParadoxScriptString
  */
 object ParadoxScopeCallStatementManipulationService {
     /**
-     * 判断 [element] 是否为显式形式。
+     * 判断 [element] 是否为普通形式。
      *
      * 说明：
      * - [element] 默认可以是其中的任一属性（`exists = v` 或 `x = y`）。
      * - [element] 的属性键（作为 `exists` 属性时）/属性值（作为目标属性时）必须是字符串字面量。
      * - `exists = v` 必须在 `x = y` 之前，且两者之间仅能有空白或注释。
      */
-    fun isExplicitForm(element: ParadoxScriptProperty, forExistsProperty: Boolean = true, forTargetProperty: Boolean = true): Boolean {
-        if (forExistsProperty && isExistsPropertyOfExplicitForm(element)) return true
-        if (forTargetProperty && isTargetPropertyOfExplicitForm(element)) return true
+    fun isNormalForm(element: ParadoxScriptProperty, forExistsProperty: Boolean = true, forTargetProperty: Boolean = true): Boolean {
+        if (forExistsProperty && isExistsPropertyOfNormalForm(element)) return true
+        if (forTargetProperty && isTargetPropertyOfNormalForm(element)) return true
         return false
     }
 
@@ -153,7 +153,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 判断 [element] 是否可以转换为显式形式。
+     * 判断 [element] 是否可以转换为普通形式。
      *
      * 说明：
      * - [element] 必须是安全形式。参见 [isSafeForm]。
@@ -161,7 +161,7 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun canConvertToExplicitForm(element: ParadoxScriptProperty): Boolean {
+    fun canConvertToNormalForm(element: ParadoxScriptProperty): Boolean {
         return isSafeForm(element)
     }
 
@@ -169,13 +169,13 @@ object ParadoxScopeCallStatementManipulationService {
      * 判断 [element] 是否可以转换为安全形式。
      *
      * 说明：
-     * - [element] 必须是显式形式。参见 [isExplicitForm]。
+     * - [element] 必须是普通形式。参见 [isNormalForm]。
      * - 适用于支持安全（调用）赋值运算符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
      *
      * @see ParadoxLinkedExpression
      */
     fun canConvertToSafeForm(element: ParadoxScriptProperty, canBeExistsProperty: Boolean = true, canBeTargetProperty: Boolean = true): Boolean {
-        if (!isExplicitForm(element, canBeExistsProperty, canBeTargetProperty)) return false
+        if (!isNormalForm(element, canBeExistsProperty, canBeTargetProperty)) return false
         val gameType = ParadoxAnalysisManager.selectGameType(element)
         if (gameType == null || gameType == ParadoxGameType.Core) return true
         return ParadoxSyntaxConstraint.SafeAssignOperator.test(gameType) || ParadoxSyntaxConstraint.SafeCallAssignOperator.test(gameType)
@@ -206,7 +206,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 将 [element] 从安全形式转换为显式形式。
+     * 将 [element] 从安全形式转换为普通形式。
      *
      * 示例：
      *
@@ -228,7 +228,7 @@ object ParadoxScopeCallStatementManipulationService {
      *
      * @see ParadoxLinkedExpression
      */
-    fun convertToExplicitForm(element: ParadoxScriptProperty, project: Project) {
+    fun convertToNormalForm(element: ParadoxScriptProperty, project: Project) {
         val keyText = element.propertyKey.text
         val valueText = element.propertyValue?.text ?: return
 
@@ -255,7 +255,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     /**
-     * 将 [element] 从显式形式转换为安全形式。
+     * 将 [element] 从普通形式转换为安全形式。
      *
      * 示例：
      *
@@ -493,13 +493,13 @@ object ParadoxScopeCallStatementManipulationService {
         return true
     }
 
-    private fun isExistsPropertyOfExplicitForm(element: ParadoxScriptProperty): Boolean {
+    private fun isExistsPropertyOfNormalForm(element: ParadoxScriptProperty): Boolean {
         if (!isExistsProperty(element)) return false
         val next = findTargetPropertyAfter(element) ?: return false
         return matchesExistsValue(element, next)
     }
 
-    private fun isTargetPropertyOfExplicitForm(element: ParadoxScriptProperty): Boolean {
+    private fun isTargetPropertyOfNormalForm(element: ParadoxScriptProperty): Boolean {
         if (!isTargetProperty(element)) return false
         val prev = findExistsPropertyBefore(element) ?: return false
         return matchesExistsValue(prev, element)
@@ -520,7 +520,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     private fun getExistsProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
-        if (isExistsPropertyOfExplicitForm(element)) return element
+        if (isExistsPropertyOfNormalForm(element)) return element
         if (isTargetProperty(element)) {
             val before = findExistsPropertyBefore(element)
             if (before != null && matchesExistsValue(before, element)) return before
@@ -529,7 +529,7 @@ object ParadoxScopeCallStatementManipulationService {
     }
 
     private fun getTargetProperty(element: ParadoxScriptProperty): ParadoxScriptProperty? {
-        if (isTargetPropertyOfExplicitForm(element)) return element
+        if (isTargetPropertyOfNormalForm(element)) return element
         if (isExistsProperty(element)) {
             val next = findTargetPropertyAfter(element)
             if (next != null && matchesExistsValue(element, next)) return next
