@@ -1,8 +1,8 @@
 <html>
 <body>
-  Reports safe scope calls in script files, which can be replaced with normal form.
+  Reports safe scope calls in script files, which can be replaced with normal form (may change semantics).
   <p>
-    Check on grammar level.
+    Check on grammar level and semantic level.
   </p>
   <p>
     Applicable for all game types with any safe call operator (<code>?=</code> or <code>? =</code>).
@@ -17,8 +17,7 @@ owner ?= v
 owner? = v
 
 # after
-exists = owner
-owner = { ... }
+owner = v
 </code></pre>
 </body>
 </html>

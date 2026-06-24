@@ -1,27 +1,32 @@
 <html>
 <body>
-  报告脚本文件中的显式的作用域调用，可以被替换为安全形式。
+  报告脚本文件中的显式的作用域调用，可以被替换为安全形式（可能会改变语义）。
   <p>
-    检测于文法级别。
+    检测于文法级别和语义级别。
   </p>
   <p>
     适用于支持安全赋值运算符的游戏类型（CK3/VIC3/EU5 使用 <code>?=</code>，Stellaris 使用 <code>? =</code>）。
   </p>
   <!-- tooltip end -->
   <p>示例：</p>
-  <pre><code class="language-paradox_script">
-# before
-exists = owner
-# comment
-owner = { ... }
+  <pre><code class="language-paradox_script"># before
+owner = v
 
 # [CK3/VIC3/EU5] after
-# comment
 owner ?= v
 
 # [Stellaris] after
-# comment
-owner? = v
+owner?= v
+</code></pre>
+  <pre><code class="language-paradox_script"># before
+exists = owner
+owner = v
+
+# [CK3/VIC3/EU5] after
+owner ?= v
+
+# [Stellaris] after
+owner?= v
 </code></pre>
 </body>
 </html>

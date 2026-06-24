@@ -1,4 +1,3 @@
 example = {
-	exists = owner
 	<spot>owner = { k = v }</spot>
 }
