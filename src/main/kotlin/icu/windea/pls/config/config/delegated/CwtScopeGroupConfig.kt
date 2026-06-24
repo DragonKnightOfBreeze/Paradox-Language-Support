@@ -26,7 +26,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * 路径定位：
  * - `scope_groups/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * scope_groups = {

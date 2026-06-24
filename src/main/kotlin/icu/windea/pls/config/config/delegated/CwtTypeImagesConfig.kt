@@ -22,7 +22,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * 路径定位：
  * - `types/type[{type}]/images`。其中 `{type}` 匹配定义类型。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {

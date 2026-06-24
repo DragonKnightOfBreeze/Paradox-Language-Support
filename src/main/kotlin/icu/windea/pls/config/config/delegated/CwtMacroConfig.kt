@@ -35,7 +35,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `macro[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * macro[inline_script] = {

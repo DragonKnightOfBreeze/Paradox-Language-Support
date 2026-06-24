@@ -131,6 +131,8 @@ priorities = {
 - 两个 MOD 都在 `events/` 中定义同名事件：由于 `events = fios`，先被读取（加载更早）的 MOD 生效，后者被忽略。
 - 两个 MOD 都在 `common/on_actions/` 添加条目：由于 `ordered`，会顺序合并执行，不发生覆盖。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 系统作用域规则 {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
@@ -139,7 +141,6 @@ priorities = {
 系统作用域规则为内置的"系统级作用域"（如 This、Root、Prev、From 等）提供元信息，用于快速文档与作用域栈推导。
 
 路径定位：
-
 - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
 
 字段含义：
@@ -169,6 +170,8 @@ system_scopes = {
 }
 ```
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 语言环境规则 {#config-locale}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
@@ -179,7 +182,6 @@ system_scopes = {
 通用的规则分组中应声明所有全局的语言环境，其中部分可能不受当前游戏类型支持。
 
 路径定位：
-
 - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
 
 字段含义：
@@ -197,6 +199,8 @@ locales = {
 }
 ```
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 类型规则与子类型规则 {#config-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
@@ -209,7 +213,6 @@ locales = {
 类型规则按"文件路径 / 键名"等条件定位并命名"定义（definition）"，并可声明子类型、展示信息与图片。
 
 路径定位：
-
 - 类型：`types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
 - 子类型：`types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
 
@@ -334,6 +337,8 @@ types = {
 - 子类型匹配"顺序敏感"，请将更具体的规则放在更前面。
 - 同一 `## group` 内的子类型互斥（如 `event_type` 分组中的 `country`、`planet`、`ship` 等）。
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### 类型展示规则 {#config-type-presentation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
@@ -347,7 +352,6 @@ types = {
 位置规则的常用选项包括 `required`（是否必需项）和 `primary`（是否主要项，用于主展示图标 / 主名称）。位置表达式的详细语法参见[位置表达式](#config-expression-location)。
 
 路径定位：
-
 - 本地化：`types/type[{type}]/localisation`。其中 `{type}` 匹配定义类型。
 - 图片：`types/type[{type}]/images`。其中 `{type}` 匹配定义类型。
 
@@ -369,6 +373,8 @@ types = {
 }
 ```
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### 位置规则 {#config-location}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
@@ -376,16 +382,15 @@ types = {
 位置规则声明图片 / 本地化等资源的定位键与位置表达式，用于类型展示规则的 `localisation` 和 `images` 小节中。
 
 路径定位：
-
 - 本地化资源：`types/type[{type}]/localisation/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
 - 图片资源：`types/type[{type}]/images/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
+
+> CWTools 兼容性：兼容。
 
 #### 声明规则 {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
 <!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
-<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
-<!-- @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.deepCopyConfigsInDeclaration -->
 
 声明规则描述了"定义条目"的结构，是补全、检查与快速文档等功能的基础。
 
@@ -394,7 +399,6 @@ types = {
 声明规则可以与其他规则协作：在声明内可引用[别名与单别名](#config-alias)（`alias_name[...]` / `alias_match_left[...]`、`single_alias_right[...]`）。切换类型（swapped type）的声明可直接嵌套在对应基础类型的声明中。游戏规则（game rule）和动作触发（on action）还可以通过[扩展规则](#configs-extended)改写声明上下文。
 
 路径定位：
-
 - `{name}`。其中 `{name}` 匹配规则名称。
 - 对于规则文件中的顶级属性，如果未在解析其他规则的过程中被匹配到，且键是一个合法的标识符，最终都会在回退时尝试解析为声明规则。
 
@@ -434,6 +438,8 @@ building = {
 - 根级 `single_alias_right[...]` 会先被展开，再参与后续解析与检查。
 - 为保证后续功能能够"向上溯源"，生成的规则节点均会保持父链（parent config）引用。
 
+> CWTools 兼容性：兼容。
+
 #### 别名规则与单别名规则 {#config-alias}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
@@ -444,7 +450,6 @@ building = {
 别名规则将可复用的规则片段抽象成"具名别名"，在多处引用并展开。单别名用于"值侧"的一对一复用。
 
 路径定位：
-
 - 别名：`alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
 - 单别名：`single_alias[{name}]`。其中 `{name}` 匹配规则名称。
 
@@ -493,6 +498,8 @@ some_definition = {
 - 展开后才会进行基数与选项校验；请在展开位置而非声明处考虑最终语义。
 - `subName` 为数据表达式（受限），可使用模板 / 枚举等提高复用度，但请避免过宽导致误匹配。
 
+> CWTools 兼容性：兼容。
+
 #### 行规则 {#config-row}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
@@ -501,7 +508,6 @@ some_definition = {
 行规则为 CSV 行声明列名与取值形态，用于补全与检查。
 
 路径定位：
-
 - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
 
 字段含义：
@@ -531,6 +537,8 @@ rows = {
 }
 ```
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 定值规则 {#config-define}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDefineConfig -->
@@ -541,7 +549,6 @@ rows = {
 它们位于 `common/defines` 目录中的扩展名为 `.txt` 的脚本文件中。
 
 路径定位：
-
 - 定值命名空间：`defines/{namespace}`。其中 `{namespace}` 匹配命名空间（即规则名称）。
 - 定值变量：`defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
 
@@ -567,6 +574,8 @@ defines = {
 - 插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
 - 目前，基于定值规则，插件会检查定值变量的声明结构的合法性，但不会检查定值命名空间或定值变量的名字的合法性。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 枚举规则 {#config-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
@@ -584,6 +593,8 @@ enums = {
     enum[weight_or_base] = { weight base }
 }
 ```
+
+CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
 #### 复杂枚举规则 {#config-complex-enum}
 
@@ -632,16 +643,19 @@ enums = {
 }
 ```
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### 动态值类型规则 {#config-dynamic-value-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 
-动态值类型规则为数据表达式 `value[...]` 提供预定义（硬编码）的动态值集合，替代固定字面量，便于补全与校验。当前实现仅支持常量值，不支持模板表达式。
+用于为对应的动态值类型提供一组可选项，作为预定义的动态值。
+这里预定义的动态值必须是常量，且不会忽略大小写。
 
-如需为动态值声明作用域上下文，或按上下文动态生成值，请参考[动态值的扩展规则](#config-extended-dynamic-value)。
+动态值是一组不固定的可选项，通常是合法的标识符，使用同名本地化的文本作为 UI 显示。
+事件目标（event target）、变量（variable）、标志（flag）等通常都会被视为动态值。
 
 路径定位：
-
 - `values/value[{name}]`。其中 `{name}` 匹配规则名称。
 
 示例：
@@ -652,6 +666,8 @@ values = {
 }
 ```
 
+> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
+
 #### 链接规则 {#config-link}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
@@ -659,7 +675,6 @@ values = {
 链接规则为复杂表达式中的"字段 / 函数样"节点提供语义与类型约束（作用域 / 值），支撑链式访问与补全检查。
 
 路径定位：
-
 - 常规链接：`links/{name}`。其中 `{name}` 匹配规则名称。
 - 本地化链接：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
 - 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
@@ -726,6 +741,8 @@ links = {
 - 可混合多个 `data_source`。
 - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### 本地化命令规则与本地化提升规则 {#config-localisation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
@@ -734,7 +751,6 @@ links = {
 本地化命令规则声明"本地化命令字段"（如 `GetCountryType`）的可用性与允许作用域。本地化提升规则声明"本地化作用域提升"，使得通过本地化链接切换作用域后仍能使用对应的命令字段。
 
 路径定位：
-
 - 本地化命令：`localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
 - 本地化提升：`localisation_promotions/{name}`。其中 `{name}` 匹配规则名称。
 
@@ -763,6 +779,8 @@ localisation_promotions = {
 - 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
 - 静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
 
+> CWTools 兼容性：兼容。
+
 #### 修正规则与修正分类规则 {#config-modifier}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
@@ -771,7 +789,6 @@ localisation_promotions = {
 修正规则声明修正（modifier）与其分类，用于图标渲染、补全与作用域校验。
 
 路径定位：
-
 - 修正：
   - `modifiers/{name}`。其中 `{name}` 匹配规则名称。
   - `types/type[{type}]/modifiers/{name}`。其中 `{type}` 匹配定义类型，`{name}` 匹配规则名称（其中的 `$` 会被替换为 `<{type}>`）。
@@ -821,6 +838,9 @@ types = {
 - 类型规则中的修正名称使用 `$` 占位，请确保与类型 / 子类型表达式对应。
 - 类别中的 `supported_scopes` 应使用标准作用域 ID，解析时会自动归一化大小写。
 
+
+> CWTools 兼容性：兼容。
+
 #### 作用域规则与作用域分组规则 {#config-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
@@ -831,7 +851,6 @@ types = {
 作用域规则与系统作用域共同决定作用域栈与含义；与链接规则共同约束链式访问的输入 / 输出作用域。在扩展规则中可通过 `## replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
 
 路径定位：
-
 - 作用域：`scopes/{name}`。其中 `{name}` 匹配规则名称。
 - 作用域分组：`scope_groups/{name}`。其中 `{name}` 匹配规则名称。
 
@@ -856,14 +875,17 @@ scope_groups = {
 }
 ```
 
+> CWTools 兼容性：兼容。
+
 #### 数据库对象类型规则 {#config-db-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-数据库对象类型规则用于描述数据库对象表达式的类型与格式。这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。它们最终会被解析为一个定义或本地化，并渲染到 UI 提示中。
+数据库对象类型规则用于描述数据库对象表达式的类型与格式。
+这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。
+它们最终会被解析为一个定义或本地化，并渲染到 UI 提示中。
 
 路径定位：
-
 - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。
 
 字段含义：
@@ -892,6 +914,8 @@ database_object_types = {
 }
 ```
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 宏规则 {#config-macro}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
@@ -907,7 +931,6 @@ database_object_types = {
 - **定义注入（definition_injection）**：（VIC3 / EU5）在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
 
 路径定位：
-
 - `macro[{name}]`。其中 `{name}` 匹配规则名称。
 
 示例：
@@ -922,6 +945,8 @@ macro[definition_injection] = {
     create_modes = { REPLACE_OR_CREATE }
 }
 ```
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ### 扩展规则 {#configs-extended}
 
@@ -940,7 +965,6 @@ macro[definition_injection] = {
 为脚本中的封装变量（scripted variable）提供额外提示（快速文档、内嵌提示等）。
 
 路径定位：
-
 - `scripted_variables/{name}`。其中 `{name}` 匹配规则名称。
 
 格式说明：
@@ -961,6 +985,8 @@ scripted_variables = {
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
 - 本条目仅提供"提示增强"，不负责声明或校验封装变量的取值与类型。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 定义的扩展规则 {#config-extended-definition}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
@@ -968,7 +994,6 @@ scripted_variables = {
 为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`## hint`）、绑定定义类型（`## type`，必填）、以及按需指定的作用域上下文（`## replace_scopes` / `## push_scope`）。
 
 路径定位：
-
 - `definitions/{name}`。其中 `{name}` 匹配规则名称。
 
 格式说明：
@@ -993,6 +1018,9 @@ definitions = {
 
 - `type` 为必填；缺失将导致该条目被跳过。
 - 此扩展用于"提示与上下文增强"，并不直接改变[声明规则](#config-declaration)的结构。
+
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### 游戏规则的扩展规则 {#config-extended-game-rule}
 
@@ -1040,6 +1068,8 @@ game_rules = {
 - 若值为 `single_alias_right[...]`，会先被内联展开，再作为重载规则生效。
 - 该扩展仅影响"[声明规则](#config-declaration)的来源 / 结构"与"提示信息"，不改变整体优先级与覆盖方式。
 
+> CWTools 兼容性：不兼容。拥有不同的格式和行为。
+
 #### 动作触发的扩展规则 {#config-extended-on-action}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
@@ -1086,6 +1116,8 @@ on_actions = {
 - `## event_type` 为必填；缺失将导致该条目被跳过。
 - 如需作用域替换，可结合 `## replace_scopes` 使用。
 
+> CWTools 兼容性：不兼容。拥有不同的格式和行为。
+
 #### 参数的扩展规则 {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
@@ -1095,7 +1127,6 @@ on_actions = {
 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
-
 - `parameters/{name}`。其中 `{name}` 匹配规则名称。
 
 主要字段：
@@ -1145,6 +1176,8 @@ parameters = {
 - 标记 `## inherit` 时，上下文取自"使用处"，可能为空或因位置不同而变化。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 复杂枚举值的扩展规则 {#config-extended-complex-enum-value}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
@@ -1172,6 +1205,8 @@ complex_enum_values = {
 
 - 本扩展不改变复杂枚举"值来源"的收集逻辑，仅提供提示信息。
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### 动态值的扩展规则 {#config-extended-dynamic-value}
 
@@ -1205,6 +1240,8 @@ dynamic_values = {
 - 本扩展不改变动态值类型与基础"值集合"的定义，仅提供提示信息。
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### 内联脚本的扩展规则 {#config-extended-inline-script}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
@@ -1214,7 +1251,6 @@ dynamic_values = {
 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
-
 - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
 
 主要字段：
@@ -1256,6 +1292,8 @@ inline_scripts = {
 
 - 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ### 内部规则 {#configs-internal}
 
@@ -1387,7 +1425,7 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 - 常量片段与动态规则名紧邻时，解析器会优先保证动态规则的正确识别。
 - 模板表达式不支持空白字符；如需要空白匹配，请改用 [ANT 路径模式](#faq-ant)或[正则表达式](#faq-regex)。
 
-> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
 ### 基数表达式 {#config-expression-cardinality}
 
@@ -1538,7 +1576,7 @@ icon|p1,p2
 对应的数据表达式的格式：
 - `$any`
 
-> CWTools 兼容性：兼容。
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### Bool {#data-type-bool}
 
@@ -1741,7 +1779,7 @@ icon|p1,p2
 - `enum[weight_or_base]`
 - `enum[ship_class]`
 
-> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
 #### Value {#data-type-value}
 
@@ -2226,7 +2264,7 @@ icon|p1,p2
 
 此类型为模式感知类型，其数据表达式格式即为模板表达式本身（参见[模板表达式](#config-expression-template)）。
 
-> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
 #### Ant {#data-type-ant}
 

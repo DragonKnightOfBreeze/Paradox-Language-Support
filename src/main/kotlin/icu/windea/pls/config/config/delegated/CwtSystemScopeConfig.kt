@@ -24,7 +24,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * 路径定位：
  * - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * system_scopes = {

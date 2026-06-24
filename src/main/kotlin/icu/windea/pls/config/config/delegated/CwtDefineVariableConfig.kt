@@ -19,7 +19,7 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
  *
  * 备注：插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * defines = {

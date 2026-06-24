@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {

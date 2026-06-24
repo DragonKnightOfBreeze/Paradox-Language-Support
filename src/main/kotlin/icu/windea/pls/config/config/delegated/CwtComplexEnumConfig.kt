@@ -35,7 +35,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * enums = {

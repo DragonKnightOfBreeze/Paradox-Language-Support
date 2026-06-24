@@ -18,7 +18,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  *
  * ### 解析逻辑
  *
- * 由 [CwtDataExpression.Resolver] 中的解析方法分派到扩展点 [CwtDataExpressionSupport] 中的解析方法，
+ * 由 [CwtDataExpression] 的静态解析方法分派到扩展点 [CwtDataExpressionSupport] 中的解析方法，
  * 解析得到 [CwtDataExpression]，其中包含对应的数据类型。
  *
  * ### 匹配逻辑

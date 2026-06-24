@@ -55,7 +55,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * - 本地化链接：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
  * - 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * links = {

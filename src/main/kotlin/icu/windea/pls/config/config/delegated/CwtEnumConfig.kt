@@ -28,7 +28,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * enums = {
@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * > CWTools 兼容性：部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
+ * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
  *
  * @property name 规则名称（即枚举名）。
  * @property values 可选项集合（忽略大小写）。

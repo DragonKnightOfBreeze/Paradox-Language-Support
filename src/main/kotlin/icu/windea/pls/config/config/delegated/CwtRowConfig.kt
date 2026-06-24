@@ -30,7 +30,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * rows = {

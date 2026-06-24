@@ -28,7 +28,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * 路径定位：
  * - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * locales = {

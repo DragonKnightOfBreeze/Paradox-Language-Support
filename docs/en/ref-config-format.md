@@ -132,6 +132,8 @@ priorities = {
 - Two mods both define an event with the same name in `events/`: Due to `events = fios`, the mod loaded first takes effect, and the later one is ignored.
 - Two mods both add entries in `common/on_actions/`: Due to `ordered`, entries are merged in order without overriding.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### System Scope Config {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
@@ -140,8 +142,7 @@ priorities = {
 System scope configs provide metadata for built-in "system-level scopes" (such as This, Root, Prev, From, etc.), used for quick documentation and scope stack derivation.
 
 Path location:
-
-- `system_scopes/{name}`, where `{name}` is the system scope ID.
+- system_scopes/{name}`, where `{name}` is the system scope ID.
 
 Field meanings:
 
@@ -170,6 +171,8 @@ system_scopes = {
 }
 ```
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Locale Config {#config-locale}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
@@ -182,8 +185,7 @@ Based on these configs, the plugin identifies and infers available locales, pref
 All global locales should be declared in the general config group, some of which may not be supported by the current game type.
 
 Path location:
-
-- `locales/{id}`, where `{id}` is the locale ID.
+- locales/{id}`, where `{id}` is the locale ID.
 
 Field meanings:
 
@@ -199,6 +201,8 @@ locales = {
     l_simp_chinese = { codes = { "zh-CN" } }
 }
 ```
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### Type Config and Subtype Config {#config-type}
 
@@ -337,6 +341,8 @@ Notes:
 - Subtype matching is "order-sensitive"; place more specific configs earlier.
 - Subtypes within the same `## group` are mutually exclusive (e.g. `country`, `planet`, `ship`, etc. in the `event_type` group).
 
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Type Presentation Config {#config-type-presentation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
@@ -372,6 +378,8 @@ types = {
 }
 ```
 
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Location Config {#config-location}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
@@ -383,18 +391,17 @@ Path location:
 - Localisation resources: `types/type[{type}]/localisation/{key}`, where `{type}` is the definition type and `{key}` is the key name.
 - Image resources: `types/type[{type}]/images/{key}`, where `{type}` is the definition type and `{key}` is the key name.
 
+> CWTools Compatibility: Compatible.
+
 #### Declaration Config {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
 <!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
-<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
-<!-- @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.deepCopyConfigsInDeclaration -->
 
 Declaration configs describe the structure of "definition entries" and serve as the foundation for features such as completion, inspection, and quick documentation.
 
 Path location:
-
-- `{name}`, where `{name}` is the config name.
+- {name}`, where `{name}` is the config name.
 - Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being resolved as declaration configs.
 
 The processing flow of declaration configs is roughly as follows: First, only top-level properties with valid identifier keys are treated as declaration configs. If the root-level value of the declaration is `single_alias_right[...]`, inline expansion is performed first. Then, the plugin trims and flattens the config tree by subtypes — `subtype[...]` blocks matching the current context subtypes are expanded to sibling-level sub-configs, while non-matching ones are skipped. The resulting config tree is used to drive completion, inspection, and other features.
@@ -436,6 +443,8 @@ Notes:
 - `subtype[...]` only takes effect when it matches the context subtypes; non-matching ones are ignored (no error is reported).
 - Root-level `single_alias_right[...]` is expanded first, then participates in subsequent resolving and inspection.
 - To ensure that downstream features can "trace back upward", generated config nodes maintain parent config references.
+
+> CWTools Compatibility: Compatible.
 
 #### Alias Config and Single Alias Config {#config-alias}
 
@@ -496,6 +505,8 @@ Notes:
 - Cardinality and option validation occur only after expansion; consider the final semantics at the expansion site rather than at the declaration site.
 - `subName` is a data expression (restricted); templates / enums can be used to increase reusability, but avoid being too broad to prevent false matches.
 
+> CWTools Compatibility: Compatible.
+
 #### Row Config {#config-row}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
@@ -504,8 +515,7 @@ Notes:
 Row configs declare column names and value forms for CSV rows, used for completion and inspection.
 
 Path location:
-
-- `rows/row[{name}]`, where `{name}` is the config name.
+- rows/row[{name}]`, where `{name}` is the config name.
 
 - `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
 - `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
@@ -531,6 +541,8 @@ rows = {
     }
 }
 ```
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### Define Configs {#config-define}
 
@@ -568,11 +580,13 @@ Notes:
 - The plugin forcibly ignores any type config or declaration config named `define` or `defines`.
 - Currently, based on define configs, the plugin checks the validity of the declaration structure for define variables, but does not check the validity of the names of define namespaces or define variables.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Enum Config {#config-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 
-Used to describe a simple enumeration, providing a set of fixed options as enum values.
+Used to describe a simple enumeration, providing a set of fixed available values as enum values.
 The values of a simple enum must be constants, and are case-insensitive.
 
 Path location:
@@ -586,12 +600,14 @@ enums = {
 }
 ```
 
+> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
+
 #### Complex Enum Config {#config-complex-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
 <!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-Used to describe a complex enumeration, where the available options are dynamically resolved based on anchors.
+Used to describe a complex enumeration, where the available values are dynamically resolved based on anchors.
 It matches script files according to a path pattern and then further matches anchors within those files.
 Complex enum values are case-sensitive by default.
 
@@ -633,17 +649,20 @@ enums = {
 }
 ```
 
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Dynamic Value Type Config {#config-dynamic-value-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 
-Dynamic value type configs provide a set of "predefined (hardcoded)" dynamic values for the data expression `value[...]`, replacing fixed literals to facilitate completion and validation. The current implementation only supports constant values and does not support template expressions.
+Used to provide a set of available values for the corresponding dynamic value type as predefined dynamic values.
+The dynamic values predefined here must be constants and are not case-insensitive.
+
+Dynamic values are a set of unfixed options, usually legal identifiers, that use localisation text with the same name as the UI display.
+Event targets, variables, flags, etc. are usually considered dynamic values.
 
 Path location:
-
 - `values/value[{name}]`, where `{name}` is the config name.
-
-To declare "scope context" for dynamic values or dynamically generate values based on context, see [Extended Config for Dynamic Values](#config-extended-dynamic-value).
 
 Example:
 
@@ -652,6 +671,8 @@ values = {
     value[event_target] = { owner capital }  # case-insensitive
 }
 ```
+
+> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
 
 #### Link Config {#config-link}
 
@@ -726,6 +747,9 @@ Notes:
 - Multiple `data_source` values can be mixed.
 - If a dynamic link argument is a single-quoted literal, it is treated as a literal and typically does not provide completion.
 
+
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Localisation Command Config and Localisation Promotion Config {#config-localisation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
@@ -762,6 +786,8 @@ Notes:
 - Names are case-insensitive; maintain spelling consistent with actual usage for searchability.
 - The promotion config name should match the localisation link name; otherwise, correct matching cannot occur.
 - Static regular links are automatically copied as localisation links; if dynamic behavior is needed, declare localisation links separately.
+
+> CWTools Compatibility: Compatible.
 
 #### Modifier Config and Modifier Category Config {#config-modifier}
 
@@ -820,6 +846,8 @@ Notes:
 - Modifier names in type configs use `$` as a placeholder; ensure they correspond to the type / subtype expression.
 - `supported_scopes` within categories should use standard scope IDs; case is automatically normalized during resolving.
 
+> CWTools Compatibility: Compatible.
+
 #### Scope Config and Scope Group Config {#config-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
@@ -855,15 +883,18 @@ scope_groups = {
 }
 ```
 
+> CWTools Compatibility: Compatible.
+
 #### Database Object Type Config {#config-db-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-Database object type configs are used to describe the type and format of database object expressions. Such expressions can be used as concept names in localisation files (e.g. `['civic:some_civic', ...]`). They are eventually resolved into a definition or localisation and rendered into UI hints.
+Database object type configs are used to describe the type and format of database object expressions.
+Such expressions can be used as concept names in localisation files (e.g. `['civic:some_civic', ...]`).
+They are eventually resolved into a definition or localisation and rendered into UI hints.
 
 Path location:
-
-- `database_object_types/{name}`, where `{name}` is the config name.
+- database_object_types/{name}`, where `{name}` is the config name.
 
 Field meanings:
 
@@ -891,6 +922,8 @@ database_object_types = {
 }
 ```
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Macro Config {#config-macro}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
@@ -906,8 +939,7 @@ Currently involved directives include:
 - **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during resolving, with mode support to determine specific behavior.
 
 Path location:
-
-- `macro[{name}]`, where `{name}` is the config name.
+- macro[{name}]`, where `{name}` is the config name.
 
 Example:
 
@@ -921,6 +953,8 @@ macro[definition_injection] = {
     create_modes = { REPLACE_OR_CREATE }
 }
 ```
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ### Extended Configs {#configs-extended}
 
@@ -939,8 +973,7 @@ macro[definition_injection] = {
 Provides additional hints (quick documentation, inlay hints, etc.) for scripted variables in scripts.
 
 Path location:
-
-- `scripted_variables/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- scripted_variables/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 Format description:
 
@@ -960,6 +993,8 @@ Notes:
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 - This entry only provides "hint enhancement" and is not responsible for declaring or validating the value and type of scripted variables.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Extended Config for Definitions {#config-extended-definition}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
@@ -967,8 +1002,7 @@ Notes:
 Provides additional context and hint information for specific "definitions", including documentation / hints (`## hint`), bound definition type (`## type`, required), and optionally specified scope context (`## replace_scopes` / `## push_scope`).
 
 Path location:
-
-- `definitions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- definitions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 Format description:
 
@@ -993,6 +1027,8 @@ Notes:
 - `type` is required; if missing, the entry will be skipped.
 - This extension is for "hint and context enhancement" and does not directly change the structure of [declaration configs](#config-declaration).
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Extended Config for Game Rules {#config-extended-game-rule}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
@@ -1000,8 +1036,7 @@ Notes:
 Provides documentation / hint enhancement for game rules (i.e. definitions of type `game_rule`), and supports "overriding [declaration configs](#config-declaration)".
 
 Path location:
-
-- `game_rules/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- game_rules/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 When the entry is a property node (e.g. `x = { ... }` or `x = single_alias_right[...]`), its value or sub-block acts as a "declaration config override" at the usage site. Only property nodes produce an override effect; pure value nodes only provide hints.
 
@@ -1038,6 +1073,8 @@ Notes:
 - If the value is `single_alias_right[...]`, it is first inlined and expanded, then takes effect as the override config.
 - This extension only affects the "source / structure of the [declaration config](#config-declaration)" and "hint information"; it does not change the overall priority and override strategy.
 
+> CWTools Compatibility: Not compatible. Have different formats and behaviors.
+
 #### Extended Config for On Actions {#config-extended-on-action}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
@@ -1045,8 +1082,7 @@ Notes:
 Provides documentation / hint enhancement for on actions (i.e. definitions of type `on_action`), and specifies the "event type" to influence event-related references in the declaration context.
 
 Path location:
-
-- `on_actions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- on_actions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 `## event_type` (required) declares the event type, used to replace event-related data expressions in the declaration context with expressions corresponding to that event type.
 
@@ -1083,6 +1119,8 @@ Notes:
 - `## event_type` is required; if missing, the entry will be skipped.
 - If scope replacement is needed, use `## replace_scopes` in combination.
 
+> CWTools Compatibility: Not compatible. Have different formats and behaviors.
+
 #### Extended Config for Parameters {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
@@ -1090,8 +1128,7 @@ Notes:
 Provides documentation and context enhancement for parameters (`$PARAM$` or `$PARAM|DEFAULT$`) in triggers / effects / inline scripts: binding context keys, declaring context configs and scope context, and supporting context inheritance from usage sites.
 
 Path location:
-
-- `parameters/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- parameters/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 Main fields:
 
@@ -1140,6 +1177,8 @@ Notes:
 - When `## inherit` is marked, the context is taken from the "usage site" and may be empty or vary by location.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Extended Config for Complex Enum Values {#config-extended-complex-enum-value}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
@@ -1147,8 +1186,7 @@ Notes:
 Provides documentation / hint enhancement (quick documentation, inlay hints, etc.) for specific entries of complex enums.
 
 Path location:
-
-- `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name and `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name and `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 Format description:
 
@@ -1167,6 +1205,8 @@ Notes:
 - This extension does not change the collection logic for complex enum "value sources"; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Extended Config for Dynamic Values {#config-extended-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
@@ -1174,8 +1214,7 @@ Notes:
 Provides documentation / hint enhancement for specific "dynamic value" entries under a dynamic value type.
 
 Path location:
-
-- `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
 Format description:
 
@@ -1198,6 +1237,8 @@ Notes:
 - This extension does not change the dynamic value type or the base "value set" definition; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Extended Config for Inline Scripts {#config-extended-inline-script}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
@@ -1205,8 +1246,7 @@ Notes:
 Declares "context configs" and "scope context" for specific inline scripts, used to provide correct completion and inspection at call sites.
 
 Path location:
-
-- `inline_scripts/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions. When `name` is `x/y`, the corresponding file is `common/inline_scripts/x/y.txt`.
+- inline_scripts/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions. When `name` is `x/y`, the corresponding file is `common/inline_scripts/x/y.txt`.
 
 `## context_configs_type` controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
 
@@ -1245,6 +1285,8 @@ Notes:
 
 - If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ### Internal Configs {#configs-internal}
 
@@ -1376,7 +1418,7 @@ Notes:
 - When constant fragments and dynamic config names are adjacent, the resolver prioritizes correct identification of dynamic configs.
 - Template expressions do not support whitespace characters; if whitespace matching is needed, use [ANT path patterns](#faq-ant) or [regular expressions](#faq-regex) instead.
 
-> CWTools Compatibility: Partially compatible. The plugin has different resolving and processing logic.
+> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
 
 ### Cardinality Expression {#config-expression-cardinality}
 
@@ -1527,7 +1569,7 @@ Matches any script expression, acting as the lowest-priority fallback.
 Format of corresponding data expressions:
 - `$any`
 
-> CWTools Compatibility: Compatible.
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### Bool {#data-type-bool}
 
@@ -1554,7 +1596,7 @@ Format of corresponding data expressions:
 - `int`
 - `int{range}` – where `{range}` matches a range parameter (e.g., `[0..1]` `[-100..100)` `[0..inf)`).
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### Float {#data-type-float}
 
@@ -1570,7 +1612,7 @@ Format of corresponding data expressions:
 - `float`
 - `float{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]` `[-100.0..100.0)` `[0.0..inf)`).
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### Scalar {#data-type-scalar}
 
@@ -1583,7 +1625,7 @@ Format of corresponding data expressions:
 - `scalar`
 - `wildcard_scalar` – wildcard variant.
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### ColorField {#data-type-color-field}
 
@@ -1642,7 +1684,7 @@ Format of corresponding data expressions:
 - `date_field`
 - `date_field[{format}]` – where `{format}` matches a date format (e.g., `y.M.d`).
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 ### Reference Data Types {#data-types-reference}
 
@@ -1730,7 +1772,7 @@ Examples of corresponding data expressions:
 - `enum[weight_or_base]`
 - `enum[ship_class]`
 
-> CWTools compatibility: Partially compatible. The plugin has different resolving and processing logic.
+> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
 
 #### Value {#data-type-value}
 
@@ -1835,7 +1877,7 @@ Examples of corresponding data expressions:
 - `value_field`
 - `value_field[0.0..1.0]`
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### IntValueField {#data-type-int-value-field}
 
@@ -1854,7 +1896,7 @@ Examples of corresponding data expressions:
 - `int_value_field`
 - `int_value_field[-100..100]`
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### VariableField {#data-type-variable-field}
 
@@ -1877,7 +1919,7 @@ Examples of corresponding data expressions:
 - `variable_field[0.0..1.0]`
 - `variable_field_32`
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### IntVariableField {#data-type-int-variable-field}
 
@@ -1900,7 +1942,7 @@ Examples of corresponding data expressions:
 - `int_variable_field[-100..100]`
 - `int_variable_field_32`
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### Command {#data-type-command}
 
@@ -2149,7 +2191,7 @@ Corresponding data expression examples:
 - `filepath[flags/]`
 - `filepath[common/inline_scripts/,.txt]`
 
-> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### FileName {#data-type-file-name}
 
@@ -2215,7 +2257,7 @@ Examples of corresponding data expressions:
 
 This is a pattern-aware type, and its data expression format is the template expression itself (see [Template Expression](#config-expression-template)).
 
-> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
 #### Ant {#data-type-ant}
 

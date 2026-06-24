@@ -286,7 +286,7 @@ object CwtDataTypes {
      * 对应的数据表达式的格式：
      * - `enum[{name}]` - 其中 `{name}` 匹配枚举的名字。
      *
-     * > CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+     * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference().build {
         withPriority { configExpression, configGroup ->
@@ -839,7 +839,7 @@ object CwtDataTypes {
      * 由常量文本片段和引用片段交替组成的模式。
      * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
      *
-     * > CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+     * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
      *
      * @see ParadoxTemplateExpression
      */

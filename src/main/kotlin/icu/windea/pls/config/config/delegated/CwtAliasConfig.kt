@@ -26,7 +26,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * # declaration

@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * inline_scripts = {

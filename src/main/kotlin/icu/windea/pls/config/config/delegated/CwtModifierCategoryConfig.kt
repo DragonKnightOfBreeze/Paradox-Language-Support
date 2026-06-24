@@ -24,7 +24,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * 路径定位：
  * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * modifier_categories = {

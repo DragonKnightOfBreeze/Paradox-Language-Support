@@ -33,7 +33,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * 路径定位：
  * - `localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * localisation_commands = {

@@ -26,7 +26,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `game_rules/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * game_rules = {
@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
- * > CWTools 兼容性：不兼容，拥有不同的格式和行为。
+ * > CWTools 兼容性：不兼容。拥有不同的格式和行为。
  *
  * @property name 规则名称。
  * @property hint 额外提示信息（可选）。

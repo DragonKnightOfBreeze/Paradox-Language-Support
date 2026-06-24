@@ -21,7 +21,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 本地化资源：`types/type[{type}]/localisation/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
  * - 图片资源：`types/type[{type}]/images/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {

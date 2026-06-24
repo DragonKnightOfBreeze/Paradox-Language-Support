@@ -20,6 +20,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 动态值类型规则。
  *
  * 用于为对应的动态值类型提供一组可选项，作为预定义的动态值。
+ * 这里预定义的动态值必须是常量，且不会忽略大小写。
  *
  * 动态值是一组不固定的可选项，通常是合法的标识符，使用同名本地化的文本作为 UI 显示。
  * 事件目标（event target）、变量（variable）、标志（flag）等通常都会被视为动态值。
@@ -27,15 +28,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `values/value[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * values = {
- *     value[event_target] = { owner }
+ *     value[event_target] = { owner capital }  # case-insensitive
  * }
  * ```
  *
- * > CWTools 兼容性：部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
+ * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
  *
  * @property name 规则名称（即动态值类型）。
  * @property values 可选项集合（不忽略大小写）。

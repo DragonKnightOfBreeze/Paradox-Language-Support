@@ -24,7 +24,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * dynamic_values = {

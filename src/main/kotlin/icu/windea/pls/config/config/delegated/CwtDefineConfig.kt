@@ -10,6 +10,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 用于描述脚本文件中的定值命名空间和定值变量，提供快速文档文本和规则上下文。
  * 它们位于 `common/defines` 目录中的扩展名为 `.txt` 的脚本文件中。
  *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
+ *
  * @property namespace 命名空间。
  *
  * @see CwtDefineNamespaceConfig

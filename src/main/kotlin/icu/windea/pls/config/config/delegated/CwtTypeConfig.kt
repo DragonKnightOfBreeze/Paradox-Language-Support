@@ -39,7 +39,7 @@ import icu.windea.pls.model.ParadoxTagType
  * 路径定位：
  * - `types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {
