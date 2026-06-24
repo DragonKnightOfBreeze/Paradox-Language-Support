@@ -119,22 +119,22 @@
                      key="inspection.script.conditionalStatementToBlockForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="INFORMATION"
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ConditionalStatementToBlockFormInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToSafeForm"
+                     key="inspection.script.scopeCallStatementToSafeForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="INFORMATION"
+                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToSafeFormInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToNormalForm"
                      key="inspection.script.scopeCallStatementToNormalForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="INFORMATION"
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNormalFormInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToSafeForm"
-                     key="inspection.script.scopeCallStatementToSafeForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToSafeFormInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToNestedForm"
-                     key="inspection.script.scopeCallStatementToNestedForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="INFORMATION"
-                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNestedFormInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToChainedForm"
                      key="inspection.script.scopeCallStatementToChainedForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="INFORMATION"
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToChainedFormInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScopeCallToNestedForm"
+                     key="inspection.script.scopeCallStatementToNestedForm" groupKey="inspection.script.statements.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="INFORMATION"
+                     implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNestedFormInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Exnressions -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"

@@ -220,7 +220,9 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     fun test_empty_incomplete_1() {
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpressionStub<ParadoxTagsExpression>("TODO")
+        val dsl = buildComplexExpression<ParadoxTagsExpression>("", 0, 0) {
+            node<ParadoxDynamicValueNode>("", 0, 0)
+        }
         exp.check(dsl)
     }
 

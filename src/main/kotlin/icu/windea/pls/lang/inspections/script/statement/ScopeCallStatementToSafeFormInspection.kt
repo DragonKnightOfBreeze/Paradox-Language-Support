@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
 /**
  * 建议将作用域调用转换为安全形式。
  *
- * 检测于文法级别。
+ * 检测于文法级别和语义级别。
  *
  * 适用于支持安全（调用）赋值运算符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
  *
@@ -31,7 +31,7 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element, canBeExistsProperty = false)) return
+                if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)) return
                 val description = PlsBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element.propertyKey, description, *fixes)

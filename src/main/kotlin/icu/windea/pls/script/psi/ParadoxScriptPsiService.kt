@@ -15,27 +15,12 @@ object ParadoxScriptPsiService {
         return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
     }
 
-    fun isPropertySeparator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS
-    }
-
-    fun isAssignOperator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.ASSIGN_OPERATOR_TOKENS
-    }
-
-    fun isSafeAssignOperator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS
-    }
-
-    fun isComparisonOperator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS
-    }
-
     fun isBeforeValueLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
         val value = element.propertyValue?.castOrNull<PsiBoundElement>() ?: return true
         return PsiService.isBeforeLeftBoundEnd(value, offset)
     }
 
+    @Suppress("unused")
     fun isBeforeBlockLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
         val block = element.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return true
         return PsiService.isBeforeLeftBoundEnd(block, offset)

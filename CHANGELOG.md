@@ -18,6 +18,7 @@
 - [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 / Provide description info when inferring game type, and display it in the mod settings dialog
 - [x] 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与普通形式（`owner = ...`）之间进行转换 / Provide intentions and inspections to convert scope call statements between safe form (`owner ?= ...` or `owner? = ...`) and normal form (`owner = ...`)
 - [x] 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 / Provide intentions and inspections to convert scope call statements between chained form (`root.owner = ...`) and nested form (`root = { owner = ... }`)
+- [x] 将作用域调用语句的相关代码检查的默认严重度级别统一定为 `INFORMATION`（无高亮，仅快速修复） / Set the default severity level of all code inspections related to scope call statements to `INFORMATION` (no highlighting, fix available)
 - [x] 支持将数字（而不仅仅是字符串）解析为复杂枚举值 / Support to resolve numbers (rather than only strings) into complex enum values
 - [x] 修复了一个可能导致错误的语义匹配结果，从而引发误报的并发处理问题 / Fix a concurrency processing issue that could result in incorrect semantic match results, which may cause false positives
 - [x] 修复 Islands Dark 主题的自定义配色方案未被正确应用的回归BUG / Fix a regression bug where the custom color scheme of the Islands Dark theme was not applied correctly

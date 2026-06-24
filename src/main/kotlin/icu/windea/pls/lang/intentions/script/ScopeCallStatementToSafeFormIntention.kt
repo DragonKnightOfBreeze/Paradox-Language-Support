@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiService
 /**
  * 将显式作用域调用转换为安全形式。
  *
- * 检测于文法级别。
+ * 检测于文法级别和语义级别。
  *
  * 适用于支持安全（调用）赋值运算符的游戏类型（CK3/VIC3/EU5 使用 `?=`，Stellaris 使用 `? =`）。
  *

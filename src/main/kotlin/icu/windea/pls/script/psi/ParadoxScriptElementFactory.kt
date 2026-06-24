@@ -1,9 +1,9 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
+import com.intellij.psi.PsiParserFacade
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
@@ -14,6 +14,11 @@ object ParadoxScriptElementFactory {
     fun createDummyFile(project: Project, text: String): ParadoxScriptFile {
         return PsiFileFactory.getInstance(project).createFileFromText(ParadoxScriptLanguage, text)
             .castOrNull<ParadoxScriptFile>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createWhiteSpaceFromText(project: Project, text: String): PsiElement {
+        return PsiParserFacade.getInstance(project).createWhiteSpaceFromText(text)
     }
 
     @JvmStatic
@@ -36,12 +41,6 @@ object ParadoxScriptElementFactory {
     fun createScriptedVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
         return createScriptedVariable(project, name, "0")
             .findChild<ParadoxScriptScriptedVariableName>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createComment(project: Project, text: String): PsiComment {
-        val file = createDummyFile(project, text.trim() + "\n")
-        return file.firstChild.firstChild as? PsiComment ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

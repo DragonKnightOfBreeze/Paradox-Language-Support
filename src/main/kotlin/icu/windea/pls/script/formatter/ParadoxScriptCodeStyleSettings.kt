@@ -1,5 +1,7 @@
 package icu.windea.pls.script.formatter
 
+import com.intellij.application.options.CodeStyle
+import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -20,4 +22,11 @@ class ParadoxScriptCodeStyleSettings(
     @JvmField var SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
     @JvmField var SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = false
     @JvmField var SPACE_WITHIN_INLINE_MATH_BRACKETS = true
+
+    companion object {
+        @JvmStatic
+        fun getInstance(file: PsiFile): ParadoxScriptCodeStyleSettings {
+            return CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
+        }
+    }
 }

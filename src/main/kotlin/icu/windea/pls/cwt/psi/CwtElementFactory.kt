@@ -16,6 +16,11 @@ object CwtElementFactory {
     }
 
     @JvmStatic
+    fun createWhiteSpaceFromText(project: Project, text: String): PsiElement {
+        return PsiParserFacade.getInstance(project).createWhiteSpaceFromText(text)
+    }
+
+    @JvmStatic
     fun createRootBlock(project: Project, text: String): CwtRootBlock {
         return createDummyFile(project, text)
             .findChild<CwtRootBlock>() ?: throw IncorrectOperationException()

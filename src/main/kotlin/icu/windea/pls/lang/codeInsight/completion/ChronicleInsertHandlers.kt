@@ -4,7 +4,11 @@ import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.EditorModificationUtil
-import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
+import com.intellij.psi.PsiFile
+import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
+import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ChronicleInsertHandlers {
     fun addParentheses(): InsertHandler<LookupElement> {
@@ -52,7 +56,7 @@ object ChronicleInsertHandlers {
     }
 
     fun applyBlock(c: InsertionContext) {
-        val spaceWithinBraces = PlsCodeStyleUtil.isSpaceWithinBraces(c.file)
+        val spaceWithinBraces = isSpaceWithinBraces(c.file)
         val text = if (spaceWithinBraces) "{  }" else "{}"
         val length = if (spaceWithinBraces) text.length - 2 else text.length - 1
         EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
@@ -77,8 +81,8 @@ object ChronicleInsertHandlers {
     fun applyKeyWithValue(context: InsertionContext, params: Params) {
         val editor = context.editor
         applyKeyOrValue(context, params)
-        val spaceAroundPropertySeparator = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(context.file)
-        val spaceWithinBraces = PlsCodeStyleUtil.isSpaceWithinBraces(context.file)
+        val spaceAroundPropertySeparator = isSpaceAroundPropertySeparator(context.file)
+        val spaceWithinBraces = isSpaceWithinBraces(context.file)
         val text = buildString {
             if (spaceAroundPropertySeparator) append(" ")
             append("=")
@@ -93,6 +97,22 @@ object ChronicleInsertHandlers {
             text.length
         }
         EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+    }
+
+    private fun isSpaceWithinBraces(file: PsiFile): Boolean {
+        return when (file) {
+            is CwtFile -> CwtCodeStyleSettings.getInstance(file).SPACE_WITHIN_BRACES
+            is ParadoxScriptFile -> ParadoxScriptCodeStyleSettings.getInstance(file).SPACE_WITHIN_BRACES
+            else -> true
+        }
+    }
+
+    private fun isSpaceAroundPropertySeparator(file: PsiFile): Boolean {
+        return when (file) {
+            is CwtFile -> CwtCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
+            is ParadoxScriptFile -> ParadoxScriptCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
+            else -> true
+        }
     }
 
     data class Params(

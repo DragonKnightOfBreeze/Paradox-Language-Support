@@ -2,9 +2,10 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.endOffset
-import com.intellij.psi.util.siblings
-import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.psi.PsiBoundElement
+import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 
 object CwtPsiService {
     fun canAttachComment(element: PsiElement): Boolean {
@@ -15,20 +16,15 @@ object CwtPsiService {
         return element is CwtFile || element.elementType in CwtTokenSets.MEMBER_CONTEXT
     }
 
-    fun collectBetweenBounds(element: CwtBoundMemberContainer, forward: Boolean = true): Sequence<PsiElement>? {
-        val leftBound = element.leftBound ?: return null
-        val rightBound = element.rightBound ?: return null
-        val start = if (forward) leftBound else rightBound
-        val end = if (forward) rightBound else leftBound
-        return start.siblings(forward, withSelf = false).takeWhile { it != end }
+    @Suppress("unused")
+    fun isBeforeValueLeftBoundEnd(element: CwtProperty, offset: Int): Boolean {
+        val value = element.propertyValue?.castOrNull<PsiBoundElement>() ?: return true
+        return PsiService.isBeforeLeftBoundEnd(value, offset)
     }
 
     @Suppress("unused")
-    fun isBeforeOrAtBlockLeftBound(element: CwtProperty, offset: Int): Boolean {
-        if (offset < element.startOffset) return false
-        val block = element.propertyValue<CwtBlock>() ?: return true
-        val leftBound = block.leftBound ?: return false
-        if (offset > leftBound.endOffset) return false
-        return true
+    fun isBeforeBlockLeftBoundEnd(element: CwtProperty, offset: Int): Boolean {
+        val block = element.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return true
+        return PsiService.isBeforeLeftBoundEnd(block, offset)
     }
 }

@@ -14,14 +14,36 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 object ParadoxSyntaxService {
     // region Script
+
+    fun isPropertySeparator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS
+    }
+
+    fun isAssignOperator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.ASSIGN_OPERATOR_TOKENS
+    }
+
+    fun isNormalAssignOperator(element: PsiElement): Boolean {
+        return element.elementType == ParadoxScriptElementTypes.EQUAL_SIGN
+    }
+
+    fun isSafeAssignOperator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS
+    }
+
+    fun isComparisonOperator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS
+    }
 
     @Suppress("unused")
     fun isNumberLiteral(element: ParadoxScriptExpressionElement): Boolean {
@@ -119,15 +141,6 @@ object ParadoxSyntaxService {
 
     // region Localisation
 
-    fun getIncorrectLeftBracketEscapeIndices(element: PsiElement, file: PsiFile? = null): List<Int> {
-        // only for actual localisation files, skip injected files (e.g., in script strings)
-        if (element.elementType != TEXT_TOKEN) return emptyList()
-        val file = file ?: element.containingFile ?: return emptyList()
-        if (VirtualFileService.isInjectedFile(file.virtualFile)) return emptyList()
-        val text = element.text
-        return text.indicesOf("\\[")
-    }
-
     fun isDanglingColorfulTextEndMarker(element: PsiElement): Boolean {
         if (element.elementType != COLORFUL_TEXT_END) return false
         if (element.nextSibling == null && element.parent?.elementType == COLORFUL_TEXT) return false
@@ -138,6 +151,15 @@ object ParadoxSyntaxService {
         if (element.elementType != TEXT_FORMAT_END) return false
         if (element.nextSibling == null && element.parent?.elementType == TEXT_FORMAT) return false
         return true
+    }
+
+    fun getIncorrectLeftBracketEscapeIndices(element: PsiElement, file: PsiFile? = null): List<Int> {
+        // only for actual localisation files, skip injected files (e.g., in script strings)
+        if (element.elementType != TEXT_TOKEN) return emptyList()
+        val file = file ?: element.containingFile ?: return emptyList()
+        if (VirtualFileService.isInjectedFile(file.virtualFile)) return emptyList()
+        val text = element.text
+        return text.indicesOf("\\[")
     }
 
     // endregion

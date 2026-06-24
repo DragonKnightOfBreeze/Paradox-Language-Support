@@ -13,9 +13,9 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiService
 /**
  * 将作用域调用转换为普通形式。
  *
- * 检测于文法级别。
+ * 检测于文法级别和语义级别。
  *
- * 对于任意游戏类型和任意安全调用运算符均可用。
+ * 适用于所有游戏类型和任意安全调用运算符（`?=` 或 `? =`）。
  *
  * @see ParadoxScopeCallStatementManipulationService
  */

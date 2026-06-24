@@ -1,5 +1,7 @@
 package icu.windea.pls.cwt.formatter
 
+import com.intellij.application.options.CodeStyle
+import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import icu.windea.pls.cwt.CwtLanguage
@@ -16,4 +18,11 @@ class CwtCodeStyleSettings(
 
     @JvmField var SPACE_WITHIN_BRACES = true
     @JvmField var SPACE_WITHIN_EMPTY_BRACES = true
+
+    companion object {
+        @JvmStatic
+        fun getInstance(file: PsiFile): CwtCodeStyleSettings {
+            return CodeStyle.getCustomSettings(file, CwtCodeStyleSettings::class.java)
+        }
+    }
 }

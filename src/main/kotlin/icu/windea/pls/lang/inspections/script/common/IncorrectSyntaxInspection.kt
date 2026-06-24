@@ -16,7 +16,6 @@ import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * （脚本文件中的）不正确的语法的代码检查。
@@ -41,7 +40,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
     private fun checkComparisonOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
         if (context.rootFile == null) return
-        if (!ParadoxScriptPsiService.isComparisonOperator(element)) return
+        if (!ParadoxSyntaxService.isComparisonOperator(element)) return
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 
         // check on grammar level
@@ -70,7 +69,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
     private fun checkSafeAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
         if (context.rootFile == null) return
-        if (!ParadoxScriptPsiService.isSafeAssignOperator(element)) return
+        if (!ParadoxSyntaxService.isSafeAssignOperator(element)) return
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
         checkForSafeAssignOperator(context, element, propertyElement)
         checkForSafeCallAssignOperator(context, element, propertyElement)

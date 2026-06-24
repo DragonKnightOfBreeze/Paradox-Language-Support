@@ -24,13 +24,13 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.quoteIfNeeded
-import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
 import icu.windea.pls.lang.ui.clause.ElementDescriptors
 import icu.windea.pls.lang.ui.clause.ElementsContext
 import icu.windea.pls.lang.ui.clause.ElementsInfo
 import icu.windea.pls.lang.ui.clause.ExpandClauseTemplateDialog
+import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -127,7 +127,7 @@ object ParadoxClauseTemplateCompletionManager {
                 val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
 
                 val multiline = descriptors.size > PlsSettings.getInstance().state.completion.clauseTemplate.maxMemberCountInOneLine
-                val around = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(file)
+                val around = ParadoxScriptCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
 
                 val commandName = PlsBundle.message("script.command.expandClauseTemplate.name")
                 executeWriteCommand(project, commandName, makeWritable = file) {
