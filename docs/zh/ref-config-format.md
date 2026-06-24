@@ -216,7 +216,7 @@ locales = {
 - 类型：`types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
 - 子类型：`types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
 
-类型字段：
+类型规则的字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
 - `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
@@ -238,7 +238,7 @@ locales = {
 - `images`：图片展示小节，详见[类型展示规则](#config-type-presentation)。
 - `modifiers`：修正小节，派生出与类型绑定的[修正规则](#config-modifier)。
 
-类型匹配流程：
+类型规则的匹配流程：
 
 对于一个脚本文件中的属性（或整个文件），类型匹配按以下步骤依次进行：
 
@@ -249,7 +249,7 @@ locales = {
 5. **类型键前缀检查**：根据 `type_key_prefix` 判断是否匹配（忽略大小写）。
 6. **声明结构检查**：检查定义的属性值是否与[声明规则](#config-declaration)的预期结构一致（如声明规则期望块则属性值必须为块）。
 
-子类型字段：
+子类型规则的字段说明：
 
 子类型通过内容匹配确定。子类型按声明顺序逐个检查，通常与[声明规则](#config-declaration)中的 `subtype[...] = {...}` 一起使用，以细化结构与校验。
 
@@ -261,7 +261,7 @@ locales = {
 - `only_if_not`：与指定子类型互斥——仅在指定的子类型均未匹配时才继续检查。
 - `## group`：子类型分组名（选项注释）。同一分组内的子类型互斥（最多匹配一个）。
 
-子类型匹配流程：
+子类型规则的匹配流程：
 
 1. **互斥检查**：若 `only_if_not` 中指定的任一子类型已匹配，则跳过。
 2. **类型键检查**：依次检查 `## starts_with`（不忽略大小写）→ `## type_key_regex` → `## type_key_filter`（忽略大小写）。
@@ -679,7 +679,7 @@ values = {
 - 本地化链接：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
 - 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
 
-主要字段：
+字段说明：
 
 - `type`：链接类型（`scope` / `value` / `both`，默认为 `scope`）。
 - `from_data`：是否从文本数据中读取动态数据（格式如 `prefix:data`）。
@@ -1079,7 +1079,9 @@ game_rules = {
 路径定位：
 - `on_actions/{name}`。其中 `{name}` 匹配规则名称。
 
-`## event_type`（必填）声明事件类型，用于在声明上下文中将与事件相关的数据表达式替换为该事件类型对应的表达式。
+字段说明：
+
+- `## event_type`（必填）：声明事件类型，用于在声明上下文中将与事件相关的数据表达式替换为该事件类型对应的表达式。
 
 格式说明：
 
@@ -1127,7 +1129,7 @@ on_actions = {
 路径定位：
 - `parameters/{name}`。其中 `{name}` 匹配规则名称。
 
-主要字段：
+字段说明：
 
 - `## context_key`（必填）：上下文键（如 `scripted_trigger@some_trigger`），`@` 之前为包含的定义类型（或 `inline_script`），`@` 之后为定义名或内联脚本路径。上下文键自身也支持模式匹配。
 - `## context_configs_type`：`single`（默认）或 `multiple`，含义同内联脚本扩展规则。
@@ -1251,9 +1253,9 @@ dynamic_values = {
 路径定位：
 - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
 
-主要字段：
+字段说明：
 
-`## context_configs_type` 控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
+- `## context_configs_type`：控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
 
 格式说明：
 

@@ -103,7 +103,7 @@ Override strategies:
 
 Query (non-streaming) result sorting is driven by priority; within the same path, the load order (game / dependency chain) determines precedence. Within the same file, later items override earlier ones.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 priorities = {
@@ -140,10 +140,10 @@ priorities = {
 
 System scope configs provide metadata for built-in "system-level scopes" (such as This, Root, Prev, From, etc.), used for quick documentation and scope stack derivation.
 
-Path location:
+Path Location:
 - `system_scopes/{name}`, where `{name}` is the system scope ID.
 
-Field explanation:
+Field Explanation:
 
 - `id`: System scope ID.
 - `base_id`: Base scope ID; defaults to `id` when not specified. Used to classify scopes of the same family (e.g. `Prev` / `PrevPrev`, `From` / `FromFrom`).
@@ -181,10 +181,10 @@ Locale Configs are used to provide locale-related information (quick documentati
 Based on these configs, the plugin identifies and infers available locales, preferred locales, and locales in contexts (such as localisation files), thereby improving UI presentation, hint information, and localisation verification logic.
 All global locales should be declared in the general config group, some of which may not be supported by the current game type.
 
-Path location:
+Path Location:
 - `locales/{id}`, where `{id}` is the locale ID.
 
-Field explanation:
+Field Explanation:
 
 - `id`: locale ID (e.g. `l_english`).
 - `codes: string[]`: List of language codes contained in this locale (e.g. `en`, `zh-CN`). Default is empty.
@@ -212,11 +212,11 @@ locales = {
 
 Type configs locate and name "definitions" based on conditions such as "file path / key name", and can declare subtypes, display information, and images.
 
-Path location:
+Path Location:
 - Type: `types/type[{type}]`, where `{type}` is the type name (i.e. the config name).
 - Subtype: `types/type[{type}]/subtype[{subtype}]`, where `{type}` is the type name and `{subtype}` is the subtype name (i.e. the config name).
 
-Type fields:
+Field Explanation (for type configs):
 
 - `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
 - `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
@@ -238,7 +238,7 @@ Type fields:
 - `images`: Image display section, see [Type Presentation Config](#config-type-presentation) for details.
 - `modifiers`: Modifier section, which derives [modifier configs](#config-modifier) bound to the type.
 
-Type matching flow:
+Matching Flow (for type configs):
 
 For a property (or entire file) in a script file, type matching proceeds through the following steps in order:
 
@@ -249,7 +249,7 @@ For a property (or entire file) in a script file, type matching proceeds through
 5. **Type key prefix check**: Checks whether the prefix matches based on `type_key_prefix` (case-insensitive).
 6. **Declaration structure check**: Checks whether the definition's property value is consistent with the expected structure of the [declaration config](#config-declaration) (e.g. if the declaration config expects a block, the property value must be a block).
 
-Subtype fields:
+Field Explanation (for subtype configs):
 
 Subtypes are determined through content matching. Subtypes are checked one by one in declaration order, typically used together with `subtype[...] = {...}` in [declaration configs](#config-declaration) to refine structure and validation.
 
@@ -261,7 +261,7 @@ Subtypes are determined through content matching. Subtypes are checked one by on
 - `only_if_not`: Mutually exclusive with specified subtypes — only continues checking if none of the specified subtypes have matched.
 - `## group`: Subtype group name (option comment). Subtypes within the same group are mutually exclusive (at most one matches).
 
-Subtype matching flow:
+Matching Flow (for subtype configs):
 
 1. **Mutual exclusion check**: If any subtype specified in `only_if_not` has already matched, skip.
 2. **Type key check**: Checks in order: `## starts_with` (case-sensitive) → `## type_key_regex` → `## type_key_filter` (case-insensitive).
@@ -351,7 +351,7 @@ Both have the same structure and contain multiple location configs. You can use 
 
 Common options for location configs include `required` (whether the item is required) and `primary` (whether it is the primary item, used for the main display icon / primary name). For the detailed syntax of location expressions, see [Location Expression](#config-expression-location).
 
-Path location:
+Path Location:
 - Localisation: `types/type[{type}]/localisation`, where `{type}` is the definition type.
 - Images: `types/type[{type}]/images`, where `{type}` is the definition type.
 
@@ -381,7 +381,7 @@ types = {
 
 Location configs declare the locating key and location expression for resources such as images / localisation, used in the `localisation` and `images` sections of type presentation configs.
 
-Path location:
+Path Location:
 - Localisation resources: `types/type[{type}]/localisation/{key}`, where `{type}` is the definition type and `{key}` is the key name.
 - Image resources: `types/type[{type}]/images/{key}`, where `{type}` is the definition type and `{key}` is the key name.
 
@@ -398,7 +398,7 @@ The processing flow of declaration configs is roughly as follows: First, only to
 
 Declaration configs can cooperate with other configs: [aliases and single aliases](#config-alias) (`alias_name[...]` / `alias_match_left[...]`, `single_alias_right[...]`) can be referenced within declarations. Swapped type declarations can be nested directly within the corresponding base type's declaration. Game rules and on actions can also have their declaration context overridden through [extended configs](#configs-extended).
 
-Path location:
+Path Location:
 - `{name}`, where `{name}` is the config name.
 - Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being resolved as declaration configs.
 
@@ -449,7 +449,7 @@ Notes:
 
 Alias configs abstract reusable config fragments into "named aliases" that can be referenced and expanded in multiple places. Single aliases are used for one-to-one reuse on the "value side".
 
-Path location:
+Path Location:
 - Alias: `alias[{name}:{subName}]`, where `{name}` is the name and `{subName}` is the sub-name (a restricted data expression).
 - Single alias: `single_alias[{name}]`, where `{name}` is the config name.
 
@@ -507,10 +507,10 @@ Notes:
 
 Row configs declare column names and value forms for CSV rows, used for completion and inspection.
 
-Path location:
+Path Location:
 - `rows/row[{name}]`, where `{name}` is the config name.
 
-Field explanation:
+Field Explanation:
 
 - `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
 - `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
@@ -548,7 +548,7 @@ rows = {
 Define configs are used to describe define namespaces and define variables in script files, providing quick documentation text and config context.
 They are located in script files with the `.txt` extension within the `common/defines` directory.
 
-Path location:
+Path Location:
 - Define namespace: `defines/{namespace}`, where `{namespace}` is the namespace (i.e. the config name).
 - Define variable: `defines/{namespace}/{variable}`, where `{namespace}` is the namespace and `{variable}` is the variable name (i.e. the config name).
 
@@ -583,7 +583,7 @@ Notes:
 Enum configs are used to describe a simple enumeration, providing a set of fixed available values as enum values.
 The values of a simple enum must be constants, and are case-insensitive.
 
-Path location:
+Path Location:
 - `enums/enum[{name}]` – where `{name}` matches the config name.
 
 Example:
@@ -605,10 +605,10 @@ Complex enum configs are used to describe a complex enumeration, where the avail
 It matches script files according to a path pattern and then further matches anchors within those files.
 Complex enum values are case-sensitive by default.
 
-Path location:
+Path Location:
 - `enums/complex_enum[{name}]` – where `{name}` matches the config name.
 
-Field explanation:
+Field Explanation:
 
 - `path`: The file directory path to be scanned (the `game/` prefix is automatically removed during resolution). Multiple paths can be declared.
 - `path_file`: Restricts to a specific file name (without extension). If specified, `path_extension` will not take effect independently.
@@ -655,7 +655,7 @@ The dynamic values predefined here must be constants and are not case-insensitiv
 Dynamic values are a set of unfixed options, usually legal identifiers, that use localisation text with the same name as the UI display.
 Event targets, variables, flags, etc. are usually considered dynamic values.
 
-Path location:
+Path Location:
 - `values/value[{name}]`, where `{name}` is the config name.
 
 Example:
@@ -674,12 +674,12 @@ values = {
 
 Link configs provide semantic and type constraints (scope / value) for "field / function-like" nodes in complex expressions, supporting chained access and completion checking.
 
-Path location:
+Path Location:
 - Regular links: `links/{name}`, where `{name}` is the config name.
 - Localisation links: `localisation_links/{name}`, where `{name}` is the config name. 
 - If not explicitly declared, static regular links are automatically copied as localisation links.
 
-Main fields:
+Field Explanation:
 
 - `type`: Link type (`scope` / `value` / `both`, defaults to `scope`).
 - `from_data`: Whether to read dynamic data from text data (format like `prefix:data`).
@@ -750,7 +750,7 @@ Notes:
 
 Localisation command configs declare the availability and allowed scopes of "localisation command fields" (e.g. `GetCountryType`). Localisation promotion configs declare "localisation scope promotions", allowing corresponding command fields to be used after switching scopes via localisation links.
 
-Path location:
+Path Location:
 - Localisation command: `localisation_commands/{name}`, where `{name}` is the config name.
 - Localisation promotion: `localisation_promotions/{name}`, where `{name}` is the config name.
 
@@ -788,7 +788,7 @@ Notes:
 
 Modifier configs declare modifiers and their categories, used for icon rendering, completion, and scope validation.
 
-Path location:
+Path Location:
 - Modifier:
   - `modifiers/{name}`, where `{name}` is the config name (can be a constant or template expression).
   - `types/type[{type}]/modifiers/{name}`, where `{type}` is the definition type and `{name}` is the config name (the `$` placeholder is replaced with `<{type}>`).
@@ -849,7 +849,7 @@ Scope configs define "scope types" and their aliases; scope group configs group 
 
 Scope configs and system scopes together determine the scope stack and semantics; together with link configs, they constrain the input / output scopes of chained access. In extended configs, `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in a specific context.
 
-Path location:
+Path Location:
 - Scope: `scopes/{name}`, where `{name}` is the config name.
 - Scope group: `scope_groups/{name}`, where `{name}` is the config name.
 
@@ -884,10 +884,10 @@ Database object type configs are used to describe the type and format of databas
 Such expressions can be used as concept names in localisation files (e.g. `['civic:some_civic', ...]`).
 They are eventually resolved into a definition or localisation and rendered into UI hints.
 
-Path location:
+Path Location:
 - `database_object_types/{name}`, where `{name}` is the config name.
 
-Field explanation:
+Field Explanation:
 
 - `type`: If present, treats the `object` in `prefix:object` as a definition reference of this type.
 - `swap_type`: If present, treats the `swap` in `prefix:object:swap` as a swapped type definition reference.
@@ -929,7 +929,7 @@ Currently involved directives include:
 - **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during resolving, with parameters support.
 - **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during resolving, with mode support to determine specific behavior.
 
-Path location:
+Path Location:
 - `macro[{name}]`, where `{name}` is the config name.
 
 Example:
@@ -963,10 +963,10 @@ macro[definition_injection] = {
 
 Provides additional hints (quick documentation, inlay hints, etc.) for scripted variables in scripts.
 
-Path location:
+Path Location:
 - `scripted_variables/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 scripted_variables = {
@@ -992,10 +992,10 @@ Notes:
 
 Provides additional context and hint information for specific "definitions", including documentation / hints (`## hint`), bound definition type (`## type`, required), and optionally specified scope context (`## replace_scopes` / `## push_scope`).
 
-Path location:
+Path Location:
 - `definitions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 definitions = {
@@ -1028,12 +1028,12 @@ Provides documentation / hint enhancement for game rules (i.e. definitions of ty
 
 Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
-Path location:
+Path Location:
 - `game_rules/{name}`, where `{name}` is the config name.
 
 When the entry is a property node (e.g. `x = { ... }` or `x = single_alias_right[...]`), its value or sub-block acts as a "declaration config override" at the usage site. Only property nodes produce an override effect; pure value nodes only provide hints.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 game_rules = {
@@ -1076,12 +1076,14 @@ Provides documentation / hint enhancement for on actions (i.e. definitions of ty
 
 Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
-Path location:
+Path Location:
 - `on_actions/{name}`, where `{name}` is the config name.
 
-`## event_type` (required) declares the event type, used to replace event-related data expressions in the declaration context with expressions corresponding to that event type.
+Field Explanation:
 
-Format explanation:
+- `## event_type` (required): Declares the event type, used to replace event-related data expressions in the declaration context with expressions corresponding to that event type.
+
+Format Explanation:
 
 ```cwt
 on_actions = {
@@ -1124,16 +1126,16 @@ Provides documentation and context enhancement for parameters (`$PARAM$` or `$PA
 
 Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
-Path location:
+Path Location:
 - `parameters/{name}`, where `{name}` is the config name.
 
-Main fields:
+Field explanation:
 
 - `## context_key` (required): Context key (e.g. `scripted_trigger@some_trigger`); before `@` is the containing definition type (or `inline_script`), after `@` is the definition name or inline script path. The context key itself also supports pattern matching.
 - `## context_configs_type`: `single` (default) or `multiple`, with the same meaning as in inline script extended configs.
 - `## inherit`: Boolean option; when marked, inherits context (configs and scope) from the parameter's "usage site" rather than using static declarations.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 parameters = {
@@ -1184,10 +1186,10 @@ Provides documentation / hint enhancement (quick documentation, inlay hints, etc
 
 Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
-Path location:
+Path Location:
 - `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name, and `{name}` is the config name.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 complex_enum_values = {
@@ -1214,10 +1216,10 @@ Provides documentation / hint enhancement for specific "dynamic value" entries u
 
 Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
-Path location:
+Path Location:
 - `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the config name.
 
-- Format explanation:
+- Format Explanation:
 
 ```cwt
 dynamic_values = {
@@ -1248,14 +1250,14 @@ Declares "context configs" and "scope context" for specific inline scripts, used
 
 Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
-Path location:
+Path Location:
 - `inline_scripts/{name}`, where `{name}` is the config name.
 
-Main Fields:
+Field Explanation:
 
-`## context_configs_type` controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
+- `## context_configs_type`: Controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
 
-Format explanation:
+Format Explanation:
 
 ```cwt
 inline_scripts = {
