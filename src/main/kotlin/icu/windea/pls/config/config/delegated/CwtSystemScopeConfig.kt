@@ -24,10 +24,6 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * 路径定位：
  * - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -39,6 +35,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *     # ...
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property id 系统作用域 ID。
  * @property baseId 基底作用域 ID（用于继承/归类）。

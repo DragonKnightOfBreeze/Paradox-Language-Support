@@ -32,10 +32,6 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -53,6 +49,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  *     triggers/some_trigger_snippet = single_alias_right[trigger_clause]
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。

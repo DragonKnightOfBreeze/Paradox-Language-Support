@@ -1355,6 +1355,8 @@ value[event_target]         # 动态值引用
 pre_<opinion_modifier>_suf  # 模板表达式（含定义引用片段）
 ```
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 ### 模板表达式 {#config-expression-template}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
@@ -1385,6 +1387,8 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 - 常量片段与动态规则名紧邻时，解析器会优先保证动态规则的正确识别。
 - 模板表达式不支持空白字符；如需要空白匹配，请改用 [ANT 路径模式](#faq-ant)或[正则表达式](#faq-regex)。
 
+> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+
 ### 基数表达式 {#config-expression-cardinality}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
@@ -1414,6 +1418,8 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 - 可使用 `## cardinality_min_define` 从对应表达式的定值变量动态获取最小基数（如 `## cardinality_min_define = NGameplay.ETHOS_MIN_POINTS`）。
 - 可使用 `## cardinality_max_define` 从对应表达式的定值变量动态获取最大基数（如 `## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS`）。
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 ### 位置表达式 {#config-expression-location}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
@@ -1421,28 +1427,6 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 位置表达式用于定位目标资源（图片、本地化等）的来源。表达式中的 `$` 为占位符，运行时会被"定义名"或"属性值"等动态内容替换。
 
 位置表达式使用 `|` 分隔参数，格式为 `<location>|<args...>`。不同类型的位置表达式对参数的解读方式有所不同，详见下文。
-
-#### 图片位置表达式 {#config-expression-location-image}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
-
-用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。若为属性键名，则会继续解析该属性值所指向的图片。
-
-参数约定：
-
-- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径），用于替换位置中的 `$` 占位符。
-- 其他参数表示"帧数来源路径"（支持逗号分隔多路径），用于图片切分。
-- 同类参数重复出现时，以后者为准。
-
-示例：
-
-```cwt
-gfx/interface/icons/modifiers/mod_$.dds
-gfx/interface/icons/modifiers/mod_$.dds|$name
-GFX_$
-icon
-icon|p1,p2
-```
 
 #### 本地化位置表达式 {#config-expression-location-localisation}
 
@@ -1466,11 +1450,39 @@ $_desc|$name,$alt_name
 title
 ```
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
+#### 图片位置表达式 {#config-expression-location-image}
+
+<!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
+
+用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。若为属性键名，则会继续解析该属性值所指向的图片。
+
+参数约定：
+
+- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径），用于替换位置中的 `$` 占位符。
+- 其他参数表示"帧数来源路径"（支持逗号分隔多路径），用于图片切分。
+- 同类参数重复出现时，以后者为准。
+
+示例：
+
+```cwt
+gfx/interface/icons/modifiers/mod_$.dds
+gfx/interface/icons/modifiers/mod_$.dds|$name
+GFX_$
+icon
+icon|p1,p2
+```
+
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 ### 模式表达式 {#config-expression-schema}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 
-模式表达式用于描述规则文件中键与值的取值形态，从而为规则文件本身提供代码补全等功能。目前仅用于提供基础的代码补全，且仅在内置文件 `internal/schema.cwt` 中使用。与[内部规则 → 模式规则](#config-internal-schema)协同工作。
+模式表达式用于描述规则文件中键与值的取值形态，从而为规则文件本身提供代码补全等功能。
+目前仅用于提供基础的代码补全，且仅在内置规则文件 `cwt/core/internal/schema.cwt` 中使用。
+与[内部规则 → 模式规则](#config-internal-schema)协同工作。
 
 模式表达式支持以下四种形态：
 
@@ -1478,6 +1490,8 @@ title
 - **模板（Template）**：包含一个或多个 `$...$` 参数的模式，如 `$type$`、`type[$type$]`。
 - **类型（Type）**：以单个 `$` 起始（不闭合），如 `$any`、`$int`。
 - **约束（Constraint）**：以 `$$` 起始，如 `$$declaration`。
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ## 数据类型 {#data-types}
 
@@ -1524,6 +1538,8 @@ title
 对应的数据表达式的格式：
 - `$any`
 
+> CWTools 兼容性：兼容。
+
 #### Bool {#data-type-bool}
 
 布尔类型。
@@ -1532,6 +1548,8 @@ title
 
 对应的数据表达式的格式：
 - `bool`
+
+> CWTools 兼容性：兼容。
 
 #### Int {#data-type-int}
 
@@ -1547,6 +1565,8 @@ title
 - `int`
 - `int{range}` - 其中 `{range}` 匹配范围参数（如 `[0..1]` `[-100..100)` `[0..inf)`）。
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### Float {#data-type-float}
 
 浮点数类型。
@@ -1561,6 +1581,8 @@ title
 - `float`
 - `float{range}` - 其中 `{range}` 匹配范围参数（如 `[0.0..1.0]` `[-100.0..100.0)` `[0.0..inf)`）。
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### Scalar {#data-type-scalar}
 
 标量类型。
@@ -1571,6 +1593,8 @@ title
 对应的数据表达式的格式：
 - `scalar`
 - `wildcard_scalar` - 通配符变体。
+
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
 
 #### ColorField {#data-type-color-field}
 
@@ -1583,6 +1607,8 @@ title
 - `colour_field` `color_field`
 - `colour[{type}]` `color[{type}]` - 其中 `{type}` 匹配颜色类型（可选值：`rgb` `hsv` `hsv360`）。
 
+> CWTools 兼容性：兼容。
+
 #### Block {#data-type-block}
 
 块类型。
@@ -1590,6 +1616,8 @@ title
 匹配脚本块（`{ ... }`）。仅适用于作为值的脚本表达式，并递归匹配块内容。
 
 仅用于内部表示，不对应规则表达式字符串。
+
+> CWTools 兼容性：兼容。
 
 ### 扩展基本数据类型 {#data-types-extended-base}
 
@@ -1602,6 +1630,8 @@ title
 对应的数据表达式的格式：
 - `percentage_field`
 
+> CWTools 兼容性：兼容。
+
 #### IntPercentageField {#data-type-int-percentage-field}
 
 整数百分比字段类型。
@@ -1610,6 +1640,8 @@ title
 
 对应的数据表达式的格式：
 - `int_percentage_field`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### DateField {#data-type-date-field}
 
@@ -1620,6 +1652,8 @@ title
 对应的数据表达式的格式：
 - `date_field`
 - `date_field[{format}]` - 其中 `{format}` 匹配日期格式（如 `y.M.d`）。
+
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
 
 ### 引用数据类型 {#data-types-reference}
 
@@ -1643,6 +1677,8 @@ title
 - `<event.country>` - 匹配事件ID引用。
 - `<technology_tier>` - 匹配科技级别引用。这是整数而非字符串。
 
+> CWTools 兼容性：兼容。
+
 #### Localisation {#data-type-localisation}
 
 本地化引用类型。
@@ -1654,6 +1690,8 @@ title
 对应的数据表达式的格式：
 - `localisation`
 
+> CWTools 兼容性：兼容。
+
 #### SyncedLocalisation {#data-type-synced-localisation}
 
 同步本地化引用类型。
@@ -1664,6 +1702,8 @@ title
 对应的数据表达式的格式：
 - `localisation_synced`
 
+> CWTools 兼容性：兼容。
+
 #### InlineLocalisation {#data-type-inline-localisation}
 
 内联本地化引用类型。
@@ -1672,6 +1712,8 @@ title
 
 对应的数据表达式的格式：
 - `localisation_inline`
+
+> CWTools 兼容性：兼容。
 
 #### Modifier {#data-type-modifier}
 
@@ -1682,6 +1724,8 @@ title
 
 对应的数据表达式的格式：
 - `<modifier>`
+
+> CWTools 兼容性：兼容。
 
 #### EnumValue {#data-type-enum-value}
 
@@ -1697,6 +1741,8 @@ title
 - `enum[weight_or_base]`
 - `enum[ship_class]`
 
+> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
+
 #### Value {#data-type-value}
 
 动态值读取类型。
@@ -1709,6 +1755,8 @@ title
 
 对应的数据表达式的示例：
 - `value[event_target]`
+
+> CWTools 兼容性：兼容。
 
 #### ValueSet {#data-type-value-set}
 
@@ -1723,6 +1771,8 @@ title
 对应的数据表达式的示例：
 - `value_set[event_target]`
 
+> CWTools 兼容性：兼容。
+
 #### DynamicValue {#data-type-dynamic-value}
 
 动态值类型。
@@ -1736,6 +1786,8 @@ title
 对应的数据表达式的示例：
 - `dynamic_value[event_target]`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### ScopeField {#data-type-scope-field}
 
 作用域字段类型。
@@ -1744,6 +1796,8 @@ title
 
 对应的数据表达式的格式：
 - `scope_field`
+
+> CWTools 兼容性：兼容。
 
 #### Scope {#data-type-scope}
 
@@ -1759,6 +1813,8 @@ title
 - `scope[country]`
 - `scope[any]`
 
+> CWTools 兼容性：兼容。
+
 #### ScopeGroup {#data-type-scope-group}
 
 作用域组类型。
@@ -1770,6 +1826,8 @@ title
 
 对应的数据表达式的示例：
 - `scope_group[economic_categories]`
+
+> CWTools 兼容性：兼容。
 
 #### ValueField {#data-type-value-field}
 
@@ -1788,6 +1846,8 @@ title
 - `value_field`
 - `value_field[0.0..1.0]`
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### IntValueField {#data-type-int-value-field}
 
 整数值字段类型。
@@ -1804,6 +1864,8 @@ title
 对应的数据表达式的示例：
 - `int_value_field`
 - `int_value_field[-100..100]`
+
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
 
 #### VariableField {#data-type-variable-field}
 
@@ -1826,6 +1888,8 @@ title
 - `variable_field[0.0..1.0]`
 - `variable_field_32`
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### IntVariableField {#data-type-int-variable-field}
 
 整数变量字段类型。
@@ -1847,6 +1911,8 @@ title
 - `int_variable_field[-100..100]`
 - `int_variable_field_32`
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### Command {#data-type-command}
 
 命令表达式类型。
@@ -1857,6 +1923,8 @@ title
 对应的数据表达式的格式：
 - `$command`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### ScriptValueReference {#data-type-script-value-reference}
 
 脚本值引用表达式类型。
@@ -1865,6 +1933,8 @@ title
 
 对应的数据表达式的格式：
 - `$script_value_reference`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### DefineReference {#data-type-define-reference}
 
@@ -1875,6 +1945,8 @@ title
 对应的数据表达式的格式：
 - `$define_reference`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### ArrayDefineReference {#data-type-array-define-reference}
 
 数组定值引用表达式类型。
@@ -1883,6 +1955,8 @@ title
 
 对应的数据表达式的格式：
 - `$array_define_reference`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### Tags {#data-type-tags}
 
@@ -1895,6 +1969,8 @@ title
 - `$tags[{name}]` - 其中 `{name}` 匹配动态值类型的名字。
 - `$tags_condition[{name}]` - 条件变体。其中 `{name}` 匹配动态值类型的名字。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### DatabaseObject {#data-type-database-object}
 
 数据库对象表达式类型。
@@ -1903,6 +1979,8 @@ title
 
 对应的数据表达式的格式：
 - `$database_object`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### NameFormat {#data-type-name-format}
 
@@ -1913,6 +1991,8 @@ title
 对应的数据表达式的格式：
 - `name_format[{type}]` - 其中 `{name}` 匹配格式类型，对应的定义类型为 `{name}_name_format`。
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### ShaderEffect {#data-type-shader-effect}
 
 着色器效果类型。
@@ -1920,10 +2000,12 @@ title
 匹配对着色器效果（shader effect）的引用。
 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
 
-“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里仅总是视为读访问。
+“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
 
 对应的数据表达式的格式：
 - `$shader_effect`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### MeshLocator {#data-type-mesh-locator}
 
@@ -1932,10 +2014,12 @@ title
 匹配对网格定位器（mesh locator）的引用。
 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
 
-“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里仅总是视为读访问。
+“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
 
 对应的数据表达式的格式：
 - `$mesh_locator`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
@@ -1947,6 +2031,8 @@ title
 对应的数据表达式的格式：
 - `$technology_with_level`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### Parameter {#data-type-parameter}
 
 参数名类型。
@@ -1955,6 +2041,8 @@ title
 
 对应的数据表达式的格式：
 - `$parameter`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### ParameterValue {#data-type-parameter-value}
 
@@ -1965,6 +2053,8 @@ title
 对应的数据表达式的格式：
 - `$parameter_value`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### LocalisationParameter {#data-type-localisation-parameter}
 
 本地化参数名类型。
@@ -1973,6 +2063,8 @@ title
 
 对应的数据表达式的格式：
 - `$localisation_parameter`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ### 别名数据类型 {#data-types-alias}
 
@@ -1987,6 +2079,8 @@ title
 对应的数据表达式的格式：
 - `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
 
+> CWTools 兼容性：兼容。
+
 #### AliasKeysField {#data-type-alias-keys-field}
 
 别名键字段类型。
@@ -1995,6 +2089,8 @@ title
 
 对应的数据表达式的格式：
 - `alias_keys_field[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+> CWTools 兼容性：兼容。
 
 #### AliasName {#data-type-alias-name}
 
@@ -2005,6 +2101,8 @@ title
 对应的数据表达式的格式：
 - `alias_name[{name}]` - 其中 `{name}` 匹配别名的名字。
 
+> CWTools 兼容性：兼容。
+
 #### AliasMatchLeft {#data-type-alias-match-left}
 
 别名匹配左侧类型。
@@ -2013,6 +2111,8 @@ title
 
 对应的数据表达式的格式：
 - `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+> CWTools 兼容性：兼容。
 
 ### 路径引用数据类型 {#data-types-path-reference}
 
@@ -2036,6 +2136,8 @@ title
 对应的数据表达式的示例：
 - `icon[gfx/interface/icons]`
 
+> CWTools 兼容性：兼容。
+
 #### FilePath {#data-type-file-path}
 
 文件路径类型。
@@ -2058,6 +2160,8 @@ title
 - `filepath[flags/]`
 - `filepath[common/inline_scripts/,.txt]`
 
+> CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
 #### FileName {#data-type-file-name}
 
 文件名类型。
@@ -2078,6 +2182,8 @@ title
 - `filename`
 - `filename[gfx/models]`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### AbsoluteFilePath {#data-type-absolute-file-path}
 
 绝对文件路径类型。
@@ -2087,6 +2193,8 @@ title
 
 对应的数据表达式的格式：
 - `abs_filepath`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ### 模式感知的数据类型 {#data-types-pattern-aware}
 
@@ -2103,6 +2211,8 @@ title
 对应的数据表达式的格式：
 - 直接使用常量值作为数据表达式字符串本身，如 `yes`、`10`、`trigger` 等。
 
+> CWTools 兼容性：兼容。
+
 #### TemplateExpression {#data-type-template-expression}
 
 模板表达式类型。
@@ -2115,6 +2225,8 @@ title
 - `job_<job>_add`
 
 此类型为模式感知类型，其数据表达式格式即为模板表达式本身（参见[模板表达式](#config-expression-template)）。
+
+> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
 
 #### Ant {#data-type-ant}
 
@@ -2130,6 +2242,8 @@ ANT 路径模式类型（模式感知）。
 - `ant:**/*.txt`
 - `ant.i:common/**/*`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### Regex {#data-type-regex}
 
 正则表达式模式类型（模式感知）。
@@ -2143,6 +2257,8 @@ ANT 路径模式类型（模式感知）。
 对应的数据表达式的示例：
 - `re:^country_.*`
 - `re.i:event_.*`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ### 后缀感知的数据类型 {#data-types-suffix-aware}
 
@@ -2160,6 +2276,8 @@ ANT 路径模式类型（模式感知）。
 对应的数据表达式的示例：
 - `<event>|country,crisis`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
 
 后缀感知的本地化引用类型。
@@ -2173,6 +2291,8 @@ ANT 路径模式类型（模式感知）。
 对应的数据表达式的示例：
 - `localisation|name,desc`
 
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
 
 后缀感知的同步本地化引用类型。
@@ -2182,6 +2302,8 @@ ANT 路径模式类型（模式感知）。
 
 对应的数据表达式的格式：
 - `localisation_synced|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 ## FAQ {#faq}
 
@@ -2212,10 +2334,10 @@ a_value[anything]_b
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
 
-从插件版本 1.3.6 开始，可以在数据表达式中使用 ANT 路径模式进行更灵活的匹配。ANT 表达式通过前缀标识：`ant:` 表示区分大小写，`ant.i:` 表示忽略大小写。
+从插件版本 1.3.6 开始，可以在数据表达式中使用 ANT 路径模式进行更灵活的匹配。
+ANT 表达式通过前缀标识：`ant:` 表示区分大小写，`ant.i:` 表示忽略大小写。
 
-ANT 路径模式支持以下通配符：
-
+这里使用的 ANT 路径模式支持以下通配符：
 - `?`：匹配任意单个字符。
 - `*`：匹配任意字符（不含 `/`）。
 - `**`：匹配任意字符（含 `/`）。
@@ -2231,7 +2353,9 @@ ant.i:/foo/bar?/*
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
 
-从插件版本 1.3.6 开始，可以在数据表达式中使用正则表达式进行更灵活的匹配。正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。前缀之后的部分即为标准的正则表达式。
+从插件版本 1.3.6 开始，可以在数据表达式中使用正则表达式进行更灵活的匹配。
+正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。
+前缀之后的部分即为标准的正则表达式。
 
 示例：
 

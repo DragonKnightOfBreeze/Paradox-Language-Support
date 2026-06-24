@@ -35,10 +35,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
  * ### 示例
  *
  * ```cwt
@@ -52,6 +48,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property name 规则名称（即枚举名）。
  * @property startFromRoot 是否从文件顶部（而非顶级属性的下一级）开始查询。

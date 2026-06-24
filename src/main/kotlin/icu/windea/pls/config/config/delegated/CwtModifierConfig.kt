@@ -34,10 +34,6 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * - `types/type[{type}]/modifiers/{name}`。其中 `{type}` 匹配定义类型，`{name}` 匹配规则名称（其中的 `$` 会被替换为 `<{type}>`）。
  * - `types/type[{type}]/modifiers/subtype[{subtype}]/{name}`。其中 `{subtype}` 匹配定义的子类型。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
  * ### 示例
  *
  * ```cwt
@@ -58,6 +54,8 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称。
  * @property categories 分类名的集合。

@@ -39,10 +39,6 @@ import icu.windea.pls.model.ParadoxTagType
  * 路径定位：
  * - `types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
  * ### 示例
  *
  * ```cwt
@@ -54,6 +50,8 @@ import icu.windea.pls.model.ParadoxTagType
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property name 规则名称（即类型名）。
  * @property baseType 基类型名，如果存在则表示继承另一类型的部分语义。

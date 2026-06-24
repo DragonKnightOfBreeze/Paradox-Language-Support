@@ -37,10 +37,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 路径定位：
  * - `parameters/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -61,6 +57,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  *     PARAM = single_alias_right[trigger_clause]
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
  * @property contextKey 上下文键（如 `scripted_trigger@x`、`inline_script@x`）。

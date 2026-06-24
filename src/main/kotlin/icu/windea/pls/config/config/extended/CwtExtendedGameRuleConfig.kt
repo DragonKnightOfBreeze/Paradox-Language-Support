@@ -26,10 +26,6 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `game_rules/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容，拥有不同的格式和行为。
- *
  * ### 示例
  *
  * ```cwt
@@ -39,6 +35,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  *     x # or `x = xxx` to override declaration config
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容，拥有不同的格式和行为。
  *
  * @property name 规则名称。
  * @property hint 额外提示信息（可选）。

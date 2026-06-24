@@ -26,10 +26,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * 路径定位：
  * - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -40,6 +36,8 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。匹配类型前缀（如 `civic:some_civic` 中的 `civic:`）。
  * @property type 如果存在，则将对象节点（如 `civic:some_civic` 中的 `some_civic`）视为该类型的定义引用。

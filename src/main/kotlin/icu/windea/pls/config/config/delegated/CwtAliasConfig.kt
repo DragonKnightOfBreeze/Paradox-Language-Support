@@ -26,10 +26,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
  * ### 示例
  *
  * ```cwt
@@ -42,6 +38,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *     alias_name[effect] = alias_match_left[effect]
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称。
  * @property subName 子名（受限支持的数据表达式）。

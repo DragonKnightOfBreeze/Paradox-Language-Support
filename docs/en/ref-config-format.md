@@ -1325,7 +1325,7 @@ Data expressions are used to describe the value forms and matching patterns of v
 
 The data expression will get the specific [data type] (#data-types) after resolving, and can be accompanied by metadata. The data type, along with this metadata, determines which expressions in script files, localisation files, and CSV files can be matched by data expressions.
 
-**Default and boundary behaviors**:
+Default and boundary behaviors:
 
 - Blocks (`{ ... }`) correspond to the data type `Block`.
 - Empty strings (`""`) correspond to the data type `Constant`, using themselves as the constant value.
@@ -1344,13 +1344,15 @@ value[event_target]         # dynamic value reference
 pre_<opinion_modifier>_suf  # template expression (with definition reference fragment)
 ```
 
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 ### Template Expression {#config-expression-template}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 Template expressions are composed of multiple fragments concatenated — constant fragments and dynamic fragments alternating — used to describe value forms more complex than a single data expression. Each dynamic fragment is itself a restricted data expression (such as definition reference, enum reference, dynamic value reference, etc.).
 
-**Resolving constraints**:
+Resolving constraints:
 
 - Text containing whitespace characters is treated as an invalid template.
 - When only one fragment exists (purely constant or purely a single dynamic), it is not treated as a template but as a regular data expression.
@@ -1369,10 +1371,12 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 
 For example, `job_<job>_add` can match `job_researcher_add`, `job_farmer_add`, etc. — where the `<job>` part matches any definition name of type `job`.
 
-**Notes**:
+Notes:
 
 - When constant fragments and dynamic config names are adjacent, the resolver prioritizes correct identification of dynamic configs.
 - Template expressions do not support whitespace characters; if whitespace matching is needed, use [ANT path patterns](#faq-ant) or [regular expressions](#faq-regex) instead.
+
+> CWTools Compatibility: Partially compatible. The plugin has different resolving and processing logic.
 
 ### Cardinality Expression {#config-expression-cardinality}
 
@@ -1383,7 +1387,7 @@ Cardinality expressions constrain the number of occurrences of definition member
 The format is `{min}..{max}`, where `{min}` and `{max}` are non-negative integers or `inf` (case-insensitive, meaning unlimited).
 Adding a `~` prefix before the integer indicates lenient validation (when not satisfied, a weaker severity level is used, e.g. from warning to weak warning).
 
-**Default and boundary behaviors**:
+Default and boundary behaviors:
 
 - A minimum value that is negative is clamped to 0.
 - Missing the `..` separator is treated as invalid, producing no constraint.
@@ -1398,10 +1402,12 @@ Example:
 ## cardinality = ~1..10   # lenient: expected 1 to 10 times, but produces only a warning by default if not met
 ```
 
-**Tip:**
+Tip:
 
 - You can use `## cardinality_min_define` to dynamically obtain the minimum cardinality from a define variable in specified expression (e.g., `## cardinality_min_define = NGameplay.ETHOS_MIN_POINTS`).
 - You can use `## cardinality_max_define` to dynamically obtain the maximum cardinality from a define variable in specified expression (e.g., `## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS`).
+
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 ### Location Expression {#config-expression-location}
 
@@ -1433,6 +1439,8 @@ icon
 icon|p1,p2
 ```
 
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Localisation Location Expression {#config-expression-location-localisation}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
@@ -1455,11 +1463,15 @@ $_desc|$name,$alt_name
 title
 ```
 
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 ### Schema Expression {#config-expression-schema}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 
-Schema expressions describe the value forms of keys and values in config files, thereby providing features such as code completion for config files themselves. Currently used only for providing basic code completion, and only in the built-in file `internal/schema.cwt`. Works in conjunction with [Internal Configs → Schema Config](#config-internal-schema).
+Schema expressions describe the value forms of keys and values in config files, thereby providing features such as code completion for config files themselves.
+Currently used only for providing basic code completion, and only in the built-in config file `cwt/core/internal/schema.cwt`.
+Works in conjunction with [Internal Configs → Schema Config](#config-internal-schema).
 
 Schema expressions support the following four forms:
 
@@ -1467,6 +1479,8 @@ Schema expressions support the following four forms:
 - **Template**: A pattern containing one or more `$...$` parameters, such as `$type$`, `type[$type$]`.
 - **Type**: Starting with a single `$` (unclosed), such as `$any`, `$int`.
 - **Constraint**: Starting with `$$`, such as `$$declaration`.
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ## Data Types {#data-types}
 
@@ -1513,6 +1527,8 @@ Matches any script expression, acting as the lowest-priority fallback.
 Format of corresponding data expressions:
 - `$any`
 
+> CWTools Compatibility: Compatible.
+
 #### Bool {#data-type-bool}
 
 Boolean type.
@@ -1521,6 +1537,8 @@ Matches boolean values (`yes` / `no`).
 
 Format of corresponding data expressions:
 - `bool`
+
+> CWTools Compatibility: Compatible.
 
 #### Int {#data-type-int}
 
@@ -1536,6 +1554,8 @@ Format of corresponding data expressions:
 - `int`
 - `int{range}` – where `{range}` matches a range parameter (e.g., `[0..1]` `[-100..100)` `[0..inf)`).
 
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Float {#data-type-float}
 
 Float type.
@@ -1550,6 +1570,8 @@ Format of corresponding data expressions:
 - `float`
 - `float{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]` `[-100.0..100.0)` `[0.0..inf)`).
 
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Scalar {#data-type-scalar}
 
 Scalar type.
@@ -1560,6 +1582,8 @@ Always matches when used as a key. The `wildcard_scalar` variant sets a wildcard
 Format of corresponding data expressions:
 - `scalar`
 - `wildcard_scalar` – wildcard variant.
+
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### ColorField {#data-type-color-field}
 
@@ -1572,6 +1596,8 @@ Format of corresponding data expressions:
 - `colour_field` `color_field`
 - `colour[{type}]` `color[{type}]` – where `{type}` matches a color type (possible values: `rgb` `hsv` `hsv360`).
 
+> CWTools Compatibility: Compatible.
+
 #### Block {#data-type-block}
 
 Block type.
@@ -1579,6 +1605,8 @@ Block type.
 Matches script blocks (`{ ... }`). Applies only to script expressions used as values, and recursively matches the block contents.
 
 Used only for internal representation and does not correspond to a config expression string.
+
+> CWTools Compatibility: Compatible.
 
 ### Extended Basic Data Types {#data-types-extended-base}
 
@@ -1591,6 +1619,8 @@ Matches percentage value strings where the numeric part is a float (e.g., `50.0%
 Format of corresponding data expressions:
 - `percentage_field`
 
+> CWTools Compatibility: Compatible.
+
 #### IntPercentageField {#data-type-int-percentage-field}
 
 Integer percentage field type.
@@ -1599,6 +1629,8 @@ Matches percentage value strings where the numeric part is an integer (e.g., `50
 
 Format of corresponding data expressions:
 - `int_percentage_field`
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### DateField {#data-type-date-field}
 
@@ -1609,6 +1641,8 @@ Matches date value strings (e.g., `2200.1.1`). When a parameter is present, it a
 Format of corresponding data expressions:
 - `date_field`
 - `date_field[{format}]` – where `{format}` matches a date format (e.g., `y.M.d`).
+
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 ### Reference Data Types {#data-types-reference}
 
@@ -1632,6 +1666,8 @@ Examples of corresponding data expressions:
 - `<event.country>` – matches an event ID reference.
 - `<technology_tier>` – matches a technology tier reference. This is an integer rather than a string.
 
+> CWTools Compatibility: Compatible.
+
 #### Localisation {#data-type-localisation}
 
 Localisation reference type.
@@ -1643,6 +1679,8 @@ The localisation file containing the referenced key must be located in the `loca
 Format of corresponding data expressions:
 - `localisation`
 
+> CWTools Compatibility: Compatible.
+
 #### SyncedLocalisation {#data-type-synced-localisation}
 
 Synced localisation reference type.
@@ -1653,6 +1691,8 @@ The localisation file containing the referenced key must be located in the `loca
 Format of corresponding data expressions:
 - `localisation_synced`
 
+> CWTools Compatibility: Compatible.
+
 #### InlineLocalisation {#data-type-inline-localisation}
 
 Inline localisation reference type.
@@ -1661,6 +1701,8 @@ Matches either a localisation key reference or any quoted string (the latter is 
 
 Format of corresponding data expressions:
 - `localisation_inline`
+
+> CWTools Compatibility: Compatible.
 
 #### Modifier {#data-type-modifier}
 
@@ -1671,6 +1713,8 @@ Validates that the referenced modifier exists within the config group when match
 
 Format of corresponding data expressions:
 - `<modifier>`
+
+> CWTools Compatibility: Compatible.
 
 #### EnumValue {#data-type-enum-value}
 
@@ -1686,6 +1730,8 @@ Examples of corresponding data expressions:
 - `enum[weight_or_base]`
 - `enum[ship_class]`
 
+> CWTools compatibility: Partially compatible. The plugin has different resolving and processing logic.
+
 #### Value {#data-type-value}
 
 Dynamic value read type.
@@ -1698,6 +1744,8 @@ Format of corresponding data expressions:
 
 Examples of corresponding data expressions:
 - `value[event_target]`
+
+> CWTools Compatibility: Compatible.
 
 #### ValueSet {#data-type-value-set}
 
@@ -1712,6 +1760,8 @@ Format of corresponding data expressions:
 Examples of corresponding data expressions:
 - `value_set[event_target]`
 
+> CWTools Compatibility: Compatible.
+
 #### DynamicValue {#data-type-dynamic-value}
 
 Dynamic value type.
@@ -1725,6 +1775,8 @@ Format of corresponding data expressions:
 Examples of corresponding data expressions:
 - `dynamic_value[event_target]`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### ScopeField {#data-type-scope-field}
 
 Scope field type.
@@ -1733,6 +1785,8 @@ Matches a scope field expression (consisting of multiple scope nodes separated b
 
 Format of corresponding data expressions:
 - `scope_field`
+
+> CWTools Compatibility: Compatible.
 
 #### Scope {#data-type-scope}
 
@@ -1748,6 +1802,8 @@ Examples of corresponding data expressions:
 - `scope[country]`
 - `scope[any]`
 
+> CWTools Compatibility: Compatible.
+
 #### ScopeGroup {#data-type-scope-group}
 
 Scope group type.
@@ -1759,6 +1815,8 @@ Format of corresponding data expressions:
 
 Examples of corresponding data expressions:
 - `scope_group[economic_categories]`
+
+> CWTools Compatibility: Compatible.
 
 #### ValueField {#data-type-value-field}
 
@@ -1777,6 +1835,8 @@ Examples of corresponding data expressions:
 - `value_field`
 - `value_field[0.0..1.0]`
 
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### IntValueField {#data-type-int-value-field}
 
 Integer value field type.
@@ -1793,6 +1853,8 @@ Format of corresponding data expressions:
 Examples of corresponding data expressions:
 - `int_value_field`
 - `int_value_field[-100..100]`
+
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### VariableField {#data-type-variable-field}
 
@@ -1815,6 +1877,8 @@ Examples of corresponding data expressions:
 - `variable_field[0.0..1.0]`
 - `variable_field_32`
 
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### IntVariableField {#data-type-int-variable-field}
 
 Integer variable field type.
@@ -1836,6 +1900,8 @@ Examples of corresponding data expressions:
 - `int_variable_field[-100..100]`
 - `int_variable_field_32`
 
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### Command {#data-type-command}
 
 Command expression type.
@@ -1846,6 +1912,8 @@ Command expressions are widely used in localisation files (`[...]`); however, cu
 Format of corresponding data expressions:
 - `$command`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### ScriptValueReference {#data-type-script-value-reference}
 
 Script value reference expression type.
@@ -1854,6 +1922,8 @@ Matches a script value reference expression（如 `some_sv|PARAM|VALUE|`）。
 
 Format of corresponding data expressions:
 - `$script_value_reference`
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### DefineReference {#data-type-define-reference}
 
@@ -1864,6 +1934,8 @@ Matches a define reference expression (e.g., `define:Namespace|Name`).
 Format of corresponding data expressions:
 - `$define_reference`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### ArrayDefineReference {#data-type-array-define-reference}
 
 Array define reference expression type.
@@ -1873,7 +1945,7 @@ Matches an array define reference expression (e.g., `array_define:Namespace|Name
 Format of corresponding data expressions:
 - `$array_define_reference`
 
-(To be implemented in 2.1.10)
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### Tags {#data-type-tags}
 
@@ -1886,6 +1958,8 @@ Format of corresponding data expressions:
 - `$tags[{name}]` – where `{name}` matches a dynamic value type name.
 - `$tags_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type name.
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### DatabaseObject {#data-type-database-object}
 
 Database object expression type.
@@ -1895,6 +1969,8 @@ Matches a database object expression (consisting of multiple reference nodes sep
 Format of corresponding data expressions:
 - `$database_object`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### NameFormat {#data-type-name-format}
 
 Name format expression type.
@@ -1903,6 +1979,8 @@ Matches a name format expression (e.g., `{alpha}`, `{<adj> {<noun>}}`).
 
 Format of corresponding data expressions:
 - `name_format[{type}]` - where `{name}` matches the format name (the corresponding definition type is `{name}_name_format`).
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### ShaderEffect {#data-type-shader-effect}
 
@@ -1916,6 +1994,8 @@ The plugin currently treats these references as dynamic references, even though 
 Format of corresponding data expressions:
 - `$shader_effect`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### MeshLocator {#data-type-mesh-locator}
 
 Mesh locator type.
@@ -1928,6 +2008,8 @@ The plugin currently treats these references as dynamic references, even though 
 Format of corresponding data expressions:
 - `$mesh_locator`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
 Technology with level type.
@@ -1938,6 +2020,8 @@ Only applies to the Stellaris game type, and has lower priority than [Definition
 Format of corresponding data expressions:
 - `$technology_with_level`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Parameter {#data-type-parameter}
 
 Parameter name type.
@@ -1946,6 +2030,8 @@ Matches a parameter name. The expression must be a valid identifier. It is consi
 
 Format of corresponding data expressions:
 - `$parameter`
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 #### ParameterValue {#data-type-parameter-value}
 
@@ -1956,6 +2042,8 @@ Matches a parameter value. Matches anything as long as it is not a block.
 Format of corresponding data expressions:
 - `$parameter_value`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### LocalisationParameter {#data-type-localisation-parameter}
 
 Localisation parameter name type.
@@ -1964,6 +2052,8 @@ Matches a localisation parameter name. The expression must be a valid identifier
 
 Format of corresponding data expressions:
 - `$localisation_parameter`
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ### Alias Data Types {#data-types-alias}
 
@@ -1978,6 +2068,8 @@ Does not directly participate in script matching; handled by the alias resolutio
 Format of corresponding data expressions:
 - `single_alias_right[{name}]` – where `{name}` matches a single alias name.
 
+> CWTools Compatibility: Compatible.
+
 #### AliasKeysField {#data-type-alias-keys-field}
 
 Alias keys field type.
@@ -1986,6 +2078,8 @@ When matching, resolves alias sub-keys and matches recursively.
 
 Format of corresponding data expressions:
 - `alias_keys_field[{name}]` – where `{name}` matches an alias name.
+
+> CWTools Compatibility: Compatible.
 
 #### AliasName {#data-type-alias-name}
 
@@ -1996,6 +2090,8 @@ When matching, resolves alias sub-keys and matches recursively. Can only be used
 Format of corresponding data expressions:
 - `alias_name[{name}]` – where `{name}` matches an alias name.
 
+> CWTools Compatibility: Compatible.
+
 #### AliasMatchLeft {#data-type-alias-match-left}
 
 Alias match left type.
@@ -2004,6 +2100,8 @@ Does not directly participate in script matching; handled by the alias resolutio
 
 Format of corresponding data expressions:
 - `alias_match_left[{name}]` – where `{name}` matches an alias name.
+
+> CWTools Compatibility: Compatible.
 
 ### Path Reference Data Types {#data-types-path-reference}
 
@@ -2027,6 +2125,8 @@ Corresponding data expression format:
 Corresponding data expression example:
 - `icon[gfx/interface/icons]`
 
+> CWTools Compatibility: Compatible.
+
 #### FilePath {#data-type-file-path}
 
 File path type.
@@ -2049,6 +2149,8 @@ Corresponding data expression examples:
 - `filepath[flags/]`
 - `filepath[common/inline_scripts/,.txt]`
 
+> CWTools compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
 #### FileName {#data-type-file-name}
 
 File name type.
@@ -2069,6 +2171,8 @@ Corresponding data expression examples:
 - `filename`
 - `filename[gfx/models]`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### AbsoluteFilePath {#data-type-absolute-file-path}
 
 Absolute file path type.
@@ -2078,6 +2182,8 @@ When matching, only validates as a string type (wildcard match).
 
 Format of corresponding data expressions:
 - `abs_filepath`
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ### Pattern-Aware Data Types {#data-types-pattern-aware}
 
@@ -2094,6 +2200,8 @@ Additionally, string literals that do not contain special characters (`:.@[]<>`)
 Format of corresponding data expressions:
 - Use the constant value directly as the data expression string itself, e.g., `yes`, `10`, `trigger`, etc.
 
+> CWTools Compatibility: Compatible.
+
 #### TemplateExpression {#data-type-template-expression}
 
 Template expression type.
@@ -2106,6 +2214,8 @@ Examples of corresponding data expressions:
 - `job_<job>_add`
 
 This is a pattern-aware type, and its data expression format is the template expression itself (see [Template Expression](#config-expression-template)).
+
+> CWTools 兼容性：部分兼容。插件拥有不同的解析和处理逻辑。
 
 #### Ant {#data-type-ant}
 
@@ -2121,6 +2231,8 @@ Examples of corresponding data expressions:
 - `ant:**/*.txt`
 - `ant.i:common/**/*`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### Regex {#data-type-regex}
 
 Regular expression pattern type (pattern-aware).
@@ -2134,6 +2246,8 @@ Format of corresponding data expressions:
 Examples of corresponding data expressions:
 - `re:^country_.*`
 - `re.i:event_.*`
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ### Suffix-Aware Data Types {#data-types-suffix-aware}
 
@@ -2151,6 +2265,8 @@ Format of corresponding data expressions:
 Example of a corresponding data expression:
 - `<event>|country,crisis`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
 
 Suffix-aware localisation reference type.
@@ -2164,6 +2280,8 @@ Format of corresponding data expressions:
 Example of a corresponding data expression:
 - `localisation|name,desc`
 
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+
 #### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
 
 Suffix-aware synced localisation reference type.
@@ -2173,6 +2291,8 @@ If the suffix list is empty, it degrades to a plain [SyncedLocalisation](#data-t
 
 Format of corresponding data expressions:
 - `localisation_synced|{suffixes}` – where `{suffixes}` matches a comma-separated set of suffixes.
+
+> CWTools Compatibility: Not compatible. The plugin provides as an extension.
 
 ## FAQ {#faq}
 
@@ -2202,10 +2322,10 @@ a_value[anything]_b
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
 
-Starting from plugin version 1.3.6, ANT path patterns can be used in data expressions for more flexible matching. ANT expressions are identified by prefix: `ant:` for case-sensitive, `ant.i:` for case-insensitive.
+Starting from plugin version 1.3.6, ANT path patterns can be used in data expressions for more flexible matching.
+ANT expressions are identified by prefix: `ant:` for case-sensitive, `ant.i:` for case-insensitive.
 
-ANT path patterns support the following wildcards:
-
+ANT path patterns used here support the following wildcards:
 - `?`: Matches any single character.
 - `*`: Matches any characters (excluding `/`).
 - `**`: Matches any characters (including `/`).
@@ -2221,7 +2341,9 @@ ant.i:/foo/bar?/*
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
 
-Starting from plugin version 1.3.6, regular expressions can be used in data expressions for more flexible matching. Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive. The part after the prefix is a standard regular expression.
+Starting from plugin version 1.3.6, regular expressions can be used in data expressions for more flexible matching.
+Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive.
+The part after the prefix is a standard regular expression.
 
 Example:
 

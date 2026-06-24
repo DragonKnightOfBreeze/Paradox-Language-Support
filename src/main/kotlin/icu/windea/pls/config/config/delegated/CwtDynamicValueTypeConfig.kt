@@ -27,10 +27,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `values/value[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
- *
  * ### 示例
  *
  * ```cwt
@@ -38,6 +34,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *     value[event_target] = { owner }
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
  *
  * @property name 规则名称（即动态值类型）。
  * @property values 可选项集合（不忽略大小写）。

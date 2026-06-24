@@ -23,10 +23,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `single_alias[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
  * ### 示例
  *
  * ```cwt
@@ -41,6 +37,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 	   potential = single_alias_right[trigger_clause]
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称。
  *

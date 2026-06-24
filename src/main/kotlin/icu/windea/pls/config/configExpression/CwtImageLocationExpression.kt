@@ -18,11 +18,7 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
  * - 其他参数表示帧数来源路径（支持逗号分隔多路径），映射到 [framePaths]。
  * - 当 [location] 含 `$` 时表示存在占位符，需要在后续步骤以“定义名或属性值”等替换。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * icon = "gfx/interface/icons/modifiers/mod_$.dds" # 用当前定义的名字替换占位符，解析为图片路径。
@@ -31,6 +27,8 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
  * icon = "icon" # 读取定义声明的 `icon` 属性，解析为图片路径、sprite 名或定义名；若为定义名则继续解析其最相关图片。
  * icon = "icon|p1,p2" # 以上并从 `p1`/`p2` 路径读取帧数用于后续切分。
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property namePaths 用于获取名字文本的一组成员路径。名字文本用于替换占位符。
  * @property framePaths 用于获取帧数的一组成员路径。帧数用于后续切分图片。

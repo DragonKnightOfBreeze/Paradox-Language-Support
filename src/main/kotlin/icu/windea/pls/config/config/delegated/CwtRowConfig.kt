@@ -30,10 +30,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -48,6 +44,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
  * @property columns 每一列的列名到对应列规则的映射。

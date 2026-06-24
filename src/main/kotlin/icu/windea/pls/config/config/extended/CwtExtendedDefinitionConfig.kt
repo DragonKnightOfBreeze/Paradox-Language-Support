@@ -26,10 +26,6 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `definitions/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -41,6 +37,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  *     x # or `x = xxx`
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
  * @property type 定义类型。

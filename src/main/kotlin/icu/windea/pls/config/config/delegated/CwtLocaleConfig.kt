@@ -28,10 +28,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * 路径定位：
  * - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * ### 示例
  *
  * ```cwt
@@ -40,6 +36,8 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *     l_simp_chinese = { codes = { "zh-CN" } }
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property id 语言环境 ID（如 `l_english`）。
  * @property codes 此语言环境包含的语言代码列表（如 `en`、`zh-CN`）。

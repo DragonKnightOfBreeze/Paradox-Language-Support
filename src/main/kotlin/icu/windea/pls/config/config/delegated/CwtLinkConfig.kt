@@ -55,10 +55,6 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * - 本地化链接：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
  * - 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
  * ### 示例
  *
  * ```cwt
@@ -70,6 +66,8 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  *     # ...
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property name 规则名称（即链接名）。
  * @property type 链接类型（`scope`/`value`/`both`，默认为 `scope`）。
