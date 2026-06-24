@@ -49,14 +49,12 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ### Known Limitations
 
-<!-- TODO: updating -->
-
-- The plugin's support for some complex language constructs of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
-- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
-  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
-  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
-  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
-- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
+- The plugin is intended for IntelliJ IDEA (and other JetBrains IDEs such as PyCharm) and does not work with VSCode or other text editors, and has no relevant development plans.
+- The plugin's support for some complex high-level language constructs in script files and localisation files is not yet complete, and is still being improved.
+- For example, the plugin currently does not support definitions declared in inline scripts in Stellaris, or complex localisation commands in Jomini.
+- The quality of the plugin's core language features (such as code completion, code inspection, and quick documentation) largely depends on the completeness and timeliness of the config files. Incomplete or faulty configs may lead to missing features and false positives.
+- Currently, the configs for **Stellaris**, **Victoria 3**, **Europa Universalis V** and **Hearts of Iron IV** are actively maintained, while the configs for other games may be rather incomplete or out of date.
+- For detailed maintenance of config files, please refer to [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
 ## Contribution and Support
 

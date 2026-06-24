@@ -52,8 +52,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 - 插件是为 IntelliJ IDEA（以及其他 JetBrains IDE，例如 PyCharm）准备的，不适用于 VSCode 或其他文本编辑器，也没有相关的开发计划。
 - 插件对脚本文件和本地化文件的部分复杂的高级语言构造的支持尚不完善，仍在持续完善中。
-- 例如，插件目暂不支持 Stellaris 中在内联脚本中声明的定义，以及 Jomini 中复杂的本地化命令。
-- 插件的核心语言功能（如代码补全、代码检查和快速文档）的质量很大程度上取决于 CWT 规则文件的完整性和时效性，不完整或过失的规则可能会导致功能的缺失和误报。
+- 例如，插件目前暂不支持 Stellaris 中在内联脚本中声明的定义，以及 Jomini 中复杂的本地化命令。
+- 插件的核心语言功能（如代码补全、代码检查和快速文档）的质量很大程度上取决于规则文件的完整性和时效性，不完整或过失的规则可能会导致功能的缺失和误报。
 - 目前，**Stellaris**、**Victoria 3**、**Europa Universalis V** 和 **Hearts of Iron IV** 的规则正在积极维护中，而其他游戏的规则可能相当不完整或已过时。
 - 关于规则文件的详细维护情况，可参见 [`CONTRIBUTORS.md`](CONTRIBUTORS.md)。
 
