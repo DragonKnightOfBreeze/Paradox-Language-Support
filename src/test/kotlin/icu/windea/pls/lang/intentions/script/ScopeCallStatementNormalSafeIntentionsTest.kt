@@ -208,7 +208,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase() {
                 # comment2
                 exists = owner
                 # comment3
-                owner ?= v
+                from.owner ?= v
             }
             """.trimIndent()
         )

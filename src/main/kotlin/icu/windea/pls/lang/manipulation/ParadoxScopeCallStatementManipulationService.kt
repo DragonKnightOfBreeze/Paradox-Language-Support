@@ -288,7 +288,7 @@ object ParadoxScopeCallStatementManipulationService {
 
         // delete prev adjacent matched `exists` properties
         run {
-            val existsProperties = element.siblings(forward = false, withSelf = true)
+            val existsProperties = element.siblings(forward = false, withSelf = false)
                 .filterNot { it is PsiWhiteSpace || it is PsiComment }
                 .takeWhile { it is ParadoxScriptProperty && it.name == "exists" }
                 .filterIsInstance<ParadoxScriptProperty>()
@@ -301,7 +301,8 @@ object ParadoxScopeCallStatementManipulationService {
             val allScopes = linkNodes
                 .scan("") { acc, node -> if (acc.isEmpty()) node.text else "$acc.${node.text}" }
                 .toSet()
-            val matchedExistsProperties = existsProperties.filter { it.name in allScopes }
+            // "from.owner" -> "" + "from" + "from.owner"
+            val matchedExistsProperties = existsProperties.filter { it.value in allScopes }
             matchedExistsProperties.forEach { it.delete() }
         }
 
