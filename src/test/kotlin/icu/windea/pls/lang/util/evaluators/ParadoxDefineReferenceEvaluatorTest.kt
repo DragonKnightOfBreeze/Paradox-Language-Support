@@ -4,7 +4,6 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -55,6 +54,17 @@ class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
         val evaluator = ParadoxDefineReferenceEvaluator()
 
         assertResult("here_we_introduce") { evaluator.evaluate(list[0]) }
+        assertResult(null) { evaluator.evaluate(list[1]) }
+    }
+
+    @Test
+    fun requireSemantic() {
+        myFixture.configureByFile("features/evaluators/define_reference_simple.test.txt")
+        val file = myFixture.file as ParadoxScriptFile
+        val list = toStringList(file)
+        val evaluator = ParadoxDefineReferenceEvaluator()
+
+        assertResult(null) { evaluator.evaluate(list[0]) }
         assertResult(null) { evaluator.evaluate(list[1]) }
     }
 

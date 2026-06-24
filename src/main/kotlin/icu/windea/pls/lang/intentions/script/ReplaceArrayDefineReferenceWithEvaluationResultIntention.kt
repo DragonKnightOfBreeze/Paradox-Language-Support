@@ -9,6 +9,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.evaluators.ParadoxArrayDefineReferenceEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
@@ -17,24 +18,24 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  * @see ParadoxArrayDefineReferenceEvaluator
  */
 @Suppress("UnstableApiUsage")
-class ReplaceArrayDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxExpressionElement>(ParadoxExpressionElement::class.java) {
+class ReplaceArrayDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxScriptStringExpressionElement>(ParadoxScriptStringExpressionElement::class.java) {
     override fun getFamilyName() = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
 
-    override fun invoke(context: ActionContext, element: ParadoxExpressionElement, updater: ModPsiUpdater) {
+    override fun invoke(context: ActionContext, element: ParadoxScriptStringExpressionElement, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
         val newElement = ParadoxScriptElementFactory.createValue(context.project, result.text)
         element.replace(newElement)
     }
 
-    override fun isElementApplicable(element: ParadoxExpressionElement, context: ActionContext): Boolean {
+    override fun isElementApplicable(element: ParadoxScriptStringExpressionElement, context: ActionContext): Boolean {
         return getResult(element) != null
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
-        return element is ParadoxExpressionElement
+        return element is ParadoxScriptStringExpressionElement
     }
 
-    private fun getResult(element: ParadoxExpressionElement): ParadoxScriptValue? {
+    private fun getResult(element: ParadoxScriptStringExpressionElement): ParadoxScriptValue? {
         if (!ParadoxEvaluationService.isEvaluableForArrayDefineReference(element)) return null
 
         val evaluator = ParadoxArrayDefineReferenceEvaluator(resolve = false) // NOTE 2.1.10 do not resolve scripted variables here

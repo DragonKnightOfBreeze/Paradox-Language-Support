@@ -18,7 +18,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ScriptedVariableReferenceIntentionsTest : BasePlatformTestCase() {
+class ReplaceScriptedVariableReferenceWithResolvedValueIntentionTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -28,7 +28,7 @@ class ScriptedVariableReferenceIntentionsTest : BasePlatformTestCase() {
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun testReplaceScriptedVariableReferenceWithResolvedValue_smoke() {
+    fun test_smoke() {
         val intentionName = PlsBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/scripted_variable_references.test.txt")
@@ -39,7 +39,7 @@ class ScriptedVariableReferenceIntentionsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testReplaceScriptedVariableReferenceWithResolvedValue_unresolved_notAvailable() {
+    fun test_unresolved_notAvailable() {
         val intentionName = PlsBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/scripted_variable_references.test.txt")
