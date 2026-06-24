@@ -19,7 +19,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
 /**
  * 动态值类型规则。
  *
- * 用于为对应的动态值类型提供预定义（硬编码）的动态值。
+ * 用于为对应的动态值类型提供一组可选项，作为预定义的动态值。
+ *
  * 动态值是一组不固定的可选项，通常是合法的标识符，使用同名本地化的文本作为 UI 显示。
  * 事件目标（event target）、变量（variable）、标志（flag）等通常都会被视为动态值。
  *
@@ -63,8 +64,6 @@ interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
 
 private object CwtDynamicValueTypeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
-
-    // TODO a dynamic value can also be a template expression
 
     fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
         val key = config.key

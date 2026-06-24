@@ -773,7 +773,7 @@ object CwtDataTypes {
 
     // Suffix Aware Data Types
 
-    // TODO SUFFIX_AWARE 目前不兼容/不支持：代码补全、用法查询
+    // TODO [config-system] SUFFIX_AWARE 目前不兼容/不支持：代码补全、用法查询
 
     /**
      * 后缀感知的定义引用类型。

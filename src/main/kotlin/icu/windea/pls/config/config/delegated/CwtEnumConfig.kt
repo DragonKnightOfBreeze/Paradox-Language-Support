@@ -22,8 +22,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
 /**
  * 简单枚举规则。
  *
- * 用于描述拥有一组固定的可选项（即枚举值）的简单枚举。
- * 其枚举值默认忽略大小写。
+ * 用于描述简单枚举，并提供一组可选项，作为固定的枚举值。
+ * 简单枚举的枚举值必须是常量，且会忽略大小写。
  *
  * 路径定位：
  * - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
@@ -65,8 +65,6 @@ interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
 
 private object CwtEnumConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
-
-    // TODO an enum value can also be a template expression
 
     fun resolve(config: CwtPropertyConfig): CwtEnumConfig? {
         val key = config.key

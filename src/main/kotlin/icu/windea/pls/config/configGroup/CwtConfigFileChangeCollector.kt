@@ -59,7 +59,7 @@ class CwtConfigFileChangeCollector {
     }
 
     fun afterVfsChange() {
-        // TODO 2.0.0-dev+ 如果更改过多，这里可能相对比较耗时
+        // TODO [config-system] 2.0.0-dev+ 如果更改过多，这里可能相对比较耗时
 
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val openProjects = ProjectManager.getInstance().openProjects

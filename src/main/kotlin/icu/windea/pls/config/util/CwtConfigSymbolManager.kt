@@ -110,7 +110,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromReferences(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        // TODO 2.0.1-dev+ 实际上可以引用于很多地方，如果需要精确实现，需要考虑进一步完善对规则文件的 schema 的支持
+        // TODO [config-system] 2.0.1-dev+ 实际上可以引用于很多地方，如果需要精确实现，需要考虑进一步完善对规则文件的 schema 的支持
 
         val configType = CwtConfigManager.getConfigType(element)
         run {

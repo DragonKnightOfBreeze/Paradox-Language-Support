@@ -173,8 +173,6 @@ system_scopes = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-语言环境规则。
-
 用于提供语言环境（locale）的相关信息（快速文档、ID、语言代码等）。
 
 插件基于这些规则，识别和推断可用的语言环境、偏好的语言环境以及上下文（如本地化文件）中的语言环境，从而改进 UI 展示、提示信息以及本地化校验逻辑。
@@ -569,24 +567,17 @@ defines = {
 - 插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
 - 目前，基于定值规则，插件会检查定值变量的声明结构的合法性，但不会检查定值命名空间或定值变量的名字的合法性。
 
-#### 枚举规则与复杂枚举规则 {#config-enum}
+#### 枚举规则 {#config-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-枚举规则为数据表达式 `enum[...]` 提供取值集合。根据值的来源不同，分为简单枚举和复杂枚举。
+用于描述简单枚举，并提供一组可选项，作为固定的枚举值。
+简单枚举的枚举值必须是常量，且会忽略大小写。
 
 路径定位：
+- `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
 
-- 简单枚举：`enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
-- 复杂枚举：`enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
-
----
-
-**简单枚举（Enum）**
-
-简单枚举的值集合全部在规则文件中声明，匹配时忽略大小写。当前实现仅支持常量值，不支持模板表达式。
+示例：
 
 ```cwt
 enums = {
@@ -594,11 +585,19 @@ enums = {
 }
 ```
 
----
+#### 复杂枚举规则 {#config-complex-enum}
 
-**复杂枚举（Complex Enum）**
+<!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-复杂枚举从脚本文件中按路径和锚点动态收集枚举值。
+用于描述复杂枚举，并基于锚点动态定位可选项，作为动态的枚举值。
+按照路径模式匹配脚本文件，并在其中进一步匹配锚点。
+复杂枚举的枚举值默认不忽略大小写。
+
+路径定位：
+- `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
+
+字段含义：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
 - `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
@@ -607,12 +606,19 @@ enums = {
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
 - `start_from_root`：指定是否从文件顶部（而非顶级属性的下一级）开始查询锚点。
 - `name`：描述如何在匹配文件中定位值锚点——实现会收集其中所有名为 `enum_name` 的属性键或属性值或块成员值作为锚点。
+- `## case_insensitive`：（扩展）布尔选项，将复杂枚举值标记为忽略大小写。
+- `## per_definition`：（扩展）布尔选项，将同名同类型复杂枚举值的等效性限制在定义级别（而非文件级别）。
+
+匹配流程：
 
 复杂枚举规则的路径匹配逻辑与[类型规则](#config-type)相同。
 
-**复杂枚举匹配流程**：对于匹配文件中的每个字符串表达式，插件会检查它是否可以作为某个复杂枚举值的锚点。具体步骤为：首先在 `name` 小节中查找包含 `enum_name` 的规则条目；然后根据 `enum_name` 出现的位置（作为属性键、属性值或块成员值），确定当前表达式的角色——若为属性键侧的 `enum_name`，则当前属性键即为枚举值锚点；若为属性值侧的 `enum_name`，则当前属性的值即为枚举值锚点；若为块成员值的 `enum_name`，则该值本身即为枚举值锚点。最后，从锚点向上逐层匹配父级结构，直至到达 `name` 小节的根（`start_from_root` 为 `yes` 时必须到达文件根级，否则到达顶级属性的下一级即可）。
+对于匹配文件中的每个字符串表达式，插件会检查它是否可以作为某个复杂枚举值的锚点。
+具体步骤为：首先在 `name` 小节中查找包含 `enum_name` 的规则条目；然后根据 `enum_name` 出现的位置（作为属性键、属性值或块成员值），确定当前表达式的角色。
+若为属性键侧的 `enum_name`，则当前属性键即为枚举值锚点；若为属性值侧的 `enum_name`，则当前属性的值即为枚举值锚点；若为块成员值的 `enum_name`，则该值本身即为枚举值锚点。
+最后，从锚点向上逐层匹配父级结构，直至到达 `name` 小节的根（`start_from_root` 为 `yes` 时必须到达文件根级，否则到达顶级属性的下一级即可）。
 
-插件扩展选项：布尔选项 `## case_insensitive` 将复杂枚举值标记为忽略大小写；布尔选项 `## per_definition` 将同名同类型复杂枚举值的等效性限制在定义级别（而非文件级别）。
+示例：
 
 ```cwt
 enums = {
@@ -625,14 +631,6 @@ enums = {
     }
 }
 ```
-
----
-
-注意事项：
-
-- 简单枚举当前仅支持常量值；若填写模板表达式，不会被按模板解析。
-- 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
-- 简单枚举值默认忽略大小写，复杂枚举值默认不忽略大小写。
 
 #### 动态值类型规则 {#config-dynamic-value-type}
 

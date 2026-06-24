@@ -174,7 +174,7 @@ system_scopes = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-Locale rules.
+Locale Configs.
 
 Used to provide locale-related information (quick documentation, ID, language code, etc.).
 
@@ -568,24 +568,17 @@ Notes:
 - The plugin forcibly ignores any type config or declaration config named `define` or `defines`.
 - Currently, based on define configs, the plugin checks the validity of the declaration structure for define variables, but does not check the validity of the names of define namespaces or define variables.
 
-#### Enum Config and Complex Enum Config {#config-enum}
+#### Enum Config {#config-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-Enum configs provide the value set for data expressions `enum[...]`. Depending on the source of values, they are divided into simple enums and complex enums.
+Used to describe a simple enumeration, providing a set of fixed options as enum values.
+The values of a simple enum must be constants, and are case-insensitive.
 
 Path location:
+- `enums/enum[{name}]` – where `{name}` matches the config name.
 
-- Simple enum: `enums/enum[{name}]`, where `{name}` is the config name.
-- Complex enum: `enums/complex_enum[{name}]`, where `{name}` is the config name.
-
----
-
-**Simple Enum**
-
-The value set of a simple enum is entirely declared in config files; matching is case-insensitive. The current implementation only supports constant values and does not support template expressions.
+Example:
 
 ```cwt
 enums = {
@@ -593,25 +586,40 @@ enums = {
 }
 ```
 
----
+#### Complex Enum Config {#config-complex-enum}
 
-**Complex Enum**
+<!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-Complex enums dynamically collect enum values from script files based on path and anchor points.
+Used to describe a complex enumeration, where the available options are dynamically resolved based on anchors.
+It matches script files according to a path pattern and then further matches anchors within those files.
+Complex enum values are case-sensitive by default.
 
-- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during resolving). Multiple values can be declared.
-- `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
-- `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
-- `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
-- `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
-- `start_from_root`: Specifies whether to start searching for anchor points from the file top (rather than the next level below top-level properties).
-- `name`: Describes how to locate value anchors in matching files — the implementation collects all property keys, property values, or block member values named `enum_name` as anchors.
+Path location:
+- `enums/complex_enum[{name}]` – where `{name}` matches the config name.
 
-The path matching logic of complex enum configs is the same as in [type configs](#config-type).
+Field meanings:
 
-Complex enum matching flow: For each string expression in a matching file, the plugin checks whether it can serve as an anchor for a complex enum value. The specific steps are: First, find config entries containing `enum_name` in the `name` section; then, based on the position where `enum_name` appears (as a property key, property value, or block member value), determine the current expression's role — if `enum_name` is on the property key side, the current property key is the enum value anchor; if `enum_name` is on the property value side, the current property's value is the enum value anchor; if `enum_name` is a block member value, that value itself is the enum value anchor. Finally, match parent structures upward layer by layer from the anchor until reaching the root of the `name` section (`start_from_root` being `yes` requires reaching the file root level; otherwise, reaching the next level below top-level properties is sufficient).
+- `path`: The file directory path to be scanned (the `game/` prefix is automatically removed during resolution). Multiple paths can be declared.
+- `path_file`: Restricts to a specific file name (without extension). If specified, `path_extension` will not take effect independently.
+- `path_extension`: Restricts to a specific file extension (normalized during resolution, e.g., the dot will be added if missing). Only takes effect when `path_file` is not specified.
+- `path_pattern`: Uses ANT path patterns to match file paths. Multiple patterns can be declared, and are independent of `path` – any matching `path_pattern` will pass the path check.
+- `path_strict`: When set to `yes`, enforces exact directory matching, not matching subdirectories.
+- `start_from_root`: Specifies whether to start querying anchors from the top of the file (rather than from the next level after the top-level properties).
+- `name`: Describes how to locate value anchors within the matched files – the implementation collects all property keys, property values, or block member values named `enum_name` as anchors.
+- `## case_insensitive`: (Extension) A boolean option that marks complex enum values as case-insensitive.
+- `## per_definition`: (Extension) A boolean option that restricts the equivalence of complex enum values with the same name and type to the definition level (rather than the file level).
 
-Plugin extension options: The boolean option `## case_insensitive` marks complex enum values as case-insensitive; the boolean option `## per_definition` limits the equivalence of complex enum values with the same name and type to the definition level (rather than the file level).
+Matching process:
+
+The path matching logic for complex enum configs is the same as for [type configs](#config-type).
+
+For each string expression in a matched file, the plugin checks whether it can serve as an anchor for a complex enum value.
+The specific steps are: first, locate the config entry containing `enum_name` within the `name` section; then, based on where `enum_name` appears (as a property key, property value, or block member value), determine the role of the current expression.
+If `enum_name` is on the property key side, then that property key is the enum value anchor; if on the property value side, then the property's value is the anchor; if it is a block member value, that value itself is the anchor.
+Finally, match upward from the anchor level by level against the parent structure, until reaching the root of the `name` section (when `start_from_root` is `yes`, must reach the file root level; otherwise, reaching the level just below the top-level property is sufficient).
+
+Example:
 
 ```cwt
 enums = {
@@ -624,12 +632,6 @@ enums = {
     }
 }
 ```
-
-Notes:
-
-- Simple enums currently only support constant values; template expressions will not be resolved as templates.
-- If a complex enum lacks a `name` section or no `enum_name` anchors are found in matching files, the enum will be empty.
-- Simple enum values are case-insensitive by default; complex enum values are case-sensitive by default.
 
 #### Dynamic Value Type Config {#config-dynamic-value-type}
 
