@@ -17,13 +17,9 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
  * 路径定位：
  * - `defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * 备注：插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * defines = {
@@ -39,6 +35,8 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称（即变量名）。等同于 [variable]。
  * @property namespace 命名空间。

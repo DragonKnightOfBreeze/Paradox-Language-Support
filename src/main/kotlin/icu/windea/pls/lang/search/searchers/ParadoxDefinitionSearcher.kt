@@ -7,12 +7,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil
@@ -33,7 +33,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.Parameters, consumer: Processor<in ParadoxDefinitionIndexInfo>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (PlsStates.resolveForMergedIndex.get() == true) return
+        if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)

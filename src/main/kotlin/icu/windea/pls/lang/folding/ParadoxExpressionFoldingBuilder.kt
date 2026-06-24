@@ -8,19 +8,19 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.annotations.WithInternalConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.annotations.WithInternalConfig
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 @WithInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
@@ -42,7 +42,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) visitProperty(element)
-                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 

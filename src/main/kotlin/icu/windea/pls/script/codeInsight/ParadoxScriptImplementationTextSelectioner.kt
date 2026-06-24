@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * 用于为脚本语言指定快速定义显示的文本范围。
@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 class ParadoxScriptImplementationTextSelectioner : ImplementationTextSelectioner {
     override fun getTextStartOffset(element: PsiElement): Int {
         if (element is ParadoxScriptPropertyKey) return getTextStartOffset(element.parent)
-        val canAttachComment = ParadoxScriptPsiUtil.canAttachComment(element)
+        val canAttachComment = ParadoxScriptPsiService.canAttachComment(element)
         return PsiService.findTextStartOffsetInView(element, canAttachComment)
     }
 

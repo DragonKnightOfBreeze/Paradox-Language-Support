@@ -14,11 +14,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
+// com.intellij.usages.impl.rules.MethodGroupingRule
+
 class ParadoxLocalisationLocaleGroupingRule(
     private val usageViewSettings: UsageViewSettings
 ) : SingleParentUsageGroupingRule() {
-    // com.intellij.usages.impl.rules.MethodGroupingRule
-
     override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
         val localisationLocale = getLocalisationLocale(usage) ?: return null
         val name = localisationLocale.name

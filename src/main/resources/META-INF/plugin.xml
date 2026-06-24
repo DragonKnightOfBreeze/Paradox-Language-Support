@@ -11,27 +11,28 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
-  <depends optional="true" config-file="pls-extension-json.xml">com.intellij.modules.json</depends>
-  <depends optional="true" config-file="pls-extension-markdown.xml">org.intellij.plugins.markdown</depends>
-  <depends optional="true" config-file="pls-extension-diagram.xml">com.intellij.diagram</depends>
-  <depends optional="true" config-file="pls-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
+  <depends optional="true" config-file="chronicle-extension-json.xml">com.intellij.modules.json</depends>
+  <depends optional="true" config-file="chronicle-extension-markdown.xml">org.intellij.plugins.markdown</depends>
+  <depends optional="true" config-file="chronicle-extension-diagram.xml">com.intellij.diagram</depends>
+  <depends optional="true" config-file="chronicle-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
 
   <!-- Needs to be placed at the very front -->
-  <xi:include href="/META-INF/pls-inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
-  <xi:include href="/META-INF/pls-ide.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-csv.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-config.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-images.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-integrations.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-extensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-ai.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-intentions.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-tools.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-ep.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-base.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-ide.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-csv.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-config.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-images.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-integrations.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-extensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-ai.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-intentions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-tools.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-ep.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

@@ -4,6 +4,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.jetbrains.rd.util.ThreadLocal
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFileConfig
@@ -41,7 +42,6 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.PlsStates
 
 object CwtConfigResolverManager {
     object Keys : KeyRegistry() {
@@ -182,7 +182,7 @@ object CwtConfigResolverManager {
     }
 
     inline fun <T> skipProcessingOptionData(action: () -> T): T {
-        return withState(PlsStates.skipProcessingOptionData, action)
+        return withState(ChronicleThreadContext.skipProcessingOptionData, action)
     }
 
     fun getFileConfigs(configGroup: CwtConfigGroup): MutableMap<String, CwtFileConfig> {

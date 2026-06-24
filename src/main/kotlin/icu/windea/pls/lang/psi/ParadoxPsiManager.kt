@@ -22,7 +22,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
@@ -53,11 +53,11 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -136,7 +136,7 @@ object ParadoxPsiManager {
                     ?.find { it.elementType != TokenType.WHITE_SPACE }
                 e1 to e2
             }
-            is ParadoxScriptParameterCondition -> {
+            is ParadoxScriptConditionalBlock -> {
                 val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
                     ?.dropWhile { it.elementType != ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET }?.drop(1)
                     ?.find { it.elementType != TokenType.WHITE_SPACE }
@@ -178,7 +178,7 @@ object ParadoxPsiManager {
         when (language) {
             is ParadoxScriptLanguage -> {
                 // 这里会把 newText 识别为一个值，但是实际上 newText 可以是任何文本，目前不进行额外的处理
-                val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+                val newRef = ParadoxScriptElementFactory.createValueFromText(project, newText)
                 element.replace(newRef)
             }
             is ParadoxLocalisationLanguage -> {
@@ -224,7 +224,7 @@ object ParadoxPsiManager {
             else -> return
         }
         if (reverse) {
-            val newRef = ParadoxScriptElementFactory.createProperty(project, newText)
+            val newRef = ParadoxScriptElementFactory.createPropertyFromText(project, newText)
             newRef.block?.let { handleInlinedScriptedTrigger(it) }
             property.parent.addAfter(newRef, property)
         } else {
@@ -284,13 +284,13 @@ object ParadoxPsiManager {
             is ParadoxScriptBlock -> {
                 val args = getArgumentTupleList(valueElement, "script")
                 if (args.isNotEmpty()) {
-                    val newRef = ParadoxScriptElementFactory.createRootBlock(project, newText)
+                    val newRef = ParadoxScriptElementFactory.createRootBlockFromText(project, newText)
                     newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = true)
                 }
             }
             else -> return
         }
-        val newRef = ParadoxScriptElementFactory.createRootBlock(project, newText)
+        val newRef = ParadoxScriptElementFactory.createRootBlockFromText(project, newText)
         val (start, end) = findMemberElementsToInline(newRef)
         if (start != null && end != null) {
             usageElement.parent.addRangeAfter(start, end, usageElement)
@@ -337,8 +337,8 @@ object ParadoxPsiManager {
      */
     fun introduceLocalScriptedVariable(name: String, value: String, containerElement: ParadoxDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = containerElement.findParentAndAnchorToIntroduceLocalScriptedVariable()
-        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
-        val newLine = ParadoxScriptElementFactory.createLine(project)
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariableFromText(project, "@$name = ${value.quoteIfNeeded()}")
+        val newLine = ParadoxScriptElementFactory.createWhiteSpaceFromText(project, "\n")
         newVariable = parent.addAfter(newVariable, anchor).cast()
         if (anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
         return newVariable
@@ -366,8 +366,8 @@ object ParadoxPsiManager {
      */
     fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
-        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
-        val newLine = ParadoxScriptElementFactory.createLine(project)
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariableFromText(project, "@$name = ${value.quoteIfNeeded()}")
+        val newLine = ParadoxScriptElementFactory.createWhiteSpaceFromText(project, "\n")
         newVariable = parent.addAfter(newVariable, anchor).cast()
         parent.addBefore(newLine, newVariable)
         return newVariable
@@ -416,7 +416,7 @@ object ParadoxPsiManager {
 
                 // 否则直接修改类型键
                 val typeKeyElement = element.propertyKey
-                val newTypeKeyElement = ParadoxScriptElementFactory.createPropertyKey(element.project, name)
+                val newTypeKeyElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, name)
                 typeKeyElement.replace(newTypeKeyElement)
                 return element
             }
@@ -425,7 +425,7 @@ object ParadoxPsiManager {
                 val expressionElement = element.propertyKey
                 val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expressionElement.name)
                 val newExpression = "$mode.$name"
-                val newExpressionElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newExpression)
+                val newExpressionElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newExpression)
                 expressionElement.replace(newExpressionElement)
                 return element
             }

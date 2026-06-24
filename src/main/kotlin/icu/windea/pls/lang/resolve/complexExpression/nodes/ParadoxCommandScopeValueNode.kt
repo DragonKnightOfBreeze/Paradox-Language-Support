@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -18,20 +17,13 @@ class ParadoxCommandScopeValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val linkConfigs: List<CwtLinkConfig>,
+    override val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxLinkValueNode {
-    override val argumentNodes: List<ParadoxComplexExpressionNode>
-        get() = nodes.filter { it !is ParadoxBlankNode && it !is ParadoxMarkerNode }
-
-    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return linkConfigs
-    }
-
     companion object {
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeValueNode {
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 
@@ -134,6 +126,7 @@ class ParadoxCommandScopeValueNode(
         }
 
         private fun resolveDsNode(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtLinkConfig>): ParadoxComplexExpressionNode {
+            // NOTE 2.1.10 nested expressions here may not be valid (return null) even if the data source expression is single, and then fallback to data source node
             configs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
                 ?.let { ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, it) }
                 ?.let { return it }

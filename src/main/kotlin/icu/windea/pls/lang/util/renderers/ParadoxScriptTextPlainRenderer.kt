@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.members
@@ -86,7 +86,7 @@ open class ParadoxScriptTextPlainRenderContext(
         val resolved = element.resolved()
         val v = when (resolved) {
             is ParadoxScriptInlineMath -> resolved.text
-            is ParadoxScriptStringExpressionElement -> resolved.value.quoteIfNecessary()
+            is ParadoxScriptStringExpressionElement -> resolved.value.quoteIfNeeded()
             else -> resolved?.value
         }
         builder.append(v ?: FallbackStrings.unresolved)

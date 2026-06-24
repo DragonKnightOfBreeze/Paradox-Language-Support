@@ -46,11 +46,11 @@ class NonTriggeredEventInspection : EventInspectionBase() {
 
     private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
         return buildList {
-            if (element.block != null) this += (Fix1(element))
+            if (element.block != null) this += (Fix(element))
         }.toTypedArray()
     }
 
-    private class Fix1(
+    private class Fix(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
         // add `is_triggered_only = yes` into declaration (after `id` field or at start)
@@ -66,8 +66,8 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             val nameField = definitionInfo.typeConfig.nameField
             val insertAfterElement = if (nameField == null) null else selectScope { element.properties().ofKey(nameField).one() }
             val textToInsert = "is_triggered_only = yes"
-            block.addAfter(ParadoxScriptElementFactory.createProperty(project, textToInsert), insertAfterElement)
-            block.addAfter(ParadoxScriptElementFactory.createLine(project), insertAfterElement)
+            block.addAfter(ParadoxScriptElementFactory.createPropertyFromText(project, textToInsert), insertAfterElement)
+            block.addAfter(ParadoxScriptElementFactory.createWhiteSpaceFromText(project, "\n"), insertAfterElement)
         }
     }
 }

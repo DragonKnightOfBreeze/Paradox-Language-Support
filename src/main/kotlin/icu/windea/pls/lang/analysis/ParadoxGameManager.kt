@@ -15,7 +15,9 @@ import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
+import kotlin.io.path.name
 import kotlin.io.path.notExists
 
 object ParadoxGameManager {
@@ -97,6 +99,14 @@ object ParadoxGameManager {
             s2.isEmpty() -> -1
             else -> s1.compareTo(s2)
         }
+    }
+
+    fun isBinariesPath(rootPath: Path): Boolean {
+        if (!rootPath.isDirectory()) return false
+        val name = rootPath.name
+        if (name.equals("binaries", true)) return true
+        if (name.equals("bin", true)) return true // 2.1.10 for compatibility
+        return false
     }
 
     fun getExecutablePath(gameType: ParadoxGameType, rootPath: Path): Path? {

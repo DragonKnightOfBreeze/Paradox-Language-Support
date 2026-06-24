@@ -14,7 +14,7 @@ import javax.swing.Icon;
 public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement, ParadoxScriptBoundMemberContainer {
 
   @NotNull
-  List<ParadoxScriptParameterCondition> getParameterConditionList();
+  List<ParadoxScriptConditionalBlock> getConditionalBlockList();
 
   @NotNull
   List<ParadoxScriptProperty> getPropertyList();

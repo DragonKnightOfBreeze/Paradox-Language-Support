@@ -104,7 +104,9 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 搜索定位）。
 - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
-## 技术细节
+## 技术信息
+
+### 技术细节
 
 - 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
 - 基于 [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html) 构建，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语义分析与丰富的语言功能。
@@ -115,7 +117,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - 内置工具集成模块（图片处理、翻译、检查工具），用于优化和扩展插件能力。
 - 内置 AI 集成模块（初步，MVP 状态），用于翻译和润色本地化文本。
 
-## 已知限制
+### 已知限制
 
 <!-- TODO: updating -->
 
@@ -211,7 +213,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### Developed by
 
-**Windea** - the dragon knight who with the title of breeze.
+**Windea** - The dragon knight who with the title of breeze.
 
 ### Powered by
 

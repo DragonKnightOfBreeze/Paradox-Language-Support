@@ -6,6 +6,8 @@ import icu.windea.pls.model.paths.ParadoxPath
 /**
  * 游戏类型的额外的元数据。
  *
+ * 读取并使用来自 `/data/game_type_metadata_list.json5` 的 JSON 数据。
+ *
  * **关于游戏或模组的入口：**
  *
  * - 入口名称即入口目录相对于入口目录的路径。可以使用 `*` 匹配任意子路径。
@@ -22,19 +24,21 @@ import icu.windea.pls.model.paths.ParadoxPath
  *
  * @see ParadoxGameType
  */
-interface ParadoxGameTypeMetadata {
-    val gameType: ParadoxGameType
+data class ParadoxGameTypeMetadata(
+    val gameType: ParadoxGameType,
+    val gameMainEntries: Set<String> = singleEmptyStringSet,
+    val gameExtraEntries: Set<String> = emptySet(),
+    val modMainEntries: Set<String> = singleEmptyStringSet,
+    val modExtraEntries: Set<String> = emptySet(),
+    val executablePaths: Set<String> = emptySet(),
+) {
+     val gameEntries: Set<String> = gameMainEntries + gameExtraEntries
+     val modEntries: Set<String> = modMainEntries + modExtraEntries
 
-    val gameMainEntries: Set<String>
-    val gameExtraEntries: Set<String>
-    val modMainEntries: Set<String>
-    val modExtraEntries: Set<String>
+     val gameEntryPaths: Set<ParadoxPath> = gameEntries.toEntryPaths()
+     val modEntryPaths: Set<ParadoxPath> = modEntries.toEntryPaths()
 
-    val gameEntries: Set<String>
-    val modEntries: Set<String>
-
-    val gameEntryPaths: Set<ParadoxPath>
-    val modEntryPaths: Set<ParadoxPath>
-
-    val executablePaths: Set<String>
+    private fun Set<String>.toEntryPaths() = sortedDescending().mapTo(mutableSetOf()) { ParadoxPath.resolve(it) }
 }
+
+private val singleEmptyStringSet = setOf("")

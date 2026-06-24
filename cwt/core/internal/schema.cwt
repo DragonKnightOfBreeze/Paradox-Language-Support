@@ -33,6 +33,8 @@ locales = {
     $locale$ = {
         #### The language codes included in this locale (e.g., `en`, `zh-CN`).
         codes = { $scalar }
+        #### Whether the locale is supported by current game type.
+        supports = $bool
     }
 }
 
@@ -343,6 +345,7 @@ game_rules = {
 on_actions = {
     #### Introduce an [Extended On Action Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-on-action).
     #### Provides hint enhancement for an on action and specifies the event type via `## event_type`.
+    ## event_type = $event_type$
     $on_action$
 }
 

@@ -27,10 +27,8 @@ import javax.swing.JComponent
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedConceptInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredByConfigs = false
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredByConfigs = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
@@ -66,15 +64,15 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            // ignoredByConfigs
-            row {
-                checkBox(PlsBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
-            }
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+            }
+            // ignoredByConfigs
+            row {
+                checkBox(PlsBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
+                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
         }
     }

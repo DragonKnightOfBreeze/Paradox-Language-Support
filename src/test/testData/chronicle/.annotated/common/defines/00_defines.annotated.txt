@@ -1,5 +1,5 @@
 ## @type string = block
-STORY_SETTINGS = {
+NStory = {
     ## @type string = string
     ## @config_expression MODE = scalar
     ## @override_strategy LIOS
@@ -22,5 +22,23 @@ STORY_SETTINGS = {
         ## @type string
         ## @config_expression scalar
         "hello the real world"
+    }
+}
+## @type string = block
+NEntrance = {
+    ## @type string = string
+    ## @config_expression INTRODUCE = localisation
+    ## @override_strategy LIOS
+    INTRODUCE = here_we_introduce
+    ## @type string = block
+    ## @config_expression WELCOMES = {...}
+    ## @override_strategy LIOS
+    WELCOMES = {
+        ## @type string
+        ## @config_expression localisation
+        here_we_send_greetings
+        ## @type string
+        ## @config_expression localisation
+        here_we_guide
     }
 }

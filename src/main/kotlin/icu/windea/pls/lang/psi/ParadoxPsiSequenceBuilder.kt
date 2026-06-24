@@ -24,10 +24,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 @Suppress("unused")
 object ParadoxPsiSequenceBuilder {
@@ -52,7 +52,7 @@ object ParadoxPsiSequenceBuilder {
         element.children(context.forward).forEach { child ->
             when (child) {
                 is ParadoxScriptMember -> yieldMember(child)
-                is ParadoxScriptParameterCondition -> if (context.conditional) yieldConditionalMembers(child)
+                is ParadoxScriptConditionalBlock -> if (context.conditional) yieldConditionalMembers(child)
             }
         }
     }
@@ -65,7 +65,7 @@ object ParadoxPsiSequenceBuilder {
     }
 
     context(context: WalkingContext)
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldConditionalMembers(element: ParadoxScriptParameterCondition) {
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldConditionalMembers(element: ParadoxScriptConditionalBlock) {
         ProgressManager.checkCanceled()
         yieldMembers(element)
     }

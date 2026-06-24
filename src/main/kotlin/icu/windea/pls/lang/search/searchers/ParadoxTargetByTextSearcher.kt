@@ -9,7 +9,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
 import icu.windea.pls.lang.settings.PlsSettings
@@ -37,7 +37,7 @@ abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiEle
         if (!PlsSettings.getInstance().state.navigation.seForTargetsByText) return
 
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (PlsStates.resolveForMergedIndex.get() == true) return
+        if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         if (queryParameters.project.isDefault) return

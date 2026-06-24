@@ -9,7 +9,7 @@ Although the plugin itself is fully functional, enabling these integrations in s
 <!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable -->
 <!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettings -->
 
-In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Integrations` to open the integrations settings page.
+In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Integrations` to open the settings page for Integrations.
 
 Here you can configure which tool integrations to enable and specify their options.
 

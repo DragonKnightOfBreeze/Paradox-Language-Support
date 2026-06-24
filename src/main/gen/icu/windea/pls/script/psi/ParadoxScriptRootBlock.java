@@ -11,7 +11,7 @@ import com.intellij.psi.search.SearchScope;
 public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement, ParadoxScriptMemberContainer {
 
   @NotNull
-  List<ParadoxScriptParameterCondition> getParameterConditionList();
+  List<ParadoxScriptConditionalBlock> getConditionalBlockList();
 
   @NotNull
   List<ParadoxScriptProperty> getPropertyList();

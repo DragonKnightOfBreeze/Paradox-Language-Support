@@ -76,8 +76,8 @@ class ParadoxScriptCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_BRACES, PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, PlsBundle.message("script.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionBrackets"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionExpressionBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.conditionalBlockBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.conditionalBlockExpressionBrackets"), spacesWithinGroup)
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_INLINE_MATH_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithinGroup)
     }
 

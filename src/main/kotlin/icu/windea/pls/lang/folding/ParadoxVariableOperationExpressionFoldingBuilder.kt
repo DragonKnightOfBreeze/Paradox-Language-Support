@@ -9,16 +9,16 @@ import icu.windea.pls.lang.settings.PlsSettings
 
 class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
     object Constants {
-        const val GROUP_NAME = "variable_operation_expressions"
-        val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
+        const val groupName = "variable_operation_expressions"
+        val foldingGroup = FoldingGroup.newGroup(groupName)
     }
 
     override fun getGroupName(): String {
-        return Constants.GROUP_NAME
+        return Constants.groupName
     }
 
     override fun getFoldingGroup(): FoldingGroup? {
-        return Constants.FOLDING_GROUP
+        return Constants.foldingGroup
     }
 
     override fun getPlaceholderText(node: ASTNode): String {

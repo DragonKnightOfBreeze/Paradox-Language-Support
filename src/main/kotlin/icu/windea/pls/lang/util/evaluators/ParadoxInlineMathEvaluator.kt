@@ -30,6 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReferenc
  *
  * @see ParadoxScriptInlineMath
  * @see ParadoxScriptInlineMathExpression
+ * @see DefaultMathExpressionEvaluator
  */
 class ParadoxInlineMathEvaluator(
     var precision: Int? = null,

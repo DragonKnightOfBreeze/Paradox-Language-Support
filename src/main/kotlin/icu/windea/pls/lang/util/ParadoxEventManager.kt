@@ -1,22 +1,14 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiRecursiveElementVisitor
-import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -26,10 +18,8 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.resolve.ParadoxEventService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.util.withGameType
-import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -37,10 +27,6 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
-import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
 
 @Suppress("unused")
 object ParadoxEventManager {
@@ -81,24 +67,6 @@ object ParadoxEventManager {
 
     fun getName(element: ParadoxDefinitionElement): String {
         return element.definitionInfo?.name.or.anonymous()
-    }
-
-    fun getNamespace(element: ParadoxDefinitionElement): String {
-        return getName(element).substringBefore('.') // enough
-    }
-
-    fun getMatchedNamespace(event: ParadoxDefinitionElement): ParadoxScriptProperty? {
-        var current = event.prevSibling ?: return null
-        while (true) {
-            if (current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
-                if (current.propertyValue is ParadoxScriptString) {
-                    return current
-                } else {
-                    return null // invalid
-                }
-            }
-            current = current.prevSibling ?: return null
-        }
     }
 
     fun getAllTypes(gameType: ParadoxGameType): Set<String> {
@@ -165,96 +133,26 @@ object ParadoxEventManager {
 
     /**
      * 得到指定事件可能调用的所有事件的名字。
-     *
-     * TODO 考虑兼容需要内联和事件继承的情况。
      */
     fun getInvocations(definition: ParadoxDefinitionElement): Set<String> {
+        // TODO 考虑兼容需要内联和事件继承的情况
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
-            val value = doGetInvocations(definition)
+            val value = ParadoxEventService.resolveInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
-    }
-
-    private fun doGetInvocations(definition: ParadoxDefinitionElement): Set<String> {
-        val result = mutableSetOf<String>()
-        definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
-                super.visitElement(element)
-            }
-
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
-                val value = element.value
-                if (result.contains(value)) return
-                if (!isValidEventId(value)) return // 排除非法的事件ID
-                val configs = ParadoxConfigManager.getConfigs(element)
-                val isEventConfig = configs.any { isEventConfig(it) }
-                if (isEventConfig) {
-                    result.add(value)
-                }
-            }
-
-            private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
-                return config.configExpression.type == CwtDataTypes.Definition
-                    && config.configExpression.value?.substringBefore('.') == ParadoxDefinitionTypes.event
-            }
-        })
-        return result
     }
 
     /**
      * 得到作为调用者的事件列表。
      */
     fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
-        // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
-        // NOTE 为了优化性能，这里可能需要新增并应用索引
-
-        val name = definition.definitionInfo?.name
-        if (name.isNullOrEmpty()) return emptyList()
-        selector.withGameType(ParadoxGameType.Stellaris)
-        return buildList b@{
-            ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
-                ProgressManager.checkCanceled()
-                ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
-                    if (ref !is ParadoxScriptExpressionPsiReference) return@p true
-                    ProgressManager.checkCanceled()
-                    val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                    val rDefinition = selectScope { refElement.parentDefinition().asProperty() } ?: return@p true
-                    val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
-                    if (rDefinitionInfo.name.isEmpty()) return@p true
-                    if (rDefinitionInfo.type != ParadoxDefinitionTypes.event) return@p true
-                    this += rDefinition
-                    true
-                }
-                true
-            }
-        }.distinct()
+        return ParadoxEventService.resolveInvokerEvents(definition, selector)
     }
 
     /**
      * 得到调用的事件列表。
      */
     fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
-        // NOTE 1. 目前不兼容封装变量引用
-        // NOTE 为了优化性能，这里可能需要新增并应用索引
-
-        val name = definition.definitionInfo?.name
-        if (name.isNullOrEmpty()) return emptyList()
-        val invocations = getInvocations(definition)
-        if (invocations.isEmpty()) return emptyList()
-        selector.withGameType(ParadoxGameType.Stellaris)
-        return buildList b@{
-            ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
-                ProgressManager.checkCanceled()
-                val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
-                if (rDefinitionInfo.name.isEmpty()) return@p true
-                if (rDefinitionInfo.name !in invocations) return@p true
-                this += rDefinition
-                true
-            }
-        }.distinct()
+        return ParadoxEventService.resolveInvokedEvents(definition, selector)
     }
 }

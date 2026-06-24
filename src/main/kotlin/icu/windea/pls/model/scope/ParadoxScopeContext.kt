@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 作用域上下文。

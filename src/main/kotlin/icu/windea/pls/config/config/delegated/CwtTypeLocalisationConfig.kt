@@ -22,11 +22,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * 路径定位：
  * - `types/type[{type}]/localisation`。其中 `{type}` 匹配定义类型。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {
@@ -42,6 +38,8 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property locationConfigGroup 子类型表达式与位置规则的配对列表。
  *

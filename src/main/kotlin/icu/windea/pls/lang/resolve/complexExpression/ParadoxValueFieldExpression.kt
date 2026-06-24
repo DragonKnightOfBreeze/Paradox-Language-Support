@@ -1,13 +1,18 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.match.TextMatcher
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
@@ -31,7 +36,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ScopeField]，则解析为 [ParadoxScopeFieldExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ValueField]，则解析为 [ParadoxValueFieldExpression]。
- * - 如果数据源表达式是 `<script_value>`，则解析为 [ParadoxScriptValueExpression]。
+ * - 如果数据源表达式是 `$scipt_value_reference`，即数据类型是 [CwtDataTypes.ScriptValueReference]，则解析为 [ParadoxScriptValueReferenceExpression]。
+ * - 如果数据源表达式是 `$define_reference`，即数据类型是 [CwtDataTypes.DefineReference]，则解析为 [ParadoxDefineReferenceExpression]。
+ * - 如果数据源表达式是 `$array_define_reference`，即数据类型是 [CwtDataTypes.ArrayDefineReference]，则解析为 [ParadoxArrayDefineReferenceExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
@@ -58,10 +65,15 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * private value_field_with_args ::= value_field_prefix "(" value_field_args ")"
  * private value_field_args ::= value_field_arg ("," value_field_arg)* // = value_field_value
  * private value_field_arg ::= value_field_value
- * value_field_value ::= dynamic_value_expression | scope_field_expression | value_field_expression | script_value_expression | data_source
+ * value_field_value ::= dynamic_value_expression | scope_field_expression | value_field_expression
+ *   | script_value_reference_expression | define_reference_expression | array_define_reference_expression
+ *   | data_source
  * ```
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+    val fieldNode: ParadoxValueFieldNode
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
@@ -74,7 +86,7 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedE
 
 private object ParadoxValueFieldExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         // skip if text is a number
@@ -134,13 +146,37 @@ private object ParadoxValueFieldExpressionResolver {
     }
 }
 
+private object ParadoxValueFieldExpressionValidator : ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxValueFieldExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, element, errors) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedValueFieldExpression(expression.rangeInExpression, expression.text)
+        checkQuotes(element, expression, errors)
+        return errors
+    }
+}
+
 private class ParadoxValueFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxValueFieldExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+    override val fieldNode: ParadoxValueFieldNode
+        get() = nodes.last().cast()
+
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxValueFieldExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxValueFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()

@@ -19,7 +19,7 @@ class ElementsTableModel(
     context.descriptorsInfo.resultDescriptors
 ), EditableModel {
     override fun addRow() {
-        addRow(PropertyDescriptor())
+        addRow(ElementDescriptors.Property())
     }
 
     class NameColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.name")) {
@@ -33,83 +33,83 @@ class ElementsTableModel(
 
         override fun setValue(item: ElementDescriptor, value: String?) {
             return when (item) {
-                is ValueDescriptor -> item.name = value.orEmpty()
-                is PropertyDescriptor -> item.name = value.orEmpty()
+                is ElementDescriptors.Value -> item.name = value.orEmpty()
+                is ElementDescriptors.Property -> item.name = value.orEmpty()
             }
         }
 
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer {
             return when (item) {
-                is ValueDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
-                is PropertyDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
+                is ElementDescriptors.Value -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
+                is ElementDescriptors.Property -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
             }
         }
 
         override fun getEditor(item: ElementDescriptor): TableCellEditor {
             return when (item) {
-                is ValueDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
-                is PropertyDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
+                is ElementDescriptors.Value -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
+                is ElementDescriptors.Property -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
             }
         }
     }
 
     class SeparatorColumn : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(PlsBundle.message("ui.table.element.column.name.separator")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
-            return item is PropertyDescriptor
+            return item is ElementDescriptors.Property
         }
 
         override fun valueOf(item: ElementDescriptor): ParadoxSeparatorType? {
             return when (item) {
-                is ValueDescriptor -> null
-                is PropertyDescriptor -> item.separator
+                is ElementDescriptors.Value -> null
+                is ElementDescriptors.Property -> item.separator
             }
         }
 
         override fun setValue(item: ElementDescriptor, value: ParadoxSeparatorType) {
             when (item) {
-                is ValueDescriptor -> pass()
-                is PropertyDescriptor -> item.separator = value
+                is ElementDescriptors.Value -> pass()
+                is ElementDescriptors.Property -> item.separator = value
             }
         }
 
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
             return when (item) {
-                is ValueDescriptor -> null
-                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.entries.toTypedArray())
+                is ElementDescriptors.Value -> null
+                is ElementDescriptors.Property -> ComboBoxTableRenderer(ParadoxSeparatorType.entries.toTypedArray())
             }
         }
 
         override fun getEditor(item: ElementDescriptor): TableCellEditor? {
             return when (item) {
-                is ValueDescriptor -> null
-                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.entries.toTypedArray())
+                is ElementDescriptors.Value -> null
+                is ElementDescriptors.Property -> ComboBoxTableRenderer(ParadoxSeparatorType.entries.toTypedArray())
             }
         }
     }
 
     class ValueColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
-            return item is PropertyDescriptor && item.constantValues.isNotEmpty()
+            return item is ElementDescriptors.Property && item.constantValues.isNotEmpty()
         }
 
         override fun valueOf(item: ElementDescriptor): String? {
             return when (item) {
-                is ValueDescriptor -> null
-                is PropertyDescriptor -> item.value
+                is ElementDescriptors.Value -> null
+                is ElementDescriptors.Property -> item.value
             }
         }
 
         override fun setValue(item: ElementDescriptor, value: String?) {
             when (item) {
-                is ValueDescriptor -> pass()
-                is PropertyDescriptor -> item.value = value.orEmpty()
+                is ElementDescriptors.Value -> pass()
+                is ElementDescriptors.Property -> item.value = value.orEmpty()
             }
         }
 
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
             return when (item) {
-                is ValueDescriptor -> null
-                is PropertyDescriptor -> {
+                is ElementDescriptors.Value -> null
+                is ElementDescriptors.Property -> {
                     val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
                     val items = constantValues.ifEmpty { arrayOf("") }
                     ComboBoxTableRenderer(items)
@@ -119,8 +119,8 @@ class ElementsTableModel(
 
         override fun getEditor(item: ElementDescriptor): TableCellEditor? {
             return when (item) {
-                is ValueDescriptor -> null
-                is PropertyDescriptor -> {
+                is ElementDescriptors.Value -> null
+                is ElementDescriptors.Property -> {
                     val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
                     val items = constantValues.ifEmpty { arrayOf("") }
                     ComboBoxTableRenderer(items)

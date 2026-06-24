@@ -107,7 +107,7 @@ class ParadoxModSettingsDialog(
             row {
                 // gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .enabled(inferredGameTypeInfo == null) // disabled if game type can be inferred

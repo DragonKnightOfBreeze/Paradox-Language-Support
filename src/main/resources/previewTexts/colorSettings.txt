@@ -11,7 +11,7 @@ examples = {
     values = { foo = bar }
     color = rgb { 142 188 241 }
     parameter = $PARAM$
-    [[!PARAM] parameter_condition = $PARAM$ ]
+    [[!PARAM] conditional_block = $PARAM$ ]
     inline_math = @[ var + ($NUM|1$ * 2) ]
 }
 
@@ -39,16 +39,23 @@ complex_expressions = {
     variable_field_expressions = {
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><VARIABLE>variable</VARIABLE>
     }
-    script_value_expressions = {
-        key = <DEFINITION_REFERENCE>some_script_value</DEFINITION_REFERENCE>
-        key = <DEFINITION_REFERENCE>some_script_value</DEFINITION_REFERENCE><MARKER>|</MARKER><ARGUMENT>PARAM</ARGUMENT><MARKER>|</MARKER>value<MARKER>|</MARKER>
-    }
     dynamic_value_expressions = {
         key = <DYNAMIC_VALUE>some_dynamic_value</DYNAMIC_VALUE>
         key = <DYNAMIC_VALUE>some_dynamic_value</DYNAMIC_VALUE><MARKER>@</MARKER><SYSTEM_SCOPE>this</SYSTEM_SCOPE>
     }
+    script_value_reference_expressions = {
+        key = <DEFINITION_REFERENCE>some_script_value</DEFINITION_REFERENCE>
+        key = <DEFINITION_REFERENCE>some_script_value</DEFINITION_REFERENCE><MARKER>|</MARKER><ARGUMENT>PARAM</ARGUMENT><MARKER>|</MARKER>value<MARKER>|</MARKER>
+    }
     define_reference_expressions = {
-        key = <KEYWORD>define:</KEYWORD><DEFINE_NAMESPACE>Namespace</DEFINE_NAMESPACE><MARKER>|</MARKER><DEFINE_VARIABLE>Variable</DEFINE_VARIABLE>
+        key = <DEFINE_NAMESPACE>Namespace</DEFINE_NAMESPACE><MARKER>|</MARKER><DEFINE_VARIABLE>Name</DEFINE_VARIABLE>
+    }
+    array_define_reference_expressions = {
+        key = <DEFINE_NAMESPACE>Namespace</DEFINE_NAMESPACE><MARKER>|</MARKER><DEFINE_VARIABLE>Name</DEFINE_VARIABLE><MARKER>|</MARKER><NUMBER>0</NUMBER>
+    }
+    tags_expressions = {
+        key = <DYNAMIC_VALUE>tag1</DYNAMIC_VALUE><MARKER>,</MARKER><DYNAMIC_VALUE>tag2</DYNAMIC_VALUE>
+        key = <DYNAMIC_VALUE>tag1</DYNAMIC_VALUE><MARKER>,</MARKER><KEYWORD>not</KEYWORD><MARKER>(</MARKER><DYNAMIC_VALUE>tag2</DYNAMIC_VALUE><MARKER>)</MARKER>
     }
     database_object_expressions = {
         key = <DATABASE_OBJECT_TYPE>civic</DATABASE_OBJECT_TYPE><MARKER>:</MARKER><DEFINITION_REFERENCE><DATABASE_OBJECT>some_civic</DATABASE_OBJECT></DEFINITION_REFERENCE>

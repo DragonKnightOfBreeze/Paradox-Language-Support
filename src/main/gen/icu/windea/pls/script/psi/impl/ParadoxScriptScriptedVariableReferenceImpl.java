@@ -35,8 +35,8 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
 
   @Override
   @NotNull
-  public List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineParameterCondition.class);
+  public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
   }
 
   @Override

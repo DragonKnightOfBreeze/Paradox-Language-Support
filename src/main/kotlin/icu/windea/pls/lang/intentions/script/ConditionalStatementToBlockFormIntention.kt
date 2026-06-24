@@ -12,13 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 将条件化语句转为块形式。
  *
- * ```paradox_script
- * # before
- * PARAM = $PARAM|no$
- *
- * # after
- * [[PARAM] PARAM = $PARAM$ ]
- * ```
+ * 检测于文法级别。
  *
  * @see ParadoxConditionalStatementManipulationService
  */
@@ -31,7 +25,7 @@ class ConditionalStatementToBlockFormIntention : PsiUpdateModCommandAction<Parad
     }
 
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
-        return ParadoxConditionalStatementManipulationService.isPropertyForm(element)
+        return ParadoxConditionalStatementManipulationService.canConvertToBlockForm(element)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

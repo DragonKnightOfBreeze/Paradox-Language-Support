@@ -1,0 +1,25 @@
+links = {
+    #### Reference the value of a numeric or color define: `define:Namespace|Name`
+    ####
+    #### See: Data type [DefineReference](https://windea.icu/Paradox-Language-Support/ref-config-format.html#data-type-define-reference)
+    define = {
+        input_scopes = { any }
+        output_scope = value
+        type = value
+        from_data = yes
+        prefix = define:
+        data_source = $define_reference
+    }
+
+    #### Reference the value of a numeric value in an array define: `array_define:Namespace|Name|Index`. Index is 0-based.
+    ####
+    #### See: Data type [ArrayDefineReference](https://windea.icu/Paradox-Language-Support/ref-config-format.html#data-type-array-define-reference)
+    array_define = {
+        input_scopes = { any }
+        output_scope = value
+        type = value
+        from_data = yes
+        prefix = array_define:
+        data_source = $array_define_reference
+    }
+}

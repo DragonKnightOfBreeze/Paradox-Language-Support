@@ -8,7 +8,6 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.ui.JBColor
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -20,6 +19,7 @@ import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.codeInsight.completion.CompletionContext
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -32,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.Icon
 
-fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: ProcessingContext) {
+fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: CompletionContext) {
     if (lookupElement == null) return
     getFinalElement(lookupElement, context)?.let { addElement(it) }
     lookupElement.extraLookupElements?.forEach { extraLookupElement ->
@@ -40,13 +40,13 @@ fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: Proce
     }
 }
 
-fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, context: ProcessingContext) {
+fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, context: CompletionContext) {
     for (lookupElement in lookupElements) addElement(lookupElement, context)
 }
 
-private fun getFinalElement(lookupElement: LookupElement, context: ProcessingContext): LookupElement? {
+private fun getFinalElement(lookupElement: LookupElement, context: CompletionContext): LookupElement? {
     val completionIds = context.completionIds
-    if (completionIds?.let { ids -> lookupElement.completionId?.let { id -> ids.add(id) } } == false) return null
+    if (lookupElement.completionId?.let { id -> completionIds.add(id) } == false) return null
     val priority = lookupElement.priority
     if (priority != null) return PrioritizedLookupElement.withPriority(lookupElement, priority)
     return lookupElement
@@ -56,7 +56,7 @@ fun <T : LookupElement> T.withPriority(priority: Double?): T {
     val scopeMatched = this.scopeMatched
     if (priority == null && scopeMatched) return this
     var finalPriority = priority ?: 0.0
-    if (!scopeMatched) finalPriority += PlsCompletionPriorities.scopeMismatchOffset
+    if (!scopeMatched) finalPriority += ChronicleCompletionPriorities.scopeMismatchOffset
     this.priority = finalPriority
     return this
 }
@@ -111,7 +111,7 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
     return this
 }
 
-fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElementBuilder? {
+fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): LookupElementBuilder? {
     // check whether scope is matched again here
     if ((!scopeMatched || !context.scopeMatched) && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
 
@@ -148,7 +148,7 @@ fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElemen
         else -> ""
     }
     val completionId = lookupString + withValueText
-    if (context.completionIds?.add(completionId) == false) return null
+    if (!context.completionIds.add(completionId)) return null
 
     var lookupElement = this
 
@@ -159,7 +159,7 @@ fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElemen
     if (!isKeyElement && !isStringElement) return lookupElement // not in a key or value position
     if (isKey == null) return lookupElement // not complete full key or value
 
-    val params = PlsInsertHandlers.Params(
+    val params = ChronicleInsertHandlers.Params(
         quoted = context.quoted,
         isKey = context.isKey,
         insertCurlyBraces = insertCurlyBraces,
@@ -167,9 +167,9 @@ fun LookupElementBuilder.forExpression(context: ProcessingContext): LookupElemen
     )
 
     if (isKeyElement || isStringElement && !isKey) { // key or value only
-        lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyOrValue(params))
+        lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
     } else if (isKey) { // key with value
-        lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyWithValue(params))
+        lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
     }
 
     val extraLookupElements = mutableListOf<LookupElement>()
@@ -219,7 +219,7 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
 }
 
 private fun LookupElementBuilder.patchTailText(withValueText: String): LookupElementBuilder {
-    val patchableTailText = patchableTailText
+    val patchableTailText = this@patchTailText.patchableTailText
     val finalTailText = buildString {
         append(withValueText)
         if (patchableTailText != null) append(patchableTailText)

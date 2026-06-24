@@ -3,29 +3,26 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
+import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
- * 不正确的文件编码的代码检查。
+ * 检查当前脚本文件是否使用了正确的文件编码。
+ *
+ * 说明：
+ * - 忽略注入的文件和临时文件。
  *
  * 提供快速修复：
  * - 改为正确的文件编码
  *
- * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
+ * @see ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -37,30 +34,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         return ParadoxPsiFileMatcher.isScriptFile(file)
     }
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-        val virtualFile = file.virtualFile ?: return null
-        val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
-        val charset = virtualFile.charset
-        val hasBom = VirtualFileBomService.hasBom(virtualFile, PlsConstants.utf8Bom)
-        val isValidCharset = charset == Charsets.UTF_8
-        val validBom = run {
-            val gameType = selectGameType(virtualFile)
-            when {
-                // name list file -> BOM, others -> NO BOM
-                gameType == ParadoxGameType.Stellaris -> fileInfo.path.parent.startsWith("common/name_lists")
-                // all -> unspecified
-                else -> null
-            }
-        }
-        val isValidBom = if (validBom != null) hasBom == validBom else true
-        if (isValidCharset && isValidBom) return null
-
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val expect = "UTF-8" + if (validBom == null) "" else if (validBom) " BOM" else " NO BOM"
-        val actual = "UTF-8" + if (hasBom) " BOM" else " NO BOM"
-        val description = PlsBundle.message("inspection.script.incorrectFileEncoding.desc.1", actual, expect)
-        val fix = ChangeFileEncodingFix(file, Charsets.UTF_8, validBom)
-        holder.registerProblem(file, description, fix)
-        return holder.resultsArray
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        return ParadoxFileInspectionService.checkFileEncoding(file, manager, isOnTheFly)
     }
 }

@@ -1,23 +1,24 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.elementType
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
 /**
  * 提供颜色ID的代码补全。
  */
-class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationColorCompletionProvider : ParadoxCompletionProvider() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         // delete existing colorId after press enter
         if (context.completionChar == '\n' || context.completionChar == '\r') {
@@ -26,6 +27,8 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
             editor.document.deleteString(offset, offset + 1)
         }
     }
+
+    val elementPattern get() = psiElement().atStartOf(psiElement().afterLeaf("§"))
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val file = parameters.originalFile

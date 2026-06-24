@@ -29,7 +29,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
 
     @Test
     fun testIncorrectSyntax() {
-        myFixture.configureByFile("features/inspections/localisation/incorrectSyntax/incorrect_syntax.test.yml")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.configureByFile("features/inspections/localisation/incorrect_syntax.test.yml")
+        myFixture.checkHighlighting()
     }
 }

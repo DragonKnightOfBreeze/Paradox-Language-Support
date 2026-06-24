@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.codeInsight
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import java.awt.Color
@@ -15,7 +15,7 @@ object ParadoxCodeInsightService {
     fun getQuickDocText(element: PsiElement): String? {
         val gameType = selectGameType(element)
         return ParadoxQuickDocTextProvider.EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getQuickDocText(element)?.orNull()
         }
     }
@@ -23,7 +23,7 @@ object ParadoxCodeInsightService {
     fun listQuickDocText(element: PsiElement): List<String> {
         val gameType = selectGameType(element)
         return ParadoxQuickDocTextProvider.EP_NAME.extensionList.mapNotNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getQuickDocText(element)?.orNull()
         }
     }
@@ -32,7 +32,7 @@ object ParadoxCodeInsightService {
     fun getHintText(element: PsiElement): String? {
         val gameType = selectGameType(element)
         return ParadoxHintTextProvider.EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getHintText(element)?.orNull()
         }
     }
@@ -40,7 +40,7 @@ object ParadoxCodeInsightService {
     fun getHintLocalisation(element: PsiElement): ParadoxLocalisationProperty? {
         val gameType = selectGameType(element)
         return ParadoxHintTextProvider.EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getHintLocalisation(element)
         }
     }

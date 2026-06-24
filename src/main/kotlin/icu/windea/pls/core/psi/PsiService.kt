@@ -1,5 +1,6 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiComment
@@ -29,6 +30,35 @@ object PsiService {
             }
             if (name != null) append(": ").append(name)
         }
+    }
+
+    /**
+     * 收集 [start] 和 [end] 之间的所有兄弟节点。通过 [forward] 指定遍历方向，默认向后遍历。
+     */
+    fun collectBetween(start: PsiElement, end: PsiElement, forward: Boolean = true): Sequence<PsiElement> {
+        return start.siblings(forward, withSelf = false).takeWhile { it !== end }
+    }
+
+    /**
+     * 收集 [element] 的左边界与右边界之间的所有子节点。通过 [forward] 指定遍历方向，默认向后遍历。如果任意边界不存在，则返回 `null`。
+     */
+    fun collectBetweenBounds(element: PsiBoundElement, forward: Boolean = true): Sequence<PsiElement>? {
+        val leftBound = element.leftBound ?: return null
+        val rightBound = element.rightBound ?: return null
+        val start = if (forward) leftBound else rightBound
+        val end = if (forward) rightBound else leftBound
+        return start.siblings(forward, withSelf = false).takeWhile { it != end }
+    }
+
+    @Suppress("unused")
+    fun isBeforeLeftBound(element: PsiBoundElement, offset: Int): Boolean {
+        val leftBound = element.leftBound ?: return false
+        return offset <= leftBound.startOffset
+    }
+
+    fun isBeforeLeftBoundEnd(element: PsiBoundElement, offset: Int): Boolean {
+        val leftBound = element.leftBound ?: return false
+        return offset <= leftBound.endOffset
     }
 
     fun containsLineBreak(element: PsiWhiteSpace): Boolean {
@@ -207,5 +237,13 @@ object PsiService {
         }
         return result
     }
-}
 
+    /**
+     * 得到展开 [element] 周围的空白后的文本范围。
+     */
+    fun getSpaceExtendedTextRange(element: PsiElement): TextRange {
+        val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
+        val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
+        return TextRange.create(startElement.startOffset, endElement.endOffset)
+    }
+}

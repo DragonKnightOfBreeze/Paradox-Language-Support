@@ -14,7 +14,8 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
 abstract class InlineScriptInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求受游戏类型支持
-        if (!ParadoxInlineScriptManager.isSupported(selectGameType(file))) return false
+        val gameType = selectGameType(file)
+        if (!ParadoxInlineScriptManager.isSupported(gameType)) return false
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的脚本文件（内联脚本文件中也能嵌套使用内联脚本，因此这里的约束是可行的）

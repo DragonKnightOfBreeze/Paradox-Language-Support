@@ -15,7 +15,7 @@
         "value.svg": "icons/nodes/value.svg",
         "block.svg": "icons/nodes/block.svg",
         "parameter.svg": "icons/nodes/parameter.svg",
-        "parameterCondition.svg": "icons/nodes/parameterCondition.svg",
+        "conditionalBlock.svg": "icons/nodes/conditionalBlock.svg",
         "localisationLocale.svg": "icons/nodes/localisationLocale.svg",
         "localisationProperty.svg": "icons/nodes/localisationProperty.svg",
         "localisationIcon.svg": "icons/nodes/localisationIcon.svg",
@@ -113,7 +113,8 @@
         "gameSettings.svg": "icons/actions/gameSettings.svg",
         "modSettings.svg": "icons/actions/modSettings.svg",
         "refreshConfigGroups.svg": "icons/actions/refreshConfigGroups.svg",
-        "syncConfigGroupsFromRemote.svg": "icons/actions/syncConfigGroupsFromRemote.svg"
+        "syncConfigGroupsFromRemote.svg": "icons/actions/syncConfigGroupsFromRemote.svg",
+        "forceRefreshConfigGroups.svg": "icons/actions/forceRefreshConfigGroups.svg"
       },
       "editorActions": {
         "addColumnLeft.svg": "icons/editorActions/addColumnLeft.svg",

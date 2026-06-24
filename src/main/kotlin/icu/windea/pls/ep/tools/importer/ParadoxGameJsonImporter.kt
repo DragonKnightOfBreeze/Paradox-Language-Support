@@ -7,10 +7,11 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
-import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
+import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
@@ -43,7 +44,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
         val existingModDirectories = modSetInfo.mods.mapNotNullTo(mutableSetOf()) { it.modDirectory?.orNull() }
 
         when {
-            ParadoxGameTypeManager.useDescriptorMod(gameType) -> {
+            gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> {
                 val data = readData(filePath, DlcLoadJson::class.java)
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
@@ -83,7 +84,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
 
     private fun getJsonFileName(gameType: ParadoxGameType): String {
         return when {
-            ParadoxGameTypeManager.useDescriptorMod(gameType) -> Constants.dlcLoadPath
+            gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> Constants.dlcLoadPath
             else -> Constants.contentLoadPath
         }
     }

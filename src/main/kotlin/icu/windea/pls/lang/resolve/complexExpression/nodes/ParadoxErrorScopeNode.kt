@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 
 class ParadoxErrorScopeNode(
     override val text: String,
@@ -15,6 +15,6 @@ class ParadoxErrorScopeNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedScopeLink(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedScopeLink(rangeInExpression, text)
     }
 }

@@ -61,7 +61,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
             CommandProcessor.getInstance().markCurrentCommandAsGlobal(project)
 
             // 用封装变量引用替换当前位置的字面量
-            val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableNameToUse)
+            val createdVariableReference = ParadoxScriptElementFactory.createScriptedVariableReference(project, variableNameToUse)
             val newVariableReference = element.parent.replace(createdVariableReference)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)

@@ -26,11 +26,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * 路径定位：
  * - `scope_groups/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * scope_groups = {
@@ -39,6 +35,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称（即分组名）。
  * @property values 分组内的作用域 ID 集合（忽略大小写）。

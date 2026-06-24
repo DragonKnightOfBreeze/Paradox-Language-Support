@@ -12,7 +12,6 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
@@ -37,14 +36,10 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.argumentNames
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.contextKey
 import icu.windea.pls.lang.codeInsight.completion.forExpression
-import icu.windea.pls.lang.codeInsight.completion.parameters
-import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiManager
@@ -59,8 +54,8 @@ import icu.windea.pls.model.toInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -165,7 +160,7 @@ object ParadoxParameterManager {
         if (parameterInfo.defaultValue != null) return true
         // 如果是条件参数，则为可选
         if (parameterInfo.conditionExpressions == null) return true
-        // 如果从参数条件表达式的堆栈来看是可选的，则为可选
+        // 如果从参数化快表达式的堆栈来看是可选的，则为可选
         if (!parameterInfo.conditionExpressions.all { it.matches(argumentNames) }) return true
         // 如果作为传入参数的值，则认为是可选的
         if (isPassingParameterValue(parameterInfo)) return true
@@ -186,7 +181,7 @@ object ParadoxParameterManager {
         return resolved != "no"
     }
 
-    fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
+    fun completeParameters(context: ParadoxCompletionContext, result: CompletionResultSet, element: PsiElement) {
         ProgressManager.checkCanceled()
         // 向上找到参数上下文
         val parameterContext = ParadoxParameterService.findContext(element) ?: return
@@ -210,16 +205,16 @@ object ParadoxParameterManager {
         }
 
         val contextKey = ParadoxParameterService.getContextKeyFromContext(parameterContext) ?: return
-        context.contextKey = contextKey
+        val context = context.copy(contextKey = contextKey)
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
-    fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
+    fun completeArguments(context: ParadoxCompletionContext, result: CompletionResultSet, element: PsiElement) {
         ProgressManager.checkCanceled()
         if (context.quoted) return // 输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
-        val completionOffset = context.parameters?.offset ?: return
+        val completionOffset = context.offset
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = mutableSetOf<String>()
         for (argument in contextReferenceInfo.arguments) {
@@ -249,8 +244,8 @@ object ParadoxParameterManager {
             true
         }
 
-        context.contextKey = contextReferenceInfo.contextKey
-        context.argumentNames = argumentNames
+        val contextKey = contextReferenceInfo.contextKey
+        val context = context.copy(contextKey = contextKey, argumentNames = argumentNames)
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
@@ -365,9 +360,9 @@ object ParadoxParameterManager {
             element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                 override fun elementFinished(element: PsiElement) {
                     run {
-                        if (element !is ParadoxScriptParameterCondition) return@run
-                        val conditionExpression = element.parameterConditionExpression ?: return@run
-                        val parameter = conditionExpression.parameterConditionParameter
+                        if (element !is ParadoxScriptConditionalBlock) return@run
+                        val conditionExpression = element.conditionalBlockExpression ?: return@run
+                        val parameter = conditionExpression.conditionalBlockParameter
                         val name = parameter.name
                         val v = argMap[name] ?: return@run
                         val revert = v.equals("no", true)

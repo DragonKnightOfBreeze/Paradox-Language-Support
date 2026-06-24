@@ -14,8 +14,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpressi
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -46,21 +45,21 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
                     else -> null
                 }
                 if (complexExpression == null) return
-                checkExpression(holder, element, complexExpression)
+                checkExpression(element, complexExpression, holder)
             }
         }
     }
 
-    private fun checkExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
+    private fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, holder: ProblemsHolder) {
         complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (node is ParadoxComplexExpression) doCheckExpression(holder, element, node)
+                if (node is ParadoxComplexExpression) checkInExpression(element, node, holder)
                 return super.visit(node)
             }
         })
     }
 
-    private fun doCheckExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
+    private fun checkInExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, holder: ProblemsHolder) {
         val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeNode>()
         val max = ParadoxScopeManager.maxScopeLinkSize
         val actual = scopeNodes.size

@@ -21,25 +21,26 @@ import javax.swing.JComponent
 /**
  * 检查本地化文件中是否包含多个语言环境声明。
  *
- * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
+ * @property ignoredFileNames （配置项）需要忽略检查的文件名。一组模式，分号分隔，忽略大小写。
  */
 class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
-    @JvmField
-    var ignoredFileNames = "languages.yml"
+    @JvmField var ignoredFileNames = "languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 跳过需要忽略的文件
+        if (isIgnoredFile(file)) return false
         // 跳过内存文件
         if (VirtualFileService.isLightFile(file.virtualFile)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
     }
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
+    private fun isIgnoredFile(file: PsiFile): Boolean {
+        return file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)
+    }
+
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxLocalisationFile) return null
-
-        val fileName = file.name
-        if (fileName.matchesPatterns(ignoredFileNames, ignoreCase = true)) return null // 忽略
-
         if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.localisation.multipleLocales.desc")
@@ -52,11 +53,9 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
             // ignoredFileNames
             row {
                 label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
-            }
-            row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

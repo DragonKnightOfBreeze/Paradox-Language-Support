@@ -1,0 +1,181 @@
+package icu.windea.pls.lang.inspections.script.expression
+
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.overriddenProvider
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.inspections.InspectionService
+import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOccurrence
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.parentProperty
+import javax.swing.JComponent
+
+/**
+ * 过多的表达式的代码检查。
+ *
+ * @property firstOnly 是否仅标出第一个错误。
+ * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ */
+class TooManyExpressionInspection : LocalInspectionTool() {
+    @JvmField var firstOnly = false
+    @JvmField var firstOnlyOnFile = true
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInlineScriptFiles = false
+
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 判断是否需要忽略内联脚本文件
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
+        // 要求是可接受的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+    }
+
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if (element is ParadoxScriptBlock) visitBlock(element)
+            }
+
+            override fun visitFile(file: PsiFile) {
+                if (file !is ParadoxScriptFile) return
+                val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
+                if (configContext.skipTooManyExpressionCheck()) return
+                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
+                doCheck(file, file, configs)
+            }
+
+            private fun visitBlock(element: ParadoxScriptBlock) {
+                ProgressManager.checkCanceled()
+                if (!element.isExpression()) return // skip check if element is not an expression
+
+                // skip checking property if its property key may contain parameters
+                // position: (in property) property key / (standalone) left curly brace
+                val property = element.parentProperty
+                val position = property?.propertyKey
+                    ?.also { if (it.text.isParameterized()) return }
+                    ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
+                    ?: return
+                val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
+                if (configContext.skipTooManyExpressionCheck()) return
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+                doCheck(element, position, configs)
+            }
+
+            private fun doCheck(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
+                if (skipCheck(element, configs)) return
+                val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
+                if (occurrences.isEmpty()) return
+                val overriddenProvider = getOverriddenProvider(configs)
+                occurrences.forEach { (configExpression, occurrence) ->
+                    if (overriddenProvider != null && overriddenProvider.skipTooManyExpressionCheck(configs, configExpression)) return@forEach
+                    val r = doCheckOccurrence(element, position, occurrence, configExpression)
+                    if (!r) return
+                }
+            }
+
+            private fun skipCheck(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Boolean {
+                // 子句不为空且可以精确匹配多个子句规则时，不适用此检查
+                return when {
+                    configs.isEmpty() -> true
+                    configs.size == 1 -> false
+                    element is ParadoxScriptFile && element.members().none() -> false
+                    element is ParadoxScriptBlock && element.members().none() -> false
+                    else -> true
+                }
+            }
+
+            private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
+                configs.forEach { c1 ->
+                    c1.overriddenProvider?.let { return it }
+                    val pc1 = selectConfigScope { c1.asValue()?.propertyConfig }
+                    pc1?.overriddenProvider?.let { return it }
+                    val cs = selectConfigScope { (pc1 ?: c1).walkUp() }
+                    cs.forEach { c2 -> c2.overriddenProvider?.let { return it } }
+                }
+                return null
+            }
+
+            private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {
+                val (actual, _, max, _, lenientMax) = occurrence
+                if (max != null && actual > max) {
+                    val isKey = configExpression.isKey
+                    val isConst = configExpression.type == CwtDataTypes.Constant
+                    val description = if (isKey) {
+                        when {
+                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.desc.1.1", configExpression)
+                            else -> PlsBundle.message("inspection.script.tooManyExpression.desc.1.2", configExpression)
+                        }
+                    } else {
+                        when {
+                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.desc.2.1", configExpression)
+                            else -> PlsBundle.message("inspection.script.tooManyExpression.desc.2.2", configExpression)
+                        }
+                    }
+                    val maxDefine = occurrence.maxDefine
+                    val detail = when {
+                        maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
+                        else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
+                    }
+                    val highlightType = InspectionService.getWeakerHighlightType(lenientMax)
+                    val fileLevel = element is PsiFile
+                    if (!fileLevel && firstOnly && holder.hasResults()) return false
+                    if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false
+                    holder.registerProblem(position, "$description $detail", highlightType)
+                }
+                return true
+            }
+        }
+    }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            // firstOnly
+            row {
+                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnly"))
+                    .bindSelected(::firstOnly.toAtomicProperty())
+            }
+            // firstOnlyOnFile
+            row {
+                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile"))
+                    .bindSelected(::firstOnlyOnFile.toAtomicProperty())
+            }
+            // ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+            }
+            // ignoredInInlineScriptFiles
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
+            }
+        }
+    }
+}

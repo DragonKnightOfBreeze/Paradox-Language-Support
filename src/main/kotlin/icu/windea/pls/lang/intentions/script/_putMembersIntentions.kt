@@ -7,13 +7,13 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBoundMemberContainer>(ParadoxScriptBoundMemberContainer::class.java), DumbAware {
     protected fun getMemberTextSequence(element: ParadoxScriptBoundMemberContainer): Sequence<String> {
@@ -22,11 +22,10 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBo
 
     protected fun checkElementAvailable(element: ParadoxScriptBoundMemberContainer, hasLineBreak: Boolean? = null): Boolean {
         // 块中存在成员元素（包括仅存在一个的情况），且不存在空白以外的非成员元素（如注释）
-        val leftBound = element.leftBound ?: return false
-        val rightBound = element.rightBound ?: return false
+        val collected = PsiService.collectBetweenBounds(element) ?: return false
         var flag = false
         var lineBreakFlag = false
-        for (e in leftBound.siblings(withSelf = false).takeWhile { it != rightBound }) {
+        for (e in collected) {
             when (e) {
                 is PsiWhiteSpace -> {
                     if (hasLineBreak != null && !lineBreakFlag) lineBreakFlag = e.textContains('\n')
@@ -42,7 +41,7 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBo
 }
 
 /**
- * 将成员放到同一行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptParameterCondition]。
+ * 将成员放到同一行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptConditionalBlock]。
  *
  * ```paradox_script
  * # before
@@ -71,10 +70,10 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newElement = when (element) {
-            is ParadoxScriptParameterCondition -> {
+            is ParadoxScriptConditionalBlock -> {
                 val conditionExpression = element.conditionExpression ?: return
                 val newText = "[[${conditionExpression}] ${membersText} ]"
-                ParadoxScriptElementFactory.createParameterConditionFromText(context.project, newText)
+                ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
             }
             else -> {
                 val newText = "{ ${membersText} }"
@@ -90,7 +89,7 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
 }
 
 /**
- * 将成员放到不同的行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptParameterCondition]。
+ * 将成员放到不同的行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptConditionalBlock]。
  *
  * ```paradox_script
  * # before
@@ -119,10 +118,10 @@ class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newElement = when (element) {
-            is ParadoxScriptParameterCondition -> {
+            is ParadoxScriptConditionalBlock -> {
                 val conditionExpression = element.conditionExpression ?: return
                 val newText = "[[${conditionExpression}]\n${membersText}\n]"
-                ParadoxScriptElementFactory.createParameterConditionFromText(context.project, newText)
+                ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
             }
             else -> {
                 val newText = "{\n${membersText}\n}"

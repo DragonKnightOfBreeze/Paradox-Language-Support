@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
@@ -70,7 +70,7 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
         val file = outputPath.toFile()
         if (!file.exists()) return emptySet() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
             val container = rootProps.find { it.name == CONTAINER_MODIFIER_CATEGORIES }
@@ -88,14 +88,14 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
         // 读取原文件文本，并在容器末尾插入缺失类别的空块（空行 + 注释 + 条目）
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         var modifiedText = readAction { psiFile.text } // 不做删除，仅做插入
 
         val insertBlock = buildString {
             if (missingNames.isNotEmpty()) {
                 appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
                 for (name in missingNames.sorted()) {
-                    val key = name.quoteIfNecessary()
+                    val key = name.quoteIfNeeded()
                     appendLine("${key} = {")
                     appendLine("# TODO choose supported scopes".prependIndent())
                     appendLine("supported_scopes = {}".prependIndent())
@@ -104,7 +104,7 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
             }
         }.trimEnd()
         if (insertBlock.isNotEmpty()) {
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            val psiFile = readAction { CwtElementFactory.createFileFromText(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIER_CATEGORIES, insertBlock)
         }
 

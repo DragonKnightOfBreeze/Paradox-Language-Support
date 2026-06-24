@@ -4,12 +4,12 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.KeyRegistryWithSync
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
@@ -30,7 +30,7 @@ interface ParadoxModifierSupport {
 
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo?
 
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
+    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
 
     fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker? = null
 

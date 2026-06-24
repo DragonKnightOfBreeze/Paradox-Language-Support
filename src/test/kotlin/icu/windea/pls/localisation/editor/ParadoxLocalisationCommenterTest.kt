@@ -12,6 +12,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxLocalisationCommenter
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationCommenterTest : BasePlatformTestCase() {

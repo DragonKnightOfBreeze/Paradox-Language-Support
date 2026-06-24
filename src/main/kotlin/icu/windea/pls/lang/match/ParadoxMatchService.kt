@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.match
 
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 
 object ParadoxMatchService {
     fun isDumb(options: ParadoxMatchOptions? = null): Boolean {
-        if (PlsStates.processMergedIndex.get() == true) return true
+        if (ChronicleThreadContext.processMergedIndex.get() == true) return true
         return options.normalized().skipIndex || options.normalized().skipScope
     }
 
@@ -21,12 +21,12 @@ object ParadoxMatchService {
     }
 
     fun skipIndex(options: ParadoxMatchOptions? = null): Boolean {
-        if (PlsStates.processMergedIndex.get() == true) return true
+        if (ChronicleThreadContext.processMergedIndex.get() == true) return true
         return options.normalized().skipIndex
     }
 
     fun skipScope(options: ParadoxMatchOptions? = null): Boolean {
-        if (PlsStates.processMergedIndex.get() == true) return true
+        if (ChronicleThreadContext.processMergedIndex.get() == true) return true
         return options.normalized().skipScope
     }
 }

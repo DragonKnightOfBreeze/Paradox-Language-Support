@@ -24,8 +24,8 @@ import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
+import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
@@ -48,16 +48,16 @@ import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.text.appendConfigFileInfoHeader
+import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.text.getModifierCategoriesText
+import icu.windea.pls.lang.text.getScopeContextText
+import icu.windea.pls.lang.text.getScopeText
+import icu.windea.pls.lang.text.getScopesText
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.builders.appendConfigFileInfoHeader
-import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.util.builders.getModifierCategoriesText
-import icu.windea.pls.lang.util.builders.getScopeContextText
-import icu.windea.pls.lang.util.builders.getScopeText
-import icu.windea.pls.lang.util.builders.getScopesText
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
@@ -90,7 +90,7 @@ object CwtDocumentationManager {
         // 2.1.8 为规则选项提供文档注释，基于 schema 规则文件
         return when (element) {
             is CwtOption -> getOptionDoc(element, originalElement, hint)
-            is CwtValue if element.isOptionValue() -> getOptionFlagDoc(element, originalElement, hint)
+            is CwtValue -> if (element.isOptionValue()) getOptionFlagDoc(element, originalElement, hint) else null
             else -> null
         }
     }

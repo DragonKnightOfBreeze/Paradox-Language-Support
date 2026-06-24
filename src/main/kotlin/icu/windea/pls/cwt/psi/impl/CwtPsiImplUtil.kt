@@ -17,7 +17,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
-import icu.windea.pls.cwt.psi.CwtPsiUtil
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
@@ -167,8 +167,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        val newValue = value.quoteIfNecessary()
-        val newElement = CwtElementFactory.createPropertyKey(element.project, newValue)
+        val newValue = value.quoteIfNeeded()
+        val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -184,7 +184,7 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun setValue(element: CwtValue, value: String): CwtValue {
         if (element is CwtString) return setValue(element, value)
-        val newElement = CwtElementFactory.createValue(element.project, value)
+        val newElement = CwtElementFactory.createValueFromText(element.project, value)
         return element.replace(newElement).cast()
     }
 
@@ -214,8 +214,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        val newValue = value.quoteIfNecessary()
-        val newElement = CwtElementFactory.createString(element.project, newValue)
+        val newValue = value.quoteIfNeeded()
+        val newElement = CwtElementFactory.createStringFromText(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -270,7 +270,7 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getOwner(element: CwtDocComment): PsiElement? {
         val attachingElement = PsiService.getAttachingElement(element) ?: return null
-        if (!CwtPsiUtil.canAttachComment(attachingElement)) return null
+        if (!CwtPsiService.canAttachComment(attachingElement)) return null
         return attachingElement
     }
 

@@ -31,16 +31,18 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
-import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -171,6 +173,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        if (expression.isEmpty()) return ParadoxMatchResult.NotMatch
+
         // absolute file path -> treat as wildcard match
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) return ParadoxMatchResult.WildcardMatch
 
@@ -178,6 +182,7 @@ object ParadoxMatchResultProvider {
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val pathReference = expression.normalizePath()
+        if (pathReference.isEmpty()) return ParadoxMatchResult.NotMatch
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
         return getCached(element, project, key, cacheKey) {
@@ -275,14 +280,32 @@ object ParadoxMatchResultProvider {
         return forComplexExpressionFromAttributes(complexExpression)
     }
 
-    fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
+    fun forScriptValueReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
+        val complexExpression = ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forComplexExpressionFromAttributes(complexExpression)
     }
 
     fun forDefineReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
         val complexExpression = ParadoxDefineReferenceExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
+        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
+        return forComplexExpressionFromAttributes(complexExpression)
+    }
+
+    fun forArrayDefineReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
+        val complexExpression = ParadoxArrayDefineReferenceExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
+        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
+        return forComplexExpressionFromAttributes(complexExpression)
+    }
+
+    fun forTagsExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
+        val complexExpression = ParadoxTagsExpression.resolve(text, null, configGroup, config) ?: return ParadoxMatchResult.NotMatch
+        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
+        return forComplexExpressionFromAttributes(complexExpression)
+    }
+
+    fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
+        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forComplexExpressionFromAttributes(complexExpression)
     }

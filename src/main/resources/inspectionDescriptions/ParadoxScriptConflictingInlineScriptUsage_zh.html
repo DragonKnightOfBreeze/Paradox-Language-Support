@@ -2,7 +2,7 @@
 <body>
   报告用法存在冲突的内联脚本。
   <p>
-    如果同一个内联脚本的用法在匹配的规则中具有不同的规则路径（如 <code>alias_name[trigger]</code> 与 <code>alias_name[effect]</code>），则会被视为用法冲突。
+    如果同一个内联脚本的用法具有存在冲突的规则上下文（如 <code>alias_name[trigger]</code> VS <code>alias_name[effect]</code>），则会被视为存在冲突。
   </p>
   <!-- tooltip end -->
   <p>
@@ -10,13 +10,13 @@
     这些脚本可以在其他脚本文件中（几乎任意位置）被调用。
   </p>
   <p><b>示例：</b></p>
-  <pre>
+  <pre><code class="language-paradox_script">
 # some_inline_script.txt (under directory common/inline_scripts/dir)
 # ……
 
 # some_other_script_file.txt
 some_other_definition = {
     inline_script = "dir/some_inline_script"
-}</pre>
+}</code></pre>
 </body>
 </html>

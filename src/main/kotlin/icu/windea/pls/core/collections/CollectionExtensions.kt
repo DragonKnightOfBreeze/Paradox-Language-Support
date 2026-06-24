@@ -228,8 +228,8 @@ inline operator fun <V> MapWithDefaultValueDelegate<V>.provideDelegate(thisRef: 
     return map
 }
 
-/** 为 [MutableMap] 提供默认值委托构建器，语法：`myMap withDefault defaultValue`。 */
-inline infix fun <V> MutableMap<String, V>.withDefault(defaultValue: V) = MapWithDefaultValueDelegate(this, defaultValue)
+/** 为 [MutableMap] 提供默认值委托构建器，语法：`myMap includeDefault defaultValue`。 */
+inline infix fun <V> MutableMap<String, V>.includeDefault(defaultValue: V) = MapWithDefaultValueDelegate(this, defaultValue)
 
 /** 得到指定键 [key] 对应的类型为 [List] 的值中的最后一个元素，如果不存在则返回 `null`。 */
 fun <K, V> Map<K, List<V>>.getOne(key: K): V? = get(key)?.lastOrNull()

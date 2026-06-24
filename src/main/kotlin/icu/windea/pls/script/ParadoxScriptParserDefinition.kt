@@ -46,6 +46,8 @@ class ParadoxScriptParserDefinition : ParserDefinition {
             leftType == AT && rightType == SCRIPTED_VARIABLE_NAME_TOKEN -> MUST_NOT
             leftType == AT && rightType == SCRIPTED_VARIABLE_REFERENCE_TOKEN -> MUST_NOT
             leftType == PIPE || rightType == PIPE -> MUST_NOT
+            rightType == SAFE_ASSIGN_SIGN -> MAY // #86 for `?=` in `k ?= v`
+            rightType == SAFE_CALL_ASSIGN_SIGN -> MUST_NOT // 2.1.10 #331 for `? =` in `k? = v`
             else -> MAY
         }
     }

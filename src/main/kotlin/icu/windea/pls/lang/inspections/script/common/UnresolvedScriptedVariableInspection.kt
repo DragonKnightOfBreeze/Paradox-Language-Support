@@ -11,11 +11,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
+import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
-import icu.windea.pls.lang.quickfix.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import javax.swing.JComponent
 
@@ -24,17 +24,15 @@ import javax.swing.JComponent
  *
  * 提供快速修复：
  * - 声明本地封装变量（在同一文件中）
- * - 声明全局封装变量（在`common/scripted_variables`目录下的某一个文件中）
+ * - 声明全局封装变量（在 `common/scripted_variables` 目录下的某一个文件中）
  * - 导入游戏目录或模组目录
  *
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredInInjectedFiles = false
-    @JvmField
-    var ignoredInInlineScriptFiles = false
+    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 判断是否需要忽略内联脚本文件

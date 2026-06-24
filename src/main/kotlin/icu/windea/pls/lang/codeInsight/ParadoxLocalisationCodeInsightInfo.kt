@@ -10,7 +10,7 @@ data class ParadoxLocalisationCodeInsightInfo(
     val locale: CwtLocaleConfig,
     val check: Boolean,
     val missing: Boolean,
-    val dynamic: Boolean
+    val dynamic: Boolean,
 ) {
     enum class Type {
         Required, Primary, Optional,

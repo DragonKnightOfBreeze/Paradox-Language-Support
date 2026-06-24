@@ -1,82 +1,29 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
-import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.InsertHandler
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.editor.EditorModificationUtil
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.ui.JBColor
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.icon
-import icu.windea.pls.core.letIf
-import icu.windea.pls.lang.codeInsight.completion.PlsCompletionPriorities
-import icu.windea.pls.lang.codeInsight.completion.withPriority
-import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
-import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
 /**
- * 提供语言环境名字的代码补全。
+ * 提供语言环境的名字的代码补全。
  */
-class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
-    private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-        // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
-        val editor = context.editor
-        val chars = editor.document.charsSequence
-        val colonIndex = chars.indexOf(':', context.startOffset)
-        if (colonIndex != -1) {
-            editor.caretModel.moveToOffset(colonIndex + 1)
-        } else {
-            val settings = CodeStyle.getSettings(context.file)
-            val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
-            val insertLineBreak = editor.document.getLineNumber(editor.caretModel.offset) == editor.document.lineCount - 1
-            val s = buildString {
-                append(":")
-                if (insertLineBreak) {
-                    append("\n")
-                    repeat(indentOptions.INDENT_SIZE) { append(" ") }
-                }
-            }
-            EditorModificationUtil.insertStringAtCaret(editor, s)
-        }
-    }
+class ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = or(psiElement(LOCALE_TOKEN), psiElement(PROPERTY_KEY_TOKEN))
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val position = parameters.position
-        if (!ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return
+        val element = parameters.position
+        if (!ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(element)) return
 
-        val file = parameters.originalFile
-        val project = file.project
-        val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.let { ParadoxLocalisationFileManager.getLocaleIdFromFileName(it) }
-        // 批量提示
-        val lookupElements = mutableSetOf<LookupElement>()
-        val locales = PlsFacade.getConfigGroup(project).localisationLocalesById.values
-        for (locale in locales) {
-            ProgressManager.checkCanceled()
-            val element = locale.pointer.element ?: continue
-            val typeFile = locale.pointer.containingFile
-            val matched = localeIdFromFileName?.let { it == locale.id }
-            val lookupElement = LookupElementBuilder.create(element, locale.id)
-                .withIcon(PlsIcons.Nodes.LocalisationLocale)
-                .withTailText(" " + locale.text) // 前面需要加一个空格
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(insertHandler)
-                .letIf(matched == false) {
-                    it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
-                }
-                .letIf(matched == true) {
-                    it.withPriority(PlsCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
-                }
-            lookupElements.add(lookupElement)
-        }
-        result.addAllElements(lookupElements)
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
+
+        ParadoxCompletionManager.completeLocale(context, result)
     }
 }

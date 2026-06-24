@@ -11,9 +11,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
@@ -45,6 +45,11 @@ import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.text.appendFileInfoHeader
+import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.text.getModifierCategoriesText
+import icu.windea.pls.lang.text.getScopeContextText
+import icu.windea.pls.lang.text.getScopesText
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -56,11 +61,6 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.lang.util.builders.appendFileInfoHeader
-import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.util.builders.getModifierCategoriesText
-import icu.windea.pls.lang.util.builders.getScopeContextText
-import icu.windea.pls.lang.util.builders.getScopesText
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText

@@ -8,6 +8,11 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
+val CwtConfigGroup.mockScriptValueConfig: CwtValueConfig
+    by registerKey(CwtConfigGroup.Keys) {
+        CwtValueConfig.createMock(this, "<script_value>")
+    }
+
 val CwtConfigGroup.mockVariableConfig: CwtValueConfig
     by registerKey(CwtConfigGroup.Keys) {
         CwtValueConfig.createMock(this, "value[variable]")

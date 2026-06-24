@@ -6,14 +6,14 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.WithDefinitionType
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
-import icu.windea.pls.lang.annotations.WithDefinitionType
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptData
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
@@ -33,8 +33,8 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
     override fun <T : ParadoxDefinitionData> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean): Boolean {
         if (lenient) return true
         val definitionInfo = element.definitionInfo ?: return false
-        if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
-        if (!PlsAnnotationManager.check(type, definitionInfo)) return false
+        if (!ChronicleAnnotationManager.check(type, definitionInfo.gameType)) return false
+        if (!ChronicleAnnotationManager.check(type, definitionInfo)) return false
         return true
     }
 

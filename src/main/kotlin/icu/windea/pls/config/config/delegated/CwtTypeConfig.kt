@@ -39,11 +39,7 @@ import icu.windea.pls.model.ParadoxTagType
  * 路径定位：
  * - `types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {
@@ -54,6 +50,8 @@ import icu.windea.pls.model.ParadoxTagType
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property name 规则名称（即类型名）。
  * @property baseType 基类型名，如果存在则表示继承另一类型的部分语义。
@@ -70,7 +68,7 @@ import icu.windea.pls.model.ParadoxTagType
  * @property graphRelatedTypes 图相关的关联类型集合。目前并未使用。
  * @property subtypes 对应的子类型规则的集合。
  * @property localisation 对应的本地化展示规则。
- * @property images 对应的的图片展示规则。
+ * @property images 对应的图片展示规则。
  * @property maxRootKeyDepth 顶级键的最大深度。用于规则匹配。
  * @property attributes 综合属性。
  * @property typeKeyPrefixConfig 当以值条目形式声明前缀时，对应的原始值规则。

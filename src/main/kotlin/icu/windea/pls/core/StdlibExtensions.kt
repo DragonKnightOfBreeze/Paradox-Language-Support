@@ -108,12 +108,12 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
 inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 
-/** 判断是否以指定前缀/后缀包裹（基于单个字符）。 */
+/** 判断是否以指定前缀/后缀包围（基于单个字符）。 */
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
     return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
 }
 
-/** 判断是否以指定前缀/后缀包裹（先匹配后缀以略微优化）。 */
+/** 判断是否以指定前缀/后缀包围（先匹配后缀以略微优化）。 */
 fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): Boolean {
     return endsWith(suffix, ignoreCase) && startsWith(prefix, ignoreCase) // 先匹配后缀，这样可能会提高性能
 }
@@ -276,7 +276,7 @@ fun String.isRightQuoted(quote: Char = '"'): Boolean {
     return length > 1 && endsWith(quote) && !isEscapedCharAt(lastIndex)
 }
 
-/** 是否左右被 [quote] 包裹。 */
+/** 是否左右被 [quote] 包围。 */
 fun String.isQuoted(quote: Char = '"'): Boolean {
     return isLeftQuoted(quote) || isRightQuoted(quote)
 }
@@ -316,9 +316,9 @@ fun String.unquote(quote: Char = '"'): String {
     }
 }
 
-/** 若包含空白/引号/额外字符，则自动加引号。 */
-fun String.quoteIfNecessary(quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
-    val shouldQuote = this.any { it == quote || (blank && it.isWhitespace()) || it in extraChars }
+/** 在必要时自动加引号。 */
+fun String.quoteIfNeeded(quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true, isBlank: Boolean = true): String {
+    val shouldQuote = (isBlank && isBlank()) || any { it == quote || (containBlank && it.isWhitespace()) || it in containAnyChar }
     return if (shouldQuote) this.quote(quote) else this
 }
 
@@ -432,6 +432,24 @@ fun String.toCapitalizedWords(): String {
     }
 }
 
+/** 查找从 [startIndex] 开始向后第一个符合条件 [predicate] 的字符。 */
+fun CharSequence.indexOf(startIndex: Int, predicate: (Char) -> Boolean): Int {
+    for (i in startIndex until length) {
+        val c = this[i]
+        if (predicate(c)) return i
+    }
+    return -1
+}
+
+/** 查找从 [startIndex] 开始向前第一个符合条件 [predicate] 的字符。 */
+fun CharSequence.lastIndexOf(startIndex: Int, predicate: (Char) -> Boolean): Int {
+    for (i in startIndex downTo 0) {
+        val c = this[i]
+        if (predicate(c)) return i
+    }
+    return -1
+}
+
 /** 查找字符 [char] 在当前序列中的所有出现位置下标。 */
 fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false, limit: Int = 0): List<Int> {
     var indices: MutableList<Int>? = null
@@ -471,7 +489,7 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
- * 使用"/"作为路径分隔符。
+ * 使用 "/" 作为路径分隔符。
  * 不会忽略前导的路径分隔符。
  *
  * @param other 另一个路径。
@@ -499,7 +517,7 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
 /**
  * 规范化当前路径。
  *
- * 将分隔符统一替换成"/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
+ * 将分隔符统一替换成 "/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
  */
 fun String.normalizePath(): String {
     if (this.isEmpty()) return ""

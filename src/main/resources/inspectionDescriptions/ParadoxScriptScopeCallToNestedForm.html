@@ -1,0 +1,28 @@
+<html>
+<body>
+  Reports chained scope calls in script files, which can be replaced with nested form.
+  <p>
+    Check on grammar level and semantic level.
+  </p>
+</body>
+<!-- tooltip end -->
+<p>Example:</p>
+<pre><code class="language-paradox_script">
+# before
+root.owner = v
+
+# after
+root = {
+    owner = v
+}
+</code></pre>
+<pre><code class="language-paradox_script">
+# before
+root.owner =? v
+
+# after
+root ?= {
+    owner ?= v
+}
+</code></pre>
+</html>

@@ -26,11 +26,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptParameter
-import icu.windea.pls.script.psi.ParadoxScriptParameterConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -53,7 +53,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             is ParadoxScriptExpressionElement -> doGetUsageType(element, targets)
             is ParadoxScriptParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_1
             is ParadoxScriptInlineMathParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_2
-            is ParadoxScriptParameterConditionParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_3
+            is ParadoxScriptConditionalBlockParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_3
             is ParadoxLocalisationParameter -> ParadoxUsageTypes.LOCALISATION_REFERENCE
             is ParadoxLocalisationColorfulText -> ParadoxUsageTypes.LOCALISATION_COLOR
             is ParadoxLocalisationIcon -> ParadoxUsageTypes.LOCALISATION_ICON

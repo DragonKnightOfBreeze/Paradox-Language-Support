@@ -14,8 +14,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.braces"), ParadoxScriptHighlighterColors.BRACES),
         AttributesDescriptor(PlsBundle.message("script.displayName.operator"), ParadoxScriptHighlighterColors.OPERATOR),
         AttributesDescriptor(PlsBundle.message("script.displayName.marker"), ParadoxScriptHighlighterColors.MARKER),
-        AttributesDescriptor(PlsBundle.message("script.displayName.parameterConditionBrackets"), ParadoxScriptHighlighterColors.PARAMETER_CONDITION_BRACKETS),
-        AttributesDescriptor(PlsBundle.message("script.displayName.parameterConditionExpressionBrackets"), ParadoxScriptHighlighterColors.PARAMETER_CONDITION_EXPRESSION_BRACKETS),
+        AttributesDescriptor(PlsBundle.message("script.displayName.conditionalBlockBrackets"), ParadoxScriptHighlighterColors.CONDITIONAL_BLOCK_BRACKETS),
+        AttributesDescriptor(PlsBundle.message("script.displayName.conditionalBlockExpressionBrackets"), ParadoxScriptHighlighterColors.CONDITIONAL_BLOCK_EXPRESSION_BRACKETS),
         AttributesDescriptor(PlsBundle.message("script.displayName.inlineMathBrackets"), ParadoxScriptHighlighterColors.INLINE_MATH_BRACKETS),
         AttributesDescriptor(PlsBundle.message("script.displayName.inlineMathOperators"), ParadoxScriptHighlighterColors.INLINE_MATH_OPERATOR),
         AttributesDescriptor(PlsBundle.message("script.displayName.comment"), ParadoxScriptHighlighterColors.COMMENT),
@@ -39,6 +39,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("semantic.displayName.keyword"), ParadoxScriptHighlighterColors.SEMANTIC_KEYWORD),
         AttributesDescriptor(PlsBundle.message("semantic.displayName.argument"), ParadoxScriptHighlighterColors.SEMANTIC_ARGUMENT),
         AttributesDescriptor(PlsBundle.message("semantic.displayName.string"), ParadoxScriptHighlighterColors.SEMANTIC_STRING),
+        AttributesDescriptor(PlsBundle.message("semantic.displayName.number"), ParadoxScriptHighlighterColors.SEMANTIC_NUMBER),
 
         AttributesDescriptor(PlsBundle.message("semantic.displayName.definition"), ParadoxScriptHighlighterColors.DEFINITION),
         AttributesDescriptor(PlsBundle.message("semantic.displayName.definitionName"), ParadoxScriptHighlighterColors.DEFINITION_NAME),
@@ -79,6 +80,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "KEYWORD" to ParadoxScriptHighlighterColors.SEMANTIC_KEYWORD,
         "ARGUMENT" to ParadoxScriptHighlighterColors.SEMANTIC_ARGUMENT,
         "STRING" to ParadoxScriptHighlighterColors.SEMANTIC_STRING,
+        "NUMBER" to ParadoxScriptHighlighterColors.SEMANTIC_NUMBER,
 
         "DEFINITION" to ParadoxScriptHighlighterColors.DEFINITION,
         "DEFINITION_NAME" to ParadoxScriptHighlighterColors.DEFINITION_NAME,

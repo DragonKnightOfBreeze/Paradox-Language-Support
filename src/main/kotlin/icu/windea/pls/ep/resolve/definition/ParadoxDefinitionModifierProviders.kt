@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.resolve.definition
 
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxScriptedModifierManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType

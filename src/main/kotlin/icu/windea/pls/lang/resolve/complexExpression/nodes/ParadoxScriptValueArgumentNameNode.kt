@@ -1,0 +1,69 @@
+package icu.windea.pls.lang.resolve.complexExpression.nodes
+
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.resolve.ParadoxParameterService
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+
+class ParadoxScriptValueArgumentNameNode(
+    override val text: String,
+    override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
+    val valueNode: ParadoxScriptValueNode?
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
+        return ParadoxSemanticHighlighterColors.argument()
+    }
+
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
+        if (element !is ParadoxScriptStringExpressionElement) return null // unexpected
+        if (valueNode == null) return null
+        if (text.isEmpty()) return null
+        val reference = valueNode.getReference(element)
+        if (reference == null) return null
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset))
+    }
+
+    /**
+     * @see icu.windea.pls.ep.resolve.parameter.ParadoxScriptValueInlineParameterSupport
+     */
+    class Reference(
+        element: ParadoxScriptStringExpressionElement,
+        rangeInElement: TextRange
+    ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
+        override fun handleElementRename(newElementName: String): PsiElement {
+            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+        }
+
+        override fun resolve(): ParadoxParameterLightElement? {
+            val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return null
+            return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when (constraint) {
+                ParadoxResolveConstraint.Parameter -> true
+                else -> false
+            }
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?): ParadoxScriptValueArgumentNameNode {
+            return ParadoxScriptValueArgumentNameNode(text, textRange, configGroup, valueNode)
+        }
+    }
+}

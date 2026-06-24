@@ -1,0 +1,41 @@
+package icu.windea.pls.base.context
+
+import icu.windea.pls.lang.resolve.CwtConfigContext
+import java.util.*
+
+object ChronicleThreadContext {
+    /**
+     * 用于标记是否要跳过对选项数据的处理，直接保留所有选项规则列表。
+     *
+     * @see icu.windea.pls.config.util.CwtConfigResolverManager.skipProcessingOptionData
+     */
+    val skipProcessingOptionData = ThreadLocal<Boolean>()
+
+    /**
+     * 用于标记是否允许不完整的复杂脚本表达式（用于兼容代码补全）。
+     *
+     * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+     */
+    val incompleteComplexExpression = ThreadLocal<Boolean>()
+
+    /**
+     * 用于得到正在解析的规则表达式的堆栈。
+     *
+     * @see icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
+     */
+    val resolvingConfigContextStack = ThreadLocal<ArrayDeque<CwtConfigContext>>()
+
+    /**
+     * 用于标记是否正在构建合并索引。
+     *
+     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+     */
+    val processMergedIndex = ThreadLocal<Boolean>()
+
+    /**
+     * 用于标记是否正在构建合并索引，并且正在解析引用。
+     *
+     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+     */
+    val resolveForMergedIndex = ThreadLocal<Boolean>()
+}

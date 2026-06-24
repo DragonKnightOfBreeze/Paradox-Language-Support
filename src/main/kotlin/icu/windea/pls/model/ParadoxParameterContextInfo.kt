@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.model.expressions.ParadoxParameterConditionExpression
+import icu.windea.pls.model.expressions.ParadoxConditionalBlockExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import java.util.*
 
@@ -18,13 +18,13 @@ class ParadoxParameterContextInfo(
     val gameType: ParadoxGameType,
 ) {
     /**
-     * @property conditionExpressions 文件中从上到下，链表中从左到右，记录参数条件表达式的堆栈。如果 [element] 是 [ParadoxConditionParameter]，则应当为 null。
+     * @property conditionExpressions 文件中从上到下，链表中从左到右，记录参数化快表达式的堆栈。如果 [element] 是 [ParadoxConditionParameter]，则应当为 null。
      */
     class Parameter(
         private val elementPointer: SmartPsiElementPointer<PsiElement>, // ParadoxConditionParameter | ParadoxParameter
         val name: String,
         val defaultValue: String? = null,
-        val conditionExpressions: Deque<ParadoxParameterConditionExpression>? = null,
+        val conditionExpressions: Deque<ParadoxConditionalBlockExpression>? = null,
         val project: Project,
         val gameType: ParadoxGameType,
     ) {

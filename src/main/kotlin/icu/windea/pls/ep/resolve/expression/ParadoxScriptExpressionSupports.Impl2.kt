@@ -5,7 +5,6 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -24,10 +23,8 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.quoted
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -91,10 +88,10 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         }
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeDefinition(context, result)
+        ParadoxExpressionCompletionManager.completeDefinition(context, result)
     }
 }
 
@@ -137,10 +134,10 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         }
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeLocalisation(context, result)
+        ParadoxExpressionCompletionManager.completeLocalisation(context, result)
     }
 }
 
@@ -183,10 +180,10 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         }
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeSyncedLocalisation(context, result)
+        ParadoxExpressionCompletionManager.completeSyncedLocalisation(context, result)
     }
 }
 
@@ -221,10 +218,10 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         return ParadoxLocalisationSearch.searchNormal(text, selector).findAll()
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
         if (context.quoted) return
-        ParadoxCompletionManager.completeLocalisation(context, result)
+        ParadoxExpressionCompletionManager.completeLocalisation(context, result)
     }
 }
 
@@ -248,9 +245,9 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBas
         return ParadoxResolutionManager.resolveModifier(element, text, configGroup)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeModifier(context, result)
+        ParadoxExpressionCompletionManager.completeModifier(context, result)
     }
 }
 
@@ -279,9 +276,9 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
         return ParadoxResolutionManager.resolveEnumValue(element, text, config)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeEnumValue(context, result)
+        ParadoxExpressionCompletionManager.completeEnumValue(context, result)
     }
 }
 
@@ -328,9 +325,9 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, alias, role)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeAliasName(context, result)
+        ParadoxExpressionCompletionManager.completeAliasName(context, result)
     }
 }
 
@@ -385,9 +382,9 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
         return config.resolved().pointer.element
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeConstant(context, result)
+        ParadoxExpressionCompletionManager.completeConstant(context, result)
     }
 }
 
@@ -407,35 +404,38 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+        if (text.isEmpty()) return null
+
         val configExpression = config.configExpression ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
-        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return text.toVirtualFile()?.toPsiFile(project)
-        } else {
-            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
-            val pathReference = text.normalizePath()
-            val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
-        }
+
+        // absolute file path -> use `VfsUtil.findFile`
+        if (configExpression.type == CwtDataTypes.AbsoluteFilePath) return text.toVirtualFile()?.toPsiFile(project)
+
+        val pathReference = text.normalizePath()
+        if (pathReference.isEmpty()) return null
+        val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+        return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configExpression = config.configExpression ?: return emptyList()
         val configGroup = config.configGroup
         val project = configGroup.project
+
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return text.toVirtualFile()?.toPsiFile(project).to.singletonListOrEmpty()
-        } else {
-            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
-            val pathReference = text.normalizePath()
-            val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
         }
+
+        val pathReference = text.normalizePath()
+        if (pathReference.isEmpty()) return emptyList()
+        val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+        return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completePathReference(context, result)
+        ParadoxExpressionCompletionManager.completePathReference(context, result)
     }
 }

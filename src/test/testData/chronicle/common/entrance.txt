@@ -1,0 +1,2 @@
+description = define:NEntrance|INTRODUCE
+tip = array_define:NEntrance|WELCOMES|0

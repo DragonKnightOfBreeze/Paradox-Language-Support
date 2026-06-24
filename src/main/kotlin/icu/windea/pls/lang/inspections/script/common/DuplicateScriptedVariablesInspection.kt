@@ -10,10 +10,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.navigation.NavigateToDuplicatesFix
+import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -39,7 +39,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                if (!inInlineMath && !ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -55,7 +55,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
             ProgressManager.checkCanceled()
             if (values.size <= 1) continue
             for (value in values) {
-                // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
+                // 第一个元素指定为 file，则是在文档头部弹出，否则从 psiElement 上通过 contextActions 显示
                 val location = value.scriptedVariableName
                 val description = PlsBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
                 val fix = NavigateToDuplicatesFix(name, value, values)

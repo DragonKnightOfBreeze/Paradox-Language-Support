@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtPropertyKey
-import icu.windea.pls.cwt.psi.CwtPsiUtil
+import icu.windea.pls.cwt.psi.CwtPsiService
 
 /**
  * 用于为CWT语言指定快速定义显示的文本范围。
@@ -15,7 +15,7 @@ import icu.windea.pls.cwt.psi.CwtPsiUtil
 class CwtImplementationTextSelectioner : ImplementationTextSelectioner {
     override fun getTextStartOffset(element: PsiElement): Int {
         if (element is CwtPropertyKey) return getTextStartOffset(element.parent)
-        val canAttachComment = CwtPsiUtil.canAttachComment(element)
+        val canAttachComment = CwtPsiService.canAttachComment(element)
         return PsiService.findTextStartOffsetInView(element, canAttachComment)
     }
 

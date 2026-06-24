@@ -37,14 +37,14 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     fun conditional_inBlock_fullExample_fromRendererTest() {
         assertResult(
             "settings = {\n    a = b\n    c\n}",
-            "settings = { a = b [[!PARAM] parameter_condition = \$PARAM$ ] c }"
+            "settings = { a = b [[!PARAM] conditional_block = \$PARAM$ ] c }"
         ) {
             multiline = true
             conditional = false
         }
         assertResult(
-            "settings = {\n    a = b\n    parameter_condition = \$PARAM$\n    c\n}",
-            "settings = { a = b [[!PARAM] parameter_condition = \$PARAM$ ] c }"
+            "settings = {\n    a = b\n    conditional_block = \$PARAM$\n    c\n}",
+            "settings = { a = b [[!PARAM] conditional_block = \$PARAM$ ] c }"
         ) {
             multiline = true
             conditional = true
@@ -213,14 +213,14 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun conditional_disabled_shouldSkipParameterConditionMembers() {
+    fun conditional_disabled_shouldSkipConditionalBlockMembers() {
         assertResult("", "[[!PARAM] a = 1 ]") {
             conditional = false
         }
     }
 
     @Test
-    fun conditional_enabled_shouldRenderParameterConditionMembers() {
+    fun conditional_enabled_shouldRenderConditionalBlockMembers() {
         assertResult("a = 1", "[[!PARAM] a = 1 ]") {
             conditional = true
         }

@@ -10,11 +10,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -39,13 +35,13 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                 val config = configs.firstOrNull() ?: return
                 if (config.configExpression.type != CwtDataTypes.ScopeField) return
                 if (config !is CwtPropertyConfig) return
-                checkExpression(holder, element, config)
+                checkExpression(element, config, holder)
                 return
             }
         }
     }
 
-    private fun checkExpression(holder: ProblemsHolder, element: ParadoxScriptProperty, config: CwtPropertyConfig) {
+    private fun checkExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, holder: ProblemsHolder) {
         val resultScopeContext = ParadoxScopeManager.getScopeContext(element) ?: return
         val links = resultScopeContext.links
         if (links.isEmpty()) return

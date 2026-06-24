@@ -2,13 +2,13 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
@@ -68,7 +68,7 @@ private object ParadoxTemplateExpressionResolver {
             }
         }.takeIf { it.expressionString.isNotEmpty() } ?: return null
 
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         // 这里需要允许部分匹配

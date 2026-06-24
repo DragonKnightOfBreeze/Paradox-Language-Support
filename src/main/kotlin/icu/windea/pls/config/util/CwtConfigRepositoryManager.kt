@@ -14,6 +14,7 @@ import com.intellij.util.application
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.collections.orNull
@@ -24,7 +25,6 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.tools.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -93,7 +93,7 @@ object CwtConfigRepositoryManager {
 
     private fun tryCheckRemote(string: String): Result<String> {
         if (string.isEmpty()) return Result.success("")
-        return runCatchingCancelable { PlsGitService.getInstance().checkRemote(string) }
+        return runCatchingCancelable { ChronicleGitService.getInstance().checkRemote(string) }
     }
 
     fun isValidToSync(): Boolean {
@@ -159,7 +159,7 @@ object CwtConfigRepositoryManager {
                 return@c
             }
 
-            val updated = results.any { result -> result.getOrNull().let { !PlsGitService.getInstance().isUpdateToDate(it) } }
+            val updated = results.any { result -> result.getOrNull().let { !ChronicleGitService.getInstance().isUpdateToDate(it) } }
 
             // 发送成功的通知
             val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0") else PlsBundle.message("config.repo.sync.result.1")
@@ -176,6 +176,6 @@ object CwtConfigRepositoryManager {
 
     private fun trySyncFromRemote(url: String, parentDirectory: String): Result<String> {
         if (url.isEmpty()) return Result.success("")
-        return runCatchingCancelable { PlsGitService.getInstance().syncFromRemote(url, parentDirectory) }
+        return runCatchingCancelable { ChronicleGitService.getInstance().syncFromRemote(url, parentDirectory) }
     }
 }

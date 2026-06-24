@@ -9,13 +9,18 @@ import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -23,6 +28,33 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 object ParadoxLocalisationManipulationService {
+    /**
+     * 是否需要处理 [element]。这意味着不需要时，操作通常无必要或无意义。
+     */
+    fun needProcess(element: ParadoxLocalisationProperty): Boolean {
+        val pv = element.propertyValue ?: return false
+        var r = false
+        pv.acceptChildren(object : PsiRecursiveElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if (element is ParadoxLocalisationText) return visitText(element)
+                super.visitElement(element)
+            }
+
+            private fun visitText(element: ParadoxLocalisationText) {
+                val s = element.text
+                if (checkString(s)) {
+                    r = true
+                }
+            }
+
+            private fun checkString(s: String): Boolean {
+                // 存在任意非空白、非数字的字符
+                return s.any { !it.isWhitespace() || !it.isExactDigit() }
+            }
+        })
+        return r
+    }
+
     suspend fun searchTextFromLocale(context: ParadoxLocalisationManipulationContext, project: Project, locale: CwtLocaleConfig) {
         val newText = readAction {
             val type = context.element?.type ?: return@readAction null

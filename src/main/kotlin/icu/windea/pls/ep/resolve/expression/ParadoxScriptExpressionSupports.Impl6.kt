@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
-import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -14,12 +14,7 @@ import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.annotations.WithGameType
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.configs
-import icu.windea.pls.lang.codeInsight.completion.isKey
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.keywordOffset
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -86,26 +81,14 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         return reference.to.singletonList()
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val definitionScriptExpressionSupport = ParadoxScriptExpressionSupport.EP_NAME.findExtension(ParadoxScriptDefinitionExpressionSupport::class.java) ?: return
 
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val separatorIndex = keyword.indexOf('@')
-        if (separatorIndex != -1 && keywordOffset - separatorIndex > 0) return
+        val separatorIndex = context.keyword.indexOf('@')
+        if (separatorIndex != -1 && context.keywordOffset - separatorIndex > 0) return
 
-        val config = context.config ?: return
-        val configs = context.configs
-        val isKey = context.isKey
-
-        val config1 = CwtValueConfig.createMock(config.configGroup, typeExpression)
-        context.config = config1
-        context.configs = emptySet()
-        context.isKey = null
+        val config = CwtValueConfig.createMock(context.configGroup, typeExpression)
+        val context = context.copy(isKey = null, config = config, configs = emptySet())
         definitionScriptExpressionSupport.complete(context, result)
-
-        context.config = config
-        context.configs = configs
-        context.isKey = isKey
     }
 }

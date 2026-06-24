@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtDocComment
-import icu.windea.pls.cwt.psi.CwtPsiUtil
+import icu.windea.pls.cwt.psi.CwtPsiService
 
 @Suppress("UnstableApiUsage")
 class CwtInlineDocumentationProvider : InlineDocumentationProvider {
@@ -20,7 +20,7 @@ class CwtInlineDocumentationProvider : InlineDocumentationProvider {
         val result = mutableListOf<InlineDocumentation>()
         file.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (CwtPsiUtil.canAttachComment(element)) {
+                if (CwtPsiService.canAttachComment(element)) {
                     val ownedComments = PsiService.getOwnedComments(element) { it is CwtDocComment }
                         .castOrNull<List<CwtDocComment>>().orEmpty()
                     val comments = ownedComments.optimized() // optimized to optimize memory
@@ -29,7 +29,7 @@ class CwtInlineDocumentationProvider : InlineDocumentationProvider {
                         result.add(inlineDocumentation)
                     }
                 }
-                if (CwtPsiUtil.isMemberContextElement(element)) super.visitElement(element)
+                if (CwtPsiService.isMemberContextElement(element)) super.visitElement(element)
             }
         })
         return result.optimized() // optimized to optimize memory
@@ -64,7 +64,7 @@ class CwtInlineDocumentationProvider : InlineDocumentationProvider {
 
         // Only return inline documentation if these comments actually attach to an owner element
         val owner = comments.last().owner
-        if (owner == null || !CwtPsiUtil.canAttachComment(owner)) return null
+        if (owner == null || !CwtPsiService.canAttachComment(owner)) return null
 
         return CwtInlineDocumentation(comments)
     }

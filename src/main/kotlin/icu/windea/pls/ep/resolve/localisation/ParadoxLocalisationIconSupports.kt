@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.resolve.localisation
 
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.addPrefix
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 

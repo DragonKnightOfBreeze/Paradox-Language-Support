@@ -29,11 +29,7 @@ import icu.windea.pls.model.scope.ParadoxScope
  * 路径定位：
  * - `localisation_promotions/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * localisation_promotions = {
@@ -53,6 +49,8 @@ import icu.windea.pls.model.scope.ParadoxScope
  *
  * # then `[Ruler.GetCountryType]` is valid after scope promotion
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称（即匹配本地化链接名，忽略大小写）。
  * @property supportedScopes （提升后）允许的作用域（类型）的集合。

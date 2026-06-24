@@ -16,6 +16,19 @@ enum class ParadoxExpressionType(val id: String) {
 
     // region Matchers
 
+    @Suppress("unused")
+    fun isBooleanLiteral(): Boolean {
+        return this == Boolean
+    }
+
+    fun isNumberLiteral(): Boolean {
+        return this == Int || this == Float
+    }
+
+    fun isStringLiteral(): Boolean {
+        return this == String
+    }
+
     fun isLenientInt(): Boolean {
         return this == Int || this == InlineMath || this == Unknown
     }

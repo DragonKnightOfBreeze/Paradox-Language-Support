@@ -5,8 +5,7 @@ import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider
@@ -15,12 +14,12 @@ import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxGameTypeInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
 
 object ParadoxAnalysisService {
     /**
@@ -36,6 +35,7 @@ object ParadoxAnalysisService {
      * @see ParadoxRootMetadataProvider.getRootMetadata
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
+        if (!rootPath.isDirectory()) return null
         return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.getRootMetadata(rootPath)
         }
@@ -45,6 +45,7 @@ object ParadoxAnalysisService {
      * @see ParadoxInferredGameTypeProvider.getInferredGameTypeInfo
      */
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
+        if (!rootPath.isDirectory()) return null
         return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.getInferredGameTypeInfo(rootPath)
         }
@@ -108,13 +109,9 @@ object ParadoxAnalysisService {
         return null
     }
 
-    fun resolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
+    fun resolveLocaleId(file: VirtualFile, project: Project): String? {
         val indexId = PlsIndexKeys.FileLocale
         val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-        return resolveLocaleConfigById(localeId, project)
-    }
-
-    fun resolveLocaleConfigById(id: String, project: Project): CwtLocaleConfig? {
-        return PlsFacade.getConfigGroup(project).localisationLocalesById.get(id)
+        return localeId.orNull()
     }
 }

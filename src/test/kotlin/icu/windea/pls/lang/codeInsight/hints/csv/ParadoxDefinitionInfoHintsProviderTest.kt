@@ -17,6 +17,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxDefinitionReferenceInfoHintsProvider
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestCase() {
@@ -26,7 +29,7 @@ class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestC
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
-        markConfigDirectory("features/inlayHints/.config")
+        markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 

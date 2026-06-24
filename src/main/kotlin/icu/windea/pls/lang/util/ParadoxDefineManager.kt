@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -14,7 +15,10 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.ParadoxDefineService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -25,8 +29,11 @@ import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.propertyValue
 
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
@@ -97,5 +104,20 @@ object ParadoxDefineManager {
         val (namespace, variable) = splitExpression(expression)
         if (variable == null) return null
         return findDefineVariableElement(namespace, variable, contextElement, project)
+    }
+
+    fun isArrayDefine(element: ParadoxScriptProperty): Boolean {
+        val propertyValue = element.propertyValue<ParadoxScriptBlock>() ?: return false
+        return propertyValue.members().all { it is ParadoxScriptValue }
+    }
+
+    fun getArrayValue(element: ParadoxScriptProperty, index: Int): ParadoxScriptValue? {
+        val propertyValue = element.propertyValue<ParadoxScriptBlock>() ?: return null
+        return propertyValue.values().elementAtOrNull(index)
+    }
+
+    fun getArrayLength(element: ParadoxScriptProperty): Int? {
+        val propertyValue = element.propertyValue<ParadoxScriptBlock>() ?: return null
+        return propertyValue.values().count()
     }
 }

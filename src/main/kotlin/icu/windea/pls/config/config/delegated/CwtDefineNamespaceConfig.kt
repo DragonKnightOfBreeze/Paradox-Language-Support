@@ -18,13 +18,9 @@ import icu.windea.pls.core.optimized
  * 路径定位：
  * - `defines/{namespace}`。其中 `{namespace}` 匹配命名空间（即规则名称）。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
  * 备注：插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
  *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * defines = {
@@ -40,6 +36,8 @@ import icu.windea.pls.core.optimized
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称（即命名空间）。等同于 [namespace]。
  * @property namespace 命名空间。

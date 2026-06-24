@@ -1,28 +1,16 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.psi.util.startOffset
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.getKeyword
-import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.configGroup
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.expressionOffset
-import icu.windea.pls.lang.codeInsight.completion.expressionTailText
-import icu.windea.pls.lang.codeInsight.completion.isKey
-import icu.windea.pls.lang.codeInsight.completion.keyword
-import icu.windea.pls.lang.codeInsight.completion.offsetInParent
-import icu.windea.pls.lang.codeInsight.completion.quoted
-import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -34,74 +22,64 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isDefinitionName
 
 /**
  * 提供已有的定义的名字的代码补全。
  */
-class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeDefinitionNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if (element.text.isParameterized()) return
-        val file = parameters.originalFile
-        val project = file.project
-        val quoted = element.text.isLeftQuoted()
-        val rightQuoted = element.text.isRightQuoted()
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = element.getKeyword(offsetInParent)
 
-        ParadoxCompletionManager.initializeContext(parameters, context)
-        context.contextElement = element
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
-        context.quoted = quoted
-        context.rightQuoted = rightQuoted
-        context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
-
-        val gameType = selectGameType(file) ?: return
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        context.configGroup = configGroup
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext).copy(
+            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+        )
 
         when {
             // key_
             // key_ =
             // key_ = { ... }
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
-                val fileInfo = file.fileInfo ?: return
+                val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
                 // 忽略 rootKeys 深度超出限制，或者带参数的情况
                 val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
                 val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-                for (typeConfig in configGroup.types.values) {
+                for (typeConfig in context.configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    val matchContext = CwtTypeConfigMatchContext(configGroup, path, null, rootKeys, typeKeyPrefix)
+                    val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, null, rootKeys, typeKeyPrefix)
                     if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
                     val type = typeConfig.name
-                    val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
+                    val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = context.configGroup)
 
-                    context.config = config
-                    context.isKey = true
-                    context.expressionTailText = ""
-                    // 仅限作为属性的定义
-                    val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
-                        .filterBy { it.name != keyword } // skip if name = input
-                    ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                        ParadoxCompletionManager.processDefinition(context, result, it)
+                    run {
+                        val context = context.copy(isKey = true, config = config, patchableTailText = "")
+
+                        // 仅限作为属性的定义
+                        val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
+                            .filterBy { it.name != context.keyword } // skip if name = input
+                        ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
+                            ParadoxCompletionUtil.processDefinition(context, result, it)
+                        }
+
+                        ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                     }
-
-                    ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
             // event = { id = _ }
@@ -113,18 +91,19 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val type = definitionInfo.type
                     val config = definitionInfo.declaration ?: return
 
-                    context.config = config
-                    context.isKey = false
-                    context.expressionTailText = ""
-                    // 排除与正在输入的同名的定义
-                    // 仅限作为属性的定义
-                    val selector = ParadoxDefinitionSearch.selector(project, file).contextSensitive().distinct()
-                        .filterBy { it.name != keyword } // skip if name = input
-                    ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                        ParadoxCompletionManager.processDefinition(context, result, it)
-                    }
+                    run {
+                        val context = context.copy(isKey = false, config = config, patchableTailText = "")
 
-                    ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
+                        // 排除与正在输入的同名的定义
+                        // 仅限作为属性的定义
+                        val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
+                            .filterBy { it.name != context.keyword } // skip if name = input
+                        ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
+                            ParadoxCompletionUtil.processDefinition(context, result, it)
+                        }
+
+                        ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
+                    }
                 }
             }
         }

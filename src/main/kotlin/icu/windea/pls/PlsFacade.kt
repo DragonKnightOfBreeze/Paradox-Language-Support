@@ -1,11 +1,14 @@
 package icu.windea.pls
 
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CoroutineScope
 
@@ -43,6 +46,16 @@ object PlsFacade {
      * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
+        val finalGameType = gameType ?: ParadoxGameType.Core
+        return CwtConfigGroupService.getInstance(project).getConfigGroup(finalGameType)
+    }
+
+    /**
+     * 从 [event] 得到对应的规则分组。
+     */
+    fun getConfigGroup(event: AnActionEvent): CwtConfigGroup {
+        val project = event.project
+        val gameType = selectGameType(event.getData(CommonDataKeys.VIRTUAL_FILE))
         val finalGameType = gameType ?: ParadoxGameType.Core
         return CwtConfigGroupService.getInstance(project).getConfigGroup(finalGameType)
     }

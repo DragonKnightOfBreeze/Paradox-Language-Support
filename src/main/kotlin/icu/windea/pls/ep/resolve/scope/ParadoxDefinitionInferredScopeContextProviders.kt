@@ -132,11 +132,11 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.0", definitionInfo.name)
+        return PlsBundle.message("scopeContext.inference.0", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.0.conflict", definitionInfo.name)
+        return PlsBundle.message("scopeContext.inference.0.conflict", definitionInfo.name)
     }
 }
 
@@ -239,12 +239,12 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         val eventId = definitionInfo.name
-        return PlsBundle.message("script.annotator.scopeContext.1", eventId)
+        return PlsBundle.message("scopeContext.inference.1", eventId)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         val eventId = definitionInfo.name
-        return PlsBundle.message("script.annotator.scopeContext.1.conflict", eventId)
+        return PlsBundle.message("scopeContext.inference.1.conflict", eventId)
     }
 }
 
@@ -390,11 +390,11 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.2", definitionInfo.name)
+        return PlsBundle.message("scopeContext.inference.2", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.2.conflict", definitionInfo.name)
+        return PlsBundle.message("scopeContext.inference.2.conflict", definitionInfo.name)
     }
 }
 
@@ -543,10 +543,10 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.3", definitionInfo.name)
+        return PlsBundle.message("scopeContext.inference.3", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.3.conflict", definitionInfo.name)
+        return PlsBundle.message("scopeContext.inference.3.conflict", definitionInfo.name)
     }
 }

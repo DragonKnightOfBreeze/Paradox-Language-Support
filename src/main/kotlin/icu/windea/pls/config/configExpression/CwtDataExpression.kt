@@ -23,13 +23,22 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * - 主要的元数据可通过 [value] 获取。
  * - 额外的元数据会存储到 [UserDataHolder] 中，可通过扩展属性获取。
  *
- * ### 适用对象
+ * 适用对象：
+ * - 定义成员对应的规则的键或值。
  *
- * 定义成员对应的规则的键或值。
+ * 示例：
  *
- * ### CWTools 兼容性
+ * ```cwt
+ * int                         # 整数
+ * float[0.0..1.0]             # 带范围约束的浮点数
+ * enum[shipsize_class]        # 枚举引用
+ * scope[country]              # 作用域引用
+ * <ship_size>                 # 定义引用
+ * value[event_target]         # 动态值引用
+ * pre_<opinion_modifier>_suf  # 模板表达式（含定义引用片段）
+ * ```
  *
- * 部分兼容。插件进行了额外的扩展和改进。
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property isKey 是否来源于作为键的表达式。
  * @property type 数据类型。

@@ -56,7 +56,7 @@ class ParadoxModDependencySettingsDialog(
             row {
                 // gameType
                 label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .enabled(false)

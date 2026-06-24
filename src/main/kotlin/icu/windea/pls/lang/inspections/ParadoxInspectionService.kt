@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
@@ -9,14 +10,12 @@ import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
+import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
+import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
+import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
-import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionFix
-import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionInListFix
-import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -26,7 +25,7 @@ object ParadoxInspectionService {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
         ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEach { ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@forEach
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@forEach
             result += ep.getSuppressedToolIds(definition, definitionInfo)
         }
         return result
@@ -35,7 +34,7 @@ object ParadoxInspectionService {
     fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val gameType = config.configGroup.gameType
         ParadoxIncorrectExpressionChecker.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.check(element, config, holder)
         }
     }
@@ -71,10 +70,10 @@ object ParadoxInspectionService {
     }
 
     fun getLocalisationReferenceFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
+        if (expectedConfigs.isEmpty()) return emptyList()
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val locales = ParadoxLocaleManager.getLocaleConfigs()
         val context = expectedConfigs.firstNotNullOfOrNull {
-            ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, locales, fromInspection = true)
+            ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, fromInspection = true)
         }
         if (context == null) return emptyList()
         return listOf(

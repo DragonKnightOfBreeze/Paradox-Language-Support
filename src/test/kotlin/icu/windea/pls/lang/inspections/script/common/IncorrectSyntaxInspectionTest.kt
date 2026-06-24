@@ -30,8 +30,8 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/inspections/script/incorrectSyntax")
-        markConfigDirectory("features/inspections/script/incorrectSyntax/.config")
+        markRootDirectory("features/inspections")
+        markConfigDirectory("features/inspections/.config")
         initConfigGroups(project, gameType)
         myFixture.enableInspections(IncorrectSyntaxInspection::class.java)
     }
@@ -42,8 +42,8 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
     @Test
     fun testComparisonOperator() {
         markFileInfo(gameType, "common/test/comparison_operator.test.txt")
-        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/comparison_operator.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.configureByFile("features/inspections/common/test/comparison_operator.test.txt")
+        myFixture.checkHighlighting()
     }
 
     @Test
@@ -52,8 +52,8 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
         settings.checkComparisonOperators = true
         try {
             markFileInfo(gameType, "common/test_entities/comparison_operator_advanced.test.txt")
-            myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test_entities/comparison_operator_advanced.test.txt")
-            myFixture.checkHighlighting(true, false, false)
+            myFixture.configureByFile("features/inspections/common/test_entities/comparison_operator_advanced.test.txt")
+            myFixture.checkHighlighting()
         } finally {
             settings.checkComparisonOperators = false
         }
@@ -62,28 +62,28 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase() {
     @Test
     fun testSafeAssignOperator() {
         markFileInfo(createRootInfo(ParadoxGameType.Core), "common/test/safe_assign_operator.test.txt")
-        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.configureByFile("features/inspections/common/test/safe_assign_operator.test.txt")
+        myFixture.checkHighlighting()
     }
 
     @Test
     fun testSafeAssignOperator_Eu5() {
         markFileInfo(createRootInfo(ParadoxGameType.Eu5), "common/test/safe_assign_operator.eu5.test.txt")
-        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.eu5.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.configureByFile("features/inspections/common/test/safe_assign_operator.eu5.test.txt")
+        myFixture.checkHighlighting()
     }
 
     @Test
     fun testSafeAssignOperator_Stellaris() {
         markFileInfo(createRootInfo(ParadoxGameType.Stellaris, "4.4.4444"), "common/test/safe_assign_operator.stellaris.test.txt")
-        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.stellaris.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.configureByFile("features/inspections/common/test/safe_assign_operator.stellaris.test.txt")
+        myFixture.checkHighlighting()
     }
 
     @Test
     fun testSafeAssignOperator_Stellaris_Old() {
         markFileInfo(createRootInfo(ParadoxGameType.Stellaris, "3.1415"), "common/test/safe_assign_operator.stellaris_old.test.txt")
-        myFixture.configureByFile("features/inspections/script/incorrectSyntax/common/test/safe_assign_operator.stellaris_old.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.configureByFile("features/inspections/common/test/safe_assign_operator.stellaris_old.test.txt")
+        myFixture.checkHighlighting()
     }
 }

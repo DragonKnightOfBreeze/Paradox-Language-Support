@@ -27,6 +27,8 @@ class PlsSettingsMigrator : AppLifecycleListener {
         "parameterConditionBlocksByDefault" to "parameterConditionsByDefault",
         "inlineMathBlocks" to "inlineMaths",
         "inlineMathBlocksByDefault" to "inlineMathsByDefault",
+        "parameterConditions" to "conditionalBlocks",
+        "parameterConditionsByDefault" to "conditionalBlocksByDefault",
     )
 
     private val replacementMap = buildMap {

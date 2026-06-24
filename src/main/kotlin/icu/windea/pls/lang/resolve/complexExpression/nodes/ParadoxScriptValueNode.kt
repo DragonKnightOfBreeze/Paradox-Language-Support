@@ -12,13 +12,11 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.values.singletonSet
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -30,10 +28,6 @@ class ParadoxScriptValueNode(
     override val configGroup: CwtConfigGroup,
     val config: CwtConfig<*>
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.to.singletonSet()
-    }
-
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.definitionReference(element.language)
     }
@@ -45,7 +39,7 @@ class ParadoxScriptValueNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedScriptValue(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedScriptValue(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

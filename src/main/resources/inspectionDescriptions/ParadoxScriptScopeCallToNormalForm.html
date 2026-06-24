@@ -1,0 +1,23 @@
+<html>
+<body>
+  Reports safe scope calls in script files, which can be replaced with normal form (may change semantics).
+  <p>
+    Check on grammar level and semantic level.
+  </p>
+  <p>
+    Applicable for all game types with any safe call operator (<code>?=</code> or <code>? =</code>).
+  </p>
+  <!-- tooltip end -->
+  <p>Example:</p>
+  <pre><code class="language-paradox_script">
+# [CK3/VIC3/EU5] before
+owner ?= v
+
+# [Stellaris] before
+owner? = v
+
+# after
+owner = v
+</code></pre>
+</body>
+</html>

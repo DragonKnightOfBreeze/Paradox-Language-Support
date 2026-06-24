@@ -56,8 +56,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val postfixTemplateSettings by registerKey<FastMap<String, FastCustomMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>, UserDataHolder>(this) { FastMap() }
         val priorities by registerKey<FastMap<String, ParadoxOverrideStrategy>, UserDataHolder>(this) { FastMap() }
         val systemScopes by registerKey<FastCustomMap<@CaseInsensitive String, CwtSystemScopeConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
-        val localisationLocalesById by registerKey<FastMap<String, CwtLocaleConfig>, UserDataHolder>(this) { FastMap() }
-        val localisationLocalesByCode by registerKey<FastMap<String, CwtLocaleConfig>, UserDataHolder>(this) { FastMap() }
+        val localesById by registerKey<FastMap<String, CwtLocaleConfig>, UserDataHolder>(this) { FastMap() }
         val types by registerKey<FastMap<String, CwtTypeConfig>, UserDataHolder>(this) { FastMap() }
         val swappedTypes by registerKey<FastMap<String, CwtTypeConfig>, UserDataHolder>(this) { FastMap() }
         val type2ModifiersMap by registerKey<FastMap<String, FastMap<String, CwtModifierConfig>>, UserDataHolder>(this) { FastMap() }
@@ -88,6 +87,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val extendedComplexEnumValues by registerKey<FastMap<String, FastMap<String, CwtExtendedComplexEnumValueConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedDynamicValues by registerKey<FastMap<String, FastMap<String, CwtExtendedDynamicValueConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedInlineScripts by registerKey<FastMap<String, CwtExtendedInlineScriptConfig>, UserDataHolder>(this) { FastMap() }
+        val globalLocales by registerKey<FastList<CwtLocaleConfig>, UserDataHolder>(this) { FastList() }
+        val supportedLocales by registerKey<FastList<CwtLocaleConfig>, UserDataHolder>(this) { FastList() }
         val predefinedModifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val generatedModifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val aliasKeysGroupConst by registerKey<FastCustomMap<@CaseInsensitive String, FastCustomMap<@CaseInsensitive String, String>>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
@@ -111,8 +112,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val postfixTemplateSettings by Keys.postfixTemplateSettings
     final override val priorities by Keys.priorities
     final override val systemScopes by Keys.systemScopes
-    final override val localisationLocalesById by Keys.localisationLocalesById
-    final override val localisationLocalesByCode by Keys.localisationLocalesByCode
+    final override val locales by Keys.localesById
     final override val types by Keys.types
     final override val swappedTypes by Keys.swappedTypes
     final override val type2ModifiersMap by Keys.type2ModifiersMap
@@ -143,6 +143,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val extendedComplexEnumValues by Keys.extendedComplexEnumValues
     final override val extendedDynamicValues by Keys.extendedDynamicValues
     final override val extendedInlineScripts by Keys.extendedInlineScripts
+    final override val globalLocales by Keys.globalLocales
+    final override val supportedLocales by Keys.supportedLocales
     final override val predefinedModifiers by Keys.predefinedModifiers
     final override val generatedModifiers by Keys.generatedModifiers
     final override val aliasKeysGroupConst by Keys.aliasKeysGroupConst
@@ -172,8 +174,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         postfixTemplateSettings.values.forEach { it.trim() }
         priorities.trim()
         systemScopes.trim()
-        localisationLocalesById.trim()
-        localisationLocalesByCode.trim()
+        locales.trim()
         types.trim()
         swappedTypes.trim()
         type2ModifiersMap.trim()
@@ -204,12 +205,14 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         extendedGameRules.trim()
         extendedOnActions.trim()
         extendedParameters.trim()
+        extendedParameters.values.forEach { it.trim() }
         extendedComplexEnumValues.trim()
         extendedComplexEnumValues.values.forEach { it.trim() }
         extendedDynamicValues.trim()
         extendedDynamicValues.values.forEach { it.trim() }
         extendedInlineScripts.trim()
-        extendedParameters.values.forEach { it.trim() }
+        globalLocales.trim()
+        supportedLocales.trim()
         predefinedModifiers.trim()
         generatedModifiers.trim()
         aliasKeysGroupConst.trim()

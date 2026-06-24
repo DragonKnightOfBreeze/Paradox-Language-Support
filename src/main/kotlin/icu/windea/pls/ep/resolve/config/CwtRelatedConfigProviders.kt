@@ -30,7 +30,7 @@ import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager

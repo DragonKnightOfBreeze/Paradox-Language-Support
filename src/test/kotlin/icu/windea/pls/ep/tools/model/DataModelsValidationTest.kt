@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.tools.model
 
+import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsSqliteService
 import org.junit.Test
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
@@ -60,7 +60,7 @@ class DataModelsValidationTest {
         val dbFile = tmpDir.resolve("launcher_v2_test_${UUID.randomUUID()}.sqlite")
 
         val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
-        PlsSqliteService.getInstance().executeSql(db, sql)
+        ChronicleSqliteService.getInstance().executeSql(db, sql)
 
         // V4+ 判定应为 false
         val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
@@ -93,7 +93,7 @@ class DataModelsValidationTest {
         val dbFile = tmpDir.resolve("launcher_v4_test_${UUID.randomUUID()}.sqlite")
 
         val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
-        PlsSqliteService.getInstance().executeSql(db, sql)
+        ChronicleSqliteService.getInstance().executeSql(db, sql)
 
         // V4+ 判定
         val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)

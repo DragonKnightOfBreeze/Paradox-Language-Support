@@ -9,19 +9,21 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.quickfix.navigation.NavigateToRecursionsFix
 import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （对于脚本文件）检查是否存在不支持的递归。
- * - 对于每个scripted_variable，检测其值中是否存在递归的scripted_variable引用。
- * - 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
- * - 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
+ * （脚本文件中的）不支持的递归的代码检查。
+ *
+ * 规则如下：
+ * - 不支持递归的封装变量（scripted variable）引用。
+ * - 不支持递归的封装触发器（scripted trigger）调用。
+ * - 不支持递归的封装效果（scripted effect）调用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 目前仅做检查即可，不需要显示递归的装订线图标

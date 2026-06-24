@@ -1,6 +1,12 @@
 <html>
 <body>
   Reports event script files which miss event namespace declarations.
+  <p>Description:</p>
+  <ul>
+    <li>This code inspection is heuristic and may contain false positives. </li>
+    <li>When this code inspection fails, it does not necessarily mean that an exception will be thrown at the game engine level. </li>
+    <li>Actually, an event script file can declare no or multiple event namespaces, and the event id does not need to strictly match the previously declared event namespace in the same file. </li>
+  </ul>
   <!-- tooltip end -->
   <p>
     In an event script file,
@@ -9,9 +15,6 @@
   </p>
   <p>
     An event script file is a script file with extension <code>.txt</code> under directory <code>events</code>.
-  </p>
-  <p>
-    <b>NOTE:</b>  In real, an event script file can declare multiple event namespaces.
   </p>
 </body>
 </html>

@@ -19,21 +19,18 @@ import icu.windea.pls.core.cache.CacheBuilder
  * - 上限可以为无限（`inf`，不区分大小写）。
  * - 默认下限为 `0`，默认上限为 `inf`。如果无法解析上下限，则会使用各自的默认值。
  *
- * ### 适用对象
+ * 适用对象：
+ * - `## cardinality` 选项的值。
  *
- * `## cardinality` 选项的值。
- *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * ## cardinality = 0..1
  * ## cardinality = 0..inf
  * ## cardinality = ~1..10
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property min 最小值。
  * @property max 最大值，`null` 表示无限。

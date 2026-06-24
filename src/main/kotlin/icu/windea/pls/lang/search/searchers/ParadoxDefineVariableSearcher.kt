@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDefineVariableSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDefineVariableSearch.Parameters, consumer: Processor<in ParadoxScriptProperty>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (PlsStates.resolveForMergedIndex.get() == true) return
+        if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized

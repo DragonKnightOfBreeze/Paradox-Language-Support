@@ -7,25 +7,33 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxDefineNamespaceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val expression: ParadoxDefineReferenceExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        val namespace = text.orNull() ?: return emptySet()
+        return configGroup.defineNamespaces.get(namespace).to.singletonSetOrEmpty()
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.defineNamespace()
     }
@@ -35,7 +43,7 @@ class ParadoxDefineNamespaceNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedDefineNamespace(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedDefineNamespace(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
@@ -50,8 +58,7 @@ class ParadoxDefineNamespaceNode(
         rangeInElement: TextRange,
         private val node: ParadoxDefineNamespaceNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        private val expression get() = node.expression
-        private val project get() = expression.configGroup.project
+        private val project get() = node.configGroup.project
         private val namespace get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -60,7 +67,7 @@ class ParadoxDefineNamespaceNode(
 
         // 缓存解析结果以优化性能
 
-        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
+        private object Resolver : ResolveCache.AbstractResolver<Reference, ParadoxScriptProperty> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
         }
 
@@ -68,7 +75,7 @@ class ParadoxDefineNamespaceNode(
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doMultiResolve()
         }
 
-        override fun resolve(): PsiElement? {
+        override fun resolve(): ParadoxScriptProperty? {
             return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
         }
 
@@ -76,7 +83,7 @@ class ParadoxDefineNamespaceNode(
             return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
         }
 
-        private fun doResolve(): PsiElement? {
+        private fun doResolve(): ParadoxScriptProperty? {
             val selector = ParadoxDefineNamespaceSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineNamespaceSearch.search(namespace, selector).find()
             return resolved
@@ -91,8 +98,8 @@ class ParadoxDefineNamespaceNode(
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineNamespaceNode {
-            return ParadoxDefineNamespaceNode(text, textRange, configGroup, expression)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDefineNamespaceNode {
+            return ParadoxDefineNamespaceNode(text, textRange, configGroup)
         }
     }
 }

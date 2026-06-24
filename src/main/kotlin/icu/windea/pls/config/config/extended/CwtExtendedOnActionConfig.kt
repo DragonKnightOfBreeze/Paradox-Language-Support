@@ -26,11 +26,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `on_actions/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容，拥有不同的格式和行为。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * on_actions = {
@@ -41,6 +37,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  *     x
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。拥有不同的格式和行为。
  *
  * @property name 规则名称。
  * @property eventType 事件类型。

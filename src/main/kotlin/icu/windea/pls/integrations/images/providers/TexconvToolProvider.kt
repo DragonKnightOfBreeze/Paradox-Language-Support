@@ -3,12 +3,12 @@ package icu.windea.pls.integrations.images.providers
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.system.OS
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.tools.PlsDataPathService
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -46,15 +46,15 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val tempParentPath = PlsDataPathService.getInstance().imagesTempPath
+        val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
         outputDirectoryPath.createDirectories()
         val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val exePath = PlsDataPathService.getInstance().texconvExePath
+        val exePath = ChronicleDataPathService.getInstance().texconvExePath
         val wd = exePath.parent?.toFile()
-        val exe = exePath.name.quoteIfNecessary('\'')
+        val exe = exePath.name.quoteIfNeeded('\'')
         val input = path.toString().quote('\'')
         val output = outputDirectoryPath.toString().quote('\'')
 

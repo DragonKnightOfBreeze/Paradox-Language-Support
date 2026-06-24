@@ -386,7 +386,7 @@
 ## 1.2.1 - 2023-11-07
 
 - [x] 支持语法`@a = @[ 1 + 2 ]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76)](https://github.com/cwtools/cwtools-vscode/issues/76)
-- [x] （仅限VIC3）支持操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53](https://github.com/cwtools/cwtools/issues/53)
+- [x] （仅限VIC3）支持运算符`?=` - 参见：[Parsing issues in Vic3 · Issue #53](https://github.com/cwtools/cwtools/issues/53)
 - [x] 其他优化与BUG修复
 
 ## 1.2.0 - 2023-11-05

@@ -1,8 +1,8 @@
-# Config
+# Config System
 
 ## Settings Page {#settings-page}
 
-In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Config` to open the config settings page.
+In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Config` to open the settings page for Config System.
 
 Here you can configure the sources of the config groups to enable, as well as the related urls and directories.
 

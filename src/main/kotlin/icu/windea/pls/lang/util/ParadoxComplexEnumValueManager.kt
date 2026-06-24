@@ -14,7 +14,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 @Suppress("unused")
 object ParadoxComplexEnumValueManager {
@@ -22,7 +22,7 @@ object ParadoxComplexEnumValueManager {
         val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueInfo>>(Keys)
     }
 
-    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
+    fun getInfo(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()

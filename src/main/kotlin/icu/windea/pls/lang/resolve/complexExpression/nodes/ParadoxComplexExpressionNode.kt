@@ -8,13 +8,24 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 
 /**
- * 复杂表达式的节点。复杂表达式由数个节点组成，本身也是一个节点。
+ * 复杂表达式的节点。
+ *
+ * 复杂表达式由数个节点组成，本身也是一个节点。
  *
  * 对于对应范围的文本，可以指定如何进行代码高亮，如何解析为引用，以及解析失败时的错误提示。
+ *
+ * @property text 当前节点的文本。
+ * @property rangeInExpression 当前节点在最外层复杂表达式中的文本范围。
+ * @property configGroup 对应的规则分组。
+ * @property nodes 当前节点的一组子节点。
+ * @property parent 当前节点的父节点。
+ *
+ * @see ParadoxComplexExpression
  */
 interface ParadoxComplexExpressionNode {
     val text: String

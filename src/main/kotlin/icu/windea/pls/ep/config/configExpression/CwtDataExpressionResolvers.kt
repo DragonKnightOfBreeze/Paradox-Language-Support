@@ -3,6 +3,7 @@ package icu.windea.pls.ep.config.configExpression
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.condition
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
@@ -54,13 +55,13 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromLiteral(CwtDataTypes.SyncedLocalisation, "localisation_synced")
         fromLiteral(CwtDataTypes.InlineLocalisation, "localisation_inline")
 
-        fromLiteral(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
         fromLiteral(CwtDataTypes.FileName, "filename")
         fromParameterized(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() }
         fromLiteral(CwtDataTypes.FilePath, "filepath")
         fromLiteral(CwtDataTypes.FilePath, "filepath[./]") { value = "./" } // fixed (should keep `"./"`)
         fromParameterized(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() }
         fromParameterized(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
+        fromLiteral(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
 
         fromLiteral(CwtDataTypes.Modifier, "<modifier>")
         fromParameterized(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }
@@ -95,7 +96,11 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromParameterized(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
 
         fromLiteral(CwtDataTypes.Command, "\$command")
+        fromLiteral(CwtDataTypes.ScriptValueReference, "\$script_value_reference")
         fromLiteral(CwtDataTypes.DefineReference, "\$define_reference")
+        fromLiteral(CwtDataTypes.ArrayDefineReference, "\$array_define_reference")
+        fromParameterized(CwtDataTypes.Tags, "\$tags[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.Tags, "\$tags_condition[", "]") { value = it.orNull(); condition = true }
         fromLiteral(CwtDataTypes.DatabaseObject, "\$database_object")
         fromParameterized(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
 

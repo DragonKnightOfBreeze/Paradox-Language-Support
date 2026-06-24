@@ -15,7 +15,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 /**
- * 不正确的复杂表达式的代码检查的基类。
+ * 不正确的复杂表达式（[ParadoxComplexExpression]）的代码检查的基类。
  */
 abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

@@ -4,9 +4,9 @@ class ElementsInfo(
     val descriptors: List<ElementDescriptor>,
     val hasRemain: Boolean
 ) {
-    val allValues = descriptors.filterIsInstance<ValueDescriptor>().map { it.name }.toTypedArray()
-    val allKeys = descriptors.filterIsInstance<PropertyDescriptor>().map { it.name }.toTypedArray()
-    val allKeyValuesMap = descriptors.filterIsInstance<PropertyDescriptor>().associateBy({ it.name }, { it.constantValueArray })
+    val allValues = descriptors.filterIsInstance<ElementDescriptors.Value>().map { it.name }.toTypedArray()
+    val allKeys = descriptors.filterIsInstance<ElementDescriptors.Property>().map { it.name }.toTypedArray()
+    val allKeyValuesMap = descriptors.filterIsInstance<ElementDescriptors.Property>().associateBy({ it.name }, { it.constantValueArray })
 
     val resultDescriptors = descriptors.mapTo(mutableListOf()) { it.copyDescriptor() }
 }

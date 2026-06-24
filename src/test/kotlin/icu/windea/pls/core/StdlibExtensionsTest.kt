@@ -16,7 +16,7 @@ class StdlibExtensionsTest {
         Assert.assertTrue(s2.isEscapedCharAt(i))
 
         val s3 = "a b"
-        Assert.assertEquals("\"a b\"", s3.quoteIfNecessary())
+        Assert.assertEquals("\"a b\"", s3.quoteIfNeeded())
         Assert.assertEquals(s3, s3.unquote())
     }
 

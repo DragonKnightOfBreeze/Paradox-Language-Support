@@ -15,20 +15,20 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
             COMMENT -> PlsStrings.commentFolder
             BLOCK -> PlsStrings.blockFolder
-            PARAMETER_CONDITION -> {
-                val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
+            CONDITIONAL_BLOCK -> {
+                val expression = node.psi.castOrNull<ParadoxScriptConditionalBlock>()?.conditionExpression
                 if (expression == null) return "..."
-                PlsStrings.parameterConditionFolder(expression)
+                PlsStrings.conditionalBlockFolder(expression)
             }
             INLINE_MATH -> PlsStrings.inlineMathFolder
             else -> null
@@ -40,7 +40,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
             BLOCK -> false
-            PARAMETER_CONDITION -> settings.parameterConditionsByDefault
+            CONDITIONAL_BLOCK -> settings.conditionalBlocksByDefault
             INLINE_MATH -> settings.inlineMathsByDefault
             else -> false
         }
@@ -75,8 +75,8 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             BLOCK -> {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
-            PARAMETER_CONDITION -> run r@{
-                if (!settings.parameterConditions) return@r
+            CONDITIONAL_BLOCK -> run r@{
+                if (!settings.conditionalBlocks) return@r
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
             INLINE_MATH -> run r@{
@@ -84,7 +84,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }
-        return ParadoxScriptPsiUtil.isMemberContextElement(element)
+        return ParadoxScriptPsiService.isMemberContextElement(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

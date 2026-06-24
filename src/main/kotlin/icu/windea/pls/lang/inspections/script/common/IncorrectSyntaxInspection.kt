@@ -16,15 +16,15 @@ import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
- * （对于脚本文件）检查是否存在不正确的语法。
+ * （脚本文件中的）不正确的语法的代码检查。
+ *
+ * 检测于文法级别和语义级别。
  *
  * 包括：
- * - 不期望的比较运算符。语法级别和语义级别。
- * - 不受游戏类型支持的安全（调用）赋值运算符。
- * - 不期望的安全（调用）赋值运算符。语法级别。
+ * - 不期望的比较运算符。文法级别和语义级别。
+ * - 不支持的安全（调用）赋值运算符。游戏类型级别和文法级别。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -34,14 +34,13 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
                 ProgressManager.checkCanceled()
                 checkComparisonOperator(context, element)
                 checkSafeAssignOperator(context, element)
-                checkSafeCallAssignOperator(context, element)
             }
         }
     }
 
     private fun checkComparisonOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
         if (context.rootFile == null) return
-        if (element.elementType !in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS) return
+        if (!ParadoxSyntaxService.isComparisonOperator(element)) return
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 
         // check on grammar level
@@ -60,7 +59,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
         // NOTE 2.1.4 所在属性对应的匹配的规则，不一定在触发器子句规则之内
         // 所在属性对应的匹配的规则，其使用的属性分隔符应是 `==`（而非常规的 `=`）
-        val valid = ParadoxSyntaxService.isComparisonOperatorStrictValid(propertyElement)
+        val valid = ParadoxSyntaxService.isComparisonOperatorValid(propertyElement)
         if (valid == false) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.2")
             context.holder.registerProblem(element, description)
@@ -70,13 +69,20 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
     private fun checkSafeAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
         if (context.rootFile == null) return
-        if (element.elementType != ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN) return
+        if (!ParadoxSyntaxService.isSafeAssignOperator(element)) return
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+        checkForSafeAssignOperator(context, element, propertyElement)
+        checkForSafeCallAssignOperator(context, element, propertyElement)
+
+    }
+
+    private fun checkForSafeAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
+        if (element.elementType != ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN) return
 
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
-        val name = PlsBundle.message("snippet.syntax.safeAssignOperators")
+        val name = PlsBundle.message("incorrectSyntax.desc.safeAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(context, element, constraint, name)) return
 
         // check on grammar level
@@ -88,17 +94,19 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
             context.holder.registerProblem(element, description)
             return
         }
+
+        // check on semantic level
+
+        // NOTE 2.1.10+ 暂不验证（要求左侧能解析为链式表达式）
     }
 
-    private fun checkSafeCallAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement) {
-        if (context.rootFile == null) return
+    private fun checkForSafeCallAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
         if (element.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) return
-        val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
-        val name = PlsBundle.message("snippet.syntax.safeCallAssignOperators")
+        val name = PlsBundle.message("incorrectSyntax.desc.safeCallAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(context, element, constraint, name)) return
 
         // check on grammar level
@@ -110,5 +118,9 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
             context.holder.registerProblem(element, description)
             return
         }
+
+        // check on semantic level
+
+        // NOTE 2.1.10+ 暂不验证（要求左侧能解析为链式表达式）
     }
 }

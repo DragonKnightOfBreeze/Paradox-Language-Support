@@ -1,0 +1,24 @@
+alias[trigger:scope_field] = { alias_name[trigger] = alias_match_left[trigger] }
+alias[effect:scope_field] = { alias_name[effect] = alias_match_left[effect] }
+
+### An inverted trigger, functionally the same as NOR
+alias[trigger:NOT] = {
+    # ## cardinality = 1..1
+    alias_name[trigger] = alias_match_left[trigger]
+}
+### An inverted OR trigger
+alias[trigger:NOR] = { alias_name[trigger] = alias_match_left[trigger] }
+### An inverted AND trigger
+alias[trigger:NAND] = { alias_name[trigger] = alias_match_left[trigger] }
+### all inside trigger must be true
+alias[trigger:AND] = { alias_name[trigger] = alias_match_left[trigger] }
+### At least one entry inside the trigger must be true
+alias[trigger:OR] = { alias_name[trigger] = alias_match_left[trigger] }
+
+### Hides the enclosed triggers from any generated tooltips
+## scopes = any
+alias[trigger:hidden_trigger] = { alias_name[trigger] = alias_match_left[trigger] }
+
+### Prevents enclosed effects from being displayed in tooltip
+## scopes = any
+alias[effect:hidden_effect] = single_alias_right[effect_clause]

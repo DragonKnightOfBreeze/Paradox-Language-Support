@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.overrides
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 

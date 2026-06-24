@@ -64,7 +64,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
     private fun configureDefaultGameDirectories() {
         val settings = PlsSettings.getInstance().state
         val defaultGameDirectories = settings.defaultGameDirectories
-        ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
+        ParadoxGameType.getAllSpecific().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
         val defaultList = defaultGameDirectories.toMutableEntryList()
         var list = defaultList.mapTo(mutableListOf()) { it.copy() }
         val dialog = DefaultGameDirectoriesDialog(list)

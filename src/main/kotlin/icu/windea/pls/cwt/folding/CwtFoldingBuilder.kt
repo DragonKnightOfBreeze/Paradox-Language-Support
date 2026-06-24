@@ -14,7 +14,7 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.cwt.psi.CwtPsiUtil
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.constants.PlsStrings
 
@@ -63,7 +63,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         if (element.elementType == BLOCK) {
             descriptors.add(FoldingDescriptor(element, element.textRange))
         }
-        return CwtPsiUtil.isMemberContextElement(element)
+        return CwtPsiService.isMemberContextElement(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

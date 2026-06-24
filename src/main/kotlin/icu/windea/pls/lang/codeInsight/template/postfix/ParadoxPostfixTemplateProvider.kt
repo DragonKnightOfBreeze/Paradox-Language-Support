@@ -13,7 +13,7 @@ class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
             val postfixTemplateSettings = PlsFacade.getConfigGroup().postfixTemplateSettings
             for ((groupName, settings) in postfixTemplateSettings) {
                 when (groupName) {
-                    ParadoxVariableOperationExpressionPostfixTemplate.Constants.GROUP_NAME -> {
+                    ParadoxVariableOperationExpressionPostfixTemplate.Constants.groupName -> {
                         for (setting in settings.values) {
                             add(ParadoxVariableOperationExpressionPostfixTemplate(setting, provider))
                         }
@@ -27,7 +27,7 @@ class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
         return "paradox.script"
     }
 
-    // customizing postfix templates is not supported so far
+    // customizing postfix templates are not supported so far
     override fun getPresentableName(): String? {
         return null
     }

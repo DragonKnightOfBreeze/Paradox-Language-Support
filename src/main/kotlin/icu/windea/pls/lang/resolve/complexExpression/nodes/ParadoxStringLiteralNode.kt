@@ -7,13 +7,13 @@ import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
- * 字面量字符串节点（用于括号参数中的单引号包裹文本）。
+ * 字符串字面量节点（用于括号参数中的单引号包围文本）。
  */
 class ParadoxStringLiteralNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxLiteralNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.string(element.language)
     }

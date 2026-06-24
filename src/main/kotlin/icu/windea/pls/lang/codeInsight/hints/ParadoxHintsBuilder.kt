@@ -7,6 +7,7 @@ import com.intellij.codeInsight.hints.presentation.ScaleAwarePresentationFactory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
+import icu.windea.pls.core.ui.UiService
 import javax.swing.Icon
 
 @Suppress("UnstableApiUsage")
@@ -53,7 +54,7 @@ class ParadoxHintsBuilder {
     fun text(text: String, pointer: SmartPsiElementPointer<out PsiElement>?) {
         val presentation = context.factory.smallText(text)
             .let { context.factory.psiSingleReference(it) { pointer?.element } }
-            .let { context.factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }
+            .let { context.factory.withCursorOnHoverWhenControlDown(it, UiService.getHandCursor()) }
         presentations.add(presentation)
     }
 
@@ -67,7 +68,7 @@ class ParadoxHintsBuilder {
     fun icon(icon: Icon, pointer: SmartPsiElementPointer<out PsiElement>?) {
         val presentation = context.factory.smallScaledIcon(icon)
             .let { context.factory.psiSingleReference(it) { pointer?.element } }
-            .let { context.factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }
+            .let { context.factory.withCursorOnHoverWhenControlDown(it, UiService.getHandCursor()) }
         presentations.add(presentation)
     }
 }

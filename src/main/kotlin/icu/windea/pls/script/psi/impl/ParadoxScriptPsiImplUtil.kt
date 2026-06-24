@@ -66,7 +66,7 @@ object ParadoxScriptPsiImplUtil {
     fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
         val nameElement = element.scriptedVariableName
         val idElement = nameElement.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name).idElement ?: throw IncorrectOperationException()
+        val newIdElement = ParadoxScriptElementFactory.createScriptedVariableNameFromText(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -204,8 +204,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-        val newValue = value.quoteIfNecessary()
-        val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newValue)
+        val newValue = value.quoteIfNeeded()
+        val newElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -221,7 +221,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
         if (element is ParadoxScriptString) return setValue(element, value)
-        val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
+        val newElement = ParadoxScriptElementFactory.createValueFromText(element.project, value)
         return element.replace(newElement).cast()
     }
 
@@ -247,8 +247,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptString {
-        val newValue = value.quoteIfNecessary()
-        val newElement = ParadoxScriptElementFactory.createString(element.project, newValue)
+        val newValue = value.quoteIfNeeded()
+        val newElement = ParadoxScriptElementFactory.createStringFromText(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -317,20 +317,20 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptParameterCondition
+    // region ParadoxScriptConditionalBlock
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ParameterCondition
+    fun getIcon(element: ParadoxScriptConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
-    fun getConditionExpression(element: ParadoxScriptParameterCondition): String? {
-        val conditionExpression = element.parameterConditionExpression ?: return null
+    fun getConditionExpression(element: ParadoxScriptConditionalBlock): String? {
+        val conditionExpression = element.conditionalBlockExpression ?: return null
         val builder = StringBuilder()
         conditionExpression.processChild {
             when {
-                it is ParadoxScriptParameterConditionParameter -> {
+                it is ParadoxScriptConditionalBlockParameter -> {
                     builder.append(it.name)
                     false
                 }
@@ -345,47 +345,47 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
-        return element.conditionExpression?.let { PlsStrings.parameterConditionFolder(it) }
+    fun getPresentationText(element: ParadoxScriptConditionalBlock): String? {
+        return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptParameterCondition): ParadoxScriptParameterCondition {
+    fun getMembersRoot(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
         return element
     }
 
     @JvmStatic
-    fun getMembers(element: ParadoxScriptParameterCondition): List<ParadoxScriptMember> {
+    fun getMembers(element: ParadoxScriptConditionalBlock): List<ParadoxScriptMember> {
         return getMembersRoot(element).findChildren<_>()
     }
 
     @JvmStatic
-    fun getLeftBound(element: ParadoxScriptParameterCondition): PsiElement? {
+    fun getLeftBound(element: ParadoxScriptConditionalBlock): PsiElement? {
         // use simple implementation is enough here
         return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
     }
 
     @JvmStatic
-    fun getRightBound(element: ParadoxScriptParameterCondition): PsiElement? {
+    fun getRightBound(element: ParadoxScriptConditionalBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
     }
 
     // endregion
 
-    // region ParadoxScriptInlineParameterCondition
+    // region ParadoxScriptInlineConditionalBlock
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptInlineParameterCondition, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ParameterCondition
+    fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
-    fun getConditionExpression(element: ParadoxScriptInlineParameterCondition): String? {
-        val conditionExpression = element.parameterConditionExpression ?: return null
+    fun getConditionExpression(element: ParadoxScriptInlineConditionalBlock): String? {
+        val conditionExpression = element.conditionalBlockExpression ?: return null
         val builder = StringBuilder()
         conditionExpression.processChild {
             when {
-                it is ParadoxScriptParameterConditionParameter -> {
+                it is ParadoxScriptConditionalBlockParameter -> {
                     builder.append(it.name)
                     false
                 }
@@ -400,44 +400,55 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
-        return element.conditionExpression?.let { PlsStrings.parameterConditionFolder(it) }
+    fun getPresentationText(element: ParadoxScriptInlineConditionalBlock): String? {
+        return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
+    }
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
+        // use simple implementation is enough here
+        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
     }
 
     // endregion
 
-    // region ParadoxScriptParameterConditionParameter
+    // region ParadoxScriptConditionalBlockParameter
 
     @JvmStatic
-    fun getIdElement(element: ParadoxScriptParameterConditionParameter): PsiElement {
+    fun getIdElement(element: ParadoxScriptConditionalBlockParameter): PsiElement {
         return element.findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
     }
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
+    fun getIcon(element: ParadoxScriptConditionalBlockParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Parameter
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptParameterConditionParameter): String {
+    fun getName(element: ParadoxScriptConditionalBlockParameter): String {
         return element.idElement.text
     }
 
     @JvmStatic
-    fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
+    fun setName(element: ParadoxScriptConditionalBlockParameter, name: String): ParadoxScriptConditionalBlockParameter {
         val idElement = element.idElement
-        val newIdElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).idElement
+        val newIdElement = ParadoxScriptElementFactory.createConditionalBlockParameter(element.project, name).idElement
         idElement.replace(newIdElement)
         return element
     }
 
     @JvmStatic
-    fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
+    fun getTextOffset(element: ParadoxScriptConditionalBlockParameter): Int {
         return element.node.startOffset
     }
 
     @JvmStatic
-    fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxConditionParameterPsiReference {
+    fun getReference(element: ParadoxScriptConditionalBlockParameter): ParadoxConditionParameterPsiReference {
         val nameElement = element.idElement
         return ParadoxConditionParameterPsiReference(element, nameElement.textRangeInParent)
     }
@@ -464,6 +475,16 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
         return element.findChild { it.elementType == INLINE_MATH_TOKEN }
+    }
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == INLINE_MATH_START }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == INLINE_MATH_END }
     }
 
     // endregion
@@ -497,7 +518,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
+        val newIdElement = ParadoxScriptElementFactory.createScriptedVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -530,7 +551,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
+        val newIdElement = ParadoxScriptElementFactory.createInlineMathScriptedVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -562,7 +583,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createParameterSmartly(element.project, name).idElement ?: throw IncorrectOperationException()
+        val newIdElement = ParadoxScriptElementFactory.createParameter(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -611,7 +632,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createInlineMathParameterSmartly(element.project, name).idElement ?: throw IncorrectOperationException()
+        val newIdElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -668,7 +689,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is ParadoxScriptScriptedVariable || it is ParadoxScriptMember || it is ParadoxScriptParameterCondition }
+        return element.findChildren { it is ParadoxScriptScriptedVariable || it is ParadoxScriptMember || it is ParadoxScriptConditionalBlock }
     }
 
     @JvmStatic

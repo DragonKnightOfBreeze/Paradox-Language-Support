@@ -26,7 +26,7 @@ class ParadoxScriptBlockSurrounder : Surrounder {
         if (firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = ParadoxScriptElementFactory.createValue(project, "{\n${replacedText}\n}") as ParadoxScriptBlock
+        var newElement = ParadoxScriptElementFactory.createValueFromText(project, "{\n${replacedText}\n}") as ParadoxScriptBlock
         newElement = firstElement.replace(newElement) as ParadoxScriptBlock
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptBlock
         return TextRange.from(newElement.endOffset, 0)

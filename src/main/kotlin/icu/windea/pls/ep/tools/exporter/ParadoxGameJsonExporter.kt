@@ -6,10 +6,11 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
-import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
+import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -37,7 +38,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
         val descriptorMapping = ParadoxMetadataUtil.buildDescriptorMapping(gameDataDirPath)
 
         // 依据游戏类型选择不同的 JSON 结构
-        return if (ParadoxGameTypeManager.useDescriptorMod(gameType)) {
+        return if (gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed) {
             // dlc_load.json: enabled_mods 是字符串列表
             val enabledModPaths = enabledMods.mapNotNull { modInfo ->
                 val modDir = modInfo.modDirectory?.normalizePath()
@@ -84,7 +85,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
 
     private fun getJsonFileName(gameType: ParadoxGameType): String {
         return when {
-            ParadoxGameTypeManager.useDescriptorMod(gameType) -> Constants.dlcLoadPath
+            gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> Constants.dlcLoadPath
             else -> Constants.contentLoadPath
         }
     }

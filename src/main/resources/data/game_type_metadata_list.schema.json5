@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "game_type_metadata.json",
+  "$id": "game_type_metadata_list.json",
   "type": "array",
   "items": {
     "$ref": "#/definitions/gameTypeMetadata"
@@ -33,7 +33,7 @@
     },
     "gameTypeId": {
       "type": "string",
-      "enum": ["stellaris", "ck2", "ck3", "eu4", "eu5", "hoi4", "ir", "vic2", "vic3"]
+      "enum": ["core", "stellaris", "ck2", "ck3", "eu4", "eu5", "hoi4", "ir", "vic2", "vic3"]
     },
     "stringSet": {
       "type": "array",

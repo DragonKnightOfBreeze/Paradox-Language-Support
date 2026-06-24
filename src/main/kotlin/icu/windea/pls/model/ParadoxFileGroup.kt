@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import icu.windea.pls.core.orNull
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
+import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.paths.ParadoxPath
 
 /**
@@ -21,13 +22,13 @@ enum class ParadoxFileGroup(val id: String) {
     companion object {
         @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxFileGroup {
-            if (ParadoxPathConstraint.ModDescriptorFile.test(path)) return ModDescriptor // NOTE 2.1.8 file-name-sensitive
+            if (path matchesBy ParadoxPathConstraint.ModDescriptorFile) return ModDescriptor // NOTE 2.1.8 file-name-sensitive
 
             return when {
-                ParadoxPathConstraint.ModDescriptorFile.test(path) -> ModDescriptor
-                ParadoxPathConstraint.ScriptFile.test(path) -> Script
-                ParadoxPathConstraint.LocalisationFile.test(path) -> Localisation
-                ParadoxPathConstraint.CsvFile.test(path) -> Csv
+                path matchesBy ParadoxPathConstraint.ModDescriptorFile -> ModDescriptor
+                path matchesBy ParadoxPathConstraint.ScriptFile -> Script
+                path matchesBy ParadoxPathConstraint.LocalisationFile -> Localisation
+                path matchesBy ParadoxPathConstraint.CsvFile -> Csv
                 else -> Other
             }
         }

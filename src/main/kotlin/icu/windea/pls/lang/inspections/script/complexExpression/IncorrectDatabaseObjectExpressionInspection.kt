@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 
 /**
- * 不正确的 [ParadoxDatabaseObjectExpression] 的代码检查。
+ * 不正确的数据库对象表达式（[ParadoxDatabaseObjectExpression]）的代码检查。
  */
 class IncorrectDatabaseObjectExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {

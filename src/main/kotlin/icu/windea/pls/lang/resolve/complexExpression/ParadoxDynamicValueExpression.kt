@@ -1,15 +1,19 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
@@ -42,6 +46,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 作用域字段表达式：[ParadoxScopeFieldExpression]（可选）。
  */
 interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
+    val dynamicValueNode: ParadoxDynamicValueNode
+    val scopeFieldExpression: ParadoxScopeFieldExpression?
+
     val configs: List<CwtConfig<*>>
 
     companion object {
@@ -67,7 +74,7 @@ private object ParadoxDynamicValueExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
         if (configs.any { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
 
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
@@ -118,6 +125,22 @@ private object ParadoxDynamicValueExpressionResolver {
     }
 }
 
+private object ParadoxDynamicValueExpressionValidator : ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxDynamicValueExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, element, errors) {
+            when {
+                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier(".") // 兼容点号
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+}
+
 private class ParadoxDynamicValueExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
@@ -125,7 +148,12 @@ private class ParadoxDynamicValueExpressionImpl(
     override val configs: List<CwtConfig<*>>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDynamicValueExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override val dynamicValueNode: ParadoxDynamicValueNode
+        get() = nodes.get(0).cast()
+    override val scopeFieldExpression: ParadoxScopeFieldExpression?
+        get() = nodes.getOrNull(2)?.cast()
+
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxDynamicValueExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxDynamicValueExpression && text == other.text
     override fun hashCode() = text.hashCode()

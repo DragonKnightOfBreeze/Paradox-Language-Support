@@ -11,7 +11,7 @@ import kotlin.io.path.name
  * 如果模组目录直接位于游戏数据目录下的 mod 子目录下，直接推断为对应的游戏类型。
  */
 class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
-    private val gameTypeMap = ParadoxGameType.getAll().associateBy { it.title }
+    private val gameTypeMap = ParadoxGameType.getAllSpecific().associateBy { it.title }
 
     override fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         val parentPath = rootPath.parent ?: return null
@@ -28,7 +28,7 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
  * 如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型。
  */
 class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
-    private val gameTypeMap = ParadoxGameType.getAll().associateBy { it.steamId }
+    private val gameTypeMap = ParadoxGameType.getAllSpecific().associateBy { it.steamId }
 
     override fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         val parentPath = rootPath.parent ?: return null

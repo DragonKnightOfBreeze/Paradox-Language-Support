@@ -13,7 +13,7 @@ class ParadoxScriptValueArgumentValueNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val valueNode: ParadoxScriptValueNode?,
-    val argumentNode: ParadoxScriptValueArgumentNode?
+    val argumentNode: ParadoxScriptValueArgumentNameNode?
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         // 为参数值提供基础代码高亮
@@ -63,7 +63,7 @@ class ParadoxScriptValueArgumentValueNode(
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?): ParadoxScriptValueArgumentValueNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNameNode?): ParadoxScriptValueArgumentValueNode {
             return ParadoxScriptValueArgumentValueNode(text, textRange, configGroup, valueNode, argumentNode)
         }
     }

@@ -24,7 +24,6 @@ import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
-import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.selectLocale
 import java.util.concurrent.atomic.AtomicReference
@@ -48,8 +47,8 @@ class AiReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocali
         val (elements, selectedLocale, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsAiBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
-            val contextsToHandle = contexts.filter { context -> context.shouldHandle }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
+            val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
 

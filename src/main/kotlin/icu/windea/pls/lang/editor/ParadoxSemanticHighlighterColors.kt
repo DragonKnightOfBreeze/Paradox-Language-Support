@@ -54,9 +54,9 @@ object ParadoxSemanticHighlighterColors {
     }
 
     fun keyword(language: Language? = null): TextAttributesKey {
-        return when(language) {
+        return when (language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SEMANTIC_KEYWORD
-            else ->ParadoxScriptHighlighterColors.SEMANTIC_KEYWORD
+            else -> ParadoxScriptHighlighterColors.SEMANTIC_KEYWORD
         }
     }
 
@@ -69,6 +69,11 @@ object ParadoxSemanticHighlighterColors {
             ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.SEMANTIC_STRING
             else -> ParadoxScriptHighlighterColors.SEMANTIC_STRING
         }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun number(language: Language? = null): TextAttributesKey {
+        return ParadoxScriptHighlighterColors.SEMANTIC_NUMBER
     }
 
     fun definitionReference(language: Language? = null): TextAttributesKey {

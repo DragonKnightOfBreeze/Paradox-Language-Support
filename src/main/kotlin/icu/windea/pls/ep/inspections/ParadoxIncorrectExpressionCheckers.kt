@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -19,7 +20,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
@@ -52,7 +52,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
             else -> element.value.toIntOrNull()
         } ?: return
         if (intValue in intRange) return
-        val description = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, intRange.expression, intValue)
+        val description = PlsBundle.message("incorrectExpression.checker.expect.range", element.expression, intRange.expression, intValue)
         holder.registerProblem(element, description)
     }
 }
@@ -69,7 +69,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
             else -> element.value.toFloatOrNull()
         } ?: return
         if (floatValue in floatRange) return
-        val description = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, floatRange.expression, floatValue)
+        val description = PlsBundle.message("incorrectExpression.checker.expect.range", element.expression, floatRange.expression, floatValue)
         holder.registerProblem(element, description)
     }
 }
@@ -84,7 +84,7 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
         val expectedColorType = configExpression.value ?: return
         val colorType = element.colorType
         if (colorType == expectedColorType) return
-        val description = PlsBundle.message("incorrectExpressionChecker.expect.colorType", expression, expectedColorType, colorType)
+        val description = PlsBundle.message("incorrectExpression.checker.expect.colorType", expression, expectedColorType, colorType)
         holder.registerProblem(element, description)
     }
 }
@@ -104,7 +104,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
         val expression = element.expression
-        val description = PlsBundle.message("incorrectExpressionChecker.expect.scope", expression, expectedScope, scopeContext.scope.id)
+        val description = PlsBundle.message("incorrectExpression.checker.expect.scope", expression, expectedScope, scopeContext.scope.id)
         holder.registerProblem(element, description)
     }
 }
@@ -124,55 +124,55 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val expression = element.expression
-        val description = PlsBundle.message("incorrectExpressionChecker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)
+        val description = PlsBundle.message("incorrectExpression.checker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)
         holder.registerProblem(element, description)
     }
 }
 
 class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
-        val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
+        val triggerKeys = setOf("trigger", "on_trigger")
+        val contextNames = setOf("switch", "inverted_switch")
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        // switch = {...}和inverted_switch = {...}中指定的应当是一个simple_trigger
+        // `switch = {...}` 和 `inverted_switch = {...}` 中指定的应当是一个 `simple_trigger`
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
         val propertyConfig = config.propertyConfig ?: return
-        if (propertyConfig.key !in Constants.TRIGGER_KEYS) return
+        if (propertyConfig.key !in Constants.triggerKeys) return
         val aliasConfig = config.memberConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
-        if (aliasConfig.subName !in Constants.CONTEXT_NAMES) return
+        if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if (resultTriggerConfigs.none { it.config.valueType != CwtExpressionType.Block }) {
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression))
+            holder.registerProblem(element, PlsBundle.message("incorrectExpression.checker.expect.simpleTrigger", element.expression))
         }
     }
 }
 
 class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
-        const val TRIGGER_KEY = "trigger"
-        val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+        const val triggerKey = "trigger"
+        val contextNames = setOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        // complex_trigger_modifier = {...}中指定的应当是一个simple_trigger（如果不带参数）或者complex_trigger（如果带参数）
+        // `complex_trigger_modifier = {...}` 中指定的应当是一个 `simple_trigger`（如果不带参数）或者 `complex_trigger`（如果带参数）
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
         val propertyConfig = config.propertyConfig ?: return
-        if (propertyConfig.key != Constants.TRIGGER_KEY) return
+        if (propertyConfig.key != Constants.triggerKey) return
         val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
-        if (aliasConfig.subName !in Constants.CONTEXT_NAMES) return
+        if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
@@ -180,12 +180,12 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         val hasParameters = selectScope { element.parentOfKey()?.parentOfKey()?.properties()?.ofKey("parameters")?.one() } != null
         if (hasParameters) {
             if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
-                holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression))
+                holder.registerProblem(element, PlsBundle.message("incorrectExpression.checker.expect.complexTrigger", element.expression))
             }
         } else {
             // can also be complex trigger here, for some parameters can be ignored (like `count = xxx`)
             // if (resultTriggerConfigs.none { !it.config.isBlock }) {
-            //    holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
+            //    holder.registerProblem(element, PlsBundle.message("incorrectExpression.checker.expect.simpleTrigger", element.expression.orEmpty()))
             // }
         }
     }
@@ -204,12 +204,12 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         val separatorIndex = text.indexOf('@')
         if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", ParadoxDefinitionSearch.selector(project, element)).findFirst() == null) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
-            val description = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
+            val description = PlsBundle.message("incorrectExpression.checker.expect.repeatableTechnologyName", range.substring(text))
             holder.registerProblem(element, description, ProblemHighlightType.ERROR, range)
         }
         if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
-            val description = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", range.substring(text))
+            val description = PlsBundle.message("incorrectExpression.checker.expect.repeatableTechnologyLevel", range.substring(text))
             holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR, range)
         }
     }

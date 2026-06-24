@@ -75,12 +75,12 @@ object CwtConfigService {
      * @see CwtInjectedConfigProvider.injectConfigs
      */
     @Optimized
-    fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
+    fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
         var r = false
         val eps = CwtInjectedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!ep.supports(parentConfig)) return@f
-            r = r || ep.injectConfigs(parentConfig, configs)
+            r = r || ep.injectConfigs(parentConfig, containerConfig, configs)
         }
         return r
     }
@@ -126,7 +126,7 @@ object CwtConfigService {
             }.getOrNull()
         }
         if (gameTypeId.isNullOrEmpty()) return null
-        return ParadoxGameType.get(gameTypeId, withCore = true)
+        return ParadoxGameType.get(gameTypeId)
     }
 
     fun resolveFilePath(file: VirtualFile, configGroup: CwtConfigGroup): @NlsSafe String? {

@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -17,27 +18,26 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.mergeValue
-import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.expressions.ParadoxParameterConditionExpression
+import icu.windea.pls.model.expressions.ParadoxConditionalBlockExpression
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import java.util.*
 
 object ParadoxParameterService {
@@ -135,7 +135,7 @@ object ParadoxParameterService {
         val gameType = parameterContextInfo.gameType
         return withRecursionGuard {
             ParadoxParameterInferredConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
                 if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
                 ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             }
@@ -147,18 +147,18 @@ object ParadoxParameterService {
         val project = file.project
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
-        val fileConditionExpressions = ArrayDeque<ParadoxParameterConditionExpression>()
+        val fileConditionExpressions = ArrayDeque<ParadoxConditionalBlockExpression>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptParameterConditionExpression) return visitParameterConditionExpression(element)
+                if (element is ParadoxScriptConditionalBlockExpression) return visitConditionalBlockExpression(element)
                 if (element is ParadoxConditionParameter) return visitConditionParameter(element)
                 if (element is ParadoxParameter) return visitParameter(element)
                 super.visitElement(element)
             }
 
-            private fun visitParameterConditionExpression(element: ParadoxScriptParameterConditionExpression) {
+            private fun visitConditionalBlockExpression(element: ParadoxScriptConditionalBlockExpression) {
                 // value may be empty (invalid condition expression)
-                fileConditionExpressions.addLast(ParadoxParameterConditionExpression.resolve(element.text))
+                fileConditionExpressions.addLast(ParadoxConditionalBlockExpression.resolve(element.text))
                 super.visitElement(element)
             }
 
@@ -181,7 +181,7 @@ object ParadoxParameterService {
             }
 
             override fun elementFinished(element: PsiElement?) {
-                if (element is ParadoxScriptParameterCondition || element is ParadoxScriptInlineParameterCondition) {
+                if (element is ParadoxScriptConditionalBlock || element is ParadoxScriptInlineConditionalBlock) {
                     fileConditionExpressions.removeLast()
                 }
             }

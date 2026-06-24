@@ -52,23 +52,23 @@ class PlatformExtensionsTest {
 
     @Test
     fun replaceAndQuoteIfNecessaryTest() {
-        // 覆盖全长替换 -> 直接按需要包裹引号
+        // 覆盖全长替换 -> 直接按需要包围引号
         run {
-            Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNecessary("abc", "def"))
-            Assert.assertEquals("\"e\"", TextRange.create(0, 3).replaceAndQuoteIfNecessary("\"b\"", "\"e\""))
+            Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNeeded("abc", "def"))
+            Assert.assertEquals("\"e\"", TextRange.create(0, 3).replaceAndQuoteIfNeeded("\"b\"", "\"e\""))
         }
-        // 在外层引号内替换 -> 避免重复包裹
+        // 在外层引号内替换 -> 避免重复包围
         run {
-            Assert.assertEquals("\"dec\"", TextRange.create(1, 3).replaceAndQuoteIfNecessary("\"abc\"", "de"))
-            Assert.assertEquals("\"d\\\"c\"", TextRange.create(1, 3).replaceAndQuoteIfNecessary("\"abc\"", "d\""))
+            Assert.assertEquals("\"dec\"", TextRange.create(1, 3).replaceAndQuoteIfNeeded("\"abc\"", "de"))
+            Assert.assertEquals("\"d\\\"c\"", TextRange.create(1, 3).replaceAndQuoteIfNeeded("\"abc\"", "d\""))
         }
-        // 在外层引号内替换包含空白的文本 -> 替换值需要引号但内部不重复包裹
+        // 在外层引号内替换包含空白的文本 -> 替换值需要引号但内部不重复包围
         run {
-            Assert.assertEquals("\"x ybc\"", TextRange.create(1, 2).replaceAndQuoteIfNecessary("\"abc\"", "x y"))
+            Assert.assertEquals("\"x ybc\"", TextRange.create(1, 2).replaceAndQuoteIfNeeded("\"abc\"", "x y"))
         }
         // 替换接近全长（length >= original.length - 1）-> 直接对 replacement 进行 quote 判断
         run {
-            Assert.assertEquals("\"d e\"", TextRange.create(0, 2).replaceAndQuoteIfNecessary("abc", "d e"))
+            Assert.assertEquals("\"d e\"", TextRange.create(0, 2).replaceAndQuoteIfNeeded("abc", "d e"))
         }
     }
 

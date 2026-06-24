@@ -12,30 +12,29 @@ import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 检查事件脚本文件中的事件ID的格式是否合法。
- *
- * 注意：这项代码检查不是强制性的，未通过这项代码检查并不意味着脚本文件中存在错误，以至于导致游戏运行时的异常。
+ * 事件脚本文件中（位于事件声明中的）的不正确的事件ID的代码检查。
  */
 class IncorrectEventIdInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-
         val elements = file.properties(inline = true)
-        for (element in elements) {
-            ProgressManager.checkCanceled()
-            val definitionInfo = element.definitionInfo ?: continue
-            if (definitionInfo.type != ParadoxDefinitionTypes.event) continue
-            val nameField = definitionInfo.typeConfig.nameField
-            val eventId = definitionInfo.name
-            if (ParadoxEventManager.isValidEventId(eventId)) continue
-            val nameElement = selectScope { element.nameElement(nameField) } ?: continue
-            val description = PlsBundle.message("inspection.script.incorrectEventId.desc", eventId)
-            holder.registerProblem(nameElement, description)
-        }
-
+        for (element in elements) checkEventIdForEventDeclaration(element, holder)
         return holder.resultsArray
+    }
+
+    private fun checkEventIdForEventDeclaration(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        ProgressManager.checkCanceled()
+        val definitionInfo = element.definitionInfo ?: return
+        if (definitionInfo.type != ParadoxDefinitionTypes.event) return
+        val nameField = definitionInfo.typeConfig.nameField
+        val eventId = definitionInfo.name
+        if (ParadoxEventManager.isValidEventId(eventId)) return
+        val nameElement = selectScope { element.nameElement(nameField) } ?: return
+        val description = PlsBundle.message("inspection.script.incorrectEventId.desc", eventId)
+        holder.registerProblem(nameElement, description)
     }
 }

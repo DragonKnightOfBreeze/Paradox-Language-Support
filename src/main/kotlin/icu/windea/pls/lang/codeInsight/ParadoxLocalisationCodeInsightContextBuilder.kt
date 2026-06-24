@@ -25,6 +25,7 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -33,7 +34,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.script.psi.isExpression
@@ -56,7 +57,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 if (contextElement == null) return null
                 val context = when (contextElement) {
                     is ParadoxDefinitionElement -> fromDefinition(contextElement, locales, fromInspection)
-                    is ParadoxScriptStringExpressionElement -> fromExpression(contextElement, locales, fromInspection)
+                    is ParadoxScriptStringExpressionElement -> fromExpression(contextElement, locales = locales, fromInspection = fromInspection)
                     else -> null
                 }
                 return context
@@ -84,10 +85,10 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 file.accept(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         when (element) {
-                            is ParadoxDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
-                            is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
+                            is ParadoxDefinitionElement -> fromDefinition(element, locales = locales, fromInspection = fromInspection)?.let { children.add(it) }
+                            is ParadoxScriptStringExpressionElement -> fromExpression(element, locales = locales, fromInspection = fromInspection)?.let { children.add(it) }
                         }
-                        if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                        if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                         super.visitElement(element)
                     }
                 })
@@ -104,7 +105,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         }
         if (children.isEmpty()) return null
         val finalChildren = getFinalChildren(children)
-        return ParadoxLocalisationCodeInsightContext(Type.File, file.name, emptyList(), finalChildren, fromInspection)
+        return ParadoxLocalisationCodeInsightContext(Type.File, file.name, emptyList(), finalChildren, locales, fromInspection)
     }
 
     private fun getFinalChildren(children: MutableList<ParadoxLocalisationCodeInsightContext>): List<ParadoxLocalisationCodeInsightContext> {
@@ -184,7 +185,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             }
         }
 
-        return ParadoxLocalisationCodeInsightContext(Type.Definition, definitionInfo.name, codeInsightInfos, fromInspection = fromInspection)
+        return ParadoxLocalisationCodeInsightContext(Type.Definition, definitionInfo.name, codeInsightInfos, locales = locales, fromInspection = fromInspection)
     }
 
     fun fromLocalisation(
@@ -207,7 +208,8 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, true, missing, false)
             codeInsightInfos += codeInsightInfo
         }
-        return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, fromInspection = fromInspection)
+
+        return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, locales = locales, fromInspection = fromInspection)
     }
 
     fun fromExpression(
@@ -220,9 +222,9 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return null
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
-        fromModifier(element, config, locales, fromInspection = fromInspection)?.let { return it }
+        fromModifier(element, config, locales = locales, fromInspection = fromInspection)?.let { return it }
         if (forReference) {
-            fromReference(element, config, locales, fromInspection = fromInspection)?.let { return it }
+            fromReference(element, config, locales = locales, fromInspection = fromInspection)?.let { return it }
         }
         return null
     }
@@ -230,7 +232,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
     fun fromModifier(
         element: ParadoxScriptStringExpressionElement,
         config: CwtMemberConfig<*>,
-        locales: Collection<CwtLocaleConfig>,
+        locales: Collection<CwtLocaleConfig> = ParadoxLocaleManager.getSupportedLocales(config.configGroup),
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         val inspection = if (fromInspection) getMissingLocalisationInspection(element) else null
@@ -266,13 +268,13 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             }
         }
 
-        return ParadoxLocalisationCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, fromInspection = fromInspection)
+        return ParadoxLocalisationCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, locales = locales, fromInspection = fromInspection)
     }
 
     fun fromReference(
         element: ParadoxScriptStringExpressionElement,
         config: CwtMemberConfig<*>,
-        locales: Collection<CwtLocaleConfig>,
+        locales: Collection<CwtLocaleConfig> = ParadoxLocaleManager.getSupportedLocales(config.configGroup),
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         val inspectionState = if (fromInspection) checkForReferences(element) else true
@@ -296,7 +298,8 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, true, missing, false)
             codeInsightInfos += codeInsightInfo
         }
-        return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, fromInspection = fromInspection)
+
+        return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, locales = locales, fromInspection = fromInspection)
     }
 
     private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocaleConfig): Boolean {

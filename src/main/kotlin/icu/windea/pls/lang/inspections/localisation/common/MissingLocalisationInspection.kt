@@ -10,15 +10,20 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
+import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
+import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
 import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -29,28 +34,36 @@ import javax.swing.JComponent
 
 /**
  * 缺失的本地化的代码检查。
+ *
+ * @property ignoredFileNames （配置项）需要忽略检查的文件名。一组模式，分号分隔，忽略大小写。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
-    @JvmField
-    var checkForPreferredLocale = true
-    @JvmField
-    var checkForSpecificLocales = true
-    @JvmField
-    var locales = ""
+    @JvmField var ignoredFileNames = "languages.yml"
+    @JvmField var checkForPreferredLocale = true
+    @JvmField var checkForSpecificLocales = true
+    @JvmField var locales = ""
 
     @Suppress("ktPropBy")
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 跳过需要忽略的文件
+        if (isIgnoredFile(file)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
 
+    private fun isIgnoredFile(file: PsiFile): Boolean {
+        return file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)
+    }
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
+        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        val supportedLocaleMap = supportedLocales.associateBy { it.id }
         val locales = mutableSetOf<CwtLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
-        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { allLocaleMap.get(it) }
+        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { supportedLocaleMap.get(it) }
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxLocalisationVisitor() {
             override fun visitProperty(element: ParadoxLocalisationProperty) {
@@ -109,6 +122,15 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
+            // ignoredFileNames
+            row {
+                label(PlsBundle.message("inspection.localisation.missingLocalisation.option.ignoredFileNames"))
+                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                    .bindText(::ignoredFileNames.toAtomicProperty())
+                    .comment(PlsBundle.message("comment.patterns"))
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
             // checkForPreferredLocale
             row {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
@@ -125,9 +147,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(PlsBundle.message("link.configure")) {
-                    val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
-                    val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }
-                    val dialog = ParadoxLocaleCheckBoxDialog(allLocaleMap.values, selectedLocales)
+                    val configGroup = PlsFacade.getConfigGroup()
+                    val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
+                    val globalLocaleMap = globalLocales.associateBy { it.id }
+                    val selectedLocales = localeSet.mapNotNull { globalLocaleMap.get(it) }
+                    val dialog = ParadoxLocaleCheckBoxDialog(globalLocaleMap.values, selectedLocales)
                     if (dialog.showAndGet()) {
                         val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
                         localeSet = newLocaleSet

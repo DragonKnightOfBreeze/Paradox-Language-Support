@@ -2,13 +2,13 @@ package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.tools.PlsDataPathService
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.name
@@ -73,7 +73,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) throw IllegalStateException()
 
-        val tempParentPath = PlsDataPathService.getInstance().imagesTempPath
+        val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
         outputDirectoryPath.createDirectories()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
@@ -81,7 +81,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
 
         val fullExePath = toolPath.toPath()
         val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name.quoteIfNecessary('\'')
+        val exe = fullExePath.name.quoteIfNeeded('\'')
         val input = path.toString().quote('\'')
         val output = outputPath.toString().quote('\'')
 

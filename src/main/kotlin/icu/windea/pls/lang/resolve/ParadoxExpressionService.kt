@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
@@ -16,11 +16,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.configGroup
-import icu.windea.pls.lang.codeInsight.completion.contextElement
-import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -42,7 +38,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
                 withRecursionCheck("${ep.javaClass.name}@a@${text}") {
                     ep.annotate(element, rangeInElement, text, config, holder)
                 }
@@ -62,7 +58,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@r@${text}") {
                     ep.resolve(element, rangeInElement, text, config, role)
                 }
@@ -82,7 +78,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@ra@${text}") {
                     ep.resolveAll(element, rangeInElement, text, config, role).orNull()
                 }
@@ -102,7 +98,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@gr@${text}") {
                     ep.getReferences(element, rangeInElement, text, config, role).orNull()
                 }
@@ -113,7 +109,7 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.complete
      */
-    fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
@@ -122,7 +118,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
                 withRecursionCheck("${ep.javaClass.name}@c@${context.keyword}") {
                     ep.complete(context, result)
                 }
@@ -143,7 +139,7 @@ object ParadoxExpressionService {
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.annotate(element, rangeInElement, text, holder)
         }
     }
@@ -157,7 +153,7 @@ object ParadoxExpressionService {
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.resolve(element, rangeInElement, text)
         }
     }
@@ -171,7 +167,7 @@ object ParadoxExpressionService {
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.resolveAll(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
@@ -185,7 +181,7 @@ object ParadoxExpressionService {
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getReferences(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
@@ -193,14 +189,14 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.complete
      */
-    fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeLocalisationExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
         val configGroup = context.configGroup ?: return
         val gameType = configGroup.gameType
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.complete(context, result)
         }
     }
@@ -219,7 +215,7 @@ object ParadoxExpressionService {
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.annotate(element, rangeInElement, text, config, holder)
         }
     }
@@ -234,7 +230,7 @@ object ParadoxExpressionService {
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.resolve(element, rangeInElement, text, config)
         }
     }
@@ -249,7 +245,7 @@ object ParadoxExpressionService {
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.resolveAll(element, rangeInElement, text, config).orNull()
         }.orEmpty()
     }
@@ -257,14 +253,14 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.complete
      */
-    fun completeCsvExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeCsvExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config?.castOrNull<CwtValueConfig>() ?: return
         val configExpression = config.configExpression
-        val gameType = config.configGroup.gameType
+        val gameType = context.gameType
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.complete(context, result)
         }
     }

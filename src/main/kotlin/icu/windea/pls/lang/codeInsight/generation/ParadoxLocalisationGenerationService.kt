@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
@@ -14,7 +15,6 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerationService {
@@ -25,7 +25,7 @@ object ParadoxLocalisationGenerationService {
         val fileName = getFileName(context)
         val fileText = getFileText(context)
         val file = ParadoxFileManager.createLightFile(fileName, fileText, ParadoxLocalisationLanguage)
-        file.bom = PlsConstants.utf8Bom // 这里需要直接这样添加bom
+        file.bom = VirtualFileBomService.utf8Bom // 这里需要直接这样添加bom
         file.putUserData(fileLocaleKey, context.locale) // 添加语言环境元数据
         file.putUserData(fileTooltipKey, context.tooltip) // 添加文件提示元数据，后续会在文件通知中显示
         return file

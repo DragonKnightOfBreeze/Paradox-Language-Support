@@ -1,0 +1,49 @@
+package icu.windea.pls.base.io
+
+import icu.windea.pls.core.executeCommandLine
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.toPath
+import java.nio.file.Path
+import kotlin.io.path.exists
+
+class ChronicleGitServiceImpl : ChronicleGitService {
+    override fun getRepositoryPathFromUrl(url: String): String {
+        return url.substringAfterLast('/').removeSuffix(".git")
+    }
+
+    override fun isUpdateToDate(message: String?): Boolean {
+        return message.isNullOrEmpty() || message.startsWith("Already up to date")
+    }
+
+    override fun checkRemote(url: String): String {
+        return lsRemote(url)
+    }
+
+    override fun syncFromRemote(url: String, parentDirectory: String): String {
+        val localRepoDirectory = getRepositoryPathFromUrl(url)
+        val parentPath = parentDirectory.toPath()
+        val localRepoPath = parentPath.resolve(localRepoDirectory)
+        return if (localRepoPath.exists()) {
+            pull(url, localRepoPath)
+        } else {
+            clone(url, parentPath)
+        }
+    }
+
+    override fun lsRemote(url: String): String {
+        val url = url.quoteIfNeeded()
+        return executeCommandLine("git ls-remote $url")
+    }
+
+    override fun clone(url: String, workDirectory: Path): String {
+        val url = url.quoteIfNeeded()
+        val wd = workDirectory.normalize().toAbsolutePath().toFile()
+        return executeCommandLine("git clone $url", workDirectory = wd)
+    }
+
+    override fun pull(url: String, workDirectory: Path): String {
+        val url = url.quoteIfNeeded()
+        val wd = workDirectory.normalize().toAbsolutePath().toFile()
+        return executeCommandLine("git pull $url", workDirectory = wd)
+    }
+}

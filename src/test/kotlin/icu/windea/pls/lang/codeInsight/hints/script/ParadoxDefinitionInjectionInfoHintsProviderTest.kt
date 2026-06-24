@@ -17,6 +17,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxDefinitionInjectionInfoHintsProvider
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionInjectionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestCase() {
@@ -26,7 +29,7 @@ class ParadoxDefinitionInjectionInfoHintsProviderTest: DeclarativeInlayHintsProv
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
-        markConfigDirectory("features/inlayHints/.config")
+        markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Vic3)
     }
 

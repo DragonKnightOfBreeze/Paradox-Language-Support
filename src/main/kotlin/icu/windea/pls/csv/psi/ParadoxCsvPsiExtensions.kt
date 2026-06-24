@@ -2,34 +2,14 @@
 
 package icu.windea.pls.csv.psi
 
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.children
-import icu.windea.pls.core.findChild
+fun ParadoxCsvRowElement.getColumnSize(): Int = ParadoxCsvPsiService.getColumnSize(this)
 
-fun ParadoxCsvRowElement.getColumnSize(): Int {
-    return this.children().count { it is ParadoxCsvColumn }
-}
+fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? = ParadoxCsvPsiService.getColumn(this, index)
 
-fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {
-    return this.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
-}
+fun ParadoxCsvColumn.isEmptyColumn(): Boolean = ParadoxCsvPsiService.isEmptyColumn(this)
 
-fun ParadoxCsvColumn.isEmptyColumn(): Boolean {
-    return firstChild == null
-}
+fun ParadoxCsvColumn.isHeaderColumn(): Boolean = ParadoxCsvPsiService.isHeaderColumn(this)
 
-fun ParadoxCsvColumn.isHeaderColumn(): Boolean {
-    return parent is ParadoxCsvHeader
-}
+fun ParadoxCsvColumn.getColumnIndex(): Int = ParadoxCsvPsiService.getColumnIndex(this)
 
-fun ParadoxCsvColumn.getColumnIndex(): Int {
-    val rowElement = parent?.castOrNull<ParadoxCsvRowElement>() ?: return 0
-    val index = rowElement.children().takeWhile { it != this }.count { it is ParadoxCsvColumn }
-    return index
-}
-
-fun ParadoxCsvColumn.getHeaderColumn(): ParadoxCsvColumn? {
-    val header = parent?.castOrNull<ParadoxCsvRow>()?.parent?.findChild<ParadoxCsvHeader>() ?: return null
-    val index = getColumnIndex()
-    return header.getColumn(index)
-}
+fun ParadoxCsvColumn.getHeaderColumn(): ParadoxCsvColumn? = ParadoxCsvPsiService.getHeaderColumn(this)

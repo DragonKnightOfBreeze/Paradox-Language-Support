@@ -3,6 +3,9 @@ package icu.windea.pls.model.constraints
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPath
 
+/**
+ * @see ParadoxPath
+ */
 @Suppress("unused")
 enum class ParadoxPathConstraint {
     InLocalisationPath {
@@ -40,7 +43,7 @@ enum class ParadoxPathConstraint {
     },
     AcceptDefinitionInjection {
         override fun test(path: ParadoxPath) = ScriptFile.test(path) && !path.matchesParent("common/defines") && !path.matchesParent("common/scripted_variables")
-    }
+    },
     ;
 
     abstract fun test(path: ParadoxPath): Boolean

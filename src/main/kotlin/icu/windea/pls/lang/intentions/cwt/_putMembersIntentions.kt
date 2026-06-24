@@ -7,8 +7,8 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 import icu.windea.pls.cwt.psi.CwtElementFactory
@@ -21,11 +21,10 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberC
 
     protected fun checkElementAvailable(element: CwtBoundMemberContainer, hasLineBreak: Boolean? = null): Boolean {
         // 块中存在成员元素（包括仅存在一个的情况），且不存在空白以外的非成员元素（如注释）
-        val leftBound = element.leftBound ?: return false
-        val rightBound = element.rightBound ?: return false
+        val collected = PsiService.collectBetweenBounds(element) ?: return false
         var flag = false
         var lineBreakFlag = false
-        for (e in leftBound.siblings(withSelf = false).takeWhile { it != rightBound }) {
+        for (e in collected) {
             when (e) {
                 is PsiWhiteSpace -> {
                     if (hasLineBreak != null && !lineBreakFlag) lineBreakFlag = e.textContains('\n')
@@ -63,7 +62,7 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newText = "{ ${membersText} }"
-        val newElement = CwtElementFactory.createBlockFromText(context.project, newText)
+        val newElement = CwtElementFactory.createBlockFromTextFromText(context.project, newText)
         element.replace(newElement)
     }
 
@@ -94,7 +93,7 @@ class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newText = "{\n${membersText}\n}"
-        val newElement = CwtElementFactory.createBlockFromText(context.project, newText)
+        val newElement = CwtElementFactory.createBlockFromTextFromText(context.project, newText)
         element.replace(newElement)
     }
 

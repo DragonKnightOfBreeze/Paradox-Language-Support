@@ -10,8 +10,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
-import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
-import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxDefineVariableInfo

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.codeInsight.daemon.impl.analysis.ErrorQuickFixProvider
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.lang.quickfix.InsertMissingTokenFix
+import icu.windea.pls.lang.fixes.InsertMissingTokenFix
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxParameter
 

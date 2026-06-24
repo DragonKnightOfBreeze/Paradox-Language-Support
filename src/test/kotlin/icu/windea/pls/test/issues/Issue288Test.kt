@@ -2,7 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -42,6 +42,6 @@ class Issue288Test : BasePlatformTestCase() {
     fun test() {
         markFileInfo(gameType, "common/location_ranks/issue_288_eu5.test.txt")
         myFixture.configureByFile("issues/288/common/location_ranks/issue_288_eu5.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.checkHighlighting()
     }
 }

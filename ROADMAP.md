@@ -12,7 +12,7 @@
 - 截止版本：v2.1.10
 - 截止日期：2026.06.15
 
-## v2.1.10
+## v2.1.10 {#v2-1-10}
 
 本版本聚焦于**快速的修复、简单的新功能、相对简单的重构和优化**。涵盖解析器/表达式支持重构、新表达式类型支持、开发体验改进等方面。
 
@@ -23,7 +23,7 @@
 - [x] P2 清理 `CHANGELOG.md`，进一步确定编写规范
 - [x] P2 重构 path/expression/complexExpression/config/configExpression 的解析器与解析的相关代码（改为：模型接口上的静态解析方法 + 委托给解析器类的对应方法）
 - [x] P2 重构 expressionSupport 以及相关代码（精简与规范化）
-- [ ] P3 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作）
+- [x] P3 重构代码补全系统的相关代码（改为：传递专门的、只读的上下文对象，存在全局上下文/动态上下文/特定上下文，需要一定的设计工作） - 需要审查
 - [x] P3 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） - 相关EP：`extendWordSelectionHandler`
 - [x] P3 提供动作，以进行定义/定义注入之间的差异比较
 - [x] P4 借助 AI，提供更多 specialPathProvider 和 specialUrlProvider 的默认 EP 实现
@@ -37,47 +37,52 @@
   - [x] 补充实现代码。
   - [x] 补充测试。
   - [x] 创建单独的 Issue。
-- [ ] P2 [CK3/VIC3?/EU5?] 完善对动态值集合表达式（dynamicValueSetExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
-  - 示例：`flag1,flag2` - 写访问。`flag1` 和 `flag2` 视为标识符（作为动态值节点）。
-  - 示例：`flag1,not(flag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
-  - 对应的规则表达式（数据表达式）：`$dynamic_value_set[{name}]` 和 `$dynamic_value_set_condition[{name}]`（条件变体）。
-  - 忽略表达式中的多余空白。
-  - 需要用双引号括起，否则给出警告。
-  - [ ] 补充实现代码。
-  - [ ] 补充测试。
-  - [ ] 更新相关规则文件。
-  - [ ] 创建单独的 Issue。
-  - [ ] 补充评估器。
-- [ ] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
-  - 示例：`Namespace|Name` - 定值引用表达式。引用字面量（通常是数字、颜色或日期）。
-  - 示例：`Namespace|Name|0` - 数组定值引用表达式。引用字面量（通常是数字）。索引从0开始。
+- [x] P2 [CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持
+  - 示例：`Namespace|Name` - 定值引用表达式。引用字面量或数组（通常是数字、颜色或日期）。
+  - 示例：`Namespace|Name|0` - 数组定值引用表达式。引用字面量或数组（通常是数字、颜色或日期）。索引从0开始。
   - 对应的规则表达式（数据表达式）：`$define_reference` 和 `$array_define_reference`
   - 需要补充规范化的链接规则 `define` 和 `array_define`（`type = value`）。
   - 需要补充或重构复杂表达式实现、代码补全、代码检查。
-  - 需要考虑补充评估器、检查器（基于评估器）、代码折叠（基于评估器）、意向动作（基于评估器）。
-  - [ ] 补充实现代码。
-  - [ ] 补充测试。
-  - [ ] 更新相关规则文件。
-  - [ ] 创建单独的 Issue。
-  - [ ] 补充评估器。
-  - [ ] 补充基于评估器的那些语言功能（代码检查、代码折叠、意向动作）。
+  - 需要考虑补充评估器、~~检查器（基于评估器）~~、内嵌提示（基于评估器）、意向动作（基于评估器）。
+  - [x] 补充实现代码。
+  - [x] 补充测试。
+  - [x] 更新相关规则文件。
+  - [x] 补充评估器。
+  - [x] 补充基于评估器的那些语言功能（~~代码检查~~、~~代码折叠~~、内嵌提示、意向动作）。
+- [x] P2 [CK3/VIC3?/EU5?] 完善对标签集表达式（tagsExpression）的支持 ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
+  - 示例：`tag1,tag2` - 写访问。`tag1` 和 `tag2` 视为标识符（作为动态值节点）。
+  - 示例：`tag1,not(tag2)` - 读访问，条件变体。`not` 视为关键字（作为关键字节点）。
+  - 对应的规则表达式（数据表达式）：`$tags[{name}]` 和 `$tags_condition[{name}]`（条件变体）。
+  - 匹配时兼容空字符串。
+  - 忽略表达式中的多余空白。
+  - 需要用双引号括起，否则给出警告。
+  - 需要进一步确认格式和语义。
+  - [x] 补充实现代码。
+  - [x] 补充测试。
+  - [x] 更新相关规则文件。
 - [x] P2/FAST 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示
   - 例如说明模组目录直接位于游戏创意工坊目录下，因此被推断为对应的游戏类型
   - 此时不允许在模组设置对话框中更改游戏类型
 
-## 附加
+### 附加
 
 - [x] 重构：重命名EP接口 `CwtDataExpressionResolver` 为 `CwtDataExpressionSupport`
 - [x] 重构：将 `icu.windea.pls.ep.match` 中的已有代码全部移到 `icu.windea.pls.ep.match.expression`
 - [x] 重构：重构 `ParadoxAnalysisInjector` 中的方法并重命名为 `ParadoxAnalysisInjectionManager`
-- [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值操作符） ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] P1 [Stellaris] 在语法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在语法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [ ] P3/QOL/MAYBE 提供意向，以在作用域的安全调用形式（`owner ?= ...` 或 `owner? = ...`）与显式调用形式（`exists = owner owner = ...`）之间进行转换
-- [ ] P3/QOL/MAYBE 提供代码检查，以在作用域的安全调用形式（`owner ?= ...` 或 `owner? = ...`）与显式调用形式（`exists = owner owner = ...`）之间进行转换
-- [ ] P3/QOL/MAYBE 提供意向，以在作用域的链式调用形式（`root.owner = ...`）与分离调用形式（`root = { owner = ... }`）之间进行转换 - split/merge - 不检查调用链是否过长
+- [x] 重构：变更 `ParadoxGameType` 中的静态方法，提供 `ParadoxGameTypeConstraint`
+- [x] 重构：将 `icu.windea.pls.lang.quickfix` 中的已有代码全部移到 `icu.windea.pls.lang.fixes`
+- [x] 重构：将 `参数条件/参数条件块/parameterCondition/parameterConditionBlock` 对应地重命名为 `参数化块/conditionalBlock`
+- [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符） ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] P1 [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] P3/QoL 提供代码检查 `UnmatchedFileInspection`（对于脚本文件或CSV文件），以报告当前文件无法匹配到任何 `CwtFilePathMatchableConfig`（默认级别：`WARNING`） - 这意味着当前文件是特殊的，或者缺失相应的规则
+- [x] P3/QoL 将 `ParadoxInlineScriptEditorNotificationProvider` 改为 `DeclaredInlineScriptInspection`（默认级别：`TEXT ATTRIBUTES`） - 为了对齐已有的 `UnusedInlineScriptInspection`
+- [x] P3/QoL 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 - 需要同时检测于文法级别和语义级别
+- [x] P3/QoL 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与普通形式（`owner = ...`）之间进行转换 - 需要同时检测于文法级别和语义级别
+- [x] P3/QoL 完善作用域调用的普通形式/安全形式之间的转换逻辑 - 存在更多细节，需要修复和改进
+- [x] P3 在工具菜单中新增规则系统相关的动作，并且另外提供动作，以强制刷新内置规则目录、强制刷新规则分组数据
 
-## v2.2.0-csv
+## v2.2.0-csv {#v2-2-0}
 
 本版本聚焦于**完善对 CSV 文件与 rowConfig 的支持**，处理边界情况，调整相关代码检查。
 
@@ -97,11 +102,11 @@
   - [ ] 调整相关的代码检查的代码。
   - [ ] 调整复杂枚举值索引和合并索引的逻辑，以兼容在CSV文件中的复杂枚举值声明和动态值声明。
 
-## v3.0.0-the-great-renaming
+## v3.0.0-the-great-renaming 
 
 本版本聚焦于**大重命名**（项目名、类名、特殊字面量等）以及**文档的全面更新**（普通文档、参考文档、规则仓库的普通文档），同时完善社区文档。
 
-### 计划
+### 计划 {#v3-0-0}
 
 - [ ] P2/MS 改进英文 `README.md`，检查并修正用词问题和单复数问题。包括更准确的描述和说明、更符合个人风格和项目叙事风格的文字，适当引入叙事性
 - [ ] P2/MS 改进与补充 `README.md`（叙事 / 问题解决 / FAQ / 已知限制 / ……）
@@ -109,7 +114,7 @@
 - [ ] P2/MS 新增与补充 `CONTRIBUTING.md`（概述，说明如何贡献代码/文档/规则，包括步骤/建议/复杂性警告）
 - [ ] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
 
-## v3.1.0-complex-expression
+## v3.1.0-complex-expression {#v3-1-0}
 
 本版本聚焦于**复杂表达式 API 的相关重构**（更准确的解析逻辑、更详细的报错、处理边界情况、补充测试），关键词包括 Token、TokenStream、Scanner、Resolver、Visitor、Validator、Evaluator 等。
 
@@ -119,7 +124,7 @@
 - [ ] P2/MS 优化对复杂表达式的支持：优化对动态链接节点中传入的字面量的处理逻辑
 - [ ] P3/MAYBE 实现 script_value 的评估器，提供对应的求值意向动作。可能需要依赖游戏运行时的上下文（此时显示为动态结果/条件结果）
 
-## v3.2.0-advanced-inline
+## v3.2.0-advanced-inline {#v3-2-0}
 
 本版本聚焦于**内联脚本进阶**，包括内联脚本的展开评估器与对应的意向动作，以及内联定义（索引/查询/引用解析/各种语言功能等）。
 
@@ -137,7 +142,7 @@
   - 暂不考虑提供装订线图标（Rust 插件在光标位于当行时提供）
   - 暂不考虑在预览中适用语义高亮（Rust 插件当前未适用）
 
-## 长期
+## 长期 {#long-term}
 
 此章节包含所有**作为长期任务或未来愿景**的待办事项。
 
@@ -157,7 +162,7 @@
 - [ ] DELAY 让 AI 有能力自行维护规则文件，并且尽可能自动化
 - [ ] DELAY 需要使用 WebView 渲染的高级可视化功能
 
-## 未整理
+## 未整理 {#unsorted}
 
 此章节包含所有**暂未纳入到上述任何版本计划中**的待办事项。
 

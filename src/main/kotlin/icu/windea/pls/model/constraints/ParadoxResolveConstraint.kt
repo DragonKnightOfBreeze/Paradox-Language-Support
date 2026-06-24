@@ -21,7 +21,7 @@ import icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionTargetPsi
 import icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReference
 import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxIdentifierNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon

@@ -1,3 +1,5 @@
+import com.github.javaparser.printer.concretesyntaxmodel.CsmElement.token
+import com.github.javaparser.resolution.model.Value.from
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -219,7 +221,7 @@ kotlin {
                 "-Xannotation-default-target=param-property",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-opt-in=kotlin.ExperimentalStdlibApi",
-                "-XXLanguage:+WhenGuards"
+                // "-XXLanguage:+WhenGuards",
             )
         )
     }
@@ -442,6 +444,11 @@ tasks {
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
+
+        // systemProperty("chronicle.capacities.recordCacheStats", "true")
+        // systemProperty("chronicle.capacities.recordIndexStats", "true")
+        // systemProperty("chronicle.capacities.refreshBuiltInConfigDirectories", "true")
+        // systemProperty("chronicle.capacities.keepOptionConfigs", "true")
     }
     withType<Test> {
         useJUnit()

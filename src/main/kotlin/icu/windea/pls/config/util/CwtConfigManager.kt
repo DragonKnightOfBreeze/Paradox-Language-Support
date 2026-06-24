@@ -25,9 +25,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.matchesAntPattern
-import icu.windea.pls.core.matchesPath
+import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -172,35 +170,9 @@ object CwtConfigManager {
         }
     }
 
+    @Deprecated("Use `CwtConfigMatchService.matchesFilePath`", ReplaceWith("icu.windea.pls.config.match.CwtConfigMatchService.matchesFilePath(config, filePath)"))
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig<*>, filePath: ParadoxPath): Boolean {
-        // This method should be very fast
-        // 1.4.2 use optimized match logic, DO NOT use config.filePathPatterns here
-
-        val pathPatterns = config.pathPatterns
-        if (pathPatterns.isNotEmpty()) {
-            if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
-        }
-        val pathFile = config.pathFile
-        if (pathFile.isNotNullOrEmpty()) {
-            if (pathFile != filePath.fileName) return false
-        } else {
-            val pathExtension = config.pathExtension
-            if (pathExtension.isNotNullOrEmpty()) {
-                if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
-            }
-        }
-        val paths = config.paths
-        if (paths.isNotEmpty()) {
-            val pathStrict = config.pathStrict
-            for (path in paths) {
-                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
-            }
-            return false
-        } else {
-            val pathExtension = config.pathExtension
-            if (pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
-            return true
-        }
+        return CwtConfigMatchService.matchesFilePath(config, filePath)
     }
 
     fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {

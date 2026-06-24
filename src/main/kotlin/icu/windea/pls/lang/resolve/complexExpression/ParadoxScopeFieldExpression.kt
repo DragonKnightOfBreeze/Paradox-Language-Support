@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
@@ -45,6 +48,8 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
@@ -57,7 +62,7 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression, ParadoxLinkedE
 
 private object ParadoxScopeFieldExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
@@ -111,13 +116,34 @@ private object ParadoxScopeFieldExpressionResolver {
     }
 }
 
+private object ParadoxScopeFieldExpressionValidator : ParadoxComplexExpressionValidatorScope {
+    fun validate(expression: ParadoxScopeFieldExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, element, errors) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedScopeFieldExpression(expression.rangeInExpression, expression.text)
+        checkQuotes(element, expression, errors)
+        return errors
+    }
+}
+
 private class ParadoxScopeFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxScopeFieldExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxScopeFieldExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxScopeFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()

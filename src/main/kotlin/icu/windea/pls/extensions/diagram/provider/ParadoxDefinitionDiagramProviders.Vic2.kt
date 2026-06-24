@@ -5,10 +5,10 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.Vic2EventTreeDiagramSettings
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic2) {
     object Constants {
         const val ID = "Vic2.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture")
+        val itemPropertyKeys = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -29,7 +29,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
 
     override fun getDiagramSettings(project: Project) = project.service<Vic2EventTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class DataModel(
         project: Project,

@@ -8,6 +8,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -19,7 +20,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference

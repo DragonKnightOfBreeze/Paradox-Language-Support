@@ -5,10 +5,10 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.Vic3EventTreeDiagramSettings
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -16,11 +16,11 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 @WithGameType(ParadoxGameType.Vic3)
 class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic3) {
     object Constants {
-        const val ID = "Vic3.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
+        const val id = "Vic3.EventTree"
+        val itemPropertyKeys = listOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
     }
 
-    override fun getID() = Constants.ID
+    override fun getID() = Constants.id
 
     override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.vic3")
 
@@ -28,7 +28,7 @@ class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
 
     override fun getDiagramSettings(project: Project) = project.service<Vic3EventTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class DataModel(
         project: Project,

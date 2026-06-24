@@ -11,12 +11,12 @@ class ParadoxScriptUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxScriptScriptedVariableRemover(),
         ParadoxScriptPropertyRemover(),
         ParadoxScriptValueRemover(),
-        ParadoxScriptParameterConditionRemover(),
-        ParadoxScriptInlineParameterConditionRemover(),
+        ParadoxScriptConditionalBlockRemover(),
+        ParadoxScriptInlineConditionalBlockRemover(),
         ParadoxScriptPropertyUnwrapper(),
         ParadoxScriptBlockUnwrapper(),
-        ParadoxScriptParameterConditionUnwrapper(),
-        ParadoxScriptInlineParameterConditionUnwrapper(),
+        ParadoxScriptConditionalBlockUnwrapper(),
+        ParadoxScriptInlineConditionalBlockUnwrapper(),
     )
 
     override fun createUnwrappers(): Array<out Unwrapper> {

@@ -29,11 +29,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * - `{name}`。其中 `{name}` 匹配规则名称。
  * - 对于规则文件中的顶级属性，如果未在解析其他规则的过程中被匹配到，且键是一个合法的标识符，最终都会在回退时尝试解析为声明规则。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * event = {
@@ -50,6 +46,8 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  *     # ...
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称（即定义的类型名）。
  * @property attributes 综合属性。

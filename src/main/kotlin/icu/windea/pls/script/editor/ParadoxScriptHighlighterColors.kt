@@ -9,8 +9,8 @@ object ParadoxScriptHighlighterColors {
     @JvmField val BRACES = createTextAttributesKey("PARADOX_SCRIPT.BRACES", DefaultLanguageHighlighterColors.BRACES)
     @JvmField val OPERATOR = createTextAttributesKey("PARADOX_SCRIPT.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val MARKER = createTextAttributesKey("PARADOX_SCRIPT.MARKER", DefaultLanguageHighlighterColors.KEYWORD)
-    @JvmField val PARAMETER_CONDITION_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.PARAMETER_CONDITION_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
-    @JvmField val PARAMETER_CONDITION_EXPRESSION_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.PARAMETER_CONDITION_EXPRESSION_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
+    @JvmField val CONDITIONAL_BLOCK_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.CONDITIONAL_BLOCK_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
+    @JvmField val CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.CONDITIONAL_BLOCK_EXPRESSION_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
     @JvmField val INLINE_MATH_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.INLINE_MATH_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
     @JvmField val INLINE_MATH_OPERATOR = createTextAttributesKey("PARADOX_SCRIPT.INLINE_MATH_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val COMMENT = createTextAttributesKey("PARADOX_SCRIPT.COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
@@ -34,6 +34,7 @@ object ParadoxScriptHighlighterColors {
     @JvmField val SEMANTIC_KEYWORD = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val SEMANTIC_ARGUMENT = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_ARGUMENT") // KOTLIN_NAMED_ARGUMENT
     @JvmField val SEMANTIC_STRING = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_STRING", DefaultLanguageHighlighterColors.STRING)
+    @JvmField val SEMANTIC_NUMBER = createTextAttributesKey("PARADOX_SCRIPT.SEMANTIC_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
 
     @JvmField val DEFINITION = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY) // underscored
     @JvmField val DEFINITION_NAME = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") // background #223C23

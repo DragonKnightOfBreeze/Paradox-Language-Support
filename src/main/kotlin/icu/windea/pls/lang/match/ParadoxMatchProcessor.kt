@@ -39,14 +39,14 @@ object ParadoxMatchProcessor {
         processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.DirectMatch }
         if (matched.isNotEmpty()) return
 
-        processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.WildcardMatch }
+        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.WildcardMatch }
         if (matched.isNotEmpty()) return
-        processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.LenientWildcardMatch }
+        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.LenientWildcardMatch }
         if (matched.isNotEmpty()) return
-        processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.PartialMatch }
+        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.PartialMatch }
         if (matched.isNotEmpty()) return
 
-        processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.FallbackMatch }
+        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.FallbackMatch }
     }
 
     private inline fun processChecked(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionWordSelectionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager

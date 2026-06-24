@@ -10,7 +10,7 @@ import com.intellij.util.ui.table.JBTableRow
 import com.intellij.util.ui.table.JBTableRowEditor
 import com.intellij.util.ui.table.JBTableRowRenderer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.model.type.ParadoxSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import javax.swing.BoxLayout
@@ -30,19 +30,19 @@ class ElementsListTable(
         override fun getText(table: JTable, row: Int): String {
             val item = getRowItem(row)
             return when (item) {
-                is ValueDescriptor -> {
+                is ElementDescriptors.Value -> {
                     item.name
                 }
-                is PropertyDescriptor -> {
+                is ElementDescriptors.Property -> {
                     buildString {
-                        append(item.name.quoteIfNecessary())
+                        append(item.name.quoteIfNeeded())
                         append(" ")
                         append(item.separator)
                         append(" ")
                         if (item.value.isEmpty()) {
                             append("\"\"").append(" # ").append(PlsBundle.message("ui.table.element.column.tooltip.editInTemplate"))
                         } else {
-                            append(item.value.quoteIfNecessary())
+                            append(item.value.quoteIfNeeded())
                         }
                     }
                 }
@@ -67,13 +67,13 @@ class ElementsListTable(
                     val panel = JPanel(VerticalFlowLayout(VerticalFlowLayout.TOP, 4, 2, true, false))
                     when (columnInfo) {
                         is ElementsTableModel.NameColumn -> {
-                            if (item is ValueDescriptor) {
+                            if (item is ElementDescriptors.Value) {
                                 val nameComboBox = ComboBox(context.descriptorsInfo.allValues)
                                 nameComboBox.selectedItem = item.name
                                 configureNameComboBox(nameComboBox)
                                 this.nameComboBox = nameComboBox
                                 panel.add(nameComboBox)
-                            } else if (item is PropertyDescriptor) {
+                            } else if (item is ElementDescriptors.Property) {
                                 val nameComboBox = ComboBox(context.descriptorsInfo.allKeys)
                                 nameComboBox.selectedItem = item.name
                                 configureNameComboBox(nameComboBox)
@@ -82,7 +82,7 @@ class ElementsListTable(
                             }
                         }
                         is ElementsTableModel.SeparatorColumn -> {
-                            if (item is PropertyDescriptor) {
+                            if (item is ElementDescriptors.Property) {
                                 val separatorComboBox = ComboBox(ParadoxSeparatorType.entries.toTypedArray())
                                 separatorComboBox.selectedItem = item.separator
                                 configureSeparatorComboBox(separatorComboBox)
@@ -91,7 +91,7 @@ class ElementsListTable(
                             }
                         }
                         is ElementsTableModel.ValueColumn -> {
-                            if (item is PropertyDescriptor) {
+                            if (item is ElementDescriptors.Property) {
                                 val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
                                 val items = constantValues
                                 val valueComboBox = ComboBox(items)

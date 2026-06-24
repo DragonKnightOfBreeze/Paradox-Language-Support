@@ -166,7 +166,7 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region 内联数学操作符周围的空格
+    // region 内联数学运算符周围的空格
 
     @Test
     fun testSpaceAroundInlineMathOperator_addSpaces() {
@@ -309,48 +309,48 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region 参数条件块
+    // region 参数化快
 
     @Test
-    fun testParameterCondition_spacingEnabled() {
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS = true
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS = false
-        // 参数条件块结构：[ (LEFT_BRACKET) [ (NESTED_LEFT_BRACKET) expr ] (NESTED_RIGHT_BRACKET) items ] (RIGHT_BRACKET)
+    fun testConditionalBlock_spacingEnabled() {
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = false
+        // 参数化快结构：[ (LEFT_BRACKET) [ (NESTED_LEFT_BRACKET) expr ] (NESTED_RIGHT_BRACKET) items ] (RIGHT_BRACKET)
         // BRACKETS 控制 NESTED_RIGHT_BRACKET 与 MEMBERS 以及 MEMBERS 与 RIGHT_BRACKET 之间的空格
         val after = reformat("[[param]k = v]")
         assertEquals("[[param] k = v ]", after)
     }
 
     @Test
-    fun testParameterCondition_spacingDisabled() {
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS = false
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS = false
+    fun testConditionalBlock_spacingDisabled() {
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = false
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = false
         val after = reformat("[[param] k = v ]")
         assertEquals("[[param]k = v]", after)
     }
 
     @Test
-    fun testParameterCondition_expressionBracketsSpacing() {
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS = true
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS = true
+    fun testConditionalBlock_expressionBracketsSpacing() {
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = true
         // EXPRESSION_BRACKETS 控制 NESTED_LEFT_BRACKET 与表达式以及表达式与 NESTED_RIGHT_BRACKET 之间的空格
         val after = reformat("[[param]k = v]")
         assertEquals("[[ param ] k = v ]", after)
     }
 
     @Test
-    fun testParameterCondition_negated() {
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS = true
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS = false
-        // 取反参数条件：`!` 是表达式内部的 NOT_SIGN
+    fun testConditionalBlock_negated() {
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = false
+        // 取反参数化快：`!` 是表达式内部的 NOT_SIGN
         val after = reformat("[[!param]k = v]")
         assertEquals("[[!param] k = v ]", after)
     }
 
     @Test
-    fun testParameterCondition_indentedInBlock() {
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS = true
-        getCustomSettings().SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS = false
+    fun testConditionalBlock_indentedInBlock() {
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
+        getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = false
         val before = "effect = {\n[[param]\nk = v\n]\n}"
         val after = reformat(before)
         assertEquals("effect = {\n    [[param]\n        k = v\n    ]\n}", after)

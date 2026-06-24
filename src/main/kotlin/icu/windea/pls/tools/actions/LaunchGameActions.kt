@@ -25,7 +25,6 @@ interface LaunchGameActions {
             e.presentation.isEnabledAndVisible = isAvailable
             if (!isAvailable) return
             val gameType = rootInfo.gameType
-            e.presentation.text = PlsToolsBundle.message("game.launcher.inSteam")
             e.presentation.description = PlsToolsBundle.message("game.launcher.inSteam.detail", gameType.title)
         }
 
@@ -50,7 +49,6 @@ interface LaunchGameActions {
             e.presentation.isEnabledAndVisible = isAvailable
             if (!isAvailable) return
             val gameType = rootInfo.gameType
-            e.presentation.text = PlsToolsBundle.message("game.launcher.inSteam.withExit")
             e.presentation.description = PlsToolsBundle.message("game.launcher.inSteam.withExit.detail", gameType.title)
         }
 

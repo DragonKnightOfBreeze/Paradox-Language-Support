@@ -26,11 +26,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * 路径定位：
  * - `scopes/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * scopes = {
@@ -38,9 +34,11 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * }
  * ```
  *
+ * > CWTools 兼容性：兼容。
+ *
  * @property name 规则名称。
  * @property aliases 该作用域的别名集合（忽略大小写）。
- * @property isSubscopeOf TODO 暂不支持。
+ * @property isSubscopeOf TODO [config-system] 暂不支持。
  *
  * @see ParadoxScope
  * @see ParadoxScopeContext

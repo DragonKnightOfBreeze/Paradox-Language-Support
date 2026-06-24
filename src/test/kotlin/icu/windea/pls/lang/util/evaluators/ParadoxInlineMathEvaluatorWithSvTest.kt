@@ -17,6 +17,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxInlineMathEvaluator
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
@@ -31,7 +34,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun simpleWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_simple_with_sv.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_simple_with_sv.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_simple_with_sv.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
@@ -48,7 +51,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun overrideWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_override.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_override.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_override.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -61,7 +64,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun multiOverrideWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_multi_override.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_multi_override.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_multi_override.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -76,11 +79,11 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     fun crossFileNotVisibleWithSv() {
         val path = "common/evaluator_sv_cross_file_main.test.txt"
         markFileInfo(ParadoxGameType.Stellaris, path)
-        myFixture.configureByFile("features/evaluators/evaluator_sv_cross_file_main.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_cross_file_main.test.txt")
 
         val otherPath = "common/evaluator_sv_cross_file_other.test.txt"
         markFileInfo(ParadoxGameType.Stellaris, otherPath)
-        myFixture.copyFileToProject("features/evaluators/evaluator_sv_cross_file_other.test.txt", otherPath)
+        myFixture.copyFileToProject("features/evaluators/inline_math_sv_cross_file_other.test.txt", otherPath)
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -92,7 +95,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun beforeOnlyWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_before_only.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_before_only.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_before_only.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -104,7 +107,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun inlineMathValueWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_inline_math_basic.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_inline_math_basic.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_inline_math_basic.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -116,7 +119,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun inlineMathValueWithParamWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_inline_math_with_param.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_inline_math_with_param.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_inline_math_with_param.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -129,7 +132,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun inlineMathValueMultiLevelWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_inline_math_multi_level.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_inline_math_multi_level.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_inline_math_multi_level.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
@@ -141,7 +144,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
     @Test
     fun inlineMathValueRecursionWithSv() {
         markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_inline_math_recursion.test.txt")
-        myFixture.configureByFile("features/evaluators/evaluator_sv_inline_math_recursion.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_inline_math_recursion.test.txt")
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)

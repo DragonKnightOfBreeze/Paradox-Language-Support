@@ -40,7 +40,7 @@ object PlsIcons {
         @JvmField val Value = getIcon("/icons/nodes/value.svg")
         @JvmField val Block = getIcon("/icons/nodes/block.svg")
         @JvmField val Parameter = getIcon("/icons/nodes/parameter.svg")
-        @JvmField val ParameterCondition = getIcon("/icons/nodes/parameterCondition.svg")
+        @JvmField val ConditionalBlock = getIcon("/icons/nodes/conditionalBlock.svg")
         @JvmField val LocalisationLocale = getIcon("/icons/nodes/localisationLocale.svg")
         @JvmField val LocalisationProperty = getIcon("/icons/nodes/localisationProperty.svg")
         @JvmField val LocalisationIcon = getIcon("/icons/nodes/localisationIcon.svg")
@@ -167,6 +167,7 @@ object PlsIcons {
         @JvmField val ModSettings = getIcon("/icons/actions/modSettings.svg") // from general/gear.svg, fill #5D8DC3
         @JvmField val RefreshConfigGroups = getIcon("/icons/actions/refreshConfigGroups.svg") // from icons/refresh.svg, fill #5D8DC3
         @JvmField val SyncConfigGroupsFromRemote = getIcon("/icons/actions/syncConfigGroupsFromRemote.svg") // from icons/clone.svg, fill #5D8DC3
+        @JvmField val ForceRefreshConfigGroups = getIcon("/icons/actions/forceRefreshConfigGroups.svg") // from icons/refresh.svg, fill #B91919
     }
 
     object EditorActions {

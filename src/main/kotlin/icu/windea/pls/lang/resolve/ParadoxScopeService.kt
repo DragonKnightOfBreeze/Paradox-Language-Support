@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -24,7 +25,6 @@ import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueInferredScopeContextProvider
 import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueScopeContextProvider
 import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
@@ -35,30 +35,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.dynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkPrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopePrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeAwareLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.scopeNodes
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -85,7 +62,7 @@ object ParadoxScopeService {
     fun getSupportedScopes(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionSupportedScopesProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             if (!ep.supports(definition, definitionInfo)) return@f null
             ep.getSupportedScopes(definition, definitionInfo)
         }
@@ -97,7 +74,7 @@ object ParadoxScopeService {
     fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             if (!ep.supports(definition, definitionInfo)) return@f null
             ep.getScopeContext(definition, definitionInfo)
         }
@@ -110,7 +87,7 @@ object ParadoxScopeService {
         val gameType = definitionInfo.gameType
         var map: Map<String, String>? = null
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
@@ -133,14 +110,14 @@ object ParadoxScopeService {
         val gameType = definitionInfo.gameType
         var message: String? = null
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (info.hasConflict) return@f
             if (message == null) {
                 message = ep.getMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("script.annotator.scopeContext", definitionInfo.name)
+                return PlsBundle.message("scopeContext.inference", definitionInfo.name)
             }
         }
         return message
@@ -153,14 +130,14 @@ object ParadoxScopeService {
         val gameType = definitionInfo.gameType
         var errorMessage: String? = null
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (!info.hasConflict) return@f
             if (errorMessage == null) {
                 errorMessage = ep.getErrorMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("script.annotator.scopeContext.conflict", definitionInfo.name)
+                return PlsBundle.message("scopeContext.inference.conflict", definitionInfo.name)
             }
         }
         return errorMessage
@@ -172,7 +149,7 @@ object ParadoxScopeService {
     fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = element.gameType
         return ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             if (!ep.supports(element)) return@f null
             ep.getScopeContext(element)
         }
@@ -185,7 +162,7 @@ object ParadoxScopeService {
         val gameType = dynamicValue.gameType
         var map: Map<String, String>? = null
         ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             if (!ep.supports(dynamicValue)) return@f
             val info = ep.getScopeContext(dynamicValue) ?: return@f
             if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
@@ -206,7 +183,7 @@ object ParadoxScopeService {
     fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         val gameType = config.configGroup.gameType
         return ParadoxOverriddenScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)
                 ?.also { it.overriddenProvider = ep }
         }

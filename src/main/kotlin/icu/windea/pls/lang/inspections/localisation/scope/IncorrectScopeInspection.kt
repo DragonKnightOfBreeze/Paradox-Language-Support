@@ -11,8 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -33,12 +32,12 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                 if (!element.isCommandExpression()) return
                 val value = element.value
                 val commandExpression = ParadoxCommandExpression.resolve(value, null, configGroup) ?: return
-                checkExpression(holder, element, commandExpression, configGroup)
+                checkExpression(element, commandExpression, configGroup, holder)
             }
         }
     }
 
-    private fun checkExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup) {
+    private fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
         var inputScopeContext = ParadoxScopeContext.resolveAny()
         when (complexExpression) {
             is ParadoxCommandExpression -> {

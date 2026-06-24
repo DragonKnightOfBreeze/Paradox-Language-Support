@@ -7,53 +7,64 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
-import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxDefineVariableNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val expression: ParadoxDefineReferenceExpression
+    val namespaceNode: ParadoxDefineNamespaceNode?,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        val namespace = namespaceNode?.text?.orNull() ?: return emptySet()
+        val variable = text.orNull() ?: return emptySet()
+        return configGroup.defineNamespaces.get(namespace)?.variables?.get(variable).to.singletonSetOrEmpty()
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.defineVariable()
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
+        if (namespaceNode == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedDefineVariable(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedDefineVariable(rangeInExpression, text, namespaceNode.text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
+        if (namespaceNode == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val offset = ParadoxExpressionManager.getExpressionOffset(element)
-        return Reference(element, rangeInExpression.shiftRight(offset), this)
+        return Reference(element, rangeInExpression.shiftRight(offset), this, namespaceNode)
     }
 
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: ParadoxDefineVariableNode
+        private val node: ParadoxDefineVariableNode,
+        private val namespaceNode: ParadoxDefineNamespaceNode?,
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        private val expression get() = node.expression
-        private val project get() = expression.configGroup.project
-        private val namespace get() = expression.namespaceNode?.text
+        private val project get() = node.configGroup.project
+        private val namespace get() = namespaceNode?.text
         private val variableName get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -62,7 +73,7 @@ class ParadoxDefineVariableNode(
 
         // 缓存解析结果以优化性能
 
-        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
+        private object Resolver : ResolveCache.AbstractResolver<Reference, ParadoxScriptProperty> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
         }
 
@@ -70,7 +81,7 @@ class ParadoxDefineVariableNode(
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doMultiResolve()
         }
 
-        override fun resolve(): PsiElement? {
+        override fun resolve(): ParadoxScriptProperty? {
             return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
         }
 
@@ -78,7 +89,7 @@ class ParadoxDefineVariableNode(
             return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
         }
 
-        private fun doResolve(): PsiElement? {
+        private fun doResolve(): ParadoxScriptProperty? {
             if (namespace == null) return null
             val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
             val resolved = ParadoxDefineVariableSearch.search(namespace, variableName, selector).find()
@@ -95,8 +106,8 @@ class ParadoxDefineVariableNode(
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineVariableNode {
-            return ParadoxDefineVariableNode(text, textRange, configGroup, expression)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, namespaceNode: ParadoxDefineNamespaceNode?): ParadoxDefineVariableNode {
+            return ParadoxDefineVariableNode(text, textRange, configGroup, namespaceNode)
         }
     }
 }

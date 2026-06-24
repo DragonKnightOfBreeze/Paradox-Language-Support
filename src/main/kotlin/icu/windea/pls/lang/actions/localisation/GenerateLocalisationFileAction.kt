@@ -15,6 +15,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -50,7 +51,7 @@ class GenerateLocalisationFileAction : AnAction() {
         val files = findFiles(e)
         if (files.none()) return
         e.presentation.isVisible = true
-        val allLocales = findAllLocales()
+        val allLocales = findLocales(e)
         val fileMap = buildFileMap(files.toList(), allLocales, project)
         if (fileMap.isEmpty()) return
         e.presentation.isEnabled = true
@@ -60,7 +61,7 @@ class GenerateLocalisationFileAction : AnAction() {
         val project = e.project ?: return
         val files = findFiles(e)
         // if (files.none()) return
-        val allLocales = findAllLocales()
+        val allLocales = findLocales(e)
         val fileMap = buildFileMap(files.toList(), allLocales, project)
         if (fileMap.isEmpty()) return
 
@@ -173,8 +174,10 @@ class GenerateLocalisationFileAction : AnAction() {
         return VirtualFileService.findFiles(e, deep = true).filter { isValidFile(it) }
     }
 
-    private fun findAllLocales(): Map<String, CwtLocaleConfig> {
-        return ParadoxLocaleManager.getLocaleConfigs().associateBy { it.shortId }
+    private fun findLocales(e: AnActionEvent): Map<String, CwtLocaleConfig> {
+        val configGroup = PlsFacade.getConfigGroup(e)
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        return supportedLocales.associateBy { it.shortId }
     }
 
     private fun buildFileMap(files: Collection<VirtualFile>, allLocales: Map<String, CwtLocaleConfig>, project: Project): Map<String, VirtualFile> {

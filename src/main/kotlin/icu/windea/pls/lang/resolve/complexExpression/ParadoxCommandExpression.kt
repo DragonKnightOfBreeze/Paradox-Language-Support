@@ -2,13 +2,17 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.core.cast
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
@@ -16,7 +20,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * （本地化）命令表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypes.DatabaseObject]。目前不支持用来匹配脚本表达式。
+ * - 对应的规则数据类型为 [CwtDataTypes.Command]。目前不支持用来匹配脚本表达式。
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
  * - 由零个或多个命令作用域链接节点（[ParadoxCommandScopeNode]）以及一个命令字段节点（[ParadoxCommandFieldNode]）组成。之间用点号分隔。之后可能还有其他额外的后缀节点。
  * - 命令作用域节点可以是系统链接（[ParadoxSystemCommandScopeNode]）、静态链接（ [ParadoxStaticCommandScopeNode]）、动态链接（[ParadoxDynamicCommandScopeNode]）或者带参数的链接（[ParadoxParameterizedCommandScopeNode]）。
@@ -32,6 +36,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * [ParadoxDynamicCommandFieldNode] 的数据源的解析优先级：
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypes.DefineReference]，则解析为 [ParadoxDefineReferenceExpression]。
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypes.ArrayDefineReference]，则解析为 [ParadoxArrayDefineReferenceExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
@@ -49,18 +55,23 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * private command_scope_link_with_args ::= command_scope_link_prefix "(" command_scope_link_args ")"
  * private command_scope_link_args ::= command_scope_link_arg ("," command_scope_link_arg)* // = command_scope_link_value
  * private command_scope_link_arg ::= command_scope_link_value
- * command_scope_link_value ::= data_source
+ * command_scope_link_value ::= dynamic_value_expression | command_expression | data_source
  * command_field ::= predefined_command_field | dynamic_command_field | parameterized_command_field
  * dynamic_command_field ::= command_field_with_prefix | command_field_with_args
  * private command_field_with_prefix ::= command_field_prefix? command_field_value
  * private command_field_with_args ::= command_field_prefix "(" command_field_args ")"
  * private command_field_args ::= command_field_arg ("," command_field_arg)* // = command_field_value
  * private command_field_arg ::= command_field_value
- * command_field_value ::= data_source
+ * command_field_value ::= dynamic_value_expression | command_expression
+ *   | define_reference_expression | array_define_reference_expression
+ *   | data_source
  * command_suffix ::= "&" SUFFIX | "::" SUFFIX
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+    val fieldNode: ParadoxCommandFieldNode
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
@@ -73,7 +84,7 @@ interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpr
 
 private object ParadoxCommandExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
@@ -168,13 +179,37 @@ private object ParadoxCommandExpressionResolver {
     }
 }
 
+private object ParadoxCommandExpressionValidator : ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxCommandExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, element, errors) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedCommandExpression(expression.rangeInExpression, expression.text)
+        checkQuotes(element, expression, errors)
+        return errors
+    }
+}
+
 private class ParadoxCommandExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxCommandExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+    override val fieldNode: ParadoxCommandFieldNode
+        get() = nodes.last().cast()
+
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxCommandExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxCommandExpression && text == other.text
     override fun hashCode() = text.hashCode()

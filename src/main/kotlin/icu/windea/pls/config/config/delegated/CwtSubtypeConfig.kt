@@ -23,11 +23,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
  *
- * ### CWTools 兼容性
- *
- * 部分兼容。插件进行了额外的扩展和改进。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {
@@ -42,6 +38,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property name 即规则名称（即子类型名）。
  * @property typeKeyFilter 类型键过滤器（包含/排除，忽略大小写）。

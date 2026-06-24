@@ -30,10 +30,10 @@ object CwtDataTypeSets {
     )
     /** 路径引用类型]。 */
     val PathReference = arrayOf(
-        CwtDataTypes.AbsoluteFilePath,
         CwtDataTypes.FileName,
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
+        CwtDataTypes.AbsoluteFilePath,
     )
 
     /** 动态值相关类型。 */
@@ -105,12 +105,32 @@ object CwtDataTypeSets {
         CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
 
+    /** 所有可评估脚本值引用的类型。 */
+    val ScriptValueReferenceEvaluatable = arrayOf(
+        CwtDataTypes.ScriptValueReference,
+        *ValueField,
+    )
+    /** 所有可评估定值引用的类型。 */
+    val DefineReferenceEvaluatable = arrayOf(
+        CwtDataTypes.DefineReference,
+        *ValueField,
+        CwtDataTypes.Command,
+    )
+    /** 所有可评估数组定值引用的类型。 */
+    val ArrayDefineReferenceEvaluatable = arrayOf(
+        CwtDataTypes.ArrayDefineReference,
+        *ValueField,
+        CwtDataTypes.Command,
+    )
+
     /** 所有涉及动态值的类型。 */
     val DynamicValueInvolved = arrayOf(
         *DynamicValue,
         *ScopeField,
         *ValueField,
         *VariableField,
+        CwtDataTypes.Command,
+        CwtDataTypes.Tags
     )
     /** 所有涉及参数的类型。 */
     val ParameterInvolved = arrayOf(

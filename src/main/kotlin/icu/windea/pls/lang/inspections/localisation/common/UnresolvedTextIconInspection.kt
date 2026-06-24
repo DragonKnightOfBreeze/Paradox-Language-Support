@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -21,15 +21,13 @@ import javax.swing.JComponent
 /**
  * 无法解析的文本图标的代码检查。
  *
- * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
+ * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class UnresolvedTextIconInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredNames = ""
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var ignoredNames = ""
+    @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求游戏类型支持文本图标
@@ -58,11 +56,9 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
             // ignoredNames
             row {
                 label(PlsBundle.message("inspection.localisation.unresolvedTextIcon.option.ignoredNames"))
-            }
-            row {
                 textField()
                     .bindText(::ignoredNames.toAtomicProperty())
-                    .comment(PlsBundle.message("inspection.localisation.unresolvedTextIcon.option.ignoredNames.comment"))
+                    .comment(PlsBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

@@ -11,6 +11,6 @@ examples = {
     values = { foo = bar }
     color = rgb { 142 188 241 }
     parameter = $PARAM$
-    [[!PARAM] parameter_condition = $PARAM$ ]
+    [[!PARAM] conditional_block = $PARAM$ ]
     inline_math = @[ var + ($NUM|1$ * 2) ]
 }

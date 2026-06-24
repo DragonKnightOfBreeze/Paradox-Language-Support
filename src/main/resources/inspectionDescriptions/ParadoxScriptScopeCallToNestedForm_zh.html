@@ -1,0 +1,28 @@
+<html>
+<body>
+  报告脚本文件中的链式的作用域调用，可以被替换为嵌套形式。
+  <p>
+    检测于文法级别和语义级别。
+  </p>
+</body>
+<!-- tooltip end -->
+<p>示例：</p>
+<pre><code class="language-paradox_script">
+# before
+root.owner = v
+
+# after
+root = {
+    owner = v
+}
+</code></pre>
+<pre><code class="language-paradox_script">
+# before
+root.owner =? v
+
+# after
+root ?= {
+    owner ?= v
+}
+</code></pre>
+</html>

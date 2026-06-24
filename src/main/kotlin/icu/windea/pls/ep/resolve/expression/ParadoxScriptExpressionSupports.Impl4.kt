@@ -4,13 +4,12 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -43,9 +42,9 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
         return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxCompletionManager.completeArgument(context, result)
+        ParadoxExpressionCompletionManager.completeArgument(context, result)
     }
 }
 
@@ -70,7 +69,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         return ParadoxLocalisationParameterService.resolveArgument(element, rangeInElement, config)
     }
 
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         // NOTE 不兼容本地化参数（CwtDataTypes.LocalisationParameter），因为那个引用实际上也可能对应一个缺失的本地化的名字
     }
 }

@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
@@ -14,12 +13,7 @@ import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
-import com.intellij.util.ProcessingContext
 import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -34,195 +28,36 @@ import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.config.util.CwtConfigSchemaManager
 import icu.windea.pls.core.buildInlineTemplate
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.executeWriteCommand
-import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.setValue
-import icu.windea.pls.cwt.psi.CwtBlockElement
-import icu.windea.pls.cwt.psi.CwtElementTypes
-import icu.windea.pls.cwt.psi.CwtExpressionElement
-import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.cwt.psi.CwtOptionComment
-import icu.windea.pls.cwt.psi.CwtOptionKey
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
-import icu.windea.pls.cwt.psi.isOptionBlockValue
-import icu.windea.pls.cwt.psi.isOptionValue
-import icu.windea.pls.cwt.psi.isPropertyValue
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.type.CwtExpressionType
 
 object CwtConfigCompletionManager {
-    object Keys : KeyRegistry()
-
-    // region Accessors
-
-    var ProcessingContext.expressionElement: CwtExpressionElement? by registerKey(Keys)
-    var ProcessingContext.containerElement: PsiElement? by registerKey(Keys)
-    var ProcessingContext.keyToMatch: String? by registerKey(Keys)
-    var ProcessingContext.optionContainerIdToMatch: String? by registerKey(Keys)
-    var ProcessingContext.schema: CwtSchemaConfig? by registerKey(Keys)
-    var ProcessingContext.contextConfigs: List<CwtMemberConfig<*>> by registerKey(Keys) { emptyList() }
-    var ProcessingContext.isOptionKey: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isOptionValue: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isOptionBlockValue: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.inOption: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isPropertyKey: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isPropertyValue: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isBlockValue: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isKey: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isKeyOnly: Boolean by registerKey(Keys) { false }
-    var ProcessingContext.isValueOnly: Boolean by registerKey(Keys) { false }
-
-    // endregion
-
-    // region Core Methods
-
-    fun initializeContext(contextElement: PsiElement, parameters: CompletionParameters, context: ProcessingContext): Boolean {
-        val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile) ?: return false
-        context.configGroup = configGroup
-
-        context.parameters = parameters
-        context.completionIds = mutableSetOf<String>().synced()
-
-        val quoted = contextElement.text.isLeftQuoted()
-        val rightQuoted = contextElement.text.isRightQuoted()
-        val offsetInParent = parameters.offset - contextElement.startOffset
-        val keyword = contextElement.getKeyword(offsetInParent)
-
-        context.contextElement = contextElement
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
-        context.quoted = quoted
-        context.rightQuoted = rightQuoted
-
-        return true
-    }
-
-    fun initializeContextForConfigCompletions(context: ProcessingContext): Boolean {
-        val file = context.parameters?.originalFile ?: return false
-        val contextElement = context.contextElement ?: return false
-        val configGroup = context.configGroup ?: return false
-
-        val expressionElement = getExpressionElement(contextElement) ?: return false
-        val containerElement = getContainerElement(expressionElement) ?: return false
-        val keyToMatch = getKeyToMatch(contextElement)
-        val optionContainerIdToMatch = getOptionContainerIdToMatch(expressionElement)
-
-        val schema = configGroup.schemas.firstOrNull() ?: return false
-        val contextConfigs = CwtConfigSchemaManager.getContextConfigs(expressionElement, containerElement, file, schema)
-
-        val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionBlockValue())
-        val isOptionBlockValue = contextElement is CwtString && contextElement.isOptionBlockValue()
-        val isOptionValue = contextElement is CwtString && contextElement.isOptionValue()
-        val inOption = isOptionKey || isOptionBlockValue || isOptionValue
-
-        val isPropertyKey = expressionElement is CwtPropertyKey || expressionElement is CwtString && expressionElement.isBlockValue()
-        val isBlockValue = expressionElement is CwtString && expressionElement.isBlockValue()
-        val isPropertyValue = expressionElement is CwtString && expressionElement.isPropertyValue()
-
-        val isKey = if (inOption) isOptionKey else isPropertyKey
-        val isKeyOnly = contextElement is CwtOptionKey || contextElement is CwtPropertyKey
-        val isValueOnly = contextElement is CwtString && if (inOption) !isOptionKey else !isPropertyKey
-
-        context.expressionElement = expressionElement
-        context.containerElement = containerElement
-        context.keyToMatch = keyToMatch
-        context.optionContainerIdToMatch = optionContainerIdToMatch
-        context.schema = schema
-        context.contextConfigs = contextConfigs
-        context.isOptionKey = isOptionKey
-        context.isOptionValue = isOptionValue
-        context.isOptionBlockValue = isOptionBlockValue
-        context.inOption = inOption
-        context.isPropertyKey = isPropertyKey
-        context.isPropertyValue = isPropertyValue
-        context.isBlockValue = isBlockValue
-        context.isKey = isKey
-        context.isKeyOnly = isKeyOnly
-        context.isValueOnly = isValueOnly
-
-        return true
-    }
-
-    private fun getExpressionElement(element: PsiElement): CwtExpressionElement? {
-        if (element is CwtOptionKey || (element is CwtString && (element.isOptionValue() || element.isOptionBlockValue()))) {
-            val parentElementType = element.parent.elementType ?: return null
-            if (parentElementType != CwtElementTypes.OPTION_COMMENT && parentElementType != CwtElementTypes.OPTION) return null
-            val memberElement = element.parentOfType<CwtOptionComment>()?.siblings(withSelf = false)?.findIsInstance<CwtMember>() ?: return null
-            return when (memberElement) {
-                is CwtProperty -> memberElement.propertyKey
-                is CwtValue -> memberElement
-                else -> null
-            }
-        }
-        return element.castOrNull()
-    }
-
-    private fun getContainerElement(expressionElement: PsiElement): PsiElement? {
-        val result = when {
-            expressionElement is CwtPropertyKey -> expressionElement.parent?.parent
-            expressionElement is CwtString -> expressionElement.parent
-            else -> null
-        }
-        if (result !is CwtProperty && result !is CwtBlockElement) return null
-        return result
-    }
-
-    private fun getKeyToMatch(element: PsiElement): String? {
-        if (element !is CwtString) return null
-        val keyElement = element.parent?.firstChild?.takeIf { it is CwtOptionKey || it is CwtPropertyKey } ?: return null
-        return keyElement.text.unquote()
-    }
-
-    private fun getOptionContainerIdToMatch(expressionElement: PsiElement): String? {
-        return when {
-            expressionElement is CwtPropertyKey -> "#" + expressionElement.value
-            expressionElement is CwtValue -> expressionElement.value
-            else -> null
-        }
-    }
-
-    fun addConfigCompletions(context: ProcessingContext, result: CompletionResultSet) {
+    fun addConfigCompletions(context: CwtConfigCompletionContext, result: CompletionResultSet) {
         val schema = context.schema!!
         val contextConfigs = context.contextConfigs
         if (contextConfigs.isEmpty()) {
-            return completeByDeclarationConfig(schema, context, result)
+            return completeByDeclarationConfig(context, result, schema)
         }
-        completeByContextConfigs(contextConfigs, schema, context, result)
+        completeByContextConfigs(context, result, schema, contextConfigs)
     }
 
-    // endregion
-
-    // region Base Methods
-
-    private fun completeByDeclarationConfig(schema: CwtSchemaConfig, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeByDeclarationConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig) {
         val declarationConfig = schema.constraints["declaration"] ?: return
         if (context.inOption) {
-            return completeByOptionConfigs(declarationConfig, schema, context, result)
+            return completeByOptionConfigs(context, result, schema, declarationConfig)
         }
     }
 
-    private fun completeByContextConfigs(contextConfigs: List<CwtMemberConfig<*>>, schema: CwtSchemaConfig, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeByContextConfigs(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, contextConfigs: List<CwtMemberConfig<*>>) {
         if (contextConfigs.isEmpty()) return
         val contextConfigsGroup = contextConfigs.groupBy { config ->
             when (config) {
@@ -239,28 +74,28 @@ object CwtConfigCompletionManager {
                 if (context.inOption) {
                     // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.optionContainerIdToMatch != id && !id.contains('$')) return@f
-                    completeByOptionConfigs(config, schema, context, result)
+                    completeByOptionConfigs(context, result, schema, config)
                 } else {
-                    completeByConfig(schema, config, context, result)
+                    completeByConfig(context, result, schema, config)
                 }
             }
         }
     }
 
-    private fun completeByConfig(schema: CwtSchemaConfig, config: CwtMemberConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeByConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
         when (config) {
             is CwtPropertyConfig -> {
                 if (context.isPropertyKey) {
                     val schemaExpression = CwtSchemaExpression.resolve(config.key)
-                    completeBySchemaExpression(schemaExpression, schema, config, context, result)
+                    completeBySchemaExpression(context, result, schema, config, schemaExpression)
                 } else if (context.isPropertyValue) {
                     // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.keyToMatch != config.key && !config.key.contains('$')) return
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
-                        completeBySchemaExpression(schemaExpression, schema, config, context, result)
+                        completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -268,16 +103,16 @@ object CwtConfigCompletionManager {
                 if (context.isBlockValue) {
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
-                        completeBySchemaExpression(schemaExpression, schema, config, context, result)
+                        completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
         }
     }
 
-    private fun completeByOptionConfigs(config: CwtMemberConfig<*>, schema: CwtSchemaConfig, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeByOptionConfigs(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
         val optionConfigs = config.optionData.optionConfigs
         if (optionConfigs.isEmpty()) return
         val optionConfigsGroup = optionConfigs.groupBy { optionConfig ->
@@ -292,25 +127,25 @@ object CwtConfigCompletionManager {
             configs.find { it is CwtOptionConfig && it.valueType != CwtExpressionType.Block }?.also { filteredConfigs += it }
             configs.find { it is CwtOptionConfig && it.valueType == CwtExpressionType.Block }?.also { filteredConfigs += it }
             filteredConfigs.forEach { config ->
-                completeByOptionConfig(schema, config, context, result)
+                completeByOptionConfig(context, result, schema, config)
             }
         }
     }
 
-    private fun completeByOptionConfig(schema: CwtSchemaConfig, config: CwtOptionMemberConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    private fun completeByOptionConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtOptionMemberConfig<*>) {
         when (config) {
             is CwtOptionConfig -> {
                 if (context.isOptionKey) {
                     val schemaExpression = CwtSchemaExpression.resolve(config.key)
-                    completeBySchemaExpression(schemaExpression, schema, config, context, result)
+                    completeBySchemaExpression(context, result, schema, config, schemaExpression)
                 } else if (context.isOptionValue) {
                     // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.keyToMatch != config.key && !config.key.contains('$')) return
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
-                        completeBySchemaExpression(schemaExpression, schema, config, context, result)
+                        completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -318,35 +153,24 @@ object CwtConfigCompletionManager {
                 if (context.isOptionBlockValue) {
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
-                        completeBySchemaExpression(schemaExpression, schema, config, context, result)
+                        completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(PlsLookupElements.blockLookupElement, context)
+                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
                     }
                 }
             }
         }
     }
 
-    private fun completeBySchemaExpression(
-        schemaExpression: CwtSchemaExpression,
-        schema: CwtSchemaConfig,
-        config: CwtConfig<*>,
-        context: ProcessingContext,
-        result: CompletionResultSet
-    ) {
-        completeBySchemaExpression(schemaExpression, schema, config) {
+    private fun completeBySchemaExpression(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression) {
+        completeBySchemaExpression(schema, config, schemaExpression) {
             val lookupElement = it.forConfig(context, config, schemaExpression)
             result.addElement(lookupElement, context)
             true
         }
     }
 
-    private fun completeBySchemaExpression(
-        schemaExpression: CwtSchemaExpression,
-        schema: CwtSchemaConfig,
-        config: CwtConfig<*>,
-        processor: Processor<LookupElementBuilder>
-    ): Boolean {
+    private fun completeBySchemaExpression(schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression, processor: Processor<LookupElementBuilder>): Boolean {
         val icon = when {
             schemaExpression is CwtSchemaExpression.Enum -> AllIcons.Nodes.Enum
             config is CwtOptionConfig -> PlsIcons.Nodes.Option
@@ -363,7 +187,7 @@ object CwtConfigCompletionManager {
                 val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withIcon(icon)
-                    .withPriority(PlsCompletionPriorities.constant)
+                    .withPriority(ChronicleCompletionPriorities.constant)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Enum -> {
@@ -376,7 +200,7 @@ object CwtConfigCompletionManager {
                     val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withIcon(icon)
-                        .withPriority(PlsCompletionPriorities.enumValue)
+                        .withPriority(ChronicleCompletionPriorities.enumValue)
                         .withPatchableTailText(tailText)
                     processor.process(lookupElement)
                 }
@@ -395,14 +219,14 @@ object CwtConfigCompletionManager {
                 val typeName = schemaExpression.name
                 when (typeName) {
                     "any" -> {
-                        PlsLookupElements.keywordLookupElements.forEach { processor.process(it) }
+                        ChronicleLookupElements.keywordLookupElements.forEach { processor.process(it) }
                     }
                     "bool" -> {
-                        processor.process(PlsLookupElements.yesLookupElement)
-                        processor.process(PlsLookupElements.noLookupElement)
+                        processor.process(ChronicleLookupElements.yesLookupElement)
+                        processor.process(ChronicleLookupElements.noLookupElement)
                     }
                     "cardinality" -> {
-                        PlsLookupElements.cardinalityElements.forEach { processor.process(it) }
+                        ChronicleLookupElements.cardinalityElements.forEach { processor.process(it) }
                     }
                 }
                 true
@@ -412,23 +236,19 @@ object CwtConfigCompletionManager {
         }
     }
 
-    fun completeByTemplateExpression(
-        templateExpression: CwtConfigTemplateExpression,
-        context: ExpressionContext,
-        processor: Processor<LookupElementBuilder>
-    ): Boolean {
+    fun completeByTemplateExpression(templateExpression: CwtConfigCompletionTemplateExpression, context: ExpressionContext, processor: Processor<LookupElementBuilder>): Boolean {
         val icon = when {
-            templateExpression is CwtConfigTemplateExpression.Enum -> AllIcons.Nodes.Enum
-            templateExpression is CwtConfigTemplateExpression.Parameter -> AllIcons.Nodes.Parameter
+            templateExpression is CwtConfigCompletionTemplateExpression.Enum -> AllIcons.Nodes.Enum
+            templateExpression is CwtConfigCompletionTemplateExpression.Parameter -> AllIcons.Nodes.Parameter
             else -> null
         }
 
-        val configGroup = templateExpression.context.configGroup ?: return true
+        val configGroup = templateExpression.context.configGroup
         val schema = configGroup.schemas.firstOrNull() ?: return true
 
         val tailText = " by ${templateExpression.text}"
         return when (templateExpression) {
-            is CwtConfigTemplateExpression.Enum -> {
+            is CwtConfigCompletionTemplateExpression.Enum -> {
                 fun processLookupElement(config: CwtValueConfig? = null): Boolean {
                     if (config == null) return true
                     val v = config.stringValue ?: return true
@@ -445,7 +265,7 @@ object CwtConfigCompletionManager {
                 val finalConfigs = schema.enums[enumName]?.values ?: return true
                 finalConfigs.process { processLookupElement(it) }
             }
-            is CwtConfigTemplateExpression.Parameter -> {
+            is CwtConfigCompletionTemplateExpression.Parameter -> {
                 fun processLookupElement(name: String, config: CwtConfig<*>? = null): Boolean {
                     if (config == null) return true
                     val element = config.pointer.element
@@ -462,7 +282,7 @@ object CwtConfigCompletionManager {
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "localisation_locale" -> {
-                        val finalConfigs = configGroup.localisationLocalesById
+                        val finalConfigs = configGroup.locales
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "type" -> {
@@ -470,7 +290,7 @@ object CwtConfigCompletionManager {
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "subtype" -> {
-                        val contextElement = templateExpression.context.contextElement ?: return true
+                        val contextElement = templateExpression.context.contextElement
                         val configPath = CwtConfigManager.getConfigPath(contextElement) ?: return true
                         val type = getTypeFromFromConfigPath(configPath) ?: return true
                         val finalConfigs = configGroup.types[type]?.subtypes ?: return true
@@ -485,7 +305,7 @@ object CwtConfigCompletionManager {
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "complex_enum_value" -> {
-                        val contextElement = templateExpression.context.contextElement ?: return true
+                        val contextElement = templateExpression.context.contextElement
                         val configPath = CwtConfigManager.getConfigPath(contextElement) ?: return true
                         val complexEnum = getComplexEnumValueFromConfigPath(configPath) ?: return true
                         val finalConfigs = configGroup.extendedComplexEnumValues[complexEnum] ?: return true
@@ -496,7 +316,7 @@ object CwtConfigCompletionManager {
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "dynamic_value" -> {
-                        val contextElement = templateExpression.context.contextElement ?: return true
+                        val contextElement = templateExpression.context.contextElement
                         val configPath = CwtConfigManager.getConfigPath(contextElement) ?: return true
                         val complexEnum = getDynamicValueFromConfigPath(configPath) ?: return true
                         val finalConfigs = configGroup.extendedDynamicValues[complexEnum]
@@ -600,9 +420,9 @@ object CwtConfigCompletionManager {
         return configPath.subPaths.getOrNull(1)
     }
 
-    private fun LookupElementBuilder.forConfig(context: ProcessingContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
+    private fun LookupElementBuilder.forConfig(context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
         var lookupElement = this
-        if (lookupElement in PlsLookupElements.keywordLookupElements) return lookupElement
+        if (lookupElement in ChronicleLookupElements.keywordLookupElements) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
         val insertCurlyBraces = when {
@@ -624,17 +444,17 @@ object CwtConfigCompletionManager {
         }
         lookupElement = lookupElement.withTailText(tailText, true)
 
-        val params = PlsInsertHandlers.Params(
+        val params = ChronicleInsertHandlers.Params(
             quoted = context.quoted,
             isKey = context.isKey,
             insertCurlyBraces = insertCurlyBraces,
         )
 
         if (context.isKeyOnly || context.isValueOnly) { // key or value only
-            lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyOrValue(params))
+            lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
         }
         if (isKeyConfig && context.isKey && !context.isKeyOnly) { // key with value
-            lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyWithValue(params))
+            lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
         }
 
         if (schemaExpression is CwtSchemaExpression.Template) {
@@ -653,24 +473,23 @@ object CwtConfigCompletionManager {
         return lookupElement
     }
 
-    private fun applyExpandTemplateInsertHandler(c: InsertionContext, context: ProcessingContext, schemaExpression: CwtSchemaExpression.Template, caretMarker: RangeMarker) {
-        val file = context.parameters?.originalFile ?: return
+    private fun applyExpandTemplateInsertHandler(c: InsertionContext, context: CwtConfigCompletionContext, schemaExpression: CwtSchemaExpression.Template, caretMarker: RangeMarker) {
         c.laterRunnable = Runnable {
-            val project = file.project
+            val project = context.project
             val editor = c.editor
             val commandName = PlsBundle.message("command.expandTemplate.name")
-            executeWriteCommand(project, commandName, makeWritable = file) c@{
+            executeWriteCommand(project, commandName, makeWritable = context.file) c@{
                 val documentManager = PsiDocumentManager.getInstance(project)
                 documentManager.commitDocument(editor.document)
                 val elementOffset = caretMarker.startOffset - 1
-                val element = file.findElementAt(elementOffset)?.parent
+                val element = context.file.findElementAt(elementOffset)?.parent
                 if (element !is CwtPropertyKey && element !is CwtString) return@c
                 val startAction = StartMarkAction.start(editor, project, commandName)
                 val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
                 val shift = element.startOffset + if (context.quoted) 1 else 0
                 schemaExpression.parameterRanges.forEach { parameterRange ->
                     val parameterText = parameterRange.substring(schemaExpression.expressionString)
-                    val expression = CwtConfigTemplateExpression.resolve(context, schemaExpression, parameterRange, parameterText)
+                    val expression = CwtConfigCompletionTemplateExpression.resolve(context, parameterRange, parameterText)
                         ?: TextExpression(parameterText)
                     templateBuilder.replaceRange(parameterRange.shiftRight(shift), expression)
                 }
@@ -684,6 +503,4 @@ object CwtConfigCompletionManager {
             }
         }
     }
-
-    // endregion
 }

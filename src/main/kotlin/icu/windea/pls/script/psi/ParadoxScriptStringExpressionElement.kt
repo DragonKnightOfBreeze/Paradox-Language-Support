@@ -22,3 +22,4 @@ interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement,
         return ParadoxScriptExpressionLiteralTextEscaper(this)
     }
 }
+

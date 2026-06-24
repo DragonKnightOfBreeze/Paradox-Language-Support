@@ -9,8 +9,6 @@ object PlsConstants {
     const val docUrl = "https://windea.icu/Paradox-Language-Support"
     fun docUrl(path: String) = "$docUrl/$path"
 
-    val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
-
     val localisationRoots = arrayOf("localisation", "localization", "localisation_synced", "localization_synced")
     val normalLocalisationRoots = arrayOf("localisation", "localization")
     val syncedLocalisationRoots = arrayOf("localisation_synced", "localization_synced")

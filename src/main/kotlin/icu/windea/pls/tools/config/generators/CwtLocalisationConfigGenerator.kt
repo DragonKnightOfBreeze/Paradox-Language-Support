@@ -108,7 +108,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
         val file = File(outputPath)
         if (!file.exists()) return LocalisationConfigInfo() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
             val rootBlock = psiFile.block
             val rootProps = rootBlock?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
@@ -141,7 +141,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
         // 基于 PSI 生成“删除未知项后”的文件文本
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         val elementsToDelete = readAction {
             val list = mutableListOf<PsiElement>()
             list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_PROMOTIONS) { toDelete(it, unknownPromotions) }
@@ -168,7 +168,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
             }
         }.trimEnd()
         if (insertBlockForPromotions.isNotEmpty()) {
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            val psiFile = readAction { CwtElementFactory.createFileFromText(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_PROMOTIONS, insertBlockForPromotions)
         }
         val insertBlockForCommands = buildString {
@@ -190,7 +190,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
             }
         }
         if (insertBlockForPromotions.isNotEmpty()) {
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            val psiFile = readAction { CwtElementFactory.createFileFromText(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_COMMANDS, insertBlockForCommands)
         }
 

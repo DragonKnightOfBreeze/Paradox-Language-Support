@@ -1,15 +1,13 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiListLikeElement
+import icu.windea.pls.core.psi.PsiBoundElement
 
 /**
  * @see ParadoxScriptBlock
- * @see ParadoxScriptParameterCondition
+ * @see ParadoxScriptConditionalBlock
  */
-interface ParadoxScriptBoundMemberContainer : ParadoxScriptMemberContainer, PsiListLikeElement {
+interface ParadoxScriptBoundMemberContainer : ParadoxScriptMemberContainer, PsiBoundElement, PsiListLikeElement {
     override val membersRoot: ParadoxScriptBoundMemberContainer get() = this
     override val members: List<ParadoxScriptMember> get() = emptyList()
-    val leftBound: PsiElement? get() = null
-    val rightBound: PsiElement? get() = null
 }

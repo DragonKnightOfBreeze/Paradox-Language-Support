@@ -15,7 +15,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
@@ -29,12 +28,6 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {
         val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)
-    }
-
-    private const val SEPARATOR = ';'
-
-    fun getSeparator(): Char {
-        return SEPARATOR
     }
 
     fun getRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
@@ -93,7 +86,7 @@ object ParadoxCsvManager {
         return ParadoxExpressionMatchService.matchCsvExpression(context).get()
     }
 
-    fun computeHeaderColumnSize(element: ParadoxCsvHeader): Int {
+    fun getExpectedHeaderColumnSize(element: ParadoxCsvHeader): Int {
         val columnList = element.columnList
         if (lastIsEndColumn(element, columnList)) return columnList.size - 1
         return columnList.size
@@ -104,10 +97,5 @@ object ParadoxCsvManager {
         val rowConfig = getRowConfig(element) ?: return false
         val name = lastColumn.name
         return name.isNotEmpty() && name == rowConfig.endColumn
-    }
-
-    fun computeColumnSize(element: ParadoxCsvRow): Int {
-        val columnList = element.columnList
-        return columnList.size
     }
 }

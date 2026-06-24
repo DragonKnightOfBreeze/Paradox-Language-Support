@@ -1,0 +1,4 @@
+tip = array_define:NEntrance|WELCOMES|0
+tip = array_define:NEntrance|WELCOMES_UNDEFINED|0
+tip = array_define:NEntrance|WELCOMES|var
+tip = array_define:NEntrance|WELCOMES|-1

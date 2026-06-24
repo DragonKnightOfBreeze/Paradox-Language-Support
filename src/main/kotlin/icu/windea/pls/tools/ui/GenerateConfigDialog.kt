@@ -61,7 +61,7 @@ class GenerateConfigDialog(
         return panel {
             // gameType
             row(PlsToolsBundle.message("config.generation.dialog.field.gameType")) {
-                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
             }
 

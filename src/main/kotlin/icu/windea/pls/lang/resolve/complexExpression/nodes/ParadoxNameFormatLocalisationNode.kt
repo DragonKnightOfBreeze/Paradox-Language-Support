@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
@@ -38,7 +38,7 @@ class ParadoxNameFormatLocalisationNode(
         if (text.isEmpty()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolve() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedNameFormatLocalisation(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedNameFormatLocalisation(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

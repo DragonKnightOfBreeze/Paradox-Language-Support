@@ -22,5 +22,5 @@ object CwtTokenSets {
 
     @JvmField val MEMBER_CONTEXT = TokenSet.create(PROPERTY, ROOT_BLOCK, BLOCK)
 
-    @JvmField val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE)
+    @JvmField val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE/*not possible:*//*, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN*/, STRING_TOKEN)
 }

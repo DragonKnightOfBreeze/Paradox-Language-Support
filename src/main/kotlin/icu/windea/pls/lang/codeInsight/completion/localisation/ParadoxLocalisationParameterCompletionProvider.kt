@@ -1,29 +1,33 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
- * 提供参数名字的代码补全。
+ * 提供本地化参数的名字的代码补全。
  */
-class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationParameterCompletionProvider : ParadoxCompletionProvider() {
+    val elementPattern get() = psiElement(PARAMETER_TOKEN)
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val type = ParadoxLocalisationType.resolve(file) ?: return

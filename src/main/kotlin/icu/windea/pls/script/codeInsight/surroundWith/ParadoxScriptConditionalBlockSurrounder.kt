@@ -1,0 +1,33 @@
+package icu.windea.pls.script.codeInsight.surroundWith
+
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+
+class ParadoxScriptConditionalBlockSurrounder : ParadoxScriptSurrounder() {
+    override fun getTemplateDescription() = "[[PARAM]...]"
+
+    override fun isApplicable(elements: Array<out PsiElement>): Boolean {
+        return elements.isNotEmpty()
+    }
+
+    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange {
+        val firstElement = elements.first()
+        val lastElement = elements.last()
+        val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
+        val replacedText = replacedRange.substring(firstElement.containingFile.text)
+        if (firstElement != lastElement) {
+            firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
+        }
+        var newElement = ParadoxScriptElementFactory.createConditionalBlockFromText(project, "[[P]\n$replacedText\n]")
+        newElement = firstElement.replace(newElement) as ParadoxScriptConditionalBlock
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptConditionalBlock
+        return newElement.conditionalBlockExpression!!.textRange
+    }
+}

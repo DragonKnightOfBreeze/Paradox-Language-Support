@@ -7,6 +7,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.resolved
 
 /**
@@ -18,7 +19,7 @@ class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxDeclarativeHin
         if (element.name.isNullOrEmpty()) return
 
         val resolved = element.resolved() ?: return
-        val value = resolved.value
+        val value = resolved.formattedValue()
         sink.addInlinePresentation(element.endOffset) {
             text("=> $value".optimized())
         }

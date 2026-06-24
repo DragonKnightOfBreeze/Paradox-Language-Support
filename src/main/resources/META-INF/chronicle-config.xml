@@ -1,0 +1,43 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="pls.config" parentId="pls" groupWeight="100" bundle="messages.PlsBundle" key="settings.config"
+                             instance="icu.windea.pls.config.settings.PlsConfigSettingsConfigurable"/>
+
+    <!-- commented out since it's light service -->
+    <!-- <applicationService serviceImplementation="icu.windea.pls.config.configGroup.CwtConfigGroupService"/> -->
+
+    <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
+    <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider"/>
+    <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
+    <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
+  </extensions>
+
+  <applicationListeners>
+    <listener class="icu.windea.pls.config.listeners.CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.config.listeners.CwtUpdateLibraryOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.config.listeners.CwtUpdateConfigGroupOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.config.listeners.CwtSyncOnConfigRepositoryUrlsChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener"/>
+  </applicationListeners>
+
+  <!-- ExternalSystem.ProjectRefreshActionGroup -->
+  <actions>
+    <group id="Pls.ConfigGroupRefreshActionGroup">
+      <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.config.actions.ConfigGroupRefreshAction">
+        <keyboard-shortcut first-keystroke="control shift g" keymap="$default"/>
+      </action>
+      <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.config.actions.HideConfigGroupRefreshAction"/>
+    </group>
+
+    <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.actions.ConfigGroupSyncFromRemoteAction">
+      <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
+      <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
+    </action>
+    <action id="Pls.ConfigGroupForceRefreshAction" class="icu.windea.pls.config.actions.ConfigGroupForceRefreshAction"/>
+    <action id="Pls.ConfigGroupForcePlusRefreshAction" class="icu.windea.pls.config.actions.ConfigGroupForcePlusRefreshAction"/>
+  </actions>
+</idea-plugin>

@@ -16,7 +16,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * 模式表达式。
  *
  * 用于描述规则文件中的键与值的取值形态，从而为规则文件本身提供代码补全、代码检查等功能。
- * 目前仅用于提供基础的代码补全，且仅在 `cwt/core/internal/schema.cwt` 中有用到。
+ * 目前仅用于提供基础的代码补全，且仅在内置规则文件 `cwt/core/internal/schema.cwt` 中使用。
  *
  * 支持的形态：
  * - 常量（[Constant]）：不包含 `$` 的原样字符串。
@@ -25,9 +25,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * - 约束（[Constraint]）：以 `$$` 起始，如：`$$declaration`。
  * - 枚举（[Enum]）：以 `$enum:` 起始并以 `$` 结尾，如：`$enum:ship_size$`。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @see CwtSchemaConfig
  */

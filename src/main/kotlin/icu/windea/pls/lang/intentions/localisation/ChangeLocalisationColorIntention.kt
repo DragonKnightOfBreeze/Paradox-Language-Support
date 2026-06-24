@@ -30,8 +30,9 @@ class ChangeLocalisationColorIntention : ModCommandAction {
 
     override fun perform(context: ActionContext): ModCommand {
         val element = findElement(context) ?: return ModCommand.nop()
-        val colorInfos = ParadoxTextColorManager.getInfos(context.project, context.file).orNull() ?: return ModCommand.nop()
-        val items = colorInfos.map { ItemIntention(element, it) }
+        val infos = ParadoxTextColorManager.getInfos(context.project, context.file).orNull()
+        if (infos.isNullOrEmpty()) return ModCommand.nop()
+        val items = infos.map { ItemIntention(element, it) }
         return ModCommand.chooseAction(PlsBundle.message("intention.changeLocalisationColor.title"), items)
     }
 

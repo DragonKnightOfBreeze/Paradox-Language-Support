@@ -2,7 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -44,13 +44,13 @@ class Issue284Test : BasePlatformTestCase() {
     fun testScopeLinkInTrigger() {
         markFileInfo(gameType, "common/scripted_triggers/test_trigger.test.txt")
         myFixture.configureByFile("issues/284/common/scripted_triggers/test_trigger.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.checkHighlighting()
     }
 
     @Test
     fun testScopeLinkInEffect() {
         markFileInfo(gameType, "common/scripted_effects/test_effect.test.txt")
         myFixture.configureByFile("issues/284/common/scripted_effects/test_effect.test.txt")
-        myFixture.checkHighlighting(true, false, false)
+        myFixture.checkHighlighting()
     }
 }

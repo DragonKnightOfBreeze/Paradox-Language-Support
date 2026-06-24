@@ -3,7 +3,6 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -16,11 +15,11 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object ParadoxExtendedCompletionManager {
-    fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedScriptedVariable(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         configGroup.extendedScriptedVariables.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
@@ -36,7 +35,7 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedDefinition(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
@@ -49,7 +48,7 @@ object ParadoxExtendedCompletionManager {
             else -> contextConfig
         }
         val typeExpression = config.configExpression?.value ?: return
-        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         run r1@{
             configGroup.extendedDefinitions.values.forEach { configs0 ->
                 configs0.forEach f@{ config0 ->
@@ -107,14 +106,14 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedParameter(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
-        val configGroup = context.configGroup ?: return
+        val configGroup = context.configGroup
         val contextKey = context.contextKey ?: return
         val argumentNames = context.argumentNames
-        val contextElement = context.contextElement ?: return
+        val contextElement = context.contextElement
         configGroup.extendedParameters.values.forEach { configs0 ->
             configs0.forEach f@{ config0 ->
                 if (!config0.contextKey.matchesByPattern(contextKey, contextElement, configGroup)) return@f
@@ -133,14 +132,14 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedComplexEnumValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
@@ -157,7 +156,7 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
@@ -168,7 +167,7 @@ object ParadoxExtendedCompletionManager {
         for (config in finalConfigs) {
             val dynamicValueType = config.configExpression?.value ?: continue
             val configGroup = config.configGroup
-            val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
 
             configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
@@ -188,13 +187,13 @@ object ParadoxExtendedCompletionManager {
         }
     }
 
-    fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeExtendedInlineScript(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
+        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name

@@ -4,13 +4,27 @@
 
 ## 2.1.10-dev
 
-- [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值操作符）/ Compatible with `? =` (safe assignment operator including blank) that started appearing in Stellaris 4.4 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] [Stellaris] 在语法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在语法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符）/ Compatible with `? =` (safe assignment operator including blank) that started appearing in Stellaris 4.4 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） / If the current cursor is in a complex expression, expand the cursor according to the structure of the complex expression (Extend Selection)
 - [x] 提供动作，以进行定义/定义注入之间的差异比较 / Provide actions to compare differences between definitions and definition injections
 - [x] 完善对作用域字段表达式和值字段表达式的支持：兼容其中嵌套的动态值表达式 / Improve support for scope field expressions and value field expressions: compatible with nested dynamic value expressions ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
+- [x] [CK3/VIC3/EU5] 完善对定值引用表达式的支持 / Improve support for define reference expressions ([#341](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/341))
+- [x] [CK3/VIC3/EU5] 完善对数组定值引用表达式的支持 / Improve support for array define reference expressions ([#341](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/341))
+- [x] [CK3/VIC3/EU5] 完善对标签集合表达式的支持 / Improve support for tags expressions ([#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163))
+- [x] 提供内嵌提示，以显示（数组）定值引用的评估结果 / Provide inlay hints to show evaluation results of (array) define references
+- [x] 提供意向，以将（数组）定值引用替换为评估结果 / Provide intentions to replace (array) define references with evaluation results
 - [x] 在推断游戏类型时，同时提供描述信息，并在模组设置对话框中显示 / Provide description info when inferring game type, and display it in the mod settings dialog
+- [x] 提供意向和代码检查，以在作用域调用语句的安全形式（`owner ?= ...` 或 `owner? = ...`）与普通形式（`owner = ...`）之间进行转换 / Provide intentions and inspections to convert scope call statements between safe form (`owner ?= ...` or `owner? = ...`) and normal form (`owner = ...`)
+- [x] 提供意向和代码检查，以在作用域调用语句的链式形式（`root.owner = ...`）与嵌套形式（`root = { owner = ... }`）之间进行转换 / Provide intentions and inspections to convert scope call statements between chained form (`root.owner = ...`) and nested form (`root = { owner = ... }`)
+- [x] 将作用域调用语句的相关代码检查的默认严重度级别统一定为 `INFORMATION`（无高亮，仅快速修复） / Set the default severity level of all code inspections related to scope call statements to `INFORMATION` (no highlighting, fix available)
+- [x] 支持将数字（而不仅仅是字符串）解析为复杂枚举值 / Support to resolve numbers (rather than only strings) into complex enum values
+- [x] 修复了一个可能导致错误的语义匹配结果，从而引发误报的并发处理问题 / Fix a concurrency processing issue that could result in incorrect semantic match results, which may cause false positives
+- [x] 修复 Islands Dark 主题的自定义配色方案未被正确应用的回归BUG / Fix a regression bug where the custom color scheme of the Islands Dark theme was not applied correctly
+- [x] [VIC3/EU5] Add support for turkish language or respect locales config ([#343](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/343))
+- [x] [Jomini] On action event type validation wrong ([#344](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/344))
+- [x] Improve inspections for file charset and file encoding, fix false positives ([#345](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/345))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [x] 同步规则文件 / Synchronize config files
 

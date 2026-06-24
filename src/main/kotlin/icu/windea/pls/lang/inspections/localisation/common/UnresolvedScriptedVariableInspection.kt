@@ -10,10 +10,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
+import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
-import icu.windea.pls.lang.quickfix.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import javax.swing.JComponent
@@ -22,14 +22,13 @@ import javax.swing.JComponent
  * 无法解析的封装变量引用的代码检查。
  *
  * 提供快速修复：
- * - 声明全局封装变量（在`common/scripted_variables`目录下的某一文件中）
+ * - 声明全局封装变量（在 `common/scripted_variables` 目录下的某一文件中）
  * - 导入游戏目录或模组目录
  *
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是可接受的本地化文件

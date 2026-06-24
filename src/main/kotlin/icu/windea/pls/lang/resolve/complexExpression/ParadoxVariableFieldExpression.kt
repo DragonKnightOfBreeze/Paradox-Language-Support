@@ -1,20 +1,24 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.match.TextMatcher
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * 变量字段表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypeSets.ValueField]。
+ * - 对应的规则数据类型为 [CwtDataTypeSets.VariableField]。
  * - 作为 [ParadoxValueFieldExpression] 的子集。相较之下，仅支持调用变量。
  * - 由零个或多个作用域链接节点（[ParadoxScopeNode]）以及一个数据源节点（[ParadoxDataSourceNode]）组成。之间用点号分隔。
  * - 作用域链接节点可以是系统链接（[[ParadoxSystemScopeNode]]）、静态链接（[ParadoxStaticScopeNode]）、动态链接（[ParadoxDynamicScopeNode]）或者带参数的链接（[ParadoxParameterizedScopeNode]）。
@@ -47,6 +51,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
+    val scopeNodes: List<ParadoxScopeNode>
+    val variableNode: ParadoxDataSourceNode
+
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
@@ -59,7 +66,7 @@ interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLink
 
 private object ParadoxVariableFieldExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         // skip if text is a number
@@ -119,13 +126,37 @@ private object ParadoxVariableFieldExpressionResolver {
     }
 }
 
+private object ParadoxVariableFieldExpressionValidator : ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxVariableFieldExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, element, errors) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedVariableFieldExpression(expression.rangeInExpression, expression.text)
+        checkQuotes(element, expression, errors)
+        return errors
+    }
+}
+
 private class ParadoxVariableFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxVariableFieldExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override val linkNodes: List<ParadoxLinkNode>
+        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+    override val scopeNodes: List<ParadoxScopeNode>
+        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+    override val variableNode: ParadoxDataSourceNode
+        get() = nodes.last().cast()
+
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxVariableFieldExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxVariableFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()

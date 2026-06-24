@@ -12,6 +12,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -74,8 +75,9 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
     abstract class WithLocalePopup : ManipulateLocalisationIntentionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(project: Project, editor: Editor, file: PsiFile): ParadoxLocaleListPopup {
-            val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-            return ParadoxLocaleListPopup(allLocales)
+            val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+            val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+            return ParadoxLocaleListPopup(supportedLocales)
         }
 
         final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: WalkingSequence<ParadoxLocalisationProperty>) {
@@ -112,8 +114,9 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
     abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationIntentionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(project: Project, editor: Editor, file: PsiFile): ParadoxLocaleListPopup {
-            val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-            return ParadoxLocaleListPopup(allLocales)
+            val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+            val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+            return ParadoxLocaleListPopup(supportedLocales)
         }
 
         protected abstract fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (T) -> Unit): JBPopup?

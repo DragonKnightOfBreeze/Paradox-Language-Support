@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.util.parentOfType
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -18,7 +19,6 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.resolve.parameter.containingContextReference
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -37,11 +37,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 路径定位：
  * - `parameters/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * parameters = {
@@ -61,6 +57,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  *     PARAM = single_alias_right[trigger_clause]
  * }
  * ```
+ *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
  * @property contextKey 上下文键（如 `scripted_trigger@x`、`inline_script@x`）。
@@ -134,7 +132,7 @@ private class CwtExtendedParameterConfigImpl(
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMember>(false) ?: return@run
                 val contextConfigs = ParadoxConfigManager.getConfigContext(parentElement)?.getConfigs().orEmpty()
-                PlsStates.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
+                ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
                 return contextConfigs
             }
             return emptyList()

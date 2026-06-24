@@ -26,10 +26,10 @@ object ParadoxCsvManipulationService {
         caretModel.removeSecondaryCarets()
     }
 
-    fun selectElements(editor: Editor, elementList: List<PsiElement>) {
+    fun selectElements(editor: Editor, elements: List<PsiElement>) {
         val caretModel = editor.caretModel
         var usePrimary = true
-        for (element in elementList) {
+        for (element in elements) {
             val range = element.textRange
             if (usePrimary) {
                 val caret = caretModel.primaryCaret

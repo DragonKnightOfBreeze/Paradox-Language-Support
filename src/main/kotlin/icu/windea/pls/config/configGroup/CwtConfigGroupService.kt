@@ -145,7 +145,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     }
 
     private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
-        val gameTypes = ParadoxGameType.getAll(withCore = true)
+        val gameTypes = ParadoxGameType.getAll()
         val configGroups = buildMap(gameTypes.size) {
             for (gameType in gameTypes) {
                 this[gameType] = CwtConfigGroupImpl(project, gameType)
@@ -244,6 +244,6 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         fun getInstance(): CwtConfigGroupService = service()
 
         @JvmStatic
-        fun getInstance(project: Project): CwtConfigGroupService = if (project.isDefault) getInstance() else project.service()
+        fun getInstance(project: Project?): CwtConfigGroupService = if (project == null || project.isDefault) getInstance() else project.service()
     }
 }

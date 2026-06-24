@@ -5,10 +5,10 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -17,7 +17,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -26,13 +26,10 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.annotations.WithGameType
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.configGroup
-import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
-import icu.windea.pls.lang.codeInsight.completion.scopeContext
 import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNecessary
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
@@ -40,15 +37,15 @@ import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
 import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.text.appendPsiLink
+import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.builders.appendPsiLink
-import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -94,9 +91,9 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         return modifierInfo
     }
 
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val element = context.contextElement!!
-        val configGroup = context.configGroup!!
+    override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement
+        val configGroup = context.configGroup
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.predefinedModifiers
@@ -110,7 +107,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
@@ -169,9 +166,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             ?: modifierInfoCandidates.firstOrNull()
     }
 
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val element = context.contextElement!!
-        val configGroup = context.configGroup!!
+    override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement
+        val configGroup = context.configGroup
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.generatedModifiers
@@ -184,7 +181,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
+            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
@@ -376,9 +373,9 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return null
     }
 
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-        val element = context.contextElement!!
-        val configGroup = context.configGroup!!
+    override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement
+        val configGroup = context.configGroup
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 

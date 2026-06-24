@@ -13,16 +13,16 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.Icon
@@ -61,9 +61,9 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxCsvColumn, value: String): ParadoxCsvColumn {
-        val extraChars = ParadoxCsvManager.getSeparator().toString()
-        val newValue = value.quoteIfNecessary(extraChars = extraChars, blank = false)
-        val newElement = ParadoxCsvElementFactory.createColumn(element.project, newValue)
+        val extraChars = ParadoxCsvPsiService.getSeparator().toString()
+        val newValue = value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
+        val newElement = ParadoxCsvElementFactory.createColumnFromText(element.project, newValue)
         return element.replace(newElement).cast()
     }
 

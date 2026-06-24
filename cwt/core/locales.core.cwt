@@ -1,17 +1,14 @@
-# Locale Config
-# Used to provide language features for locales, e.g. "l_english"
-
-# See vanilla game file: localisation/languages.yml
-
+#### Locale Configs
+####
+#### Used to provide language features for locales, e.g. `l_english`.
+####
+#### See vanilla game file: `localisation/languages.yml`
 locales = {
     l_default = {
         codes = {}
     }
     l_english = {
         codes = { "en" }
-    }
-    l_braz_por = {
-        codes = { "pt" }
     }
     l_german = {
         codes = { "de" }
@@ -31,6 +28,9 @@ locales = {
     l_simp_chinese = {
         codes = { "zh" "zh-CN" }
     }
+    l_braz_por = {
+        codes = { "pt" }
+    }
     l_japanese = {
         # since: stellaris v3.4
         codes = { "ja" }
@@ -38,5 +38,10 @@ locales = {
     l_korean = {
         # since: stellaris v3.4
         codes = { "ko" }
+    }
+    l_turkish = {
+        # for vic3 and eu5
+        codes = { "tr" }
+        supports = no
     }
 }

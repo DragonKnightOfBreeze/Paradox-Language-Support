@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.settings.PlsConfigSettings
@@ -17,7 +18,6 @@ import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
-import icu.windea.pls.lang.tools.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
@@ -30,7 +30,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
         val directoryName = relativePath.substringBefore('/')
         val gameTypeId = getGameTypeIdFromDirectoryName(project, directoryName) ?: return null
-        val gameType = ParadoxGameType.get(gameTypeId, withCore = true) ?: ParadoxGameType.Core
+        val gameType = ParadoxGameType.get(gameTypeId) ?: ParadoxGameType.Core
         return PlsFacade.getConfigGroup(project, gameType)
     }
 
@@ -81,13 +81,13 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         if (messageIndex < 0) return null
         val gameType = configGroup.gameType
         val isBuiltIn = source == CwtConfigGroupFileSource.BuiltIn
-        val isShared = gameType == ParadoxGameType.Core
+        val isGeneral = gameType == ParadoxGameType.Core
         val notification = when {
-            isShared -> PlsBundle.message("configGroup.notification.shared", messageIndex)
+            isGeneral -> PlsBundle.message("configGroup.notification.general", messageIndex)
             else -> PlsBundle.message("configGroup.notification", messageIndex, gameType.title)
         }
         val message = when {
-            isEnabled || (isBuiltIn && isShared) -> PlsBundle.message("configGroup.notification.enabled", notification)
+            isEnabled || (isBuiltIn && isGeneral) -> PlsBundle.message("configGroup.notification.enabled", notification)
             else -> PlsBundle.message("configGroup.notification.disabled", notification)
         }
         return message
@@ -161,7 +161,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == ParadoxGameType.Core) return "core"
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls[gameType.id]?.orNull()
-            ?.let { PlsGitService.getInstance().getRepositoryPathFromUrl(it) }
+            ?.let { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it) }
         return fromConfig
     }
 
@@ -170,7 +170,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls.entries
-            .find { PlsGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }
+            .find { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }
             ?.key
         return fromConfig
     }

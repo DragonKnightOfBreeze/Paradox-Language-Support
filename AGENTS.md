@@ -142,17 +142,27 @@ Some tests are intentionally **disabled by default** and only run when explicitl
   - `./gradlew test --tests "*SomeKeyword*"`
 - Prefer adding or updating tests when behavior changes:
   - Unit tests for pure logic.
-  - Integration tests for PSI/index/config-driven resolution.
+  - Integration tests for syntax/semantic/PSI/index/config-driven logic.
 
 ## Coding conventions
 
 ### Naming
 
+Here are some common conversions:
+
 - Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
-- Consider using prefix `Pls` for plugin specific class names (e.g., `PlsStates`).
+- prefer using verb form for actions and intentions (e.g, `CopyDefinitionNameIntention`).
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
 
 For more details, see: `agents/context/naming-conventions.md`
+
+### Comments
+
+- Write documentation comments in Chinese by default, unless explicitly requested, or need to be consistent with the context or relevant location.
+- Write normal comments in Chinese or English, based on the context or relevant location.
+- Prefer KDoc style for Kotlin.
+- When referencing types like `PsiElement` in KDoc, prefer KDoc links like `[PsiElement]`.
+- Avoid overly long parameter-by-parameter docs unless truly necessary, prefer describing the method as a whole.
 
 ### Caching
 
@@ -173,13 +183,16 @@ For more details, see: `agents/context/naming-conventions.md`
 Package organization:
 
 - `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
+- `icu.windea.pls.base`: Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
 - `icu.windea.pls.ide`: Global codes to handle IDE platform integration. Usually language-free and domain-free.
-- `icu.windea.pls.config`: Codes related to config, config expression and config group. Including models, resolvers, services, managers, etc.
-- `icu.windea.pls.tools`: Codes provided as tool APIs. Not necessarily "language features".
+- `icu.windea.pls.config`: Codes related to config, config expression and config group. Usually not depend on game or mod files. 
 - `icu.windea.pls.lang`: Codes which are domain specific, or related to semantic match and resolution.
   - `icu.windea.pls.lang.match`: Semantic-level matching (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.resolve`: Semantic-level resolution (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.util`: High-level managers and special components.
+- `icu.windea.pls.tools`: Codes related to bundled utilities and integrations. Including game launcher, config generator and others.
+- `icu.windea.pls.integrations`: Provides integrations with third-party tools.
+- `icu.windea.pls.extensions`: Provides integrations and extensions to third-party plugins.
 
 Service vs Manager vs Util:
 
@@ -187,46 +200,43 @@ Service vs Manager vs Util:
 - `Manager`: Higher-level, convenient domain methods, typically hosts caching.
 - `Util`: Narrow-purpose helpers.
 
-### Code Guidance
+### Code guidance
 
 Here are some common code patterns:
 
-- How to get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
-- How to get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
-- How to get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
-- How to get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
+- Get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
+- Get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
+- Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
+- Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
-- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Service`, `...Manager`, `...Util` and so on.
-- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords. 
+- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Util`, `...Service`, `...Manager` and so on.
+- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
+- Assume and search existing extensions, components, utils, services, managers, etc., **before** reinventing the wheel.
+- Follow the best practice for Kotlin programming and IntelliJ platform development, more importantly, the **conceptual consistency**.
 
 ## Domain terminology and guidance
 
 ### Translation terms
 
+Prefer translate *config* to *规则*, and vice versa, if it specifically means *CWT* config.
+
 Here are some common terms:
 
-- CWT Config → CWT 规则 (prefer translate "config" to "规则", and vice versa, if it specifically means CWT config)
 - scope → 作用域
 - modifier → 修正
 - trigger → 触发器
 - effect → 效果
 - scripted variable → 封装变量
+- scripted trigger → 封装触发器
+- scripted effect → 封装效果
+- on action → 动作触发
 - define → 定值
-- localisation → 本地化
 - definition → 定义
-  - scripted trigger → 封装触发器
-  - scripted effect → 封装效果
-  - script value → 脚本值
-  - game rule → 游戏规则
-  - on action → 动作触发
-  - event → 事件
-  - event namespace → 事件命名空间
-  - sprite → 精灵
-- macro → 宏
-  - inline script → 内联脚本
-  - definition injection → 定义注入
+- localisation → 本地化
 
-### Language Guidance
+For more details, see: `agents/context/translation-terms.md`
+
+### Language guidance
 
 For detailed language syntax and recommended examples, see:
 
@@ -236,14 +246,14 @@ For detailed language syntax and recommended examples, see:
 - `src/test/testData/localisation/example.test.yml`
 - `src/test/testData/csv/example.test.csv`
 
-### Config System Guidance
+### Config system guidance
 
-For the config system and the config format, see:
+For the documents and examples, see:
 
-- `docs/en/config.md`
-- `docs/en/ref-config-format.md`
+- `docs/en/config.md` (the config system document)
+- `docs/en/ref-config-format.md` (the config format manual)
 - `src/test/testData/chronicle` (the easter-egg config directory)
-- `cwt/cwtools-stellaris-config` (the real-game config directory for Stellaris, other game types are also available)
+- `cwt/cwtools-stellaris-config` (the real-game config directory for Stellaris, also available for other game types)
 
 ## Agent instructions
 
@@ -252,25 +262,17 @@ For the config system and the config format, see:
 - **IMPORTANT**: Communicate with the maintainer in **Chinese**.
 - **TIP**: Meanwhile, write documents, doc comments and normal comments in Chinese or/and English, depending on the specific scenario.
 
-### Markdown output conventions
+### Markdown specifics
 
 - Prefer `-` for unordered lists.
 - Prefer `**bold**` for emphasis.
-- If you include headings in Markdown responses, prefer starting from `###` (H3) unless there is a strong reason to use `#`/`##`.
-
-### Documentation and comments
-
-- Write documentation comments in Chinese by default, unless explicitly requested, or need to be consistent with the context or relevant location.
-- Write normal comments in Chinese or English, based on the context or relevant location.
-- Prefer KDoc style for Kotlin.
-- When referencing types like `PsiElement` in KDoc, prefer KDoc links like `[PsiElement]`.
-- Avoid overly long parameter-by-parameter docs unless truly necessary; prefer describing the method as a whole.
+- Prefer starting from `###` (H3) in responses (not in documents), unless there is a strong reason to use `#` and `##`.
 
 ### IntelliJ plugin specifics
 
-- Many registrations live under `src/main/resources/META-INF/pls-*.xml` included by `plugin.xml`.
+- Many registrations live under `src/main/resources/META-INF/chronicle-*.xml` included by `plugin.xml`.
 - Optional dependencies (enabled only when present): Markdown, Diagrams (Ultimate), Translation plugin.
-- There is an internal **code injection** subsystem; avoid changing it casually unless you understand the impact.
+- There is an internal code injection subsystem, avoid changing it casually unless you understand the impact.
 
 ### Making changes safely
 
@@ -291,7 +293,7 @@ Prefer **tool-assisted** workflows over ad-hoc shell usage.
 - Prefer using suitable mcp when structured search or semantic search is available.
 - Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
 
-### JetBrains official MCP server (IDE actions)
+### JetBrains MCP server
 
 When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
 
@@ -299,7 +301,7 @@ When you need to **drive IDE actions** (not just code intelligence), prefer the 
 - IDE inspections / file problems: `get_file_problems`
 - Reformatting: `reformat_file`
 
-### IDE Index MCP server (semantic code intelligence)
+### IDE Index MCP server
 
 When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available:
 

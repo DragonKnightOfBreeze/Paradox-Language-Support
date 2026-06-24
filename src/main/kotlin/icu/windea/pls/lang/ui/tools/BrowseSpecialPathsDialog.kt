@@ -99,7 +99,7 @@ class BrowseSpecialPathsDialog(
     override fun createCenterPanel(): DialogPanel {
         return panel {
             row(PlsBundle.message("dialog.field.selectedGameType")) {
-                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(selectedGameTypeProperty)
                     .applyToComponent { addActionListener { tableModel.fireTableDataChanged() } }
                 button(PlsBundle.message("reset")) { selectedGameTypeProperty.set(defaultSelectedGameType) }

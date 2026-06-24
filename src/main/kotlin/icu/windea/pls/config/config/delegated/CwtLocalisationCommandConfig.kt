@@ -33,11 +33,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * 路径定位：
  * - `localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * localisation_commands = {
@@ -47,6 +43,8 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  *
  * # then `[Owner.GetCountryType]` can be used in localisation text
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称（即命令字段名称，忽略大小写）。
  * @property supportedScopes 允许的作用域（类型）的集合。

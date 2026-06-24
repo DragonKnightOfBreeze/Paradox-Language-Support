@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.navigation.NavigateToDuplicatesFix
+import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 

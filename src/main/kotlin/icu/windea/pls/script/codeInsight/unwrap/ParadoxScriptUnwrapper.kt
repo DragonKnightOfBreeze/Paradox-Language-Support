@@ -6,10 +6,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptParameter
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -40,16 +40,16 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
         }
 
         private fun isElementToExtract(element: PsiElement, child: PsiElement): Boolean {
-            if (element is ParadoxScriptInlineParameterCondition) {
+            if (element is ParadoxScriptInlineConditionalBlock) {
                 return child.elementType == ParadoxScriptElementTypes.ARGUMENT_TOKEN
                     || child is ParadoxScriptParameter
-                    || child is ParadoxScriptInlineParameterCondition
+                    || child is ParadoxScriptInlineConditionalBlock
             }
             return child is PsiComment
                 || child is ParadoxScriptProperty
                 || child is ParadoxScriptValue
                 || child is ParadoxScriptScriptedVariable
-                || child is ParadoxScriptParameterCondition
+                || child is ParadoxScriptConditionalBlock
         }
     }
 }

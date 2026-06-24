@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -31,17 +30,16 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun resolve(text: String, formatName: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxNameFormatExpression? {
+    private fun resolve(text: String, formatName: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxNameFormatExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
-        val cfg = CwtValueConfig.createMock(configGroup, "name_format[$formatName]")
-        return ParadoxNameFormatExpression.resolve(text, null, configGroup, cfg)
+        val config = CwtValueConfig.createMock(configGroup, "name_format[$formatName]")
+        return mark(incomplete) { ParadoxNameFormatExpression.resolve(text, null, configGroup, config) }
     }
 
     @Test
     fun test_basic_empire1() {
         val s = "{<eater_adj> {<patron_noun>}}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 29) {
@@ -70,7 +68,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_empire2() {
         val s = "{AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 58) {
@@ -104,7 +102,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_empire3() {
         val s = "{<home_planet> Fleet}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>("{<home_planet> Fleet}", 0, 21) {
             node<ParadoxNameFormatClosureNode>("{<home_planet> Fleet}", 0, 21) {
@@ -125,7 +123,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_basic_federation() {
         val s = "{<union_adj> Council}"
-        val exp = resolve(s, formatName = "federation")!!
+        val exp = resolve(s, "federation", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>("{<union_adj> Council}", 0, 21) {
             node<ParadoxNameFormatClosureNode>("{<union_adj> Council}", 0, 21) {
@@ -144,9 +142,9 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty_incompleteDiff() {
-        Assert.assertNull(resolve("", formatName = "empire", incomplete = false))
-        val exp = resolve("", formatName = "empire", incomplete = true)!!
+    fun test_empty() {
+        Assert.assertNull(resolve("", "empire", ParadoxGameType.Stellaris, incomplete = false))
+        val exp = resolve("", "empire", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>("", 0, 0) { }
         exp.check(dsl)
@@ -157,7 +155,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_braces_empty() {
         val s = "{}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>("{}", 0, 2) {
@@ -171,7 +169,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_localisation_simple() {
         val s = "{alpha}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 7) {
@@ -186,7 +184,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_definition_simple() {
         val s = "{<x> y}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 7) {
@@ -207,7 +205,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_command_simple() {
         val s = "{[Root.GetName]}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 16) {
@@ -230,7 +228,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_nested_mixed() {
         val s = "{X{<Y> [Root.GetName]}}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 23) {
@@ -266,7 +264,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         // NOTE 顶层与闭包层的“空错误节点”逻辑是幂等的：若子层已在当前层末位放置了错误节点（例如 [ 未闭合导致的当前层末尾空错误），则闭包层不会再重复添加。
 
         val s = "{<abc"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 5) {
@@ -286,7 +284,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         // NOTE 顶层与闭包层的“空错误节点”逻辑是幂等的：若子层已在当前层末位放置了错误节点（例如 [ 未闭合导致的当前层末尾空错误），则闭包层不会再重复添加。
 
         val s = "{[Root."
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 7) {
@@ -312,7 +310,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_text_and_blanks() {
         val s = "{Alpha Beta}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 12) {
@@ -329,7 +327,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_top_level_blanks_and_closure() {
         val s = "   { <x> y  }   "
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxBlankNode>("   ", 0, 3)
@@ -354,7 +352,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_top_level_errors_and_closure() {
         val s = "foo { <x> y  } <bar> "
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxErrorTokenNode>("foo", 0, 3)
@@ -382,7 +380,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_no_open_brace_whole_error() {
         val s = "<x> y} "
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxErrorTokenNode>("<x> y}", 0, 6)
@@ -394,7 +392,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_stray_close_in_closure() {
         val s = "{x> y}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 6) {
@@ -412,7 +410,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_extra_close_top_level() {
         val s = "{<x>> y}}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>("{<x>> y}", 0, 8) {
@@ -435,7 +433,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_empty_command_in_closure() {
         val s = "{[]}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 4) {
@@ -454,7 +452,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_empty_definition_in_closure() {
         val s = "{<>}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 4) {
@@ -473,7 +471,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_unmatched_angle_stop_at_space() {
         val s = "{<abc y}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 8) {
@@ -494,7 +492,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_unmatched_bracket_stop_at_space() {
         val s = "{[Root. y}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>("{[Root. y}", 0, 10) {
@@ -523,7 +521,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_stray_close_bracket_in_closure() {
         val s = "{x] y}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 6) {
@@ -541,7 +539,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_top_level_after_closure_text() {
         val s = "{x}y"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>("{x}", 0, 3) {
@@ -557,7 +555,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_braces_blank_inside() {
         val s = "{ }"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 3) {
@@ -572,7 +570,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_strict_command_adjacent_no_space() {
         val s = "{x[Root.GetName]}"
-        val exp = resolve(s, formatName = "empire")!!
+        val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxNameFormatExpression>(s, 0, s.length) {
             node<ParadoxNameFormatClosureNode>(s, 0, 17) {

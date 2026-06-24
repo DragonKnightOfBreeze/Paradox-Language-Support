@@ -35,8 +35,8 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
 
   @Override
   @NotNull
-  public List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineParameterCondition.class);
+  public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
   }
 
   @Override

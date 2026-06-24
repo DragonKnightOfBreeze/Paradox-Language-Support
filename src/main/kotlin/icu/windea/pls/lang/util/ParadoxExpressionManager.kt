@@ -68,8 +68,8 @@ import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKey
@@ -188,7 +188,7 @@ object ParadoxExpressionManager {
     //
     //     // detailed version
     //     // val first = element.firstChild ?: return false
-    //     // if (first is ParadoxScriptInlineParameterCondition || first is ParadoxParameter) return false
+    //     // if (first is ParadoxScriptInlineConditionalBlock || first is ParadoxParameter) return false
     //     // return first.text.isLeftQuoted()
     // }
 
@@ -255,7 +255,7 @@ object ParadoxExpressionManager {
     }
 
     fun isParameterElementInExpression(element: PsiElement): Boolean {
-        return element is ParadoxParameter || element is ParadoxScriptInlineParameterCondition || element is ParadoxLocalisationParameter
+        return element is ParadoxParameter || element is ParadoxScriptInlineConditionalBlock || element is ParadoxLocalisationParameter
     }
 
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
@@ -513,7 +513,7 @@ object ParadoxExpressionManager {
 
         // 尝试解析为复杂枚举值声明
         run {
-            if (element !is ParadoxScriptStringExpressionElement) return@run
+            if (!element.isResolvableExpression()) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
             val textRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
             val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo)

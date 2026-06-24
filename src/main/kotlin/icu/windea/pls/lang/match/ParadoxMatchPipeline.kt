@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.model.expressions.ParadoxExpression
 
@@ -57,7 +57,7 @@ object ParadoxMatchPipeline {
         }
 
         // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
-        if (dynamic) PlsStates.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true
+        if (dynamic) ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true
 
         return result
     }

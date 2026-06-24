@@ -43,7 +43,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     }
 
     @JvmStatic
-    fun processInlineParameterCondition(b: PsiBuilder, l: Int): Boolean {
+    fun processInlineConditionalBlock(b: PsiBuilder, l: Int): Boolean {
         // interrupt parsing when contains whitespaces or comments
         // also must not be alone in whole template expression
         var i = 1
@@ -64,8 +64,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     }
 
     @JvmStatic
-    fun processInlineParameterConditionItem(b: PsiBuilder, l: Int): Boolean {
-        // remapping token types to ARGUMENT_TOKEN for inline parameter condition items
+    fun processInlineConditionalBlockItem(b: PsiBuilder, l: Int): Boolean {
+        // remapping token types to ARGUMENT_TOKEN for inline conditional block items
         if (b !is Builder) return true
         b.setTokenTypeRemapper m@{ t, _, _, _ ->
             if (t in TokenSets.SNIPPET_TYPES) return@m ARGUMENT_TOKEN
@@ -75,7 +75,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     }
 
     @JvmStatic
-    fun postProcessInlineParameterConditionItem(b: PsiBuilder, l: Int): Boolean {
+    fun postProcessInlineConditionalBlockItem(b: PsiBuilder, l: Int): Boolean {
         // reset remapping
         if (b !is Builder) return true
         b.setTokenTypeRemapper(null)

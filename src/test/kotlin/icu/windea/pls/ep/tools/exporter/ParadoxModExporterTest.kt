@@ -2,13 +2,13 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
-import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
@@ -109,7 +109,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_export_${UUID.randomUUID()}.sqlite")
 
-        PlsSqliteService.getInstance().executeSql(dbFile, sql)
+        ChronicleSqliteService.getInstance().executeSql(dbFile, sql)
 
         val exporter = ParadoxLauncherDbExporter()
         val modSet = buildModSetInfoFromWorkshop()
@@ -134,7 +134,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_export_${UUID.randomUUID()}.sqlite")
 
-        PlsSqliteService.getInstance().executeSql(dbFile, sql)
+        ChronicleSqliteService.getInstance().executeSql(dbFile, sql)
 
         val exporter = ParadoxLauncherDbExporter()
         val modSet = buildModSetInfoFromWorkshop()

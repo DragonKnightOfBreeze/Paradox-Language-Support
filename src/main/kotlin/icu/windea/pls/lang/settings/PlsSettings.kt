@@ -154,8 +154,8 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      *
      * @property comments 是否允许折叠多行注释。
      * @property commentsByDefault 是否默认折叠多行注释。
-     * @property parameterConditions 是否允许折叠参数条件表达式块。
-     * @property parameterConditionsByDefault 是否默认折叠参数条件表达式块。
+     * @property conditionalBlocks 是否允许折叠参数化快表达式块。
+     * @property conditionalBlocksByDefault 是否默认折叠参数化快表达式块。
      * @property inlineMaths 是否允许折叠内联数学表达式块。
      * @property inlineMathsByDefault 是否默认折叠内联数学表达式块。
      * @property localisationParametersFully 是否允许折叠本地化参数。完全折叠。
@@ -177,8 +177,8 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     class FoldingState : BaseState() {
         var comments by property(false)
         var commentsByDefault by property(false)
-        var parameterConditions by property(true)
-        var parameterConditionsByDefault by property(false)
+        var conditionalBlocks by property(true)
+        var conditionalBlocksByDefault by property(false)
         var inlineMaths by property(true)
         var inlineMathsByDefault by property(true)
         var localisationTexts by property(false)

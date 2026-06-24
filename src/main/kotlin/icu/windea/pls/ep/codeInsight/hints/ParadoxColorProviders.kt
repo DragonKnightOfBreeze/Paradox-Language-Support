@@ -19,9 +19,8 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptFloat
-import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
@@ -74,7 +73,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
     private fun doSetColor(element: ParadoxScriptString, color: Color) {
         val project = element.project
         val newText = "0x${ColorUtil.toHex(color, true)}"
-        val newString = ParadoxScriptElementFactory.createValue(project, newText)
+        val newString = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newString !is ParadoxScriptString) return
         val command = Runnable {
             // element.replace(newString) // do not do this, element could be reused
@@ -151,7 +150,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         if (colorType == null || colorArgs == null) return
         val newColorArgs = ParadoxColorManager.getNewColorArgs(colorType, colorArgs, color) ?: return
         val newText = newColorArgs.joinToString(" ", "{ ", " }")
-        val newBlock = ParadoxScriptElementFactory.createValue(project, newText)
+        val newBlock = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newBlock !is ParadoxScriptBlock) return
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
@@ -177,7 +176,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         return element.valueList
             .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
             ?.map { it.resolved() ?: return null }
-            ?.takeIf { it.all { v -> v is ParadoxScriptInt || v is ParadoxScriptFloat } }
+            ?.takeIf { it.all { v -> v is ParadoxScriptNumberExpressionElement } }
             ?.map { it.value }
     }
 }
@@ -234,7 +233,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         val colorArgs = element.colorArgs
         val newColorArgs = ParadoxColorManager.getNewColorArgs(colorType, colorArgs, color) ?: return
         val newText = newColorArgs.joinToString(" ", "$colorType { ", " }")
-        val newColor = ParadoxScriptElementFactory.createValue(project, newText)
+        val newColor = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newColor !is ParadoxScriptColor) return
         val command = Runnable {
             // element.replace(newColor) // do not do this, element could be reused

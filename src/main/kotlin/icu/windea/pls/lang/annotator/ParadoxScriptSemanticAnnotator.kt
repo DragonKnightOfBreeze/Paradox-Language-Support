@@ -1,0 +1,180 @@
+package icu.windea.pls.lang.annotator
+
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.defineInfo
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.tagType
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.ParadoxDefineNamespaceInfo
+import icu.windea.pls.model.ParadoxDefineVariableInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.annotator.ParadoxScriptSyntaxAnnotator
+import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isResolvableExpression
+
+/**
+ * @see ParadoxScriptSyntaxAnnotator
+ */
+class ParadoxScriptSemanticAnnotator : Annotator {
+    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        when (element) {
+            is ParadoxScriptFile -> annotateFile(element, holder)
+            is ParadoxScriptProperty -> annotateProperty(element, holder)
+            is ParadoxScriptExpressionElement -> annotateExpressionElement(element, holder)
+        }
+    }
+
+    private fun annotateFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
+        // 高亮定义声明
+        annotateDefinition(file, holder)
+    }
+
+    private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
+        val gameType = selectGameType(element) ?: return
+
+        // 高亮内联脚本用法 - `inline_script = ...` 中的 `inline_script`
+        if (annotateInlineScriptUsage(element, holder, gameType)) return
+        // 高亮定义注入表达式 - `inject:some_definition = {...}` 中的 `inject:some_definition`（以及使用其他合法前缀的情况）
+        if (annotateDefinitionInjectionExpression(element, holder, gameType)) return
+
+        // 高亮定义声明
+        if (annotateDefinition(element, holder)) return
+
+        // 高亮定值的命名空间和变量
+        if (annotateDefine(element, holder)) return
+    }
+
+    private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+        // #131
+        if (!element.isResolvableExpression()) return
+
+        // 高亮特殊标签
+        if (annotateTag(element, holder)) return
+        // 高亮复杂枚举值声明
+        if (annotateComplexEnumValue(element, holder)) return
+
+        val isKey = element is ParadoxScriptPropertyKey
+        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey)).firstOrNull()
+        if (config != null) {
+            // 如果不是字符串，除非是定义引用，否则不作高亮
+            if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return
+
+            // 高亮脚本表达式
+            annotateExpression(element, holder, config)
+            return
+        }
+    }
+
+    private fun annotateDefinition(element: ParadoxDefinitionElement, holder: AnnotationHolder): Boolean {
+        val definitionInfo = element.definitionInfo
+        if (definitionInfo == null) return false
+        if (element is ParadoxScriptProperty) {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptHighlighterColors.DEFINITION).create()
+        }
+        val nameField = definitionInfo.typeConfig.nameField
+        if (nameField.isNotNullOrEmpty()) {
+            // 如果存在，高亮定义名对应的字符串（可能还有其他高亮）
+            val nameElement = selectScope { element.nameFieldElement(nameField) }
+            if (nameElement != null) {
+                val nameString = definitionInfo.name.escapeXml().or.anonymous()
+                val typesString = definitionInfo.typeText
+                // 这里不能使用PSI链接
+                val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(ParadoxScriptHighlighterColors.DEFINITION_NAME).create()
+            }
+        }
+        return true
+    }
+
+    private fun annotateDefine(element: ParadoxScriptProperty, holder: AnnotationHolder): Boolean {
+        val defineInfo = element.defineInfo
+        if (defineInfo == null) return false
+        when (defineInfo) {
+            is ParadoxDefineNamespaceInfo -> {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptHighlighterColors.DEFINE_NAMESPACE).create()
+            }
+            is ParadoxDefineVariableInfo -> {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptHighlighterColors.DEFINE_VARIABLE).create()
+            }
+        }
+        return true
+    }
+
+    private fun annotateInlineScriptUsage(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
+        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return false
+        val name = element.name
+        val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
+        val r1 = TextRange.from(offset, name.length)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptHighlighterColors.MACRO).create()
+        return true
+    }
+
+    private fun annotateDefinitionInjectionExpression(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
+        if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, gameType)) return false
+        val name = element.name
+        if (name.isParameterized()) return false // 忽略带参数的情况
+
+        // 兼容目标为空的情况，此时仅高亮模式前缀
+
+        val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
+        if (mode.isNullOrEmpty()) return false
+        val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
+        val modeRange = TextRange.from(offset, mode.length)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptHighlighterColors.MACRO).create()
+        val markerRange = TextRange.from(offset + mode.length, 1)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptHighlighterColors.SEMANTIC_MARKER).create()
+
+        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
+        if (target.isNullOrEmpty()) return true
+        val targetRange = TextRange.from(offset + mode.length + 1, target.length)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(targetRange).textAttributes(ParadoxScriptHighlighterColors.DEFINITION_REFERENCE).create()
+        return true
+    }
+
+    private fun annotateTag(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
+        // 目前不在这里显示标签类型，而是在快速文档中
+        if (element !is ParadoxScriptString) return false
+        if (element.tagType == null) return false
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptHighlighterColors.TAG).create()
+        return true
+    }
+
+    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxScriptStringExpressionElement) return false
+        if (element.complexEnumValueInfo == null) return false
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
+            .textAttributes(ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE)
+            .create()
+        return true
+    }
+
+    private fun annotateExpression(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, config: CwtMemberConfig<*>) {
+        ParadoxExpressionManager.annotateScriptExpression(element, null, config, holder)
+    }
+}

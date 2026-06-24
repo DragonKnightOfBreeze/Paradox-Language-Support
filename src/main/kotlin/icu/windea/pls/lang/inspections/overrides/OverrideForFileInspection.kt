@@ -5,9 +5,9 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingFilesFix
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
-import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingFilesFix
 import icu.windea.pls.lang.util.ParadoxFileManager
 
 /**

@@ -5,9 +5,9 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingScriptedVariablesFix
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
-import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingScriptedVariablesFix
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptVisitor

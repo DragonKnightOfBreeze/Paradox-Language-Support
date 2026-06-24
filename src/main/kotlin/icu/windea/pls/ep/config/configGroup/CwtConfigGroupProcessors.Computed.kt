@@ -35,10 +35,13 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         val initializer = configGroup.initializer
 
         checkCanceled()
+        computeLocales(initializer)
+
+        checkCanceled()
         addModifiersFromTypes(initializer)
 
         checkCanceled()
-        computePredefinedModifiersAndGeneratedModifiers(initializer)
+        computeModifiers(initializer)
 
         checkCanceled()
         computeSwappedTypesAndAddMissingDeclarations(initializer)
@@ -66,6 +69,13 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         checkCanceled()
         computeDefinitionTypeModel(initializer)
+    }
+
+    private fun computeLocales(initializer: CwtConfigGroupInitializer) {
+        for (localeConfig in initializer.locales.values) {
+            initializer.globalLocales += localeConfig
+            if (localeConfig.supports) initializer.supportedLocales += localeConfig
+        }
     }
 
     private fun addModifiersFromTypes(initializer: CwtConfigGroupInitializer) {
@@ -103,7 +113,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computePredefinedModifiersAndGeneratedModifiers(initializer: CwtConfigGroupInitializer) {
+    private fun computeModifiers(initializer: CwtConfigGroupInitializer) {
         initializer.modifiers.values
             .filter { it.template.expressionString.isEmpty() }
             .associateByTo(initializer.predefinedModifiers) { it.name }

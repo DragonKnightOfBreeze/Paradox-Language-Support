@@ -2,9 +2,9 @@ package icu.windea.pls.ep.resolve.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
  * 用于基于上下文提供重载后的规则。
@@ -27,14 +27,14 @@ interface CwtOverriddenConfigProvider {
     /**
      * 是否跳过缺失的表达式的代码检查。
      *
-     * @see icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
+     * @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
      */
     fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
     /**
      * 是否跳过过多的表达式的代码检查。
      *
-     * @see icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
+     * @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
      */
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 

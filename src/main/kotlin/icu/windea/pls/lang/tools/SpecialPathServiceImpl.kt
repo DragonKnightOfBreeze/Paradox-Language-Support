@@ -33,7 +33,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
     override fun initAsync() {
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch { getSteamPath() }
-        ParadoxGameType.getAll().forEach { gameType ->
+        ParadoxGameType.getAllSpecific().forEach { gameType ->
             coroutineScope.launch { getSteamGamePath(gameType.steamId, gameType.title) }
         }
     }

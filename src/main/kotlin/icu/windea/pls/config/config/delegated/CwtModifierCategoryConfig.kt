@@ -24,17 +24,15 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * 路径定位：
  * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * modifier_categories = {
  *     Pops = { supported_scopes = { species pop_group planet ... } }
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称（即分类名）。
  * @property supportedScopes 允许的作用域（类型）的集合。

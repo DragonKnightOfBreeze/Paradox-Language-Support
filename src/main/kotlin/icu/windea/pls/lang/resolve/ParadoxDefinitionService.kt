@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -19,7 +20,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
@@ -53,7 +53,7 @@ object ParadoxDefinitionService {
     fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getSuperDefinition(definitionInfo)
         }
     }
@@ -64,7 +64,7 @@ object ParadoxDefinitionService {
     fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
         val gameType = definitionInfo.gameType
         ParadoxDefinitionInheritSupport.EP_NAME.extensionList.process p@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@p true
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@p true
             ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
         }
     }
@@ -75,7 +75,7 @@ object ParadoxDefinitionService {
     fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionModifierProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getModifierCategories(definitionInfo)
         }
     }

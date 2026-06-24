@@ -21,11 +21,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 本地化资源：`types/type[{type}]/localisation/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
  * - 图片资源：`types/type[{type}]/images/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
  *
- * ### CWTools 兼容性
- *
- * 兼容。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * types = {
@@ -38,6 +34,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *     }
  * }
  * ```
+ *
+ * > CWTools 兼容性：兼容。
  *
  * @property key 资源的名字。
  * @property value 资源的位置表达式（[CwtLocationExpression]）。

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
@@ -19,7 +20,6 @@ import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtConfigMatchService
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
@@ -31,6 +31,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -43,6 +44,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
@@ -50,7 +52,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.floatValue
@@ -62,19 +63,32 @@ import icu.windea.pls.script.psi.propertyValue
 object ParadoxConfigMatchService {
     private val CwtConfigGroup.typeConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
-            types.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
+            types.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
     private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
-            complexEnums.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
+            complexEnums.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
     private val CwtConfigGroup.rowConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtRowConfig>> { path ->
-            rows.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
+            rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
+
+    // region File Level
+
+    fun isMatchedOnFileLevel(file: PsiFile, configGroup: CwtConfigGroup, path: ParadoxPath): Boolean {
+        return when {
+            file is ParadoxScriptFile -> configGroup.types.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+                || configGroup.complexEnums.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+            file is ParadoxCsvFile -> configGroup.rows.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+            else -> true // meaningless, return true here
+        }
+    }
+
+    // endregion
 
     // region Type Config
 
@@ -147,7 +161,7 @@ object ParadoxConfigMatchService {
 
     fun matchesTypeFast(context: CwtTypeConfigMatchContext, typeConfig: CwtTypeConfig): Boolean? {
         if (context.matchPath && context.path != null) {
-            if (!CwtConfigManager.matchesFilePathPattern(typeConfig, context.path)) return false
+            if (!CwtConfigMatchService.matchesFilePath(typeConfig, context.path)) return false
         }
 
         if (context.typeKey != null) {
@@ -274,7 +288,7 @@ object ParadoxConfigMatchService {
 
     private fun matchesDefinitionForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, propertyConfig: CwtPropertyConfig): Boolean {
         // 这里不能基于内联后的声明结构，否则可能会导致SOE
-        // 也不要基于参数条件表达式中的声明结构
+        // 也不要基于参数化快表达式中的声明结构
         val childValueConfigs = propertyConfig.values.orEmpty()
         if (childValueConfigs.isNotEmpty()) {
             // 匹配值列表
@@ -381,7 +395,7 @@ object ParadoxConfigMatchService {
         val configGroup = propertyConfig.configGroup
         val singleAliasName = propertyConfig.valueExpression.value ?: return false
         val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
-        return matchesPropertyForSubtype(context,definition, property, singleAlias.config)
+        return matchesPropertyForSubtype(context, definition, property, singleAlias.config)
     }
 
     private fun matchesAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {
@@ -410,16 +424,16 @@ object ParadoxConfigMatchService {
         return if (context.path == null) configGroup.complexEnums.values else configGroup.complexEnumConfigCandidatesCache[context.path]
     }
 
-    fun getMatchedComplexEnumConfig(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptStringExpressionElement): CwtComplexEnumConfig? {
+    fun getMatchedComplexEnumConfig(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptExpressionElement): CwtComplexEnumConfig? {
         val candidates = getComplexEnumConfigCandidates(context)
         if (candidates.isEmpty()) return null
         context.matchPath = false
         return candidates.find { matchesComplexEnum(context, element, it) }
     }
 
-    fun matchesComplexEnum(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig): Boolean {
+    fun matchesComplexEnum(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptExpressionElement, complexEnumConfig: CwtComplexEnumConfig): Boolean {
         if (context.matchPath && context.path != null) {
-            if (!CwtConfigManager.matchesFilePathPattern(complexEnumConfig, context.path)) return false
+            if (!CwtConfigMatchService.matchesFilePath(complexEnumConfig, context.path)) return false
         }
         for (enumNameConfig in complexEnumConfig.enumNameConfigs) {
             if (matchesEnumNameForComplexEnum(element, complexEnumConfig, enumNameConfig)) return true
@@ -427,7 +441,7 @@ object ParadoxConfigMatchService {
         return false
     }
 
-    private fun matchesEnumNameForComplexEnum(element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
+    private fun matchesEnumNameForComplexEnum(element: ParadoxScriptExpressionElement, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
         if (config is CwtPropertyConfig) {
             if (config.key == "enum_name") {
                 if (element !is ParadoxScriptPropertyKey) return false
@@ -585,7 +599,7 @@ object ParadoxConfigMatchService {
 
     fun matchesRow(context: CwtRowConfigMatchContext, rowConfig: CwtRowConfig): Boolean {
         if (context.matchPath && context.path != null) {
-            if (!CwtConfigManager.matchesFilePathPattern(rowConfig, context.path)) return false
+            if (!CwtConfigMatchService.matchesFilePath(rowConfig, context.path)) return false
         }
         return true
     }

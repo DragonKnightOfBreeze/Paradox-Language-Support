@@ -9,9 +9,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -22,16 +22,14 @@ import javax.swing.JComponent
 /**
  * 无法解析的文本格式的代码检查。
  *
- * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
+ * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class UnresolvedTextFormatInspection : LocalInspectionTool() {
     // aka predefined format styles, or color expressions, or combined
-    @JvmField
-    var ignoredNames = "bold;semibold;extrabold;italic;underline;strikethrough;indent_newline;tooltip"
-    @JvmField
-    var ignoredInInjectedFiles = false
+    @JvmField var ignoredNames = "bold;semibold;extrabold;italic;underline;strikethrough;indent_newline;tooltip:"
+    @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求游戏类型支持文本格式
@@ -62,11 +60,9 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
             // ignoredNames
             row {
                 label(PlsBundle.message("inspection.localisation.unresolvedTextFormat.option.ignoredNames"))
-            }
-            row {
                 textField()
                     .bindText(::ignoredNames.toAtomicProperty())
-                    .comment(PlsBundle.message("inspection.localisation.unresolvedTextFormat.option.ignoredNames.comment"))
+                    .comment(PlsBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.modifier
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxModifierInfo
 
 /**

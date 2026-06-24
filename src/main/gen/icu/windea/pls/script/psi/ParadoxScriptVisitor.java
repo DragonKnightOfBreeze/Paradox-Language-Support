@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.core.psi.PsiBoundElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -24,13 +25,31 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitLiteralValue(o);
   }
 
+  public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {
+    visitBoundMemberContainer(o);
+  }
+
+  public void visitConditionalBlockExpression(@NotNull ParadoxScriptConditionalBlockExpression o) {
+    visitPsiElement(o);
+  }
+
+  public void visitConditionalBlockParameter(@NotNull ParadoxScriptConditionalBlockParameter o) {
+    visitParadoxConditionParameter(o);
+  }
+
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
     visitValue(o);
+    // visitNumberExpressionElement(o);
     // visitLiteralValue(o);
+  }
+
+  public void visitInlineConditionalBlock(@NotNull ParadoxScriptInlineConditionalBlock o) {
+    visitPsiBoundElement(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
     visitValue(o);
+    // visitPsiBoundElement(o);
   }
 
   public void visitInlineMathAbsExpression(@NotNull ParadoxScriptInlineMathAbsExpression o) {
@@ -78,12 +97,9 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitInlineMathExpression(o);
   }
 
-  public void visitInlineParameterCondition(@NotNull ParadoxScriptInlineParameterCondition o) {
-    visitPsiElement(o);
-  }
-
   public void visitInt(@NotNull ParadoxScriptInt o) {
     visitValue(o);
+    // visitNumberExpressionElement(o);
     // visitLiteralValue(o);
   }
 
@@ -94,18 +110,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitParameterArgument(@NotNull ParadoxScriptParameterArgument o) {
     visitArgument(o);
-  }
-
-  public void visitParameterCondition(@NotNull ParadoxScriptParameterCondition o) {
-    visitBoundMemberContainer(o);
-  }
-
-  public void visitParameterConditionExpression(@NotNull ParadoxScriptParameterConditionExpression o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParameterConditionParameter(@NotNull ParadoxScriptParameterConditionParameter o) {
-    visitParadoxConditionParameter(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -151,6 +155,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitExpressionElement(o);
     // visitMemberContainer(o);
     // visitMember(o);
+  }
+
+  public void visitPsiBoundElement(@NotNull PsiBoundElement o) {
+    visitElement(o);
   }
 
   public void visitParadoxConditionParameter(@NotNull ParadoxConditionParameter o) {

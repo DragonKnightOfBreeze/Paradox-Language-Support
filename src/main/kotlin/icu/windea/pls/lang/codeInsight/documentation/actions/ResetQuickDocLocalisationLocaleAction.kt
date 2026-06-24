@@ -27,7 +27,7 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
             val targetElement = browser?.targetPointer?.dereference()?.targetElement
             if (targetElement == null) return@run
             if (targetElement.language !is ParadoxLanguage) return@run
-            val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
+            val locale = ParadoxLocaleManager.getGlobalLocaleConfigInDocumentation(targetElement)
             isVisible = true
             isEnabled = locale != null
         }
@@ -40,7 +40,7 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
         val targetElement = browser?.targetPointer?.dereference()?.targetElement
         if (targetElement == null) return
         if (targetElement.language !is ParadoxLanguage) return
-        val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
+        val locale = ParadoxLocaleManager.getGlobalLocaleConfigInDocumentation(targetElement)
         if (locale == null) return
         targetElement.putUserData(ParadoxLocaleManager.Keys.documentationLocale, null)
         browser.reload()

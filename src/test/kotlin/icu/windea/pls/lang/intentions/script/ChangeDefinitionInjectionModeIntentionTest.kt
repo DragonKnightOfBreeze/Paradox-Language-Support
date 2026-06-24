@@ -6,6 +6,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import icu.windea.pls.test.markRootDirectory
@@ -28,7 +29,8 @@ class ChangeDefinitionInjectionModeIntentionTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/intentions/definition_injection")
+        markRootDirectory("features/intentions")
+        markConfigDirectory("features/intentions/.config")
         initConfigGroups(project, gameType)
     }
 

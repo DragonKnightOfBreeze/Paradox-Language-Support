@@ -1,0 +1,54 @@
+# common
+
+alias[effect:<scripted_effect>] = bool
+
+### The scripted effect will draw the value of the right clause via $left_clause$.
+alias[effect:<scripted_effect>] = {
+    ## cardinality = 0..inf
+    $parameter = $parameter_value
+}
+
+### Executes enclosed effects if limit criteria are met
+## scopes = any
+alias[effect:if] = {
+    ## cardinality = ~1..1
+    limit = single_alias_right[trigger_clause]
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Executes enclosed effects if limit criteria of preceding 'if' or 'else_if' is not met, and its own limit is met
+### if = { limit = { <triggers> } <effects> }
+## scopes = any
+alias[effect:else_if] = {
+    ## cardinality = ~1..1
+    limit = single_alias_right[trigger_clause]
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Executes enclosed effects if limit criteria of preceding 'if' or 'else_if' is not met
+### if = { limit = { <triggers> } <effects> }
+## scopes = any
+alias[effect:else] = {
+    ## cardinality = 0..1
+    limit = single_alias_right[trigger_clause]
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Saves the current scope as an arbitrarily-named target to be referenced later in the (unbroken) event chain
+## scopes = any
+alias[effect:save_event_target_as] = value_set[event_target]
+### Saves the current scope as an arbitrarily-named target to be referenced later, accessible globally until cleared
+## scopes = any
+alias[effect:save_global_event_target_as] = value_set[global_event_target]
+
+# extra
+
+### Do nothing.
+## scopes = { character }
+alias[effect:pass] = bool
+### Revival into the real world.
+## scopes = { character }
+alias[effect:revival] = bool
+### Say hello to the real world.
+## scopes = { character }
+alias[effect:say_hello_world] = bool

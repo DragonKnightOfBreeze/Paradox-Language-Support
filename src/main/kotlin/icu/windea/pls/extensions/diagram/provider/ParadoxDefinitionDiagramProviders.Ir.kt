@@ -5,10 +5,10 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.IrEventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ir) {
     object Constants {
         const val ID = "Ir.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture")
+        val itemPropertyKeys = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -28,7 +28,7 @@ class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameTy
 
     override fun getDiagramSettings(project: Project) = project.service<IrEventTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
     class DataModel(
         project: Project,

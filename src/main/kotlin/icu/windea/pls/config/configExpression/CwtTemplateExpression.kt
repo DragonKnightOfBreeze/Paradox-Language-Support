@@ -23,15 +23,10 @@ import icu.windea.pls.lang.isIdentifierChar
  * - 采用“最左最早匹配”的方式，基于所有动态规则（具有前后缀的规则）扫描字符串，拆分出常量/动态片段。
  * - 仅存在一个片段（纯常量或纯动态）时视为不构成模板，返回空表达式。
  *
- * ### 适用对象
+ * 适用对象：
+ * - 定义成员对应的规则的键或值。
  *
- * 定义成员对应的规则的键或值。
- *
- * ### CWTools 兼容性
- *
- * 部分兼容。拥有不同的解析和处理逻辑。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * job_<job>_add # "job" + <job> + "_add"
@@ -40,6 +35,8 @@ import icu.windea.pls.lang.isIdentifierChar
  * value[gui_element_name]:<sprite> # value[gui_element_name] + ":" + sprite
  * value[gui_element_name]:localisation # value[gui_element_name] + ":" + localisation
  * ```
+ *
+ * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
  *
  * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。
  * @property referenceExpressions 过滤后的引用片段（即非 [CwtDataTypes.Constant] 片段），用于后续的引用解析、导航与高亮。

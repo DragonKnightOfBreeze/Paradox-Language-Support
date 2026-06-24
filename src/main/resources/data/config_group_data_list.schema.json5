@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "config_group_data_list.json",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/configGroupData"
+  },
+  "definitions": {
+    "configGroupData": {
+      "type": "object",
+      "properties": {
+        "gameType": {
+          "$ref": "#/definitions/gameTypeId"
+        },
+        "aliasNamesSupportScope": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "typesSupportScope": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "typesIndirectSupportScope": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "typesSkipCheckSystemScope": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "typesSupportParameters": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "typesSupportScopeContextInference": {
+          "$ref": "#/definitions/stringSet"
+        },
+      },
+      "required": ["gameType"],
+      "additionalProperties": false
+    },
+    "gameTypeId": {
+      "type": "string",
+      "enum": ["core", "stellaris", "ck2", "ck3", "eu4", "eu5", "hoi4", "ir", "vic2", "vic3"]
+    },
+    "stringSet": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

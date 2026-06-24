@@ -1,0 +1,5 @@
+example = {
+	<spot>root = {
+		owner = { k = v }
+	}</spot>
+}

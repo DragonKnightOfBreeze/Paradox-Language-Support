@@ -193,10 +193,10 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     }
 
     @Test
-    fun testPutMembersOnOneLine_parameterConditionBlock() {
+    fun testPutMembersOnOneLine_conditionalBlock() {
         val intentionName = PlsBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
-            "put_members_on_one_line_parameter_condition_block.test.txt",
+            "put_members_on_one_line_conditional_block_block.test.txt",
             """
             k = {
                 [[p]
@@ -218,10 +218,10 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     }
 
     @Test
-    fun testPutMembersOnSeparateLines_parameterConditionBlock() {
+    fun testPutMembersOnSeparateLines_conditionalBlock() {
         val intentionName = PlsBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
-            "put_members_on_separate_lines_parameter_condition_block.test.txt",
+            "put_members_on_separate_lines_conditional_block_block.test.txt",
             "k = { [[p] <caret>a b = c ] }"
         )
         val intention = myFixture.findSingleIntention(intentionName)

@@ -3,59 +3,61 @@
   {
     "gameType": "stellaris",
     "gameMainEntries": [
-      ""
+      "",
+      "dlc/*",
     ],
     "gameExtraEntries": [
       "pdx_launcher/game",
       "pdx_launcher/common",
       "pdx_online_assets",
       "previewer_assets",
-      "tweakergui_assets"
+      "tweakergui_assets",
     ],
     "executablePaths": [
-      "stellaris"
+      "stellaris",
+      "binaries/stellaris", // 2.1.10 for compatibility
     ]
   },
   // ck2
   {
     "gameType": "ck2",
     "gameMainEntries": [
-      "game"
+      "game",
     ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     "executablePaths": [
-      "binaries/ck2"
+      "ck2", // 2.1.10 for compatibility
+      "binaries/ck2",
     ]
   },
   // ck3
   {
     "gameType": "ck3",
     "gameMainEntries": [
-      "game"
+      "game",
     ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     "executablePaths": [
-      "binaries/ck3"
+      "ck3", // 2.1.10 for compatibility
+      "binaries/ck3",
     ]
   },
   // eu4
   {
     "gameType": "eu4",
-    "gameMainEntries": [
-      ""
-    ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     "executablePaths": [
-      "eu4"
+      "eu4",
+      "binaries/eu4", // 2.1.10 for compatibility
     ]
   },
   // eu5
@@ -67,21 +69,22 @@
       "game/loading_screen",
       "game/dlc/*/in_game",
       "game/dlc/*/main_menu",
-      "game/dlc/*/loading_screen"
+      "game/dlc/*/loading_screen",
     ],
     "gameExtraEntries": [
       "clausewitz/main_menu",
       "clausewitz/loading_screen",
       "jomini/main_menu",
-      "jomini/loading_screen"
+      "jomini/loading_screen",
     ],
     "modMainEntries": [
       "in_game",
       "main_menu",
-      "loading_screen"
+      "loading_screen",
     ],
     "executablePaths": [
-      "binaries/eu5"
+      "eu5", // 2.1.10 for compatibility
+      "binaries/eu5",
     ]
   },
   // hoi4
@@ -92,53 +95,58 @@
     ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     executablePaths: [
-      "hoi4"
+      "hoi4",
+      "binaries/hoi4", // 2.1.10 for compatibility
     ]
   },
   // ir
   {
     "gameType": "ir",
     "gameMainEntries": [
-      "game"
+      "game",
     ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     "executablePaths": [
-      "binaries/imperator"
+      "imperator", // 2.1.10 for compatibility
+      "binaries/imperator",
     ]
   },
   // vic2
   {
     "gameType": "vic2",
     "gameMainEntries": [
-      "game"
+      "game",
     ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     "executablePaths": [
-      // "victoria2",
-      "binaries/v2game"
+      // not `victoria2`
+      "v2game", // 2.1.10 for compatibility
+      "binaries/v2game",
     ]
   },
   // vic3
   {
     "gameType": "vic3",
     "gameMainEntries": [
-      "game"
+      "game",
+      "game/dlc/*",
     ],
     "gameExtraEntries": [
       "clausewitz",
-      "jomini"
+      "jomini",
     ],
     "executablePaths": [
-      "binaries/victoria3"
+      "victoria3", // 2.1.10 for compatibility
+      "binaries/victoria3",
     ]
   }
 ]

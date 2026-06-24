@@ -9,9 +9,9 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -44,6 +44,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     consumer.process(file)
                 }
             } else {
+                if (context.filePath.isEmpty()) return true
                 val keys = getFilePaths(context, context.filePath)
                 return FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, context.scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
@@ -67,31 +68,40 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     consumer.process(file)
                 }
             } else {
+                if (context.filePath.isEmpty()) return true
+                val canResolve = support.canResolve(context.configExpression, context.filePath)
+                if (!canResolve) return true
                 val resolvedPaths = support.resolvePath(context.configExpression, context.filePath)
-                if (resolvedPaths.isNotNullOrEmpty()) {
-                    val keys = resolvedPaths
-                    return FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, context.scope, null, null) p@{ file ->
-                        ProgressManager.checkCanceled()
-                        ParadoxAnalysisManager.getFileInfo(file) ?: return@p true // ensure file info is resolved here
-                        if (!matchesGameType(context, file)) return@p true // check game type at file level
-                        consumer.process(file)
-                    }
-                }
+                if (resolvedPaths != null) return processResolvedPaths(context, resolvedPaths, consumer)
                 val resolvedFileNames = support.resolveFileName(context.configExpression, context.filePath)
-                if (resolvedFileNames.isNotNullOrEmpty()) {
-                    val resolvedFiles = sortedSetOf<VirtualFile>(compareBy { it.path })
-                    FilenameIndex.processFilesByNames(resolvedFileNames, false, context.scope, null) p@{ file ->
-                        ProgressManager.checkCanceled()
-                        val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return@p true // ensure file info is resolved here
-                        if (!matchesGameType(context, file)) return@p true // check game type at file level
-                        if (!support.matches(context.configExpression, context.contextElement, fileInfo.path.path)) return@p true
-                        resolvedFiles.add(file)
-                    }
-                    return resolvedFiles.process { consumer.process(it) }
-                }
+                if (resolvedFileNames != null) return processResolvedFileNames(context, resolvedFileNames, support, consumer)
                 return true
             }
         }
+    }
+
+    private fun processResolvedPaths(context: Context, resolved: Set<String>, consumer: Processor<in VirtualFile>): Boolean {
+        if (resolved.isEmpty()) return true
+        return FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, resolved, context.scope, null, null) p@{ file ->
+            ProgressManager.checkCanceled()
+            ParadoxAnalysisManager.getFileInfo(file) ?: return@p true // ensure file info is resolved here
+            if (!matchesGameType(context, file)) return@p true // check game type at file level
+            consumer.process(file)
+        }
+    }
+
+    private fun processResolvedFileNames(context: Context, resolved: Set<String>, support: ParadoxPathReferenceExpressionSupport, consumer: Processor<in VirtualFile>): Boolean {
+        if (resolved.isEmpty()) return true
+        val configExpression = context.configExpression ?: return true
+        val resolvedFiles = sortedSetOf<VirtualFile>(compareBy { it.path })
+        FilenameIndex.processFilesByNames(resolved, false, context.scope, null) p@{ file ->
+            ProgressManager.checkCanceled()
+            val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return@p true // ensure file info is resolved here
+            if (!matchesGameType(context, file)) return@p true // check game type at file level
+            if (!support.matches(configExpression, context.contextElement, fileInfo.path.path)) return@p true
+            resolvedFiles.add(file)
+        }
+        return resolvedFiles.process { consumer.process(it) }
     }
 
     private fun getFilePaths(context: Context, filePath: String): Set<String> {
@@ -104,7 +114,9 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
 
     private fun getFilePathsIgnoreLocale(filePath: String): Set<String>? {
         if (!filePath.endsWith(".yml", true)) return null // 仅限本地化文件
-        val localeStrings = ParadoxLocaleManager.getLocaleConfigs().map { it.shortId }
+        val configGroup = PlsFacade.getConfigGroup()
+        val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
+        val localeStrings = globalLocales.map { it.shortId }
         var index = 0
         var usedLocaleString: String? = null
         for (localeString in localeStrings) {

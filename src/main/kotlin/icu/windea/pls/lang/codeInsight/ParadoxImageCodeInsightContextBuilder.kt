@@ -22,7 +22,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxImageCodeInsightContextBuilder {
@@ -36,7 +36,7 @@ object ParadoxImageCodeInsightContextBuilder {
                     is ParadoxDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
-                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
         })

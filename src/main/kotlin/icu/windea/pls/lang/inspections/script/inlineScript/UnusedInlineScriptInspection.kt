@@ -10,11 +10,11 @@ import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
- * 未使用的内联脚本的代码检查。
+ * 检查内联脚本是否未被使用。
  */
 class UnusedInlineScriptInspection : InlineScriptInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        // still check if inference.inlineScriptConfig is not checked
+        // still check if `inference.inlineScriptConfig` is not enabled
         // if (!getSettings().inference.inlineScriptConfig) return null
 
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null

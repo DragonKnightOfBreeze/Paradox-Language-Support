@@ -15,6 +15,8 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.*
 import javax.swing.Icon
 
+// com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
+
 class ParadoxDefinitionUsageGroup(
     element: ParadoxDefinitionElement,
     private val name: String,
@@ -22,8 +24,6 @@ class ParadoxDefinitionUsageGroup(
     private val project: Project,
     private val usageViewSettings: UsageViewSettings,
 ) : UsageGroup {
-    // com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
-
     private val icon = element.icon
     private val pointer = element.createPointer()
 

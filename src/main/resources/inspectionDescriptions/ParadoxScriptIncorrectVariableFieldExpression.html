@@ -3,13 +3,17 @@
   Reports incorrect variable field expressions.
   <!-- tooltip end -->
   <p>
-    A value field expression is a script expression matching expression data type
-    <code>variable_field</code> or <code>int_variable_field</code>,
+    A value field expression is a script expression matching data type
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-variable-field">VariableField</a> or
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-int-variable-field">IntVariableField</a>,
     as a subset of
-    <code>value_field</code> or <code>int_value_field</code>.
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-value-field">ValueField</a> or
+    <a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#data-type-int-value-field">IntValueField</a> separately.
   </p>
-  <p>
-    Example: <code>root.owner.some_variable</code>.
-  </p>
+  <p>Example:</p>
+  <ul>
+    <li><code>some_variable</code></li>
+    <li><code>owner.some_variable</code></li>
+  </ul>
 </body>
 </html>

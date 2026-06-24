@@ -1,21 +1,23 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
 
 /**
  * 命名格式表达式。
  *
  * 说明：
- * - 用于解析 Stellaris 中以花括号包裹的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  * - 对应的规则数据类型为 [CwtDataTypes.NameFormat]。
+ * - 用于解析 Stellaris 中以花括号包围的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  *
  * 示例：
  * ```
@@ -37,7 +39,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * ### 语法与结构
  *
  * - 整体形态：
- *   - 顶层仅识别由花括号包裹的“闭包段”`{...}`。若字符串中不含任何`{`，则非空白部分整体被视为错误片段，其前后空白会作为空白节点保留。
+ *   - 顶层仅识别由花括号包围的“闭包段”`{...}`。若字符串中不含任何`{`，则非空白部分整体被视为错误片段，其前后空白会作为空白节点保留。
  *
  * - 闭包段的内容由一系列节点顺序拼接而成，空白会被保留为空白节点。按优先级识别如下节点类型：
  *   1) 定义占位：形如`<name>`。
@@ -76,7 +78,7 @@ private object ParadoxNameFormatExpressionResolver {
         val configExpression = config.configExpression ?: return null
         if (configExpression.type != CwtDataTypes.NameFormat) return null
 
-        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val formatName = configExpression.value
@@ -411,6 +413,23 @@ private object ParadoxNameFormatExpressionResolver {
     }
 }
 
+private object ParadoxNameFormatExpressionValidator: ParadoxComplexExpressionValidatorScope {
+    @Suppress("UNUSED_PARAMETER")
+    fun validate(expression: ParadoxNameFormatExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val result = validateAllNodes(expression, element, errors) {
+            when (it) {
+                is ParadoxNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
+                is ParadoxNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier(".-'")
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedNameFormatExpression(expression.rangeInExpression, expression.text)
+        return errors
+    }
+}
+
 private class ParadoxNameFormatExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
@@ -418,7 +437,7 @@ private class ParadoxNameFormatExpressionImpl(
     override val config: CwtConfig<*>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxNameFormatExpression {
-    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxNameFormatExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxNameFormatExpression && text == other.text
     override fun hashCode() = text.hashCode()

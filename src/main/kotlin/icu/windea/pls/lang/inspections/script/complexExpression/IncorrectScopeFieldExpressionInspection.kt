@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 
 /**
- * 不正确的 [ParadoxScopeFieldExpression] 的代码检查。
+ * 不正确的作用域字段表达式（[ParadoxScopeFieldExpression]）的代码检查。
  */
 class IncorrectScopeFieldExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {

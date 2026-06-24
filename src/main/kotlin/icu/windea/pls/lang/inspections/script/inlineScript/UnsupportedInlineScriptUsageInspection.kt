@@ -14,16 +14,23 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
 class UnsupportedInlineScriptUsageInspection : InlineScriptInspectionBase()/*, DumbAware*/ {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val extension = holder.file.name.substringAfterLast('.').lowercase()
-        if (extension == "asset") {
-            return object : ParadoxScriptVisitor() {
-                override fun visitProperty(element: ParadoxScriptProperty) {
-                    ProgressManager.checkCanceled()
-                    if (!ParadoxInlineScriptManager.isMatched(element.name)) return
-                    val description = PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1")
-                    holder.registerProblem(element.propertyKey, description)
-                }
+        val isAssetFile = extension == "asset"
+
+        // fast return
+        val fastReturn = !isAssetFile
+        if (fastReturn) return PsiElementVisitor.EMPTY_VISITOR
+
+        return object : ParadoxScriptVisitor() {
+            override fun visitProperty(element: ParadoxScriptProperty) {
+                ProgressManager.checkCanceled()
+                checkInAssetFile(element, holder)
             }
         }
-        return PsiElementVisitor.EMPTY_VISITOR
+    }
+
+    private fun checkInAssetFile(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        if (!ParadoxInlineScriptManager.isMatched(element.name)) return
+        val description = PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1")
+        holder.registerProblem(element.propertyKey, description)
     }
 }

@@ -16,6 +16,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxTemplateExpression
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
@@ -38,9 +41,9 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_template_job_placeholder() {
         val gameType = ParadoxGameType.Stellaris
-        val cfg = pickModifierWithTemplate(gameType) { it.template.expressionString.contains("<") }
-        Assume.assumeTrue("No modifier with <placeholder> template found", cfg != null)
-        val tpl = cfg!!.template
+        val config = pickModifierWithTemplate(gameType) { it.template.expressionString.contains("<") }
+        Assume.assumeTrue("No modifier with <placeholder> template found", config != null)
+        val tpl = config!!.template
         // 构造一个简单匹配文本：将所有占位替换为 foo
         val text = if (tpl.referenceExpressions.size == 1) {
             CwtConfigExpressionManager.extract(tpl, "foo")
@@ -49,7 +52,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
             CwtConfigExpressionManager.extract(tpl, refMap)
         }
         val g = PlsFacade.getConfigGroup(project, gameType)
-        val exp = ParadoxTemplateExpression.resolve(text, null, g, cfg)!!
+        val exp = ParadoxTemplateExpression.resolve(text, null, g, config)!!
         val out = exp.render()
         println(out)
         Assert.assertTrue(out.contains("ParadoxTemplateSnippetConstantNode") && out.contains("ParadoxTemplateSnippetNode"))
@@ -58,14 +61,14 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     @Test
     fun test_template_enum_placeholder_dumpOnly() {
         val gameType = ParadoxGameType.Stellaris
-        val cfg = pickModifierWithTemplate(gameType) { it.template.expressionString.contains("enum[") }
-        Assume.assumeTrue("No modifier with enum[...] in template found", cfg != null)
-        val tpl = cfg!!.template
+        val config = pickModifierWithTemplate(gameType) { it.template.expressionString.contains("enum[") }
+        Assume.assumeTrue("No modifier with enum[...] in template found", config != null)
+        val tpl = config!!.template
         // 仅在单占位时生成用例，否则跳过
         Assume.assumeTrue(tpl.referenceExpressions.size == 1)
         val text = CwtConfigExpressionManager.extract(tpl, "foo")
         val g = PlsFacade.getConfigGroup(project, gameType)
-        val exp = ParadoxTemplateExpression.resolve(text, null, g, cfg)!!
+        val exp = ParadoxTemplateExpression.resolve(text, null, g, config)!!
         val out = exp.render()
         println(out)
         Assert.assertTrue(out.isNotBlank())

@@ -11,7 +11,6 @@ import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -24,15 +23,14 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
+import icu.windea.pls.lang.ui.clause.ElementDescriptors
 import icu.windea.pls.lang.ui.clause.ElementsContext
 import icu.windea.pls.lang.ui.clause.ElementsInfo
 import icu.windea.pls.lang.ui.clause.ExpandClauseTemplateDialog
-import icu.windea.pls.lang.ui.clause.PropertyDescriptor
-import icu.windea.pls.lang.ui.clause.ValueDescriptor
+import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -43,7 +41,7 @@ object ParadoxClauseTemplateCompletionManager {
     private const val blockFolderText = "{ <generate via template> }"
     private const val blockFolderId = "{$...$}"
 
-    fun buildLookupElement(context: ProcessingContext, config: CwtConfig<*>, lookupElement: LookupElementBuilder): LookupElementBuilder? {
+    fun buildLookupElement(context: ParadoxCompletionContext, config: CwtConfig<*>, lookupElement: LookupElementBuilder): LookupElementBuilder? {
         if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
         val entryConfigs = CwtConfigManager.getEntryConfigs(config)
@@ -61,7 +59,7 @@ object ParadoxClauseTemplateCompletionManager {
         return result
     }
 
-    fun buildBlockLookupElement(context: ProcessingContext, config: CwtConfig<*>): LookupElementBuilder? {
+    fun buildBlockLookupElement(context: ParadoxCompletionContext, config: CwtConfig<*>): LookupElementBuilder? {
         if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
         val entryConfigs = CwtConfigManager.getEntryConfigs(config)
@@ -71,15 +69,15 @@ object ParadoxClauseTemplateCompletionManager {
             .withPresentableText(extraTailText)
             .withInsertHandler(insertHandler)
             .withCompletionId(blockFolderId)
-            .withPriority(PlsCompletionPriorities.keyword)
+            .withPriority(ChronicleCompletionPriorities.keyword)
         return result
     }
 
-    fun getExpandInsertHandler(context: ProcessingContext, entryConfigs: List<CwtMemberConfig<*>>): InsertHandler<LookupElement>? {
+    fun getExpandInsertHandler(context: ParadoxCompletionContext, entryConfigs: List<CwtMemberConfig<*>>): InsertHandler<LookupElement>? {
         // 如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
         // 默认列出且仅允许选择直接的key为常量字符串的属性（忽略需要内联的情况）
 
-        val file = context.parameters?.originalFile ?: return null
+        val file = context.parameters.originalFile
         val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtMemberConfig<*>>>>()
         val hasRemainList = mutableListOf<Boolean>()
         for (entry in entryConfigs) {
@@ -99,13 +97,17 @@ object ParadoxClauseTemplateCompletionManager {
         val config = context.config!!
         val propertyName = CwtConfigManager.getEntryName(config)
 
-        val params = PlsInsertHandlers.Params(quoted = context.quoted, isKey = context.isKey, insertCurlyBraces = true)
+        val params = ChronicleInsertHandlers.Params(
+            quoted = context.quoted,
+            isKey = context.isKey,
+            insertCurlyBraces = true,
+        )
 
         return InsertHandler { c, _ ->
             if (params.isKey == true) {
-                PlsInsertHandlers.applyKeyWithValue(c, params)
+                ChronicleInsertHandlers.applyKeyWithValue(c, params)
             } else {
-                PlsInsertHandlers.applyBlock(c)
+                ChronicleInsertHandlers.applyBlock(c)
             }
 
             c.laterRunnable = Runnable {
@@ -125,7 +127,7 @@ object ParadoxClauseTemplateCompletionManager {
                 val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
 
                 val multiline = descriptors.size > PlsSettings.getInstance().state.completion.clauseTemplate.maxMemberCountInOneLine
-                val around = PlsCodeStyleUtil.isSpaceAroundPropertySeparator(file)
+                val around = ParadoxScriptCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
 
                 val commandName = PlsBundle.message("script.command.expandClauseTemplate.name")
                 executeWriteCommand(project, commandName, makeWritable = file) {
@@ -135,7 +137,7 @@ object ParadoxClauseTemplateCompletionManager {
                     val elementOffset = if (around) caretOffset + 1 else caretOffset
                     val elementAtCaret = file.findElementAt(elementOffset)?.parent as ParadoxScriptValue
                     val clauseText = buildClauseText(descriptors, multiline, around)
-                    val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
+                    val clauseElement = ParadoxScriptElementFactory.createValueFromText(project, clauseText)
                     val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
                     documentManager.doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 
@@ -174,10 +176,10 @@ object ParadoxClauseTemplateCompletionManager {
                     if (!mustBeConstantValue) add("")
                     constantValueExpressions.forEach { add(it.expressionString) }
                 }
-                val descriptor = PropertyDescriptor(name = name, value = value, constantValues = constantValues)
+                val descriptor = ElementDescriptors.Property(name = name, value = value, constantValues = constantValues)
                 descriptors.add(descriptor)
             } else {
-                val descriptor = ValueDescriptor(name = expression.expressionString)
+                val descriptor = ElementDescriptors.Value(name = expression.expressionString)
                 descriptors.add(descriptor)
             }
         }
@@ -190,11 +192,11 @@ object ParadoxClauseTemplateCompletionManager {
             if (multiline) append("\n")
             descriptors.forEach {
                 when (it) {
-                    is ValueDescriptor -> {
-                        append(it.name.quoteIfNecessary())
+                    is ElementDescriptors.Value -> {
+                        append(it.name.quoteIfNeeded())
                     }
-                    is PropertyDescriptor -> {
-                        append(it.name.quoteIfNecessary())
+                    is ElementDescriptors.Property -> {
+                        append(it.name.quoteIfNeeded())
                         if (around) append(" ")
                         append(it.separator)
                         if (around) append(" ")
@@ -213,8 +215,8 @@ object ParadoxClauseTemplateCompletionManager {
             if (e is ParadoxScriptProperty || e is ParadoxScriptValue) {
                 val descriptor = descriptors[i]
                 if (descriptor.editInTemplate) {
-                    if (e is ParadoxScriptProperty && descriptor is PropertyDescriptor) {
-                        val string = if (descriptor.value.isNotEmpty()) descriptor.value.quoteIfNecessary() else ""
+                    if (e is ParadoxScriptProperty && descriptor is ElementDescriptors.Property) {
+                        val string = if (descriptor.value.isNotEmpty()) descriptor.value.quoteIfNeeded() else ""
                         val expression = TextExpression(string)
                         templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", expression, true)
                     }

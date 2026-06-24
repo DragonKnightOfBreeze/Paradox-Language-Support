@@ -32,11 +32,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 路径定位：
  * - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
  *
- * ### CWTools 兼容性
- *
- * 不兼容。插件作为扩展提供。
- *
- * ### 示例
+ * 示例：
  *
  * ```cwt
  * inline_scripts = {
@@ -54,6 +50,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
+ * > CWTools 兼容性：不兼容。插件作为扩展提供。
+ *
  * @property name 规则名称。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  *
@@ -64,7 +62,7 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     @FromName
     val name: String
     @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
-    val contextConfigsType: String // TODO 2.0.4+ 需要详细说明这个属性的用处与行为
+    val contextConfigsType: String // TODO [config-system] 2.0.4+ 需要详细说明这个属性的用处与行为
 
     /** 得到处理后的“上下文规则容器”。 */
     fun getContainerConfig(): CwtMemberConfig<*>

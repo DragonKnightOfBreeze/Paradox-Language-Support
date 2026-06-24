@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -35,7 +35,7 @@ abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeEle
                 if (tagType != null) return null
                 ParadoxScriptValueTreeElement(this)
             }
-            is ParadoxScriptParameterCondition -> ParadoxScriptParameterConditionTreeElement(this)
+            is ParadoxScriptConditionalBlock -> ParadoxScriptConditionalBlockTreeElement(this)
             else -> null
         }
     }

@@ -1,0 +1,32 @@
+<html>
+<body>
+  Reports explicit scope calls in script files, which can be replaced with safe form (may change semantics).
+  <p>
+    Check on grammar level and semantic level.
+  </p>
+  <p>
+    Applicable for game types that support safe assign operators (<code>?=</code> in CK3/VIC3/EU5, <code>? =</code> in Stellaris).
+  </p>
+  <!-- tooltip end -->
+  <p>Example:</p>
+  <pre><code class="language-paradox_script"># before
+owner = v
+
+# [CK3/VIC3/EU5] after
+owner ?= v
+
+# [Stellaris] after
+owner?= v
+</code></pre>
+  <pre><code class="language-paradox_script"># before
+exists = owner
+owner = v
+
+# [CK3/VIC3/EU5] after
+owner ?= v
+
+# [Stellaris] after
+owner?= v
+</code></pre>
+</body>
+</html>

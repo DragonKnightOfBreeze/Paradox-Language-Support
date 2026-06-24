@@ -20,9 +20,9 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
     // #331
     // `? =` in `k? = v`
     SafeCallAssignOperator(Stellaris) {
-        override fun testResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult = when (gameType) {
-            Stellaris -> sinceGameVersion(gameVersion, "4.4")
-            else -> super.testResult(gameType, gameVersion)
+        override fun testResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult {
+            if (gameType == Stellaris) return sinceGameVersion(gameVersion, "4.4")
+            return super.testResult(gameType, gameVersion)
         }
     },
 
@@ -41,28 +41,28 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
 
     fun testTarget(target: Any): Boolean {
         return when (target) {
-            is ParadoxGameType -> testGameType(target)
-            is _ParadoxLocalisationTextLexer -> testGameType(target.gameType)
-            is PsiBuilder -> testGameType(selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)))
+            is ParadoxGameType -> test(target)
+            is _ParadoxLocalisationTextLexer -> test(target.gameType)
+            is PsiBuilder -> test(selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)))
             is VirtualFile -> testFrom(target)
             is PsiFile -> testFrom(target)
             else -> false // unsupported
         }
     }
 
-    private fun testFrom(from: Any): Boolean {
+    fun testFrom(from: Any): Boolean {
         val selectedFile = selectFile(from)
         val rootInfo = selectedFile?.fileInfo?.rootInfo
         val gameType = rootInfo?.gameType
         return gameType == null || gameType == Core || gameType in gameTypes
     }
 
-    private fun testGameType(gameType: ParadoxGameType?): Boolean {
+    fun test(gameType: ParadoxGameType?): Boolean {
         return gameType == null || gameType == Core || gameType in gameTypes
     }
 
     open fun testResult(gameType: ParadoxGameType?, gameVersion: String? = null): TestResult {
-        return TestResult(testGameType(gameType))
+        return TestResult(test(gameType))
     }
 
     @Suppress("SameParameterValue")
