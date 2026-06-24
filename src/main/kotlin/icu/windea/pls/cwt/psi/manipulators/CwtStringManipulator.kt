@@ -11,7 +11,7 @@ class CwtStringManipulator : AbstractElementManipulator<CwtString>() {
     override fun handleContentChange(element: CwtString, range: TextRange, newContent: String): CwtString {
         val text = element.text
         val newText = range.replaceAndQuoteIfNeeded(text, newContent)
-        val newElement = CwtElementFactory.createString(element.project, newText)
+        val newElement = CwtElementFactory.createStringFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

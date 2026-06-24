@@ -79,7 +79,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val file = outputPath.toFile()
         if (!file.exists()) return emptyMap() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
             val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroupImpl(project, gameType), file.name)
             val configs = fileConfig.properties.mapNotNull { CwtAliasConfig.resolve(it) }
@@ -127,7 +127,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val fileText = buildString {
             val file = outputPath.toFile()
             val text = withContext(Dispatchers.IO) { file.readText() }
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+            val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
             val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile) { toDelete(it, unknownNames) } }
             val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
             appendLine(modifiedText)

@@ -388,7 +388,7 @@ object ParadoxScopeCallStatementManipulationService {
         val newSeparatorText = separatorText // NOTE separator should be kept in all depths
         val newValueText = element.propertyValue?.text.orEmpty() // property value can be null here
         val newText = "$newOuterKeyText $newSeparatorText {\n$newInnerKeyText $newSeparatorText $newValueText\n}"
-        val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
+        val newElement = ParadoxScriptElementFactory.createPropertyFromText(project, newText)
         val replacedElement = element.replace(newElement)
 
         // 如果有必要，准备移动光标位置
@@ -467,7 +467,7 @@ object ParadoxScopeCallStatementManipulationService {
         val newSeparatorText = innerSeparatorText // NOTE outer separator text will be lost here, if is not `=`
         val newValueText = innerProperty.propertyValue?.text.orEmpty() // property value can be null here
         val newText = "$newKeyText $newSeparatorText $newValueText"
-        val newElement = ParadoxScriptElementFactory.createProperty(project, newText)
+        val newElement = ParadoxScriptElementFactory.createPropertyFromText(project, newText)
         element.replace(newElement)
     }
 }

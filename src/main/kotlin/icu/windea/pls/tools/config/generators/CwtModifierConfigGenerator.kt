@@ -109,7 +109,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
         val file = outputPath.toFile()
         if (!file.exists()) return ModifierConfigInfo() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         val names = caseInsensitiveStringSet()
         val templates = mutableSetOf<CwtTemplateExpression>()
         readAction {
@@ -151,7 +151,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
         // 删除未知项并生成文本（不删除通过模板匹配的项）
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_MODIFIERS) { toDelete(it, unknownNames) } }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
@@ -176,7 +176,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
             }
         }.trimEnd()
         if (insertBlock.isNotEmpty()) {
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            val psiFile = readAction { CwtElementFactory.createFileFromText(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIERS, insertBlock)
         }
 

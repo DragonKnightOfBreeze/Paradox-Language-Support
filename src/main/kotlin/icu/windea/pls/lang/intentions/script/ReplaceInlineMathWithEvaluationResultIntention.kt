@@ -24,7 +24,7 @@ class ReplaceInlineMathWithEvaluationResultIntention : PsiUpdateModCommandAction
 
     override fun invoke(context: ActionContext, element: ParadoxScriptInlineMath, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
-        val newElement = ParadoxScriptElementFactory.createValue(context.project, result.formatted())
+        val newElement = ParadoxScriptElementFactory.createValueFromText(context.project, result.formatted())
         if (newElement !is ParadoxScriptNumberExpressionElement) return // post check
         element.replace(newElement)
     }

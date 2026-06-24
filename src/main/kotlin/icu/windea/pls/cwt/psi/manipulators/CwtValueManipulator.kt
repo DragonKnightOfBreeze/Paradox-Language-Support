@@ -10,7 +10,7 @@ class CwtValueManipulator : AbstractElementManipulator<CwtValue>() {
     override fun handleContentChange(element: CwtValue, range: TextRange, newContent: String): CwtValue {
         val text = element.text
         val newText = range.replace(text, newContent)
-        val newElement = CwtElementFactory.createValue(element.project, newText)
+        val newElement = CwtElementFactory.createValueFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

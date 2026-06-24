@@ -5,7 +5,6 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.evaluators.ParadoxArrayDefineReferenceEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -23,7 +22,7 @@ class ReplaceArrayDefineReferenceWithEvaluationResultIntention : PsiUpdateModCom
 
     override fun invoke(context: ActionContext, element: ParadoxScriptStringExpressionElement, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
-        val newElement = ParadoxScriptElementFactory.createValue(context.project, result.text)
+        val newElement = ParadoxScriptElementFactory.createValueFromText(context.project, result.text)
         element.replace(newElement)
     }
 

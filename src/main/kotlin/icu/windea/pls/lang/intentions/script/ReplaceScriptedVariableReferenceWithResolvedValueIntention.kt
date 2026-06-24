@@ -18,7 +18,7 @@ class ReplaceScriptedVariableReferenceWithResolvedValueIntention : PsiUpdateModC
 
     override fun invoke(context: ActionContext, element: ParadoxScriptedVariableReference, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
-        val newElement = ParadoxScriptElementFactory.createValue(context.project, result)
+        val newElement = ParadoxScriptElementFactory.createValueFromText(context.project, result)
         element.replace(newElement)
     }
 

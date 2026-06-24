@@ -11,7 +11,7 @@ class ParadoxScriptPropertyKeyManipulator : AbstractElementManipulator<ParadoxSc
     override fun handleContentChange(element: ParadoxScriptPropertyKey, range: TextRange, newContent: String): ParadoxScriptPropertyKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNeeded(text, newContent)
-        val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newText)
+        val newElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

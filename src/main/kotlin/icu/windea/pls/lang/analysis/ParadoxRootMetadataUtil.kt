@@ -100,7 +100,7 @@ object ParadoxRootMetadataUtil {
 
     private fun resolveDescriptorModInfo(path: Path, text: String): ParadoxDescriptorModInfo? {
         val project = getDefaultProject()
-        val file = ParadoxScriptElementFactory.createDummyFile(project, text)
+        val file = ParadoxScriptElementFactory.createFileFromText(project, text)
         val scriptData = ParadoxScriptDataResolver.DEFAULT.resolveFile(file) ?: return null
         val data = ParadoxModDescriptorData(scriptData)
         val name = data.name?.orNull() ?: path.parent?.name?.orNull() ?: "" // 作为回退，使用模组目录名作为模组名

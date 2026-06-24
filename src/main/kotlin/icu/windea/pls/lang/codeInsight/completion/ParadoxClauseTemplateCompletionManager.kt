@@ -137,7 +137,7 @@ object ParadoxClauseTemplateCompletionManager {
                     val elementOffset = if (around) caretOffset + 1 else caretOffset
                     val elementAtCaret = file.findElementAt(elementOffset)?.parent as ParadoxScriptValue
                     val clauseText = buildClauseText(descriptors, multiline, around)
-                    val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
+                    val clauseElement = ParadoxScriptElementFactory.createValueFromText(project, clauseText)
                     val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
                     documentManager.doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 

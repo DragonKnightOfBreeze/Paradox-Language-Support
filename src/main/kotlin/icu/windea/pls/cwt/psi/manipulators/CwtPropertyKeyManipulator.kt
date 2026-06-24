@@ -11,7 +11,7 @@ class CwtPropertyKeyManipulator : AbstractElementManipulator<CwtPropertyKey>() {
     override fun handleContentChange(element: CwtPropertyKey, range: TextRange, newContent: String): CwtPropertyKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNeeded(text, newContent)
-        val newElement = CwtElementFactory.createPropertyKey(element.project, newText)
+        val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

@@ -85,7 +85,7 @@ object ParadoxConditionalStatementManipulationService {
         val matchResult = blockFormRegex.matchEntire(text) ?: return
         val parameterName = matchResult.groupValues.get(1)
         val newText = propertyTemplate.invoke(parameterName)
-        val newElement = ParadoxScriptElementFactory.createDummyFile(project, newText)
+        val newElement = ParadoxScriptElementFactory.createFileFromText(project, newText)
             .findChild<ParadoxScriptRootBlock>()
             ?.findChild<ParadoxScriptProperty>()
             ?: return
@@ -110,7 +110,7 @@ object ParadoxConditionalStatementManipulationService {
         val matchResult = propertyFormRegex.matchEntire(text) ?: return
         val parameterName = matchResult.groupValues.get(1)
         val newText = blockTemplate.invoke(parameterName)
-        val newElement = ParadoxScriptElementFactory.createDummyFile(project, newText)
+        val newElement = ParadoxScriptElementFactory.createFileFromText(project, newText)
             .findChild<ParadoxScriptRootBlock>()
             ?.findChild<ParadoxScriptConditionalBlock>()
             ?: return

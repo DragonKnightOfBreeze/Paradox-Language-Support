@@ -57,7 +57,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) {
             // 用封装变量引用替换当前位置的字面量
-            var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
+            var newVariableReference = ParadoxScriptElementFactory.createScriptedVariableReference(project, name)
             newVariableReference = element.parent.replace(newVariableReference).cast<ParadoxScriptScriptedVariableReference>()
 
             // 声明对应名字的封装变量，以内联模板的方式编辑名字

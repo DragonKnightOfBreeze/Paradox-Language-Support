@@ -22,6 +22,6 @@
     <lang.psiStructureViewFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.structureView.ParadoxCsvStructureViewFactory"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.csv.psi.ParadoxCsvColumn"
-                             implementationClass="icu.windea.pls.csv.psi.ParadoxCsvColumnManipulator"/>
+                             implementationClass="icu.windea.pls.csv.psi.manipulators.ParadoxCsvColumnManipulator"/>
   </extensions>
 </idea-plugin>

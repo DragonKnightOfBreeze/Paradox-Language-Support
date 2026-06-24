@@ -1,30 +1,43 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
+import com.intellij.psi.PsiParserFacade
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
+@Suppress("unused")
 object ParadoxLocalisationElementFactory {
     @JvmStatic
-    fun createDummyFile(project: Project, text: String): ParadoxLocalisationFile {
+    fun createFileFromText(project: Project, text: String): ParadoxLocalisationFile {
         return PsiFileFactory.getInstance(project).createFileFromText(ParadoxLocalisationLanguage, text)
             .castOrNull() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
+    fun createWhiteSpaceFromText(project: Project, text: String): PsiElement {
+        return PsiParserFacade.getInstance(project).createWhiteSpaceFromText(text)
+    }
+
+    @JvmStatic
     fun createLocale(project: Project, locale: String): ParadoxLocalisationLocale {
-        return createDummyFile(project, "$locale:\n")
+        return createFileFromText(project, "$locale:\n")
             .propertyList?.locale ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createProperty(project: Project, key: String, value: String): ParadoxLocalisationProperty {
-        return createDummyFile(project, "l_english:\n$key:0 \"$value\"")
+    fun createPropertyFromText(project: Project, text: String): ParadoxLocalisationProperty {
+        return createFileFromText(project, "l_english:\n$text")
             .findChild<ParadoxLocalisationPropertyList>()
             ?.findChild<ParadoxLocalisationProperty>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createProperty(project: Project, key: String, value: String): ParadoxLocalisationProperty {
+        return createPropertyFromText(project, "$key:0 \"$value\"")
     }
 
     @JvmStatic
@@ -57,6 +70,7 @@ object ParadoxLocalisationElementFactory {
             ?.findChild<ParadoxLocalisationParameter>() ?: throw IncorrectOperationException()
     }
 
+    @JvmStatic
     fun createScriptedVariableReference(project: Project, name: String): ParadoxLocalisationScriptedVariableReference {
         return createPropertyValue(project, "$@$name$").tokenElement
             ?.findChild<ParadoxLocalisationParameter>()

@@ -22,7 +22,7 @@ class ReplaceDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandA
 
     override fun invoke(context: ActionContext, element: ParadoxScriptStringExpressionElement, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
-        val newElement = ParadoxScriptElementFactory.createValue(context.project, result.text)
+        val newElement = ParadoxScriptElementFactory.createValueFromText(context.project, result.text)
         element.replace(newElement)
     }
 

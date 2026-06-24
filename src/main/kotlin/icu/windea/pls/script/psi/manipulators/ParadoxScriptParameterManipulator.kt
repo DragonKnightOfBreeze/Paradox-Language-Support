@@ -10,7 +10,7 @@ class ParadoxScriptParameterManipulator : AbstractElementManipulator<ParadoxScri
     override fun handleContentChange(element: ParadoxScriptParameter, range: TextRange, newContent: String): ParadoxScriptParameter {
         val text = element.text
         val newText = range.replace(text, newContent)
-        val newElement = ParadoxScriptElementFactory.createParameter(element.project, newText)
+        val newElement = ParadoxScriptElementFactory.createParameterFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

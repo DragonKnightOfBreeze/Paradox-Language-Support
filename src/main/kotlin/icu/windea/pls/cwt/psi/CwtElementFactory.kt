@@ -8,9 +8,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
+@Suppress("unused")
 object CwtElementFactory {
     @JvmStatic
-    fun createDummyFile(project: Project, text: String): CwtFile {
+    fun createFileFromText(project: Project, text: String): CwtFile {
         return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text)
             .castOrNull<CwtFile>() ?: throw IncorrectOperationException()
     }
@@ -21,51 +22,51 @@ object CwtElementFactory {
     }
 
     @JvmStatic
-    fun createRootBlock(project: Project, text: String): CwtRootBlock {
-        return createDummyFile(project, text)
+    fun createRootBlockFromText(project: Project, text: String): CwtRootBlock {
+        return createFileFromText(project, text)
             .findChild<CwtRootBlock>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createOption(project: Project, text: String): CwtOption {
-        return createRootBlock(project, "## $text")
+    fun createOptionFromText(project: Project, text: String): CwtOption {
+        return createRootBlockFromText(project, "## $text")
             .findChild<CwtOptionComment>()
             ?.findChild<_>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createOptionKey(project: Project, text: String): CwtOptionKey {
-        return createOption(project, "$text = v")
+    fun createOptionKeyFromText(project: Project, text: String): CwtOptionKey {
+        return createOptionFromText(project, "$text = v")
             .findChild<CwtOptionKey>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createProperty(project: Project, text: String): CwtProperty {
-        return createRootBlock(project, text)
+    fun createPropertyFromText(project: Project, text: String): CwtProperty {
+        return createRootBlockFromText(project, text)
             .findChild<CwtProperty>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createPropertyKey(project: Project, text: String): CwtPropertyKey {
-        return createProperty(project, "$text = v")
+    fun createPropertyKeyFromText(project: Project, text: String): CwtPropertyKey {
+        return createPropertyFromText(project, "$text = v")
             .findChild<CwtPropertyKey>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createValue(project: Project, text: String): CwtValue {
-        return createRootBlock(project, text)
+    fun createValueFromText(project: Project, text: String): CwtValue {
+        return createRootBlockFromText(project, text)
             .findChild<CwtValue>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createString(project: Project, text: String): CwtString {
-        return createValue(project, text)
+    fun createStringFromText(project: Project, text: String): CwtString {
+        return createValueFromText(project, text)
             .castOrNull<CwtString>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createBlockFromText(project: Project, text: String): CwtBlock {
-        return createValue(project, text)
+    fun createBlockFromTextFromText(project: Project, text: String): CwtBlock {
+        return createValueFromText(project, text)
             .castOrNull<CwtBlock>() ?: throw IncorrectOperationException()
     }
 }

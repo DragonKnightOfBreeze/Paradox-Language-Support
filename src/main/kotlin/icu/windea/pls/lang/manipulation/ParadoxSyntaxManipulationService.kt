@@ -27,7 +27,7 @@ object ParadoxSyntaxManipulationService {
     }
 
     fun replacePropertySeparator(separator: PsiElement, project: Project, newSeparatorText: String) {
-        val newProperty = ParadoxScriptElementFactory.createProperty(project, "k${newSeparatorText}v")
+        val newProperty = ParadoxScriptElementFactory.createPropertyFromText(project, "k${newSeparatorText}v")
         val newSeparator = newProperty.findChild { ParadoxSyntaxService.isPropertySeparator(it) } ?: return
         separator.replace(newSeparator)
     }

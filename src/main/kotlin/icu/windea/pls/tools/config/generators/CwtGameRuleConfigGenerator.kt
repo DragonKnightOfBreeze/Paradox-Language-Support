@@ -52,7 +52,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
         val names = linkedSetOf<String>()
         for (file in files) {
             val text = withContext(Dispatchers.IO) { file.readText() }
-            val psiFile = readAction { ParadoxScriptElementFactory.createDummyFile(project, text) }
+            val psiFile = readAction { ParadoxScriptElementFactory.createFileFromText(project, text) }
             readAction { psiFile.properties().forEach { names += it.name } }
         }
         return names
@@ -62,7 +62,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
         val file = outputPath.toFile()
         if (!file.exists()) return GameRuleConfigInfo() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
             val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroupImpl(project, gameType), file.name)
             val rootConfig = fileConfig.properties.find { it.key == CONTAINER_GAME_RULES }
@@ -105,7 +105,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
         // 删除未知静态名并生成文本
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_GAME_RULES) { toDelete(it, removedNames) } }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
@@ -123,7 +123,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
             }
         }.trimEnd()
         if (insertBlock.isNotEmpty()) {
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            val psiFile = readAction { CwtElementFactory.createFileFromText(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_GAME_RULES, insertBlock)
         }
 

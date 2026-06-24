@@ -6,9 +6,9 @@ import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.isEmptyColumn
-import icu.windea.pls.lang.util.ParadoxCsvManager
 
 /**
  * 将 CSV 文本渲染为纯文本的渲染器。
@@ -77,12 +77,12 @@ open class ParadoxCsvTextPlainRenderContext(
         val needQuoteBecauseBoundaryBlank = value.isNotEmpty() && (value.first().isWhitespace() || value.last().isWhitespace())
         if (needQuoteBecauseBoundaryBlank) return value.quote()
 
-        val extraChars = ParadoxCsvManager.getSeparator().toString() + "#"
+        val extraChars = ParadoxCsvPsiService.getSeparator().toString() + "#"
         return value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
     }
 
     fun hasTrailingSeparator(element: ParadoxCsvRowElement): Boolean {
-        return element.lastChild?.text == ParadoxCsvManager.getSeparator().toString()
+        return element.lastChild?.text == ParadoxCsvPsiService.getSeparator().toString()
     }
 }
 

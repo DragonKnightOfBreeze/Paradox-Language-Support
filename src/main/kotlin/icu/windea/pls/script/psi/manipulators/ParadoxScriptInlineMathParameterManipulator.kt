@@ -11,7 +11,7 @@ class ParadoxScriptInlineMathParameterManipulator : AbstractElementManipulator<P
     override fun handleContentChange(element: ParadoxScriptInlineMathParameter, range: TextRange, newContent: String): ParadoxScriptInlineMathParameter {
         val text = element.text
         val newText = range.replaceAndQuoteIfNeeded(text, newContent)
-        val newElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, newText)
+        val newElement = ParadoxScriptElementFactory.createInlineMathParameterFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

@@ -11,7 +11,7 @@ class CwtOptionKeyManipulator : AbstractElementManipulator<CwtOptionKey>() {
     override fun handleContentChange(element: CwtOptionKey, range: TextRange, newContent: String): CwtOptionKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNeeded(text, newContent)
-        val newElement = CwtElementFactory.createOptionKey(element.project, newText)
+        val newElement = CwtElementFactory.createOptionKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

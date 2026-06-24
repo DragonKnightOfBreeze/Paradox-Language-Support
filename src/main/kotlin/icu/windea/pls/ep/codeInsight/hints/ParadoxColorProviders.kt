@@ -73,7 +73,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
     private fun doSetColor(element: ParadoxScriptString, color: Color) {
         val project = element.project
         val newText = "0x${ColorUtil.toHex(color, true)}"
-        val newString = ParadoxScriptElementFactory.createValue(project, newText)
+        val newString = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newString !is ParadoxScriptString) return
         val command = Runnable {
             // element.replace(newString) // do not do this, element could be reused
@@ -150,7 +150,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         if (colorType == null || colorArgs == null) return
         val newColorArgs = ParadoxColorManager.getNewColorArgs(colorType, colorArgs, color) ?: return
         val newText = newColorArgs.joinToString(" ", "{ ", " }")
-        val newBlock = ParadoxScriptElementFactory.createValue(project, newText)
+        val newBlock = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newBlock !is ParadoxScriptBlock) return
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
@@ -233,7 +233,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         val colorArgs = element.colorArgs
         val newColorArgs = ParadoxColorManager.getNewColorArgs(colorType, colorArgs, color) ?: return
         val newText = newColorArgs.joinToString(" ", "$colorType { ", " }")
-        val newColor = ParadoxScriptElementFactory.createValue(project, newText)
+        val newColor = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newColor !is ParadoxScriptColor) return
         val command = Runnable {
             // element.replace(newColor) // do not do this, element could be reused
