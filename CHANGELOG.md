@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-## 2.1.10-dev
+## 2.1.10 - 2026.06.24
 
+- [x] 同步规则文件（部分适配 Stellaris 4.4 以及 VIC3/EU5/HOI4 的最新版本） / Synchronize config files (Partially adapted to Stellaris 4.4 and the latest version of VIC3/EU5/HOI4)
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符）/ Compatible with `? =` (safe assignment operator including blank) that started appearing in Stellaris 4.4 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
@@ -26,7 +27,6 @@
 - [x] [Jomini] On action event type validation wrong ([#344](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/344))
 - [x] Improve inspections for file charset and file encoding, fix false positives ([#345](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/345))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
-- [x] 同步规则文件 / Synchronize config files
 
 ## 2.1.9 - 2026-05-21
 
