@@ -47,10 +47,10 @@ class ReplaceArrayDefineReferenceWithEvaluationResultIntentionTest : BasePlatfor
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
 
         val intentionName = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
-        myFixture.configureByText("define_references.test.txt", "tips = <caret>array_define:NEntrance|WELCOMES|0")
+        myFixture.configureByText("define_references.test.txt", "tip = <caret>array_define:NEntrance|WELCOMES|0")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("tips = here_we_send_greetings")
+        myFixture.checkResult("tip = here_we_send_greetings")
     }
 
     @Test
@@ -63,7 +63,7 @@ class ReplaceArrayDefineReferenceWithEvaluationResultIntentionTest : BasePlatfor
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
 
         val intentionName = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
-        myFixture.configureByText("define_references.test.txt", "tips = <caret>array_define:NEntrance|WELCOMES_UNDEFINED|0")
+        myFixture.configureByText("define_references.test.txt", "tip = <caret>array_define:NEntrance|WELCOMES_UNDEFINED|0")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
     }
 
@@ -77,7 +77,7 @@ class ReplaceArrayDefineReferenceWithEvaluationResultIntentionTest : BasePlatfor
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
 
         val intentionName = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
-        myFixture.configureByText("define_references.test.txt", "tips = <caret>array_define:NEntrance|WELCOMES|var")
+        myFixture.configureByText("define_references.test.txt", "tip = <caret>array_define:NEntrance|WELCOMES|var")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
     }
 
@@ -91,7 +91,7 @@ class ReplaceArrayDefineReferenceWithEvaluationResultIntentionTest : BasePlatfor
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
 
         val intentionName = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
-        myFixture.configureByText("define_references.test.txt", "tips = <caret>array_define:NEntrance|WELCOMES|-1")
+        myFixture.configureByText("define_references.test.txt", "tip = <caret>array_define:NEntrance|WELCOMES|-1")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
     }
 }

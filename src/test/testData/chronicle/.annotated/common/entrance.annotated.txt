@@ -2,5 +2,5 @@
 ## @config_expression description = value_field
 description = define:NEntrance|INTRODUCE
 ## @type string = string
-## @config_expression tips = value_field
-tips = array_define:NEntrance|WELCOMES|0
+## @config_expression tip = value_field
+tip = array_define:NEntrance|WELCOMES|0

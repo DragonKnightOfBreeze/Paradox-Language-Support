@@ -65,7 +65,7 @@ entrance = {
     ## cardinality = 0..inf
     description = value_field # localisation
     ## cardinality = 0..inf
-    tips = value_field # localisation array
+    tip = value_field # localisation array
 }
 
 defines = {
