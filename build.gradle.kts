@@ -1,3 +1,5 @@
+import com.github.javaparser.printer.concretesyntaxmodel.CsmElement.token
+import com.github.javaparser.resolution.model.Value.from
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -219,7 +221,7 @@ kotlin {
                 "-Xannotation-default-target=param-property",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-opt-in=kotlin.ExperimentalStdlibApi",
-                "-XXLanguage:+WhenGuards"
+                // "-XXLanguage:+WhenGuards",
             )
         )
     }

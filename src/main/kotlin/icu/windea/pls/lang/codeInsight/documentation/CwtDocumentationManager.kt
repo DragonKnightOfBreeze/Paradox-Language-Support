@@ -90,7 +90,7 @@ object CwtDocumentationManager {
         // 2.1.8 为规则选项提供文档注释，基于 schema 规则文件
         return when (element) {
             is CwtOption -> getOptionDoc(element, originalElement, hint)
-            is CwtValue if element.isOptionValue() -> getOptionFlagDoc(element, originalElement, hint)
+            is CwtValue -> if (element.isOptionValue()) getOptionFlagDoc(element, originalElement, hint) else null
             else -> null
         }
     }
