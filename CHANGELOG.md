@@ -6,8 +6,8 @@
 
 - [x] 同步规则文件（部分适配 Stellaris 4.4 以及 VIC3/EU5/HOI4 的最新版本） / Synchronize config files (Partially adapted to Stellaris 4.4 and the latest version of VIC3/EU5/HOI4)
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符）/ Compatible with `? =` (safe assignment operator including blank) that started appearing in Stellaris 4.4 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
-- [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (`SAFE_CALL_ASSIGN`) 与 CK3/VIC3/EU5 中的 `?=` (`SAFE_ASSIGN`) & 优化格式化逻辑 / Differentiate between `?=` (`SAFE_CALL_ASSIGN`) in Stellaris 4.4 and `?=` (`SAFE_ASSIGN`) in CK3/VIC3/EU5 at grammar level & optimize formatting logic ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
+- [x] [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且否在文法级别合法 / Improve code inspection `ParadoxScriptIncorrectSyntax`: verify whether `? =` `?=` is supported by the game type and is legal at the grammatical level ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标（Extend Selection） / If the current cursor is in a complex expression, expand the cursor according to the structure of the complex expression (Extend Selection)
 - [x] 提供动作，以进行定义/定义注入之间的差异比较 / Provide actions to compare differences between definitions and definition injections
 - [x] 完善对作用域字段表达式和值字段表达式的支持：兼容其中嵌套的动态值表达式 / Improve support for scope field expressions and value field expressions: compatible with nested dynamic value expressions ([#330](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/330))
