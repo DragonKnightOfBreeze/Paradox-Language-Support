@@ -23,6 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxSyntaxService {
     // region Script
 
+    @Suppress("unused")
     fun isNumberLiteral(element: ParadoxScriptExpressionElement): Boolean {
         return when (element) {
             is ParadoxScriptNumberExpressionElement -> true
@@ -100,7 +101,7 @@ object ParadoxSyntaxService {
      *
      * 要求表达式是一个字符串字面量。
      */
-    fun isSafeOperatorAllowed(element: ParadoxScriptExpressionElement): Boolean {
+    fun isSafeAssignOperatorAllowed(element: ParadoxScriptExpressionElement): Boolean {
         return isStringLiteral(element)
     }
 
@@ -109,9 +110,9 @@ object ParadoxSyntaxService {
      *
      * 要求属性的键是一个字符串字面量。
      */
-    fun isSafeOperatorAllowed(element: ParadoxScriptProperty): Boolean {
+    fun isSafeAssignOperatorAllowed(element: ParadoxScriptProperty): Boolean {
         val propertyKey = element.propertyKey
-        return isSafeOperatorAllowed(propertyKey)
+        return isSafeAssignOperatorAllowed(propertyKey)
     }
 
     // endregion
@@ -119,9 +120,10 @@ object ParadoxSyntaxService {
     // region Localisation
 
     fun getIncorrectLeftBracketEscapeIndices(element: PsiElement, file: PsiFile? = null): List<Int> {
+        // only for actual localisation files, skip injected files (e.g., in script strings)
         if (element.elementType != TEXT_TOKEN) return emptyList()
         val file = file ?: element.containingFile ?: return emptyList()
-        if (VirtualFileService.isInjectedFile(file.virtualFile)) return emptyList() // only for actual localisation files, skip injected files (e.g., in script strings)
+        if (VirtualFileService.isInjectedFile(file.virtualFile)) return emptyList()
         val text = element.text
         return text.indicesOf("\\[")
     }

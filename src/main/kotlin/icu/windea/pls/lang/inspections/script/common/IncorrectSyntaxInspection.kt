@@ -89,12 +89,16 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check on grammar level
 
         // 所在属性的键的表达式类型是字符串
-        val allowed = ParadoxSyntaxService.isSafeOperatorAllowed(propertyElement)
+        val allowed = ParadoxSyntaxService.isSafeAssignOperatorAllowed(propertyElement)
         if (!allowed) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.3")
             context.holder.registerProblem(element, description)
             return
         }
+
+        // check on semantic level
+
+        // NOTE 2.1.10+ 暂不验证（要求左侧能解析为链式表达式）
     }
 
     private fun checkForSafeCallAssignOperator(context: ParadoxSyntaxInspectionContext, element: PsiElement, propertyElement: ParadoxScriptProperty) {
@@ -109,11 +113,15 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         // check on grammar level
 
         // 所在属性的键的表达式类型是字符串
-        val allowed = ParadoxSyntaxService.isSafeOperatorAllowed(propertyElement)
+        val allowed = ParadoxSyntaxService.isSafeAssignOperatorAllowed(propertyElement)
         if (!allowed) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.4")
             context.holder.registerProblem(element, description)
             return
         }
+
+        // check on semantic level
+
+        // NOTE 2.1.10+ 暂不验证（要求左侧能解析为链式表达式）
     }
 }
