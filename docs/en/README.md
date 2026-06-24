@@ -22,10 +22,10 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 - **Multi-language support**: Supports the script language, localisation language, and CSV language used for mod development, as well as the CWT language for writing configs.
 - **Advanced language construct support**: Supports parameters, scopes, complex expressions, inline scripts, definition injections, and other advanced language constructs.
-- **Rich language features**: Supports code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams, and many other language features.
-- **Flexible code navigation**: Quickly navigate to various targets, including files, definitions, localisations, related localisations, related images, related configs, etc., through navigation actions, quick documentation, inlay hints, code hierarchy, search everywhere, and more.
-- **Enhanced information hints**: Intuitively show key information such as localisation text, images, scopes, parameters, etc., through quick documentation, inlay hints, and more.
-- **Extensible config system**: Supports customizing and importing config files to enhance features like code navigation, code completion, and documentation hints.
+- **Rich language features**: Supports code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, gutter icons, code hierarchy, diff viewing, diagrams, and many other language features.
+- **Flexible code navigation**: Navigates to various targets, including files, definitions, localisations, related localisations, related images, related configs, etc., through navigation actions, quick documentation, inlay hints, gutter icons, code hierarchy, search everywhere, and more.
+- **Enhanced information hints**: Shows key information such as localisation text, images, scopes, parameters, etc., through quick documentation, inlay hints, gutter icons, and more.
+- **Extensible config system**: Supports customizing and importing config files to refine and enhance features like highlighting, navigation, completion, inspections, documentation hints.
 - **Image processing**: Supports previewing and rendering DDS and TGA images, and can convert between different image formats (PNG, DDS, TGA).
 - **Tool integration**: Integrates useful tools such as [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), [Tiger](https://github.com/amtep/tiger), etc., to boost development efficiency.
 - **AI assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
