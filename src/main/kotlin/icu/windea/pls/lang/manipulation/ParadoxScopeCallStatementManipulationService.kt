@@ -12,6 +12,9 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
+import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isChainedForm
+import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isNormalForm
+import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isSafeForm
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
