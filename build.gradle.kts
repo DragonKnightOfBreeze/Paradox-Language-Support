@@ -1,5 +1,3 @@
-import com.github.javaparser.printer.concretesyntaxmodel.CsmElement.token
-import com.github.javaparser.resolution.model.Value.from
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -246,7 +244,7 @@ private fun extractChangelogForVersion(fullChangelog: String, targetVersion: Str
     // Match h2 headings: `## <heading>`
     val headingRegex = """^##\s+(.+)$""".toRegex()
     // Match version from heading text: `3.0.0`, `3.0.0-dev`, `3.0.0-dev-262`, `3.0.0 - 2026-01-01`, etc.
-    val versionRegex = """^(\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?)(?:\s+-\s+\d{4}-\d{2}-\d{2})?$""".toRegex()
+    val versionRegex = """^(\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?)(?:\s+-\s+.*)?$""".toRegex()
 
     // Parse the changelog into heading-content sections
     data class Section(val heading: String, val content: String)

@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 2.1.10 - 2026.06.24
+## 2.1.10 - 2026-06-24
 
 - [x] 同步规则文件（部分适配 Stellaris 4.4 以及 VIC3/EU5/HOI4 的最新版本） / Synchronize config files (Partially adapted to Stellaris 4.4 and the latest version of VIC3/EU5/HOI4)
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符）/ Compatible with `? =` (safe assignment operator including blank) that started appearing in Stellaris 4.4 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
