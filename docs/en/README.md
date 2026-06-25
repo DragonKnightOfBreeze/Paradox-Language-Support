@@ -12,7 +12,7 @@
 Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
-After completing the necessary configuration (such as game type, game directory, mod dependencies) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
+After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
 
 The plugin implements core language features based on its own [config system](config.md).  
 The CWT config files it uses follow a syntax and format largely consistent with [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.  
@@ -25,7 +25,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - **Rich language features**: Supports code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, gutter icons, code hierarchy, diff viewing, diagrams, and many other language features.
 - **Flexible code navigation**: Navigates to various targets, including files, definitions, localisations, related localisations, related images, related configs, etc., through navigation actions, quick documentation, inlay hints, gutter icons, code hierarchy, search everywhere, and more.
 - **Enhanced information hints**: Shows key information such as localisation text, images, scopes, parameters, etc., through quick documentation, inlay hints, gutter icons, and more.
-- **Extensible config system**: Supports customizing and importing config files to refine and enhance features like highlighting, navigation, completion, inspections, documentation hints.
+- **Extensible config system**: Supports customizing and importing config files to refine and enhance features like highlighting, navigation, completion, inspections, information hints.
 - **Image processing**: Supports previewing and rendering DDS and TGA images, and can convert between different image formats (PNG, DDS, TGA).
 - **Tool integration**: Integrates useful tools such as [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), [Tiger](https://github.com/amtep/tiger), etc., to boost development efficiency.
 - **AI assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
@@ -49,7 +49,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ### Known Limitations
 
-- The plugin is intended for IntelliJ IDEA (and other JetBrains IDEs such as PyCharm) and does not work with VSCode or other text editors, and has no relevant development plans.
+- The plugin is intended for IntelliJ IDEA (and other JetBrains IDEs such as PyCharm) and does not work with VSCode or other text editors, and there are no relevant development plans.
 - The plugin's support for some complex high-level language constructs in script files and localisation files is not yet complete, and is still being improved.
 - For example, the plugin currently does not support definitions declared in inline scripts in Stellaris, or complex localisation commands in Jomini.
 - The quality of the plugin's core language features (such as code completion, code inspection, and quick documentation) largely depends on the completeness and timeliness of the config files. Incomplete or faulty configs may lead to missing features and false positives.
@@ -60,11 +60,11 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 We welcome various forms of contribution and support, including but not limited to:
 
-- 📢 Recommending this plugin to friends or the community.
-- ⭐ Starring this project on GitHub.
-- 💝 Sponsoring this project via [Afdian][url:afdian].
-- 🐛 Submitting feedback and issues (via [GitHub Issues][url:issues], [Discord][url:discord], or [email][mailto]).
-- 🔧 Submitting pull requests (to the [plugin repository][url:github] (this project), or the [respective config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
+- Recommending this plugin to friends or the community.
+- Starring this project on GitHub.
+- Sponsoring this project via [Afdian][url:afdian].
+- Submitting feedback and issues (via [GitHub Issues][url:issues], [Discord][url:discord], or [email][mailto]).
+- Submitting pull requests (to the [plugin repository][url:github] (this project), or the [respective config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
 
 For a detailed guidance for contributing, please see [`CONTRIBUTING.md`](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTING.md).
 
@@ -85,7 +85,7 @@ For example, by viewing the reference documentation and configuration files (e.g
 ### Contributing Config Files
 
 Given the plugin's config-driven architecture, contributing config files is one of the most effective ways to improve support for specific games.
-Config files define the semantic information (definitions, corrections, scopes, effects, triggers, etc.) that drives code completion, code inspections, and documentation hints. Keeping them up to date directly improves the user experience for all users of that game.
+Config files define the semantic information (definitions, corrections, scopes, effects, triggers, etc.) that drives code completion, code inspections, and information hints. Keeping them up to date directly improves the user experience for all users of that game.
 
 For reference, please read the [documentation for the config system](config.md), the [syntax reference manual](ref-syntax.md), and the [config format reference manual](ref-config-format.md).
 

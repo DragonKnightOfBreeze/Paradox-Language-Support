@@ -39,7 +39,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 - **丰富的语言功能**：支持代码高亮、代码导航、代码补全、代码重构、意向动作、代码检查、快速文档、内嵌提示、装订线图标、代码层级、差异比较和图表等多种语言功能。
 - **灵活的代码导航**：通过导航动作、快速文档、内嵌提示、装订线图标、代码层级、随处搜索等方式，快速导航到各种目标位置，包括文件、定义、本地化、相关本地化、相关图片、相关规则等。
 - **增强的信息提示**：通过快速文档、内嵌提示、装订线图标等方式，直观显示各类关键信息，包括本地化文本、图片、作用域和参数等。
-- **可扩展的规则系统**：支持自定义和导入规则文件，从而改进和强化高亮、导航、补全、检查、文档提示等功能。
+- **可扩展的规则系统**：支持自定义和导入规则文件，从而改进和强化高亮、导航、补全、检查、信息提示等功能。
 - **图像处理**：支持预览和渲染 DDS 和 TGA 图片，并可在不同图片格式（PNG、DDS、TGA）之间互相转换。
 - **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，提升开发效率。
 - **AI 辅助**：初步集成 AI 技术，适用于本地化文本的翻译和润色。
@@ -130,11 +130,11 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 我们欢迎各种形式的贡献与支持，包括但不限于：
 
-- 📢 向朋友或社区推荐此插件。
-- ⭐ 在 GitHub 上收藏此项目。
-- 💝 通过[爱发电][url:afdian] 赞助此项目。
-- 🐛 提交问题反馈（通过 [GitHub Issues][url:issues]、[Discord][url:discord]、[群聊][url:qq-group] 或 [邮件][mailto]）。
-- 🔧 提交 Pull Request（提交至[插件仓库][url:github]（即此项目），或者[各个规则仓库](cwt/README.md)）。
+- 向朋友或社区推荐此插件。
+- 在 GitHub 上收藏此项目。
+- 通过[爱发电][url:afdian] 赞助此项目。
+- 提交问题反馈（通过 [GitHub Issues][url:issues]、[Discord][url:discord]、[群聊][url:qq-group] 或 [邮件][mailto]）。
+- 提交 Pull Request（提交至[插件仓库][url:github]（即此项目），或者[各个规则仓库](cwt/README.md)）。
 
 关于具体的贡献指南，请参见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
 
