@@ -2264,39 +2264,61 @@ Examples of corresponding data expressions:
 
 This is a pattern-aware type, and its data expression format is the template expression itself (see [Template Expression](#config-expression-template)).
 
-> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
+> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
+
+#### Glob {#data-type-glob}
+
+<!-- @see icu.windea.pls.core.match.GlobMatcher -->
+
+Glob pattern type. One of the pattern-aware data types.
+
+Matches expressions that conform to a glob pattern. Supports the wildcards `?` (single character) and `*` (any number of characters).
+
+Format of corresponding data expressions:
+- `glob:{pattern}` – where `{pattern}` matches the pattern.
+- `glob.i:{pattern}` – case-insensitive variant.
+
+Examples of corresponding data expressions:
+- `glob:name?`
+- `glob.i:*desc`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Ant {#data-type-ant}
 
-ANT path pattern type (pattern-aware).
+<!-- @see icu.windea.pls.core.match.AntMatcher -->
 
-Matches expressions that conform to ANT path patterns. Supports wildcards `?` (single character), `*` (single segment), and `**` (multiple segments, less commonly used).
+ANT path pattern type. One of the pattern-aware data types.
+
+Matches expressions that conform to an ANT path pattern. Supports the wildcards `?` (single character), `*` (any number of characters within a path segment), and `**` (any number of path segments).
 
 Format of corresponding data expressions:
-- `ant:{pattern}` – where `{pattern}` matches a pattern.
+- `ant:{pattern}` – where `{pattern}` matches the pattern.
 - `ant.i:{pattern}` – case-insensitive variant.
 
 Examples of corresponding data expressions:
 - `ant:**/*.txt`
 - `ant.i:common/**/*`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Regex {#data-type-regex}
 
-Regular expression pattern type (pattern-aware).
+<!-- @see icu.windea.pls.core.match.RegexMatcher -->
+
+Regular expression pattern type. One of the pattern-aware data types.
 
 Matches expressions that conform to a regular expression.
 
 Format of corresponding data expressions:
-- `re:{pattern}` – where `{pattern}` matches a pattern.
+- `re:{pattern}` – where `{pattern}` matches the pattern.
 - `re.i:{pattern}` – case-insensitive variant.
 
 Examples of corresponding data expressions:
 - `re:^country_.*`
 - `re.i:event_.*`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ### Suffix-Aware Data Types {#data-types-suffix-aware}
 

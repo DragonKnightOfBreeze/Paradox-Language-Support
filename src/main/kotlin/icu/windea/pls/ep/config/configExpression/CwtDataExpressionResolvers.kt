@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.config.configExpression
 
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -139,43 +140,22 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 }
 
-class CwtAntDataExpressionSupport : CwtDataExpressionSupport {
-    private val prefix = "ant:"
-    private val prefixIgnoreCase = "ant.i:"
-    private val dataType = CwtDataTypes.Ant
-
+class CwtPatternDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        run {
-            val v = expressionString.removePrefixOrNull(prefix) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }
-        }
-        run {
-            val v = expressionString.removePrefixOrNull(prefixIgnoreCase) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }.apply { ignoreCase = true }
-        }
+        doResolve(expressionString, isKey, CwtDataTypes.Glob, "glob:", false)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Glob, "glob.i:", true)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Ant, "ant:", false)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Ant, "ant.i:", true)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "re:", false)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "re.i:", true)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "regex:", false)?.let { return it } // for compatibility
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "regex.i:", true)?.let { return it } // for compatibility
         return null
     }
 
-    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        return null
-    }
-}
-
-class CwtRegexDataExpressionSupport : CwtDataExpressionSupport {
-    private val prefix = "re:"
-    private val prefixIgnoreCase = "re.i:"
-    private val dataType = CwtDataTypes.Regex
-
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        run {
-            val v = expressionString.removePrefixOrNull(prefix) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }
-        }
-        run {
-            val v = expressionString.removePrefixOrNull(prefixIgnoreCase) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }.apply { ignoreCase = true }
-        }
-        return null
+    private fun doResolve(expressionString: String, isKey: Boolean, dataType: CwtDataType, prefix: String, ignoreCase: Boolean): CwtDataExpression? {
+        val v = expressionString.removePrefixOrNull(prefix) ?: return null
+        return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v }.apply { this.ignoreCase = ignoreCase }
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {

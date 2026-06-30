@@ -46,7 +46,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 object CwtConfigTypes {
     // NOTE 2.1.8 偏好使用 lambda 式构建器，而非多行的链式构建器：可通过代码折叠隐藏细节，方便查看
 
-    // Standard Config Types
+    // region Standard Config Types
 
     /**
      * 类型规则。
@@ -391,7 +391,9 @@ object CwtConfigTypes {
         description(PlsBundle.message("config.description.locale"))
     }
 
-    // Extended Config Types
+    // endregion
+
+    // region Extended Config Types
 
     /**
      * 封装变量的扩展规则。
@@ -489,4 +491,6 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedInlineScript)
         prefix("(inline script config)")
     }
+
+    // endregion
 }

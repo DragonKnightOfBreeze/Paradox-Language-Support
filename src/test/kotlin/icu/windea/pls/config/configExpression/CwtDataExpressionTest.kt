@@ -330,35 +330,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolvePatternAware_ant_and_regex() {
-        if (!hasEp()) return
-        run {
-            val e = CwtDataExpression.resolve("ant:foo/*", false)
-            assertEquals(CwtDataTypes.Ant, e.type)
-            assertEquals("foo/*", e.value)
-            assertFalse(e.ignoreCase)
-        }
-        run {
-            val e = CwtDataExpression.resolve("ant.i:foo/*", false)
-            assertEquals(CwtDataTypes.Ant, e.type)
-            assertEquals("foo/*", e.value)
-            assertTrue(e.ignoreCase)
-        }
-        run {
-            val e = CwtDataExpression.resolve("re:foo.*bar", false)
-            assertEquals(CwtDataTypes.Regex, e.type)
-            assertEquals("foo.*bar", e.value)
-            assertFalse(e.ignoreCase)
-        }
-        run {
-            val e = CwtDataExpression.resolve("re.i:foo.*bar", false)
-            assertEquals(CwtDataTypes.Regex, e.type)
-            assertEquals("foo.*bar", e.value)
-            assertTrue(e.ignoreCase)
-        }
-    }
-
-    @Test
     fun testResolveTemplateExpression_viaDataExpression() {
         if (!hasEp()) return
         val s = "a_value[foo]_b"
@@ -385,6 +356,76 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             val e = CwtDataExpression.resolveTemplate("abc")
             assertEquals(CwtDataTypes.Constant, e.type)
             assertEquals("abc", e.value)
+        }
+    }
+
+    @Test
+    fun testResolvePatterns() {
+        if (!hasEp()) return
+        run {
+            val e = CwtDataExpression.resolve("glob:fo*", false)
+            assertEquals(CwtDataTypes.Glob, e.type)
+            assertEquals("fo*", e.value)
+            assertFalse(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("glob.i:fo*", false)
+            assertEquals(CwtDataTypes.Glob, e.type)
+            assertEquals("fo*", e.value)
+            assertTrue(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("ant:foo/*", false)
+            assertEquals(CwtDataTypes.Ant, e.type)
+            assertEquals("foo/*", e.value)
+            assertFalse(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("ant.i:foo/*", false)
+            assertEquals(CwtDataTypes.Ant, e.type)
+            assertEquals("foo/*", e.value)
+            assertTrue(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("re:foo.*bar", false)
+            assertEquals(CwtDataTypes.Regex, e.type)
+            assertEquals("foo.*bar", e.value)
+            assertFalse(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("re.i:foo.*bar", false)
+            assertEquals(CwtDataTypes.Regex, e.type)
+            assertEquals("foo.*bar", e.value)
+            assertTrue(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("regex:foo.*bar", false)
+            assertEquals(CwtDataTypes.Regex, e.type)
+            assertEquals("foo.*bar", e.value)
+            assertFalse(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("regex.i:foo.*bar", false)
+            assertEquals(CwtDataTypes.Regex, e.type)
+            assertEquals("foo.*bar", e.value)
+            assertTrue(e.ignoreCase)
+        }
+    }
+
+    @Test
+    fun testResolvePatterns_empty() {
+        if (!hasEp()) return
+        run {
+            val e = CwtDataExpression.resolve("glob:", false)
+            assertEquals(CwtDataTypes.Glob, e.type)
+            assertEquals("", e.value)
+            assertFalse(e.ignoreCase)
+        }
+        run {
+            val e = CwtDataExpression.resolve("glob.i:", false)
+            assertEquals(CwtDataTypes.Glob, e.type)
+            assertEquals("", e.value)
+            assertTrue(e.ignoreCase)
         }
     }
 }

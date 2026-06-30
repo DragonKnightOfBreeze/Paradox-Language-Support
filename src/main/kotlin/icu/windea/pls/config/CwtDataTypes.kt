@@ -13,6 +13,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.core.match.AntMatcher
 import icu.windea.pls.core.match.RegexMatcher
+import icu.windea.pls.core.match.GlobMatcher
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
@@ -41,7 +42,7 @@ import icu.windea.pls.model.ParadoxGameType
 object CwtDataTypes {
     // NOTE 2.1.8 偏好使用 lambda 式构建器，而非多行的链式构建器：可通过代码折叠隐藏细节，方便查看
 
-    // Base Data Types
+    // region Base Data Types
 
     /**
      * 任意类型。
@@ -153,7 +154,9 @@ object CwtDataTypes {
         withPriority(100.0) // highest
     }
 
-    // Extended Base Data Types
+    // endregion
+
+    // region Extended Base Data Types
 
     /**
      * 百分比字段类型。
@@ -196,7 +199,9 @@ object CwtDataTypes {
         withPriority(90.0)
     }
 
-    // Complex Data Types
+    // endregion
+
+    // region Complex Data Types
 
     /**
      * 定义引用类型。
@@ -693,7 +698,9 @@ object CwtDataTypes {
         withPriority(10.0)
     }
 
-    // Alias Data Types
+    // endregion
+
+    // region Alias Data Types
 
     /**
      * 单别名右侧类型。
@@ -740,7 +747,9 @@ object CwtDataTypes {
      */
     val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
 
-    // Path Reference Data Types
+    // endregion
+
+    // region Path Reference Data Types
 
     /**
      * 图标路径类型。
@@ -816,10 +825,12 @@ object CwtDataTypes {
         withPriority(70.0)
     }
 
-    // Pattern Aware Data Types
+    // endregion
+
+    // region Pattern Aware Data Types
 
     /**
-     * 常量类型。
+     * 常量类型。模式感知的数据类型之一。
      *
      * 匹配与常量值完全相同的表达式。
      * 作为值时，布尔常量（`yes` / `no`）不会匹配用引号括起的字符串字面量。
@@ -834,7 +845,7 @@ object CwtDataTypes {
         withPriority(100.0) // highest
     }
     /**
-     * 模板表达式类型。
+     * 模板表达式类型。模式感知的数据类型之一。
      *
      * 由常量文本片段和引用片段交替组成的模式。
      * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
@@ -847,9 +858,24 @@ object CwtDataTypes {
         withPriority(65.0)
     }
     /**
-     * ANT 路径模式类型（模式感知）。
+     * GLOB 模式类型。模式感知的数据类型之一。
      *
-     * 匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单字符）、`*`（单段）和 `**`（多段，不常用）。
+     * 匹配符合 GLOB 模式的表达式。支持通配符 `?`（单个字符） 和 `*`（任意个字符）。
+     *
+     * 对应的数据表达式的格式：
+     * - `glob:{pattern}` - 其中 `{pattern}` 匹配模式。
+     * - `glob.i:{pattern}` - 忽略大小写的变体。
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     *
+     * @see GlobMatcher
+     * @since 2.2.0
+     */
+    val Glob = CwtDataType.builder("Ant").patternAware().build()
+    /**
+     * ANT 路径模式类型。模式感知的数据类型之一。
+     *
+     * 匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单个字符）、`*`（子路径中的任意个字符）和 `**`（任意个子路径）。
      *
      * 对应的数据表达式的格式：
      * - `ant:{pattern}` - 其中 `{pattern}` 匹配模式。
@@ -862,7 +888,7 @@ object CwtDataTypes {
      */
     val Ant = CwtDataType.builder("Ant").patternAware().build()
     /**
-     * 正则表达式模式类型（模式感知）。
+     * 正则表达式模式类型。模式感知的数据类型之一。
      *
      * 匹配符合正则表达式的表达式。
      *
@@ -877,7 +903,9 @@ object CwtDataTypes {
      */
     val Regex = CwtDataType.builder("Regex").patternAware().build()
 
-    // Suffix Aware Data Types
+    // endregion
+
+    // region Suffix Aware Data Types
 
     // TODO [config-system] SUFFIX_AWARE 目前不兼容/不支持：代码补全、用法查询
 
@@ -925,4 +953,6 @@ object CwtDataTypes {
      * @since 2.0.5
      */
     val SuffixAwareSyncedLocalisation = CwtDataType.builder("SuffixAwareLocalisationSynced").suffixAware().build() // #162, #193
+
+    // endregion
 }

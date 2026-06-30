@@ -8,6 +8,7 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -367,26 +368,20 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxAntScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Ant) return null
+        val value = context.expression.value
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
         val ignoreCase = context.configExpression.ignoreCase
-        val r = context.expression.value.matchesAntPattern(pattern, ignoreCase)
-        return ParadoxMatchResult.exactOrNot(r)
-    }
-}
-
-class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
-
-    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        if (context.dataType != CwtDataTypes.Regex) return null
-        val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val ignoreCase = context.configExpression.ignoreCase
-        val r = context.expression.value.matchesRegex(pattern, ignoreCase)
+        val r = when (context.dataType) {
+            CwtDataTypes.Glob -> value.matchesPattern(pattern, ignoreCase)
+            CwtDataTypes.Ant -> value.matchesAntPattern(pattern, ignoreCase)
+            CwtDataTypes.Regex -> value.matchesRegex(pattern, ignoreCase)
+            else -> false
+        }
         return ParadoxMatchResult.exactOrNot(r)
     }
 }

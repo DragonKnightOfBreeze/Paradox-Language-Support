@@ -2266,11 +2266,31 @@ icon|p1,p2
 
 > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
+#### Glob {#data-type-glob}
+
+<!-- @see icu.windea.pls.core.match.GlobMatcher -->
+
+GLOB 模式类型。模式感知的数据类型之一。
+
+匹配符合 GLOB 模式的表达式。支持通配符 `?`（单个字符） 和 `*`（任意个字符）。
+
+对应的数据表达式的格式：
+- `glob:{pattern}` - 其中 `{pattern}` 匹配模式。
+- `glob.i:{pattern}` - 忽略大小写的变体。
+
+对应的数据表达式的示例：
+- `glob:name?`
+- `glob.i:*desc`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### Ant {#data-type-ant}
 
-ANT 路径模式类型（模式感知）。
+<!-- @see icu.windea.pls.core.match.AntMatcher -->
 
-匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单字符）、`*`（单段）和 `**`（多段，不常用）。
+ANT 路径模式类型。模式感知的数据类型之一。
+
+匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单个字符）、`*`（子路径中的任意个字符）和 `**`（任意个子路径）。
 
 对应的数据表达式的格式：
 - `ant:{pattern}` - 其中 `{pattern}` 匹配模式。
@@ -2284,7 +2304,9 @@ ANT 路径模式类型（模式感知）。
 
 #### Regex {#data-type-regex}
 
-正则表达式模式类型（模式感知）。
+<!-- @see icu.windea.pls.core.match.RegexMatcher -->
+
+正则表达式模式类型。模式感知的数据类型之一。
 
 匹配符合正则表达式的表达式。
 
