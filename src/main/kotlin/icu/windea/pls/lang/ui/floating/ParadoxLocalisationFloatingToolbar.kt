@@ -10,15 +10,15 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.core.ui.FloatingToolbar
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
+import icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
+import icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import kotlinx.coroutines.CoroutineScope
-import icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
-import icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
-import icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
-import icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
-import icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
 
 // org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
 

@@ -5,7 +5,6 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 不正确的表达式的检查器。

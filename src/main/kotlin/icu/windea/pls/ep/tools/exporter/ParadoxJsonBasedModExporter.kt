@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.icons.AllIcons
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.ep.PlsEpBundle
 import icu.windea.pls.model.ParadoxGameType

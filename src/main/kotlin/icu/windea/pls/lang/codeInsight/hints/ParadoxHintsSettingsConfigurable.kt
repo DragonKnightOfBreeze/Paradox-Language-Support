@@ -4,7 +4,6 @@ import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.smaller
 import icu.windea.pls.core.toAtomicProperty
 import javax.swing.JComponent
 

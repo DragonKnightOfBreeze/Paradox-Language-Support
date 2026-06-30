@@ -1,6 +1,5 @@
 package icu.windea.pls.ep.tools.importer
 
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.PlsEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 

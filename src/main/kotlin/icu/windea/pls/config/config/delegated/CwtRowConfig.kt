@@ -7,8 +7,6 @@ import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.attributes.CwtRowConfigAttributes
 import icu.windea.pls.config.attributes.CwtRowConfigAttributesEvaluator
-import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
-import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig

@@ -21,8 +21,8 @@ import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.orNull
-import icu.windea.pls.model.ParadoxInlineMathArgument
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
+import icu.windea.pls.model.ParadoxInlineMathArgument
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import java.awt.Dimension

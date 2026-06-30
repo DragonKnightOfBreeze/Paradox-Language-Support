@@ -12,8 +12,8 @@ import icu.windea.pls.config.CwtDataTypes.ValueField
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.core.match.AntMatcher
-import icu.windea.pls.core.match.RegexMatcher
 import icu.windea.pls.core.match.GlobMatcher
+import icu.windea.pls.core.match.RegexMatcher
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression

@@ -3,7 +3,6 @@ package icu.windea.pls.ep.inspections
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**

@@ -3,7 +3,6 @@ package icu.windea.pls.ep.resolve
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig

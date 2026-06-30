@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.ep.PlsEpBundle
 import icu.windea.pls.ep.tools.model.Constants
