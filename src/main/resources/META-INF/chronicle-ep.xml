@@ -150,9 +150,9 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxColorFieldChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeBasedScopeFieldExpressionChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.StellarisTechnologyWithLevelChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>

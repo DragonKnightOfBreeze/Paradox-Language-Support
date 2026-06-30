@@ -40,6 +40,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+/**
+ * 检查整数数值是否在指定的区间内。
+ */
 class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
@@ -57,6 +60,9 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     }
 }
 
+/**
+ * 检查浮点数数值是否在指定的区间内。
+ */
 class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
@@ -74,6 +80,9 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
     }
 }
 
+/**
+ * 检查颜色字段的颜色类型是否匹配。
+ */
 class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptColor) return
@@ -89,6 +98,9 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
     }
 }
 
+/**
+ * 检查作用域字段表达式的作用域是否匹配指定的作用域。
+ */
 class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
@@ -109,6 +121,9 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
     }
 }
 
+/**
+ * 检查作用域字段表达式的作用域是否匹配指定的作用域分组。
+ */
 class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
@@ -129,7 +144,41 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
     }
 }
 
-class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
+/**
+ * 检查 Stellaris 中携带了循环等级的科技引用是否正确。
+ */
+@WithGameType(ParadoxGameType.Stellaris)
+class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
+    override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+
+        val configExpression = config.configExpression
+        if (configExpression.type != CwtDataTypes.TechnologyWithLevel) return
+        val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return
+        val project = config.configGroup.project
+        val text = element.text
+        val separatorIndex = text.indexOf('@')
+        if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", ParadoxDefinitionSearch.selector(project, element)).findFirst() == null) {
+            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
+            val description = PlsBundle.message("incorrectExpression.checker.expect.repeatableTechnologyName", range.substring(text))
+            holder.registerProblem(element, description, ProblemHighlightType.ERROR, range)
+        }
+        if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
+            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
+            val description = PlsBundle.message("incorrectExpression.checker.expect.repeatableTechnologyLevel", range.substring(text))
+            holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR, range)
+        }
+    }
+}
+
+/**
+ * 检查特定语句中指定的触发器（trigger）是否是简单触发器（simple trigger）。
+ *
+ * 适用于：
+ * - `switch = {...}`
+ * - `inverted_switch = {...}`
+ */
+class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
         val triggerKeys = setOf("trigger", "on_trigger")
         val contextNames = setOf("switch", "inverted_switch")
@@ -138,7 +187,6 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        // `switch = {...}` 和 `inverted_switch = {...}` 中指定的应当是一个 `simple_trigger`
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
@@ -156,7 +204,14 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     }
 }
 
-class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpressionChecker {
+/**
+ * 检查特定语句中指定的触发器（trigger）是否是简单触发器（simple trigger）（如果不带参数），或者复杂触发器（complex trigger）（如果带参数）。
+ *
+ * 适用于：
+ * - `complex_trigger_modifier = {...}`
+ * - `export_trigger_value_to_variable = {...}`
+ */
+class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
         const val triggerKey = "trigger"
         val contextNames = setOf("complex_trigger_modifier", "export_trigger_value_to_variable")
@@ -165,7 +220,6 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        // `complex_trigger_modifier = {...}` 中指定的应当是一个 `simple_trigger`（如果不带参数）或者 `complex_trigger`（如果带参数）
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
@@ -187,30 +241,6 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
             // if (resultTriggerConfigs.none { !it.config.isBlock }) {
             //    holder.registerProblem(element, PlsBundle.message("incorrectExpression.checker.expect.simpleTrigger", element.expression.orEmpty()))
             // }
-        }
-    }
-}
-
-@WithGameType(ParadoxGameType.Stellaris)
-class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
-    override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        if (element !is ParadoxScriptStringExpressionElement) return
-
-        val configExpression = config.configExpression
-        if (configExpression.type != CwtDataTypes.TechnologyWithLevel) return
-        val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return
-        val project = config.configGroup.project
-        val text = element.text
-        val separatorIndex = text.indexOf('@')
-        if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", ParadoxDefinitionSearch.selector(project, element)).findFirst() == null) {
-            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
-            val description = PlsBundle.message("incorrectExpression.checker.expect.repeatableTechnologyName", range.substring(text))
-            holder.registerProblem(element, description, ProblemHighlightType.ERROR, range)
-        }
-        if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
-            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
-            val description = PlsBundle.message("incorrectExpression.checker.expect.repeatableTechnologyLevel", range.substring(text))
-            holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR, range)
         }
     }
 }
