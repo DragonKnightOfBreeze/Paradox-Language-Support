@@ -43,14 +43,17 @@ object CwtConfigExpressionManipulationService {
             CwtDataTypes.Float -> when {
                 otherExpression.type == CwtDataTypes.ValueField || otherExpression.type == CwtDataTypes.VariableField -> return "float"
             }
+            CwtDataTypes.IntPercentageField -> when {
+                otherExpression.type == CwtDataTypes.PercentageField -> return "int_percentage_field"
+            }
+            in CwtDataTypeSets.DynamicValue -> when {
+                otherExpression.type in CwtDataTypeSets.DynamicValue -> if (expression.value != null && expression.value == otherExpression.value) return "dynamic_value[${expression.value}]"
+                otherExpression.type in CwtDataTypeSets.ValueField -> if (expression.value != null) return "dynamic_value[${expression.value}]"
+                otherExpression.type in CwtDataTypeSets.VariableField -> if (expression.value == "variable") return "dynamic_value[${expression.value}]"
+            }
             in CwtDataTypeSets.ScopeField -> when {
                 otherExpression.type == CwtDataTypes.ScopeField -> return expression.expressionString
                 otherExpression.type == CwtDataTypes.Scope && otherExpression.value == null -> return expression.expressionString
-            }
-            in CwtDataTypeSets.DynamicValue -> when {
-                otherExpression.type in CwtDataTypeSets.DynamicValue -> return if (expression.value != null && expression.value == otherExpression.value) "dynamic_value[${expression.value}]" else null
-                otherExpression.type in CwtDataTypeSets.ValueField -> return if (expression.value != null) "dynamic_value[${expression.value}]" else null
-                otherExpression.type in CwtDataTypeSets.VariableField -> return if (expression.value == "variable") "dynamic_value[${expression.value}]" else null
             }
             CwtDataTypes.VariableField -> when {
                 otherExpression.type in CwtDataTypeSets.ValueField -> return "variable_field"
