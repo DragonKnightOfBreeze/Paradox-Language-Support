@@ -4,13 +4,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
-import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
-import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.math.DefaultMathExpressionEvaluator
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.math.MathToken
@@ -18,6 +16,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.model.ParadoxInlineMathArgument
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathExpression
@@ -26,39 +25,28 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 
 /**
- * 内联数学的评估器。
+ * 内联数学表达式的评估器。
  *
  * @see ParadoxScriptInlineMath
  * @see ParadoxScriptInlineMathExpression
  * @see DefaultMathExpressionEvaluator
  */
-class ParadoxInlineMathEvaluator(
+@Suppress("unused")
+class ParadoxInlineMathExpressionEvaluator(
     var precision: Int? = null,
     var isFloatingPoint: Boolean? = null,
 ) {
-    data class Argument(
-        val expression: String,
-        val id: String,
-        val defaultValue: String,
-        var value: String = "",
-    ) {
-        private var resolvedElementPointer: SmartPsiElementPointer<PsiElement>? = null
-        val resolvedElement: PsiElement? get() = resolvedElementPointer?.element
-
-        fun withResolvedElement(element: PsiElement?, file: PsiFile? = element?.containingFile): Argument {
-            resolvedElementPointer = element?.createPointer(file)
-            return this
-        }
+    fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, ParadoxInlineMathArgument> {
+        val expressionElement = element.inlineMathExpression ?: return emptyMap()
+        return resolveArgumentsInternal(expressionElement)
     }
 
-    fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, Argument> {
-        val tokenElement = element.tokenElement ?: return emptyMap()
-        val result = sortedMapOf<String, Argument>()
-        buildArguments(tokenElement, result)
-        return result
+    fun resolveArguments(element: ParadoxScriptInlineMathExpression): Map<String, ParadoxInlineMathArgument> {
+        return resolveArgumentsInternal(element)
     }
 
-    private fun buildArguments(tokenElement: PsiElement, result: MutableMap<String, Argument>) {
+    private fun resolveArgumentsInternal(tokenElement: ParadoxScriptInlineMathExpression): Map<String, ParadoxInlineMathArgument> {
+        val result = sortedMapOf<String, ParadoxInlineMathArgument>()
         tokenElement.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
@@ -66,8 +54,8 @@ class ParadoxInlineMathEvaluator(
                         val expression = element.text?.trim()?.orNull() ?: return
                         val id = element.name?.trim()?.orNull()?.let { "$$it$" } ?: return
                         val defaultValue = element.defaultValue.orEmpty()
-                        result[expression] = Argument(expression, id, defaultValue)
-                        if (id != expression) result[id] = Argument(id, id, defaultValue)
+                        result[expression] = ParadoxInlineMathArgument(expression, id, defaultValue)
+                        if (id != expression) result[id] = ParadoxInlineMathArgument(id, id, defaultValue)
                     }
                     is ParadoxScriptInlineMathScriptedVariableReference -> {
                         val expression = element.text?.trim()?.orNull() ?: return
@@ -77,13 +65,15 @@ class ParadoxInlineMathEvaluator(
                             else -> element.resolved()
                         }
                         val defaultValue = resolved?.text.orEmpty()
-                        result[expression] = Argument(expression, id, defaultValue).withResolvedElement(resolved)
-                        // if (id != expression) result[id] = Argument(id, id, defaultValue)
+                        result[expression] = ParadoxInlineMathArgument(expression, id, defaultValue).withResolvedElement(resolved)
+                        // if (id != expression) result[id] = ParadoxInlineMathArgument(id, id, defaultValue)
                     }
                 }
                 super.visitElement(element)
             }
         })
+        if (result.isEmpty()) return emptyMap()
+        return result
     }
 
     /**
@@ -92,16 +82,26 @@ class ParadoxInlineMathEvaluator(
      * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
      */
     fun evaluate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathResult {
+        val expressionElement = element.inlineMathExpression ?: throw IllegalStateException("Cannot evaluate: empty inline math expression.")
+        return evaluateInternal(expressionElement, args)
+    }
+
+    /**
+     * @throws ArithmeticException 如果在评估过程中发生任何数学异常。
+     * @throws IllegalArgumentException 如果在评估过程中发生任何与参数有关的异常（缺少参数、参数值不合法等）。
+     * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
+     */
+    fun evaluate(element: ParadoxScriptInlineMathExpression, args: Map<String, String> = emptyMap()): MathResult {
         return evaluateInternal(element, args)
     }
 
-    private fun evaluateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): MathResult {
-        val arguments = resolveArguments(element)
+    private fun evaluateInternal(element: ParadoxScriptInlineMathExpression, args: Map<String, String>): MathResult {
+        val arguments = resolveArgumentsInternal(element)
         prepareArguments(args, arguments)
         return evaluateWithArguments(element, args, arguments)
     }
 
-    private fun prepareArguments(args: Map<String, String>, arguments: Map<String, Argument>) {
+    private fun prepareArguments(args: Map<String, String>, arguments: Map<String, ParadoxInlineMathArgument>) {
         if (arguments.isEmpty()) return
         // val parameterGroups = arguments.values
         //     .filter { it.expression.surroundsWith('$', '$') }
@@ -145,20 +145,21 @@ class ParadoxInlineMathEvaluator(
         }
     }
 
-    private fun evaluateWithArguments(element: ParadoxScriptInlineMath, args: Map<String, String>, arguments: Map<String, Argument>): MathResult {
-        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot evaluate: token element is missing.")
-        PsiTreeUtil.findChildOfType(tokenElement, PsiErrorElement::class.java)?.let { error ->
+    private fun evaluateWithArguments(element: ParadoxScriptInlineMathExpression, args: Map<String, String>, arguments: Map<String, ParadoxInlineMathArgument>): MathResult {
+        PsiTreeUtil.findChildOfType(element, PsiErrorElement::class.java)?.let { error ->
             val errorText = error.errorDescription.ifEmpty { "Syntax error" }
             throw IllegalStateException("Cannot evaluate: $errorText")
         }
 
         val tokens = mutableListOf<MathToken>()
-        collectTokens(tokenElement, tokens, args, arguments)
-        if (tokens.isEmpty()) throw IllegalStateException("Cannot evaluate: empty expression.")
+        collectTokens(element, tokens, args, arguments)
+        if (tokens.isEmpty()) throw IllegalStateException("Cannot evaluate: empty inline math expression.")
         return evaluateTokens(tokens)
     }
 
-    private fun collectTokens(element: PsiElement, tokens: MutableList<MathToken>, args: Map<String, String>, arguments: Map<String, Argument>) {
+    private fun collectTokens(element: PsiElement, tokens: MutableList<MathToken>, args: Map<String, String>, arguments: Map<String, ParadoxInlineMathArgument>) {
+        if (element is PsiWhiteSpace) return
+
         val operandToken = resolveOperand(element, args, arguments)
         if (operandToken != null) {
             tokens.add(operandToken)
@@ -181,7 +182,7 @@ class ParadoxInlineMathEvaluator(
         return evaluator.evaluate(tokens)
     }
 
-    private fun resolveOperand(element: PsiElement, args: Map<String, String>, arguments: Map<String, Argument>): MathToken.Operand? {
+    private fun resolveOperand(element: PsiElement, args: Map<String, String>, arguments: Map<String, ParadoxInlineMathArgument>): MathToken.Operand? {
         return when (element) {
             is ParadoxScriptInlineMathNumber -> {
                 val valueText = element.value
@@ -213,9 +214,10 @@ class ParadoxInlineMathEvaluator(
                             ?: throw IllegalArgumentException("Missing arguments: $expression")
                         when (resolvedValueElement) {
                             is ParadoxScriptInlineMath -> {
+                                val expressionElement = resolvedValueElement.inlineMathExpression ?: throw IllegalStateException("Cannot evaluate: empty inline math expression in '$expression'.")
                                 withRecursionGuard {
                                     withRecursionCheck("sv:${argument.id}") {
-                                        evaluateInternal(resolvedValueElement, args)
+                                        evaluateInternal(expressionElement, args)
                                     } ?: throw IllegalArgumentException("Recursive scripted variable reference '$expression'.")
                                 } ?: throw IllegalArgumentException("Recursion detected.")
                             }

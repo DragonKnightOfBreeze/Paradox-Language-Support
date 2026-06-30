@@ -7,7 +7,7 @@ import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
-import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
+import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -131,7 +131,7 @@ fun ParadoxScriptValue.colorValue(valid: Boolean = false): Color? {
 
 fun ParadoxScriptValue.inlineMathValue(valid: Boolean = false): MathResult? {
     if (this !is ParadoxScriptInlineMath) return null
-    val r = runCatching { ParadoxInlineMathEvaluator().evaluate(this) }.getOrNull() ?: return null
+    val r = runCatching { ParadoxInlineMathExpressionEvaluator().evaluate(this) }.getOrNull() ?: return null
     if (valid && !isValidExpression()) return null
     return r
 }

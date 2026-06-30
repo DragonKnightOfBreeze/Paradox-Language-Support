@@ -10,7 +10,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.values
-import icu.windea.pls.lang.util.evaluators.ParadoxDefineReferenceEvaluator
+import icu.windea.pls.lang.util.evaluators.ParadoxDefineReferenceExpressionEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -20,14 +20,14 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 /**
  * 通过内嵌提示显示定值引用的评估结果。
  *
- * @see ParadoxDefineReferenceEvaluator
+ * @see ParadoxDefineReferenceExpressionEvaluator
  */
 class ParadoxDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
         if (!ParadoxEvaluationService.isEvaluableForDefineReference(element)) return
 
-        val evaluator = ParadoxDefineReferenceEvaluator()
+        val evaluator = ParadoxDefineReferenceExpressionEvaluator()
         val result = runCatching { evaluator.evaluate(element) }.getOrNull() ?: return
         val value = formatValue(result)
         sink.addInlinePresentation(element.endOffset) {

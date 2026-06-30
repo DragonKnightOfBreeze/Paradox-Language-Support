@@ -16,11 +16,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxInlineMathEvaluator
+ * @see ParadoxInlineMathExpressionEvaluator
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
+class ParadoxInlineMathExpressionEvaluatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -34,7 +34,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_simple.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k2")) }
@@ -60,7 +60,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_basic_ops.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(7)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(9)) { evaluator.evaluate(map.getValue("k2")) }
@@ -78,7 +78,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_complex.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(5)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(21)) { evaluator.evaluate(map.getValue("k2")) }
@@ -96,7 +96,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_params_edge.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(3)) { evaluator.evaluate(map.getValue("k2")) }
@@ -118,13 +118,15 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_errors.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(IllegalStateException::class.java) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(IllegalStateException::class.java) { evaluator.evaluate(map.getValue("k2")) }
         assertResult(IllegalStateException::class.java) { evaluator.evaluate(map.getValue("k3")) }
-        assertResult(ArithmeticException::class.java) { evaluator.evaluate(map.getValue("k4")) }
-        assertResult(ArithmeticException::class.java) { evaluator.evaluate(map.getValue("k5")) }
+        assertResult(IllegalStateException::class.java) { evaluator.evaluate(map.getValue("k4")) }
+        assertResult(IllegalStateException::class.java) { evaluator.evaluate(map.getValue("k5")) }
+        assertResult(ArithmeticException::class.java) { evaluator.evaluate(map.getValue("k6")) }
+        assertResult(ArithmeticException::class.java) { evaluator.evaluate(map.getValue("k7")) }
     }
 
     @Test
@@ -132,7 +134,7 @@ class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_edge_cases.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(9)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(9)) { evaluator.evaluate(map.getValue("k2")) }

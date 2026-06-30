@@ -1,27 +1,22 @@
 package icu.windea.pls.lang.util.evaluators
 
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.core.letIf
-import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.resolved
-import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import kotlin.sequences.take
 
 /**
  * 数组定值引用表达式的评估器。
  *
  * @see ParadoxArrayDefineReferenceExpression
  */
-class ParadoxArrayDefineReferenceEvaluator(
+class ParadoxArrayDefineReferenceExpressionEvaluator(
     var resolve: Boolean = true,
 ) {
     fun evaluate(element: ParadoxExpressionElement): ParadoxScriptValue? {

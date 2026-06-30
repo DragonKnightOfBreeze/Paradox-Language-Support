@@ -22,17 +22,17 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxDefineReferenceEvaluator
+ * @see ParadoxArrayDefineReferenceExpressionEvaluator
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
+class ParadoxArrayDefineReferenceExpressionEvaluatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("features/evaluators")
+        markRootDirectory("features/inlayHints")
         markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
@@ -48,24 +48,28 @@ class ParadoxDefineReferenceEvaluatorTest : BasePlatformTestCase() {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
-        myFixture.configureByFile("features/evaluators/define_reference_simple.test.txt")
+        myFixture.configureByFile("features/evaluators/array_define_reference_simple.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val list = toStringList(file)
-        val evaluator = ParadoxDefineReferenceEvaluator()
+        val evaluator = ParadoxArrayDefineReferenceExpressionEvaluator()
 
-        assertResult("here_we_introduce") { evaluator.evaluate(list[0]) }
+        assertResult("here_we_send_greetings") { evaluator.evaluate(list[0]) }
         assertResult(null) { evaluator.evaluate(list[1]) }
+        assertResult(null) { evaluator.evaluate(list[2]) }
+        assertResult(null) { evaluator.evaluate(list[3]) }
     }
 
     @Test
     fun requireSemantic() {
-        myFixture.configureByFile("features/evaluators/define_reference_simple.test.txt")
+        myFixture.configureByFile("features/evaluators/array_define_reference_simple.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val list = toStringList(file)
-        val evaluator = ParadoxDefineReferenceEvaluator()
+        val evaluator = ParadoxArrayDefineReferenceExpressionEvaluator()
 
         assertResult(null) { evaluator.evaluate(list[0]) }
         assertResult(null) { evaluator.evaluate(list[1]) }
+        assertResult(null) { evaluator.evaluate(list[2]) }
+        assertResult(null) { evaluator.evaluate(list[3]) }
     }
 
     private fun toStringList(file: ParadoxScriptFile): List<ParadoxScriptString> {

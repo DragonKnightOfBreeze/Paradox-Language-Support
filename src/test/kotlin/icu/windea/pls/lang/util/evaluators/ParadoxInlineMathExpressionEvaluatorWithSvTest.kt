@@ -18,11 +18,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxInlineMathEvaluator
+ * @see ParadoxInlineMathExpressionEvaluator
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
+class ParadoxInlineMathExpressionEvaluatorWithSvTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -37,7 +37,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/evaluators/inline_math_simple_with_sv.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k2")) }
@@ -55,7 +55,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(3)) { evaluator.evaluate(map.getValue("k2")) }
@@ -68,7 +68,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(2.5)) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(3)) { evaluator.evaluate(map.getValue("k2")) }
@@ -87,7 +87,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k1")) }
     }
@@ -99,7 +99,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k1")) }
     }
@@ -111,7 +111,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(8)) { evaluator.evaluate(map.getValue("k1")) }
     }
@@ -123,7 +123,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k1")) }
         assertResult(MathResult.from(8)) { evaluator.evaluate(map.getValue("k1"), mapOf("\$NUM$" to "2")) }
@@ -136,7 +136,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(MathResult.from(4)) { evaluator.evaluate(map.getValue("k1")) }
     }
@@ -148,7 +148,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
-        val evaluator = ParadoxInlineMathEvaluator()
+        val evaluator = ParadoxInlineMathExpressionEvaluator()
 
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k1")) }
     }

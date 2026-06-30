@@ -14,7 +14,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
-import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
+import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 /**
  * 求值内联数学表达式。
  *
- * @see ParadoxInlineMathEvaluator
+ * @see ParadoxInlineMathExpressionEvaluator
  */
 class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
     override fun getFamilyName() = PlsBundle.message("intention.evaluateInlineMath")
