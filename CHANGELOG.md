@@ -6,7 +6,7 @@
 
 - [x] 修复本地化悬浮工具栏无法正常显示的BUG / Fix a bug where the localisation floating toolbar cannot be displayed properly 
 - [x] Missing localizations false positive ([#347](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/347))
-- [x] 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式* / For *pattern-aware data types*, in addition to *constants/templates/ANT path patterns/regular expressions*, additionally support *GLOB patterns*
+- [x] 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式* / For *pattern-aware data types*, in addition to *constants/templates/ANT path patterns/regular expressions*, additionally support *GLOB patterns* ([doc](https://windea.icu/Paradox-Language-Support/ref-config-format.md#data-types-pattern-aware))
 
 ## 2.1.10 - 2026-06-24
 
