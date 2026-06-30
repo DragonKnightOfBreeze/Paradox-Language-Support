@@ -131,7 +131,7 @@ priorities = {
 - Two mods both define an event with the same name in `events/`: Due to `events = fios`, the mod loaded first takes effect, and the later one is ignored.
 - Two mods both add entries in `common/on_actions/`: Due to `ordered`, entries are merged in order without overriding.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### System Scope Config {#config-system-scope}
 
@@ -170,7 +170,7 @@ system_scopes = {
 }
 ```
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Locale Config {#config-locale}
 
@@ -199,7 +199,7 @@ locales = {
 }
 ```
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Type Config and Subtype Config {#config-type}
 
@@ -537,7 +537,7 @@ rows = {
 }
 ```
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Define Configs {#config-define}
 
@@ -574,7 +574,7 @@ Notes:
 - The plugin forcibly ignores any type config or declaration config named `define` or `defines`.
 - Currently, based on define configs, the plugin checks the validity of the declaration structure for define variables, but does not check the validity of the names of define namespaces or define variables.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Enum Config {#config-enum}
 
@@ -913,7 +913,7 @@ database_object_types = {
 }
 ```
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Macro Config {#config-macro}
 
@@ -945,7 +945,7 @@ macro[definition_injection] = {
 }
 ```
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ### Extended Configs {#configs-extended}
 
@@ -984,7 +984,7 @@ Notes:
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 - This entry only provides "hint enhancement" and is not responsible for declaring or validating the value and type of scripted variables.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Extended Config for Definitions {#config-extended-definition}
 
@@ -1018,7 +1018,7 @@ Notes:
 - `type` is required; if missing, the entry will be skipped.
 - This extension is for "hint and context enhancement" and does not directly change the structure of [declaration configs](#config-declaration).
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Extended Config for Game Rules {#config-extended-game-rule}
 
@@ -1176,7 +1176,7 @@ Notes:
 - When `## inherit` is marked, the context is taken from the "usage site" and may be empty or vary by location.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Extended Config for Complex Enum Values {#config-extended-complex-enum-value}
 
@@ -1206,7 +1206,7 @@ Notes:
 - This extension does not change the collection logic for complex enum "value sources"; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Extended Config for Dynamic Values {#config-extended-dynamic-value}
 
@@ -1240,7 +1240,7 @@ Notes:
 - This extension does not change the dynamic value type or the base "value set" definition; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Extended Config for Inline Scripts {#config-extended-inline-script}
 
@@ -1293,7 +1293,7 @@ Notes:
 - If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ### Internal Configs {#configs-internal}
 
@@ -1529,7 +1529,7 @@ Schema expressions support the following four forms:
 - **Type**: Starting with a single `$` (unclosed), such as `$any`, `$int`.
 - **Constraint**: Starting with `$$`, such as `$$declaration`.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ## Data Types {#data-types}
 
@@ -1576,7 +1576,7 @@ Matches any script expression, acting as the lowest-priority fallback.
 Format of corresponding data expressions:
 - `$any`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Bool {#data-type-bool}
 
@@ -1679,7 +1679,7 @@ Matches percentage value strings where the numeric part is an integer (e.g., `50
 Format of corresponding data expressions:
 - `int_percentage_field`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### DateField {#data-type-date-field}
 
@@ -1824,7 +1824,7 @@ Format of corresponding data expressions:
 Examples of corresponding data expressions:
 - `dynamic_value[event_target]`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### ScopeField {#data-type-scope-field}
 
@@ -1961,7 +1961,7 @@ Command expressions are widely used in localisation files (`[...]`); however, cu
 Format of corresponding data expressions:
 - `$command`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### ScriptValueReference {#data-type-script-value-reference}
 
@@ -1972,7 +1972,7 @@ Matches a script value reference expression（如 `some_sv|PARAM|VALUE|`）。
 Format of corresponding data expressions:
 - `$script_value_reference`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### DefineReference {#data-type-define-reference}
 
@@ -1983,7 +1983,7 @@ Matches a define reference expression (e.g., `define:Namespace|Name`).
 Format of corresponding data expressions:
 - `$define_reference`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### ArrayDefineReference {#data-type-array-define-reference}
 
@@ -1994,7 +1994,7 @@ Matches an array define reference expression (e.g., `array_define:Namespace|Name
 Format of corresponding data expressions:
 - `$array_define_reference`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Tags {#data-type-tags}
 
@@ -2007,7 +2007,7 @@ Format of corresponding data expressions:
 - `$tags[{name}]` – where `{name}` matches a dynamic value type name.
 - `$tags_condition[{name}]` – condition variant, where `{name}` matches a dynamic value type name.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### DatabaseObject {#data-type-database-object}
 
@@ -2018,7 +2018,7 @@ Matches a database object expression (consisting of multiple reference nodes sep
 Format of corresponding data expressions:
 - `$database_object`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### NameFormat {#data-type-name-format}
 
@@ -2029,7 +2029,7 @@ Matches a name format expression (e.g., `{alpha}`, `{<adj> {<noun>}}`).
 Format of corresponding data expressions:
 - `name_format[{type}]` - where `{name}` matches the format name (the corresponding definition type is `{name}_name_format`).
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### ShaderEffect {#data-type-shader-effect}
 
@@ -2043,7 +2043,7 @@ The plugin currently treats these references as dynamic references, even though 
 Format of corresponding data expressions:
 - `$shader_effect`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### MeshLocator {#data-type-mesh-locator}
 
@@ -2057,7 +2057,7 @@ The plugin currently treats these references as dynamic references, even though 
 Format of corresponding data expressions:
 - `$mesh_locator`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
@@ -2069,7 +2069,7 @@ Only applies to the Stellaris game type, and has lower priority than [Definition
 Format of corresponding data expressions:
 - `$technology_with_level`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Parameter {#data-type-parameter}
 
@@ -2080,7 +2080,7 @@ Matches a parameter name. The expression must be a valid identifier. It is consi
 Format of corresponding data expressions:
 - `$parameter`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### ParameterValue {#data-type-parameter-value}
 
@@ -2091,7 +2091,7 @@ Matches a parameter value. Matches anything as long as it is not a block.
 Format of corresponding data expressions:
 - `$parameter_value`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### LocalisationParameter {#data-type-localisation-parameter}
 
@@ -2102,7 +2102,7 @@ Matches a localisation parameter name. The expression must be a valid identifier
 Format of corresponding data expressions:
 - `$localisation_parameter`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ### Alias Data Types {#data-types-alias}
 
@@ -2220,7 +2220,7 @@ Corresponding data expression examples:
 - `filename`
 - `filename[gfx/models]`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### AbsoluteFilePath {#data-type-absolute-file-path}
 
@@ -2232,7 +2232,7 @@ When matching, only validates as a string type (wildcard match).
 Format of corresponding data expressions:
 - `abs_filepath`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ### Pattern-Aware Data Types {#data-types-pattern-aware}
 
@@ -2336,7 +2336,7 @@ Format of corresponding data expressions:
 Example of a corresponding data expression:
 - `<event>|country,crisis`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
 
@@ -2351,7 +2351,7 @@ Format of corresponding data expressions:
 Example of a corresponding data expression:
 - `localisation|name,desc`
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
 
@@ -2363,7 +2363,7 @@ If the suffix list is empty, it degrades to a plain [SyncedLocalisation](#data-t
 Format of corresponding data expressions:
 - `localisation_synced|{suffixes}` – where `{suffixes}` matches a comma-separated set of suffixes.
 
-> CWTools Compatibility: Not compatible. The plugin provides as an extension.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 ## FAQ {#faq}
 
