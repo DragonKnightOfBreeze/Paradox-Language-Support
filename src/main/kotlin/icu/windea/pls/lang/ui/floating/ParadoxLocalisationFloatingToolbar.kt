@@ -14,6 +14,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import kotlinx.coroutines.CoroutineScope
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
+import icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
+import icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
 
 // org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
 
@@ -26,11 +31,11 @@ import kotlinx.coroutines.CoroutineScope
  * - 快速插入命令 - 不会检查插入后语法是否合法
  * - 更改文本颜色（将会列出所有可选的颜色代码）
  *
- * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
- * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
- * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
- * @see icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
- * @see icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
+ * @see CreateReferenceAction
+ * @see CreateIconAction
+ * @see CreateCommandAction
+ * @see SetColorGroup
+ * @see SetColorAction
  */
 class ParadoxLocalisationFloatingToolbar(
     editor: Editor,
@@ -72,7 +77,7 @@ class ParadoxLocalisationFloatingToolbar(
     }
 
     override fun createActionGroup(): ActionGroup? {
-        return CustomActionsSchema.getInstance().getCorrectedAction("Pls.ParadoxLocalisation.Toolbar.Floating") as? ActionGroup
+        return CustomActionsSchema.getInstance().getCorrectedAction("Pls.Localisation.Toolbar.Floating") as? ActionGroup
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {

@@ -8,7 +8,7 @@ import icu.windea.pls.PlsBundle
 class ParadoxLocalisationFloatingToolbarCustomizableGroupProvider : CustomizableActionGroupProvider() {
     override fun registerGroups(registrar: CustomizableActionGroupRegistrar) {
         registrar.addCustomizableActionGroup(
-            "Pls.ParadoxLocalisation.Toolbar.Floating",
+            "Pls.Localisation.Toolbar.Floating",
             PlsBundle.message("localisation.floating.toolbar.customizable.group.name")
         )
     }

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.2.0-dev
+
+- [x] 修复本地化悬浮工具栏无法正常显示的BUG / Fix a bug where the localisation floating toolbar cannot be displayed properly 
+
 ## 2.1.10 - 2026-06-24
 
 - [x] 同步规则文件（部分适配 Stellaris 4.4 以及 VIC3/EU5/HOI4 的最新版本） / Synchronize config files (Partially adapted to Stellaris 4.4 and the latest version of VIC3/EU5/HOI4)
