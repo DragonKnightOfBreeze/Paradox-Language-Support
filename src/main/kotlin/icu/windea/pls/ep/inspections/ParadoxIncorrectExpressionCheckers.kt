@@ -30,6 +30,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.evaluators.ParadoxComplexExpressionEvaluator
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.type.CwtExpressionType
@@ -138,6 +139,57 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val description = PlsEpBundle.message("incorrectExpression.scopeGroup.desc", expectedScopeGroup, scopeContext.scope.id)
         holder.registerProblem(element, description)
+    }
+}
+
+/**
+ * 检查整数值字段的评估结果是否是一个整数。如果指定了区间，也检查是否在此区间内。
+ */
+class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
+    override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+        if (element !is ParadoxScriptExpressionElement) return
+
+        val configExpression = config.configExpression
+        if (configExpression.type != CwtDataTypes.IntValueField) return
+
+        val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return
+        val intValue = evaluated.resolved()?.intValue()
+        val intRange = configExpression.intRange
+        if (intValue == null) {
+            val description = PlsEpBundle.message("incorrectExpression.intValueField.desc", evaluated.expression)
+            holder.registerProblem(element, description)
+        }
+        if (intValue == null) return
+        if (intRange != null && intValue !in intRange) {
+            val description = PlsEpBundle.message("incorrectExpression.intValueFieldRange.desc", evaluated.expression, intRange.expression, intValue)
+            holder.registerProblem(element, description)
+        }
+    }
+}
+
+/**
+ * 检查浮点数值字段的评估结果是否是一个浮点数。如果指定了区间，也检查是否在此区间内。
+ */
+class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
+    override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+        if (element !is ParadoxScriptExpressionElement) return
+
+        val configExpression = config.configExpression
+        if (configExpression.type != CwtDataTypes.ValueField) return
+
+        val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return
+        val floatValue = evaluated.resolved()?.floatValue()
+        val floatRange = configExpression.floatRange
+        if (floatValue == null && floatRange != null) { // NOTE 2.2.0 may not be a number after evaluation, if range is not specified
+            val description = PlsEpBundle.message("incorrectExpression.floatValueField.desc", evaluated.expression)
+            holder.registerProblem(element, description)
+            return
+        }
+        if (floatValue == null) return
+        if (floatRange != null && floatValue !in floatRange) {
+            val description = PlsEpBundle.message("incorrectExpression.floatValueFieldRange.desc", evaluated.expression, floatRange.expression, floatValue)
+            holder.registerProblem(element, description)
+        }
     }
 }
 

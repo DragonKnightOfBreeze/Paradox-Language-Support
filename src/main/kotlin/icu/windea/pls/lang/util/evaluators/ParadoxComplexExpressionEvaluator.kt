@@ -36,7 +36,7 @@ class ParadoxComplexExpressionEvaluator(
         return evaluateExpression(element, expression)
     }
 
-    fun findExpression(rootExpression: ParadoxComplexExpression): ParadoxComplexExpression? {
+    private fun findExpression(rootExpression: ParadoxComplexExpression): ParadoxComplexExpression? {
         // NOTE 2.1.10 ignore prev link nodes
         return when (rootExpression) {
             is ParadoxDefineReferenceExpression -> rootExpression
@@ -51,7 +51,7 @@ class ParadoxComplexExpressionEvaluator(
         }
     }
 
-    fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression): ParadoxScriptValue? {
+    private fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression): ParadoxScriptValue? {
         return when (expression) {
             is ParadoxDefineReferenceExpression -> ParadoxDefineReferenceExpressionEvaluator(resolve).evaluateExpression(element, expression)
             is ParadoxArrayDefineReferenceExpression -> ParadoxArrayDefineReferenceExpressionEvaluator(resolve).evaluateExpression(element, expression)
