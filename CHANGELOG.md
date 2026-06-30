@@ -5,6 +5,7 @@
 ## 2.2.0-dev
 
 - [x] 修复本地化悬浮工具栏无法正常显示的BUG / Fix a bug where the localisation floating toolbar cannot be displayed properly 
+- [x] Missing localizations false positive ([#347](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/347))
 
 ## 2.1.10 - 2026-06-24
 

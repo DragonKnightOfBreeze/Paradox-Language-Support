@@ -16,10 +16,9 @@ enum class ParadoxLocalisationIndexConstraint(
         private val regex = """[\w.]+\.\d+(\.[\w.]*)?""".toRegex()
         override fun test(name: String) = name.contains('.') && name.matches(regex)
     },
-    Tech(PlsIndexKeys.LocalisationNameForTech) {
-        override fun test(name: String) = name.startsWith("tech_")
-    },
     ;
+
+    // NOTE 2.2.0 technologies have different formats in non-Stellaris games (e.g., VIC3), so remove relevant constraint here
 
     abstract fun test(name: String): Boolean
 }

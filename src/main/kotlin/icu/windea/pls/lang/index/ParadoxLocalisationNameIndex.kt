@@ -38,13 +38,4 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
     class EventIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.LocalisationNameForEvent
     }
-
-    /**
-     * 用于快速索引与科技相关的本地化。
-     *
-     * @see ParadoxLocalisationIndexConstraint.Tech
-     */
-    class TechIndex : BaseIndex() {
-        override fun getKey() = PlsIndexKeys.LocalisationNameForTech
-    }
 }

@@ -89,7 +89,9 @@ object ParadoxConfigExpressionService {
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).find()
         }, {
+            val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
             val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
+                .withConstraint(constraint)
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         })
@@ -102,7 +104,6 @@ object ParadoxConfigExpressionService {
     private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationIndexConstraint? {
         return when (definitionInfo.type) {
             ParadoxDefinitionTypes.event -> ParadoxLocalisationIndexConstraint.Event
-            ParadoxDefinitionTypes.technology -> ParadoxLocalisationIndexConstraint.Tech
             else -> null
         }
     }
@@ -112,7 +113,7 @@ object ParadoxConfigExpressionService {
         definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: ImageFrameInfo? = null,
-        toFile: Boolean = false
+        toFile: Boolean = false,
     ): CwtImageLocationResolveResult? {
         val (location, isPlaceholder, namePaths, framePaths) = locationExpression
         val project = definitionInfo.project

@@ -88,7 +88,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if (!element.isExpression()) return
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, forReference = false, locales = supportedLocales, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, locales = locales, forReference = false, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }
