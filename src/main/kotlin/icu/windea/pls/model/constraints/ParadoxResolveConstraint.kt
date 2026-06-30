@@ -147,6 +147,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
                 is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                is ParadoxComplexEnumValuePsiReference -> true
                 is ParadoxScriptExpressionPsiReference -> {
                     reference.configs.any { config ->
                         val configExpression = config.configExpression
@@ -154,7 +155,6 @@ enum class ParadoxResolveConstraint {
                         dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
                     }
                 }
-                is ParadoxComplexEnumValuePsiReference -> true
                 is ParadoxCsvExpressionPsiReference -> {
                     val config = reference.columnConfig.valueConfig ?: return false
                     val configExpression = config.configExpression
@@ -174,6 +174,7 @@ enum class ParadoxResolveConstraint {
             return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
+                is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }
@@ -187,6 +188,12 @@ enum class ParadoxResolveConstraint {
                         val dataType = configExpression.type
                         dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                     }
+                }
+                is ParadoxCsvExpressionPsiReference -> {
+                    val config = reference.columnConfig.valueConfig ?: return false
+                    val configExpression = config.configExpression
+                    val dataType = configExpression.type
+                    dataType in CwtDataTypeSets.DynamicValue
                 }
                 else -> false
             }

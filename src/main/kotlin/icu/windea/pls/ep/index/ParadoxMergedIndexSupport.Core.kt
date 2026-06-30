@@ -13,6 +13,7 @@ import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -48,6 +49,16 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     }
 
     override fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        // read access or write access
+        if (!constraint.canResolveReference(element)) return
+        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
+        for (reference in references) {
+            if (!constraint.canResolve(reference)) continue
+            buildDataFromReference(reference, fileData)
+        }
+    }
+
+    override fun buildDataForExpression(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         // read access or write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance

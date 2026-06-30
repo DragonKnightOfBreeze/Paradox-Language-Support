@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.lang.index.PlsIndexStatisticService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -31,6 +32,8 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {}
 
     fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+
+    fun buildDataForExpression(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
     fun compressData(value: List<T>): List<T> = value
 

@@ -8,13 +8,15 @@ import icu.windea.pls.core.annotations.CaseInsensitive
  *
  * 用于进行更准确的语义解析与匹配。
  *
- * @property involvedTypeKeys 涉及到的类型键的集合。
- * @property possibleTypeKeys 可能的类型键的集合。
+ * @property maxRootKeyDepth 顶级键的最大深度。用于规则匹配。
+ * @property involvedTypeKeys 涉及到的类型键的集合。用于规则匹配。
+ * @property possibleTypeKeys 可能的类型键的集合。用于规则匹配。
  *
  * @see CwtTypeConfig
  * @see CwtTypeConfigAttributesEvaluator
  */
 data class CwtTypeConfigAttributes(
+    val maxRootKeyDepth: Int = 0,
     val involvedTypeKeys: Set<@CaseInsensitive String> = emptySet(),
     val possibleTypeKeys: Set<@CaseInsensitive String> = emptySet(),
 ) : CwtConfigAttributes {

@@ -25,6 +25,9 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.csv.ParadoxCsvFileType
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer
 import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
 import icu.windea.pls.lang.definitionCandidateInfo
@@ -72,7 +75,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType) return false
+        if (fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType && fileType != ParadoxCsvFileType) return false
         if (file.fileInfo == null) return false
         return true
     }
@@ -95,6 +98,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             when (file) {
                 is ParadoxScriptFile -> buildDataForScriptFile(file, fileData)
                 is ParadoxLocalisationFile -> buildDataForLocalisationFile(file, fileData)
+                is ParadoxCsvFile -> buildDataForCsvFile(file, fileData)
             }
         }
     }
@@ -215,6 +219,40 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         })
     }
 
+    private fun buildDataForCsvFile(file: ParadoxCsvFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
+        val useLazyIndex = useLazyIndex(file.virtualFile)
+
+        val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
+        if (!useLazyIndex && !isAvailableForCsvFile(file, optimizers)) return
+
+        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if (element is ParadoxCsvExpressionElement) {
+                    visitExpressionElement(element)
+                    return // optimize
+                }
+
+                super.visitElement(element)
+            }
+
+            private fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
+                buildDataForExpressionFromSupports(element)
+            }
+
+            private fun buildDataForExpressionFromSupports(element: ParadoxCsvExpressionElement) {
+                supports.forEachFast { ep -> ep.buildDataForExpression(element, fileData) }
+            }
+
+            override fun elementFinished(element: PsiElement?) {
+                if (element is ParadoxCsvExpressionElement) {
+                    cleanUpDumbExpressionReferencesCache(element)
+                }
+            }
+        })
+    }
+
     private fun isAvailableForScriptFile(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
         optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForScriptFile(file)) return true }
         return false
@@ -222,6 +260,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
     private fun isAvailableForLocalisationFile(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
         optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForLocalisationFile(file)) return true }
+        return false
+    }
+
+    private fun isAvailableForCsvFile(file: ParadoxCsvFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForCsvFile(file)) return true }
         return false
     }
 

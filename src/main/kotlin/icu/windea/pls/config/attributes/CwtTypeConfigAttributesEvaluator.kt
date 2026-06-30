@@ -19,25 +19,33 @@ class CwtTypeConfigAttributesEvaluator {
     private val possibleTypeKeys = caseInsensitiveStringSet()
 
     fun evaluate(config: CwtTypeConfig): CwtTypeConfigAttributes {
+        val maxRootKeyDepth = computeMaxRootKeyDepth(config)
+
         processTypeKeyFilter(config.typeKeyFilter)
         config.subtypes.values.forEach { subtypeConfig ->
             processTypeKeyFilter(subtypeConfig.typeKeyFilter)
         }
-        return buildAttributes()
+
+        val result = CwtTypeConfigAttributes(
+            maxRootKeyDepth,
+            involvedTypeKeys.optimized(),
+            possibleTypeKeys.optimized(),
+        )
+        if (result == CwtTypeConfigAttributes.EMPTY) return CwtTypeConfigAttributes.EMPTY
+        return result
+    }
+
+    private fun computeMaxRootKeyDepth(config: CwtTypeConfig): Int {
+        return when {
+            config.typePerFile -> 0
+            config.skipRootKey.isEmpty() -> 0
+            else -> config.skipRootKey.maxOf { it.size }
+        }
     }
 
     private fun processTypeKeyFilter(typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?) {
         val (v, o) = typeKeyFilter ?: return
         involvedTypeKeys.addAll(v)
         if (o) possibleTypeKeys.addAll(v)
-    }
-
-    private fun buildAttributes(): CwtTypeConfigAttributes {
-        val result = CwtTypeConfigAttributes(
-            involvedTypeKeys.optimized(),
-            possibleTypeKeys.optimized(),
-        )
-        if (result == CwtTypeConfigAttributes.EMPTY) return CwtTypeConfigAttributes.EMPTY
-        return result
     }
 }

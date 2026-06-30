@@ -5,6 +5,10 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.attributes.CwtRowConfigAttributes
+import icu.windea.pls.config.attributes.CwtRowConfigAttributesEvaluator
+import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
+import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
@@ -50,6 +54,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property name 规则名称。
  * @property columns 每一列的列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
+ * @property attributes 综合属性。
  */
 interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
     @FromName("row[$]")
@@ -58,6 +63,8 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     val columns: Map<String, CwtPropertyConfig>
     @FromMember("end_column: string?")
     val endColumn: String?
+
+    val attributes: CwtRowConfigAttributes
 
     companion object {
         /** 由属性规则解析为行规则。 */
@@ -110,6 +117,8 @@ private class CwtRowConfigImpl(
     override val columns: Map<String, CwtPropertyConfig>,
     override val endColumn: String?
 ) : UserDataHolderBase(), CwtRowConfig {
+    override val attributes: CwtRowConfigAttributes by lazy { CwtRowConfigAttributesEvaluator().evaluate(this) }
+
     override fun toString() = "CwtRowConfigImpl(name='$name')"
 }
 

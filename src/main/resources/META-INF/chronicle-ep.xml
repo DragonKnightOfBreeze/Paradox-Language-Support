@@ -129,6 +129,7 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport"/>
 
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexOptimizer"/>
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxRowBasedMergedIndexOptimizer"/>
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxFallbackMergedIndexOptimizer" order="last"/>
 
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport"/>

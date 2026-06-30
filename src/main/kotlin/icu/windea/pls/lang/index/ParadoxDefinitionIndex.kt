@@ -97,7 +97,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
         val maxDefinitionDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-        val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.maxRootKeyDepth }
+        val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
         val effectiveMaxDepth = (minOf(maxRootKeyDepth, maxDefinitionDepth) - rootKeyStack.size).coerceAtLeast(0)
 
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
