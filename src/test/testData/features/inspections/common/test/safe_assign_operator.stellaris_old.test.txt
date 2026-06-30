@@ -1,9 +1,0 @@
-# for Stellaris (< 4.4)
-
-owner <warning descr="Safe assign operators (`?=`) are not supported in Stellaris">?=</warning> {}
-
-owner<warning descr="Safe call assign operators (`? =`) are not supported in Stellaris (game version < 4.4)">? =</warning> {}
-
-1 <warning descr="Safe assign operators (`?=`) are not supported in Stellaris">?=</warning> {}
-
-1<warning descr="Safe call assign operators (`? =`) are not supported in Stellaris (game version < 4.4)">? =</warning> {}

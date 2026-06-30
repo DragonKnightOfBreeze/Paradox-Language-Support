@@ -515,8 +515,8 @@ object ParadoxExpressionManager {
         run {
             if (!element.isResolvableExpression()) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
-            val textRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
-            val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo)
+            val referenceRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
+            val reference = ParadoxComplexEnumValuePsiReference(element, referenceRange, complexEnumValueInfo)
             return arrayOf(reference)
         }
 

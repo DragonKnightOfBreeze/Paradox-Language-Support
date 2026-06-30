@@ -15,6 +15,7 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -39,6 +40,7 @@ class ParadoxComparisonOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         // check on semantic level
 
+        if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
         if (DumbService.isDumb(context.holder.project)) return
 
         val valid = ParadoxSyntaxService.isComparisonOperatorValid(propertyElement)
@@ -83,6 +85,9 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         // check on semantic level
 
+        if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
+        if (DumbService.isDumb(context.holder.project)) return
+
         val configGroup = PlsFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)
         if (!valid) {
@@ -112,6 +117,9 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         }
 
         // check on semantic level
+
+        if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
+        if (DumbService.isDumb(context.holder.project)) return
 
         val configGroup = PlsFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)

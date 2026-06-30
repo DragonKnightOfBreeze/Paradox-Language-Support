@@ -8,14 +8,14 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.resolveElementWithConfig
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
+import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -28,22 +28,16 @@ class ParadoxScriptExpressionPsiReference(
     rangeInElement: TextRange,
     val configs: List<CwtMemberConfig<*>>,
     val role: ParadoxExpressionRole,
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiCompositeReference {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiCompositeReference, ParadoxScriptTagAwarePsiReference {
     val config: CwtMemberConfig<*> get() = configs.first()
 
     private val configGroup get() = configs.first().configGroup
     private val project get() = configGroup.project
 
-    init {
-        processTags()
-    }
+    override val tagConfig: CwtValueConfig? get() = config.castOrNull()
 
-    private fun processTags() {
-        for (config in configs) {
-            if (config is CwtValueConfig && config.tagType != null) {
-                config.resolveElementWithConfig()
-            }
-        }
+    init {
+        ParadoxTagManager.processConfigs(configs)
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {

@@ -168,9 +168,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return false
         if (element.complexEnumValueInfo == null) return false
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
-            .textAttributes(ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE)
-            .create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE).create()
         return true
     }
 
