@@ -153,7 +153,7 @@ class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
         if (configExpression.type != CwtDataTypes.IntValueField) return
 
         val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return
-        val intValue = evaluated.resolved()?.intValue()
+        val intValue = evaluated.intValue()
         val intRange = configExpression.intRange
         if (intValue == null) {
             val description = PlsEpBundle.message("incorrectExpression.intValueField.desc", evaluated.expression)
@@ -178,7 +178,7 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
         if (configExpression.type != CwtDataTypes.ValueField) return
 
         val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return
-        val floatValue = evaluated.resolved()?.floatValue()
+        val floatValue = evaluated.floatValue()
         val floatRange = configExpression.floatRange
         if (floatValue == null && floatRange != null) { // NOTE 2.2.0 may not be a number after evaluation, if range is not specified
             val description = PlsEpBundle.message("incorrectExpression.floatValueField.desc", evaluated.expression)

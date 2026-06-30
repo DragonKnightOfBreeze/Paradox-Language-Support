@@ -15,6 +15,9 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 /**
  * 数组定值引用表达式的评估器。
  *
+ * 说明：
+ * - 输入的可以是上层的复杂表达式，也可以是最终需要评估的复杂表达式。
+ *
  * @see ParadoxArrayDefineReferenceExpression
  */
 class ParadoxArrayDefineReferenceExpressionEvaluator(
@@ -23,9 +26,7 @@ class ParadoxArrayDefineReferenceExpressionEvaluator(
     fun evaluate(element: ParadoxExpressionElement): ParadoxScriptValue? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ArrayDefineReferenceEvaluatable) return null
-        val value = element.value
-        val configGroup = config.configGroup
-        val rootExpression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
+        val rootExpression = ParadoxComplexExpression.resolveByConfig(element.value, null, config.configGroup, config) ?: return null
         val expression = findExpression(rootExpression) ?: return null
         return evaluateExpression(element, expression)
     }

@@ -124,10 +124,12 @@ object CwtDataTypeSets {
         CwtDataTypes.Command,
     )
     /** 所有可评估的复杂表达式的数据类型。 */
-    val EvaluatableComplexExpression = arrayOf(
-        *ScriptValueReferenceEvaluatable,
-        *DefineReferenceEvaluatable,
-        *ArrayDefineReferenceEvaluatable,
+    val Evaluatable = arrayOf(
+        CwtDataTypes.ScriptValueReference,
+        CwtDataTypes.DefineReference,
+        CwtDataTypes.ArrayDefineReference,
+        *ValueField,
+        CwtDataTypes.Command,
     )
 
     /** 所有涉及动态值的数据类型。 */

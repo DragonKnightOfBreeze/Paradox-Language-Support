@@ -12,21 +12,21 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 各种复杂表达式的评估器。
+ * 复杂表达式的评估器。
  *
- * @see ParadoxDefineReferenceExpressionEvaluator
- * @see ParadoxArrayDefineReferenceExpressionEvaluator
+ * 说明：
+ * - 输入的可以是上层的复杂表达式，也可以是最终需要评估的复杂表达式。
+ * - 评估结果可能来自其中嵌套的特定复杂表达式。
+ *
+ * @see ParadoxComplexExpression
  */
-@Suppress("unused")
 class ParadoxComplexExpressionEvaluator(
     var resolve: Boolean = true,
 ) {
     fun evaluate(element: ParadoxExpressionElement): ParadoxScriptValue? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
-        if (config.configExpression.type !in CwtDataTypeSets.EvaluatableComplexExpression) return null
-        val value = element.value
-        val configGroup = config.configGroup
-        val rootExpression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
+        if (config.configExpression.type !in CwtDataTypeSets.Evaluatable) return null
+        val rootExpression = ParadoxComplexExpression.resolveByConfig(element.value, null, config.configGroup, config) ?: return null
         val expression = findExpression(rootExpression) ?: return null
         return evaluateExpression(element, expression)
     }
@@ -36,7 +36,7 @@ class ParadoxComplexExpressionEvaluator(
         return evaluateExpression(element, expression)
     }
 
-    private fun findExpression(rootExpression: ParadoxComplexExpression): ParadoxComplexExpression? {
+    fun findExpression(rootExpression: ParadoxComplexExpression): ParadoxComplexExpression? {
         // NOTE 2.1.10 ignore prev link nodes
         return when (rootExpression) {
             is ParadoxDefineReferenceExpression -> rootExpression
@@ -51,7 +51,7 @@ class ParadoxComplexExpressionEvaluator(
         }
     }
 
-    private fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression): ParadoxScriptValue? {
+    fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression): ParadoxScriptValue? {
         return when (expression) {
             is ParadoxDefineReferenceExpression -> ParadoxDefineReferenceExpressionEvaluator(resolve).evaluateExpression(element, expression)
             is ParadoxArrayDefineReferenceExpression -> ParadoxArrayDefineReferenceExpressionEvaluator(resolve).evaluateExpression(element, expression)
