@@ -20,6 +20,6 @@ interface SpecialPathProvider {
     fun getPath(file: VirtualFile? = null, gameType: ParadoxGameType? = null): Path?
 
     companion object {
-        val EP_NAME = ExtensionPointName<SpecialPathProvider>("icu.windea.pls.specialPathProvider")
+        @JvmField val EP_NAME = ExtensionPointName<SpecialPathProvider>("icu.windea.pls.specialPathProvider")
     }
 }

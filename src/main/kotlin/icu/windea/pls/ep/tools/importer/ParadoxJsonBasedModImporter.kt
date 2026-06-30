@@ -3,6 +3,7 @@ package icu.windea.pls.ep.tools.importer
 import com.intellij.icons.AllIcons
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.ep.PlsEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,7 +28,7 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
         return try {
             JsonService.jsonMapper.readValue(filePath.toFile(), type)
         } catch (e: Exception) {
-            throw IllegalStateException(PlsBundle.message("mod.importer.error.data", filePath), e)
+            throw IllegalStateException(PlsEpBundle.message("mod.importer.error.data", filePath), e)
         }
     }
 }

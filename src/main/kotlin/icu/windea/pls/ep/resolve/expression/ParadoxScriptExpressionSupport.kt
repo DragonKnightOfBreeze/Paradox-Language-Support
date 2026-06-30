@@ -49,6 +49,6 @@ interface ParadoxScriptExpressionSupport {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
     }
 }

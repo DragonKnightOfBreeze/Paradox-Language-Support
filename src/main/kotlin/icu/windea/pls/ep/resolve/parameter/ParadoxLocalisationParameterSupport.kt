@@ -29,6 +29,6 @@ interface ParadoxLocalisationParameterSupport {
     fun buildDocumentationDefinition(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean = false
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxLocalisationParameterSupport>("icu.windea.pls.localisationParameterSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationParameterSupport>("icu.windea.pls.localisationParameterSupport")
     }
 }

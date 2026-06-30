@@ -45,6 +45,6 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxMergedIndexSupport<*>>("icu.windea.pls.mergedIndexSupport")
+        @JvmField  val EP_NAME = ExtensionPointName<ParadoxMergedIndexSupport<*>>("icu.windea.pls.mergedIndexSupport")
     }
 }

@@ -24,6 +24,6 @@ interface ParadoxIncorrectSyntaxChecker: DumbAware {
     fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxIncorrectSyntaxChecker>("icu.windea.pls.incorrectSyntaxChecker")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectSyntaxChecker>("icu.windea.pls.incorrectSyntaxChecker")
     }
 }

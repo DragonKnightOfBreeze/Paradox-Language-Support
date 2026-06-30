@@ -35,6 +35,6 @@ interface ParadoxDefinitionInheritSupport {
     fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean = true
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
     }
 }

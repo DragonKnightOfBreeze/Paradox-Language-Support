@@ -23,6 +23,6 @@ interface ParadoxIncorrectExpressionChecker {
     fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
     }
 }

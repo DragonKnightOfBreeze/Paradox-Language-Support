@@ -2,8 +2,8 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.PlsEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ModEntity
 import icu.windea.pls.ep.tools.model.Mods
@@ -36,16 +36,16 @@ import kotlin.io.path.notExists
  * 参见：[ParadoxLauncherImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporter.cs)
  */
 open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
-    override val text get() = PlsBundle.message("mod.importer.launcher")
+    override val text get() = PlsEpBundle.message("mod.importer.launcher")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
 
         // 校验 Steam 创意工坊目录
         val workshopDirPath = SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
-            ?: throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
+            ?: throw IllegalStateException(PlsEpBundle.message("mod.importer.error.steamWorkshopNotFound"))
         if (workshopDirPath.notExists()) {
-            throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath))
+            throw IllegalStateException(PlsEpBundle.message("mod.importer.error.steamWorkshopDirNotExist", workshopDirPath))
         }
 
         // 连接 SQLite（launcher-v2.sqlite）。
@@ -89,7 +89,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
     override fun createFileChooserDescriptor(gameType: ParadoxGameType): FileChooserDescriptor {
         // 选择 launcher-v2.sqlite 文件
         return FileChooserDescriptorFactory.createSingleFileDescriptor("sqlite")
-            .withTitle(PlsBundle.message("mod.importer.launcher"))
+            .withTitle(PlsEpBundle.message("mod.importer.launcher"))
     }
 
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {

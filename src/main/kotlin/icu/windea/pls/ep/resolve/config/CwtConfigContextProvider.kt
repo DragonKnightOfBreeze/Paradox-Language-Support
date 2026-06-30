@@ -37,6 +37,6 @@ interface CwtConfigContextProvider {
     fun skipTooManyExpressionCheck(context: CwtConfigContext) = false
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
+        @JvmField val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
     }
 }

@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesPath
@@ -56,10 +55,6 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         val extension = filePath.substring(i + 1).lowercase()
         if (extension !in PlsConstants.imageFileExtensions) return null
         return filePath.substring(0, i)
-    }
-
-    override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
     }
 }
 
@@ -153,10 +148,6 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
         return resolved.to.singletonSet()
     }
-
-    override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
-    }
 }
 
 /**
@@ -190,9 +181,5 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         return pathReference.substringAfterLast('/').to.singletonSet()
-    }
-
-    override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)
     }
 }

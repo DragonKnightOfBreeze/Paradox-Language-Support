@@ -47,6 +47,6 @@ interface ParadoxCsvExpressionSupport {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxCsvExpressionSupport>("icu.windea.pls.csvExpressionSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxCsvExpressionSupport>("icu.windea.pls.csvExpressionSupport")
     }
 }

@@ -28,6 +28,6 @@ interface ParadoxScriptExpressionMatchOptimizer {
     fun <T: CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
     }
 }

@@ -15,6 +15,6 @@ interface ParadoxInferredGameTypeProvider {
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxInferredGameTypeProvider>("icu.windea.pls.inferredGameTypeProvider")
+        @JvmField  val EP_NAME = ExtensionPointName<ParadoxInferredGameTypeProvider>("icu.windea.pls.inferredGameTypeProvider")
     }
 }

@@ -3,6 +3,7 @@ package icu.windea.pls.ep.tools.exporter
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.PlsEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.KnexMigrations
 import icu.windea.pls.ep.tools.model.ModEntity
@@ -38,7 +39,7 @@ import kotlin.io.path.exists
  * 参见：[ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
  */
 open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
-    override val text get() = PlsBundle.message("mod.exporter.launcher")
+    override val text get() = PlsEpBundle.message("mod.exporter.launcher")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         // 仅导出启用的模组
@@ -120,7 +121,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
     }
 
     override fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor {
-        return FileSaverDescriptor(PlsBundle.message("mod.exporter.launcher"), "", "sqlite")
+        return FileSaverDescriptor(PlsEpBundle.message("mod.exporter.launcher"), "", "sqlite")
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {

@@ -55,6 +55,6 @@ interface ParadoxModExporter {
     )
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxModExporter>("icu.windea.pls.modExporter")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxModExporter>("icu.windea.pls.modExporter")
     }
 }

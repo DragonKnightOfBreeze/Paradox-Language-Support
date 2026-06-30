@@ -25,6 +25,6 @@ interface CwtRelatedConfigProvider {
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>>
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
+        @JvmField val EP_NAME = ExtensionPointName<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
     }
 }

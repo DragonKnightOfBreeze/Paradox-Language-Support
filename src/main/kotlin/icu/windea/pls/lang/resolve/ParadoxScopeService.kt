@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -117,7 +116,7 @@ object ParadoxScopeService {
             if (message == null) {
                 message = ep.getMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("scopeContext.inference", definitionInfo.name)
+                return ParadoxDefinitionInferredScopeContextProvider.getDefaultMessage(definition, definitionInfo, info)
             }
         }
         return message
@@ -137,7 +136,7 @@ object ParadoxScopeService {
             if (errorMessage == null) {
                 errorMessage = ep.getErrorMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("scopeContext.inference.conflict", definitionInfo.name)
+                return ParadoxDefinitionInferredScopeContextProvider.getDefaultErrorMessage(definition, definitionInfo, info)
             }
         }
         return errorMessage

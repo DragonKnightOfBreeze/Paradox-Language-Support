@@ -24,6 +24,6 @@ interface ParadoxMergedIndexOptimizer {
     fun isAvailableForDefinition(definitionCandidateInfo: ParadoxDefinitionCandidateInfo): Boolean = false
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxMergedIndexOptimizer>("icu.windea.pls.mergedIndexOptimizer")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxMergedIndexOptimizer>("icu.windea.pls.mergedIndexOptimizer")
     }
 }

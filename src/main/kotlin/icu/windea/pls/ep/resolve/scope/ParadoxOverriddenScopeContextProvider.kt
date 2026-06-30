@@ -19,6 +19,6 @@ interface ParadoxOverriddenScopeContextProvider {
     fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxOverriddenScopeContextProvider>("icu.windea.pls.overriddenScopeContextProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxOverriddenScopeContextProvider>("icu.windea.pls.overriddenScopeContextProvider")
     }
 }

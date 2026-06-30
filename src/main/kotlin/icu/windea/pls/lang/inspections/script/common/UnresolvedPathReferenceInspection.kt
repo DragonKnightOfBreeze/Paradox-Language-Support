@@ -12,6 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toAtomicProperty
@@ -74,7 +75,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     val filePath = element.value
                     val virtualFile = filePath.toVirtualFile()
                     if (virtualFile != null) return
-                    val description = PlsBundle.message("inspection.script.unresolvedPathReference.desc.abs", filePath)
+                    val description = getDescription(configExpression, filePath)
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     return
                 }
@@ -88,7 +89,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     }
                     val selector = ParadoxFilePathSearch.selector(project, file) // use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
-                    val description = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
+                    val description = getDescription(configExpression, pathReference)
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                 }
             }
@@ -102,6 +103,16 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     if (config != null) return true
                 }
                 return false
+            }
+
+            private fun getDescription(configExpression: CwtDataExpression, pathReference: String): String {
+                return when(configExpression.type) {
+                    CwtDataTypes.Icon -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
+                    CwtDataTypes.FilePath -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
+                    CwtDataTypes.FileName -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)
+                    CwtDataTypes.AbsoluteFilePath -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.abs", pathReference)
+                    else -> PlsBundle.message("inspection.script.unresolvedPathReference.desc", pathReference, configExpression)
+                }
             }
         }
     }

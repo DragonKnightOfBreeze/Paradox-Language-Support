@@ -15,6 +15,6 @@ interface CwtConfigGroupPostProcessor {
     suspend fun postProcess(configGroup: CwtConfigGroup)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<CwtConfigGroupPostProcessor>("icu.windea.pls.configGroupPostProcessor")
+        @JvmField   val EP_NAME = ExtensionPointName<CwtConfigGroupPostProcessor>("icu.windea.pls.configGroupPostProcessor")
     }
 }

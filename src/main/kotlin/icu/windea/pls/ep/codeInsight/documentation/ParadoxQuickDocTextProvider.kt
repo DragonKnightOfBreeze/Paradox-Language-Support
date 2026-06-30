@@ -42,6 +42,6 @@ interface ParadoxQuickDocTextProvider {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxQuickDocTextProvider>("icu.windea.pls.quickDocTextProvider")
+        @JvmField  val EP_NAME = ExtensionPointName<ParadoxQuickDocTextProvider>("icu.windea.pls.quickDocTextProvider")
     }
 }

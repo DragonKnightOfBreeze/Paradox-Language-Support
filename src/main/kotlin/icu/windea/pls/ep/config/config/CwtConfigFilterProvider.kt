@@ -16,6 +16,6 @@ interface CwtConfigFilterProvider {
     fun filter(config: CwtConfig<*>): Boolean
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<CwtConfigFilterProvider>("icu.windea.pls.configFilterProvider")
+        @JvmField val EP_NAME = ExtensionPointName<CwtConfigFilterProvider>("icu.windea.pls.configFilterProvider")
     }
 }

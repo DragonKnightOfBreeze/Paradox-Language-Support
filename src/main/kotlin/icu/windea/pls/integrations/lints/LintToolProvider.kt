@@ -15,6 +15,6 @@ interface LintToolProvider {
     fun validateRootDirectory(rootDirectory: VirtualFile): LintResult?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<LintToolProvider>("icu.windea.pls.integrations.lintToolProvider")
+        @JvmField val EP_NAME = ExtensionPointName<LintToolProvider>("icu.windea.pls.integrations.lintToolProvider")
     }
 }

@@ -19,6 +19,6 @@ interface SpecialUrlProvider {
     fun getUrl(file: VirtualFile? = null, gameType: ParadoxGameType? = null): String?
 
     companion object {
-        val EP_NAME = ExtensionPointName<SpecialUrlProvider>("icu.windea.pls.specialUrlProvider")
+        @JvmField val EP_NAME = ExtensionPointName<SpecialUrlProvider>("icu.windea.pls.specialUrlProvider")
     }
 }
