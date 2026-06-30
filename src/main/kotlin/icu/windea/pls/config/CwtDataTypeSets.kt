@@ -123,6 +123,12 @@ object CwtDataTypeSets {
         *ValueField,
         CwtDataTypes.Command,
     )
+    /** 所有可评估的复杂表达式的数据类型。 */
+    val EvaluatableComplexExpression = arrayOf(
+        *ScriptValueReferenceEvaluatable,
+        *DefineReferenceEvaluatable,
+        *ArrayDefineReferenceEvaluatable,
+    )
 
     /** 所有涉及动态值的数据类型。 */
     val DynamicValueInvolved = arrayOf(

@@ -1,8 +1,10 @@
 package icu.windea.pls.lang.util.evaluators
 
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
@@ -24,23 +26,27 @@ class ParadoxDefineReferenceExpressionEvaluator(
         val value = element.value
         val configGroup = config.configGroup
         val rootExpression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
-        return evaluate(element, rootExpression)
+        val expression = findExpression(rootExpression) ?: return null
+        return evaluateExpression(element, expression)
     }
 
     fun evaluate(element: ParadoxExpressionElement, rootExpression: ParadoxComplexExpression): ParadoxScriptValue? {
+        val expression = findExpression(rootExpression) ?: return null
+        return evaluateExpression(element, expression)
+    }
+
+    fun findExpression(rootExpression: ParadoxComplexExpression): ParadoxDefineReferenceExpression? {
         // NOTE 2.1.10 ignore prev link nodes
-        val expression = when {
-            rootExpression is ParadoxDefineReferenceExpression -> rootExpression
-            rootExpression is ParadoxLinkedExpression -> {
+        return when (rootExpression) {
+            is ParadoxDefineReferenceExpression -> rootExpression
+            is ParadoxLinkedExpression -> {
                 val lastLinkNode = rootExpression.nodes.findLast { it is ParadoxLinkNode } ?: return null
                 val lastLinkValueNode = lastLinkNode.nodes.findLast { it is ParadoxLinkValueNode } ?: return null
-                val resultNode = lastLinkValueNode.nodes.singleOrNull { it is ParadoxDefineReferenceExpression } ?: return null
-                resultNode
+                val resultNode = lastLinkValueNode.nodes.singleOrNull() ?: return null
+                resultNode.castOrNull()
             }
             else -> null
         }
-        if (expression !is ParadoxDefineReferenceExpression) return null
-        return evaluateExpression(element, expression)
     }
 
     fun evaluateExpression(element: ParadoxExpressionElement, expression: ParadoxDefineReferenceExpression): ParadoxScriptValue? {
