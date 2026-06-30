@@ -10,6 +10,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -22,10 +23,12 @@ import icu.windea.pls.script.psi.isExpression
 import javax.swing.JComponent
 
 /**
- * 不正确的表达式的代码检查。
+ * （脚本文件中的）不正确的表达式的代码检查。
  *
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ *
+ * @see ParadoxIncorrectExpressionChecker
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
@@ -41,6 +44,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val checkers = ParadoxIncorrectExpressionChecker.EP_NAME.extensionList
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptExpressionElement) visitExpressionElement(element)
@@ -58,7 +62,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
 
                 // 开始检查
-                ParadoxInspectionService.checkIncorrectExpression(element, config, holder)
+                ParadoxInspectionService.checkIncorrectExpression(element, config, holder, checkers)
 
                 // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }

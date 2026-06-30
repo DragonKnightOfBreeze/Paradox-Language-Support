@@ -5,10 +5,13 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.type.CwtSeparatorType
@@ -104,6 +107,8 @@ object ParadoxSyntaxService {
         // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
         if (!PlsConfigSettings.getInstance().state.features.checkComparisonOperators) return null
 
+        // NOTE 2.1.4 所在属性对应的匹配的规则，不一定在触发器子句规则之内
+
         val configs = ParadoxConfigManager.getConfigs(element)
         if (configs.isEmpty()) return null
         return configs.any { config -> isComparisonOperatorValid(config) }
@@ -135,6 +140,17 @@ object ParadoxSyntaxService {
     fun isSafeAssignOperatorAllowed(element: ParadoxScriptProperty): Boolean {
         val propertyKey = element.propertyKey
         return isSafeAssignOperatorAllowed(propertyKey)
+    }
+
+    /**
+     * 判断 [element] 是否允许使用安全赋值运算符作为属性分隔符。语义级别。
+     *
+     * 要求属性的键能解析为链式表达式。
+     */
+    fun isSafeAssignOperatorValid(element: ParadoxScriptProperty, configGroup: CwtConfigGroup): Boolean {
+        val propertyKey = element.propertyKey
+        val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
+        return complexExpression is ParadoxLinkedExpression
     }
 
     // endregion

@@ -2,14 +2,18 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
@@ -21,19 +25,30 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxInspectionService {
+    @Optimized
     fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
-        ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEach { ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@forEach
+        ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             result += ep.getSuppressedToolIds(definition, definitionInfo)
         }
         return result
     }
 
-    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+    @Optimized
+    fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, checkers: List<ParadoxIncorrectSyntaxChecker>) {
+        val gameType = context.gameType
+        checkers.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            ep.check(element, context)
+        }
+    }
+
+    @Optimized
+    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder, checkers: List<ParadoxIncorrectExpressionChecker>) {
         val gameType = config.configGroup.gameType
-        ParadoxIncorrectExpressionChecker.EP_NAME.extensionList.forEach f@{ ep ->
+        checkers.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.check(element, config, holder)
         }

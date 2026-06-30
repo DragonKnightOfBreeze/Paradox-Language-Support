@@ -18,6 +18,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.mergedIndexOptimizer" interface="icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.incorrectSyntaxChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatchOptimizer" interface="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer" dynamic="true"/>
@@ -145,6 +146,9 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport"/>
 
+    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
+    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>
+
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedIntChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedFloatChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxColorFieldChecker"/>
@@ -154,8 +158,10 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 
-    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
-    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>
+    <incorrectSyntaxChecker implementation="icu.windea.pls.ep.inspections.ParadoxComparisonOperatorChecker"/>
+    <incorrectSyntaxChecker implementation="icu.windea.pls.ep.inspections.ParadoxSafeAssignOperatorChecker"/>
+    <incorrectSyntaxChecker implementation="icu.windea.pls.ep.inspections.ParadoxDanglingRichTextEndMarkerChecker"/>
+    <incorrectSyntaxChecker implementation="icu.windea.pls.ep.inspections.ParadoxLeftBracketEscapeChecker"/>
 
     <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.expression.ParadoxBaseScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="extendedBase" implementation="icu.windea.pls.ep.match.expression.ParadoxExtendedBaseScriptExpressionMatcher"/>
