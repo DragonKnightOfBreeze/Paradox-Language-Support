@@ -1563,7 +1563,7 @@ Related extension points:
 - The implementation logic for expressions in localisation files is driven by the extension point `icu.windea.pls.localisationExpressionSupport` (special support).
 - The implementation logic for expressions in CSV files is driven by the extension point `icu.windea.pls.csvExpressionSupport` (limited support).
 
-### Basic Data Types {#data-types-base}
+### Basic Data Types {#data-types-basic}
 
 The following data types represent basic value forms.
 
@@ -1657,7 +1657,7 @@ Used only for internal representation and does not correspond to a config expres
 
 > CWTools Compatibility: Compatible.
 
-### Extended Basic Data Types {#data-types-extended-base}
+### Extra Basic Data Types {#data-types-extra-basic}
 
 #### PercentageField {#data-type-percentage-field}
 

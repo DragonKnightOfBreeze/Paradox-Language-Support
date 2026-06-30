@@ -1563,7 +1563,7 @@ icon|p1,p2
 - 本地化文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.localisationExpressionSupport` 驱动（特殊支持）。
 - CSV 文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.csvExpressionSupport` 驱动（有限支持）。
 
-### 基本数据类型 {#data-types-base}
+### 基本数据类型 {#data-types-basic}
 
 以下数据类型表示基本的取值形态。
 
@@ -1657,7 +1657,7 @@ icon|p1,p2
 
 > CWTools 兼容性：兼容。
 
-### 扩展基本数据类型 {#data-types-extended-base}
+### 额外基本数据类型 {#data-types-extra-basic}
 
 #### PercentageField {#data-type-percentage-field}
 

@@ -42,7 +42,7 @@ import icu.windea.pls.model.ParadoxGameType
 object CwtDataTypes {
     // NOTE 2.1.8 偏好使用 lambda 式构建器，而非多行的链式构建器：可通过代码折叠隐藏细节，方便查看
 
-    // region Base Data Types
+    // region Basic Data Types
 
     /**
      * 任意类型。
@@ -156,7 +156,7 @@ object CwtDataTypes {
 
     // endregion
 
-    // region Extended Base Data Types
+    // region Extra Basic Data Types
 
     /**
      * 百分比字段类型。
