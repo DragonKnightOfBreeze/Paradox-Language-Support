@@ -13,15 +13,15 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathAbsExpression {
+public class ParadoxScriptInlineMathGroupingExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathGroupingExpression {
 
-  public ParadoxScriptInlineMathAbsExpressionImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathGroupingExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineMathAbsExpression(this);
+    visitor.visitInlineMathGroupingExpression(this);
   }
 
   @Override
@@ -31,15 +31,9 @@ public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlin
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptInlineMathExpression> getInlineMathExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineMathExpression.class);
-  }
-
-  @Override
   @Nullable
-  public ParadoxScriptInlineMathFactor getInlineMathFactor() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathFactor.class);
+  public ParadoxScriptInlineMathExpression getInlineMathExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathExpression.class);
   }
 
   @Override

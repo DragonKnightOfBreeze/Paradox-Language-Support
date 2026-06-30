@@ -52,11 +52,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitPsiBoundElement(o);
   }
 
-  public void visitInlineMathAbsExpression(@NotNull ParadoxScriptInlineMathAbsExpression o) {
-    visitInlineMathExpression(o);
-  }
-
-  public void visitInlineMathBiExpression(@NotNull ParadoxScriptInlineMathBiExpression o) {
+  public void visitInlineMathBinaryExpression(@NotNull ParadoxScriptInlineMathBinaryExpression o) {
     visitInlineMathExpression(o);
   }
 
@@ -65,16 +61,16 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitInlineMathFactor(@NotNull ParadoxScriptInlineMathFactor o) {
-    visitPsiElement(o);
+    visitInlineMathExpression(o);
+  }
+
+  public void visitInlineMathGroupingExpression(@NotNull ParadoxScriptInlineMathGroupingExpression o) {
+    visitInlineMathExpression(o);
   }
 
   public void visitInlineMathNumber(@NotNull ParadoxScriptInlineMathNumber o) {
     visitInlineMathFactor(o);
     // visitLiteralValue(o);
-  }
-
-  public void visitInlineMathParExpression(@NotNull ParadoxScriptInlineMathParExpression o) {
-    visitInlineMathExpression(o);
   }
 
   public void visitInlineMathParameter(@NotNull ParadoxScriptInlineMathParameter o) {

@@ -16,6 +16,7 @@
     PIPE="|"
   ]
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  extends("inline_math_add_expr")=inline_math_binary_expression
 }
 
 // Grammar for Paradox Script.
@@ -288,44 +289,62 @@ inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END { // lazy-pa
   implements=[
     "icu.windea.pls.core.psi.PsiBoundElement"
   ]
-  methods=[getValue getExpression getInlineMathExpression getTokenElement getLeftBound getRightBound]
+  methods=[getValue getExpression getTokenElement getInlineMathExpression getLeftBound getRightBound]
 }
 
 // ------
 
 // inline math expression rules (lazy-parsing, from INLINE_MATH_TOKEN)
 
-inline_math_root ::= inline_math_items {
+inline_math_root ::= inline_math_expr {
   extraRoot=true
 }
-private inline_math_items ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
+
+// precedence-sensitive
+private inline_math_expr ::= inline_math_expr_term
+private inline_math_expr_term ::= inline_math_expr_factor inline_math_add_expr *
+private inline_math_expr_factor ::= inline_math_expr_unary inline_math_mul_expr *
+private inline_math_expr_unary ::= inline_math_unary_expression | inline_math_expr_primary
+private inline_math_expr_primary ::= inline_math_grouping_expression | inline_math_factor
 
 // noinspection BnfUnusedRule
-inline_math_expression ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
-inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_expr {
+inline_math_expression ::= inline_math_binary_expression | inline_math_unary_expression | inline_math_grouping_expression | inline_math_factor
+
+inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_factor {
   pin=1
   extends=inline_math_expression
 }
 private inline_math_unary_op ::= PLUS_SIGN | MINUS_SIGN
-private inline_math_unary_expr ::= inline_math_abs_expression | inline_math_par_expression | inline_math_factor
-inline_math_abs_expression ::= LABS_SIGN inline_math_abs_expr RABS_SIGN {
-  pin=1
-  extends=inline_math_expression
-}
-private inline_math_abs_expr ::= inline_math_items
-inline_math_par_expression ::= LP_SIGN inline_math_par_expr RP_SIGN {
-  pin=1
-  extends=inline_math_expression
-}
-private inline_math_par_expr ::= inline_math_items
-left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor {
-  pin=1
-  extends=inline_math_expression
-}
-private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
-private inline_math_bi_right_factor ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
+private inline_math_unary_factor ::= inline_math_grouping_expression | inline_math_factor
 
-inline_math_factor ::= inline_math_number | inline_math_parameter | inline_math_scripted_variable_reference
+inline_math_binary_expression ::= inline_math_add_expr | inline_math_mul_expr {
+  pin=2
+  extends=inline_math_expression
+}
+left inline_math_add_expr ::= inline_math_add_op inline_math_expr_factor {
+  pin=1
+  elementType=inline_math_binary_expression
+}
+left inline_math_mul_expr ::= inline_math_mul_op inline_math_expr_unary {
+  pin=1
+  elementType=inline_math_binary_expression
+}
+private inline_math_add_op ::= PLUS_SIGN | MINUS_SIGN
+private inline_math_mul_op ::= TIMES_SIGN | DIV_SIGN | MOD_SIGN
+
+inline_math_grouping_expression ::= inline_math_par_expr | inline_math_abs_expr {
+  extends=inline_math_expression
+}
+private inline_math_par_expr ::= LP_SIGN inline_math_expr RP_SIGN {
+pin=1
+}
+private inline_math_abs_expr ::= LABS_SIGN inline_math_expr RABS_SIGN {
+pin=1
+}
+
+inline_math_factor ::= inline_math_number | inline_math_parameter | inline_math_scripted_variable_reference {
+  extends=inline_math_expression
+}
 inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   extends=inline_math_factor
   implements=[

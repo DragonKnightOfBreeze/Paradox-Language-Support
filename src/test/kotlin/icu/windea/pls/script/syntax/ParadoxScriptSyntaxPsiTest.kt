@@ -49,7 +49,10 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     @Test
     fun attached_comments() = doTest(true)
     @Test
-    fun inline_math_mismatch() = doTest(true)
-    @Test
     fun unterminated_quoted_string_value() = doTest(true)
+
+    @Test
+    fun inline_maths() = doTest(true)
+    @Test
+    fun inline_maths_mismatch() = doTest(true)
 }

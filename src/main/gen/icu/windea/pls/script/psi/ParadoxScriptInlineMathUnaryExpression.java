@@ -11,13 +11,7 @@ import com.intellij.psi.search.SearchScope;
 public interface ParadoxScriptInlineMathUnaryExpression extends ParadoxScriptInlineMathExpression {
 
   @Nullable
-  ParadoxScriptInlineMathAbsExpression getInlineMathAbsExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathFactor getInlineMathFactor();
-
-  @Nullable
-  ParadoxScriptInlineMathParExpression getInlineMathParExpression();
+  ParadoxScriptInlineMathExpression getInlineMathExpression();
 
   @NotNull GlobalSearchScope getResolveScope();
 

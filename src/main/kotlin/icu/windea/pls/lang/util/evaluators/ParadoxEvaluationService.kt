@@ -8,8 +8,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object ParadoxEvaluationService {
     fun isEvaluableForInlineMath(element: ParadoxScriptInlineMath): Boolean {
         if (!element.isValid) return false
-        val expression = element.inlineMathExpression
-        if (expression.isEmpty()) return false
+        if (element.inlineMathExpression == null) return false
         return true
     }
 

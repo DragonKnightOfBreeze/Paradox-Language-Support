@@ -468,13 +468,13 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getInlineMathExpression(element: ParadoxScriptInlineMath): String {
-        return element.tokenElement?.text?.trim().orEmpty()
+    fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.findChild { it.elementType == INLINE_MATH_TOKEN }
     }
 
     @JvmStatic
-    fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
-        return element.findChild { it.elementType == INLINE_MATH_TOKEN }
+    fun getInlineMathExpression(element: ParadoxScriptInlineMath): ParadoxScriptInlineMathExpression? {
+        return element.findChild { it.elementType == INLINE_MATH_TOKEN }?.findChild<_>()
     }
 
     @JvmStatic

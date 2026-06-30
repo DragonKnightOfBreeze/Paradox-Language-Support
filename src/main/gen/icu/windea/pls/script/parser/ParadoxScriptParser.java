@@ -44,9 +44,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(INLINE_MATH_FACTOR, INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE),
-    create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
-      INLINE_MATH_UNARY_EXPRESSION),
+    create_token_set_(INLINE_MATH_BINARY_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_FACTOR, INLINE_MATH_GROUPING_EXPRESSION,
+      INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE, INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
       INLINE_MATH, INT, SCRIPTED_VARIABLE_REFERENCE, STRING,
       VALUE),
@@ -337,74 +336,139 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_items
+  // LABS_SIGN inline_math_expr RABS_SIGN
   static boolean inline_math_abs_expr(PsiBuilder b, int l) {
-    return inline_math_items(b, l + 1);
-  }
-
-  /* ********************************************************** */
-  // LABS_SIGN inline_math_abs_expr RABS_SIGN
-  public static boolean inline_math_abs_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_abs_expression")) return false;
+    if (!recursion_guard_(b, l, "inline_math_abs_expr")) return false;
     if (!nextTokenIs(b, LABS_SIGN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_ABS_EXPRESSION, null);
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, LABS_SIGN);
     p = r; // pin = 1
-    r = r && report_error_(b, inline_math_abs_expr(b, l + 1));
+    r = r && report_error_(b, inline_math_expr(b, l + 1));
     r = p && consumeToken(b, RABS_SIGN) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   /* ********************************************************** */
-  // inline_math_bi_op inline_math_bi_right_factor
-  public static boolean inline_math_bi_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_bi_expression")) return false;
+  // inline_math_add_op inline_math_expr_factor
+  public static boolean inline_math_add_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_add_expr")) return false;
+    if (!nextTokenIs(b, "<inline math add expr>", MINUS_SIGN, PLUS_SIGN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _LEFT_, INLINE_MATH_BI_EXPRESSION, "<inline math bi expression>");
-    r = inline_math_bi_op(b, l + 1);
+    Marker m = enter_section_(b, l, _LEFT_, INLINE_MATH_BINARY_EXPRESSION, "<inline math add expr>");
+    r = inline_math_add_op(b, l + 1);
     p = r; // pin = 1
-    r = r && inline_math_bi_right_factor(b, l + 1);
+    r = r && inline_math_expr_factor(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   /* ********************************************************** */
-  // PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
-  static boolean inline_math_bi_op(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_bi_op")) return false;
+  // PLUS_SIGN | MINUS_SIGN
+  static boolean inline_math_add_op(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_add_op")) return false;
+    if (!nextTokenIs(b, "", MINUS_SIGN, PLUS_SIGN)) return false;
     boolean r;
     r = consumeToken(b, PLUS_SIGN);
     if (!r) r = consumeToken(b, MINUS_SIGN);
-    if (!r) r = consumeToken(b, TIMES_SIGN);
-    if (!r) r = consumeToken(b, DIV_SIGN);
-    if (!r) r = consumeToken(b, MOD_SIGN);
     return r;
   }
 
   /* ********************************************************** */
-  // inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
-  static boolean inline_math_bi_right_factor(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_bi_right_factor")) return false;
+  // inline_math_add_expr | inline_math_mul_expr
+  public static boolean inline_math_binary_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_binary_expression")) return false;
     boolean r;
-    r = inline_math_unary_expression(b, l + 1);
-    if (!r) r = inline_math_abs_expression(b, l + 1);
-    if (!r) r = inline_math_par_expression(b, l + 1);
+    Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_BINARY_EXPRESSION, "<inline math binary expression>");
+    r = inline_math_add_expr(b, l + 1);
+    if (!r) r = inline_math_mul_expr(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // inline_math_expr_term
+  static boolean inline_math_expr(PsiBuilder b, int l) {
+    return inline_math_expr_term(b, l + 1);
+  }
+
+  /* ********************************************************** */
+  // inline_math_expr_unary inline_math_mul_expr *
+  static boolean inline_math_expr_factor(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_expr_factor")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = inline_math_expr_unary(b, l + 1);
+    r = r && inline_math_expr_factor_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // inline_math_mul_expr *
+  private static boolean inline_math_expr_factor_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_expr_factor_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!inline_math_mul_expr(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "inline_math_expr_factor_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // inline_math_grouping_expression | inline_math_factor
+  static boolean inline_math_expr_primary(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_expr_primary")) return false;
+    boolean r;
+    r = inline_math_grouping_expression(b, l + 1);
     if (!r) r = inline_math_factor(b, l + 1);
     return r;
   }
 
   /* ********************************************************** */
-  // inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
+  // inline_math_expr_factor inline_math_add_expr *
+  static boolean inline_math_expr_term(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_expr_term")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = inline_math_expr_factor(b, l + 1);
+    r = r && inline_math_expr_term_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // inline_math_add_expr *
+  private static boolean inline_math_expr_term_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_expr_term_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!inline_math_add_expr(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "inline_math_expr_term_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // inline_math_unary_expression | inline_math_expr_primary
+  static boolean inline_math_expr_unary(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_expr_unary")) return false;
+    boolean r;
+    r = inline_math_unary_expression(b, l + 1);
+    if (!r) r = inline_math_expr_primary(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // inline_math_binary_expression | inline_math_unary_expression | inline_math_grouping_expression | inline_math_factor
   public static boolean inline_math_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_expression")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_EXPRESSION, "<inline math expression>");
-    r = inline_math_unary_expression(b, l + 1);
-    if (!r) r = inline_math_abs_expression(b, l + 1);
-    if (!r) r = inline_math_par_expression(b, l + 1);
-    if (!r) r = inline_math_bi_expression(b, l + 1);
+    r = inline_math_binary_expression(b, l + 1);
+    if (!r) r = inline_math_unary_expression(b, l + 1);
+    if (!r) r = inline_math_grouping_expression(b, l + 1);
+    if (!r) r = inline_math_factor(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -423,37 +487,40 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
-  static boolean inline_math_items(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_items")) return false;
+  // inline_math_par_expr | inline_math_abs_expr
+  public static boolean inline_math_grouping_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_grouping_expression")) return false;
+    if (!nextTokenIs(b, "<inline math grouping expression>", LABS_SIGN, LP_SIGN)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = inline_math_items_0(b, l + 1);
-    r = r && inline_math_items_1(b, l + 1);
-    exit_section_(b, m, null, r);
+    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_GROUPING_EXPRESSION, "<inline math grouping expression>");
+    r = inline_math_par_expr(b, l + 1);
+    if (!r) r = inline_math_abs_expr(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
-  private static boolean inline_math_items_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_items_0")) return false;
-    boolean r;
-    r = inline_math_unary_expression(b, l + 1);
-    if (!r) r = inline_math_abs_expression(b, l + 1);
-    if (!r) r = inline_math_par_expression(b, l + 1);
-    if (!r) r = inline_math_factor(b, l + 1);
-    return r;
+  /* ********************************************************** */
+  // inline_math_mul_op inline_math_expr_unary
+  public static boolean inline_math_mul_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_mul_expr")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _LEFT_, INLINE_MATH_BINARY_EXPRESSION, "<inline math mul expr>");
+    r = inline_math_mul_op(b, l + 1);
+    p = r; // pin = 1
+    r = r && inline_math_expr_unary(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // inline_math_bi_expression *
-  private static boolean inline_math_items_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_items_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!inline_math_bi_expression(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "inline_math_items_1", c)) break;
-    }
-    return true;
+  /* ********************************************************** */
+  // TIMES_SIGN | DIV_SIGN | MOD_SIGN
+  static boolean inline_math_mul_op(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_mul_op")) return false;
+    boolean r;
+    r = consumeToken(b, TIMES_SIGN);
+    if (!r) r = consumeToken(b, DIV_SIGN);
+    if (!r) r = consumeToken(b, MOD_SIGN);
+    return r;
   }
 
   /* ********************************************************** */
@@ -470,21 +537,15 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_items
+  // LP_SIGN inline_math_expr RP_SIGN
   static boolean inline_math_par_expr(PsiBuilder b, int l) {
-    return inline_math_items(b, l + 1);
-  }
-
-  /* ********************************************************** */
-  // LP_SIGN inline_math_par_expr RP_SIGN
-  public static boolean inline_math_par_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_par_expression")) return false;
+    if (!recursion_guard_(b, l, "inline_math_par_expr")) return false;
     if (!nextTokenIs(b, LP_SIGN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PAR_EXPRESSION, null);
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, LP_SIGN);
     p = r; // pin = 1
-    r = r && report_error_(b, inline_math_par_expr(b, l + 1));
+    r = r && report_error_(b, inline_math_expr(b, l + 1));
     r = p && consumeToken(b, RP_SIGN) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
@@ -514,12 +575,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_items
+  // inline_math_expr
   public static boolean inline_math_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_root")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_ROOT, "<inline math root>");
-    r = inline_math_items(b, l + 1);
+    r = inline_math_expr(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -579,18 +640,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_abs_expression | inline_math_par_expression | inline_math_factor
-  static boolean inline_math_unary_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_unary_expr")) return false;
-    boolean r;
-    r = inline_math_abs_expression(b, l + 1);
-    if (!r) r = inline_math_par_expression(b, l + 1);
-    if (!r) r = inline_math_factor(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // inline_math_unary_op inline_math_unary_expr
+  // inline_math_unary_op inline_math_unary_factor
   public static boolean inline_math_unary_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_unary_expression")) return false;
     if (!nextTokenIs(b, "<inline math unary expression>", MINUS_SIGN, PLUS_SIGN)) return false;
@@ -598,9 +648,19 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_UNARY_EXPRESSION, "<inline math unary expression>");
     r = inline_math_unary_op(b, l + 1);
     p = r; // pin = 1
-    r = r && inline_math_unary_expr(b, l + 1);
+    r = r && inline_math_unary_factor(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // inline_math_grouping_expression | inline_math_factor
+  static boolean inline_math_unary_factor(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_unary_factor")) return false;
+    boolean r;
+    r = inline_math_grouping_expression(b, l + 1);
+    if (!r) r = inline_math_factor(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */

@@ -8,13 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptInlineMathAbsExpression extends ParadoxScriptInlineMathExpression {
-
-  @NotNull
-  List<ParadoxScriptInlineMathExpression> getInlineMathExpressionList();
-
-  @Nullable
-  ParadoxScriptInlineMathFactor getInlineMathFactor();
+public interface ParadoxScriptInlineMathBinaryExpression extends ParadoxScriptInlineMathExpression {
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -32,20 +32,8 @@ public class ParadoxScriptInlineMathUnaryExpressionImpl extends ParadoxScriptInl
 
   @Override
   @Nullable
-  public ParadoxScriptInlineMathAbsExpression getInlineMathAbsExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathAbsExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMathFactor getInlineMathFactor() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathFactor.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMathParExpression getInlineMathParExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathParExpression.class);
+  public ParadoxScriptInlineMathExpression getInlineMathExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathExpression.class);
   }
 
   @Override

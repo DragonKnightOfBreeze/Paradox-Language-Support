@@ -13,33 +13,21 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxScriptInlineMathBiExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathBiExpression {
+public class ParadoxScriptInlineMathBinaryExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathBinaryExpression {
 
-  public ParadoxScriptInlineMathBiExpressionImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathBinaryExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineMathBiExpression(this);
+    visitor.visitInlineMathBinaryExpression(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptInlineMathExpression> getInlineMathExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineMathExpression.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptInlineMathFactor> getInlineMathFactorList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineMathFactor.class);
   }
 
   @Override

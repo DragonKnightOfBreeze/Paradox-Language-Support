@@ -8,22 +8,10 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptInlineMathParExpression extends ParadoxScriptInlineMathExpression {
+public interface ParadoxScriptInlineMathGroupingExpression extends ParadoxScriptInlineMathExpression {
 
   @Nullable
-  ParadoxScriptInlineMathAbsExpression getInlineMathAbsExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathBiExpression getInlineMathBiExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathFactor getInlineMathFactor();
-
-  @Nullable
-  ParadoxScriptInlineMathParExpression getInlineMathParExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathUnaryExpression getInlineMathUnaryExpression();
+  ParadoxScriptInlineMathExpression getInlineMathExpression();
 
   @NotNull GlobalSearchScope getResolveScope();
 
