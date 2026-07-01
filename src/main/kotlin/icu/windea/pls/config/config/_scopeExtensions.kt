@@ -1,20 +1,38 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 interface CwtConfigResolverScope {
-    fun String.withLocationPrefix(element: PsiElement? = null): String {
-        val location = CwtConfigResolverManager.getLocation() ?: return this
-        val file = element?.containingFile
-        val lineNumber = file?.fileDocument?.getLineNumber(element.startOffset)
-        val lineNumberString = lineNumber?.let { "#L$it" }.orEmpty()
-        return "[$location$lineNumberString] $this"
+    fun String.withLocationPrefix(config: CwtConfig<*>): String {
+        val configGroup = config.configGroup
+        val element = config.pointer.element
+        return withLocationPrefix(element, configGroup)
     }
 
-    fun String.withLocationPrefix(config: CwtConfig<*>): String {
-        val element = config.pointer.element
-        return withLocationPrefix(element)
+    fun String.withLocationPrefix(element: PsiElement?, configGroup: CwtConfigGroup): String {
+        val locationPrefix = getLocationPrefix(element, configGroup)
+        return "$locationPrefix $this"
+    }
+
+    private fun getLocationPrefix(element: PsiElement?, configGroup: CwtConfigGroup): String {
+        val gameType = configGroup.gameType
+        val gameTypeId = gameType.id
+        val file = element?.containingFile
+        val fileName = file?.name
+        val lineNumber = if (element is PsiFile) null else file?.fileDocument?.getLineNumber(element.startOffset)
+        return buildString {
+            append("[").append(gameTypeId).append("]")
+            if (file != null) {
+                append(" [")
+                append(fileName)
+                if (lineNumber != null) {
+                    append("#L").append(lineNumber)
+                }
+                append("]")
+            }
+        }
     }
 }

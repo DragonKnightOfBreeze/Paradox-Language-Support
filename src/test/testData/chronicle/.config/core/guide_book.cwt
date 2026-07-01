@@ -43,7 +43,7 @@ guide = {
             ## cardinality = 0..inf
             d_color_field = color_field
             ## cardinality = 0..inf
-            d_color_field_rgb = color_field[rgb]
+            d_color_field_rgb = color[rgb]
         }
 
         ## cardinality = 0..inf
@@ -55,7 +55,7 @@ guide = {
             ## cardinality = 0..inf
             d_date_field = date_field
             ## cardinality = 0..inf
-            d_date_field_formatted = date_field[yyyy-MM-dd]
+            d_date_field_formatted = date_field[yyyy.MM.dd]
         }
 
         ## cardinality = 0..inf

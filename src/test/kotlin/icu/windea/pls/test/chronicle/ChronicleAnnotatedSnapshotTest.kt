@@ -61,6 +61,7 @@ class ChronicleAnnotatedSnapshotTest : ChronicleSnapshotTest() {
         val dataFilePaths = computeDataFilePaths()
         assertNotEmpty(dataFilePaths)
         println("Number of data files: ${dataFilePaths.size}")
+        dataFilePaths.forEach { println("- ${it.toString().normalizePath()}") }
         return dataFilePaths
     }
 
@@ -82,6 +83,7 @@ class ChronicleAnnotatedSnapshotTest : ChronicleSnapshotTest() {
             val path = file.fileInfo?.path?.path ?: throw IllegalStateException()
             val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
             val annotatedFile = myFixture.configureByFile("chronicle/.annotated/$annotatedPath")
+            println("Assert annotated data file: ${annotatedPath}")
             assertEquals(annotatedFile.text.trimEnd(), result.trimEnd())
         }
     }

@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.annotations.Optimized
@@ -32,7 +33,7 @@ import java.util.*
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     companion object {
         @JvmStatic
-        fun resolve(element: CwtValue): CwtOptionValueConfig = CwtOptionValueConfigResolver.resolve(element)
+        fun resolve(element: CwtValue, configGroup: CwtConfigGroup): CwtOptionValueConfig = CwtOptionValueConfigResolver.resolve(element, configGroup)
 
         @JvmStatic
         fun create(
@@ -48,10 +49,10 @@ interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
 private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
-    fun resolve(element: CwtValue): CwtOptionValueConfig {
+    fun resolve(element: CwtValue, configGroup: CwtConfigGroup): CwtOptionValueConfig {
         val value = element.value
         val valueType = CwtTypeResolver.resolveExpressionType(element)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element)
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element, configGroup)
         return create(value, valueType, optionConfigs)
     }
 

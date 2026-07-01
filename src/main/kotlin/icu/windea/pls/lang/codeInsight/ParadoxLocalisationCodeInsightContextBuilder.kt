@@ -30,6 +30,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
@@ -127,6 +128,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
         if (!(inspection == null || inspection.checkForDefinitions)) return null
         val definitionInfo = element.definitionInfo ?: return null
+        val localisationType = ParadoxLocalisationType.Normal
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
 
         for (info in definitionInfo.localisations) {
@@ -164,7 +166,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 val keyToUse = keys.firstOrNull() ?: return@run
                 for (locale in locales) {
                     ProgressManager.checkCanceled()
-                    val missing = keys.all { key -> isMissing(key, project, element, locale) }
+                    val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
                     val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
@@ -176,7 +178,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 val keyToUse = keys.firstOrNull() ?: return@run
                 for (locale in locales) {
                     ProgressManager.checkCanceled()
-                    val missing = keys.all { key -> isMissing(key, project, element, locale) }
+                    val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
                     val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
@@ -195,14 +197,15 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         val inspectionState = if (fromInspection) checkForLocalisations(project, element) else true
         if (!inspectionState) return null
 
-        val contextType = Type.Localisation
         val type = ParadoxLocalisationCodeInsightInfo.Type.Primary
         val name = element.name
         if (name.isEmpty()) return null
+        val contextType = Type.Localisation
+        val localisationType = element.type ?: return null
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
         for (locale in locales) {
             ProgressManager.checkCanceled()
-            val missing = isMissing(name, project, element, locale)
+            val missing = isMissing(name, project, element, locale, localisationType)
             val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, true, missing, false)
             codeInsightInfos += codeInsightInfo
         }
@@ -239,6 +242,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
         if (config.configExpression.type != CwtDataTypes.Modifier) return null
         val modifierName = element.value
+        val localisationType = ParadoxLocalisationType.Normal
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
 
         run {
@@ -248,7 +252,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val keyToUse = keys.firstOrNull() ?: return@run
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val missing = keys.all { key -> isMissing(key, project, element, locale) }
+                val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
@@ -260,7 +264,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val keyToUse = keys.firstOrNull() ?: return@run
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val missing = keys.all { key -> isMissing(key, project, element, locale) }
+                val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
@@ -279,20 +283,23 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         val inspectionState = if (fromInspection) checkForReferences(project, element) else true
         if (!inspectionState) return null
 
+        val type = ParadoxLocalisationCodeInsightInfo.Type.Reference
+        val name = element.value
+        if (name.isEmpty()) return null
         val contextType = when {
             config.configExpression.type == CwtDataTypes.Localisation -> Type.LocalisationReference
             config.configExpression.type == CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
             config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
             else -> null
+        } ?: return null
+        val localisationType = when {
+            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> ParadoxLocalisationType.Synced
+            else -> ParadoxLocalisationType.Normal
         }
-        if (contextType == null) return null
-        val type = ParadoxLocalisationCodeInsightInfo.Type.Reference
-        val name = element.value
-        if (name.isEmpty()) return null
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
         for (locale in locales) {
             ProgressManager.checkCanceled()
-            val missing = isMissing(name, project, element, locale)
+            val missing = isMissing(name, project, element, locale, localisationType)
             val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, true, missing, false)
             codeInsightInfos += codeInsightInfo
         }
@@ -300,9 +307,9 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, locales = locales, fromInspection = fromInspection)
     }
 
-    private fun isMissing(name: String, project: Project, element: PsiElement, locale: CwtLocaleConfig): Boolean {
+    private fun isMissing(name: String, project: Project, element: PsiElement, locale: CwtLocaleConfig, localisationType: ParadoxLocalisationType): Boolean {
         val selector = ParadoxLocalisationSearch.selector(project, element).locale(locale)
-        val missing = ParadoxLocalisationSearch.searchNormal(name, selector).findFirst() == null
+        val missing = ParadoxLocalisationSearch.search(name, localisationType, selector).findFirst() == null
         return missing
     }
 

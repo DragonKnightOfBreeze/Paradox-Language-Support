@@ -1,5 +1,6 @@
 guide = {
     name = data_type_lession_1
+    category = data_type
     basic_data_types = {
         d_any = hello_world
         d_any = { hello_world }
@@ -46,6 +47,7 @@ guide = {
 
 guide = {
     name = data_type_lession_2
+    category = data_type
     extra_basic_data_types = {
         d_percentage_field = 10%
         d_percentage_field = 10.0%
@@ -61,6 +63,7 @@ guide = {
 
 guide = {
     name = data_type_lession_3
+    category = data_type
     complex_data_types = {
         d_definition = hello_world
         d_definition = next_step
@@ -84,9 +87,9 @@ guide = {
     }
 }
 
-
 guide = {
     name = data_type_lession_4
+    category = data_type
     complex_data_types = {
         d_scope_field = this # lenient match
         d_scope = this # lenient match
@@ -99,6 +102,7 @@ guide = {
 
 guide = {
     name = data_type_lession_ex_union
+    category = data_type
     complex_data_types = {
         d_union_value = yes # `bool`
         d_union_value = world # `enum[guide_example_enum]`
@@ -109,6 +113,7 @@ guide = {
 
 guide = {
     name = data_type_lession_ex_pattern
+    category = data_type
     pattern_aware_data_types = {
         d_template = hello_world__world__day1
         d_template = on_the_way__universe__one_day

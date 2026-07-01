@@ -3,6 +3,7 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.annotations.Optimized
@@ -47,7 +48,7 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
 
     companion object {
         @JvmStatic
-        fun resolve(element: CwtOption): CwtOptionConfig? = CwtOptionConfigResolver.resolve(element)
+        fun resolve(element: CwtOption, configGroup: CwtConfigGroup): CwtOptionConfig? = CwtOptionConfigResolver.resolve(element, configGroup)
 
         @JvmStatic
         fun create(
@@ -66,7 +67,7 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
     private val cache = CacheBuilder().build<String, CwtOptionConfig>()
 
-    fun resolve(element: CwtOption): CwtOptionConfig? {
+    fun resolve(element: CwtOption, configGroup: CwtConfigGroup): CwtOptionConfig? {
         // - use `EmptyPointer` since visit PSI is not needed
         // - 2.1.1 reduce PSI iterations to optimize performance
 
@@ -82,22 +83,22 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
         }
 
         if (keyElement == null) {
-            logger.warn("Missing option key, skipped.".withLocationPrefix(element))
+            logger.warn("Missing option key, skipped.".withLocationPrefix(element, configGroup))
             return null
         }
         if (valueElement == null) {
-            logger.warn("Missing option value, skipped.".withLocationPrefix(element))
+            logger.warn("Missing option value, skipped.".withLocationPrefix(element, configGroup))
             return null
         }
         if (separatorType == null) {
-            logger.warn("Missing option separator, skipped.".withLocationPrefix(element))
+            logger.warn("Missing option separator, skipped.".withLocationPrefix(element, configGroup))
             return null
         }
 
         val key = keyElement.value
         val value = valueElement.value
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(valueElement)
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(valueElement, configGroup)
         return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
     }
 

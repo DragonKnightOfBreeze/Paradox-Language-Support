@@ -59,6 +59,7 @@ class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
         val dataFilePaths = computeDataFilePaths()
         assertNotEmpty(dataFilePaths)
         println("Number of data files: ${dataFilePaths.size}")
+        dataFilePaths.forEach { println("- ${it.toString().normalizePath()}") }
         return dataFilePaths
     }
 
@@ -88,6 +89,7 @@ class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
             types += type
         }
         println("Number of enabled inspections: ${types.size}")
+        types.forEach { println("- ${it.name}") }
         return types
     }
 }

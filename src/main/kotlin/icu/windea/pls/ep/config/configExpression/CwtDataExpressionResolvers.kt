@@ -105,13 +105,15 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromLiteral(CwtDataTypes.DatabaseObject, "\$database_object")
         fromParameterized(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
 
+        fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
+        fromLiteral(CwtDataTypes.MeshLocator, "\$mesh_locator")
+        fromLiteral(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
+
         fromLiteral(CwtDataTypes.Parameter, "\$parameter")
         fromLiteral(CwtDataTypes.ParameterValue, "\$parameter_value")
         fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
 
-        fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
-        fromLiteral(CwtDataTypes.MeshLocator, "\$mesh_locator")
-        fromLiteral(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
+        fromParameterized(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
     }
 }
 
