@@ -88,21 +88,12 @@
 
 ### 计划
 
-- [ ] P2/MS 完善对 CSV 文件与 rowConfig 的支持 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
-  - [ ] 允许在 CSV 文件中声明复杂枚举值（提案：列规则上的 `## declare_complex_enum = x`）。
-  - [ ] ~~允许在 CSV 文件中声明定义（提案：列规则上的 `## declare_type = x`）。~~
-    - 将一整行视为定义声明，将某个列视为指定了定义名的列。
-    - 需要架构上的大幅重构，并且涉及一些领域设计上的问题，因此暂不考虑。
-  - [ ] 为 rowConfig 添加字段 type，可选值包括 key/index，默认 key。表示是按键还是按索引来匹配列中的每一行。
-    - 表头列的列名（columnKey/columnName）可以重复，因此在解析规则数据和语义解析时，可能需要基于列索引，而非列名。
-  - [ ] 为 rowConfig 添加字段 skip_last_row 和 skip_last_column，值为布尔值。表示匹配与解析时是否忽略最后一列/最后一行。
-    - 表头列的最后一列，以及文件中的最后一行，可能需要在语义解析时忽略，因此需要提供对应的规则字段。
-  - [ ] ~~考虑将从（脚本/CSV）表达式解析为复杂枚举值的表达式引用（即PSI引用）的逻辑，提取为需要置顶的 expressionSupport 的EP实现。~~ - 不采用
-    - 后续也可以考虑以类似方式处理各种特殊标签。
-  - [ ] 调整相关的代码检查的代码。
+- [ ] P2/MS 支持在 CSV 文件中声明复杂枚举值（通过在列规则上使用 `## declare_complex_enum = x`） ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [ ] P2/MS 为行规则添加字段 type，可选值包括 key/index，默认 key。表示是按键还是按索引来匹配列中的每一行 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [ ] P2/MS 为行规则添加字段 skip_last_row 和 skip_last_column，值为布尔值。表示匹配与解析时是否忽略最后一列/最后一行 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
 - [ ] P2/MS 调整复杂枚举值索引的逻辑，以兼容在CSV文件中的复杂枚举值声明
 - [x] P2/MS 调整合并索引的逻辑，以兼容在CSV文件中的动态值引用
-- [ ] P2/MS 支持在CSV文件中声明复杂枚举值（通过在列规则上使用 `## declare_complex_enum = x`）
+- [ ] P2/MS 调整 CSV 文件的相关代码检查的代码。
 
 ### 附加
 
