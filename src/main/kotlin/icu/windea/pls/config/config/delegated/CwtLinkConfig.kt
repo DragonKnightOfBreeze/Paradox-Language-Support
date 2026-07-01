@@ -93,13 +93,13 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val name: String
-    @FromMember("type: string?")
+    @FromMember("type: string?", allowedValues = ["scope", "value", "both"], defaultValue = "scope")
     val type: CwtLinkType
     @FromMember("from_data: boolean", defaultValue = "no")
     val fromData: Boolean
     @FromMember("from_argument: boolean", defaultValue = "no")
     val fromArgument: Boolean
-    @FromMember("argument_separator: string?", defaultValue = "comma")
+    @FromMember("argument_separator: string?", allowedValues = ["comma", "pipe"], defaultValue = "comma")
     val argumentSeparator: CwtLinkArgumentSeparator
     @FromMember("prefix: string?")
     val prefix: String?

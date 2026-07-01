@@ -517,8 +517,15 @@ Field Explanation:
 - `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
 - `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
-- `columns`: Declares the mapping from column names to column configs
+- `type`: row type (`key`/`index`, default is `key`). Decide how to match each of these columns. Match by column name (column names cannot be repeated), or by column index in containing row (column names can be repeated).
+- `skip_last_row`: Whether to ignore the last row when resolving and matching. Default is `no`.
+- `skip_last_column`: whether to ignore the last column when resolving and matching. Default is `no`.
+- `columns`: Declares the mapping from column names to column configs.
 - `end_column`: Declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
+
+Field Explanation for Column Configs:
+
+- `## declare_complex_enum`: Indicates that this column declares a complex enum value of specified type (rather than a reference).
 
 The path matching logic of row configs is the same as in [type configs](#config-type).
 
@@ -526,12 +533,15 @@ Examples:
 
 ```cwt
 rows = {
-    row[component_template] = {
-        path = "game/common/component_templates"
+    row[weapon_template] = {
+        path = "game/common/weapon_templates"
         path_extension = .csv
+        skip_last_column = yes
         columns = {
-            key = <component_template>
-            # ... other columns
+            key = <weapon_template>
+            damage = float
+            ## declare_complex_enum = weapon_tag
+            tag = scalar
         }
     }
 }

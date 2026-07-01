@@ -517,8 +517,15 @@ some_definition = {
 - `path_extension`：限定文件扩展名（解析时会自动规范化，如补齐 `.`）。仅在未指定 `path_file` 时单独生效。
 - `path_pattern`：使用 ANT 路径模式匹配文件路径。可声明多个，与 `path` 独立——任一 `path_pattern` 匹配即可通过路径检查。
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
-- `columns` 每一列的名字和需要匹配的数据表达式。
-- `end_column` 声明终止列名（匹配到后视为可省略的尾列）。
+- `type`：行类型（`key`/`index`，默认为 `key`）。决定如何匹配其中的每一列。按列名匹配（列名不可重复），还是按列在所在行中的索引匹配（列名可重复）。
+- `skip_last_row`：解析与匹配时，是否忽略最后一行。默认为 `no`。
+- `skip_last_column`：解析与匹配时，是否忽略最后一列。默认为 `no`。
+- `columns`：每一列的名字和需要匹配的数据表达式。
+- `end_column`：声明终止列名（匹配到后视为可省略的尾列）。
+
+列规则的字段说明：
+
+- `## declare_complex_enum`：表示这一列声明了一个指定类型的复杂枚举值（而非引用）。
 
 行规则的路径匹配逻辑与[类型规则](#config-type)相同。
 
@@ -526,12 +533,15 @@ some_definition = {
 
 ```cwt
 rows = {
-    row[component_template] = {
-        path = "game/common/component_templates"
+    row[weapon_template] = {
+        path = "game/common/weapon_templates"
         path_extension = .csv
+        skip_last_column = yes
         columns = {
-            key = <component_template>
-            # ... other columns
+            key = <weapon_template>
+            damage = float
+            ## declare_complex_enum = weapon_tag
+            tag = scalar
         }
     }
 }
