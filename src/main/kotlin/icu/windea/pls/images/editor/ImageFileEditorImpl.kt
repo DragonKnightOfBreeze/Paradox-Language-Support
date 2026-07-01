@@ -21,7 +21,7 @@ class ImageFileEditorImpl(
     file: VirtualFile
 ) : UserDataHolderBase(), ImageFileEditor, PropertyChangeListener {
     companion object {
-        private const val NAME = "Pls.ImageFileEditor"
+        private const val NAME = "Chronicle.ImageFileEditor"
     }
 
     private val imageEditor = ImageEditorImpl(project, file)

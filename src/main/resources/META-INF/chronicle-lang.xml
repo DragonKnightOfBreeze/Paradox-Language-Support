@@ -462,12 +462,12 @@
       <add-to-group group-id="Documentation.PrimaryGroup"/>
     </group>
 
-    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="icu.windea.pls.ChronicleIcons.General.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="icu.windea.pls.ChronicleIcons.General.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
@@ -478,7 +478,7 @@
     <action id="Pls.CopyPathFromEntry" class="icu.windea.pls.lang.actions.CopyPathFromEntryProvider">
       <add-to-group group-id="CopyFileReference"/>
     </action>
-    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageUrlProvider" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageUrlProvider" icon="icu.windea.pls.ChronicleIcons.General.Steam">
       <add-to-group group-id="CopyFileReference"/>
     </action>
 
@@ -641,14 +641,14 @@
 
     <group id="Pls.TableManipulation">
       <action id="Pls.Manipulation.SelectColumnCell" class="icu.windea.pls.lang.actions.csv.SelectColumnCellAction" icon="AllIcons.Actions.InSelection"/>
-      <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddColumnLeft"/>
-      <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddColumnRight"/>
+      <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddColumnLeft"/>
+      <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddColumnRight"/>
       <action id="Pls.Manipulation.MoveColumnLeft" class="icu.windea.pls.lang.actions.csv.MoveColumnLeftAction" icon="AllIcons.Actions.Back"/>
       <action id="Pls.Manipulation.MoveColumnRight" class="icu.windea.pls.lang.actions.csv.MoveColumnRightAction" icon="AllIcons.Actions.Forward"/>
       <action id="Pls.Manipulation.SelectColumn" class="icu.windea.pls.lang.actions.csv.SelectColumnAction" icon="AllIcons.Actions.InSelection"/>
       <action id="Pls.Manipulation.RemoveColumn" class="icu.windea.pls.lang.actions.csv.RemoveColumnAction" icon="AllIcons.Actions.GC"/>
-      <action id="Pls.Manipulation.InsertRowAbove" class="icu.windea.pls.lang.actions.csv.InsertRowAboveAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddRowAbove"/>
-      <action id="Pls.Manipulation.InsertRowBelow" class="icu.windea.pls.lang.actions.csv.InsertRowBelowAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddRowBelow"/>
+      <action id="Pls.Manipulation.InsertRowAbove" class="icu.windea.pls.lang.actions.csv.InsertRowAboveAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddRowAbove"/>
+      <action id="Pls.Manipulation.InsertRowBelow" class="icu.windea.pls.lang.actions.csv.InsertRowBelowAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddRowBelow"/>
       <action id="Pls.Manipulation.MoveRowUp" class="icu.windea.pls.lang.actions.csv.MoveRowUpAction" icon="AllIcons.Actions.PreviousOccurence"/>
       <action id="Pls.Manipulation.MoveRowDown" class="icu.windea.pls.lang.actions.csv.MoveRowDownAction" icon="AllIcons.Actions.NextOccurence"/>
       <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction" icon="AllIcons.Actions.InSelection"/>
@@ -662,13 +662,13 @@
     </group>
 
     <group id="Pls.Localisation.Toolbar.Floating">
-      <action id="Pls.Localisation.Styling.CreateReference" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationProperty">
+      <action id="Pls.Localisation.Styling.CreateReference" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationProperty">
         <keyboard-shortcut first-keystroke="control alt r" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationIcon">
+      <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationIcon">
         <keyboard-shortcut first-keystroke="control alt i" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationCommand">
+      <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationCommand">
         <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
       </action>
       <separator/>
@@ -683,11 +683,11 @@
       <reference ref="Pls.Localisation.Styling.CreateCommand"/>
     </group>
 
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenGameSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenGameSettingsAction" icon="icu.windea.pls.ChronicleIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.settings.OpenModSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.settings.OpenModSettingsAction" icon="icu.windea.pls.ChronicleIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
     </action>

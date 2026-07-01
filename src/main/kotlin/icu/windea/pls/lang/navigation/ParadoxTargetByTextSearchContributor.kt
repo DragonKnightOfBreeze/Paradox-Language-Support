@@ -86,7 +86,7 @@ class ParadoxTargetByTextSearchContributor(val event: AnActionEvent) : WeightedS
     override fun createExtendedInfo() = createPsiExtendedInfo(null, null) { it.castOrNull<PsiElement>() }
 
     companion object {
-        const val PROVIDER_ID: String = "Pls.TargetByTextSearch"
+        const val PROVIDER_ID: String = "Chronicle.TargetByTextSearch"
     }
 
     class Factory : SearchEverywhereContributorFactory<PsiElement> {

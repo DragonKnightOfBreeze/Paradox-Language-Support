@@ -404,7 +404,7 @@
 
     <!-- region Linting Tools -->
     <externalAnnotator language="PARADOX" implementationClass="icu.windea.pls.lang.inspections.lints.ChronicleTigerLintAnnotator"/>
-    <localInspection language="PARADOX" shortName="PlsTigerLint"
+    <localInspection language="PARADOX" shortName="ChronicleTigerLint"
                      key="inspection.lints.tiger" groupKey="inspection.lints.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.lints.ChronicleTigerLintInspection"/>

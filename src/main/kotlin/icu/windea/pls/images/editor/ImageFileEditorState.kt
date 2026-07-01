@@ -14,7 +14,7 @@ class ImageFileEditorState(
     var isZoomFactorChanged: Boolean
 ) : TransferableFileEditorState, Serializable {
     companion object {
-        private const val IMAGE_EDITOR_ID = "PlsImageEditor"
+        private const val IMAGE_EDITOR_ID = "Chronicle.ImageEditor"
         private const val BACKGROUND_VISIBLE_OPTION = "backgroundVisible"
         private const val GRID_VISIBLE_OPTION = "gridVisible"
         private const val ZOOM_FACTOR_OPTION = "zoomFactor"

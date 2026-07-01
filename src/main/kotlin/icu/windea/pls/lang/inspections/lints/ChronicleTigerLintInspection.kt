@@ -23,10 +23,6 @@ import javax.swing.JComponent
  * @see ChronicleTigerLintAnnotator
  */
 class ChronicleTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection, DumbAware {
-    companion object {
-        const val SHORT_NAME = "PlsTigerLint"
-    }
-
     private val callbackLock = CallbackLock()
 
     override fun getBatchSuppressActions(element: PsiElement?): Array<out SuppressQuickFix?> {
