@@ -517,10 +517,10 @@ Field Explanation:
 - `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
 - `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
-- `type`: row type (`key`/`index`, default is `key`). Decide how to match each of these columns. Match by column name (column names cannot be repeated), or by column index in containing row (column names can be repeated).
+- `type`: Row type (`key`/`index`, default is `key`). Decide how to match each of these columns. Match by column name (column names cannot be repeated), or by column index in containing row (column names can be repeated).
 - `skip_last_row`: Whether to ignore the last row when resolving and matching. Default is `no`.
-- `skip_last_column`: whether to ignore the last column when resolving and matching. Default is `no`.
-- `columns`: Declares the mapping from column names to column configs.
+- `skip_last_column`: Whether to ignore the last column when resolving and matching. Default is `no`.
+- `columns`: Column config list (a set of property configs, where the key is the column name and the value is the data expression to be matched).
 - `end_column`: Declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
 
 Field Explanation for Column Configs:

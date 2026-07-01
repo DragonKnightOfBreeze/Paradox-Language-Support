@@ -72,7 +72,7 @@ object ParadoxCsvManager {
             else -> column.getHeaderColumn()?.name
         }
         if (headerName.isNullOrEmpty()) return null
-        return rowConfig.columns[headerName]
+        return rowConfig.columnMap[headerName]
     }
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {

@@ -9,6 +9,7 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -602,6 +603,34 @@ object ParadoxConfigMatchService {
             if (!CwtConfigMatchService.matchesFilePath(rowConfig, context.path)) return false
         }
         return true
+    }
+
+    fun getMatchedColumnConfig(rowConfig: CwtRowConfig, columnName: String, columnIndex: Int): CwtPropertyConfig? {
+        if (columnIndex < 0) return null
+        if (rowConfig.columns.isEmpty()) return null
+        return when (rowConfig.type) {
+            CwtRowType.Key -> {
+                rowConfig.columns.find { it.key == columnName }
+            }
+            CwtRowType.Index -> {
+                rowConfig.columns.getOrNull(columnIndex)
+            }
+        }
+    }
+
+    fun getMatchedColumnConfig(rowConfig: CwtRowConfig, columnNames: List<String>, columnIndex: Int): CwtPropertyConfig? {
+        if (columnIndex < 0) return null
+        if (columnNames.isEmpty()) return null
+        if (rowConfig.columns.isEmpty()) return null
+        return when (rowConfig.type) {
+            CwtRowType.Key -> {
+                val columnName = columnNames.getOrNull(columnIndex) ?: return null
+                rowConfig.columns.find { it.key == columnName }
+            }
+            CwtRowType.Index -> {
+                rowConfig.columns.getOrNull(columnIndex)
+            }
+        }
     }
 
     // endregion

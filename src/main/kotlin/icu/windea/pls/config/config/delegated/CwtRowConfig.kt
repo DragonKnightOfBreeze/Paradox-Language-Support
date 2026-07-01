@@ -57,7 +57,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property type 行类型（`key`/`index`，默认为 `key`）。决定如何匹配其中的每一列。
  * @property skipLastRow 解析与匹配时，是否忽略最后一行。
  * @property skipLastColumn 解析与匹配时，是否忽略最后一列。
- * @property columns 每一列的列名到对应列规则的映射。
+ * @property columns 列规则的列表（一组属性规则，键为列名，值为需要匹配的数据表达式）。
+ * @property columnMap 每一列的列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  * @property attributes 综合属性。
  */
@@ -65,13 +66,15 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     @FromName("row[$]")
     val name: String
     @FromMember("type: string?", allowedValues = ["key", "index"], defaultValue = "key")
-    val type: CwtRowType?
+    val type: CwtRowType
     @FromMember("skip_last_row: boolean", defaultValue = "no")
     val skipLastRow: Boolean
     @FromMember("skip_last_column: boolean", defaultValue = "no")
     val skipLastColumn: Boolean
     @FromMember("columns: ColumnConfigs")
-    val columns: Map<String, CwtPropertyConfig>
+    val columns: List<CwtPropertyConfig>
+    @FromMember("columns: ColumnConfigs")
+    val columnMap: Map<String, CwtPropertyConfig>
     @FromMember("end_column: string?")
     val endColumn: String?
 
@@ -108,14 +111,14 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         val type = propGroup.getOne("type")?.stringValue.let { CwtRowType.resolve(it) }
         val skipLastRow = propGroup.getOne("skip_last_row")?.booleanValue ?: false
         val skipLastColumn = propGroup.getOne("skip_last_column")?.booleanValue ?: false
-        val columnConfigs = propGroup.getOne("columns")?.properties?.associateBy { it.key }.orEmpty()
+        val columns = propGroup.getOne("columns")?.properties?.optimized().orEmpty()
         val endColumn = propGroup.getOne("end_column")?.stringValue
 
         logger.debug { "Resolved row config (name: $name).".withLocationPrefix(config) }
         return CwtRowConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
-            type, skipLastRow, skipLastColumn, columnConfigs, endColumn
+            type, skipLastRow, skipLastColumn, columns, endColumn
         )
     }
 }
@@ -128,12 +131,14 @@ private class CwtRowConfigImpl(
     override val pathExtension: String?,
     override val pathStrict: Boolean,
     override val pathPatterns: Set<String>,
-    override val type: CwtRowType?,
+    override val type: CwtRowType,
     override val skipLastRow: Boolean,
     override val skipLastColumn: Boolean,
-    override val columns: Map<String, CwtPropertyConfig>,
+    override val columns: List<CwtPropertyConfig>,
     override val endColumn: String?
 ) : UserDataHolderBase(), CwtRowConfig {
+    override val columnMap: Map<String, CwtPropertyConfig> = columns.associateBy { it.key }
+
     override val attributes: CwtRowConfigAttributes by lazy { CwtRowConfigAttributesEvaluator().evaluate(this) }
 
     override fun toString() = "CwtRowConfigImpl(name='$name')"

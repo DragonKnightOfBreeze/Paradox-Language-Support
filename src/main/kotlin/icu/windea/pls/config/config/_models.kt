@@ -49,8 +49,6 @@ enum class CwtSubtypeGroup(val id: String) {
 enum class CwtRowType(val id: String) {
     Key("key"), Index("index");
 
-    fun byIndex() = this == Index
-
     companion object {
         @JvmStatic
         fun resolve(id: String?): CwtRowType {

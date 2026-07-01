@@ -120,7 +120,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
                 checkContextRoot(element)
                 if (element is ParadoxScriptStringExpressionElement) {
-                    visitExpressionElement(element)
+                    visitStringExpressionElement(element)
                 }
 
                 super.visitElement(element)
@@ -139,7 +139,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 definitionAvailableStatusStack.addLast(definitionAvailableStatus)
             }
 
-            private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
+            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 if (!element.isExpression()) return
 
                 val definitionCandidateInfo = definitionCandidateInfoStack.lastOrNull()
