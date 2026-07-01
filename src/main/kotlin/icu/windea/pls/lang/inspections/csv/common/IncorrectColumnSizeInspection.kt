@@ -10,15 +10,17 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
-import icu.windea.pls.csv.psi.getColumnSize
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
 
 /**
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * （CSV 文件中的）不正确的列数量的代码检查。
+ *
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class IncorrectColumnSizeInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
@@ -40,15 +42,12 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
 
         val expectColumnSize = rowConfig.columns.size
 
-        // 如果表头中的列数与期望的不一致，则直接跳过检查
-        val headerColumnSize = ParadoxCsvManager.getExpectedHeaderColumnSize(header)
-        if (headerColumnSize != expectColumnSize) return PsiElementVisitor.EMPTY_VISITOR
-
         return object : ParadoxCsvVisitor() {
-            override fun visitRow(element: ParadoxCsvRow) {
+            override fun visitRowElement(element: ParadoxCsvRowElement) {
                 ProgressManager.checkCanceled()
-                val columnSize = element.getColumnSize()
+                val columnSize = ParadoxCsvPsiService.getColumnSize(element)
                 if (columnSize == expectColumnSize) return
+                if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return
                 val location = element.lastChild ?: return // latest non-empty column or separator
                 val description = ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
                 holder.registerProblem(location, description)

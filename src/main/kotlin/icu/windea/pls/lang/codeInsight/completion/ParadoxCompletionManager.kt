@@ -11,6 +11,7 @@ import com.intellij.ui.JBColor
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -18,9 +19,7 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
@@ -28,10 +27,12 @@ import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -203,7 +204,7 @@ object ParadoxCompletionManager {
     fun addColumnCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, columnElement: ParadoxCsvColumn) {
         if (context.file !is ParadoxCsvFile) return
 
-        if (columnElement.isHeaderColumn()) {
+        if (ParadoxCsvPsiService.isHeaderColumn(columnElement)) {
             ProgressManager.checkCanceled()
             completeHeaderColumn(context, result)
             return
@@ -540,19 +541,22 @@ object ParadoxCompletionManager {
 
     fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val column = context.contextElement.castOrNull<ParadoxCsvColumn>() ?: return
-        if (!column.isHeaderColumn()) return
-        val file = context.file
-        if (file !is ParadoxCsvFile) return
-        val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
         val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
-        val existingHeaderNames = header.children()
-            .mapNotNull { it as? ParadoxCsvColumn }
-            .filterIsInstance<ParadoxCsvColumn> { it != column }
-            .map { it.value }
-            .toSet()
-        val columnConfigs = rowConfig.columns.filterNot { it.key in existingHeaderNames }
+        val rowConfig = ParadoxCsvManager.getRowConfig(header) ?: return
+        val columnConfigs = rowConfig.columns
         if (columnConfigs.isEmpty()) return
-        for (columnConfig in columnConfigs) {
+        // #134 updated logic to get expected column configs
+        val expectedColumnConfigs = when (rowConfig.type) {
+            CwtRowType.Key -> {
+                val columnNames = ParadoxCsvPsiService.getColumnNames(header)
+                columnConfigs.filter { it.key !in columnNames }
+            }
+            CwtRowType.Index -> {
+                val columnIndex = ParadoxCsvPsiService.getColumnIndex(column)
+                columnConfigs.getOrNull(columnIndex).to.singletonListOrEmpty()
+            }
+        }
+        for (columnConfig in expectedColumnConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = columnConfig)
             val name = columnConfig.key

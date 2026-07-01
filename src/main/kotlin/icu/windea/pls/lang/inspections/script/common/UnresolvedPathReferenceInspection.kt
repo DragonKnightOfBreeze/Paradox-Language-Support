@@ -35,8 +35,8 @@ import javax.swing.JComponent
  * 无法解析的路径引用的代码检查。
  *
  * @property ignoredFileNames （配置项）需要忽略解析的文件名。一组模式，分号分隔，忽略大小写。
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredFileNames = "*.lua;*.tga"
@@ -139,7 +139,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             }
             // ignoredByConfigs
             row {
-                checkBox(ChronicleBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
         }

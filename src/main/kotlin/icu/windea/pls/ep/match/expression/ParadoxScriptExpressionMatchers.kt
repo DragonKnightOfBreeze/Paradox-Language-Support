@@ -20,7 +20,7 @@ import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
@@ -81,7 +81,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxExtendedBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)

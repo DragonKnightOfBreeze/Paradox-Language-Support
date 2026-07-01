@@ -18,8 +18,8 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.csv.psi.getColumnSize
 import icu.windea.pls.lang.manipulation.ParadoxCsvManipulationService
 import kotlinx.coroutines.launch
 import java.util.function.Supplier
@@ -38,7 +38,7 @@ sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActi
         coroutineScope.launch {
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                val newRow = ParadoxCsvElementFactory.createEmptyRow(project, header.getColumnSize())
+                val newRow = ParadoxCsvElementFactory.createEmptyRow(project, ParadoxCsvPsiService.getColumnSize(header))
                 if (above) {
                     container.addRangeBefore(newRow, newRow.nextSibling, anchorRow)
                 } else {

@@ -17,8 +17,8 @@ import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.withContextRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -280,14 +280,14 @@ object ParadoxPsiSequenceBuilder {
                 }
             } else {
                 val rows = firstRow.siblings(forward = forward, withSelf = false).filterIsInstance<ParadoxCsvRow>().takeWhile { it != lastRow }
-                val startIndex = previous.getColumnIndex()
-                val endIndex = column.getColumnIndex()
+                val startIndex = ParadoxCsvPsiService.getColumnIndex(previous)
+                val endIndex = ParadoxCsvPsiService.getColumnIndex(column)
                 val columnsBetween = rows.flatMap { row0 ->
                     when (row0) {
                         firstRow -> previous.siblings(forward = forward, withSelf = false)
-                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() <= endIndex }
+                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { ParadoxCsvPsiService.getColumnIndex(it) <= endIndex }
                         lastRow -> column.siblings(forward = !forward, withSelf = false)
-                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() >= startIndex }.toList().reversed().asSequence()
+                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { ParadoxCsvPsiService.getColumnIndex(it) >= startIndex }.toList().reversed().asSequence()
                         else -> row0.children(forward = forward)
                             .filterIsInstance<ParadoxCsvColumn>().toList().subList(startIndex, endIndex).asSequence()
                     }

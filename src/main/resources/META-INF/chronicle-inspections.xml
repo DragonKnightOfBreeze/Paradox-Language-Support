@@ -373,18 +373,10 @@
                      key="inspection.csv.unmatchedFile" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="TEXT ATTRIBUTES"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnmatchedFileInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumns"
-                     key="inspection.csv.missingColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnName"
+                     key="inspection.csv.incorrectColumnName" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.common.MissingColumnsInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvDuplicateColumns"
-                     key="inspection.csv.duplicateColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.common.DuplicateColumnsInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumns"
-                     key="inspection.csv.unresolvedColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectColumnNameInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSize"
                      key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"

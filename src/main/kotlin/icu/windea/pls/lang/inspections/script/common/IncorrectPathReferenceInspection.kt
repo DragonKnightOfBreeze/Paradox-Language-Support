@@ -24,8 +24,8 @@ import javax.swing.JComponent
 /**
  * 不正确的路径引用的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class IncorrectPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false

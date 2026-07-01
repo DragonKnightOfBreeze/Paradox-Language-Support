@@ -11,7 +11,7 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
@@ -56,7 +56,7 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     }
 }
 
-class ParadoxExtendedBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)

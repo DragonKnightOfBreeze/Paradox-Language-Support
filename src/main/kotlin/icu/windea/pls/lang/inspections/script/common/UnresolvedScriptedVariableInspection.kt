@@ -27,8 +27,8 @@ import javax.swing.JComponent
  * - 声明全局封装变量（在 `common/scripted_variables` 目录下的某一个文件中）
  * - 导入游戏目录或模组目录
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false

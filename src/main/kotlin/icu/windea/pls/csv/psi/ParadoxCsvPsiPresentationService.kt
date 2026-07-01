@@ -63,7 +63,7 @@ object ParadoxCsvPsiPresentationService {
     fun getTreeLocationString(element: PsiElement): String? {
         return when (element) {
             // 截断后的对应的表头列的名字
-            is ParadoxCsvColumn -> element.getHeaderColumn()?.name?.formatted()
+            is ParadoxCsvColumn -> ParadoxCsvPsiService.getHeaderColumn(element)?.name?.formatted()
             else -> null
         }
     }

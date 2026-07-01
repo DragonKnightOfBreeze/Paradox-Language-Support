@@ -11,9 +11,8 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
-import icu.windea.pls.csv.psi.isEmptyColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -23,7 +22,7 @@ import javax.swing.JComponent
 /**
  * （CSV 文件中的）不正确的表达式的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  *
  * @see ParadoxIncorrectExpressionChecker
  */
@@ -49,8 +48,8 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         return object : ParadoxCsvVisitor() {
             override fun visitColumn(element: ParadoxCsvColumn) {
                 ProgressManager.checkCanceled()
-                if (element.isHeaderColumn()) return // skip header columns
-                if (element.isEmptyColumn()) return // skip empty columns
+                if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
+                if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
                 if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return

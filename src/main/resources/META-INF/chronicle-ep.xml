@@ -116,8 +116,8 @@
 
     <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseDataConfigGroupPostProcessor"/>
 
-    <dataExpressionSupport id="base" implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionSupport"/>
-    <dataExpressionSupport id="extendedBase" implementation="icu.windea.pls.ep.config.configExpression.CwtExtendedBaseDataExpressionSupport"/>
+    <dataExpressionSupport id="basic" implementation="icu.windea.pls.ep.config.configExpression.CwtBasicDataExpressionSupport"/>
+    <dataExpressionSupport id="extraBasic" implementation="icu.windea.pls.ep.config.configExpression.CwtExtraBasicDataExpressionSupport"/>
     <dataExpressionSupport id="core" implementation="icu.windea.pls.ep.config.configExpression.CwtCoreDataExpressionSupport"/>
     <dataExpressionSupport id="constant" implementation="icu.windea.pls.ep.config.configExpression.CwtConstantDataExpressionSupport" order="last"/>
     <dataExpressionSupport id="template" implementation="icu.windea.pls.ep.config.configExpression.CwtTemplateDataExpressionSupport" order="last, after constant"/>
@@ -159,16 +159,16 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 
-    <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.expression.ParadoxBaseScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="extendedBase" implementation="icu.windea.pls.ep.match.expression.ParadoxExtendedBaseScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxConstantScriptExpressionMatcher" order="first"/>
     <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.expression.ParadoxTemplateScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxPatternScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxPredicateBasedScriptExpressionMatcher" order="first, before constant"/>
 
-    <csvExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.expression.ParadoxBaseCsvExpressionMatcher"/>
-    <csvExpressionMatcher id="extendedBase" implementation="icu.windea.pls.ep.match.expression.ParadoxExtendedBaseCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher"/>
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCoreCsvExpressionMatcher"/>
 
     <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionConstantMatchOptimizer" order="first"/>

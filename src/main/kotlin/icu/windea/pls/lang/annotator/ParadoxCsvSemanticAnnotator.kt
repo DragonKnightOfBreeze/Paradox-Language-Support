@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.annotator.ParadoxCsvSyntaxAnnotator
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -23,7 +23,7 @@ class ParadoxCsvSemanticAnnotator : Annotator {
 
     private fun annotateExpression(element: ParadoxCsvExpressionElement, holder: AnnotationHolder) {
         if (element !is ParadoxCsvColumn) return
-        if (element.isHeaderColumn()) return // 不高亮表格头中的列
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // 不高亮表格头中的列
 
         // 高亮复杂枚举值声明
         if (annotateComplexEnumValue(element, holder)) return

@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.createResults
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -45,7 +45,7 @@ class ParadoxCsvExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         val element = element
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) {
             return columnConfig.pointer.element
         }
         // 根据对应的 expression 进行解析
@@ -56,7 +56,7 @@ class ParadoxCsvExpressionPsiReference(
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) {
             val resolved = columnConfig.pointer.element
             return resolved.createResults()
         }

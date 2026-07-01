@@ -18,7 +18,7 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
-class CwtBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
         fromLiteral(CwtDataTypes.Any, "\$any")
 
@@ -40,7 +40,7 @@ class CwtBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
     }
 }
 
-class CwtExtendedBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtExtraBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
         fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
         fromLiteral(CwtDataTypes.IntPercentageField, "int_percentage_field")

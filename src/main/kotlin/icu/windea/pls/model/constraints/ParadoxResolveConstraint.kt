@@ -5,7 +5,7 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -70,7 +70,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationTextColorAwareElement -> true // <text_color>
                 is ParadoxLocalisationTextIcon -> true // <text_icon>
                 is ParadoxLocalisationTextFormat -> true // <text_format>
-                is ParadoxCsvColumn -> !element.isHeaderColumn()
+                is ParadoxCsvColumn -> !ParadoxCsvPsiService.isHeaderColumn(element)
                 else -> false
             }
         }
@@ -139,7 +139,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
-                is ParadoxCsvColumn -> !element.isHeaderColumn()
+                is ParadoxCsvColumn -> !ParadoxCsvPsiService.isHeaderColumn(element)
                 else -> false
             }
         }
@@ -174,7 +174,7 @@ enum class ParadoxResolveConstraint {
             return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
-                is ParadoxCsvColumn -> !element.isHeaderColumn()
+                is ParadoxCsvColumn -> !ParadoxCsvPsiService.isHeaderColumn(element)
                 else -> false
             }
         }

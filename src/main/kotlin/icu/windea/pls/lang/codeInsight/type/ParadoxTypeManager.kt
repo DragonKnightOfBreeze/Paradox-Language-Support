@@ -8,7 +8,7 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
@@ -207,7 +207,7 @@ object ParadoxTypeManager {
                 if (element !is ParadoxCsvColumn) return null
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
                 when {
-                    element.isHeaderColumn() -> columnConfig.key
+                    ParadoxCsvPsiService.isHeaderColumn(element) -> columnConfig.key
                     else -> {
                         if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // require matched
                         columnConfig.value

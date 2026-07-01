@@ -25,19 +25,15 @@ import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.resolve.isDeclarationRoot
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -49,11 +45,11 @@ import icu.windea.pls.script.psi.isExpression
 import javax.swing.JComponent
 
 /**
- * 无法解析的表达式的代码检查。
+ * （脚本文件中的）无法解析的表达式的代码检查。
  *
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
@@ -73,9 +69,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
-        val file = holder.file
-        val project = holder.project
-        val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(file))
         return object : PsiElementVisitor() {
             private var disabledElement: PsiElement? = null
 
@@ -212,32 +205,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
-                if (!ignoredByConfigs) return false
-                val value = element.value
-                for (memberConfig in expectedConfigs) {
-                    val configExpression = memberConfig.configExpression
-                    if (configExpression.type in CwtDataTypeSets.DefinitionAware) {
-                        val definitionType = configExpression.value ?: continue
-                        val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
-                        val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
-                        if (config != null) return true
-                        if (definitionType == ParadoxDefinitionTypes.gameRule) {
-                            val config1 = configGroup.extendedGameRules.findByPattern(value, element, configGroup)
-                            if (config1 != null) return true
-                        }
-                        if (definitionType == ParadoxDefinitionTypes.onAction) {
-                            val config1 = configGroup.extendedOnActions.findByPattern(value, element, configGroup)
-                            if (config1 != null) return true
-                        }
-                    }
-                }
-                return false
+                return ignoredByConfigs && expectedConfigs.any { ParadoxConfigManager.checkExtendedConfig(element, it) }
             }
         }
     }
 
     private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
+            expectedConfigs.isEmpty() -> ""
             showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
                 .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
@@ -289,12 +264,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
             // ignoredByConfigs
             row {
-                checkBox(ChronicleBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
             // showExpectInfo
             row {
-                checkBox(ChronicleBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
+                checkBox(ChronicleBundle.message("inspection.option.showExpectInfo"))
                     .bindSelected(::showExpectInfo.toAtomicProperty())
             }
         }

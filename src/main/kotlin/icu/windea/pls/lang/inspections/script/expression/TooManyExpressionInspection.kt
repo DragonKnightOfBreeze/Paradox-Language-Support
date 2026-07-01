@@ -37,10 +37,10 @@ import javax.swing.JComponent
 /**
  * 过多的表达式的代码检查。
  *
- * @property firstOnly 是否仅标出第一个错误。
- * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property firstOnly （配置项）是否仅标出第一个错误。
+ * @property firstOnlyOnFile （配置项）在文件级别上，是否仅标出第一个错误。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class TooManyExpressionInspection : LocalInspectionTool() {
     @JvmField var firstOnly = false

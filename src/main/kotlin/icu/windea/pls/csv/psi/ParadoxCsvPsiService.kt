@@ -2,6 +2,7 @@ package icu.windea.pls.csv.psi
 
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.findChild
@@ -9,6 +10,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 
+@Suppress("unused")
 object ParadoxCsvPsiService {
     private val cachedColumnNamesKey = createKey<CachedValue<List<String>>>("cached.paradox.csv.columnNames")
     private const val SEPARATOR = ';'
@@ -60,5 +62,14 @@ object ParadoxCsvPsiService {
         val header = column.parent?.castOrNull<ParadoxCsvRow>()?.parent?.findChild<ParadoxCsvHeader>() ?: return null
         val index = getColumnIndex(column)
         return getColumn(header, index)
+    }
+
+    fun isLastRow(element: ParadoxCsvRowElement): Boolean {
+        if (element !is ParadoxCsvRow) return false
+        return element.siblings(withSelf = false).none { it is ParadoxCsvRow }
+    }
+
+    fun isLastColumn(element: ParadoxCsvColumn): Boolean {
+        return element.siblings(withSelf = false).none { it is ParadoxCsvColumn }
     }
 }

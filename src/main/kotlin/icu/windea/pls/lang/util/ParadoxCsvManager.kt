@@ -13,7 +13,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxCsvService
@@ -53,19 +52,5 @@ object ParadoxCsvManager {
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {
         return ParadoxCsvService.isMatchedColumnConfig(column, columnConfig)
-    }
-
-    @Deprecated("")
-    fun getExpectedHeaderColumnSize(element: ParadoxCsvHeader): Int {
-        val columnList = element.columnList
-        if (lastIsEndColumn(element, columnList)) return columnList.size - 1
-        return columnList.size
-    }
-
-    private fun lastIsEndColumn(element: ParadoxCsvHeader, columnList: List<ParadoxCsvColumn>): Boolean {
-        val lastColumn = columnList.lastOrNull() ?: return false
-        val rowConfig = getRowConfig(element) ?: return false
-        val name = lastColumn.name
-        return name.isNotEmpty() && name == rowConfig.endColumn
     }
 }

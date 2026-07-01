@@ -23,7 +23,7 @@ import javax.swing.JComponent
  * 无法解析的文本格式的代码检查。
  *
  * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class UnresolvedTextFormatInspection : LocalInspectionTool() {

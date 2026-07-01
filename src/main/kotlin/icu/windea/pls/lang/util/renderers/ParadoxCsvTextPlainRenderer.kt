@@ -8,7 +8,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
-import icu.windea.pls.csv.psi.isEmptyColumn
 
 /**
  * 将 CSV 文本渲染为纯文本的渲染器。
@@ -70,7 +69,7 @@ open class ParadoxCsvTextPlainRenderContext(
     }
 
     fun getColumnText(column: ParadoxCsvColumn): String {
-        if (column.isEmptyColumn()) return ""
+        if (ParadoxCsvPsiService.isEmptyColumn(column)) return ""
 
         val value = column.value
 

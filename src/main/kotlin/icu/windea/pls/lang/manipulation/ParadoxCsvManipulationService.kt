@@ -5,14 +5,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.children
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
-import icu.windea.pls.csv.psi.getColumnIndex
 
 object ParadoxCsvManipulationService {
     fun findAllColumnsOfIndex(file: PsiFile, index: Int): Sequence<ParadoxCsvColumn> {
         return file.children().filterIsInstance<ParadoxCsvRowElement>().mapNotNull f@{ rowElement ->
             val column = rowElement.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
-            if (column == null || column.getColumnIndex() != index) return@f null
+            if (column == null || ParadoxCsvPsiService.getColumnIndex(column) != index) return@f null
             column
         }
     }

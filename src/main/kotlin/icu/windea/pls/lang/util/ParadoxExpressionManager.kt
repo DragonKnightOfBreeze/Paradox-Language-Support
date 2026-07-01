@@ -43,7 +43,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -277,7 +277,7 @@ object ParadoxExpressionManager {
     }
 
     fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig, holder: AnnotationHolder) {
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, expressionText, config, holder)
     }
@@ -416,7 +416,7 @@ object ParadoxExpressionManager {
     }
 
     fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): PsiElement? {
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return null
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return null
         val expressionText = getExpressionText(element, rangeInElement)
 
         ProgressManager.checkCanceled()
@@ -425,7 +425,7 @@ object ParadoxExpressionManager {
     }
 
     fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): List<PsiElement> {
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return emptyList()
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
 
         ProgressManager.checkCanceled()

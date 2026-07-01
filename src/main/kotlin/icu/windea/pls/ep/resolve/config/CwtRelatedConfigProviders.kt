@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.resolve.modifier.modifierConfig
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
@@ -303,7 +303,7 @@ class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
         // 基于匹配的规则
         if (element !is ParadoxCsvColumn) return emptySet()
         val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
-        if (element.isHeaderColumn()) {
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) {
             result += columnConfig
         } else {
             val config = columnConfig.valueConfig

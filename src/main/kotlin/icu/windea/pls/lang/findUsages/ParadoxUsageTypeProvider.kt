@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -110,7 +110,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     private fun doGetUsageType(element: ParadoxCsvExpressionElement): UsageType? {
         if (element !is ParadoxCsvColumn) return null
 
-        if (element.isHeaderColumn()) {
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) {
             return ParadoxUsageTypes.HEADER_COLUMN
         }
 

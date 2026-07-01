@@ -20,7 +20,7 @@ import javax.swing.JComponent
  * 无法解析的图标的代码检查。
  *
  * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField var ignoredNames = ""

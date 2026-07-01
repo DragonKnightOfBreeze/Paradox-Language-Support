@@ -18,7 +18,7 @@ import javax.swing.JComponent
 /**
  * 无法解析的颜色的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedColorInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
