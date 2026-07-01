@@ -8,7 +8,6 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.navigation.CwtItemPresentation
 
 class CwtFile(
     viewProvider: FileViewProvider
@@ -23,7 +22,7 @@ class CwtFile(
 
     override fun getFileType() = CwtFileType
 
-    override fun getPresentation() = CwtItemPresentation(this)
+    override fun getPresentation() = CwtPsiPresentation(this)
 
     override fun toString() = PsiService.toPresentableString(this)
 }

@@ -10,8 +10,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -31,7 +31,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
+        return ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -56,7 +56,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isDefinitionCall(element, re) }
+                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatchService.isDefinitionCall(element, re) }
                 if (recursions.isEmpty()) return
                 val description = when {
                     definitionInfo.type == "scripted_trigger" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.2")

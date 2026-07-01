@@ -43,7 +43,7 @@ import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.parentProperty
 
-object ParadoxPsiFileManager {
+object ParadoxPsiFileService {
     // region Find Extensions (from elementOffset)
 
     @Suppress("unused")

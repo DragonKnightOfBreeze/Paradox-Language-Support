@@ -15,11 +15,11 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
-import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -123,7 +123,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxCsvItemPresentation(element)
+        return ParadoxCsvPsiPresentation(element)
     }
 
     @JvmStatic

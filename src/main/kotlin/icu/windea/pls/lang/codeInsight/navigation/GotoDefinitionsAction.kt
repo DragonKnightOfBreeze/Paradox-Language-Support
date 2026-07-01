@@ -6,8 +6,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.editor
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
@@ -27,8 +27,8 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
+        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)) return
         presentation.isVisible = true
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
@@ -37,6 +37,6 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 }

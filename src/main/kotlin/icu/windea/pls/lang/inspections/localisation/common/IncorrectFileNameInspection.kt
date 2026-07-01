@@ -12,7 +12,7 @@ import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.model.ParadoxLocalisationType
 import javax.swing.JComponent
 
@@ -40,7 +40,7 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         // 要求是普通的本地化文件
         if (ParadoxLocalisationType.resolve(file) != ParadoxLocalisationType.Normal) return false
         // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file)
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

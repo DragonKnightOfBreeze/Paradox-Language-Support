@@ -13,7 +13,7 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 
@@ -31,7 +31,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         // 跳过内存文件
         if (VirtualFileService.isLightFile(file.virtualFile)) return false
         // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
+        return ParadoxPsiFileMatchService.isLocalisationFile(file, injectable = true)
     }
 
     private fun isIgnoredFile(file: PsiFile): Boolean {

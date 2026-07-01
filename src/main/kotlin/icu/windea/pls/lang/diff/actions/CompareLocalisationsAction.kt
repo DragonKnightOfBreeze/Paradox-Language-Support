@@ -35,7 +35,7 @@ import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -71,7 +71,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val editor = e.editor ?: return null
         val offset = editor.caretModel.offset
         val psiFile = file.toPsiFile(project) ?: return null
-        return ParadoxPsiFileManager.findLocalisation(psiFile, offset)?.takeIf { it.type != null }
+        return ParadoxPsiFileService.findLocalisation(psiFile, offset)?.takeIf { it.type != null }
     }
 
     override fun update(e: AnActionEvent) {

@@ -17,7 +17,7 @@ import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.tagType
@@ -127,7 +127,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     }
 
     private fun annotateInlineScriptUsage(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return false
+        if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return false
         val name = element.name
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val r1 = TextRange.from(offset, name.length)
@@ -136,7 +136,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     }
 
     private fun annotateDefinitionInjectionExpression(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, gameType)) return false
+        if (!ParadoxPsiMatchService.isDefinitionInjectionUsage(element, gameType)) return false
         val name = element.name
         if (name.isParameterized()) return false // 忽略带参数的情况
 

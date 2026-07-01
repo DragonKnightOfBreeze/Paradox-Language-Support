@@ -12,7 +12,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -34,7 +34,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         // 要求规则分组数据已加载完毕
         if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = !ignoredInInjectedFiles)
+        return ParadoxPsiFileMatchService.isLocalisationFile(file, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

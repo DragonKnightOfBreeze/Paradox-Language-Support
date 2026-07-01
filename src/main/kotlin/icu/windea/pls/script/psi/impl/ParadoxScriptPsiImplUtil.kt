@@ -19,7 +19,7 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
@@ -27,7 +27,6 @@ import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
@@ -132,7 +131,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
-        element.definitionInfo?.let { return ParadoxPsiManager.renameDefinition(element, name, it) }
+        element.definitionInfo?.let { return ParadoxPsiService.renameDefinition(element, name, it) }
         throw IncorrectOperationException()
     }
 
@@ -719,7 +718,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxScriptItemPresentation(element)
+        return ParadoxScriptPsiPresentation(element)
     }
 
     @JvmStatic

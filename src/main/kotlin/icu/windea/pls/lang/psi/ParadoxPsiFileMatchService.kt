@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-object ParadoxPsiFileMatcher {
+object ParadoxPsiFileMatchService {
     /**
      * 是否是直接位于游戏或模组的根目录下的文件（或者根目录本身）。
      */

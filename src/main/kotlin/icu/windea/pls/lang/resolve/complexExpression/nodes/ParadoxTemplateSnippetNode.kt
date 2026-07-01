@@ -17,7 +17,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -98,7 +98,7 @@ class ParadoxTemplateSnippetNode(
         private val project get() = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
+            return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
         }
 
         // 缓存解析结果以优化性能

@@ -10,8 +10,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.ParadoxTargetInfo
@@ -26,7 +26,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        if (!ParadoxPsiMatcher.isScriptedVariable(element)) return null
+        if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
         val name = element.name?.orNull() ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.scriptedVariables.search", name)) {
@@ -45,7 +45,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {
-        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
+        return ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME }
     }
 
     override fun shouldSortTargets(): Boolean {

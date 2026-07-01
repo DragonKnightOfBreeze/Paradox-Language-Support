@@ -32,11 +32,11 @@
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$InlineMathExpressions"/>
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettingsProvider"/>
-    <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
-    <breadcrumbsInfoProvider implementation="icu.windea.pls.script.navigation.ParadoxScriptBreadCrumbsProvider"/>
-    <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionInjectionFileStructureGroupRuleProvider"/>
+    <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
+    <navbar implementation="icu.windea.pls.script.navigationToolbar.ParadoxScriptNavBar"/>
+    <breadcrumbsInfoProvider implementation="icu.windea.pls.script.breadcrumbs.ParadoxScriptBreadCrumbsProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
                              implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>

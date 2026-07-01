@@ -1,18 +1,14 @@
-package icu.windea.pls.cwt.navigation
+package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.truncate
-import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import javax.swing.Icon
 
-object CwtNavigationManager {
+object CwtPsiPresentationService {
     fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
         return when (element) {
             null -> false
@@ -47,6 +43,10 @@ object CwtNavigationManager {
         }
     }
 
+    fun getTreePresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLongPresentableText(element: PsiElement): String? {
         return getPresentableText(element)
     }
@@ -56,7 +56,7 @@ object CwtNavigationManager {
     }
 
     @Suppress("unused")
-    fun getLocalLocationString(element: PsiElement): String? {
+    fun getTreeLocationString(element: PsiElement): String? {
         return null
     }
 

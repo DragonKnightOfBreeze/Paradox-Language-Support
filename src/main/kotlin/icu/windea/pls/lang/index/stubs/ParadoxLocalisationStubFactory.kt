@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
 
-object ParadoxLocalisationStubManager {
+object ParadoxLocalisationStubFactory {
     fun createPropertyListStub(psi: ParadoxLocalisationPropertyList, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationPropertyListStub {
         val locale = selectLocale(psi)?.id
         return ParadoxLocalisationPropertyListStub.create(parentStub, locale)

@@ -6,7 +6,7 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -31,6 +31,6 @@ abstract class CopyLocalisationTextIntentionBase : ModCommandAction, DumbAware {
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileManager.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE }
+        return ParadoxPsiFileService.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }

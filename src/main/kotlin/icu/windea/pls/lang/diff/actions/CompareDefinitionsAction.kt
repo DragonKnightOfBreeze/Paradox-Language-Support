@@ -38,7 +38,7 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -74,7 +74,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val editor = e.editor ?: return null
         val offset = editor.caretModel.offset
         val psiFile = file.toPsiFile(project) ?: return null
-        return ParadoxPsiFileManager.findDefinition(psiFile, offset)
+        return ParadoxPsiFileService.findDefinition(psiFile, offset)
     }
 
     override fun update(e: AnActionEvent) {

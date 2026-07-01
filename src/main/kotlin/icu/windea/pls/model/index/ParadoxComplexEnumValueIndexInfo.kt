@@ -2,7 +2,7 @@ package icu.windea.pls.model.index
 
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -24,5 +24,5 @@ data class ParadoxComplexEnumValueIndexInfo(
         get() = config?.caseInsensitive ?: false
 
     val definitionElement: ParadoxScriptProperty?
-        get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, definitionElementOffset) }
+        get() = file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, definitionElementOffset) }
 }

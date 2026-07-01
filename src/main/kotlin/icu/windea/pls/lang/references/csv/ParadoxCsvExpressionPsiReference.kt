@@ -10,7 +10,7 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxCsvExpressionPsiReference(
@@ -22,7 +22,7 @@ class ParadoxCsvExpressionPsiReference(
     private val project get() = configGroup.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
+        return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
     }
 
     // 缓存解析结果以优化性能

@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationManager
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 
 /**
  * 用于为各种目标提供提示文本，并渲染到快速文档中。
@@ -21,7 +21,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
  *
  * @see ParadoxDocumentationTarget
  * @see ParadoxDocumentationManager
- * @see ParadoxPsiMatcher
+ * @see ParadoxPsiMatchService
  */
 @Suppress("unused")
 @WithGameTypeEP

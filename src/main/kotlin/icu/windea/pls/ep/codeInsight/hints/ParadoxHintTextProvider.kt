@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * - 动态值（参见 [ParadoxHintTextProviderBase.DynamicValue]）
  *
  * @see ParadoxHintsProvider
- * @see ParadoxPsiMatcher
+ * @see ParadoxPsiMatchService
  */
 @Suppress("unused")
 @WithGameTypeEP

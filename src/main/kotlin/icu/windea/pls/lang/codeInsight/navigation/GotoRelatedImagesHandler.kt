@@ -17,7 +17,7 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -82,7 +82,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileManager.findScriptExpression(file, offset)
+        return ParadoxPsiFileService.findScriptExpression(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

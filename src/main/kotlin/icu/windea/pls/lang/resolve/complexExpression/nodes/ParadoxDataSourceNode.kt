@@ -14,7 +14,7 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
@@ -87,7 +87,7 @@ class ParadoxDataSourceNode(
         private val linkConfigsNotDynamicValue = node.linkConfigs.filter { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
+            return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
         }
 
         // 缓存解析结果以优化性能

@@ -29,7 +29,6 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 
-@Suppress("unused")
 object ParadoxPsiSequenceBuilder {
     // region Paradox Script
 

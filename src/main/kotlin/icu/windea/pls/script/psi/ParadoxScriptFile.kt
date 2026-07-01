@@ -11,7 +11,6 @@ import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.navigation.ParadoxScriptItemPresentation
 
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
@@ -26,7 +25,7 @@ class ParadoxScriptFile(
 
     override fun getFileType() = ParadoxScriptFileType
 
-    override fun getPresentation() = ParadoxScriptItemPresentation(this)
+    override fun getPresentation() = ParadoxScriptPsiPresentation(this)
 
     override fun toString() = PsiService.toPresentableString(this)
 

@@ -7,8 +7,8 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.editor
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -29,8 +29,8 @@ class GotoRelatedDefinitionInjectionsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
+        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)) return
         val gameType = selectGameType(file)
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         presentation.isVisible = true
@@ -44,6 +44,6 @@ class GotoRelatedDefinitionInjectionsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 }

@@ -11,7 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.defineVariableInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -40,7 +40,7 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileManager.findScriptProperty(file, offset)
+        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 
-object ParadoxScriptStubManager {
+object ParadoxScriptStubFactory {
     fun createScriptedVariableStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<out PsiElement>?): ParadoxScriptScriptedVariableStub {
         // 排除为空或者带参数的情况
         val name = psi.name.orEmpty()
@@ -41,7 +41,6 @@ object ParadoxScriptStubManager {
         if (name.isEmpty() || name.isParameterized()) return ParadoxScriptPropertyStub.createDummy(parentStub)
         return createPropertyStub(psi, parentStub, name) ?: ParadoxScriptPropertyStub.create(parentStub, name)
     }
-
 
     fun createPropertyStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub? {
         val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return null

@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableDialog
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -45,7 +45,7 @@ class IntroduceGlobalVariableFix(
             CommandProcessor.getInstance().markCurrentCommandAsGlobal(project)
 
             // 在指定脚本文件中声明对应名字的封装变量
-            ParadoxPsiManager.introduceGlobalScriptedVariable(variableNameToUse, variableValueToUse, targetFile, project)
+            ParadoxPsiService.introduceGlobalScriptedVariable(variableNameToUse, variableValueToUse, targetFile, project)
 
             val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
             if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) // 提交文档更改

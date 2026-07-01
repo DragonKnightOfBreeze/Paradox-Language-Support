@@ -24,7 +24,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -113,7 +113,7 @@ class ParadoxInlineScriptInlineProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineInlineScript(usageElement, rangeInUsageElement, element, myProject)
+                ParadoxPsiService.inlineInlineScript(usageElement, rangeInUsageElement, element, myProject)
             } catch (e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

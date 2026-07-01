@@ -1,6 +1,6 @@
 package icu.windea.pls.model.index
 
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -15,5 +15,5 @@ data class ParadoxDefinitionInjectionIndexInfo(
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
     val element: ParadoxScriptProperty?
-        get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, elementOffset) }
+        get() = file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, elementOffset) }
 }

@@ -8,7 +8,7 @@ import com.intellij.refactoring.inline.InlineOptionsDialog
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -23,7 +23,7 @@ class ParadoxScriptedVariableInlineDialog(
     private val editor: Editor?
 ) : InlineOptionsDialog(project, true, element) {
     private val optimizedScope = when {
-        ParadoxPsiMatcher.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
+        ParadoxPsiMatchService.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
             ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
             ?.intersectWith(GlobalSearchScope.projectScope(project))
             ?: GlobalSearchScope.projectScope(project)

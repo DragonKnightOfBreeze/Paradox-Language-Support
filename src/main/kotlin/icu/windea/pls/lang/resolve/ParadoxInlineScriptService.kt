@@ -14,7 +14,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
@@ -107,7 +107,7 @@ object ParadoxInlineScriptService {
     fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
         // hardcoded
         val v = usageElement.block ?: return emptyMap()
-        return ParadoxPsiManager.getArgumentTupleList(v, "script").toMap()
+        return ParadoxPsiService.getArgumentTupleList(v, "script").toMap()
     }
 
     fun getInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null, fast: Boolean = true): List<CwtMemberConfig<*>> {

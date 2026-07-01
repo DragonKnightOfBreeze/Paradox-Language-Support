@@ -23,8 +23,8 @@ import icu.windea.pls.core.process
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptedTriggerInlineProcessor(
@@ -53,7 +53,7 @@ class ParadoxScriptedTriggerInlineProcessor(
         }
         ReferencesSearch.search(element, myRefactoringScope, true).process p@{ reference ->
             ProgressManager.checkCanceled()
-            if (!ParadoxPsiMatcher.isDefinitionCall(element, reference.element)) return@p true
+            if (!ParadoxPsiMatchService.isDefinitionCall(element, reference.element)) return@p true
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()
@@ -110,7 +110,7 @@ class ParadoxScriptedTriggerInlineProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineScriptedTrigger(usageElement, rangeInUsageElement, element, myProject)
+                ParadoxPsiService.inlineScriptedTrigger(usageElement, rangeInUsageElement, element, myProject)
             } catch (e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

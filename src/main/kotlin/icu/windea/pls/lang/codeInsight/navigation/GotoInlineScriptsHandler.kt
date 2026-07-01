@@ -9,8 +9,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -27,7 +27,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
-        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return null
+        if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return null
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.inlineScripts.search", expression)) {
@@ -40,7 +40,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileManager.findScriptProperty(file, offset)
+        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

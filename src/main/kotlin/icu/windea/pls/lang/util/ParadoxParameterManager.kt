@@ -42,7 +42,7 @@ import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectRootFile
@@ -368,7 +368,7 @@ object ParadoxParameterManager {
                         val revert = v.equals("no", true)
                         val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
                         if ((!revert && operator) || (revert && !operator)) {
-                            val (start, end) = ParadoxPsiManager.findMemberElementsToInline(element)
+                            val (start, end) = ParadoxPsiService.findMemberElementsToInline(element)
                             if (start != null && end != null) {
                                 element.parent.addRangeAfter(start, end, element)
                             }

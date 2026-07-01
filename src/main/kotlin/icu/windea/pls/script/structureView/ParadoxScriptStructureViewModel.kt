@@ -9,8 +9,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.*
 
 class ParadoxScriptStructureViewModel(
@@ -30,7 +30,7 @@ class ParadoxScriptStructureViewModel(
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {
-        return ParadoxScriptNavigationManager.accept(element)
+        return ParadoxScriptPsiPresentationService.accept(element)
     }
 
     override fun getGroupers() = _groupers

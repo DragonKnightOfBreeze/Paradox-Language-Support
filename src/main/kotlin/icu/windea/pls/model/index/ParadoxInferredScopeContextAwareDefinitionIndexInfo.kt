@@ -1,6 +1,6 @@
 package icu.windea.pls.model.index
 
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -15,6 +15,6 @@ data class ParadoxInferredScopeContextAwareDefinitionIndexInfo(
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
     val definitionElement: ParadoxScriptProperty?
-        get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, definitionElementOffset) }
-            // ?.takeIf { ParadoxPsiMatcher.isDefinition(it) }
+        get() = file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, definitionElementOffset) }
+            // ?.takeIf { ParadoxPsiMatchService.isDefinition(it) }
 }

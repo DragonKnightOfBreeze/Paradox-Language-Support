@@ -1,8 +1,9 @@
-package icu.windea.pls.cwt.navigation
+package icu.windea.pls.cwt.breadcrumbs
 
 import com.intellij.psi.PsiElement
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtPsiPresentationService
 
 class CwtBreadCrumbsProvider : BreadcrumbsProvider {
     private val _languages = arrayOf(CwtLanguage)
@@ -10,10 +11,10 @@ class CwtBreadCrumbsProvider : BreadcrumbsProvider {
     override fun getLanguages() = _languages
 
     override fun acceptElement(element: PsiElement): Boolean {
-        return CwtNavigationManager.accept(element, forFile = false)
+        return CwtPsiPresentationService.accept(element, forFile = false)
     }
 
     override fun getElementInfo(element: PsiElement): String {
-        return CwtNavigationManager.getLongPresentableText(element).orEmpty()
+        return CwtPsiPresentationService.getLongPresentableText(element).orEmpty()
     }
 }

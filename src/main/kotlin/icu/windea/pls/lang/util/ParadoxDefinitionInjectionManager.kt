@@ -20,7 +20,7 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.selectGameType
@@ -84,7 +84,7 @@ object ParadoxDefinitionInjectionManager {
         val propertyValue = element.propertyValue ?: return false
         if (propertyValue !is ParadoxScriptBlock) return false // 属性的值必须是子句
         val file = element.containingFile ?: return false
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return false // 额外检查
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return false // 额外检查
         // 这里目前不继续检查当前位置是否匹配任意定义类型
         return true
     }

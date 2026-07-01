@@ -15,7 +15,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
@@ -68,7 +68,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
             if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改
 
             // 在指定脚本文件中声明对应名字的封装变量
-            ParadoxPsiManager.introduceGlobalScriptedVariable(variableNameToUse, variableValueToUse, targetFile, project)
+            ParadoxPsiService.introduceGlobalScriptedVariable(variableNameToUse, variableValueToUse, targetFile, project)
             val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
             if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) // 提交文档更改
 

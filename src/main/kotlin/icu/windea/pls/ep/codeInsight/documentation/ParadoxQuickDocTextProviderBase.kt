@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
     abstract class ScriptedVariable : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isScriptedVariable(element)) return null
+            if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
             val name = element.name
             if (name.isNullOrEmpty()) return null
             if (name.isParameterized()) return null
@@ -31,7 +31,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class Definition : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isDefinition(element)) return null
+            if (!ParadoxPsiMatchService.isDefinition(element)) return null
             val definitionInfo = element.definitionInfo ?: return null
             val name = definitionInfo.name
             if (name.isEmpty()) return null
@@ -44,7 +44,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class Define : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isDefine(element)) return null
+            if (!ParadoxPsiMatchService.isDefine(element)) return null
             val defineInfo = element.defineInfo ?: return null
             return doGetQuickDocText(element, defineInfo)
         }
@@ -54,7 +54,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class InlineScript : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isInlineScriptFile(element)) return null
+            if (!ParadoxPsiMatchService.isInlineScriptFile(element)) return null
             val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element) ?: return null
             if (expression.isEmpty()) return null
             if (expression.isParameterized()) return null
@@ -66,7 +66,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class ComplexEnumValue : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isComplexEnumValueElement(element)) return null
+            if (!ParadoxPsiMatchService.isComplexEnumValueElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             if (name.isParameterized()) return null
@@ -78,7 +78,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class DynamicValue : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isDynamicValueElement(element)) return null
+            if (!ParadoxPsiMatchService.isDynamicValueElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             if (name.isParameterized()) return null
@@ -90,7 +90,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class Parameter : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isParameterElement(element)) return null
+            if (!ParadoxPsiMatchService.isParameterElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             // if (name.isParameterized()) return null // unnecessary

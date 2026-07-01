@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
@@ -26,7 +26,7 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        // if (!ParadoxPsiMatcher.isLocalisation(element)) return null // 不需要
+        // if (!ParadoxPsiMatchService.isLocalisation(element)) return null // 不需要
         val type = element.type ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", element.name)) {
@@ -43,7 +43,7 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileManager.findLocalisation(file, offset) { BY_NAME }
+        return ParadoxPsiFileService.findLocalisation(file, offset) { BY_NAME }
     }
 
     override fun shouldSortTargets(): Boolean {

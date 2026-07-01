@@ -11,7 +11,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
@@ -41,7 +41,7 @@ class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return
         val gameType = selectGameType(file) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return
 
         // see: icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection

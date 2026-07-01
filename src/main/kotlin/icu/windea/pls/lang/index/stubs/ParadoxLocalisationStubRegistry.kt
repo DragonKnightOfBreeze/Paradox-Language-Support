@@ -65,11 +65,11 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
 
     class PropertyListFactory : LightStubElementFactory<ParadoxLocalisationPropertyListStub, ParadoxLocalisationPropertyList> {
         override fun createStub(psi: ParadoxLocalisationPropertyList, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationPropertyListStub {
-            return ParadoxLocalisationStubManager.createPropertyListStub(psi, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyListStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyListStub {
-            return ParadoxLocalisationStubManager.createPropertyListStub(node, tree, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyListStub(node, tree, parentStub)
         }
 
         override fun createPsi(stub: ParadoxLocalisationPropertyListStub): ParadoxLocalisationPropertyList {
@@ -98,11 +98,11 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
 
     class PropertyFactory : LightStubElementFactory<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty> {
         override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationPropertyStub {
-            return ParadoxLocalisationStubManager.createPropertyStub(psi, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-            return ParadoxLocalisationStubManager.createPropertyStub(tree, node, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxLocalisationPropertyStub): ParadoxLocalisationProperty {

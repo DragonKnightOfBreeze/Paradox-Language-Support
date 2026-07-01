@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.InlineDocumentation
 import icu.windea.pls.cwt.psi.CwtDocComment
-import icu.windea.pls.lang.psi.CwtPsiManager
+import icu.windea.pls.lang.psi.CwtPsiService
 
 @Suppress("UnstableApiUsage")
 class CwtInlineDocumentation(
@@ -24,7 +24,7 @@ class CwtInlineDocumentation(
     }
 
     override fun renderText(): String? {
-        return CwtPsiManager.getDocCommentText(comments)
+        return CwtPsiService.getDocCommentText(comments)
     }
 
     override fun getOwnerTarget(): DocumentationTarget? {

@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.cwt.psi.CwtTokenSets
 
-object CwtPsiFileManager {
+object CwtPsiFileService {
     // region Find Extensions (from elementOffset)
 
     fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): CwtStringExpressionElement? {

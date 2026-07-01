@@ -39,8 +39,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -73,7 +73,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
         val project = e.project ?: return null
         val psiFile = file.toPsiFile(project) ?: return null
-        if (!ParadoxPsiFileMatcher.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
+        if (!ParadoxPsiFileMatchService.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
         if (!ParadoxDefinitionInjectionManager.isSupported(fileInfo.rootInfo.gameType)) return null // 忽略游戏类型不支持的情况
         return file
     }
@@ -87,8 +87,8 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val editor = e.editor ?: return null
         val offset = editor.caretModel.offset
         val psiFile = file.toPsiFile(project) ?: return null
-        ParadoxPsiFileManager.findDefinition(psiFile, offset)?.let { if (it is ParadoxScriptProperty) return it }
-        ParadoxPsiFileManager.findDefinitionInjection(psiFile, offset)?.let { return it }
+        ParadoxPsiFileService.findDefinition(psiFile, offset)?.let { if (it is ParadoxScriptProperty) return it }
+        ParadoxPsiFileService.findDefinitionInjection(psiFile, offset)?.let { return it }
         return null
     }
 

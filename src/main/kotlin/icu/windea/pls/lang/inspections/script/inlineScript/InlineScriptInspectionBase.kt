@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.script.inlineScript
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
@@ -19,6 +19,6 @@ abstract class InlineScriptInspectionBase : LocalInspectionTool() {
         // 要求规则分组数据已加载完毕
         if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的脚本文件（内联脚本文件中也能嵌套使用内联脚本，因此这里的约束是可行的）
-        return ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)
+        return ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)
     }
 }

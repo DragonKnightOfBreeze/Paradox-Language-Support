@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.navigation
+package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
@@ -6,15 +6,11 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import javax.swing.Icon
 
-object ParadoxLocalisationNavigationManager {
+object ParadoxLocalisationPsiPresentationService {
     fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
         return when (element) {
             null -> false
@@ -58,16 +54,20 @@ object ParadoxLocalisationNavigationManager {
         }
     }
 
+    fun getTreePresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLongPresentableText(element: PsiElement): String? {
         return getPresentableText(element)
     }
 
     fun getLocationString(element: PsiElement): String? {
-        ParadoxPsiManager.getFileInfoText(element)?.let { return it }
+        ParadoxPsiPresentationService.getFileInfoText(element)?.let { return it }
         return element.containingFile?.name
     }
 
-    fun getLocalLocationString(element: PsiElement): String? {
+    fun getTreeLocationString(element: PsiElement): String? {
         return when (element) {
             // 语言区域的显示文本
             is ParadoxLocalisationPropertyList -> selectLocale(element)?.text

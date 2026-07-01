@@ -15,7 +15,7 @@ import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import javax.swing.JComponent
 
 /**
@@ -40,11 +40,11 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
         if (VirtualFileService.isLightFile(virtualFile)) return false
         if (VirtualFileService.isInjectedFile(virtualFile)) return false
         // 忽略直接位于游戏或入口目录下的文件
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return false
+        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return false
         // 要求规则分组数据已加载完毕
         if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file)
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

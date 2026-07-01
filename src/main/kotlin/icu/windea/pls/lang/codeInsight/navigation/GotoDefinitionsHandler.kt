@@ -13,7 +13,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
@@ -48,7 +48,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 
     override fun shouldSortTargets(): Boolean {

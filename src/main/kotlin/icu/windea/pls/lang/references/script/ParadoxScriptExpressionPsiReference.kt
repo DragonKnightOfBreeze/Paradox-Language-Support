@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
@@ -41,7 +41,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
+        return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
     }
 
     override fun isReferenceTo(element: PsiElement): Boolean {

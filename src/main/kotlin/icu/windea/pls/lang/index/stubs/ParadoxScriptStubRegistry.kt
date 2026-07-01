@@ -63,11 +63,11 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         // since 1.3.24, also index local scripted variables, not only global scripted variables
 
         override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<out PsiElement>?): ParadoxScriptScriptedVariableStub {
-            return ParadoxScriptStubManager.createScriptedVariableStub(psi, parentStub)
+            return ParadoxScriptStubFactory.createScriptedVariableStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-            return ParadoxScriptStubManager.createScriptedVariableStub(tree, node, parentStub)
+            return ParadoxScriptStubFactory.createScriptedVariableStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxScriptScriptedVariableStub): ParadoxScriptScriptedVariable {
@@ -99,11 +99,11 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
     class PropertyFactory : LightStubElementFactory<ParadoxScriptPropertyStub, ParadoxScriptProperty> {
         override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?): ParadoxScriptPropertyStub {
-            return ParadoxScriptStubManager.createPropertyStub(psi, parentStub)
+            return ParadoxScriptStubFactory.createPropertyStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-            return ParadoxScriptStubManager.createPropertyStub(tree, node, parentStub)
+            return ParadoxScriptStubFactory.createPropertyStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {

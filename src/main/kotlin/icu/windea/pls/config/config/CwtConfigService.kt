@@ -37,7 +37,7 @@ import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.psi.CwtPsiManager
+import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 
@@ -294,8 +294,8 @@ object CwtConfigService {
     }
 
     fun getDocumentation(element: CwtMember): String? {
-        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
+        val ownedComments = CwtPsiService.getOwnedDocComments(element)
+        val documentation = CwtPsiService.getDocCommentText(ownedComments)
         return documentation
     }
 

@@ -28,9 +28,9 @@
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Members"/>
     <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.formatter.CwtCodeStyleSettingsProvider"/>
-    <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
-    <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.navigation.CwtBreadCrumbsProvider"/>
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
+    <navbar implementation="icu.windea.pls.cwt.navigationToolbar.CwtNavBar"/>
+    <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.breadcrumbs.CwtBreadCrumbsProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
                              implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtOptionKeyManipulator"/>

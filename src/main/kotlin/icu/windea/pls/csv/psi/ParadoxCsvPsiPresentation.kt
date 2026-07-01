@@ -1,11 +1,11 @@
-package icu.windea.pls.cwt.navigation
+package icu.windea.pls.csv.psi
 
 import com.intellij.ide.util.treeView.TreeAnchorizer
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import javax.swing.Icon
 
-class CwtItemPresentation(
+class ParadoxCsvPsiPresentation(
     element: PsiElement
 ) : ItemPresentation {
     private val anchor = TreeAnchorizer.getService().createAnchor(element)
@@ -13,16 +13,16 @@ class CwtItemPresentation(
 
     override fun getIcon(unused: Boolean): Icon? {
         val element = element ?: return null
-        return CwtNavigationManager.getIcon(element)
+        return ParadoxCsvPsiPresentationService.getIcon(element)
     }
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return CwtNavigationManager.getPresentableText(element)
+        return ParadoxCsvPsiPresentationService.getPresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return CwtNavigationManager.getLocationString(element)
+        return ParadoxCsvPsiPresentationService.getLocationString(element)
     }
 }

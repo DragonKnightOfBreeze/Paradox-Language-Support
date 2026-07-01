@@ -8,9 +8,9 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.editor
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
@@ -34,8 +34,8 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
+        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)) return
         presentation.isVisible = true
         if (file.definitionInfo != null) {
             presentation.isEnabled = true
@@ -44,7 +44,7 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val isEnabled = when {
-            ParadoxPsiMatcher.isScriptedVariable(element) -> true
+            ParadoxPsiMatchService.isScriptedVariable(element) -> true
             element !is ParadoxScriptStringExpressionElement -> false
             element.isDefinitionTypeKeyOrName() -> true
             else -> ParadoxModifierManager.resolveModifier(element) != null
@@ -53,8 +53,8 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
-            ?: ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME }
+            ?: ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 }
 

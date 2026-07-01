@@ -12,7 +12,7 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.DelegatedIcon
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.model.ParadoxTextColorInfo
@@ -37,7 +37,7 @@ class ChangeLocalisationColorIntention : ModCommandAction {
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationColorfulText? {
-        return ParadoxPsiFileManager.findLocalisationColorfulText(context.file, context.offset, true)
+        return ParadoxPsiFileService.findLocalisationColorfulText(context.file, context.offset, true)
     }
 
     private class ItemIntention(

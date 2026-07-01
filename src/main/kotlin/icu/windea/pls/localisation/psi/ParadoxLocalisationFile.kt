@@ -10,7 +10,6 @@ import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.navigation.ParadoxLocalisationItemPresentation
 import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationFile(
@@ -32,7 +31,7 @@ class ParadoxLocalisationFile(
 
     override fun getFileType() = ParadoxLocalisationFileType
 
-    override fun getPresentation() = ParadoxLocalisationItemPresentation(this)
+    override fun getPresentation() = ParadoxLocalisationPsiPresentation(this)
 
     override fun toString() = PsiService.toPresentableString(this)
 

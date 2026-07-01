@@ -2,11 +2,12 @@ package icu.windea.pls.lang
 
 import com.intellij.ide.IconProvider
 import com.intellij.psi.PsiElement
-import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
-import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentationService
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiPresentationService
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
 import javax.swing.Icon
 
 /**
@@ -14,10 +15,10 @@ import javax.swing.Icon
  */
 class ParadoxIconProvider : IconProvider() {
     override fun getIcon(element: PsiElement, flags: Int): Icon? {
-        return when (element) {
-            is ParadoxScriptFile -> ParadoxScriptNavigationManager.getPatchedIcon(element)
-            is ParadoxScriptProperty -> ParadoxScriptNavigationManager.getPatchedIcon(element)
-            is ParadoxLocalisationProperty -> ParadoxLocalisationNavigationManager.getPatchedIcon(element)
+        return when (element.language) {
+            ParadoxScriptLanguage -> ParadoxScriptPsiPresentationService.getPatchedIcon(element)
+            ParadoxLocalisationLanguage -> ParadoxLocalisationPsiPresentationService.getPatchedIcon(element)
+            ParadoxCsvLanguage -> ParadoxCsvPsiPresentationService.getPatchedIcon(element)
             else -> null
         }
     }

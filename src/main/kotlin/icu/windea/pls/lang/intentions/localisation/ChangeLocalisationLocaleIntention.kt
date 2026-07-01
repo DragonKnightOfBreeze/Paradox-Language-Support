@@ -13,7 +13,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 
@@ -40,7 +40,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationLocale? {
-        return ParadoxPsiFileManager.findLocalisationLocale(context.file, context.offset, true)
+        return ParadoxPsiFileService.findLocalisationLocale(context.file, context.offset, true)
     }
 
     private class ItemIntention(

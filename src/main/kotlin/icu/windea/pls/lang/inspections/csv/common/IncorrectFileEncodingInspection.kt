@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction
@@ -30,7 +30,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         if (VirtualFileService.isLightFile(virtualFile)) return false
         if (VirtualFileService.isInjectedFile(virtualFile)) return false
         // 要求是可接受的 CSV 文件
-        return ParadoxPsiFileMatcher.isCsvFile(file)
+        return ParadoxPsiFileMatchService.isCsvFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

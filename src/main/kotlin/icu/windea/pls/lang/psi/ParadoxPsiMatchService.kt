@@ -35,9 +35,7 @@ import kotlin.contracts.contract
  * 用于按照类型或语义匹配输入的 PSI。
  */
 @Suppress("unused")
-object ParadoxPsiMatcher {
-    // region Type Sensitive Matchers
-
+object ParadoxPsiMatchService {
     /**
      * 是否是非匿名的封装变量。
      */
@@ -99,10 +97,6 @@ object ParadoxPsiMatcher {
         }
         return element is ParadoxModifierLightElement && element.name.orNull() != null
     }
-
-    // endregion
-
-    // region Semantic Matchers
 
     @OptIn(ExperimentalContracts::class)
     fun isLocalScriptedVariable(element: PsiElement?): Boolean {
@@ -233,6 +227,4 @@ object ParadoxPsiMatcher {
         if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return false
         return true
     }
-
-    // endregion
 }

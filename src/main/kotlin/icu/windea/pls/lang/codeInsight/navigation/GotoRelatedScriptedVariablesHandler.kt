@@ -10,8 +10,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -24,7 +24,7 @@ class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        if (!ParadoxPsiMatcher.isNormalLocalisation(element)) return null
+        if (!ParadoxPsiMatchService.isNormalLocalisation(element)) return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedScriptedVariables.search", element.name)) {
             // need read actions here if necessary
@@ -38,7 +38,7 @@ class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileManager.findLocalisation(file, offset)
+        return ParadoxPsiFileService.findLocalisation(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

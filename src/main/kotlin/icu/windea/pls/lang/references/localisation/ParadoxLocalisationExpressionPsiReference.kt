@@ -8,7 +8,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
@@ -21,7 +21,7 @@ class ParadoxLocalisationExpressionPsiReference(
     private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
+        return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
     }
 
     override fun getReferences(): List<PsiReference> {

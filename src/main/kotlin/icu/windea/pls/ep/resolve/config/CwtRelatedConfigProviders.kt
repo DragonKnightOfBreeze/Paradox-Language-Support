@@ -25,7 +25,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -59,7 +59,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         // 包括内联规则以及内联后的规则
         // 包括其他一些相关的规则
 
-        val element = ParadoxPsiFileManager.findScriptExpression(file, offset) ?: return emptySet()
+        val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return emptySet()
         val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
 
         val result = mutableSetOf<CwtConfig<*>>()
@@ -200,7 +200,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
 
         run {
-            val element = ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@run
+            val element = ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@run
             val name = element.name
             if (name.isNullOrEmpty()) return@run
             if (name.isParameterized()) return@run
@@ -209,7 +209,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         }
 
         run {
-            val element = ParadoxPsiFileManager.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@run
+            val element = ParadoxPsiFileService.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@run
             val definition = element
             val definitionInfo = definition.definitionInfo ?: return@run
             val definitionName = definitionInfo.name
@@ -242,7 +242,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         }
 
         run {
-            val element = ParadoxPsiFileManager.findScriptExpression(file, offset) ?: return@run
+            val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return@run
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val name = element.name
 
@@ -290,7 +290,7 @@ class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         // 适用于 CSV 文件中的某一列对应的表达式
 
-        val element = ParadoxPsiFileManager.findCsvExpression(file, offset) ?: return emptySet()
+        val element = ParadoxPsiFileService.findCsvExpression(file, offset) ?: return emptySet()
         if (element !is ParadoxCsvColumn) return emptySet()
 
         val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()

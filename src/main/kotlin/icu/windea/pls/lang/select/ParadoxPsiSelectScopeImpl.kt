@@ -12,7 +12,7 @@ import icu.windea.pls.core.collections.generateSequenceFromSeeds
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processParent
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
@@ -260,7 +260,7 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
     override fun PsiElement.parentDefinitionCandidate(withSelf: Boolean): ParadoxDefinitionElement? {
         if (language !is ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
-            if (ParadoxPsiMatcher.isDefinitionCandidate(it)) return it
+            if (ParadoxPsiMatchService.isDefinitionCandidate(it)) return it
             true
         }
         return null
@@ -269,7 +269,7 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
     override fun PsiElement.parentDefinition(withSelf: Boolean): ParadoxDefinitionElement? {
         if (language !is ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
-            if (ParadoxPsiMatcher.isDefinition(it)) return it
+            if (ParadoxPsiMatchService.isDefinition(it)) return it
             true
         }
         return null
@@ -279,7 +279,7 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         if (language !is ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
             if (it is ParadoxScriptRootBlock) return@p false
-            if (ParadoxPsiMatcher.isDefinitionInjection(it)) return it
+            if (ParadoxPsiMatchService.isDefinitionInjection(it)) return it
             true
         }
         return null
@@ -288,7 +288,7 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
     override fun PsiElement.parentDefineVariable(withSelf: Boolean): ParadoxScriptProperty? {
         if (language !is ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
-            if (ParadoxPsiMatcher.isDefineVariable(it)) return it
+            if (ParadoxPsiMatchService.isDefineVariable(it)) return it
             true
         }
         return null

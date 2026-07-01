@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.script.scope
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 /**
  * 作用域的代码检查的基类。
@@ -13,6 +13,6 @@ abstract class ScopeInspectionBase : LocalInspectionTool() {
         // 要求规则分组数据已加载完毕
         if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
+        return ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)
     }
 }

@@ -22,7 +22,7 @@ import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuil
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
 import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
@@ -50,7 +50,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         // 跳过需要忽略的文件
         if (isIgnoredFile(file)) return false
         // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file)
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     private fun isIgnoredFile(file: PsiFile): Boolean {

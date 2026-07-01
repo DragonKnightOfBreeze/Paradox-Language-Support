@@ -68,22 +68,12 @@ import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
-object ParadoxPsiManager {
+object ParadoxPsiService {
     object Keys : KeyRegistry() {
         val cachedArgumentTupleList by registerKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
     }
 
     // region Common Methods
-
-    fun getFileInfoText(element: PsiElement): String? {
-        val fileInfo = element.fileInfo ?: return null
-        val path = fileInfo.path.path
-        val entry = fileInfo.entry
-        return when {
-            entry.isEmpty() -> path
-            else -> "$path of $entry"
-        }
-    }
 
     fun getOwnedComments(element: PsiElement): List<PsiComment> {
         return PsiService.getOwnedComments(element) { true }

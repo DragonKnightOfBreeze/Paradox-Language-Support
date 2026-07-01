@@ -5,9 +5,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.editor
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
@@ -27,18 +27,18 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
+        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
         val gameType = selectGameType(file)
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return // 只要向上能找到符合条件的属性就行
-        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return
+        if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return
         presentation.isEnabledAndVisible = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileManager.findScriptProperty(file, offset)
+        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 }
 

@@ -14,7 +14,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -73,7 +73,7 @@ object ParadoxInlineScriptManager {
         val propertyValue = element.propertyValue
         if (propertyValue !is ParadoxScriptString && propertyValue !is ParadoxScriptScriptedVariableReference && propertyValue !is ParadoxScriptBlock) return false
         val file = element.containingFile ?: return false
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return false // 额外检查
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return false // 额外检查
         return true
     }
 

@@ -15,8 +15,8 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -46,10 +46,10 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
     private fun findElement(context: ActionContext): ParadoxScriptProperty? {
         val gameType = selectGameType(context.file) ?: return null
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return null
-        val expression = ParadoxPsiFileManager.findScriptExpression(context.file, context.offset)
+        val expression = ParadoxPsiFileService.findScriptExpression(context.file, context.offset)
         if (expression !is ParadoxScriptPropertyKey) return null
         val property = expression.parentProperty ?: return null
-        if (!ParadoxPsiMatcher.isDefinitionInjection(property)) return null
+        if (!ParadoxPsiMatchService.isDefinitionInjection(property)) return null
         return property
     }
 

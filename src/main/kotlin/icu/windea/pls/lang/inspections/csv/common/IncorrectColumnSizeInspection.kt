@@ -13,7 +13,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.csv.psi.getColumnSize
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
 
@@ -27,7 +27,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         // 要求规则分组数据已加载完毕
         if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的 CSV 文件
-        return ParadoxPsiFileMatcher.isCsvFile(file, injectable = !ignoredInInjectedFiles)
+        return ParadoxPsiFileMatchService.isCsvFile(file, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

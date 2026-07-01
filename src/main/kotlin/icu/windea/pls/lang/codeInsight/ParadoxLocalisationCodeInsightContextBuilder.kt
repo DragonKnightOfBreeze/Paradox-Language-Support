@@ -18,7 +18,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.ChronicleInspections
 import icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -47,7 +47,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
     ): ParadoxLocalisationCodeInsightContext? {
         when (file) {
             is ParadoxScriptFile -> {
-                val element = ParadoxPsiFileManager.findScriptExpression(file, editor.caretModel.offset)
+                val element = ParadoxPsiFileService.findScriptExpression(file, editor.caretModel.offset)
                 val contextElement = when {
                     element == null -> null
                     element.isDefinitionTypeKeyOrName() -> selectScope { element.parentDefinition() }
@@ -62,7 +62,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 return context
             }
             is ParadoxLocalisationFile -> {
-                val element = ParadoxPsiFileManager.findLocalisation(file, editor.caretModel.offset)?.takeIf { it.type != null }
+                val element = ParadoxPsiFileService.findLocalisation(file, editor.caretModel.offset)?.takeIf { it.type != null }
                 val contextElement = element
                 if (contextElement == null) return null
                 val context = fromLocalisation(contextElement, locales, fromInspection)

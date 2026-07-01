@@ -27,10 +27,10 @@
     <defaultLiveTemplates file="/liveTemplates/ParadoxLocalisation.xml"/>
     <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationCodeStyleSettingsProvider"/>
-    <navbar implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationNavBar"/>
-    <breadcrumbsInfoProvider implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationBreadCrumbsProvider"/>
-    <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
+    <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
+    <navbar implementation="icu.windea.pls.localisation.navigationToolbar.ParadoxLocalisationNavBar"/>
+    <breadcrumbsInfoProvider implementation="icu.windea.pls.localisation.breadcrumbs.ParadoxLocalisationBreadCrumbsProvider"/>
 
     <!-- floating toolbar -->
     <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>

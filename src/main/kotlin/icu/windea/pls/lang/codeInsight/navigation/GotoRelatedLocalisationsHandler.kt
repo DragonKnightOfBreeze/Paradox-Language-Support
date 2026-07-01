@@ -17,8 +17,8 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -46,7 +46,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
         val element = findElement(file, offset) ?: return null
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         when {
-            ParadoxPsiMatcher.isScriptedVariable(element) -> {
+            ParadoxPsiMatchService.isScriptedVariable(element) -> {
                 val scriptedVariable = element
                 val name = scriptedVariable.name?.orNull() ?: return null
                 val targets = mutableListOf<PsiElement>()
@@ -113,8 +113,8 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
-            ?: ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME }
+            ?: ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -124,7 +124,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         run {
             when {
-                ParadoxPsiMatcher.isScriptedVariable(sourceElement) -> {
+                ParadoxPsiMatchService.isScriptedVariable(sourceElement) -> {
                     val name = sourceElement.name?.orNull() ?: return@run
                     return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.3", name.escapeXml())
                 }
@@ -149,7 +149,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         run {
             when {
-                ParadoxPsiMatcher.isScriptedVariable(sourceElement) -> {
+                ParadoxPsiMatchService.isScriptedVariable(sourceElement) -> {
                     val name = sourceElement.name?.orNull() ?: return@run
                     return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.3", name.escapeXml())
                 }

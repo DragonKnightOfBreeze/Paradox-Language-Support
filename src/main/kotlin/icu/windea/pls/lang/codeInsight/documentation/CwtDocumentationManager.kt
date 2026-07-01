@@ -38,7 +38,7 @@ import icu.windea.pls.cwt.psi.isExpression
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.CwtPsiManager
+import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -471,8 +471,8 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
+        val ownedComments = CwtPsiService.getOwnedDocComments(element)
+        val documentation = CwtPsiService.getDocCommentText(ownedComments)
         if (documentation.isNullOrEmpty()) return
         content {
             append(documentation)

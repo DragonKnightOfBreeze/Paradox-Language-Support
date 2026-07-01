@@ -20,7 +20,6 @@ import icu.windea.pls.lang.psi.light.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.*
@@ -519,7 +518,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxLocalisationItemPresentation(element)
+        return ParadoxLocalisationPsiPresentation(element)
     }
 
     @JvmStatic

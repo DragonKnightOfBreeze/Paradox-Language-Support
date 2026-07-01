@@ -12,7 +12,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -32,7 +32,7 @@ class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        if (reference != null && !ParadoxPsiMatcher.isDefinitionCall(element, reference.element)) return false
+        if (reference != null && !ParadoxPsiMatchService.isDefinitionCall(element, reference.element)) return false
         return super.canInlineElementInEditor(element, editor)
     }
 
@@ -42,14 +42,14 @@ class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
     }
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty, reference: PsiReference?) {
-        if (reference != null && !ParadoxPsiMatcher.isDefinitionCall(element, reference.element)) {
+        if (reference != null && !ParadoxPsiMatchService.isDefinitionCall(element, reference.element)) {
             val message = ChronicleBundle.message("refactoring.scriptedEffect.invocation", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
 
 
-        val isRecursive = ParadoxRecursionManager.checkDefinition(element) { _, re -> ParadoxPsiMatcher.isDefinitionCall(element, re) }
+        val isRecursive = ParadoxRecursionManager.checkDefinition(element) { _, re -> ParadoxPsiMatchService.isDefinitionCall(element, re) }
         if (isRecursive) {
             val message = ChronicleBundle.message("refactoring.scriptedEffect.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

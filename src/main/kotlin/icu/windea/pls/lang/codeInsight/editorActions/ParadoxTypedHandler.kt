@@ -6,8 +6,8 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
@@ -21,7 +21,7 @@ import icu.windea.pls.lang.selectGameType
  */
 class ParadoxTypedHandler : TypedHandlerDelegate() {
     override fun charTyped(c: Char, project: Project, editor: Editor, file: PsiFile): Result {
-        val matched = ParadoxPsiFileMatcher.isScriptFile(file, injectable = true) || ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
+        val matched = ParadoxPsiFileMatchService.isScriptFile(file, injectable = true) || ParadoxPsiFileMatchService.isLocalisationFile(file, injectable = true)
         if (!matched) return Result.CONTINUE
         charTypedInComplexExpression(c, project, editor, file)?.let { return it }
         return Result.CONTINUE
@@ -32,7 +32,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         val closeMarker = ParadoxComplexExpressionUtil.getMatchedMarker(leftMarker) ?: return null
         val closeChar = closeMarker.singleOrNull() ?: return null
         val caretOffset = editor.caretModel.offset
-        val element = ParadoxPsiFileManager.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
+        val element = ParadoxPsiFileService.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
         if (element == null) return null
 
         val gameType = selectGameType(file) ?: return null
