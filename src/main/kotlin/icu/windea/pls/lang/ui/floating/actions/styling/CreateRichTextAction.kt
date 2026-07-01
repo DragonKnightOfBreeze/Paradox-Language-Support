@@ -27,6 +27,15 @@ sealed class CreateRichTextAction : ToggleAction(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
+    override fun update(event: AnActionEvent) {
+        val originalIcon = event.presentation.icon
+        super.update(event)
+        if (event.isFromContextMenu) {
+            // Restore original icon, as it will be disabled in popups, and we still want to show in GeneratePopup
+            event.presentation.icon = originalIcon
+        }
+    }
+
     override fun isSelected(event: AnActionEvent): Boolean {
         val file = event.getData(CommonDataKeys.PSI_FILE)
         val editor = event.getData(CommonDataKeys.EDITOR)
@@ -34,12 +43,17 @@ sealed class CreateRichTextAction : ToggleAction(), DumbAware {
             event.presentation.isEnabledAndVisible = false
             return false
         }
-        event.presentation.isEnabledAndVisible = true
+        val isAvailable = isAvailable(file)
+        if (!isAvailable) {
+            event.presentation.isEnabledAndVisible = false
+            return false
+        }
         val isSelectedElement = isSelectedElement(file, editor)
         if (isSelectedElement == null) {
             event.presentation.isEnabledAndVisible = false
             return false
         }
+        event.presentation.isEnabledAndVisible = true
         return if (!isSelectedElement) {
             // wrap
             event.presentation.isEnabled = !editor.isViewer
@@ -89,15 +103,6 @@ sealed class CreateRichTextAction : ToggleAction(), DumbAware {
         }
     }
 
-    override fun update(event: AnActionEvent) {
-        val originalIcon = event.presentation.icon
-        super.update(event)
-        if (event.isFromContextMenu) {
-            // Restore original icon, as it will be disabled in popups, and we still want to show in GeneratePopup
-            event.presentation.icon = originalIcon
-        }
-    }
-
     private fun isSelectedElement(file: PsiFile, editor: Editor): Boolean? {
         // 返回null表示此操作不可用
         // 仅判断选中文本之外是否都是正确的首尾PSI ELEMENT，不判断执行操作后语法是否仍然合法
@@ -112,6 +117,8 @@ sealed class CreateRichTextAction : ToggleAction(), DumbAware {
         if (start == end) return false
         return isSelectedElement(startElement, endElement)
     }
+
+    protected abstract fun isAvailable(file: PsiFile): Boolean
 
     protected abstract fun isSelectedElement(startElement: PsiElement, endElement: PsiElement): Boolean
 }
