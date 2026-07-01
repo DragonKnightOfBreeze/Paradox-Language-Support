@@ -686,7 +686,7 @@ Field Explanation:
 - `from_argument`: Whether to read dynamic data from arguments (format like `func(arg)`).
 - `argument_separator`: Separator for multiple arguments (`comma` / `pipe`, defaults to `comma`).
 - `prefix`: Prefix for the dynamic link.
-- `data_source` (multi-valued): Each data source is a data expression constraining the valid values for dynamic data.
+- `data_source` (multivalued): Each data source is a data expression constraining the valid values for dynamic data.
 - `input_scopes`: Input scope set; can be a single value or a set, supporting both `input_scope` and `input_scopes` notations.
 - `output_scope`: Output scope; when empty, indicates passthrough or derivation based on data source.
 - `for_definition_type`: Only available within the specified definition type.
@@ -920,7 +920,7 @@ database_object_types = {
 <!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
 
 Union configs are used to provide a set of candidate data expressions for union matching. During matching, the candidates are recursively expanded and attempted in order.
-Unlike enum configs, the options here can be data expressions of various data types.
+Unlike enum configs, the available values here can be data expressions of various data types.
 
 Path location:
 - `union[{name}]` – where `{name}` matches the config name.

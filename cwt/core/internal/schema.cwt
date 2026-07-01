@@ -305,8 +305,14 @@ single_alias[$single_alias$] = $declaration
 ## api_status = $enum:api_status$
 alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
+#### Introduce a [Union Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-union)
+#### to apply union match with several data expression candidates.
+union[$union$] = {
+    $data_expression
+}
+
 #### Introduce a [Macro Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-macro)
-#### to describe special expressions and structures that alter the game's runtime script parser behavior.
+#### to describe special language constructs (expressions, statements, etc.) that alter the game's runtime script parser behavior.
 macro[$macro$] = $any
 
 # endregion
