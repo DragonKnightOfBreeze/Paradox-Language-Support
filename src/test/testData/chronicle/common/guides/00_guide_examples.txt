@@ -1,0 +1,11 @@
+guide_example = {
+    name = hello_world
+}
+
+guide_example = {
+    name = next_step
+}
+
+guide_example = {
+    name = on_the_way
+}

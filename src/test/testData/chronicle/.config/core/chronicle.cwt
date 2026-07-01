@@ -123,3 +123,20 @@ enums = {
     }
 }
 
+scopes = {
+    Character = {
+        aliases = { character }
+    }
+    Scene = {
+        aliases = { scene }
+    }
+    Area = {
+        aliases = { area }
+    }
+}
+
+scope_groups = {
+    geography = {
+        scene area
+    }
+}
