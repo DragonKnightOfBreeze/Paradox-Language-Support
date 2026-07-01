@@ -16,4 +16,6 @@ object PlsActions {
     const val GotoInlineScripts = "Pls.GoToInlineScripts"
     const val GotoDefinitionInjections = "Pls.GoToDefinitionInjections"
     const val GotoDefinitionInjectionTargets = "Pls.GoToDefinitionInjectionTargets"
+
+    // and more...
 }

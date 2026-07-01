@@ -1,11 +1,10 @@
-@file:Suppress("unused")
-
-package icu.windea.pls.lang.editor
+package icu.windea.pls.core.editor
 
 import com.intellij.openapi.editor.Document
 import com.intellij.util.DocumentUtil
 
-object PlsDocumentManager {
+@Suppress("unused")
+object DocumentService {
     fun isAtLineStart(document: Document, offset: Int, skipWhitespaces: Boolean = false): Boolean {
         if (!skipWhitespaces) return DocumentUtil.isAtLineStart(offset, document)
         val lineStartOffset = DocumentUtil.getLineStartOffset(offset, document)

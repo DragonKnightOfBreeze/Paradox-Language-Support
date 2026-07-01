@@ -1,10 +1,9 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.core.psi
 
 import com.intellij.psi.PsiComment
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
@@ -18,7 +17,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class PlsPsiManagerTest : BasePlatformTestCase() {
+class PsiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
