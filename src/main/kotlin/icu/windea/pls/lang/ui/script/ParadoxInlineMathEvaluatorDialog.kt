@@ -150,7 +150,7 @@ class ParadoxInlineMathEvaluatorDialog(
 
     override fun getPreferredFocusedComponent() = table
 
-    override fun getDimensionServiceKey() = "Pls.ParadoxInlineMathEvaluatorDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ParadoxInlineMathEvaluatorDialog" // 持久化对话框的位置
 
     private fun updateResultText() {
         val args = argumentList

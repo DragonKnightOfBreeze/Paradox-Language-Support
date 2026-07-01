@@ -104,5 +104,5 @@ class ParadoxGameSettingsDialog(
         application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
 
-    override fun getDimensionServiceKey() = "Pls.ParadoxGameSettingsDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ParadoxGameSettingsDialog" // 持久化对话框的位置
 }

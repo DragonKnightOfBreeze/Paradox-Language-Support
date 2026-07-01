@@ -125,7 +125,7 @@ class GenerateConfigDialog(
         super.doOKAction()
     }
 
-    override fun getDimensionServiceKey() = "Pls.GenerateConfigDialog" // 持久化对话框的位置
+    override fun getDimensionServiceKey() = "Chronicle.GenerateConfigDialog" // 持久化对话框的位置
 
     private fun getDefaultInputPath() = propertiesComponent.getValue(inputPathKey, "")
 

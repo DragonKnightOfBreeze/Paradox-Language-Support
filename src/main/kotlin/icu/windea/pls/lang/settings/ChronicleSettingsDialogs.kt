@@ -68,7 +68,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
         super.doOKAction()
     }
 
-    override fun getDimensionServiceKey() = "Pls.DefaultGameDirectoriesDialog"
+    override fun getDimensionServiceKey() = "Chronicle.DefaultGameDirectoriesDialog" // 持久化对话框的位置
 }
 
 class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
@@ -95,7 +95,7 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
         }
     }
 
-    override fun getDimensionServiceKey() = "Pls.DefinitionTypeBindingsInCallHierarchyDialog"
+    override fun getDimensionServiceKey() = "Chronicle.DefinitionTypeBindingsInCallHierarchyDialog" // 持久化对话框的位置
 }
 
 class ClauseTemplateSettingsDialog : DialogWrapper(null) {
@@ -116,5 +116,5 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
         }
     }
 
-    override fun getDimensionServiceKey() = "Pls.ClauseTemplateSettingsDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ClauseTemplateSettingsDialog" // 持久化对话框的位置
 }

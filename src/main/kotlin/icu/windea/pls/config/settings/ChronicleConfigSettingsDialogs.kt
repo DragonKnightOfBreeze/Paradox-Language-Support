@@ -53,5 +53,5 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
         super.doOKAction()
     }
 
-    override fun getDimensionServiceKey() = "Pls.ConfigRepositoryUrlsDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ConfigRepositoryUrlsDialog" // 持久化对话框的位置
 }

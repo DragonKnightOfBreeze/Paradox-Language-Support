@@ -189,5 +189,5 @@ class ParadoxModSettingsDialog(
         }
     }
 
-    override fun getDimensionServiceKey() = "Pls.ParadoxModSettingsDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ParadoxModSettingsDialog" // 持久化对话框的位置
 }

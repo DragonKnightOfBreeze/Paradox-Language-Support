@@ -161,5 +161,5 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
         super.doOKAction()
     }
 
-    override fun getDimensionServiceKey() = "Pls.TigerHighlightDialog"
+    override fun getDimensionServiceKey() = "Chronicle.TigerHighlightDialog" // 持久化对话框的位置
 }

@@ -81,5 +81,5 @@ class ParadoxModDependencySettingsDialog(
     //     cancelAction.putValue(Action.NAME, IdeBundle.message("action.close"))
     // }
 
-    override fun getDimensionServiceKey() = "Pls.ParadoxModDependencySettingsDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ParadoxModDependencySettingsDialog" // 持久化对话框的位置
 }
