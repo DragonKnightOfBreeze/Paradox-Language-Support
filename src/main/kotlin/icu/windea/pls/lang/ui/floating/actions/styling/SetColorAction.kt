@@ -17,7 +17,7 @@ import icu.windea.pls.model.ParadoxTextColorInfo
 class SetColorAction(
     val colorConfig: ParadoxTextColorInfo
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
-    private val setColorActionBaseName = ChronicleBundle.message("action.Pls.Localisation.Styling.SetColor.text")
+    private val actionBaseName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.SetColor.text")
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -54,7 +54,7 @@ class SetColorAction(
         val end = if (endIndex != -1) selectionEnd + endIndex else selectionEnd
         val toReplaceEnd = if (endIndex != -1) selectionEnd + endIndex - 2 else selectionEnd
         val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return
-        executeWriteCommand(project, setColorActionBaseName, makeWritable = file) {
+        executeWriteCommand(project, actionBaseName, makeWritable = file) {
             val toReplace = editor.document.getText(TextRange.create(toReplaceStart, toReplaceEnd))
             val replaced = "§${colorConfig.name}$toReplace§!"
             editor.document.replaceString(start, end, replaced)

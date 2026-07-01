@@ -662,11 +662,14 @@
     </group>
 
     <group id="Pls.Localisation.Toolbar.Floating">
-      <action id="Pls.Localisation.Styling.CreateReference" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationProperty">
+      <action id="Pls.Localisation.Styling.CreateParameter" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateParameterAction" icon="icu.windea.pls.ChronicleIcons.Nodes.Parameter">
         <keyboard-shortcut first-keystroke="control alt r" keymap="$default"/>
       </action>
       <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationIcon">
         <keyboard-shortcut first-keystroke="control alt i" keymap="$default"/>
+      </action>
+      <action id="Pls.Localisation.Styling.CreateTextIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateTextIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationTextIcon">
+        <keyboard-shortcut first-keystroke="control alt shift i" keymap="$default"/>
       </action>
       <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationCommand">
         <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
@@ -678,7 +681,7 @@
     <group id="Pls.Localisation.InsertGroup">
       <!-- Also add all insert actions into default generate popup -->
       <add-to-group group-id="GenerateGroup" anchor="last"/>
-      <reference ref="Pls.Localisation.Styling.CreateReference"/>
+      <reference ref="Pls.Localisation.Styling.CreateParameter"/>
       <reference ref="Pls.Localisation.Styling.CreateIcon"/>
       <reference ref="Pls.Localisation.Styling.CreateCommand"/>
     </group>

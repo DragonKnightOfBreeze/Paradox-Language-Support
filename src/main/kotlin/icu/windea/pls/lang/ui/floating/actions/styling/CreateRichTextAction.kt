@@ -7,23 +7,23 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
 // org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
-class CreateReferenceAction : ToggleAction(), DumbAware {
-    private val wrapActionName: String
-        get() = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.text")
+sealed class CreateRichTextAction : ToggleAction(), DumbAware {
+    protected abstract val startMarker: String
+    protected abstract val endMarker: String
 
-    private val unwrapActionName: String
-        get() = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.unwrap.text")
+    protected abstract val wrapActionName: String
+    protected abstract val wrapActionDescription: String
+    protected abstract val unwrapActionName: String
+    protected abstract val unwrapActionDescription: String
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -44,13 +44,13 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
             // wrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = wrapActionName
-            event.presentation.description = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.description")
+            event.presentation.description = wrapActionDescription
             false
         } else {
             // unwrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = unwrapActionName
-            event.presentation.description = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.unwrap.description")
+            event.presentation.description = unwrapActionDescription
             true
         }
     }
@@ -71,19 +71,19 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
         if (state) {
             // wrap
             executeWriteCommand(project, wrapActionName, makeWritable = file) {
-                editor.document.insertString(end, "$")
-                editor.document.insertString(start, "$")
-                editor.caretModel.moveToOffset(start + 1)
-                editor.selectionModel.setSelection(start + 1, end + 1)
+                editor.document.insertString(end, endMarker)
+                editor.document.insertString(start, startMarker)
+                editor.caretModel.moveToOffset(start + startMarker.length)
+                editor.selectionModel.setSelection(start + startMarker.length, end + endMarker.length)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
             }
         } else {
             // unwrap
             executeWriteCommand(project, unwrapActionName, makeWritable = file) {
-                editor.document.deleteString(end, end + 1)
-                editor.document.deleteString(start - 1, start)
-                editor.caretModel.moveToOffset(start - 1)
-                editor.selectionModel.setSelection(start - 1, end - 1)
+                editor.document.deleteString(end, end + endMarker.length)
+                editor.document.deleteString(start - startMarker.length, start)
+                editor.caretModel.moveToOffset(start - startMarker.length)
+                editor.selectionModel.setSelection(start - startMarker.length, end - endMarker.length)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
             }
         }
@@ -110,6 +110,8 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
         val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
         if (startParent !== endParent) return null
         if (start == end) return false
-        return startElement.elementType == PARAMETER_START && endElement.elementType == PARAMETER_END
+        return isSelectedElement(startElement, endElement)
     }
+
+    protected abstract fun isSelectedElement(startElement: PsiElement, endElement: PsiElement): Boolean
 }

@@ -12,7 +12,7 @@ import icu.windea.pls.core.ui.FloatingToolbar
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
 import icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
-import icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateParameterAction
 import icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
 import icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -31,7 +31,7 @@ import kotlinx.coroutines.CoroutineScope
  * - 快速插入命令 - 不会检查插入后语法是否合法
  * - 更改文本颜色（将会列出所有可选的颜色代码）
  *
- * @see CreateReferenceAction
+ * @see CreateParameterAction
  * @see CreateIconAction
  * @see CreateCommandAction
  * @see SetColorGroup
