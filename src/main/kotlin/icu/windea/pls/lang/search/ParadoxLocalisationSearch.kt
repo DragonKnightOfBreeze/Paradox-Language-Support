@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
@@ -68,10 +68,10 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmStatic
         fun processVariants(type: ParadoxLocalisationType, prefixMatcher: PrefixMatcher, selector: Selector, processor: Processor<ParadoxLocalisationProperty>): Boolean {
             val indexKey = when (type) {
-                ParadoxLocalisationType.Normal -> PlsIndexKeys.LocalisationName
-                ParadoxLocalisationType.Synced -> PlsIndexKeys.SyncedLocalisationName
+                ParadoxLocalisationType.Normal -> ChronicleIndexKeys.LocalisationName
+                ParadoxLocalisationType.Synced -> ChronicleIndexKeys.SyncedLocalisationName
             }
-            return PlsIndexService.processVariants(indexKey, prefixMatcher, selector, processor)
+            return ChronicleIndexService.processVariants(indexKey, prefixMatcher, selector, processor)
         }
 
         @JvmStatic

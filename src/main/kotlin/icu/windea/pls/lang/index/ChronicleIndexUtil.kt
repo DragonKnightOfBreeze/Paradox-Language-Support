@@ -3,7 +3,7 @@ package icu.windea.pls.lang.index
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.lang.fileInfo
 
-object PlsIndexUtil {
+object ChronicleIndexUtil {
     const val nameKeyPrefix = "name:"
     const val typeKeyPrefix = "type:"
     const val idKeyPrefix = "id:"

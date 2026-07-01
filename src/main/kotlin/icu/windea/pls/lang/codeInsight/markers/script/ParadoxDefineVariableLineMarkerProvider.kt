@@ -11,7 +11,7 @@ import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFac
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
-import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -56,6 +56,6 @@ class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProv
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         val actionText = ChronicleBundle.message("script.gutterIcon.defineVariable.action")
-        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoDefineVariables)
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoDefineVariables)
     }
 }

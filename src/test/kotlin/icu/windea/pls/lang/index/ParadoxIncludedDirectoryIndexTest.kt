@@ -40,7 +40,7 @@ class ParadoxIncludedDirectoryIndexTest : BasePlatformTestCase() {
         dir?.injectFileInfo(gameType, "common")
         FileBasedIndex.getInstance().requestReindex(dir!!)
 
-        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.IncludedDirectory, project)
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.IncludedDirectory, project)
         val expectedKey = "${gameType.id}:common"
         Assert.assertTrue("Expected key '$expectedKey' in index", expectedKey in allKeys)
     }
@@ -66,7 +66,7 @@ class ParadoxIncludedDirectoryIndexTest : BasePlatformTestCase() {
         }
         FileBasedIndex.getInstance().requestReindex(copied)
 
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.IncludedDirectory, copied.parent, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.IncludedDirectory, copied.parent, project)
         Assert.assertTrue("Expected excluded directory 'jomini' not to be indexed", fileData.isEmpty())
     }
 
@@ -79,7 +79,7 @@ class ParadoxIncludedDirectoryIndexTest : BasePlatformTestCase() {
 
         // .hidden.test.txt 的父目录是 common，它本身是可见的
         // 但如果存在以点开头的目录，该目录不应在索引中
-        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.IncludedDirectory, project)
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.IncludedDirectory, project)
         val hiddenDirKey = "${gameType.id}:.hidden"
         Assert.assertFalse("Expected hidden directory not to be in index", hiddenDirKey in allKeys)
     }

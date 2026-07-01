@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.Component
@@ -66,7 +66,7 @@ class ParadoxModDependencySettingsDialog(
                 label(ChronicleBundle.message("mod.dependency.settings.modDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(ChronicleBundle.message("modDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                    .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
                     .columns(COLUMNS_LARGE)

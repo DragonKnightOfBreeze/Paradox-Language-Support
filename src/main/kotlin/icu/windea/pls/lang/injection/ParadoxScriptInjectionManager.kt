@@ -168,7 +168,7 @@ object ParadoxScriptInjectionManager {
         val injectionInfo = when {
             host is ParadoxScriptStringExpressionElement -> {
                 val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile // actual PsiFile of VirtualFileWindow
-                val shreds = PlsInjectionManager.getShreds(file0)
+                val shreds = ChronicleInjectionManager.getShreds(file0)
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
                 // it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)

@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class ParadoxSyncedLocalisationChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private val indexKey = PlsIndexKeys.SyncedLocalisationName
+    private val indexKey = ChronicleIndexKeys.SyncedLocalisationName
 
     private fun isEnabled() = PlsSettings.getInstance().state.navigation.seForSyncedLocalisations
 
@@ -28,7 +28,7 @@ class ParadoxSyncedLocalisationChooseByNameContributor : ChooseByNameContributor
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
-        val name = PlsChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
+        val name = ChronicleChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = parameters.searchScope
         val idFilter = parameters.idFilter

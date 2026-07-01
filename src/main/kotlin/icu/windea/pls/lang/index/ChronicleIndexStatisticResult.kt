@@ -4,7 +4,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfoType
 
 @Suppress("unused")
-data class PlsIndexStatisticResult(
+data class ChronicleIndexStatisticResult(
     val configSymbol: Map<ParadoxGameType, Long>,
     val complexEnumValue: Map<ParadoxGameType, Long>,
     val definition: Map<ParadoxGameType, Long>,

@@ -53,9 +53,9 @@ import java.io.DataOutput
 class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxDefinitionIndexInfo>({ it.type }, { it.name })
 
-    override fun getName() = PlsIndexKeys.Definition
+    override fun getName() = ChronicleIndexKeys.Definition
 
-    override fun getVersion() = PlsIndexVersions.Definition
+    override fun getVersion() = ChronicleIndexVersions.Definition
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
@@ -207,16 +207,16 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     }
 
     private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
-        PlsIndexStatisticService.recordDefinition(info.gameType)
+        ChronicleIndexStatisticService.recordDefinition(info.gameType)
 
         val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type) }
         val name = info.name.letIf(ignoreCase) { it.lowercase() }
         val type = info.type
-        fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
-        fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
         if (name.isEmpty()) return
-        fileData.getOrPut(PlsIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
-        fileData.getOrPut(PlsIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
@@ -229,7 +229,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionIndexInfo>> {
-        return mapOf(PlsIndexUtil.createLazyKey() to emptyList())
+        return mapOf(ChronicleIndexUtil.createLazyKey() to emptyList())
     }
 
     override fun saveValue(storage: DataOutput, value: List<ParadoxDefinitionIndexInfo>) {

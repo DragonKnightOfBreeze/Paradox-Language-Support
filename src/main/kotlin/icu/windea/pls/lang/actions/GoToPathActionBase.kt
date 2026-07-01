@@ -70,7 +70,7 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
 
     protected fun getGameType(e: AnActionEvent): ParadoxGameType? {
         // NOTE 2.1.2 首先需要尝试从绑定的属性获取游戏类型
-        val fromData = PlsDataKeys.gameTypeProperty.getData(e.dataContext)
+        val fromData = ChronicleDataKeys.gameTypeProperty.getData(e.dataContext)
         if (fromData != null) return fromData.get()
 
         // 尝试从上下文文件获取游戏类型

@@ -13,7 +13,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModSetInfo
@@ -46,7 +46,7 @@ class ParadoxModDependenciesExportPopup(
         val gameType = settings.finalGameType
         val gameTypeProperty = AtomicProperty(gameType)
         val descriptor = modExporter.createFileSaverDescriptor(gameType)
-            .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+            .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
         val baseDir = modExporter.getSavedBaseDir(gameType)
         val fileName = modExporter.getSavedFileName(gameType)
         val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, table).save(baseDir, fileName)

@@ -9,7 +9,7 @@ import com.intellij.util.diff.FlyweightCapableTreeStructure
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexVersions
+import icu.windea.pls.lang.index.ChronicleIndexVersions
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.lexer.ParadoxScriptLexerFactory
 import icu.windea.pls.script.parser.ParadoxScriptParser
@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 
 @Suppress("UnstableApiUsage")
 class ParadoxScriptStubDefinition : LightLanguageStubDefinition {
-    override val stubVersion = PlsIndexVersions.ScriptStub
+    override val stubVersion = ChronicleIndexVersions.ScriptStub
     override val builder = ParadoxScriptStubBuilder()
 
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {

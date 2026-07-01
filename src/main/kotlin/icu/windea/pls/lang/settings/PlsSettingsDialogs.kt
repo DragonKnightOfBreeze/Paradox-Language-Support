@@ -10,7 +10,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.ui.EntryListTableModel
 import icu.windea.pls.core.util.Entry
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.JComponent
@@ -37,7 +37,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                     label(gameType.title + ":").widthGroup("left")
                     val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(ChronicleBundle.message("gameDirectory.title"))
-                        .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                        .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
                         .columns(COLUMNS_LARGE)

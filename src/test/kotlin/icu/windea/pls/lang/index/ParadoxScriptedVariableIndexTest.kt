@@ -38,7 +38,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.ScriptedVariableName,
+            ChronicleIndexKeys.ScriptedVariableName,
             "var",
             project,
             scope,
@@ -59,7 +59,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.ScriptedVariableName,
+            ChronicleIndexKeys.ScriptedVariableName,
             "var",
             project,
             scope,

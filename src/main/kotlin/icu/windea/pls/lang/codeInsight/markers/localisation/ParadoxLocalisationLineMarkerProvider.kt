@@ -11,7 +11,7 @@ import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFac
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -57,6 +57,6 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         val actionText = ChronicleBundle.message("localisation.gutterIcon.localisation.action")
-        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoLocalisations)
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoLocalisations)
     }
 }

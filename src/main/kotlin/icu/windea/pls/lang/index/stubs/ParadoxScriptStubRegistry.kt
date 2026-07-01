@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -93,7 +93,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
         override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
             if (stub.name.isEmpty()) return
-            sink.occurrence(PlsIndexKeys.ScriptedVariableName, stub.name)
+            sink.occurrence(ChronicleIndexKeys.ScriptedVariableName, stub.name)
         }
     }
 
@@ -176,20 +176,20 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
             when (stub) {
                 is ParadoxScriptPropertyStub.DefineNamespace -> {
                     if (stub.namespace.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.DefineNamespace, stub.namespace)
+                    sink.occurrence(ChronicleIndexKeys.DefineNamespace, stub.namespace)
                 }
                 is ParadoxScriptPropertyStub.DefineVariable -> {
                     if (stub.namespace.isEmpty()) return
                     if (stub.variable.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.DefineVariable, ParadoxDefineVariableKey(stub.namespace, stub.variable))
+                    sink.occurrence(ChronicleIndexKeys.DefineVariable, ParadoxDefineVariableKey(stub.namespace, stub.variable))
                 }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                     if (stub.expression.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.InlineScriptUsage, stub.expression)
+                    sink.occurrence(ChronicleIndexKeys.InlineScriptUsage, stub.expression)
                 }
                 is ParadoxScriptPropertyStub.InlineScriptArgument -> {
                     if (stub.expression.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.InlineScriptArgument, stub.expression)
+                    sink.occurrence(ChronicleIndexKeys.InlineScriptArgument, stub.expression)
                 }
                 else -> {}
             }

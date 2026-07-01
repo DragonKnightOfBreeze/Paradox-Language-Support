@@ -12,7 +12,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
@@ -63,7 +63,7 @@ class ParadoxGameSettingsDialog(
                 label(ChronicleBundle.message("game.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(ChronicleBundle.message("game.settings.gameDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                    .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.gameDirectory.orEmpty())
                     .columns(COLUMNS_LARGE)

@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 基于名字索引封装变量声明。
  */
 class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptScriptedVariable>() {
-    override fun getKey() = PlsIndexKeys.ScriptedVariableName
+    override fun getKey() = ChronicleIndexKeys.ScriptedVariableName
 
-    override fun getVersion() = PlsIndexVersions.ScriptStub
+    override fun getVersion() = ChronicleIndexVersions.ScriptStub
 }

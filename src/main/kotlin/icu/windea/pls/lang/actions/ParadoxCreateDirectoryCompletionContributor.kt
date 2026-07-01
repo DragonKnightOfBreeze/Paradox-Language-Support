@@ -10,7 +10,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxFileInfo
 
 /**
@@ -60,7 +60,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         val gameType = fileInfo.rootInfo.gameType
         val project = directory.project
         val gameTypePrefix = "${gameType.id}:"
-        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.IncludedDirectory, project)
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.IncludedDirectory, project)
         for (key in allKeys) {
             ProgressManager.checkCanceled()
             if (!key.startsWith(gameTypePrefix)) continue

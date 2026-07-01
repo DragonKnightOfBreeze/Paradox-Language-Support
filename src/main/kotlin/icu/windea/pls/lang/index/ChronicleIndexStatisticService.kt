@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
 @Suppress("unused")
-object PlsIndexStatisticService {
+object ChronicleIndexStatisticService {
     var recordIndexStats = ChronicleCapacities.recordIndexStats()
 
     private val configSymbolCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
@@ -16,8 +16,8 @@ object PlsIndexStatisticService {
     private val definitionInjectionCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val mergedCounters = ConcurrentHashMap<ParadoxGameType, ConcurrentHashMap<ParadoxIndexInfoType<*>, AtomicLong>>()
 
-    fun collectResult(): PlsIndexStatisticResult {
-        return PlsIndexStatisticResult(
+    fun collectResult(): ChronicleIndexStatisticResult {
+        return ChronicleIndexStatisticResult(
             configSymbolCounters.mapValues { (_, v) -> v.get() },
             complexEnumValueCounters.mapValues { (_, v) -> v.get() },
             definitionCounters.mapValues { (_, v) -> v.get() },

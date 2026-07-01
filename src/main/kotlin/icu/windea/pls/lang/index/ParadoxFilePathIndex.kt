@@ -18,9 +18,9 @@ class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getName() = PlsIndexKeys.FilePath
+    override fun getName() = ChronicleIndexKeys.FilePath
 
-    override fun getVersion() = PlsIndexVersions.FilePath
+    override fun getVersion() = ChronicleIndexVersions.FilePath
 
     override fun getInputFilter() = inputFilter
 

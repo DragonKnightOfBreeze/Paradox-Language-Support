@@ -9,7 +9,7 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.injection.PlsInjectionManager
+import icu.windea.pls.lang.injection.ChronicleInjectionManager
 import icu.windea.pls.lang.selectFile
 
 /**
@@ -27,7 +27,7 @@ class RefManagerImplCodeInjector : CodeInjectorBase() {
             if (entity !is RefFile) return@r
             val element = entity.psiElement ?: return@r
             val file = selectFile(element) ?: return@r
-            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
+            val contextFile = ChronicleInjectionManager.findTopHostFileOrThis(file)
             val fileInfo = contextFile.fileInfo ?: return@r
             return fileInfo.path.parent.orNull()
         }

@@ -13,7 +13,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -62,6 +62,6 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         val actionText = ChronicleBundle.message("script.gutterIcon.definition.action")
-        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoDefinitions)
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoDefinitions)
     }
 }

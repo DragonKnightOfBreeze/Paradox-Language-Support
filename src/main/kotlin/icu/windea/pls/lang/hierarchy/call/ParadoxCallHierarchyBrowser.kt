@@ -15,7 +15,7 @@ import com.intellij.ui.PopupHandler
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.element
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
@@ -37,13 +37,13 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
 
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         val tree1 = createTree(false)
-        PopupHandler.installPopupMenu(tree1, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree1, ChronicleActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         val baseOnThisAction = BaseOnThisAction()
         baseOnThisAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree1)
         trees.put(getCalleeType(), tree1)
 
         val tree2 = createTree(false)
-        PopupHandler.installPopupMenu(tree2, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree2, ChronicleActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         baseOnThisAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree2)
         trees.put(getCallerType(), tree2)
     }

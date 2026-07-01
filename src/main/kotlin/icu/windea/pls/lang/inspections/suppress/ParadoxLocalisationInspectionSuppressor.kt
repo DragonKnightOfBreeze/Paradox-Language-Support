@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleSuppressionUtil
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -22,9 +23,9 @@ import icu.windea.pls.model.constants.ChronicleConstants
 class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         val propertyElement = element.parentOfType<ParadoxLocalisationProperty>()
-        if (propertyElement != null && PlsInspectionSuppressManager.isSuppressedInComment(propertyElement, toolId)) return true
+        if (propertyElement != null && ChronicleSuppressionUtil.isSuppressedInComment(propertyElement, toolId)) return true
         val file = (propertyElement ?: element).containingFile
-        if (file != null && PlsInspectionSuppressManager.isSuppressedInComment(file, toolId)) return true
+        if (file != null && ChronicleSuppressionUtil.isSuppressedInComment(file, toolId)) return true
         return false
     }
 

@@ -14,7 +14,7 @@ import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModDependencies
@@ -51,7 +51,7 @@ class ParadoxModDependenciesImportPopup(
         val gameTypeProperty = AtomicProperty(gameType)
         val selected = modImporter.getSelectedFile(gameType)?.toVirtualFile()
         val descriptor = modImporter.createFileChooserDescriptor(gameType)
-            .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+            .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
         FileChooser.chooseFile(descriptor, project, table, selected) { file ->
             doExecute(settings, modImporter, file)
         }

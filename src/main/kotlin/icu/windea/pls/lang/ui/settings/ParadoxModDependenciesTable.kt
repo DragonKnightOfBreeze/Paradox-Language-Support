@@ -15,7 +15,7 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.registerDoubleClickListener
-import icu.windea.pls.lang.actions.PlsActionPlaces
+import icu.windea.pls.lang.actions.ChronicleActionPlaces
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
@@ -176,7 +176,7 @@ class ParadoxModDependenciesTable(
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(table))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamAction(table))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamWebsiteAction(table))
-            PopupHandler.installPopupMenu(table, actionGroup, PlsActionPlaces.MOD_DEPENDENCIES_POPUP)
+            PopupHandler.installPopupMenu(table, actionGroup, ChronicleActionPlaces.MOD_DEPENDENCIES_POPUP)
             return panel
         }
     }

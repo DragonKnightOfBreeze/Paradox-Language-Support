@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.index.ParadoxMergedIndex
-import icu.windea.pls.lang.index.PlsIndexStatisticService
+import icu.windea.pls.lang.index.ChronicleIndexStatisticService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -42,7 +42,7 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
 
     fun <T : ParadoxIndexInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        PlsIndexStatisticService.recordMerged(info.gameType, indexInfoType)
+        ChronicleIndexStatisticService.recordMerged(info.gameType, indexInfoType)
 
         fileData.getOrPut(indexInfoType.key.toString()) { mutableListOf() }.asMutable() += info
     }

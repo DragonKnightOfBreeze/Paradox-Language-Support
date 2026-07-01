@@ -53,7 +53,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val allData = FileBasedIndex.getInstance().getValues(PlsIndexKeys.DefinitionInjection, PlsIndexUtil.createAllKey(), scope).flatten()
+        val allData = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.DefinitionInjection, ChronicleIndexUtil.createAllKey(), scope).flatten()
 
         // Assert
         val expect = listOf(
@@ -87,18 +87,18 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert: key 分发
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(4, allInfos.size)
         Assert.assertEquals(expectedInfos.toSet(), allInfos.toSet())
 
-        val typeInfos = fileData[PlsIndexUtil.createTypeKey("arcane_tome")].orEmpty()
+        val typeInfos = fileData[ChronicleIndexUtil.createTypeKey("arcane_tome")].orEmpty()
         Assert.assertEquals(4, typeInfos.size)
 
-        Assert.assertEquals(listOf(expectedInfos[0]), fileData[PlsIndexUtil.createNameKey("tome_of_flames")])
-        Assert.assertEquals(listOf(expectedInfos[0]), fileData[PlsIndexUtil.createNameTypeKey("tome_of_flames", "arcane_tome")])
+        Assert.assertEquals(listOf(expectedInfos[0]), fileData[ChronicleIndexUtil.createNameKey("tome_of_flames")])
+        Assert.assertEquals(listOf(expectedInfos[0]), fileData[ChronicleIndexUtil.createNameTypeKey("tome_of_flames", "arcane_tome")])
     }
 
     @Test
@@ -109,16 +109,16 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert: 标量值（非块）应被忽略
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("tome_scalar")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("tome_scalar")])
         // 未知模式应被忽略
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("should_be_ignored")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("should_be_ignored")])
         // 参数化表达式应被忽略
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("A_\$PARAM\$_B")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("A_\$PARAM\$_B")])
         // 嵌套属性（非顶层）应被忽略
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("nested_should_be_ignored")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("nested_should_be_ignored")])
     }
 
     // endregion
@@ -140,12 +140,12 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
-        Assert.assertEquals(expectedInfos, fileData[PlsIndexUtil.createAllKey()])
-        Assert.assertEquals(expectedInfos, fileData[PlsIndexUtil.createTypeKey("academy_spell")])
-        Assert.assertEquals(listOf(expectedInfos[0]), fileData[PlsIndexUtil.createNameTypeKey("shared_name", "academy_spell")])
+        Assert.assertEquals(expectedInfos, fileData[ChronicleIndexUtil.createAllKey()])
+        Assert.assertEquals(expectedInfos, fileData[ChronicleIndexUtil.createTypeKey("academy_spell")])
+        Assert.assertEquals(listOf(expectedInfos[0]), fileData[ChronicleIndexUtil.createNameTypeKey("shared_name", "academy_spell")])
     }
 
     // endregion
@@ -164,7 +164,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val sharedInfos = FileBasedIndex.getInstance()
-            .getValues(PlsIndexKeys.DefinitionInjection, PlsIndexUtil.createNameKey("shared_name"), scope).flatten()
+            .getValues(ChronicleIndexKeys.DefinitionInjection, ChronicleIndexUtil.createNameKey("shared_name"), scope).flatten()
 
         // Assert: "shared_name" 出现在 arcane_tome（TRY_INJECT）和 academy_spell（INJECT）两种类型中
         Assert.assertEquals(2, sharedInfos.size)
@@ -182,7 +182,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val allInfos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.DefinitionInjection, PlsIndexUtil.createAllKey(), scope).flatten()
+        val allInfos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.DefinitionInjection, ChronicleIndexUtil.createAllKey(), scope).flatten()
 
         // Assert: arcane_tome(4) + academy_spell(2) = 6
         Assert.assertEquals(6, allInfos.size)
@@ -201,7 +201,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
         Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
@@ -215,7 +215,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
         Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
@@ -229,7 +229,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
         Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
@@ -243,10 +243,10 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         val offsets = allInfos.map { it.elementOffset }
         Assert.assertEquals(4, offsets.size)
         Assert.assertEquals(offsets.toSet().size, offsets.size) // 互不相同

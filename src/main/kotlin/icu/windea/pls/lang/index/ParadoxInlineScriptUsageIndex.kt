@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 内联脚本用法的索引（基于内联脚本表达式）。
  */
 class ParadoxInlineScriptUsageIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
-    override fun getKey() = PlsIndexKeys.InlineScriptUsage
+    override fun getKey() = ChronicleIndexKeys.InlineScriptUsage
 
-    override fun getVersion() = PlsIndexVersions.LocalisationStub
+    override fun getVersion() = ChronicleIndexVersions.LocalisationStub
 }

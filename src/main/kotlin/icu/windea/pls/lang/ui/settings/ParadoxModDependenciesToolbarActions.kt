@@ -18,7 +18,7 @@ import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.qualifiedName
@@ -37,7 +37,7 @@ interface ParadoxModDependenciesToolbarActions {
             val gameTypeProperty = AtomicProperty(gameType)
             val descriptor = FileChooserDescriptorFactory.multiDirs()
                 .withTitle(ChronicleBundle.message("mod.dependencies.add.title"))
-                .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
             FileChooser.chooseFiles(descriptor, project, table, null) { files ->
                 try {
                     var count = 0

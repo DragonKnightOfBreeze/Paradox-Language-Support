@@ -23,7 +23,7 @@ import icu.windea.pls.model.index.IndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfoType
 
-object PlsIndexService {
+object ChronicleIndexService {
     // region FileBasedIndex Methods
 
     fun <INDEX : IndexInfoAwareFileBasedIndex<V, T>, V, T : IndexInfo> processAllFileData(

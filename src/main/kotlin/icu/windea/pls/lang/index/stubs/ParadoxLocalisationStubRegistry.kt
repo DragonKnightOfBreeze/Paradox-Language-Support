@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -129,7 +129,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
             if (stub.name.isEmpty()) return
             when (stub.type) {
                 ParadoxLocalisationType.Normal -> {
-                    sink.occurrence(PlsIndexKeys.LocalisationName, stub.name)
+                    sink.occurrence(ChronicleIndexKeys.LocalisationName, stub.name)
                     ParadoxLocalisationIndexConstraint.entries.forEach { constraint ->
                         if (constraint.test(stub.name)) {
                             val name = stub.name.letIf(constraint.ignoreCase) { it.lowercase() }
@@ -138,7 +138,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
                     }
                 }
                 ParadoxLocalisationType.Synced -> {
-                    sink.occurrence(PlsIndexKeys.SyncedLocalisationName, stub.name)
+                    sink.occurrence(ChronicleIndexKeys.SyncedLocalisationName, stub.name)
                 }
             }
         }

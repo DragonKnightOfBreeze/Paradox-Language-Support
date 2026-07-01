@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -33,12 +33,12 @@ class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptProperty>): Boolean {
         if (!context.isValid()) return true
         if (context.namespace == null) {
-            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineNamespace, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         } else {
             if (context.namespace.isEmpty()) return true
-            return PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, context.namespace, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(ChronicleIndexKeys.DefineNamespace, context.namespace, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         }

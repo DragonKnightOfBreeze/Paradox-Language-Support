@@ -22,9 +22,9 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getName() = PlsIndexKeys.FileLocale
+    override fun getName() = ChronicleIndexKeys.FileLocale
 
-    override fun getVersion() = PlsIndexVersions.FileLocale
+    override fun getVersion() = ChronicleIndexVersions.FileLocale
 
     override fun getInputFilter() = inputFilter
 

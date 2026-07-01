@@ -45,17 +45,17 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         // act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val namespaces = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, namespaces.size)
         Assert.assertEquals("NGameplay", namespaces.single().name)
 
         val marineKey = ParadoxDefineVariableKey("NGameplay", "MARINE")
-        val variables = StubIndex.getElements(PlsIndexKeys.DefineVariable, marineKey, project, scope, ParadoxScriptProperty::class.java)
+        val variables = StubIndex.getElements(ChronicleIndexKeys.DefineVariable, marineKey, project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, variables.size)
         Assert.assertEquals("MARINE", variables.single().name)
 
         val fleetPowerKey = ParadoxDefineVariableKey("NGameplay", "FLEET_POWER")
-        val variables2 = StubIndex.getElements(PlsIndexKeys.DefineVariable, fleetPowerKey, project, scope, ParadoxScriptProperty::class.java)
+        val variables2 = StubIndex.getElements(ChronicleIndexKeys.DefineVariable, fleetPowerKey, project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, variables2.size)
         Assert.assertEquals("FLEET_POWER", variables2.single().name)
     }
@@ -73,10 +73,10 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         val scope = GlobalSearchScope.projectScope(project)
 
         // assert namespaces
-        val namespaces1 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces1 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, namespaces1.size)
         Assert.assertEquals("NGameplay", namespaces1.single().name)
-        val namespaces2 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "NEconomy", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces2 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "NEconomy", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, namespaces2.size)
         Assert.assertEquals("NEconomy", namespaces2.single().name)
 
@@ -86,16 +86,16 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         val key3 = ParadoxDefineVariableKey("NEconomy", "ENERGY")
         val key4 = ParadoxDefineVariableKey("NEconomy", "MINERALS")
         val key5 = ParadoxDefineVariableKey("NEconomy", "MARINE")
-        Assert.assertEquals(1, StubIndex.getElements(PlsIndexKeys.DefineVariable, key1, project, scope, ParadoxScriptProperty::class.java).size)
-        Assert.assertEquals(1, StubIndex.getElements(PlsIndexKeys.DefineVariable, key2, project, scope, ParadoxScriptProperty::class.java).size)
-        Assert.assertEquals(1, StubIndex.getElements(PlsIndexKeys.DefineVariable, key3, project, scope, ParadoxScriptProperty::class.java).size)
-        Assert.assertEquals(1, StubIndex.getElements(PlsIndexKeys.DefineVariable, key4, project, scope, ParadoxScriptProperty::class.java).size)
-        Assert.assertEquals(1, StubIndex.getElements(PlsIndexKeys.DefineVariable, key5, project, scope, ParadoxScriptProperty::class.java).size)
+        Assert.assertEquals(1, StubIndex.getElements(ChronicleIndexKeys.DefineVariable, key1, project, scope, ParadoxScriptProperty::class.java).size)
+        Assert.assertEquals(1, StubIndex.getElements(ChronicleIndexKeys.DefineVariable, key2, project, scope, ParadoxScriptProperty::class.java).size)
+        Assert.assertEquals(1, StubIndex.getElements(ChronicleIndexKeys.DefineVariable, key3, project, scope, ParadoxScriptProperty::class.java).size)
+        Assert.assertEquals(1, StubIndex.getElements(ChronicleIndexKeys.DefineVariable, key4, project, scope, ParadoxScriptProperty::class.java).size)
+        Assert.assertEquals(1, StubIndex.getElements(ChronicleIndexKeys.DefineVariable, key5, project, scope, ParadoxScriptProperty::class.java).size)
 
         // NOT_A_DEFINE should not be indexed as namespace or variable
-        val namespaces3 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "NOT_A_DEFINE", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces3 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "NOT_A_DEFINE", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(namespaces3.isEmpty())
-        val variables3 = StubIndex.getElements(PlsIndexKeys.DefineVariable, ParadoxDefineVariableKey("NOT_A_DEFINE", "ANY"), project, scope, ParadoxScriptProperty::class.java)
+        val variables3 = StubIndex.getElements(ChronicleIndexKeys.DefineVariable, ParadoxDefineVariableKey("NOT_A_DEFINE", "ANY"), project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(variables3.isEmpty())
     }
 
@@ -111,22 +111,22 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         val scope = GlobalSearchScope.projectScope(project)
 
         // valid namespace should be indexed
-        val namespaces1 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces1 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, namespaces1.size)
 
         // parameterized namespace should not be indexed
-        val namespaces2 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "\$NS$", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces2 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "\$NS$", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(namespaces2.isEmpty())
-        val namespaces3 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "N\$NS$", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces3 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "N\$NS$", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(namespaces3.isEmpty())
 
         // top-level property not block should not be indexed as namespace
-        val namespaces4 = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "N_NOT_BLOCK", project, scope, ParadoxScriptProperty::class.java)
+        val namespaces4 = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "N_NOT_BLOCK", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(namespaces4.isEmpty())
 
         // nested variable should not be indexed as define variable
         val nestedKey = ParadoxDefineVariableKey("NGameplay", "INSIDE")
-        val nestedVariables = StubIndex.getElements(PlsIndexKeys.DefineVariable, nestedKey, project, scope, ParadoxScriptProperty::class.java)
+        val nestedVariables = StubIndex.getElements(ChronicleIndexKeys.DefineVariable, nestedKey, project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(nestedVariables.isEmpty())
     }
 

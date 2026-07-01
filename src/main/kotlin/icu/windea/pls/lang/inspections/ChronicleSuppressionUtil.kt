@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.suppress
+package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.SuppressionUtil
 import com.intellij.psi.PsiComment
@@ -7,11 +7,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.regex.Pattern
 
-object PlsInspectionSuppressManager {
+object ChronicleSuppressionUtil {
+    // com.intellij.codeInspection.SuppressionUtil
     // com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
     // org.intellij.grammar.inspection.BnfInspectionSuppressor
 

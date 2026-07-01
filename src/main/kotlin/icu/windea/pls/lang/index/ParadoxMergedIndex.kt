@@ -69,9 +69,9 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val definitionCandidate by registerKey<Boolean>(Keys)
     }
 
-    override fun getName() = PlsIndexKeys.Merged
+    override fun getName() = ChronicleIndexKeys.Merged
 
-    override fun getVersion() = PlsIndexVersions.Merged
+    override fun getVersion() = ChronicleIndexVersions.Merged
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType

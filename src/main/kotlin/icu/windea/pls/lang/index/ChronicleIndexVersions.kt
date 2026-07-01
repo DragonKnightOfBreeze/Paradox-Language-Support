@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.index
 
-object PlsIndexVersions {
+object ChronicleIndexVersions {
     const val ScriptStub = 95 // 2.1.10
     const val LocalisationStub = 95 // 2.1.10
 

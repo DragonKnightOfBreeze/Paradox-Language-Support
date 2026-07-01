@@ -9,7 +9,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.index.CwtConfigSymbolIndex
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.CwtConfigSearchContext
@@ -30,7 +30,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
     private fun processQuery(context: Context, consumer: Processor<in CwtConfigSymbolIndexInfo>): Boolean {
         if (!context.isValid()) return true
         val keys = context.types
-        return PlsIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        return ChronicleIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
             context.types.process { type ->
                 val infos = fileData[type].orEmpty()
                 infos.process { info -> processInfo(context, file, info, consumer) }

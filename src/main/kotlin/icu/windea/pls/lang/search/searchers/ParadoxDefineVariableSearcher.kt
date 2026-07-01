@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -35,19 +35,19 @@ class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, P
         if (!context.isValid()) return true
         if (context.namespace != null && context.variable != null) {
             val key = ParadoxDefineVariableKey(context.namespace, context.variable)
-            return PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(ChronicleIndexKeys.DefineVariable, key, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         } else if (context.namespace != null) {
-            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, context.project, context.scope, { it.namespace == context.namespace }) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineVariable, context.project, context.scope, { it.namespace == context.namespace }) { _, element ->
                 consumer.process(element)
             }
         } else if (context.variable != null) {
-            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, context.project, context.scope, { it.variable == context.variable }) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineVariable, context.project, context.scope, { it.variable == context.variable }) { _, element ->
                 consumer.process(element)
             }
         } else {
-            return PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineVariable, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         }

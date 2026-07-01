@@ -16,8 +16,8 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
@@ -154,11 +154,11 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
     }
 
     private fun processScriptVariables(context: Context, processor: Processor<ParadoxScriptScriptedVariable>): Boolean {
-        val indexKey = PlsIndexKeys.ScriptedVariableName
+        val indexKey = ChronicleIndexKeys.ScriptedVariableName
         return if (context.name == null) {
-            PlsIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
+            ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
         } else {
-            PlsIndexService.processElements(indexKey, context.name, context.project, context.scope) { element -> processor.process(element) }
+            ChronicleIndexService.processElements(indexKey, context.name, context.project, context.scope) { element -> processor.process(element) }
         }
     }
 

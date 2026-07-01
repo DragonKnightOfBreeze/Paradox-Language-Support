@@ -16,7 +16,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
@@ -97,7 +97,7 @@ class ParadoxModSettingsDialog(
                 label(ChronicleBundle.message("mod.settings.modDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(ChronicleBundle.message("modDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                    .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
                     .columns(COLUMNS_LARGE)
@@ -124,7 +124,7 @@ class ParadoxModSettingsDialog(
                 label(ChronicleBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(ChronicleBundle.message("gameDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                    .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.text = it } }
                     .bindText(gameDirectoryProperty)

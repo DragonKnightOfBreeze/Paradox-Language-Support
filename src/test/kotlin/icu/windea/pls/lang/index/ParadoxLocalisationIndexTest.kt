@@ -38,7 +38,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.LocalisationName,
+            ChronicleIndexKeys.LocalisationName,
             "UI_OK",
             project,
             scope,
@@ -59,7 +59,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.SyncedLocalisationName,
+            ChronicleIndexKeys.SyncedLocalisationName,
             "SYNC_TITLE",
             project,
             scope,

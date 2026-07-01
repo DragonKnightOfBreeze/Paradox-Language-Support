@@ -9,7 +9,7 @@ import com.intellij.util.diff.FlyweightCapableTreeStructure
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexVersions
+import icu.windea.pls.lang.index.ChronicleIndexVersions
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -17,7 +17,7 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
-    override val stubVersion = PlsIndexVersions.LocalisationStub
+    override val stubVersion = ChronicleIndexVersions.LocalisationStub
     override val builder = ParadoxLocalisationStubBuilder()
 
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {

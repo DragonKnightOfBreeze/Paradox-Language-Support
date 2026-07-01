@@ -9,8 +9,8 @@ import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
-import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.index.PlsIndexUtil
+import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -36,9 +36,9 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         if (!context.isValid()) return true
         val keys = setOf(
             createActualKey(context),
-            PlsIndexUtil.createLazyKey(),
+            ChronicleIndexUtil.createLazyKey(),
         )
-        return PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        return ChronicleIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
             infos.process { info -> processInfo(context, file, info, consumer) }
@@ -47,7 +47,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
 
     private fun createActualKey(context: Context): String {
         val type = context.enumName
-        return PlsIndexUtil.createTypeKey(type)
+        return ChronicleIndexUtil.createTypeKey(type)
     }
 
     private fun processInfo(context: Context, file: VirtualFile, info: ParadoxComplexEnumValueIndexInfo, consumer: Processor<in ParadoxComplexEnumValueIndexInfo>): Boolean {

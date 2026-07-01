@@ -15,7 +15,7 @@ import com.intellij.ui.PopupHandler
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
@@ -34,7 +34,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         Type.entries.forEach { type ->
             val tree = createTree(true)
-            PopupHandler.installPopupMenu(tree, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
+            PopupHandler.installPopupMenu(tree, ChronicleActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
             val baseOnThisAction = BaseOnThisAction()
             baseOnThisAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_TYPE_HIERARCHY).shortcutSet, tree)
             trees.put(type.text, tree)

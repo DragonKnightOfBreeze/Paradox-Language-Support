@@ -45,9 +45,9 @@ import java.io.DataOutput
 class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxComplexEnumValueIndexInfo>, ParadoxComplexEnumValueIndexInfo>() {
     private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
 
-    override fun getName() = PlsIndexKeys.ComplexEnumValue
+    override fun getName() = ChronicleIndexKeys.ComplexEnumValue
 
-    override fun getVersion() = PlsIndexVersions.ComplexEnumValue
+    override fun getVersion() = ChronicleIndexVersions.ComplexEnumValue
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
@@ -121,10 +121,10 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
     }
 
     private fun addToFileData(info: ParadoxComplexEnumValueIndexInfo, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
-        PlsIndexStatisticService.recordComplexEnumValue(info.gameType)
+        ChronicleIndexStatisticService.recordComplexEnumValue(info.gameType)
 
         val type = info.enumName
-        fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
@@ -138,7 +138,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {
         // 用于兼容懒加载的索引，真实数据通过 gist 计算
-        return mapOf(PlsIndexUtil.createLazyKey() to emptyList())
+        return mapOf(ChronicleIndexUtil.createLazyKey() to emptyList())
     }
 
     override fun saveValue(storage: DataOutput, value: List<ParadoxComplexEnumValueIndexInfo>) {

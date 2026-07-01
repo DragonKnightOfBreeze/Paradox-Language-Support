@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.actions
 
-object PlsActions {
+object ChronicleActions {
     const val DefinitionHierarchyPopupMenu = "Pls.DefinitionHierarchyPopupMenu"
     const val CallHierarchyPopupMenu = "Pls.CallHierarchyPopupMenu"
 

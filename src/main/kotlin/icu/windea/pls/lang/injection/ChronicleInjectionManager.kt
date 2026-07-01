@@ -11,7 +11,7 @@ import com.intellij.psi.impl.source.tree.injected.Place
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.getShreds
 
-object PlsInjectionManager {
+object ChronicleInjectionManager {
     /**
      * 向上找到最顶层的作为语言注入宿主的虚拟文件，或者返回自身。
      */
