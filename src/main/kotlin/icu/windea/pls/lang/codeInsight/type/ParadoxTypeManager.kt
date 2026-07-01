@@ -2,10 +2,8 @@ package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -39,7 +37,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDefinitionName
 
@@ -100,16 +97,17 @@ object ParadoxTypeManager {
                     if (definition is ParadoxScriptProperty) return findTypeDeclarations(definition)
                 }
 
-                if (element is ParadoxScriptStringExpressionElement) {
-                    val complexEnumValueInfo = element.complexEnumValueInfo
-                    if (complexEnumValueInfo != null) {
-                        val gameType = complexEnumValueInfo.gameType
-                        val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
-                        val enumName = complexEnumValueInfo.enumName
-                        val config = configGroup.complexEnums[enumName] ?: return emptyList() // unexpected
-                        val resolved = config.pointer.element ?: return emptyList()
-                        return resolved.to.singletonList()
-                    }
+                val complexEnumValueInfo = element.complexEnumValueInfo
+                if (complexEnumValueInfo != null) {
+                    val resolved = complexEnumValueInfo.config.pointer.element
+                    return resolved.to.singletonListOrEmpty()
+                }
+            }
+            element is ParadoxCsvExpressionElement -> {
+                val complexEnumValueInfo = element.complexEnumValueInfo
+                if (complexEnumValueInfo != null) {
+                    val resolved = complexEnumValueInfo.config.pointer.element
+                    return resolved.to.singletonListOrEmpty()
                 }
             }
         }

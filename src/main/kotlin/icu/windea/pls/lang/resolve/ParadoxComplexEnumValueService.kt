@@ -4,6 +4,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.orNull
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
@@ -11,6 +14,7 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -33,6 +37,17 @@ object ParadoxComplexEnumValueService {
         return ParadoxComplexEnumValueInfo(name, enumName, config)
     }
 
+    fun resolveInfo(element: ParadoxCsvExpressionElement): ParadoxComplexEnumValueInfo? {
+        if (element !is ParadoxCsvColumn) return null
+        val name = element.value
+        if (name.isParameterized()) return null // 排除可能带参数的情况
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
+        val enumName = columnConfig.optionData.declareComplexEnum?.orNull() ?: return null
+        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null
+        val config = columnConfig // 这里改为使用列规则
+        return ParadoxComplexEnumValueInfo(name, enumName, config)
+    }
+
     fun resolveNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
         val selector = ParadoxLocalisationSearch.selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.searchNormal(name, selector).find()
@@ -44,7 +59,13 @@ object ParadoxComplexEnumValueService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
+    fun getInfoDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
         return listOf(file)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getInfoDependencies(element: ParadoxCsvExpressionElement): List<Any> {
+        if (element is ParadoxCsvColumn) element.parent?.let { return listOf(it) } // depend on current row
+        return listOf(element.containingFile)
     }
 }

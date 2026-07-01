@@ -165,7 +165,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
         val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
 
-        val deps = ParadoxDefinitionService.getDependencies(titan, file)
+        val deps = ParadoxDefinitionService.getInfoDependencies(titan, file)
 
         // 应依赖 file
         Assert.assertEquals(1, deps.size)

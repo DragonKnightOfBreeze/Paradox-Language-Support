@@ -71,15 +71,15 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
     }
 }
 
+fun ParadoxScriptExpressionElement.isResolvableLiteralExpression(): Boolean {
+    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumberExpressionElement
+}
+
 /**
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的规则。
  */
 fun ParadoxScriptExpressionElement.isValidExpression(options: ParadoxMatchOptions? = null): Boolean {
     return ParadoxConfigManager.getConfigs(this, options.normalized().copy(fallback = false)).size == 1
-}
-
-fun ParadoxScriptExpressionElement.isResolvableExpression(): Boolean {
-    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumberExpressionElement
 }
 
 fun ParadoxScriptExpressionElement.isDefinitionTypeKeyOrName(): Boolean {
@@ -98,7 +98,7 @@ fun ParadoxScriptPropertyKey.isDefinitionTypeKey(): Boolean {
 
 fun ParadoxScriptValue.isDefinitionName(): Boolean {
     // #131
-    if (!isResolvableExpression()) return false
+    if (!isResolvableLiteralExpression()) return false
 
     val nameProperty = parentProperty ?: return false
     // def = def_name

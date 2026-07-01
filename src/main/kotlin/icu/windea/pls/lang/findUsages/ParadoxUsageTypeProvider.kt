@@ -34,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isResolvableExpression
+import icu.windea.pls.script.psi.isResolvableLiteralExpression
 
 /**
  * 在查找用法中，区分定义、本地化等各种声明的用法类型。
@@ -68,7 +68,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 
     private fun doGetUsageType(element: ParadoxScriptExpressionElement, targets: Array<out UsageTarget>): UsageType? {
         // #131
-        if (!element.isResolvableExpression()) return null
+        if (!element.isResolvableLiteralExpression()) return null
 
         // 尝试解析为定义注入目标
         run {

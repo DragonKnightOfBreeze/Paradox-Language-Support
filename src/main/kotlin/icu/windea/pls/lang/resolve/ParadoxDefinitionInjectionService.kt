@@ -100,7 +100,7 @@ object ParadoxDefinitionInjectionService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
+    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
         // 由于不能有 rootKey 或 typeKeyPrefix，这里可以直接依赖 element
         return listOf(element)
     }

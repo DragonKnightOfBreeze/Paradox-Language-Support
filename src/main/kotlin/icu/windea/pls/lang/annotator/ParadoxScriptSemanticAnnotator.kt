@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isResolvableExpression
+import icu.windea.pls.script.psi.isResolvableLiteralExpression
 
 /**
  * @see ParadoxScriptSyntaxAnnotator
@@ -72,7 +72,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
 
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
         // #131
-        if (!element.isResolvableExpression()) return
+        if (!element.isResolvableLiteralExpression()) return
 
         // 高亮特殊标签
         if (annotateTag(element, holder)) return
@@ -166,7 +166,6 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     }
 
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return false
         if (element.complexEnumValueInfo == null) return false
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE).create()
         return true

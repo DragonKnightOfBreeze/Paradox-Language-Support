@@ -62,7 +62,7 @@ object ParadoxDefinitionManager {
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionService.getDependencies(element, file)
+                val dependencies = ParadoxDefinitionService.getInfoDependencies(element, file)
                 value.withDependencyItems(dependencies)
             }
         }

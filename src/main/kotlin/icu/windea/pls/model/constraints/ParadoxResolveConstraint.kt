@@ -15,7 +15,7 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterP
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
-import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
+import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionTargetPsiReference
 import icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReference
@@ -37,7 +37,7 @@ import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.isResolvableExpression
+import icu.windea.pls.script.psi.isResolvableLiteralExpression
 
 enum class ParadoxResolveConstraint {
     ScriptedVariable {
@@ -63,7 +63,7 @@ enum class ParadoxResolveConstraint {
     Definition {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxScriptExpressionElement -> element.isResolvableExpression() && element.isExpression()
+                is ParadoxScriptExpressionElement -> element.isResolvableLiteralExpression() && element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxLocalisationIcon -> true // <sprite>, etc.
                 is ParadoxLocalisationConceptCommand -> true // <game_concept>

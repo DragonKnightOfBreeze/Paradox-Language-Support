@@ -7,6 +7,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -31,8 +32,8 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 // region Analysis Data Accessors
@@ -58,7 +59,8 @@ inline val ParadoxDefinitionElement.definitionCandidateInfo: ParadoxDefinitionCa
 inline val ParadoxDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
 inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
 
-inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
+inline val ParadoxScriptExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
+inline val ParadoxCsvExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
 
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 

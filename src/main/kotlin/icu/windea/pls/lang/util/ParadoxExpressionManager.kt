@@ -52,7 +52,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
-import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
+import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -74,7 +74,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.isResolvableExpression
+import icu.windea.pls.script.psi.isResolvableLiteralExpression
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
@@ -471,7 +471,7 @@ object ParadoxExpressionManager {
 
     fun getExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
-        if (!element.isResolvableExpression() && element !is ParadoxScriptBlock) return PsiReference.EMPTY_ARRAY // #131
+        if (!element.isResolvableLiteralExpression() && element !is ParadoxScriptBlock) return PsiReference.EMPTY_ARRAY // #131
         if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
         val cacheKey = getExpressionReferencesCacheKey()
         return CachedValuesManager.getCachedValue(element, cacheKey) {
@@ -513,7 +513,7 @@ object ParadoxExpressionManager {
 
         // 尝试解析为复杂枚举值声明
         run {
-            if (!element.isResolvableExpression()) return@run
+            if (element is ParadoxScriptBlock) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
             val referenceRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
             val reference = ParadoxComplexEnumValuePsiReference(element, referenceRange, complexEnumValueInfo)
@@ -541,8 +541,17 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetExpressionReferences(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
-        // 尝试基于规则进行解析
         if (element !is ParadoxCsvColumn) return PsiReference.EMPTY_ARRAY
+
+        // 尝试解析为复杂枚举值声明
+        run {
+            val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
+            val referenceRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
+            val reference = ParadoxComplexEnumValuePsiReference(element, referenceRange, complexEnumValueInfo)
+            return arrayOf(reference)
+        }
+
+        // 尝试基于规则进行解析
         val columnConfig = ParadoxCsvManager.getColumnConfig(element)
         if (columnConfig == null) return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) // unquoted text

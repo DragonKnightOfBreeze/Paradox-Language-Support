@@ -88,10 +88,9 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         // 尝试解析为复杂枚举值声明
         run {
-            if (element !is ParadoxScriptStringExpressionElement) return@run
             val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
-            val complexEnumConfig = configGroup.complexEnums[complexEnumValueInfo.enumName] ?: return@run
-            result += complexEnumConfig
+            val config = complexEnumValueInfo.config
+            result += config
         }
 
         // 基于所有匹配的规则
@@ -291,16 +290,26 @@ class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
         // 适用于 CSV 文件中的某一列对应的表达式
 
         val element = ParadoxPsiFileService.findCsvExpression(file, offset) ?: return emptySet()
-        if (element !is ParadoxCsvColumn) return emptySet()
 
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
+
+        // 尝试解析为复杂枚举值声明
+        run {
+            val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+            val config = complexEnumValueInfo.config
+            result += config
+        }
+
+        // 基于匹配的规则
+        if (element !is ParadoxCsvColumn) return emptySet()
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
         if (element.isHeaderColumn()) {
             result += columnConfig
         } else {
             val config = columnConfig.valueConfig
             if (config != null) result += config
         }
+
         return result
     }
 }

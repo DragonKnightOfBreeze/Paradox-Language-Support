@@ -11,10 +11,13 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.isResolvableLiteralExpression
 
 @Suppress("unused")
 object ParadoxComplexEnumValueManager {
@@ -23,13 +26,29 @@ object ParadoxComplexEnumValueManager {
     }
 
     fun getInfo(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
+        // fast return
+        if (!element.isResolvableLiteralExpression()) return null
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxComplexEnumValueService.resolveInfo(element, file)
-                val dependencies = ParadoxComplexEnumValueService.getDependencies(element, file)
+                val dependencies = ParadoxComplexEnumValueService.getInfoDependencies(element, file)
+                value.withDependencyItems(dependencies)
+            }
+        }
+    }
+
+    fun getInfo(element: ParadoxCsvExpressionElement): ParadoxComplexEnumValueInfo? {
+        // fast return
+        if (element !is ParadoxCsvColumn) return null
+        // from cache
+        return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
+            ProgressManager.checkCanceled()
+            runSmartReadAction {
+                val value = ParadoxComplexEnumValueService.resolveInfo(element)
+                val dependencies = ParadoxComplexEnumValueService.getInfoDependencies(element)
                 value.withDependencyItems(dependencies)
             }
         }
