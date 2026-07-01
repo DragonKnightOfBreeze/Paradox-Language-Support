@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ReplaceStringFix
@@ -28,8 +28,8 @@ object ParadoxSyntaxInspectionService {
         val testResult = constraint.testResult(context.gameType, context.gameVersion)
         if (!testResult.strictValue) {
             val description = when {
-                testResult.sinceGameVersion == null -> PlsBundle.message("incorrectSyntax.desc.in.game", name, context.gameType.title)
-                else -> PlsBundle.message("incorrectSyntax.desc.since.gameVersion", name, context.gameType.title, testResult.sinceGameVersion)
+                testResult.sinceGameVersion == null -> ChronicleBundle.message("incorrectSyntax.desc.in.game", name, context.gameType.title)
+                else -> ChronicleBundle.message("incorrectSyntax.desc.since.gameVersion", name, context.gameType.title, testResult.sinceGameVersion)
             }
             val fixes = getFixes(element, context, constraint, testResult)
             context.holder.registerProblem(element, description, *fixes)
@@ -68,7 +68,7 @@ object ParadoxSyntaxInspectionService {
         val length = spaceExtendedTextRange.endOffset - offset
         val spaceAroundPropertySeparator = ParadoxScriptCodeStyleSettings.getInstance(context.holder.file).SPACE_AROUND_PROPERTY_SEPARATOR
         val string = if (spaceAroundPropertySeparator) " = " else "="
-        val fix = ReplaceStringFix(element, PlsBundle.message("incorrectSyntax.safeAssign.fix.1"), string, offset, length)
+        val fix = ReplaceStringFix(element, ChronicleBundle.message("incorrectSyntax.safeAssign.fix.1"), string, offset, length)
         return fix
     }
 
@@ -78,7 +78,7 @@ object ParadoxSyntaxInspectionService {
         val length = spaceExtendedTextRange.endOffset - offset
         val spaceAroundPropertySeparator = ParadoxScriptCodeStyleSettings.getInstance(context.holder.file).SPACE_AROUND_PROPERTY_SEPARATOR
         val string = if (spaceAroundPropertySeparator) "? = " else "? ="
-        val fix = ReplaceStringFix(element, PlsBundle.message("incorrectSyntax.safeAssign.fix.2"), string, offset, length)
+        val fix = ReplaceStringFix(element, ChronicleBundle.message("incorrectSyntax.safeAssign.fix.2"), string, offset, length)
         return fix
     }
 
@@ -88,7 +88,7 @@ object ParadoxSyntaxInspectionService {
         val length = spaceExtendedTextRange.endOffset - offset
         val spaceAroundPropertySeparator = ParadoxScriptCodeStyleSettings.getInstance(context.holder.file).SPACE_AROUND_PROPERTY_SEPARATOR
         val string = if (spaceAroundPropertySeparator) " ?= " else "?="
-        val fix = ReplaceStringFix(element, PlsBundle.message("incorrectSyntax.safeAssign.fix.3"), string, offset, length)
+        val fix = ReplaceStringFix(element, ChronicleBundle.message("incorrectSyntax.safeAssign.fix.3"), string, offset, length)
         return fix
     }
 }

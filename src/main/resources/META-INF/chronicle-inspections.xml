@@ -1,5 +1,5 @@
 <idea-plugin>
-  <resource-bundle>messages.PlsBundle</resource-bundle>
+  <resource-bundle>messages.ChronicleBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxScriptInspectionSuppressor"/>
@@ -52,12 +52,12 @@
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
-                     bundle="messages.PlsBundle"
+                     bundle="messages.ChronicleBundle"
                      enabledByDefault="true" level="WEAK WARNING"
                      key="inspection.script.missingLocalisation" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingImage"
-                     bundle="messages.PlsBundle"
+                     bundle="messages.ChronicleBundle"
                      enabledByDefault="true" level="WEAK WARNING"
                      key="inspection.script.missingImage" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingImageInspection"/>

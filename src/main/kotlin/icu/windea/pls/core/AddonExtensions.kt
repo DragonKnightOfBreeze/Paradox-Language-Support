@@ -1,6 +1,6 @@
 package icu.windea.pls.core
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
@@ -18,7 +18,7 @@ inline fun <T> runOnce(flag: AtomicBoolean, action: () -> T): T? {
     return r
 }
 
-val String?.errorDetails: String get() = this?.orNull()?.let { PlsBundle.message("error.details", it) }.orEmpty()
+val String?.errorDetails: String get() = this?.orNull()?.let { ChronicleBundle.message("error.details", it) }.orEmpty()
 
 inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
     return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }

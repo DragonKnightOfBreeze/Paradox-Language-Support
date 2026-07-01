@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -107,11 +107,11 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
             private fun getDescription(configExpression: CwtDataExpression, pathReference: String): String {
                 return when(configExpression.type) {
-                    CwtDataTypes.Icon -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
-                    CwtDataTypes.FilePath -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
-                    CwtDataTypes.FileName -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)
-                    CwtDataTypes.AbsoluteFilePath -> PlsBundle.message("inspection.script.unresolvedPathReference.desc.abs", pathReference)
-                    else -> PlsBundle.message("inspection.script.unresolvedPathReference.desc", pathReference, configExpression)
+                    CwtDataTypes.Icon -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
+                    CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
+                    CwtDataTypes.FileName -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)
+                    CwtDataTypes.AbsoluteFilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.abs", pathReference)
+                    else -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc", pathReference, configExpression)
                 }
             }
         }
@@ -120,26 +120,26 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
+                label(ChronicleBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.patterns"))
+                    .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
             // ignoredByConfigs
             row {
-                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                checkBox(ChronicleBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
         }

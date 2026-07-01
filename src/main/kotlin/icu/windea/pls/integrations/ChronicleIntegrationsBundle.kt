@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.integrations
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.Nls
@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.util.function.Supplier
 
-object PlsToolsBundle {
+object ChronicleIntegrationsBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsToolsBundle"
-    private val INSTANCE = DynamicBundle(PlsToolsBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.ChronicleIntegrationsBundle"
+    private val INSTANCE = DynamicBundle(ChronicleIntegrationsBundle::class.java, BUNDLE)
 
     @JvmStatic
     @Nls
@@ -17,7 +17,6 @@ object PlsToolsBundle {
         return INSTANCE.getMessage(key, *params)
     }
 
-    @Suppress("unused")
     @JvmStatic
     @Nls
     fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {

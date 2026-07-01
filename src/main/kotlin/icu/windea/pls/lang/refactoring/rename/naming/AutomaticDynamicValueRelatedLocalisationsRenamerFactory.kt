@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
@@ -23,7 +23,7 @@ class AutomaticDynamicValueRelatedLocalisationsRenamerFactory : AutomaticRenamer
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.dynamicValue.relatedLocalisations")
+        return ChronicleBundle.message("rename.dynamicValue.relatedLocalisations")
     }
 
     override fun isEnabled(): Boolean {

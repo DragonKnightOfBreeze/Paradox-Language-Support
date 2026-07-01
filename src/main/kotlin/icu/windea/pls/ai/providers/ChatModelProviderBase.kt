@@ -2,7 +2,7 @@ package icu.windea.pls.ai.providers
 
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.chat.StreamingChatModel
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 
 /**
  *  - 缓存得到的 [ChatModel] 与 [StreamingChatModel]。当实际的 [options] 发生变化时，会重新缓存。
@@ -46,7 +46,7 @@ abstract class ChatModelProviderBase<S : ChatModelProvider.Options> : ChatModelP
     final override fun checkStatus(options: S?): ChatModelProvider.StatusResult {
         val options = options
         if (options == null) {
-            return ChatModelProvider.StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.missingConfig"))
+            return ChatModelProvider.StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.missingConfig"))
         }
         return doCheckStatus(options)
     }

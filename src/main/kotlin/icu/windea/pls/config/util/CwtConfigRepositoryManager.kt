@@ -12,7 +12,7 @@ import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
 import com.intellij.util.io.createDirectories
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
@@ -51,8 +51,8 @@ object CwtConfigRepositoryManager {
     fun validateUrl(builder: ValidationInfoBuilder, gameType: ParadoxGameType, url: String): ValidationInfo? {
         // 规则仓库URL应当包含对应的游戏类型ID
 
-        if (url.isEmpty()) return builder.warning(PlsBundle.message("config.repo.validation.urlNotConfigured"))
-        if (!url.contains(gameType.id)) return builder.error(PlsBundle.message("config.repo.validation.urlMustContainGameTypeId", gameType.id))
+        if (url.isEmpty()) return builder.warning(ChronicleBundle.message("config.repo.validation.urlNotConfigured"))
+        if (!url.contains(gameType.id)) return builder.error(ChronicleBundle.message("config.repo.validation.urlMustContainGameTypeId", gameType.id))
         return null
     }
 
@@ -60,10 +60,10 @@ object CwtConfigRepositoryManager {
     fun validateUrlsByGit(urls: List<String>): Boolean {
         // NOTE 这里需要执行git命令的校验，需要并发进行
 
-        val results = runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsBundle.message("config.repo.validation.progress.title")) r@{
+        val results = runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleBundle.message("config.repo.validation.progress.title")) r@{
             reportRawProgress { reporter ->
-                reporter.text(PlsBundle.message("config.repo.validation.progress.text"))
-                reporter.details(PlsBundle.message("config.repo.validation.progress.details"))
+                reporter.text(ChronicleBundle.message("config.repo.validation.progress.text"))
+                reporter.details(ChronicleBundle.message("config.repo.validation.progress.details"))
 
                 val resultFutures = urls.map {
                     async {
@@ -82,12 +82,12 @@ object CwtConfigRepositoryManager {
                 .mapNotNull { it.exceptionOrNull()?.message?.orNull() }
                 .distinct()
                 .joinToString("<br>") { it.replace("\n", "<br>") }
-            Messages.showErrorDialog(errorMessage, PlsBundle.message("config.repo.validation.result.title"))
+            Messages.showErrorDialog(errorMessage, ChronicleBundle.message("config.repo.validation.result.title"))
             return false
         }
 
         // 显示成功的消息弹窗
-        Messages.showInfoMessage(PlsBundle.message("config.repo.validation.result.0"), PlsBundle.message("config.repo.validation.result.title"))
+        Messages.showInfoMessage(ChronicleBundle.message("config.repo.validation.result.0"), ChronicleBundle.message("config.repo.validation.result.title"))
         return true
     }
 
@@ -116,12 +116,12 @@ object CwtConfigRepositoryManager {
         val urlMap = settings.configRepositoryUrls.orNull() ?: return
         val parentDirectory = settings.remoteConfigDirectory?.orNull() ?: return
 
-        val notificationTitle = PlsBundle.message("config.repo.sync.result.title")
+        val notificationTitle = ChronicleBundle.message("config.repo.sync.result.title")
 
         // 创建父目录，如果存在报错，发送通知并直接返回
         val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
-            val warningMessage = PlsBundle.message("config.repo.sync.createDirectoryFailed")
+            val warningMessage = ChronicleBundle.message("config.repo.sync.createDirectoryFailed")
             val notification = PlsNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.ERROR)
             notification.notify(project)
             return
@@ -129,10 +129,10 @@ object CwtConfigRepositoryManager {
 
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch c@{
-            val results = withBackgroundProgress(project, PlsBundle.message("config.repo.sync.progress.title"), cancellable = true) p@{
+            val results = withBackgroundProgress(project, ChronicleBundle.message("config.repo.sync.progress.title"), cancellable = true) p@{
                 reportRawProgress { reporter ->
-                    reporter.text(PlsBundle.message("config.repo.sync.progress.text"))
-                    reporter.details(PlsBundle.message("config.repo.sync.progress.details"))
+                    reporter.text(ChronicleBundle.message("config.repo.sync.progress.text"))
+                    reporter.details(ChronicleBundle.message("config.repo.sync.progress.details"))
 
                     val resultFutures = mutableListOf<Deferred<Result<String>>>()
                     urlMap.forEach { (_, url) ->
@@ -146,13 +146,13 @@ object CwtConfigRepositoryManager {
                 }
             }
 
-            val action = NotificationAction.createSimple(PlsBundle.message("config.repo.sync.action.openRepoDir")) {
+            val action = NotificationAction.createSimple(ChronicleBundle.message("config.repo.sync.action.openRepoDir")) {
                 BrowserUtil.open(parentDirectory)
             }
 
             // 如果存在报错，发送通知并直接返回
             if (results.any { it.isFailure }) {
-                val warningMessage = PlsBundle.message("config.repo.sync.result.2")
+                val warningMessage = ChronicleBundle.message("config.repo.sync.result.2")
                 val notification = PlsNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.WARNING)
                     .addAction(action)
                 notification.notify(project)
@@ -162,7 +162,7 @@ object CwtConfigRepositoryManager {
             val updated = results.any { result -> result.getOrNull().let { !ChronicleGitService.getInstance().isUpdateToDate(it) } }
 
             // 发送成功的通知
-            val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0") else PlsBundle.message("config.repo.sync.result.1")
+            val successMessage = if (updated) ChronicleBundle.message("config.repo.sync.result.0") else ChronicleBundle.message("config.repo.sync.result.1")
             val notification = PlsNotificationGroups.global().createNotification(notificationTitle, successMessage, NotificationType.INFORMATION)
                 .addAction(action)
             notification.notify(project)

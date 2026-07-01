@@ -10,7 +10,7 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.TableView
 import com.intellij.util.ui.JBUI
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.letIf
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -35,7 +35,7 @@ class ExpandClauseTemplateDialog(
     val multipleGroup = context.descriptorsInfoList.size > 1
 
     init {
-        title = PlsBundle.message("ui.dialog.expandClauseTemplate.title")
+        title = ChronicleBundle.message("ui.dialog.expandClauseTemplate.title")
         elementsTableModel = createElementsInfoModel()
         init()
     }
@@ -49,17 +49,17 @@ class ExpandClauseTemplateDialog(
             // (textField) propertyName
             row {
                 val propertyName = context.propertyName
-                    ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
+                    ?: ChronicleBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
                 textField()
                     .text(propertyName)
-                    .label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
+                    .label(ChronicleBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
                     .align(Align.FILL)
                     .columns(COLUMNS_LARGE)
                     .enabled(false)
             }
             if (multipleGroup) {
                 row {
-                    comment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
+                    comment(ChronicleBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
                 }
             }
         }.withPreferredWidth(preferredDialogWidth)
@@ -71,7 +71,7 @@ class ExpandClauseTemplateDialog(
             val contentPanel = JPanel(BorderLayout())
             with(contentPanel) {
                 val elementsPanel = createElementsPanel()
-                add(SeparatorFactory.createSeparator(PlsBundle.message("ui.dialog.expandClauseTemplate.elementsToInsert"), elementsPanel), BorderLayout.NORTH)
+                add(SeparatorFactory.createSeparator(ChronicleBundle.message("ui.dialog.expandClauseTemplate.elementsToInsert"), elementsPanel), BorderLayout.NORTH)
                 add(elementsPanel, BorderLayout.CENTER)
             }
             add(contentPanel, BorderLayout.CENTER)

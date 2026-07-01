@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
@@ -50,7 +50,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val scriptedVariable = element
                 val name = scriptedVariable.name?.orNull() ?: return null
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking<Unit>(project, PlsBundle.message("script.goto.relatedLocalisations.search.3", name)) {
+                runWithModalProgressBlocking<Unit>(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.3", name)) {
                     // need read actions here if necessary
                     readAction {
                         val result = ParadoxScriptedVariableManager.getNameLocalisations(name, element, preferredLocale)
@@ -67,7 +67,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val localisationInfos = definitionInfo.localisations
                 if (localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name)) {
+                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
@@ -84,7 +84,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name)) {
+                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name)) {
                     // need read actions here if necessary
                     readAction {
                         val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
@@ -126,24 +126,24 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             when {
                 ParadoxPsiMatcher.isScriptedVariable(sourceElement) -> {
                     val name = sourceElement.name?.orNull() ?: return@run
-                    return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.3", name.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.3", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
-                    return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
                 }
                 else -> {
                     val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()
                         ?.let { ParadoxModifierManager.resolveModifier(it) } ?: return@run
                     val modifierName = modifierElement.name
-                    return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.2", modifierName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.2", modifierName.escapeXml())
                 }
             }
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.0", sourceName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.0", sourceName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
@@ -151,27 +151,27 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             when {
                 ParadoxPsiMatcher.isScriptedVariable(sourceElement) -> {
                     val name = sourceElement.name?.orNull() ?: return@run
-                    return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.3", name.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.3", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
-                    return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
                 }
                 else -> {
                     val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()
                         ?.let { ParadoxModifierManager.resolveModifier(it) } ?: return@run
                     val modifierName = modifierElement.name
-                    return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.2", modifierName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.2", modifierName.escapeXml())
                 }
             }
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.0", sourceName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.0", sourceName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedLocalisations.notFoundMessage")
+        return ChronicleBundle.message("script.goto.relatedLocalisations.notFoundMessage")
     }
 }

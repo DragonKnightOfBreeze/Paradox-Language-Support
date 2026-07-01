@@ -3,7 +3,7 @@ package icu.windea.pls.ep.tools.importer
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import icu.windea.pls.core.orNull
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
@@ -28,16 +28,16 @@ import kotlin.io.path.notExists
  * 参见：[ParadoxImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxImporter.cs)
  */
 class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
-    override val text get() = PlsEpBundle.message("mod.importer.game")
+    override val text get() = ChronicleEpBundle.message("mod.importer.game")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
         val gameDataDirPath = SpecialPathService.getInstance().getGameDataPath(gameType)
         if (gameDataDirPath == null) {
-            throw IllegalStateException(PlsEpBundle.message("mod.importer.error.gameDataDirNotFound"))
+            throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameDataDirNotFound"))
         }
         if (gameDataDirPath.notExists()) {
-            throw IllegalStateException(PlsEpBundle.message("mod.importer.error.gameDataDirNotExist", gameDataDirPath))
+            throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameDataDirNotExist", gameDataDirPath))
         }
 
         val newModInfos = mutableListOf<ParadoxModInfo>()
@@ -70,7 +70,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
     override fun createFileChooserDescriptor(gameType: ParadoxGameType): FileChooserDescriptor {
         val jsonFileName = getJsonFileName(gameType)
         return FileChooserDescriptorFactory.createSingleFileDescriptor("json")
-            .withTitle(PlsEpBundle.message("mod.importer.game.title", jsonFileName))
+            .withTitle(ChronicleEpBundle.message("mod.importer.game.title", jsonFileName))
     }
 
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {

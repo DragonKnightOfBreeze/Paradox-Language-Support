@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.util.values.anonymous
@@ -35,7 +35,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val definitionInfo = definition.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitions.search", definitionInfo.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.definitions.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
@@ -58,16 +58,16 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.or.anonymous()
-        return PlsBundle.message("script.goto.definitions.chooseTitle", definitionName.escapeXml())
+        return ChronicleBundle.message("script.goto.definitions.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.or.anonymous()
-        return PlsBundle.message("script.goto.definitions.findUsagesTitle", definitionName.escapeXml())
+        return ChronicleBundle.message("script.goto.definitions.findUsagesTitle", definitionName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.definitions.notFoundMessage")
+        return ChronicleBundle.message("script.goto.definitions.notFoundMessage")
     }
 }

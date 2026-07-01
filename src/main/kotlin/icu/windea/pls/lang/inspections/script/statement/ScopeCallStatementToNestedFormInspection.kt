@@ -11,7 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -31,7 +31,7 @@ class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAwar
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
                 if (!ParadoxScopeCallStatementManipulationService.canConvertToNestedForm(element, gameType)) return
-                val description = PlsBundle.message("inspection.script.scopeCallStatementToNestedForm.desc")
+                val description = ChronicleBundle.message("inspection.script.scopeCallStatementToNestedForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element.propertyKey, description, *fixes)
             }
@@ -45,7 +45,7 @@ class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAwar
     private class Fix(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element)/*not:*//*, IntentionActionWithFixAllOption*/ {
-        override fun getText() = PlsBundle.message("inspection.script.scopeCallStatementToNestedForm.fix.1.name")
+        override fun getText() = ChronicleBundle.message("inspection.script.scopeCallStatementToNestedForm.fix.1.name")
 
         override fun getFamilyName() = text
 

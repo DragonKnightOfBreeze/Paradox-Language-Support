@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
@@ -31,8 +31,8 @@ import icu.windea.pls.script.psi.isExpression
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.modifierHintText")
 
-    override val name get() = PlsBundle.message("script.hints.modifierHintText")
-    override val description get() = PlsBundle.message("script.hints.modifierHintText.description")
+    override val name get() = ChronicleBundle.message("script.hints.modifierHintText")
+    override val description get() = ChronicleBundle.message("script.hints.modifierHintText.description")
     override val key get() = settingsKey
 
     override val renderLocalisation get() = true

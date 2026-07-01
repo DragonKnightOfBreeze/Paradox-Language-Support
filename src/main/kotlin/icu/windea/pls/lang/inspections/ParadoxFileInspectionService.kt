@@ -13,7 +13,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringSettings
 import com.intellij.refactoring.rename.RenameProcessor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -50,7 +50,7 @@ object ParadoxFileInspectionService {
         val actual = charset.displayName() + if (hasBom) " BOM" else " NO BOM"
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("incorrectFileEncoding.desc", actual, expect)
+        val description = ChronicleBundle.message("incorrectFileEncoding.desc", actual, expect)
         val fix = ChangeFileEncodingFix(file, expectedCharset, true)
         holder.registerProblem(file, description, fix)
         return holder.resultsArray
@@ -76,7 +76,7 @@ object ParadoxFileInspectionService {
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val location = locale // 不要直接注册到文件上
-        val description = PlsBundle.message("incorrectFileName.desc", file.name, localeId)
+        val description = ChronicleBundle.message("incorrectFileName.desc", file.name, localeId)
         val fixes = getFileNameFixes(locale, expectedFileName, localeIdFromFile)
         holder.registerProblem(location, description, *fixes)
         return holder.resultsArray
@@ -97,8 +97,8 @@ object ParadoxFileInspectionService {
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = when {
-            file is ParadoxScriptFile -> PlsBundle.message("unmatchedFile.desc.script")
-            file is ParadoxCsvFile -> PlsBundle.message("unmatchedFile.desc.csv")
+            file is ParadoxScriptFile -> ChronicleBundle.message("unmatchedFile.desc.script")
+            file is ParadoxCsvFile -> ChronicleBundle.message("unmatchedFile.desc.csv")
             else -> return null
         }
         holder.registerProblem(file, description)
@@ -120,9 +120,9 @@ object ParadoxFileInspectionService {
         element: ParadoxLocalisationLocale,
         private val expectedFileName: String
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getText() = PlsBundle.message("incorrectFileName.fix.1.name", expectedFileName)
+        override fun getText() = ChronicleBundle.message("incorrectFileName.fix.1.name", expectedFileName)
 
-        override fun getFamilyName() = PlsBundle.message("incorrectFileName.fix.1.familyName")
+        override fun getFamilyName() = ChronicleBundle.message("incorrectFileName.fix.1.familyName")
 
         override fun getPriority() = PriorityAction.Priority.HIGH
 
@@ -149,9 +149,9 @@ object ParadoxFileInspectionService {
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
         override fun getPriority() = PriorityAction.Priority.TOP // 高优先级，如果可用
 
-        override fun getText() = PlsBundle.message("incorrectFileName.fix.2.name", expectedLocaleId)
+        override fun getText() = ChronicleBundle.message("incorrectFileName.fix.2.name", expectedLocaleId)
 
-        override fun getFamilyName() = PlsBundle.message("incorrectFileName.fix.2.familyName")
+        override fun getFamilyName() = ChronicleBundle.message("incorrectFileName.fix.2.familyName")
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return

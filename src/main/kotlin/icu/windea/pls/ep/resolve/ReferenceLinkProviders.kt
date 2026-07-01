@@ -13,7 +13,7 @@ import icu.windea.pls.core.toPsiFileSystemItem
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -125,7 +125,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsEpBundle.message("reference.link.unresolved.config", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.config", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -174,7 +174,7 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsEpBundle.message("reference.link.unresolved.sv", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.sv", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -207,7 +207,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsEpBundle.message("reference.link.unresolved.def", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.def", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -239,7 +239,7 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsEpBundle.message("reference.link.unresolved.loc", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.loc", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -271,7 +271,7 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsEpBundle.message("reference.link.unresolved.path", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.path", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -293,7 +293,7 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsEpBundle.message("reference.link.unresolved.modifier", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.modifier", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {

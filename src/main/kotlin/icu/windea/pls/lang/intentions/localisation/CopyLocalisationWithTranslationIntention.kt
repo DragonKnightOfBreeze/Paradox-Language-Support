@@ -12,7 +12,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopup(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithTranslation")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && TranslationToolService.getInstance().findTool() != null
@@ -39,7 +39,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
-        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -48,7 +48,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
                 if (contextsToHandle.isEmpty()) return@r
                 reportProgressScope(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
-                        reporter.itemStep(PlsBundle.message("manipulation.localisation.translate.progress.itemStep", context.key)) {
+                        reporter.itemStep(ChronicleBundle.message("manipulation.localisation.translate.progress.itemStep", context.key)) {
                             withErrorRef(errorRef) { handleText(context, selectedLocale) }.getOrThrow()
                         }
                     }
@@ -70,13 +70,13 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
-            val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
+            val content = ChronicleBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
             return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
-        val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.failed()) + errorDetails
+        val errorDetails = error.message?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
+        val content = ChronicleBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.failed()) + errorDetails
         return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

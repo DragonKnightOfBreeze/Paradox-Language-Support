@@ -19,7 +19,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
@@ -56,7 +56,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
             else -> element.value.toIntOrNull()
         } ?: return
         if (intValue in intRange) return
-        val description = PlsEpBundle.message("incorrectExpression.range.desc", intRange.expression, intValue)
+        val description = ChronicleEpBundle.message("incorrectExpression.range.desc", intRange.expression, intValue)
         holder.registerProblem(element, description)
     }
 }
@@ -76,7 +76,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
             else -> element.value.toFloatOrNull()
         } ?: return
         if (floatValue in floatRange) return
-        val description = PlsEpBundle.message("incorrectExpression.range.desc", floatRange.expression, floatValue)
+        val description = ChronicleEpBundle.message("incorrectExpression.range.desc", floatRange.expression, floatValue)
         holder.registerProblem(element, description)
     }
 }
@@ -93,7 +93,7 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
         val expectedColorType = configExpression.value ?: return
         val colorType = element.colorType
         if (colorType == expectedColorType) return
-        val description = PlsEpBundle.message("incorrectExpression.colorType.desc", expectedColorType, colorType)
+        val description = ChronicleEpBundle.message("incorrectExpression.colorType.desc", expectedColorType, colorType)
         holder.registerProblem(element, description)
     }
 }
@@ -115,7 +115,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val parentScopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: ParadoxScopeContext.resolveAny()
         val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
-        val description = PlsEpBundle.message("incorrectExpression.scope.desc", expectedScope, scopeContext.scope.id)
+        val description = ChronicleEpBundle.message("incorrectExpression.scope.desc", expectedScope, scopeContext.scope.id)
         holder.registerProblem(element, description)
     }
 }
@@ -137,7 +137,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val parentScopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: ParadoxScopeContext.resolveAny()
         val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
-        val description = PlsEpBundle.message("incorrectExpression.scopeGroup.desc", expectedScopeGroup, scopeContext.scope.id)
+        val description = ChronicleEpBundle.message("incorrectExpression.scopeGroup.desc", expectedScopeGroup, scopeContext.scope.id)
         holder.registerProblem(element, description)
     }
 }
@@ -156,12 +156,12 @@ class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
         val intValue = evaluated.intValue()
         val intRange = configExpression.intRange
         if (intValue == null) {
-            val description = PlsEpBundle.message("incorrectExpression.intValueField.desc", evaluated.expression)
+            val description = ChronicleEpBundle.message("incorrectExpression.intValueField.desc", evaluated.expression)
             holder.registerProblem(element, description)
         }
         if (intValue == null) return
         if (intRange != null && intValue !in intRange) {
-            val description = PlsEpBundle.message("incorrectExpression.intValueFieldRange.desc", evaluated.expression, intRange.expression, intValue)
+            val description = ChronicleEpBundle.message("incorrectExpression.intValueFieldRange.desc", evaluated.expression, intRange.expression, intValue)
             holder.registerProblem(element, description)
         }
     }
@@ -181,13 +181,13 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
         val floatValue = evaluated.floatValue()
         val floatRange = configExpression.floatRange
         if (floatValue == null && floatRange != null) { // NOTE 2.2.0 may not be a number after evaluation, if range is not specified
-            val description = PlsEpBundle.message("incorrectExpression.floatValueField.desc", evaluated.expression)
+            val description = ChronicleEpBundle.message("incorrectExpression.floatValueField.desc", evaluated.expression)
             holder.registerProblem(element, description)
             return
         }
         if (floatValue == null) return
         if (floatRange != null && floatValue !in floatRange) {
-            val description = PlsEpBundle.message("incorrectExpression.floatValueFieldRange.desc", evaluated.expression, floatRange.expression, floatValue)
+            val description = ChronicleEpBundle.message("incorrectExpression.floatValueFieldRange.desc", evaluated.expression, floatRange.expression, floatValue)
             holder.registerProblem(element, description)
         }
     }
@@ -209,12 +209,12 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         val separatorIndex = text.indexOf('@')
         if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", ParadoxDefinitionSearch.selector(project, element)).findFirst() == null) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
-            val description = PlsEpBundle.message("incorrectExpression.repeatableTechnologyName.desc", range.substring(text))
+            val description = ChronicleEpBundle.message("incorrectExpression.repeatableTechnologyName.desc", range.substring(text))
             holder.registerProblem(element, description, ProblemHighlightType.ERROR, range)
         }
         if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
-            val description = PlsEpBundle.message("incorrectExpression.repeatableTechnologyLevel.desc", range.substring(text))
+            val description = ChronicleEpBundle.message("incorrectExpression.repeatableTechnologyLevel.desc", range.substring(text))
             holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR, range)
         }
     }
@@ -248,7 +248,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if (resultTriggerConfigs.none { it.config.valueType != CwtExpressionType.Block }) {
-            holder.registerProblem(element, PlsEpBundle.message("incorrectExpression.simpleTrigger.desc", element.expression))
+            holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.simpleTrigger.desc", element.expression))
         }
     }
 }
@@ -283,12 +283,12 @@ class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressi
         val hasParameters = selectScope { element.parentOfKey()?.parentOfKey()?.properties()?.ofKey("parameters")?.one() } != null
         if (hasParameters) {
             if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
-                holder.registerProblem(element, PlsEpBundle.message("incorrectExpression.complexTrigger.desc", element.expression))
+                holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.complexTrigger.desc", element.expression))
             }
         } else {
             // can also be complex trigger here, for some parameters can be ignored (like `count = xxx`)
             // if (resultTriggerConfigs.none { !it.config.isBlock }) {
-            //    holder.registerProblem(element, PlsEpBundle.message("incorrectExpression.checker.expect.simpleTrigger", element.expression.orEmpty()))
+            //    holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.checker.expect.simpleTrigger", element.expression.orEmpty()))
             // }
         }
     }

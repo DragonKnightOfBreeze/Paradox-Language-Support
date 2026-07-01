@@ -4,10 +4,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.jetbrains.jsonSchema.extension.JsonSchemaFileProvider
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 import com.jetbrains.jsonSchema.extension.SchemaType
-import icu.windea.pls.extensions.PlsExtensionsBundle
+import icu.windea.pls.extensions.ChronicleExtensionsBundle
 
 class ParadoxLauncherSettingsJsonSchemaProvider : JsonSchemaFileProvider {
-    override fun getName() = PlsExtensionsBundle.message("json.schema.launcherSettings.name")
+    override fun getName() = ChronicleExtensionsBundle.message("json.schema.launcherSettings.name")
 
     override fun isAvailable(file: VirtualFile) = JsonExtensionManager.isLauncherSettingsJson(file)
 

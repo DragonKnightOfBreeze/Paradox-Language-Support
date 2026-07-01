@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.definitionInfo
@@ -26,7 +26,7 @@ class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.definition.overrides")
+        return ChronicleBundle.message("rename.definition.overrides")
     }
 
     override fun isEnabled(): Boolean {

@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileHandler
@@ -21,10 +21,10 @@ class GenerateLocalisationsInFileFix(
 
     override fun getText(): String {
         val fileName = startElement.containingFile?.name.or.anonymous()
-        return PlsBundle.message("fix.generateLocalisationsInFile.name", fileName)
+        return ChronicleBundle.message("fix.generateLocalisationsInFile.name", fileName)
     }
 
-    override fun getFamilyName() = PlsBundle.message("fix.generateLocalisationsInFile.familyName")
+    override fun getFamilyName() = ChronicleBundle.message("fix.generateLocalisationsInFile.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return

@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
@@ -55,7 +55,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         val targetFile = dialog.file.toPsiFile(project) ?: return true // 不期望的结果
         if (targetFile !is ParadoxScriptFile) return true
 
-        val commandName = PlsBundle.message("script.command.introduceGlobalScriptedVariable.name")
+        val commandName = ChronicleBundle.message("script.command.introduceGlobalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = setOf(file, targetFile)) {
             // 标记为全局命令
             CommandProcessor.getInstance().markCurrentCommandAsGlobal(project)

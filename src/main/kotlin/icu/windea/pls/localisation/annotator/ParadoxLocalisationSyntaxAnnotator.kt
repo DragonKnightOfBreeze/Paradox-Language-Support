@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.InsertStringFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
@@ -20,8 +20,8 @@ class ParadoxLocalisationSyntaxAnnotator : Annotator, DumbAware {
         // 不允许紧邻的图标
         if (element !is ParadoxLocalisationIcon) return
         if (element.prevSibling !is ParadoxLocalisationIcon) return
-        holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.adjacent.icon.unexpected"))
-            .withFix(InsertStringFix(element, PlsBundle.message("fix.adjacent.icon.unexpected"), " ", element.startOffset))
+        holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.adjacent.icon.unexpected"))
+            .withFix(InsertStringFix(element, ChronicleBundle.message("fix.adjacent.icon.unexpected"), " ", element.startOffset))
             .create()
     }
 }

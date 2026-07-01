@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
@@ -36,6 +36,6 @@ class UnsupportedConditionalBlockInspection : LocalInspectionTool(), DumbAware {
     private fun checkInlineScript(element: ParadoxScriptConditionalBlock, holder: ProblemsHolder) {
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedConditionalBlock.desc.1"))
+        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedConditionalBlock.desc.1"))
     }
 }

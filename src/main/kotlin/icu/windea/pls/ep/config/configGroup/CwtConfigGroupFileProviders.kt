@@ -5,7 +5,7 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -73,7 +73,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun getHintMessage(): String? {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
-        return PlsBundle.message("configGroup.hint", messageIndex)
+        return ChronicleBundle.message("configGroup.hint", messageIndex)
     }
 
     override fun getNotificationMessage(configGroup: CwtConfigGroup): String? {
@@ -83,12 +83,12 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val isBuiltIn = source == CwtConfigGroupFileSource.BuiltIn
         val isGeneral = gameType == ParadoxGameType.Core
         val notification = when {
-            isGeneral -> PlsBundle.message("configGroup.notification.general", messageIndex)
-            else -> PlsBundle.message("configGroup.notification", messageIndex, gameType.title)
+            isGeneral -> ChronicleBundle.message("configGroup.notification.general", messageIndex)
+            else -> ChronicleBundle.message("configGroup.notification", messageIndex, gameType.title)
         }
         val message = when {
-            isEnabled || (isBuiltIn && isGeneral) -> PlsBundle.message("configGroup.notification.enabled", notification)
-            else -> PlsBundle.message("configGroup.notification.disabled", notification)
+            isEnabled || (isBuiltIn && isGeneral) -> ChronicleBundle.message("configGroup.notification.enabled", notification)
+            else -> ChronicleBundle.message("configGroup.notification.disabled", notification)
         }
         return message
     }

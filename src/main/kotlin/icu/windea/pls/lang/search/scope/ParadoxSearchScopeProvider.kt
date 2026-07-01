@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.SearchScopeProvider
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.rootInfo
@@ -19,7 +19,7 @@ import icu.windea.pls.model.ParadoxRootInfo
  */
 class ParadoxSearchScopeProvider : SearchScopeProvider {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.provider.name")
+        return ChronicleBundle.message("search.scope.provider.name")
     }
 
     override fun getSearchScopes(project: Project, dataContext: DataContext): List<SearchScope> {

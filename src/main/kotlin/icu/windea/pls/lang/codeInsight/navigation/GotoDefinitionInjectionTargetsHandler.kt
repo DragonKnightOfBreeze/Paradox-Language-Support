@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
@@ -32,7 +32,7 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
         val info = element.definitionInjectionInfo ?: return null
         if (!info.isTargetValid()) return null // 排除目标或目标类型为空的情况
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target.orEmpty())) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.definitionInjectionTargets.search", info.target.orEmpty())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
@@ -54,16 +54,16 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val definitionInjectionInfo = sourceElement.castOrNull<ParadoxScriptProperty>()?.definitionInjectionInfo ?: return ""
         val target = definitionInjectionInfo.target?.orNull() ?: return ""
-        return PlsBundle.message("script.goto.definitionInjectionTargets.chooseTitle", target.escapeXml())
+        return ChronicleBundle.message("script.goto.definitionInjectionTargets.chooseTitle", target.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInjectionInfo = sourceElement.castOrNull<ParadoxScriptProperty>()?.definitionInjectionInfo ?: return ""
         val target = definitionInjectionInfo.target?.orNull() ?: return ""
-        return PlsBundle.message("script.goto.definitionInjectionTargets.findUsagesTitle", target.escapeXml())
+        return ChronicleBundle.message("script.goto.definitionInjectionTargets.findUsagesTitle", target.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.definitionInjectionTargets.notFoundMessage")
+        return ChronicleBundle.message("script.goto.definitionInjectionTargets.notFoundMessage")
     }
 }

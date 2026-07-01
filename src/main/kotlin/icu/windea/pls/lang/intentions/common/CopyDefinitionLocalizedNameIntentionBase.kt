@@ -5,7 +5,7 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * 复制定义的显示名称到剪贴板。
  */
 abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyDefinitionLocalizedName")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyDefinitionLocalizedName")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null

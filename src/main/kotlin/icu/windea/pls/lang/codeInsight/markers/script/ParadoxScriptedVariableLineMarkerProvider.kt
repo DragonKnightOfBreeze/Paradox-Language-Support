@@ -5,7 +5,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
@@ -25,11 +25,11 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 提供封装变量（scriptedVariable）的装订线图标。
  */
 class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariable")
+    override fun getName() = ChronicleBundle.message("script.gutterIcon.scriptedVariable")
 
     override fun getIcon() = PlsIcons.Gutter.ScriptedVariable
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.scriptedVariable.group")
+    override fun getGroup() = ChronicleBundle.message("script.gutterIcon.scriptedVariable.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 scriptedVariable
@@ -54,15 +54,15 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariable.title"))
+            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.scriptedVariable.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.scriptedVariable") }
+            .setNamer { ChronicleBundle.message("script.gutterIcon.scriptedVariable") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = PlsBundle.message("script.gutterIcon.scriptedVariable.action")
+        val actionText = ChronicleBundle.message("script.gutterIcon.scriptedVariable.action")
         NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoScriptedVariables)
     }
 }

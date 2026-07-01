@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
@@ -50,7 +50,7 @@ class ParadoxModSettingsDialog(
 
     init {
         handleModSettings()
-        title = PlsBundle.message("mod.settings")
+        title = ChronicleBundle.message("mod.settings")
         init()
     }
 
@@ -70,7 +70,7 @@ class ParadoxModSettingsDialog(
         return panel {
             row {
                 // name
-                label(PlsBundle.message("mod.settings.name")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
                     .columns(COLUMNS_LARGE)
@@ -79,13 +79,13 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // version
-                label(PlsBundle.message("mod.settings.version")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
                 // supportedVersion
-                label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("right")
+                label(ChronicleBundle.message("mod.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
                     .columns(COLUMNS_SHORT)
@@ -94,9 +94,9 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // modDirectory
-                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.modDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
-                    .withTitle(PlsBundle.message("modDirectory.title"))
+                    .withTitle(ChronicleBundle.message("modDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
@@ -106,13 +106,13 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // gameType
-                label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .enabled(inferredGameTypeInfo == null) // disabled if game type can be inferred
                 // gameVersion
-                label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
+                label(ChronicleBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
                     .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.text = it } }
                     .bindText(gameVersionProperty)
@@ -121,9 +121,9 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // gameDirectory
-                label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
-                    .withTitle(PlsBundle.message("gameDirectory.title"))
+                    .withTitle(ChronicleBundle.message("gameDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.text = it } }
@@ -133,34 +133,34 @@ class ParadoxModSettingsDialog(
                     .validationOnApply { validateGameDirectory(this) }
             }
             row {
-                link(PlsBundle.message("gameDirectory.quickSelect")) { quickSelectGameDirectory() }
+                link(ChronicleBundle.message("gameDirectory.quickSelect")) { quickSelectGameDirectory() }
             }
             if (inferredGameTypeInfo != null) {
                 row {
-                    comment(PlsBundle.message("mod.settings.comment.1", inferredGameTypeInfo.gameType.title, inferredGameTypeInfo.lazyMessage.get()))
+                    comment(ChronicleBundle.message("mod.settings.comment.1", inferredGameTypeInfo.gameType.title, inferredGameTypeInfo.lazyMessage.get()))
                 }
             }
 
             // options
-            collapsibleGroup(PlsBundle.message("mod.options"), false) {
+            collapsibleGroup(ChronicleBundle.message("mod.options"), false) {
                 // disableTiger
                 row {
-                    checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
+                    checkBox(ChronicleBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
+                    browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
                 row {
-                    comment(PlsBundle.message("mod.options.comment.1"))
+                    comment(ChronicleBundle.message("mod.options.comment.1"))
                 }
             }
 
             // modDependencies
-            collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
+            collapsibleGroup(ChronicleBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)
                 }.resizableRow() // 占据额外的垂直空间
                 row {
-                    comment(PlsBundle.message("mod.dependencies.comment.1"))
+                    comment(ChronicleBundle.message("mod.dependencies.comment.1"))
                 }
             }.resizableRow() // 占据额外的垂直空间
         }

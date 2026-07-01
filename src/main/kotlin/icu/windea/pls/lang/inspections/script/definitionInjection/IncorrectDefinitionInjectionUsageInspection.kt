@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -35,7 +35,7 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
     private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (definitionInjectionInfo.target.isNullOrEmpty()) {
-            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
+            val description = ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
             holder.registerProblem(element.propertyKey, description)
             return
         }
@@ -51,12 +51,12 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         if (definitionInjectionInfo.isTargetExist(holder.file)) return
         if (definitionInjectionInfo.isLenientMode()) {
             if (checkForLenientModes) {
-                val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
+                val description = ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
                 val highlightType = InspectionService.getWeakerHighlightType() // use weaker highlight type
                 holder.registerProblem(element.propertyKey, description, highlightType)
             }
         } else {
-            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.2", target, type)
+            val description = ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.2", target, type)
             holder.registerProblem(element.propertyKey, description)
         }
     }
@@ -65,9 +65,9 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         return panel {
             // checkForLenientModes
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes"))
+                checkBox(ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes"))
                     .bindSelected(::checkForLenientModes.toAtomicProperty())
-                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip"))
+                contextHelp(ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip"))
             }
         }
     }

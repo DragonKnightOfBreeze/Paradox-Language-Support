@@ -10,7 +10,7 @@ import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.ex.ComboBoxAction
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.function
 import icu.windea.pls.lang.element
@@ -54,7 +54,7 @@ interface ParadoxHierarchyActions {
         override fun createCustomComponent(presentation: Presentation, place: String): JComponent {
             val panel = JPanel(GridBagLayout())
             panel.add(
-                JLabel(PlsBundle.message("label.scopeType")),
+                JLabel(ChronicleBundle.message("label.scopeType")),
                 GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, JBUI.insetsLeft(5), 0, 0)
             )
             panel.add(
@@ -112,7 +112,7 @@ interface ParadoxHierarchyActions {
         override fun createCustomComponent(presentation: Presentation, place: String): JComponent {
             val panel = JPanel(GridBagLayout())
             panel.add(
-                JLabel(PlsBundle.message("label.groupingStrategy")),
+                JLabel(ChronicleBundle.message("label.groupingStrategy")),
                 GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, JBUI.insetsLeft(5), 0, 0)
             )
             panel.add(

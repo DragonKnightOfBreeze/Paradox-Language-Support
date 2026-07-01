@@ -10,7 +10,7 @@ import com.intellij.util.xmlb.annotations.MapAnnotation
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.ParadoxGameType
@@ -107,7 +107,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
         inferredGameType = rootInfo.inferredGameType
         if (inferredGameType != null) gameType = inferredGameType
 
-        name = rootInfo.name.orNull() ?: PlsBundle.message("root.name.unnamed")
+        name = rootInfo.name.orNull() ?: ChronicleBundle.message("root.name.unnamed")
         version = rootInfo.version
 
         supportedVersion = rootInfo.supportedVersion

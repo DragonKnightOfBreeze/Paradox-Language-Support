@@ -27,8 +27,8 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxTechTreeDiagramSettings
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
@@ -54,10 +54,10 @@ import javax.swing.JComponent
  */
 abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
     object Categories {
-        val Type = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
-        val Properties = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val LocalizedName = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.localizedName"), PlsIcons.Nodes.Localisation, false, false)
-        val Presentation = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
+        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
+        val LocalizedName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.localizedName"), PlsIcons.Nodes.Localisation, false, false)
+        val Presentation = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
 
         val All = arrayOf(Type, Properties, LocalizedName, Presentation)
     }
@@ -198,17 +198,17 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         override fun updateDataModel() {
             // 群星原版科技有400+
 
-            val title = PlsDiagramBundle.message("techTree.update.title")
+            val title = ChronicleDiagramBundle.message("techTree.update.title")
             runWithModalProgressBlocking(project, title) action@{
                 reportSequentialProgress { sReporter ->
-                    val step1 = PlsDiagramBundle.message("techTree.update.step.1")
+                    val step1 = ChronicleDiagramBundle.message("techTree.update.step.1")
                     val technologies = sReporter.indeterminateStep(step1) {
                         readAction { searchTechnologies() }
                     }
                     if (technologies.isEmpty()) return@action
                     val size = technologies.size
 
-                    val step2 = PlsDiagramBundle.message("techTree.update.step.2", size)
+                    val step2 = ChronicleDiagramBundle.message("techTree.update.step.2", size)
                     sReporter.nextStep(25, step2) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
@@ -219,7 +219,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                         }
                     }
 
-                    val step3 = PlsDiagramBundle.message("techTree.update.step.3", size)
+                    val step3 = ChronicleDiagramBundle.message("techTree.update.step.3", size)
                     sReporter.nextStep(50, step3) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
@@ -230,7 +230,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                         }
                     }
 
-                    val step4 = PlsDiagramBundle.message("techTree.update.step.4", size)
+                    val step4 = ChronicleDiagramBundle.message("techTree.update.step.4", size)
                     sReporter.nextStep(100, step4) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->

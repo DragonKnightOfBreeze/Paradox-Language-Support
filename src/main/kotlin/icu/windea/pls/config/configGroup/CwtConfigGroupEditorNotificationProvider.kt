@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import java.util.function.Function
@@ -31,15 +31,15 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, Dum
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
-            panel.createActionLabel(PlsBundle.message("configGroup.notification.action.documentation")) {
+            panel.createActionLabel(ChronicleBundle.message("configGroup.notification.action.documentation")) {
                 val url = "https://windea.icu/Paradox-Language-Support/config.html"
                 BrowserUtil.browse(url)
             }
-            panel.createActionLabel(PlsBundle.message("configGroup.notification.action.manual")) {
+            panel.createActionLabel(ChronicleBundle.message("configGroup.notification.action.manual")) {
                 val url = "https://windea.icu/Paradox-Language-Support/ref-config-format.html"
                 BrowserUtil.browse(url)
             }
-            panel.createActionLabel(PlsBundle.message("configGroup.notification.action.repositories")) {
+            panel.createActionLabel(ChronicleBundle.message("configGroup.notification.action.repositories")) {
                 val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md#repositories"
                 BrowserUtil.browse(url)
             }

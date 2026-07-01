@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools
 
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.orNull
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxGameType
@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 
 interface SpecialUrlProviders {
     class GameStore : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameStore")
+        override val text get() = ChronicleEpBundle.message("special.url.gameStore")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -20,7 +20,7 @@ interface SpecialUrlProviders {
     }
 
     class GameWorkshop : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameWorkshop")
+        override val text get() = ChronicleEpBundle.message("special.url.gameWorkshop")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -29,7 +29,7 @@ interface SpecialUrlProviders {
     }
 
     class Mod : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.mod")
+        override val text get() = ChronicleEpBundle.message("special.url.mod")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
             val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
@@ -40,7 +40,7 @@ interface SpecialUrlProviders {
     }
 
     class GameStoreInSteam : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameStore.inSteam")
+        override val text get() = ChronicleEpBundle.message("special.url.gameStore.inSteam")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -49,7 +49,7 @@ interface SpecialUrlProviders {
     }
 
     class GameWorkshopInSteam : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameWorkshop.inSteam")
+        override val text get() = ChronicleEpBundle.message("special.url.gameWorkshop.inSteam")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -58,7 +58,7 @@ interface SpecialUrlProviders {
     }
 
     class ModInSteam : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.mod.inSteam")
+        override val text get() = ChronicleEpBundle.message("special.url.mod.inSteam")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
             val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
@@ -69,7 +69,7 @@ interface SpecialUrlProviders {
     }
 
     class GameLaunchInSteam : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameLaunch.inSteam")
+        override val text get() = ChronicleEpBundle.message("special.url.gameLaunch.inSteam")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -78,7 +78,7 @@ interface SpecialUrlProviders {
     }
 
     class GameInSteamDb : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameInSteamDb")
+        override val text get() = ChronicleEpBundle.message("special.url.gameInSteamDb")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -87,7 +87,7 @@ interface SpecialUrlProviders {
     }
 
     class GameInParadoxMods : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameInParadoxMods")
+        override val text get() = ChronicleEpBundle.message("special.url.gameInParadoxMods")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -97,7 +97,7 @@ interface SpecialUrlProviders {
     }
 
     class ModInParadoxMods : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.modInParadoxMods")
+        override val text get() = ChronicleEpBundle.message("special.url.modInParadoxMods")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
             val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
@@ -109,7 +109,7 @@ interface SpecialUrlProviders {
     }
 
     class GameForum : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameForum")
+        override val text get() = ChronicleEpBundle.message("special.url.gameForum")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -118,7 +118,7 @@ interface SpecialUrlProviders {
     }
 
     class GameWiki : SpecialUrlProvider {
-        override val text get() = PlsEpBundle.message("special.url.gameWiki")
+        override val text get() = ChronicleEpBundle.message("special.url.gameWiki")
 
         override fun getUrl(file: VirtualFile?, gameType: ParadoxGameType?): String? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)

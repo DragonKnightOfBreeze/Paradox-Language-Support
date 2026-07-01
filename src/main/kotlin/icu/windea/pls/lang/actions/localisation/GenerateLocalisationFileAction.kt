@@ -14,7 +14,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
@@ -65,7 +65,7 @@ class GenerateLocalisationFileAction : AnAction() {
         val fileMap = buildFileMap(files.toList(), allLocales, project)
         if (fileMap.isEmpty()) return
 
-        val taskTitle = PlsBundle.message("progress.generateLocalisationFiles")
+        val taskTitle = ChronicleBundle.message("progress.generateLocalisationFiles")
         val task = object : Task.Modal(project, taskTitle, true) {
             override fun run(indicator: ProgressIndicator) {
                 val fileDocumentManager = FileDocumentManager.getInstance()
@@ -106,7 +106,7 @@ class GenerateLocalisationFileAction : AnAction() {
                         val newParentPath = newPath.parent
                         val newFileName = newPath.fileName
                         indicator.isIndeterminate = false
-                        indicator.text = PlsBundle.message("progress.text.generateLocalisationFile", newFileName)
+                        indicator.text = ChronicleBundle.message("progress.text.generateLocalisationFile", newFileName)
                         indicator.fraction = index / missingLocales.size.toDouble()
 
                         try {
@@ -151,13 +151,13 @@ class GenerateLocalisationFileAction : AnAction() {
                 }
 
                 PlsNotificationGroups.global().createNotification(
-                    PlsBundle.message("notification.generateLocalisationFile.success.title"),
-                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total),
+                    ChronicleBundle.message("notification.generateLocalisationFile.success.title"),
+                    ChronicleBundle.message("notification.generateLocalisationFile.success.content", generated, total),
                     NotificationType.INFORMATION
                 ).notify(project)
             }
         }
-        val commandName = PlsBundle.message("command.generateLocalisationFiles")
+        val commandName = ChronicleBundle.message("command.generateLocalisationFiles")
         executeWriteCommand(project, commandName) {
             ProgressManager.getInstance().run(task)
         }

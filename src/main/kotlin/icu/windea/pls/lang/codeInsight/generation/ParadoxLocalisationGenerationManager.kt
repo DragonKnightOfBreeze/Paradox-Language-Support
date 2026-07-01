@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
@@ -23,12 +23,12 @@ object ParadoxLocalisationGenerationManager {
 
     fun handleGeneration(file: PsiFile, editor: Editor, context: ParadoxLocalisationCodeInsightContext?, locale: CwtLocaleConfig) {
         if (context == null) {
-            HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
+            HintManager.getInstance().showErrorHint(editor, ChronicleBundle.message("generation.localisation.noMembersHint"))
             return
         }
         val elements = getElements(context, locale)
         if (elements.isEmpty()) {
-            HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
+            HintManager.getInstance().showErrorHint(editor, ChronicleBundle.message("generation.localisation.noMembersHint"))
             return
         }
         val project = file.project
@@ -59,13 +59,13 @@ object ParadoxLocalisationGenerationManager {
         val onlyMissing = context.fromInspection
         return if (onlyMissing) {
             when (context.type) {
-                Type.File -> PlsBundle.message("generation.localisation.chooser.title.0.missing")
-                else -> PlsBundle.message("generation.localisation.chooser.title.1.missing")
+                Type.File -> ChronicleBundle.message("generation.localisation.chooser.title.0.missing")
+                else -> ChronicleBundle.message("generation.localisation.chooser.title.1.missing")
             }
         } else {
             when (context.type) {
-                Type.File -> PlsBundle.message("generation.localisation.chooser.title.0")
-                else -> PlsBundle.message("generation.localisation.chooser.title.1")
+                Type.File -> ChronicleBundle.message("generation.localisation.chooser.title.0")
+                else -> ChronicleBundle.message("generation.localisation.chooser.title.1")
             }
         }
     }
@@ -109,21 +109,21 @@ object ParadoxLocalisationGenerationManager {
         val onlyMissing = context.fromInspection
         return if (onlyMissing) {
             when (context.type) {
-                Type.File -> PlsBundle.message("generation.localisation.progress.title.0.missing", context.name)
-                Type.Definition -> PlsBundle.message("generation.localisation.progress.title.1.missing", context.name)
-                Type.Modifier -> PlsBundle.message("generation.localisation.progress.title.2.missing", context.name)
-                Type.LocalisationReference -> PlsBundle.message("generation.localisation.progress.title.3.missing", context.name)
-                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.progress.title.4.missing", context.name)
-                Type.Localisation -> PlsBundle.message("generation.localisation.progress.title.5.missing", context.name)
+                Type.File -> ChronicleBundle.message("generation.localisation.progress.title.0.missing", context.name)
+                Type.Definition -> ChronicleBundle.message("generation.localisation.progress.title.1.missing", context.name)
+                Type.Modifier -> ChronicleBundle.message("generation.localisation.progress.title.2.missing", context.name)
+                Type.LocalisationReference -> ChronicleBundle.message("generation.localisation.progress.title.3.missing", context.name)
+                Type.SyncedLocalisationReference -> ChronicleBundle.message("generation.localisation.progress.title.4.missing", context.name)
+                Type.Localisation -> ChronicleBundle.message("generation.localisation.progress.title.5.missing", context.name)
             }
         } else {
             when (context.type) {
-                Type.File -> PlsBundle.message("generation.localisation.progress.title.0", context.name)
-                Type.Definition -> PlsBundle.message("generation.localisation.progress.title.1", context.name)
-                Type.Modifier -> PlsBundle.message("generation.localisation.progress.title.2", context.name)
-                Type.LocalisationReference -> PlsBundle.message("generation.localisation.progress.title.3", context.name)
-                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.progress.title.4", context.name)
-                Type.Localisation -> PlsBundle.message("generation.localisation.progress.title.5", context.name)
+                Type.File -> ChronicleBundle.message("generation.localisation.progress.title.0", context.name)
+                Type.Definition -> ChronicleBundle.message("generation.localisation.progress.title.1", context.name)
+                Type.Modifier -> ChronicleBundle.message("generation.localisation.progress.title.2", context.name)
+                Type.LocalisationReference -> ChronicleBundle.message("generation.localisation.progress.title.3", context.name)
+                Type.SyncedLocalisationReference -> ChronicleBundle.message("generation.localisation.progress.title.4", context.name)
+                Type.Localisation -> ChronicleBundle.message("generation.localisation.progress.title.5", context.name)
             }
         }
     }
@@ -132,21 +132,21 @@ object ParadoxLocalisationGenerationManager {
         val onlyMissing = context.fromInspection
         return if (onlyMissing) {
             when (context.type) {
-                Type.File -> PlsBundle.message("generation.localisation.file.tooltip.0.missing", context.name)
-                Type.Definition -> PlsBundle.message("generation.localisation.file.tooltip.1.missing", context.name)
-                Type.Modifier -> PlsBundle.message("generation.localisation.file.tooltip.2.missing", context.name)
-                Type.LocalisationReference -> PlsBundle.message("generation.localisation.file.tooltip.3.missing", context.name)
-                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.file.tooltip.4.missing", context.name)
-                Type.Localisation -> PlsBundle.message("generation.localisation.file.tooltip.5.missing", context.name)
+                Type.File -> ChronicleBundle.message("generation.localisation.file.tooltip.0.missing", context.name)
+                Type.Definition -> ChronicleBundle.message("generation.localisation.file.tooltip.1.missing", context.name)
+                Type.Modifier -> ChronicleBundle.message("generation.localisation.file.tooltip.2.missing", context.name)
+                Type.LocalisationReference -> ChronicleBundle.message("generation.localisation.file.tooltip.3.missing", context.name)
+                Type.SyncedLocalisationReference -> ChronicleBundle.message("generation.localisation.file.tooltip.4.missing", context.name)
+                Type.Localisation -> ChronicleBundle.message("generation.localisation.file.tooltip.5.missing", context.name)
             }
         } else {
             when (context.type) {
-                Type.File -> PlsBundle.message("generation.localisation.file.tooltip.0", context.name)
-                Type.Definition -> PlsBundle.message("generation.localisation.file.tooltip.1", context.name)
-                Type.Modifier -> PlsBundle.message("generation.localisation.file.tooltip.2", context.name)
-                Type.LocalisationReference -> PlsBundle.message("generation.localisation.file.tooltip.3", context.name)
-                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.file.tooltip.4", context.name)
-                Type.Localisation -> PlsBundle.message("generation.localisation.file.tooltip.5", context.name)
+                Type.File -> ChronicleBundle.message("generation.localisation.file.tooltip.0", context.name)
+                Type.Definition -> ChronicleBundle.message("generation.localisation.file.tooltip.1", context.name)
+                Type.Modifier -> ChronicleBundle.message("generation.localisation.file.tooltip.2", context.name)
+                Type.LocalisationReference -> ChronicleBundle.message("generation.localisation.file.tooltip.3", context.name)
+                Type.SyncedLocalisationReference -> ChronicleBundle.message("generation.localisation.file.tooltip.4", context.name)
+                Type.Localisation -> ChronicleBundle.message("generation.localisation.file.tooltip.5", context.name)
             }
         }
     }

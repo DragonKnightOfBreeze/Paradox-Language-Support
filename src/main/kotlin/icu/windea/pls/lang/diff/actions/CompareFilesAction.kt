@@ -25,7 +25,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ide.notification.PlsNotificationGroups
@@ -75,7 +75,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val file = findFile(e) ?: return null
         val path = file.fileInfo?.path?.path ?: return null
         val virtualFiles = mutableListOf<VirtualFile>()
-        runWithModalProgressBlocking<Unit>(project, PlsBundle.message("diff.compare.files.collect.title")) {
+        runWithModalProgressBlocking<Unit>(project, ChronicleBundle.message("diff.compare.files.collect.title")) {
             readAction {
                 val selector = ParadoxFilePathSearch.selector(project, file)
                 val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
@@ -84,7 +84,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
         if (virtualFiles.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.files.content.notification.empty")
+            val content = ChronicleBundle.message("diff.compare.files.content.notification.empty")
             PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
@@ -161,7 +161,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示文件的路径信息、游戏或模组的名字和版本信息
-        return PlsBundle.message("diff.compare.files.dialog.title", path, qualifiedName)
+        return ChronicleBundle.message("diff.compare.files.dialog.title", path, qualifiedName)
     }
 
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
@@ -172,8 +172,8 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示文件的路径信息、游戏或模组的名字和版本信息
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", path, qualifiedName)
-            else -> PlsBundle.message("diff.compare.files.content.title", path, qualifiedName)
+            original -> ChronicleBundle.message("diff.compare.files.originalContent.title", path, qualifiedName)
+            else -> ChronicleBundle.message("diff.compare.files.content.title", path, qualifiedName)
         }
     }
 
@@ -203,7 +203,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
             // NOTE 2.1.2 目前的方案：仅显示文件的路径信息、游戏或模组的名字和版本信息
-            return PlsBundle.message("diff.compare.files.popup.name", path, qualifiedName)
+            return ChronicleBundle.message("diff.compare.files.popup.name", path, qualifiedName)
         }
     }
 
@@ -221,7 +221,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
 
         private inner class Popup : BaseListPopupStep<ParadoxDiffRequestProducer>(
-            PlsBundle.message("diff.compare.files.popup.title"),
+            ChronicleBundle.message("diff.compare.files.popup.title"),
             chain.requests
         ) {
             init {

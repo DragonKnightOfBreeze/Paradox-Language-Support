@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -129,19 +129,19 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if (isKey) {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.missingExpression.desc.1.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.missingExpression.desc.1.2", configExpression)
+                            isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.1.1", configExpression)
+                            else -> ChronicleBundle.message("inspection.script.missingExpression.desc.1.2", configExpression)
                         }
                     } else {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.missingExpression.desc.2.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.missingExpression.desc.2.2", configExpression)
+                            isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.2.1", configExpression)
+                            else -> ChronicleBundle.message("inspection.script.missingExpression.desc.2.2", configExpression)
                         }
                     }
                     val minDefine = occurrence.minDefine
                     val detail = when {
-                        minDefine == null -> PlsBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
-                        else -> PlsBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
+                        minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
+                        else -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
                     }
                     val highlightType = InspectionService.getWeakerHighlightType(lenientMin)
                     val fileLevel = element is PsiFile
@@ -158,22 +158,22 @@ class MissingExpressionInspection : LocalInspectionTool() {
         return panel {
             // firstOnly
             row {
-                checkBox(PlsBundle.message("inspection.script.missingExpression.option.firstOnly"))
+                checkBox(ChronicleBundle.message("inspection.script.missingExpression.option.firstOnly"))
                     .bindSelected(::firstOnly.toAtomicProperty())
             }
             // firstOnlyOnFile
             row {
-                checkBox(PlsBundle.message("inspection.script.missingExpression.option.firstOnlyOnFile"))
+                checkBox(ChronicleBundle.message("inspection.script.missingExpression.option.firstOnlyOnFile"))
                     .bindSelected(::firstOnlyOnFile.toAtomicProperty())
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

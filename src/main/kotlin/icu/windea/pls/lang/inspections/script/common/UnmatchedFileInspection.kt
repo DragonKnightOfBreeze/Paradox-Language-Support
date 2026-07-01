@@ -4,7 +4,7 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -55,10 +55,10 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
         return panel {
             // ignoredFilePaths
             row {
-                label(PlsBundle.message("unmatchedFile.option.ignoredFilePaths"))
+                label(ChronicleBundle.message("unmatchedFile.option.ignoredFilePaths"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.antPatterns"))
+                    .comment(ChronicleBundle.message("comment.antPatterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

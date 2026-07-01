@@ -6,7 +6,7 @@ import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.ui.EntryListTableModel
 import icu.windea.pls.core.util.Entry
@@ -23,7 +23,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
     val properties = list.associateBy({ it.key }, { graph.property(it.value) })
 
     init {
-        title = PlsBundle.message("settings.general.defaultGameDirectories.dialog.title")
+        title = ChronicleBundle.message("settings.general.defaultGameDirectories.dialog.title")
         init()
     }
 
@@ -36,7 +36,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                     // gameDirectory
                     label(gameType.title + ":").widthGroup("left")
                     val descriptor = FileChooserDescriptorFactory.singleDir()
-                        .withTitle(PlsBundle.message("gameDirectory.title"))
+                        .withTitle(ChronicleBundle.message("gameDirectory.title"))
                         .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
@@ -48,7 +48,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
             }
 
             row {
-                link(PlsBundle.message("gameDirectory.quickSelectAll")) {
+                link(ChronicleBundle.message("gameDirectory.quickSelectAll")) {
                     for ((gameTypeId, gameDirectoryProperty) in properties) {
                         val gameType = ParadoxGameType.getSpecific(gameTypeId) ?: continue
                         val quickGameDirectory = ParadoxGameManager.getQuickGameDirectory(gameType)?.orNull() ?: continue
@@ -75,22 +75,22 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
 
     init {
-        title = PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.title")
+        title = ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.title")
         init()
     }
 
     override fun createCenterPanel(): JComponent {
         return panel {
             row {
-                val keyName = PlsBundle.message("settings.configure.definitionTypeBindings.dialog.key")
-                val valueName = PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.value")
+                val keyName = ChronicleBundle.message("settings.configure.definitionTypeBindings.dialog.key")
+                val valueName = ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.value")
                 cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
             }.resizableRow() // 占据额外的垂直空间
             row {
-                comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"), MAX_LINE_LENGTH_WORD_WRAP)
+                comment(ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"), MAX_LINE_LENGTH_WORD_WRAP)
             }
             row {
-                comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.2"), MAX_LINE_LENGTH_WORD_WRAP)
+                comment(ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.2"), MAX_LINE_LENGTH_WORD_WRAP)
             }
         }
     }
@@ -100,7 +100,7 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
 
 class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     init {
-        title = PlsBundle.message("settings.completion.clauseTemplate.dialog.title")
+        title = ChronicleBundle.message("settings.completion.clauseTemplate.dialog.title")
         init()
     }
 
@@ -109,9 +109,9 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
         return panel {
             // maxExpressionCountInOneLine
             row {
-                label(PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine"))
+                label(ChronicleBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine"))
                 intTextField(1..10).bindIntText(settings::maxMemberCountInOneLine)
-                contextHelp(PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tip"))
+                contextHelp(ChronicleBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tip"))
             }
         }
     }

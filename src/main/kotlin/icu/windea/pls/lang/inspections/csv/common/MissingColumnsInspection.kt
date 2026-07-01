@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -44,7 +44,7 @@ class MissingColumnsInspection : LocalInspectionTool() {
                 missingKeys -= headerColumns.map { it.name }.toSet()
                 if (missingKeys.isEmpty()) return
 
-                val description = PlsBundle.message("inspection.csv.missingColumns.desc.1", missingKeys.joinToString(", "), rowConfig.name)
+                val description = ChronicleBundle.message("inspection.csv.missingColumns.desc.1", missingKeys.joinToString(", "), rowConfig.name)
                 holder.registerProblem(file, description)
             }
         }
@@ -54,7 +54,7 @@ class MissingColumnsInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

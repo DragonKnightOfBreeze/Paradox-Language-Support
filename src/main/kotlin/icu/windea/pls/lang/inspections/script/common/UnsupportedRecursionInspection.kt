@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -44,7 +44,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.checkScriptedVariable(element, recursions)
                 if (recursions.isEmpty()) return
-                val description = PlsBundle.message("inspection.script.unsupportedRecursion.desc.1")
+                val description = ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.1")
                 val location = element.scriptedVariableName
                 holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
             }
@@ -59,8 +59,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isDefinitionCall(element, re) }
                 if (recursions.isEmpty()) return
                 val description = when {
-                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2")
-                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.3")
+                    definitionInfo.type == "scripted_trigger" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.2")
+                    definitionInfo.type == "scripted_effect" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.3")
                     else -> return
                 }
                 val location = element.propertyKey

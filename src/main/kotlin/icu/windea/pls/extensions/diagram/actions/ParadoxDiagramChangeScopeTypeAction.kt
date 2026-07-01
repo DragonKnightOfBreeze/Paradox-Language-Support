@@ -8,8 +8,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.uml.core.actions.visibility.DeselectedVisibilityIcon
 import com.intellij.uml.core.actions.visibility.SelectedVisibilityIcon
 import icu.windea.pls.core.orNull
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
@@ -29,7 +29,7 @@ class ParadoxDiagramChangeScopeTypeAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun getActionName(): String {
-        return PlsDiagramBundle.message("action.changeScopeType.name", scopeType.text)
+        return ChronicleDiagramBundle.message("action.changeScopeType.name", scopeType.text)
     }
 
     private fun getActionIcon(): Icon {

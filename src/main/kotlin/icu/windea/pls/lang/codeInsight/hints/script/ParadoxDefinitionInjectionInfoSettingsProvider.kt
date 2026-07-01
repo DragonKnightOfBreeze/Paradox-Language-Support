@@ -6,7 +6,7 @@ import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.smaller
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInjectionInfoSettingsProvider.*
@@ -31,12 +31,12 @@ class ParadoxDefinitionInjectionInfoSettingsProvider : InlayHintsCustomSettingsP
     private val component by lazy {
         panel {
             row {
-                checkBox(PlsBundle.message("hints.settings.showDefinitionType")).selected(true).enabled(false).smaller()
+                checkBox(ChronicleBundle.message("hints.settings.showDefinitionType")).selected(true).enabled(false).smaller()
             }
             row {
-                checkBox(PlsBundle.message("hints.settings.showDefinitionSubtypes")).bindSelected(showSubtypesProperty).smaller()
+                checkBox(ChronicleBundle.message("hints.settings.showDefinitionSubtypes")).bindSelected(showSubtypesProperty).smaller()
             }
-            row(PlsBundle.message("hints.settings.truncateDefinitionSubtypes")) {
+            row(ChronicleBundle.message("hints.settings.truncateDefinitionSubtypes")) {
                 intTextField().bindIntText(truncateSubtypesProperty).smaller()
             }
         }.also { it.border = JBUI.Borders.empty(5) }

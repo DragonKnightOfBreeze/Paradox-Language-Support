@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.annotator
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
@@ -28,7 +28,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Highlight
 
     @Test
     fun testAdjacentIcons_errorAndFix() {
-        val msg = PlsBundle.message("message.adjacent.icon.unexpected")
+        val msg = ChronicleBundle.message("message.adjacent.icon.unexpected")
         val msgTag = msg.toErrorTag()
 
         // 两个相邻图标：£a££b£，应在第二个图标上报错
@@ -42,7 +42,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Highlight
         myFixture.checkHighlighting(true, true, true)
 
         // Quick Fix: 插入空格
-        val fixName = PlsBundle.message("fix.adjacent.icon.unexpected")
+        val fixName = ChronicleBundle.message("fix.adjacent.icon.unexpected")
         myFixture.configureByText(
             "annotator_adjacent_icons_apply.test.yml",
             """

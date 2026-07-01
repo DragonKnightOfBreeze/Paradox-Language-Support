@@ -9,7 +9,7 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
  * 更改本地化语言环境。
  */
 class ChangeLocalisationLocaleIntention : ModCommandAction {
-    override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale")
+    override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         findElement(context) ?: return null
@@ -36,7 +36,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         val localeConfigs = configGroup.supportedLocales
         if (localeConfigs.isEmpty()) return ModCommand.nop()
         val items = localeConfigs.map { ItemIntention(element, it) }
-        return ModCommand.chooseAction(PlsBundle.message("intention.changeLocalisationLocale.title"), items)
+        return ModCommand.chooseAction(ChronicleBundle.message("intention.changeLocalisationLocale.title"), items)
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationLocale? {
@@ -47,7 +47,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         element: ParadoxLocalisationLocale,
         private val localeConfig: CwtLocaleConfig,
     ) : PsiUpdateModCommandAction<ParadoxLocalisationLocale>(element) {
-        override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
+        override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
 
         override fun getPresentation(context: ActionContext, element: ParadoxLocalisationLocale): Presentation {
             return Presentation.of(localeConfig.idWithText).withIcon(PlsIcons.Nodes.LocalisationLocale)

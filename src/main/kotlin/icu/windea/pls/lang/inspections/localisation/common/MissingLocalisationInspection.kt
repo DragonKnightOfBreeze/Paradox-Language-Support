@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.matchesPatterns
@@ -109,7 +109,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
         val localeId = codeInsightInfo.locale.id
         codeInsightInfo.name
-            ?.let { return PlsBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
+            ?.let { return ChronicleBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
         return null
     }
 
@@ -124,18 +124,18 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             // ignoredFileNames
             row {
-                label(PlsBundle.message("inspection.localisation.missingLocalisation.option.ignoredFileNames"))
+                label(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.ignoredFileNames"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.patterns"))
+                    .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }
             // checkForPreferredLocale
             row {
-                checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
+                checkBox(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale.toAtomicProperty())
-                cell(ActionLink(PlsBundle.message("link.configure")) {
+                cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
                     dialog.showAndGet()
@@ -143,10 +143,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForSpecificLocales
             row {
-                checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
+                checkBox(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
-                cell(ActionLink(PlsBundle.message("link.configure")) {
+                cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     val configGroup = PlsFacade.getConfigGroup()
                     val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
                     val globalLocaleMap = globalLocales.associateBy { it.id }

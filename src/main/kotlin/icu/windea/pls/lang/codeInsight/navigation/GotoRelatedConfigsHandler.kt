@@ -7,7 +7,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 
@@ -35,14 +35,14 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        return PlsBundle.message("script.goto.relatedConfigs.chooseTitle")
+        return ChronicleBundle.message("script.goto.relatedConfigs.chooseTitle")
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        return PlsBundle.message("script.goto.relatedConfigs.findUsagesTitle")
+        return ChronicleBundle.message("script.goto.relatedConfigs.findUsagesTitle")
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedConfigs.notFoundMessage")
+        return ChronicleBundle.message("script.goto.relatedConfigs.notFoundMessage")
     }
 }

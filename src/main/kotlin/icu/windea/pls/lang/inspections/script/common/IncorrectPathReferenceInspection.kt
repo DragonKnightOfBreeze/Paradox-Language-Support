@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -63,7 +63,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val value = element.value
                 val fileExtension = value.substringAfterLast('.', "")
                 if (expectFileExtensions.any { fileExtension.equals(it, true) }) return
-                val description = PlsBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
+                val description = ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
                 holder.registerProblem(element, description)
             }
         }
@@ -73,12 +73,12 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

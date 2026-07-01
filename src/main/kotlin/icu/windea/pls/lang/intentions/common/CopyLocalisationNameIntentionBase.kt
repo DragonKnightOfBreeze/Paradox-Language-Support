@@ -5,7 +5,7 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * 复制本地化的名字到剪贴板。
  */
 abstract class CopyLocalisationNameIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationName")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisationName")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null

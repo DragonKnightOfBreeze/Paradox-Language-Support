@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.actions.BasePlatformRefactoringAction
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  */
 class IntroduceGlobalScriptedVariableAction : BasePlatformRefactoringAction() {
     init {
-        addTextOverride(ActionPlaces.MAIN_MENU, PlsBundle.message("action.Pls.IntroduceGlobalScriptedVariable.text.mainMenu"))
+        addTextOverride(ActionPlaces.MAIN_MENU, ChronicleBundle.message("action.Pls.IntroduceGlobalScriptedVariable.text.mainMenu"))
     }
 
     private val handler = IntroduceGlobalScriptedVariableHandler()

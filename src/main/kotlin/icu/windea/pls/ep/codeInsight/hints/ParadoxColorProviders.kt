@@ -8,7 +8,7 @@ import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -81,7 +81,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
         }
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
-        CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 }
@@ -158,7 +158,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
             // element.replace(newBlock) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newBlock.node)
         }
-        CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 
@@ -241,7 +241,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         }
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
-        CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 }

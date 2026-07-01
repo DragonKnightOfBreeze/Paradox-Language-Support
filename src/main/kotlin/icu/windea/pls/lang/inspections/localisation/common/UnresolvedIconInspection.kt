@@ -7,7 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
@@ -42,7 +42,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
-                val description = PlsBundle.message("inspection.localisation.unresolvedIcon.desc", name)
+                val description = ChronicleBundle.message("inspection.localisation.unresolvedIcon.desc", name)
                 holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
@@ -52,16 +52,16 @@ class UnresolvedIconInspection : LocalInspectionTool() {
         return panel {
             // ignoredNames
             row {
-                label(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames"))
+                label(ChronicleBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames"))
                 textField()
                     .bindText(::ignoredNames.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.patterns"))
+                    .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

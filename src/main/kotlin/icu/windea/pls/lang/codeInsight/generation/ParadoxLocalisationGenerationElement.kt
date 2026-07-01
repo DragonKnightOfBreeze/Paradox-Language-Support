@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.generation
 import com.intellij.codeInsight.generation.ClassMember
 import com.intellij.codeInsight.generation.MemberChooserObject
 import com.intellij.codeInsight.generation.MemberChooserObjectBase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
@@ -50,7 +50,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "modifier group: $name"
     }
 
-    class LocalisationReferences : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.localisationReferences")) {
+    class LocalisationReferences : ParadoxLocalisationGenerationElement(ChronicleBundle.message("generation.localisation.localisationReferences")) {
         override fun equals(other: Any?) = this === other || (other is LocalisationReferences)
 
         override fun hashCode() = 0
@@ -58,7 +58,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "<localisation references>"
     }
 
-    class SyncedLocalisationReferences : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.syncedLocalisationReferences")) {
+    class SyncedLocalisationReferences : ParadoxLocalisationGenerationElement(ChronicleBundle.message("generation.localisation.syncedLocalisationReferences")) {
         override fun equals(other: Any?) = this === other || (other is SyncedLocalisationReferences)
 
         override fun hashCode() = 0
@@ -66,7 +66,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "<synced localisation references>"
     }
 
-    class Localisations : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.localisations")) {
+    class Localisations : ParadoxLocalisationGenerationElement(ChronicleBundle.message("generation.localisation.localisations")) {
         override fun equals(other: Any?) = this === other || (other is Localisations)
 
         override fun hashCode() = 0

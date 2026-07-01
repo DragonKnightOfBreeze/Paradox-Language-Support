@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtConfigTypes.Effect
 import icu.windea.pls.config.CwtConfigTypes.Modifier
@@ -22,11 +22,11 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
-import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -60,7 +60,7 @@ object CwtConfigTypes {
     val Type = CwtConfigType.builder("Type").build {
         icon(PlsIcons.Configs.Type)
         prefix("(type)")
-        description(PlsBundle.message("config.description.type"))
+        description(ChronicleBundle.message("config.description.type"))
     }
     /**
      * 子类型规则。
@@ -73,7 +73,7 @@ object CwtConfigTypes {
     val Subtype = CwtConfigType.builder("Subtype").build {
         icon(PlsIcons.Configs.Type)
         prefix("(subtype)")
-        description(PlsBundle.message("config.description.subtype"))
+        description(ChronicleBundle.message("config.description.subtype"))
     }
     /**
      * 行规则。
@@ -86,7 +86,7 @@ object CwtConfigTypes {
     val Row = CwtConfigType.builder("Row").build {
         icon(PlsIcons.Configs.Row)
         prefix("(row)")
-        description(PlsBundle.message("config.description.row"))
+        description(ChronicleBundle.message("config.description.row"))
     }
     /**
      * 定值命名空间规则。
@@ -99,7 +99,7 @@ object CwtConfigTypes {
     val DefineNamespace = CwtConfigType.builder("DefineNamespace").build {
         icon(PlsIcons.Configs.DefineNamespace)
         prefix("(define namespace)")
-        description(PlsBundle.message("config.description.defineNamespace"))
+        description(ChronicleBundle.message("config.description.defineNamespace"))
     }
     /**
      * 定值变量规则。
@@ -112,7 +112,7 @@ object CwtConfigTypes {
     val DefineVariable = CwtConfigType.builder("DefineVariable").build {
         icon(PlsIcons.Configs.DefineVariable)
         prefix("(define variable)")
-        description(PlsBundle.message("config.description.defineVariable"))
+        description(ChronicleBundle.message("config.description.defineVariable"))
     }
     /**
      * 枚举规则。
@@ -125,7 +125,7 @@ object CwtConfigTypes {
     val Enum = CwtConfigType.builder("Enum").build {
         icon(PlsIcons.Configs.Enum)
         prefix("(enum)")
-        description(PlsBundle.message("config.description.enum"))
+        description(ChronicleBundle.message("config.description.enum"))
     }
     /**
      * 枚举值。
@@ -138,7 +138,7 @@ object CwtConfigTypes {
     val EnumValue = CwtConfigType.builder("EnumValue", "enums").reference().build {
         icon(PlsIcons.Configs.EnumValue)
         prefix("(enum value)")
-        description(PlsBundle.message("config.description.enumValue"))
+        description(ChronicleBundle.message("config.description.enumValue"))
     }
     /**
      * 复杂枚举规则。
@@ -151,7 +151,7 @@ object CwtConfigTypes {
     val ComplexEnum = CwtConfigType.builder("ComplexEnum").build {
         icon(PlsIcons.Configs.ComplexEnum)
         prefix("(complex enum)")
-        description(PlsBundle.message("config.description.complexEnum"))
+        description(ChronicleBundle.message("config.description.complexEnum"))
     }
     /**
      * 动态值类型规则。
@@ -164,7 +164,7 @@ object CwtConfigTypes {
     val DynamicValueType = CwtConfigType.builder("DynamicValueType").build {
         icon(PlsIcons.Configs.DynamicValueType)
         prefix("(dynamic value type)")
-        description(PlsBundle.message("config.description.dynamicValueType"))
+        description(ChronicleBundle.message("config.description.dynamicValueType"))
     }
     /**
      * 动态值。
@@ -177,7 +177,7 @@ object CwtConfigTypes {
     val DynamicValue = CwtConfigType.builder("DynamicValue", "values").reference().build {
         icon(PlsIcons.Configs.DynamicValue)
         prefix("(dynamic value)")
-        description(PlsBundle.message("config.description.dynamicValue"))
+        description(ChronicleBundle.message("config.description.dynamicValue"))
     }
     /**
      * 单别名规则。
@@ -190,7 +190,7 @@ object CwtConfigTypes {
     val SingleAlias = CwtConfigType.builder("SingleAlias").build {
         icon(PlsIcons.Configs.Alias)
         prefix("(single alias)")
-        description(PlsBundle.message("config.description.singleAlias"))
+        description(ChronicleBundle.message("config.description.singleAlias"))
     }
     /**
      * 别名规则。
@@ -205,7 +205,7 @@ object CwtConfigTypes {
     val Alias = CwtConfigType.builder("Alias").build {
         icon(PlsIcons.Configs.Alias)
         prefix("(alias)")
-        description(PlsBundle.message("config.description.alias"))
+        description(ChronicleBundle.message("config.description.alias"))
     }
     /**
      * 并集规则。
@@ -218,7 +218,7 @@ object CwtConfigTypes {
     val Union = CwtConfigType.builder("Union").reference().build {
         icon(PlsIcons.Configs.Union)
         prefix("(union)")
-        description(PlsBundle.message("config.description.union"))
+        description(ChronicleBundle.message("config.description.union"))
     }
     /**
      * 宏规则。
@@ -231,7 +231,7 @@ object CwtConfigTypes {
     val Macro = CwtConfigType.builder("Macro").build {
         icon(PlsIcons.Configs.Macro)
         prefix("(macro)")
-        description(PlsBundle.message("config.description.macro"))
+        description(ChronicleBundle.message("config.description.macro"))
     }
     /**
      * 链接规则。
@@ -244,7 +244,7 @@ object CwtConfigTypes {
     val Link = CwtConfigType.builder("Link").reference().build {
         icon(PlsIcons.Configs.Link)
         prefix("(link)")
-        description(PlsBundle.message("config.description.link"))
+        description(ChronicleBundle.message("config.description.link"))
     }
     /**
      * 本地化链接规则。
@@ -257,7 +257,7 @@ object CwtConfigTypes {
     val LocalisationLink = CwtConfigType.builder("LocalisationLink").reference().build {
         icon(PlsIcons.Configs.Link)
         prefix("(localisation link)")
-        description(PlsBundle.message("config.description.localisationLink"))
+        description(ChronicleBundle.message("config.description.localisationLink"))
     }
     /**
      * 本地化提升规则。
@@ -270,7 +270,7 @@ object CwtConfigTypes {
     val LocalisationPromotion = CwtConfigType.builder("LocalisationPromotion").reference().build {
         icon(PlsIcons.Configs.LocalisationPromotion)
         prefix("(localisation promotion)")
-        description(PlsBundle.message("config.description.localisationPromotion"))
+        description(ChronicleBundle.message("config.description.localisationPromotion"))
     }
     /**
      * 本地化命令规则。
@@ -283,7 +283,7 @@ object CwtConfigTypes {
     val LocalisationCommand = CwtConfigType.builder("LocalisationCommand").reference().build {
         icon(PlsIcons.Configs.LocalisationCommand)
         prefix("(localisation command)")
-        description(PlsBundle.message("config.description.localisationCommand"))
+        description(ChronicleBundle.message("config.description.localisationCommand"))
     }
     /**
      * 修正分类规则。
@@ -296,7 +296,7 @@ object CwtConfigTypes {
     val ModifierCategory = CwtConfigType.builder("ModifierCategory").reference().build {
         icon(PlsIcons.Configs.ModifierCategory)
         prefix("(modifier category)")
-        description(PlsBundle.message("config.description.modifierCategory"))
+        description(ChronicleBundle.message("config.description.modifierCategory"))
     }
     /**
      * 修正规则。
@@ -311,7 +311,7 @@ object CwtConfigTypes {
     val Modifier = CwtConfigType.builder("Modifier").reference().build {
         icon(PlsIcons.Configs.Modifier)
         prefix("(modifier)")
-        description(PlsBundle.message("config.description.modifier"))
+        description(ChronicleBundle.message("config.description.modifier"))
     }
     /**
      * 触发器规则。
@@ -324,7 +324,7 @@ object CwtConfigTypes {
     val Trigger = CwtConfigType.builder("Trigger").reference().build {
         icon(PlsIcons.Configs.Trigger)
         prefix("(trigger)")
-        description(PlsBundle.message("config.description.trigger"))
+        description(ChronicleBundle.message("config.description.trigger"))
     }
     /**
      * 效果规则。
@@ -337,7 +337,7 @@ object CwtConfigTypes {
     val Effect = CwtConfigType.builder("Effect").reference().build {
         icon(PlsIcons.Configs.Effect)
         prefix("(effect)")
-        description(PlsBundle.message("config.description.effect"))
+        description(ChronicleBundle.message("config.description.effect"))
     }
     /**
      * 作用域规则。
@@ -350,7 +350,7 @@ object CwtConfigTypes {
     val Scope = CwtConfigType.builder("Scope").reference().build {
         icon(PlsIcons.Configs.Scope)
         prefix("(scope)")
-        description(PlsBundle.message("config.description.scope"))
+        description(ChronicleBundle.message("config.description.scope"))
     }
     /**
      * 作用域组规则。
@@ -363,7 +363,7 @@ object CwtConfigTypes {
     val ScopeGroup = CwtConfigType.builder("ScopeGroup").reference().build {
         icon(PlsIcons.Configs.ScopeGroup)
         prefix("(scope group)")
-        description(PlsBundle.message("config.description.scopeGroup"))
+        description(ChronicleBundle.message("config.description.scopeGroup"))
     }
     /**
      * 数据库对象类型规则。
@@ -376,7 +376,7 @@ object CwtConfigTypes {
     val DatabaseObjectType = CwtConfigType.builder("DatabaseObjectType").reference().build {
         icon(PlsIcons.Configs.DatabaseObjectType)
         prefix("(database object type)")
-        description(PlsBundle.message("config.description.databaseObjectType"))
+        description(ChronicleBundle.message("config.description.databaseObjectType"))
     }
     /**
      * 系统作用域规则。
@@ -389,7 +389,7 @@ object CwtConfigTypes {
     val SystemScope = CwtConfigType.builder("SystemScope").reference().build {
         icon(PlsIcons.Configs.SystemScope)
         prefix("(system scope)")
-        description(PlsBundle.message("config.description.systemScope"))
+        description(ChronicleBundle.message("config.description.systemScope"))
     }
     /**
      * 语言区域规则。
@@ -402,7 +402,7 @@ object CwtConfigTypes {
     val Locale = CwtConfigType.builder("Locale").reference().build {
         icon(PlsIcons.Configs.Locale)
         prefix("(locale)")
-        description(PlsBundle.message("config.description.locale"))
+        description(ChronicleBundle.message("config.description.locale"))
     }
 
     // endregion

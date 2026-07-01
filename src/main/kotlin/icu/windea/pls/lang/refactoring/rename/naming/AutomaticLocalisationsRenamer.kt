@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -25,11 +25,11 @@ class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : Auto
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.localisation.overrides.title")
+    override fun getDialogTitle() = ChronicleBundle.message("rename.localisation.overrides.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.localisation.overrides.desc")
+    override fun getDialogDescription() = ChronicleBundle.message("rename.localisation.overrides.desc")
 
-    override fun entityName() = PlsBundle.message("rename.localisation.overrides.entityName")
+    override fun entityName() = ChronicleBundle.message("rename.localisation.overrides.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
         if (element !is ParadoxLocalisationProperty) return

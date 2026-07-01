@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
@@ -59,16 +59,16 @@ object ParadoxConfigExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.LocalisationLocationAware) {
-            return createLocalisationResolveResult(PlsBundle.message("dynamic"))
+            return createLocalisationResolveResult(ChronicleBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createLocalisationResolveResult(PlsBundle.message("parameterized"))
+            return createLocalisationResolveResult(ChronicleBundle.message("parameterized"))
         }
         if (config.configExpression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-            return createLocalisationResolveResult(PlsBundle.message("inlined"))
+            return createLocalisationResolveResult(ChronicleBundle.message("inlined"))
         }
         val name = valueElement.stringValue
         if (name.isEmpty()) return null
@@ -159,13 +159,13 @@ object ParadoxConfigExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ImageLocationAware) {
-            return createImageResolveResult(PlsBundle.message("dynamic"))
+            return createImageResolveResult(ChronicleBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createImageResolveResult(PlsBundle.message("parameterized"))
+            return createImageResolveResult(ChronicleBundle.message("parameterized"))
         }
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, ParadoxExpressionRole.Value)
         when {

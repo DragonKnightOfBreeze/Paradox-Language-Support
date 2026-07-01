@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
@@ -26,16 +26,16 @@ class GenerateLocalisationsFix(
     override fun getText(): String {
         val contextName = context.name.or.anonymous()
         return when (context.type) {
-            Type.Definition -> PlsBundle.message("fix.generateLocalisations.name.1", contextName)
-            Type.Modifier -> PlsBundle.message("fix.generateLocalisations.name.2", contextName)
-            Type.LocalisationReference -> PlsBundle.message("fix.generateLocalisations.name.3", contextName)
-            Type.SyncedLocalisationReference -> PlsBundle.message("fix.generateLocalisations.name.4", contextName)
-            Type.Localisation -> PlsBundle.message("fix.generateLocalisations.name.5", contextName)
+            Type.Definition -> ChronicleBundle.message("fix.generateLocalisations.name.1", contextName)
+            Type.Modifier -> ChronicleBundle.message("fix.generateLocalisations.name.2", contextName)
+            Type.LocalisationReference -> ChronicleBundle.message("fix.generateLocalisations.name.3", contextName)
+            Type.SyncedLocalisationReference -> ChronicleBundle.message("fix.generateLocalisations.name.4", contextName)
+            Type.Localisation -> ChronicleBundle.message("fix.generateLocalisations.name.5", contextName)
             else -> throw IllegalStateException()
         }
     }
 
-    override fun getFamilyName() = PlsBundle.message("fix.generateLocalisations.familyName")
+    override fun getFamilyName() = ChronicleBundle.message("fix.generateLocalisations.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return

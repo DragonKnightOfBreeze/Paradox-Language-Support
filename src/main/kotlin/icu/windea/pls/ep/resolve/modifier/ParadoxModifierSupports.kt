@@ -5,7 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.base.annotations.WithGameType
@@ -228,7 +228,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val templateString = templateConfigExpression.expressionString
 
             appendBr().appendIndent()
-            append(PlsBundle.message("fromTemplate")).append(" ")
+            append(ChronicleBundle.message("fromTemplate")).append(" ")
             val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
@@ -243,7 +243,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val definitionName = snippetNode.text
                             val definitionType = configExpression.value!!
                             val definitionTypes = definitionType.split('.')
-                            append(PlsBundle.message("generatedFromDefinition"))
+                            append(ChronicleBundle.message("generatedFromDefinition"))
                             append(" ")
                             val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, gameType)
                             appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = modifierElement)
@@ -262,7 +262,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataTypes.EnumValue -> {
                             val enumValueName = snippetNode.text
                             val enumName = configExpression.value!!
-                            append(PlsBundle.message("generatedFromEnumValue"))
+                            append(ChronicleBundle.message("generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, "$enumName/$enumValueName", gameType)
@@ -285,7 +285,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataTypes.Value -> {
                             val dynamicValueType = snippetNode.text
                             val valueName = configExpression.value!!
-                            append(PlsBundle.message("generatedFromDynamicValue"))
+                            append(ChronicleBundle.message("generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, "$dynamicValueType/$valueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), valueName.escapeXml(), context = modifierElement)
@@ -319,7 +319,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             // 2.1.8 文本可能过长，因此这里目前改为不显示
             // append(" ")
             // grayed {
-            //     append(PlsBundle.message("fromTemplate"))
+            //     append(ChronicleBundle.message("fromTemplate"))
             //     append(" ")
             //     val key = modifier.config.name
             //     val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, key, gameType)
@@ -432,19 +432,19 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         append(PlsStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济分类信息
         appendBr().appendIndent()
-        append(PlsBundle.message("generatedFromEconomicCategory"))
+        append(ChronicleBundle.message("generatedFromEconomicCategory"))
         append(" ")
         val ecLink = ReferenceLinkType.Definition.createLink(economicCategoryInfo.name, ParadoxDefinitionTypes.economicCategory, gameType)
         appendPsiLinkOrUnresolved(ecLink.escapeXml(), economicCategoryInfo.name.escapeXml(), context = modifierElement)
         if (modifierInfo.resource != null) {
             appendBr().appendIndent()
-            append(PlsBundle.message("generatedFromResource"))
+            append(ChronicleBundle.message("generatedFromResource"))
             append(" ")
             val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
             appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = modifierElement)
         } else {
             appendBr().appendIndent()
-            append(PlsBundle.message("forAiBudget"))
+            append(ChronicleBundle.message("forAiBudget"))
         }
 
         return true
@@ -465,7 +465,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             if (modifierInfo.resource != null) {
                 append(" ")
                 grayed {
-                    append(PlsBundle.message("fromResource"))
+                    append(ChronicleBundle.message("fromResource"))
                     append(" ")
                     val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)
@@ -473,7 +473,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             } else {
                 append(" ")
                 grayed {
-                    append(PlsBundle.message("forAiBudget"))
+                    append(ChronicleBundle.message("forAiBudget"))
                 }
             }
         }

@@ -15,7 +15,7 @@ import com.intellij.openapi.editor.RangeMarker
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -477,7 +477,7 @@ object CwtConfigCompletionManager {
         c.laterRunnable = Runnable {
             val project = context.project
             val editor = c.editor
-            val commandName = PlsBundle.message("command.expandTemplate.name")
+            val commandName = ChronicleBundle.message("command.expandTemplate.name")
             executeWriteCommand(project, commandName, makeWritable = context.file) c@{
                 val documentManager = PsiDocumentManager.getInstance(project)
                 documentManager.commitDocument(editor.document)

@@ -1,4 +1,4 @@
-package icu.windea.pls.extensions.diagram
+package icu.windea.pls.ai
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.Nls
@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.util.function.Supplier
 
-object PlsDiagramBundle {
+object ChronicleAiBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsDiagramBundle"
-    private val INSTANCE = DynamicBundle(PlsDiagramBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.ChronicleAiBundle"
+    private val INSTANCE = DynamicBundle(ChronicleAiBundle::class.java, BUNDLE)
 
     @JvmStatic
     @Nls

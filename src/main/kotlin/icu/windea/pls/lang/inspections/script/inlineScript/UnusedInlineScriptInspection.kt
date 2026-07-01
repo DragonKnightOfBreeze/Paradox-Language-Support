@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
@@ -23,7 +23,7 @@ class UnusedInlineScriptInspection : InlineScriptInspectionBase() {
         if (hasUsages) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("inspection.script.unusedInlineScript.desc", inlineScriptExpression)
+        val description = ChronicleBundle.message("inspection.script.unusedInlineScript.desc", inlineScriptExpression)
         holder.registerProblem(file, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
         return holder.resultsArray
     }

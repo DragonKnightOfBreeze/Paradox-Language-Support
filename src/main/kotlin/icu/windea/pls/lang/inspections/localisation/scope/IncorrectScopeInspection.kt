@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -59,7 +59,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                             val startOffset = offset + node.rangeInExpression.startOffset
                             val endOffset = offset + node.rangeInExpression.endOffset
                             val range = TextRange.create(startOffset, endOffset)
-                            val description = PlsBundle.message("inspection.localisation.incorrectScope.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
+                            val description = ChronicleBundle.message("inspection.localisation.incorrectScope.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
                             holder.registerProblem(element, range, description)
                             break // only reports first problem per complex expression
                         }

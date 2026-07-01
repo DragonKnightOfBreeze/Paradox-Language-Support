@@ -5,7 +5,7 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiService
  */
 @Suppress("UnstableApiUsage")
 class ScopeCallStatementToNestedFormIntention : PsiUpdateModCommandAction<ParadoxScriptProperty>(ParadoxScriptProperty::class.java), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.scopeCallStatementToNestedForm")
+    override fun getFamilyName() = ChronicleBundle.message("intention.scopeCallStatementToNestedForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
         val moveTo = ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, context.project, context.offset)

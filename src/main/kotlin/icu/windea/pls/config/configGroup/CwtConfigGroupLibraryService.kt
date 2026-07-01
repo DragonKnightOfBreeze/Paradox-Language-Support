@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.ide.analysis.PlsAnalysisManager
@@ -46,7 +46,7 @@ class CwtConfigGroupLibraryService(private val project: Project) {
 
     @Suppress("UnstableApiUsage")
     private fun refreshRoots(oldRoots: Set<VirtualFile>, newRoots: Set<VirtualFile>) {
-        val libraryName = PlsBundle.message("configGroup.library.name")
+        val libraryName = ChronicleBundle.message("configGroup.library.name")
         AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
     }
 

@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.parameter
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -69,7 +69,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         // 加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()
-        append(PlsBundle.message("ofLocalisation")).append(" ")
+        append(ChronicleBundle.message("ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
         val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)

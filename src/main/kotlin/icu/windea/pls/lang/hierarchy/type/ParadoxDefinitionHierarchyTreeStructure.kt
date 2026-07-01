@@ -5,7 +5,7 @@ import com.intellij.ide.hierarchy.HierarchyTreeStructure
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.tree.LeafState
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createPointer
@@ -78,7 +78,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
             descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, subtypeElement, false, subtypeConfig.name, type, NodeType.Subtype)
         }
         val typeElement = descriptor.psiElement ?: return
-        val name = PlsBundle.message("hierarchy.definition.descriptor.noSubtype")
+        val name = ChronicleBundle.message("hierarchy.definition.descriptor.noSubtype")
         descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, typeElement, false, name, type, NodeType.NoSubtype)
     }
 

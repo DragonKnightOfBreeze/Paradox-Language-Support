@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations.lints
 
-import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.TigerLintResult.*
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.inspections.lints.ChronicleTigerLintAnnotator
@@ -84,19 +84,19 @@ object TigerLintToolUtil {
 
     fun getConfidenceDisplayName(confidence: Confidence): String {
         return when (confidence) {
-            Confidence.WEAK -> PlsIntegrationsBundle.message("lint.tiger.confidence.weak")
-            Confidence.REASONABLE -> PlsIntegrationsBundle.message("lint.tiger.confidence.reasonable")
-            Confidence.STRONG -> PlsIntegrationsBundle.message("lint.tiger.confidence.strong")
+            Confidence.WEAK -> ChronicleIntegrationsBundle.message("lint.tiger.confidence.weak")
+            Confidence.REASONABLE -> ChronicleIntegrationsBundle.message("lint.tiger.confidence.reasonable")
+            Confidence.STRONG -> ChronicleIntegrationsBundle.message("lint.tiger.confidence.strong")
         }
     }
 
     fun getSeverityDisplayName(severity: Severity): String {
         return when (severity) {
-            Severity.TIPS -> PlsIntegrationsBundle.message("lint.tiger.severity.tips")
-            Severity.UNTIDY -> PlsIntegrationsBundle.message("lint.tiger.severity.untidy")
-            Severity.WARNING -> PlsIntegrationsBundle.message("lint.tiger.severity.warning")
-            Severity.ERROR -> PlsIntegrationsBundle.message("lint.tiger.severity.error")
-            Severity.FATAL -> PlsIntegrationsBundle.message("lint.tiger.severity.fatal")
+            Severity.TIPS -> ChronicleIntegrationsBundle.message("lint.tiger.severity.tips")
+            Severity.UNTIDY -> ChronicleIntegrationsBundle.message("lint.tiger.severity.untidy")
+            Severity.WARNING -> ChronicleIntegrationsBundle.message("lint.tiger.severity.warning")
+            Severity.ERROR -> ChronicleIntegrationsBundle.message("lint.tiger.severity.error")
+            Severity.FATAL -> ChronicleIntegrationsBundle.message("lint.tiger.severity.fatal")
         }
     }
 }

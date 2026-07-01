@@ -4,7 +4,7 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.SyntheticLibrary
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import javax.swing.Icon
 
@@ -31,7 +31,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
     }
 
     override fun getPresentableText(): String {
-        return PlsBundle.message("configGroup.library.name")
+        return ChronicleBundle.message("configGroup.library.name")
     }
 
     override fun equals(other: Any?): Boolean {

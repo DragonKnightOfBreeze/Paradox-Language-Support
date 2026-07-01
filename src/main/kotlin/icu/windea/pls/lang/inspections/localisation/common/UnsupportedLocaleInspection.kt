@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectLocale
@@ -31,12 +31,12 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
                 val locale = selectLocale(element)
                 if (locale == null) {
                     val location = element.idElement
-                    val description = PlsBundle.message("inspection.localisation.unsupportedLocale.desc.1", element.name)
+                    val description = ChronicleBundle.message("inspection.localisation.unsupportedLocale.desc.1", element.name)
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                 } else if(!locale.supports) {
                     val gameType = locale.configGroup.gameType
                     val location = element.idElement
-                    val description = PlsBundle.message("inspection.localisation.unsupportedLocale.desc.2", element.name, gameType.title)
+                    val description = ChronicleBundle.message("inspection.localisation.unsupportedLocale.desc.2", element.name, gameType.title)
                     holder.registerProblem(location, description)
                 }
             }

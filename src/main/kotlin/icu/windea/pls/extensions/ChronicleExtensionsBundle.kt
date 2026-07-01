@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.extensions
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.Nls
@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.util.function.Supplier
 
-object PlsBundle {
+object ChronicleExtensionsBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsBundle"
-    private val INSTANCE = DynamicBundle(PlsBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.ChronicleExtensionsBundle"
+    private val INSTANCE = DynamicBundle(ChronicleExtensionsBundle::class.java, BUNDLE)
 
     @JvmStatic
     @Nls

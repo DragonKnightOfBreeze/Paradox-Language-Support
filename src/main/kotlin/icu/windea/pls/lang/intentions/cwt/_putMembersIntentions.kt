@@ -7,7 +7,7 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiWhiteSpace
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
@@ -54,7 +54,7 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberC
  * ```
  */
 class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
-    override fun getFamilyName() = PlsBundle.message("intention.putMembersOnOneLine")
+    override fun getFamilyName() = ChronicleBundle.message("intention.putMembersOnOneLine")
 
     override fun invoke(context: ActionContext, element: CwtBoundMemberContainer, updater: ModPsiUpdater) {
         val membersText = getMemberTextSequence(element).joinToString(" ")
@@ -85,7 +85,7 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
  * ```
  */
 class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
-    override fun getFamilyName() = PlsBundle.message("intention.putMembersOnSeparateLines")
+    override fun getFamilyName() = ChronicleBundle.message("intention.putMembersOnSeparateLines")
 
     override fun invoke(context: ActionContext, element: CwtBoundMemberContainer, updater: ModPsiUpdater) {
         val membersText = getMemberTextSequence(element).joinToString("\n")

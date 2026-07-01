@@ -5,7 +5,7 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * 复制本地化文本到剪贴板（复制的是处理后的纯文本）。
  */
 abstract class CopyLocalisationTextAsPlainIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationTextAsPlain")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisationTextAsPlain")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null

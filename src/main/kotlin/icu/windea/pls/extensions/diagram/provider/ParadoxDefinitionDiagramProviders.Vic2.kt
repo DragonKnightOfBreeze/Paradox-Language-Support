@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.WithGameType
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.Vic2EventTreeDiagramSettings
 import icu.windea.pls.lang.definitionInfo
@@ -23,7 +23,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.vic2")
+    override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.vic2")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 

@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
@@ -29,7 +29,7 @@ class ParadoxModDependenciesImportPopup(
     private val table: ParadoxModDependenciesTable,
 ) : BaseListPopupStep<ParadoxModImporter>() {
     init {
-        val title = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
+        val title = ChronicleBundle.message("mod.dependencies.toolbar.action.import.popup.title")
         val gameType = table.model.settings.finalGameType
         val importers = ParadoxModImporter.EP_NAME.extensionList.filter { it.isAvailable(gameType) }
         init(title, importers, null)
@@ -63,19 +63,19 @@ class ParadoxModDependenciesImportPopup(
         val qualifiedName = settings.qualifiedName
         val modSetInfo = table.model.modDependencies.toModSetInfo(gameType) // 需要从 tableModel 中获取，而非直接从 settings 中获取
         val result = try {
-            runWithModalProgressBlocking(project, PlsBundle.message("mod.dependencies.import.progress.title")) {
+            runWithModalProgressBlocking(project, ChronicleBundle.message("mod.dependencies.import.progress.title")) {
                 modImporter.execute(file.toNioPath(), modSetInfo)
             }
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsBundle.message("mod.dependencies.import.error") + e.message.errorDetails
+            val content = ChronicleBundle.message("mod.dependencies.import.error") + e.message.errorDetails
             PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
         val from = result.newModSetInfo.name
         if (result.actualTotal == 0) {
-            val content = PlsBundle.message("mod.dependencies.import.empty", from)
+            val content = ChronicleBundle.message("mod.dependencies.import.empty", from)
             PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
@@ -84,11 +84,11 @@ class ParadoxModDependenciesImportPopup(
         table.addModDependencies(result.newModSetInfo.toModDependencies())
 
         if (result.warning != null) {
-            val content = PlsBundle.message("mod.dependencies.import.info", from, result.actualTotal) + result.warning.errorDetails
+            val content = ChronicleBundle.message("mod.dependencies.import.info", from, result.actualTotal) + result.warning.errorDetails
             PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
-        val content = PlsBundle.message("mod.dependencies.import.info", from, result.actualTotal)
+        val content = ChronicleBundle.message("mod.dependencies.import.info", from, result.actualTotal)
         PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
     }
 

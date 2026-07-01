@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -29,7 +29,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
                         // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                         val location = value.propertyKey
                         val fix = NavigateToDuplicatesFix(key, value, values)
-                        val description = PlsBundle.message("inspection.localisation.duplicateProperties.desc", key)
+                        val description = ChronicleBundle.message("inspection.localisation.duplicateProperties.desc", key)
                         holder.registerProblem(location, description, fix)
                     }
                 }

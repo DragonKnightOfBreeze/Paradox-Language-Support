@@ -10,7 +10,7 @@ import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiBasedModCommandAction
 import com.intellij.openapi.application.EDT
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
  * @see ParadoxInlineMathExpressionEvaluator
  */
 class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.evaluateInlineMath")
+    override fun getFamilyName() = ChronicleBundle.message("intention.evaluateInlineMath")
 
     override fun getPresentation(context: ActionContext, element: ParadoxScriptInlineMath): Presentation {
         return Presentation.of(familyName).withPriority(PriorityAction.Priority.HIGH)
@@ -46,7 +46,7 @@ class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInline
     }
 
     override fun generatePreview(context: ActionContext?, element: ParadoxScriptInlineMath?): IntentionPreviewInfo {
-        return IntentionPreviewInfo.Html(PlsBundle.message("intention.evaluateInlineMath.preview"))
+        return IntentionPreviewInfo.Html(ChronicleBundle.message("intention.evaluateInlineMath.preview"))
     }
 
     override fun isElementApplicable(element: ParadoxScriptInlineMath, context: ActionContext): Boolean {

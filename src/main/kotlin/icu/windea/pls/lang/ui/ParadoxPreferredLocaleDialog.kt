@@ -2,7 +2,7 @@ package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsManager
@@ -12,7 +12,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     private val callbackLock = CallbackLock()
 
     init {
-        title = PlsBundle.message("ui.selectPreferredLocale.title")
+        title = ChronicleBundle.message("ui.selectPreferredLocale.title")
         init()
     }
 

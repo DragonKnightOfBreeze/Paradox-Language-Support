@@ -5,7 +5,7 @@ package icu.windea.pls.lang.codeInsight.documentation
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
@@ -381,20 +381,20 @@ object CwtDocumentationManager {
                 val linkConfig = configGroup.links[name] ?: return
                 if (sections != null) {
                     val inputScopes = linkConfig.inputScopes
-                    sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
                     val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
-                    sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
             CwtConfigTypes.LocalisationLink -> {
                 val linkConfig = configGroup.localisationLinks[name] ?: return
                 if (sections != null) {
                     val inputScopes = linkConfig.inputScopes
-                    sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
                     val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
-                    sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
             CwtConfigTypes.Modifier -> {
@@ -402,32 +402,32 @@ object CwtDocumentationManager {
                 if (sections != null) {
                     val categoryNames = modifierConfig.categoryConfigMap.keys
                     if (categoryNames.isNotEmpty()) {
-                        sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
+                        sections[ChronicleBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
                     }
 
                     val supportedScopes = modifierConfig.supportedScopes
-                    sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
                 }
             }
             CwtConfigTypes.ModifierCategory -> {
                 val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
                 if (sections != null) {
                     val supportedScopes = modifierCategoryConfig.supportedScopes
-                    sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
                 }
             }
             CwtConfigTypes.LocalisationPromotion -> {
                 val localisationPromotionConfig = configGroup.localisationPromotions[name] ?: return
                 if (sections != null) {
                     val supportedScopes = localisationPromotionConfig.supportedScopes
-                    sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
                 }
             }
             CwtConfigTypes.LocalisationCommand -> {
                 val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
                 if (sections != null) {
                     val supportedScopes = localisationCommandConfig.supportedScopes
-                    sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
                 }
             }
             CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
@@ -440,11 +440,11 @@ object CwtDocumentationManager {
                 if (aliasConfig.name !in configGroup.aliasNamesSupportScope) return
                 if (sections != null) {
                     val supportedScopes = aliasConfig.supportedScopes
-                    sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                    sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
 
                     val outputScope = aliasConfig.outputScope
                     if (outputScope != null) {
-                        sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
+                        sections[ChronicleBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                     }
                 }
             }
@@ -467,7 +467,7 @@ object CwtDocumentationManager {
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
-        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {

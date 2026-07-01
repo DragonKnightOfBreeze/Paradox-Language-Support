@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -32,7 +32,7 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
                 if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)) return
-                val description = PlsBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
+                val description = ChronicleBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element.propertyKey, description, *fixes)
             }
@@ -46,7 +46,7 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
     private class Fix(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        override fun getText() = PlsBundle.message("inspection.script.scopeCallStatementToSafeForm.fix.1.name")
+        override fun getText() = ChronicleBundle.message("inspection.script.scopeCallStatementToSafeForm.fix.1.name")
 
         override fun getFamilyName() = text
 

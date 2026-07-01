@@ -11,7 +11,7 @@ import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.isExactDigit
@@ -95,13 +95,13 @@ object ParadoxLocalisationManipulationService {
     }
 
     fun createRevertAction(contexts: List<ParadoxLocalisationManipulationContext>): AnAction {
-        return object : AnAction(PlsBundle.message("manipulation.localisation.revert")) {
+        return object : AnAction(ChronicleBundle.message("manipulation.localisation.revert")) {
             override fun actionPerformed(e: AnActionEvent) {
                 val project = e.project ?: return
                 val coroutineScope = PlsFacade.getCoroutineScope(project)
                 coroutineScope.launch {
-                    withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.revert.progress.title")) {
-                        writeCommandAction(project, PlsBundle.message("manipulation.localisation.revert.command")) {
+                    withBackgroundProgress(project, ChronicleBundle.message("manipulation.localisation.revert.progress.title")) {
+                        writeCommandAction(project, ChronicleBundle.message("manipulation.localisation.revert.command")) {
                             for (context in contexts) {
                                 if (context.text == context.newText) continue
                                 // 注意这里 context.element 可能已经不合法
@@ -115,13 +115,13 @@ object ParadoxLocalisationManipulationService {
     }
 
     fun createReapplyAction(contexts: List<ParadoxLocalisationManipulationContext>): AnAction {
-        return object : AnAction(PlsBundle.message("manipulation.localisation.reapply")) {
+        return object : AnAction(ChronicleBundle.message("manipulation.localisation.reapply")) {
             override fun actionPerformed(e: AnActionEvent) {
                 val project = e.project ?: return
                 val coroutineScope = PlsFacade.getCoroutineScope(project)
                 coroutineScope.launch {
-                    withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.reapply.progress.title")) {
-                        writeCommandAction(project, PlsBundle.message("manipulation.localisation.reapply.command")) {
+                    withBackgroundProgress(project, ChronicleBundle.message("manipulation.localisation.reapply.progress.title")) {
+                        writeCommandAction(project, ChronicleBundle.message("manipulation.localisation.reapply.command")) {
                             for (context in contexts) {
                                 if (context.text == context.newText) continue
                                 // 注意这里 context.element 可能已经不合法

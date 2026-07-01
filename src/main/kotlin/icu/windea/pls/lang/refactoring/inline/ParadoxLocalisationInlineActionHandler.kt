@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.refactoring.util.CommonRefactoringUtil
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
-    override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")
+    override fun getActionName(element: PsiElement?) = ChronicleBundle.message("title.inline.localisation")
 
     override fun isEnabledForLanguage(language: Language) = language is ParadoxLocalisationLanguage
 
@@ -42,20 +42,20 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxLocalisationProperty, reference: PsiReference?) {
         if (reference != null && reference !is ParadoxLocalisationParameterPsiReference) {
-            val message = PlsBundle.message("refactoring.localisation.reference", getRefactoringName())
+            val message = ChronicleBundle.message("refactoring.localisation.reference", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
 
         if (ParadoxLocalisationManager.isSpecialLocalisation(element)) {
-            val message = PlsBundle.message("refactoring.localisation.special", getRefactoringName())
+            val message = ChronicleBundle.message("refactoring.localisation.special", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
 
         val isRecursive = ParadoxRecursionManager.checkLocalisation(element)
         if (isRecursive) {
-            val message = PlsBundle.message("refactoring.localisation.recursive", getRefactoringName())
+            val message = ChronicleBundle.message("refactoring.localisation.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
@@ -64,7 +64,7 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
             if (reference == null) return@run
             val referenceElement = reference.element.castOrNull<ParadoxLocalisationParameter>() ?: return@run
             if (referenceElement.argumentElement != null) {
-                val message = PlsBundle.message("refactoring.localisation.withArgument", getRefactoringName())
+                val message = ChronicleBundle.message("refactoring.localisation.withArgument", getRefactoringName())
                 CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
                 return
             }
@@ -74,5 +74,5 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
         dialog.show()
     }
 
-    private fun getRefactoringName() = PlsBundle.message("title.inline.localisation")
+    private fun getRefactoringName() = ChronicleBundle.message("title.inline.localisation")
 }

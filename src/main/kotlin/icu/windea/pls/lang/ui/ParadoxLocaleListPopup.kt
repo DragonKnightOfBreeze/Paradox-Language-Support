@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 
@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 class ParadoxLocaleListPopup(
     val allLocales: List<CwtLocaleConfig>,
     val onSelected: (selectedValue: CwtLocaleConfig) -> Unit = {},
-) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("ui.selectLocale.title"), allLocales) {
+) : BaseListPopupStep<CwtLocaleConfig>(ChronicleBundle.message("ui.selectLocale.title"), allLocales) {
     private var callback = onSelected
 
     override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale

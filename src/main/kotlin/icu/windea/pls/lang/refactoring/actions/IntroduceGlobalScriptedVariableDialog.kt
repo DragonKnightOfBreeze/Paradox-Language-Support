@@ -17,7 +17,7 @@ import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
@@ -46,7 +46,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private val fileField = TextFieldWithHistoryWithBrowseButton()
 
     init {
-        title = PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.title")
+        title = ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.title")
         init()
     }
 
@@ -58,7 +58,7 @@ class IntroduceGlobalScriptedVariableDialog(
         return panel {
             row {
                 // 输入变量名
-                label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
+                label(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
                 textField()
                     .bindText(variableNameProperty)
                     .align(Align.FILL)
@@ -69,7 +69,7 @@ class IntroduceGlobalScriptedVariableDialog(
             if (setVariableValue) {
                 row {
                     // 输入变量值
-                    label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
+                    label(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
                     textField()
                         .bindText(variableValueProperty)
                         .align(Align.FILL)
@@ -79,9 +79,9 @@ class IntroduceGlobalScriptedVariableDialog(
             }
             row {
                 // 选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
-                label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
+                label(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("txt")
-                    .withTitle(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
+                    .withTitle(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
                     .withRoots(scriptedVariablesFile)
                     .withTreeRootVisible(true)
                 val fileField = fileField.apply {
@@ -117,9 +117,9 @@ class IntroduceGlobalScriptedVariableDialog(
 
     private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
         if (variableName.isEmpty()) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
+            return error(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
         } else if (!ParadoxNameValidators.checkScriptedVariableName(variableName)) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
+            return error(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
         }
         return null
     }
@@ -127,16 +127,16 @@ class IntroduceGlobalScriptedVariableDialog(
     private fun ValidationInfoBuilder.validateScriptedVariableFilePath(): ValidationInfo? {
         filePath = fileField.text
         if (filePath.isEmpty()) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.0"))
+            return error(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.0"))
         } else if (!filePath.endsWith(".txt", true)) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.3"))
+            return error(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.3"))
         }
         val selectedFile = filePath.toVirtualFile()
             ?.takeIf { it.exists() }
-            ?: return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.1"))
+            ?: return error(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.1"))
         val path = selectedFile.fileInfo?.path?.path
         if (path == null || !"common/scripted_variables".matchesPath(path, acceptSelf = false)) {
-            return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.2"))
+            return error(ChronicleBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.2"))
         }
         file = selectedFile
         return null

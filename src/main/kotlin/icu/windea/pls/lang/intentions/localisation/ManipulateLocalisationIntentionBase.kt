@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
@@ -144,8 +144,8 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     }
 
     object Messages {
-        fun success() = PlsBundle.message("intention.manipulateLocalisation.status.0")
-        fun failed() = PlsBundle.message("intention.manipulateLocalisation.status.1")
-        fun partialSuccess() = PlsBundle.message("intention.manipulateLocalisation.status.2")
+        fun success() = ChronicleBundle.message("intention.manipulateLocalisation.status.0")
+        fun failed() = ChronicleBundle.message("intention.manipulateLocalisation.status.1")
+        fun partialSuccess() = ChronicleBundle.message("intention.manipulateLocalisation.status.2")
     }
 }

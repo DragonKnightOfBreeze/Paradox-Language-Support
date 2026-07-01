@@ -7,7 +7,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.siblings
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
@@ -91,8 +91,8 @@ class MoveRowUpAction : MoveRowActionBase(above = true) {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.textBatch")
+                runSmartReadAction { elements.singleOrNull() } != null -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowUp.text")
+                else -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowUp.textBatch")
             }
         }
     }
@@ -102,8 +102,8 @@ class MoveRowDownAction : MoveRowActionBase(above = false) {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.textBatch")
+                runSmartReadAction { elements.singleOrNull() } != null -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowDown.text")
+                else -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowDown.textBatch")
             }
         }
     }
@@ -113,8 +113,8 @@ class SelectRowAction : ManipulateRowActionBase() {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.SelectRow.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.SelectRow.textBatch")
+                runSmartReadAction { elements.singleOrNull() } != null -> ChronicleBundle.message("action.Pls.Manipulation.SelectRow.text")
+                else -> ChronicleBundle.message("action.Pls.Manipulation.SelectRow.textBatch")
             }
         }
     }
@@ -138,8 +138,8 @@ class RemoveRowAction : ManipulateRowActionBase() {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.textBatch")
+                runSmartReadAction { elements.singleOrNull() } != null -> ChronicleBundle.message("action.Pls.Manipulation.RemoveRow.text")
+                else -> ChronicleBundle.message("action.Pls.Manipulation.RemoveRow.textBatch")
             }
         }
     }

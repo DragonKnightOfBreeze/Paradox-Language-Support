@@ -8,7 +8,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
@@ -34,8 +34,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.scopeContextInfo")
 
-    override val name get() = PlsBundle.message("script.hints.scopeContextInfo")
-    override val description get() = PlsBundle.message("script.hints.scopeContextInfo.description")
+    override val name get() = ChronicleBundle.message("script.hints.scopeContextInfo")
+    override val description get() = ChronicleBundle.message("script.hints.scopeContextInfo.description")
     override val key get() = settingsKey
 
     override val showScopeContextInfo get() = true

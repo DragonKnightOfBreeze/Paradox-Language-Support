@@ -1,15 +1,15 @@
 package icu.windea.pls.lang.settings
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 
 interface PlsSettingsStrategies {
     /**
      * 本地化的生成策略。
      */
     enum class LocalisationGeneration(override val text: String) : PlsSettingsStrategy {
-        EmptyText(PlsBundle.message("settings.strategy.localisationGeneration.0")),
-        SpecificText(PlsBundle.message("settings.strategy.localisationGeneration.1")),
-        FromLocale(PlsBundle.message("settings.strategy.localisationGeneration.2")),
+        EmptyText(ChronicleBundle.message("settings.strategy.localisationGeneration.0")),
+        SpecificText(ChronicleBundle.message("settings.strategy.localisationGeneration.1")),
+        FromLocale(ChronicleBundle.message("settings.strategy.localisationGeneration.2")),
         ;
     }
 
@@ -17,10 +17,10 @@ interface PlsSettingsStrategies {
      * 默认差异比较分组的策略。
      */
     enum class DiffGroup(override val text: String) : PlsSettingsStrategy {
-        Current(PlsBundle.message("settings.strategy.diffGroup.0")),
-        Vanilla(PlsBundle.message("settings.strategy.diffGroup.1")),
-        First(PlsBundle.message("settings.strategy.diffGroup.2")),
-        Last(PlsBundle.message("settings.strategy.diffGroup.3")),
+        Current(ChronicleBundle.message("settings.strategy.diffGroup.0")),
+        Vanilla(ChronicleBundle.message("settings.strategy.diffGroup.1")),
+        First(ChronicleBundle.message("settings.strategy.diffGroup.2")),
+        Last(ChronicleBundle.message("settings.strategy.diffGroup.3")),
         ;
     }
 
@@ -28,8 +28,8 @@ interface PlsSettingsStrategies {
      * 事件树的层级视图的分组策略。
      */
     enum class EventTreeGrouping(override val text: String) : PlsSettingsStrategy {
-        None(PlsBundle.message("settings.strategy.eventTreeGrouping.0")),
-        Type(PlsBundle.message("settings.strategy.eventTreeGrouping.1")),
+        None(ChronicleBundle.message("settings.strategy.eventTreeGrouping.0")),
+        Type(ChronicleBundle.message("settings.strategy.eventTreeGrouping.1")),
         ;
     }
 
@@ -37,14 +37,14 @@ interface PlsSettingsStrategies {
      * 科技树的层级视图的分组策略。
      */
     enum class TechTreeGrouping(override val text: String) : PlsSettingsStrategy {
-        None(PlsBundle.message("settings.strategy.techTreeGrouping.0")),
-        Tier(PlsBundle.message("settings.strategy.techTreeGrouping.1")),
-        Area(PlsBundle.message("settings.strategy.techTreeGrouping.2")),
-        Category(PlsBundle.message("settings.strategy.techTreeGrouping.3")),
-        Tier2Area(PlsBundle.message("settings.strategy.techTreeGrouping.4")),
-        Tier2Category(PlsBundle.message("settings.strategy.techTreeGrouping.5")),
-        Area2Tier(PlsBundle.message("settings.strategy.techTreeGrouping.6")),
-        Category2Tier(PlsBundle.message("settings.strategy.techTreeGrouping.7")),
+        None(ChronicleBundle.message("settings.strategy.techTreeGrouping.0")),
+        Tier(ChronicleBundle.message("settings.strategy.techTreeGrouping.1")),
+        Area(ChronicleBundle.message("settings.strategy.techTreeGrouping.2")),
+        Category(ChronicleBundle.message("settings.strategy.techTreeGrouping.3")),
+        Tier2Area(ChronicleBundle.message("settings.strategy.techTreeGrouping.4")),
+        Tier2Category(ChronicleBundle.message("settings.strategy.techTreeGrouping.5")),
+        Area2Tier(ChronicleBundle.message("settings.strategy.techTreeGrouping.6")),
+        Category2Tier(ChronicleBundle.message("settings.strategy.techTreeGrouping.7")),
         ;
     }
 }

@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -44,7 +44,7 @@ class UnsupportedParameterInspection : LocalInspectionTool() {
     private fun checkGeneral(element: PsiElement, holder: ProblemsHolder) {
         if (element !is ParadoxParameter && element !is ParadoxConditionParameter) return
         if (element.reference?.resolve() != null) return
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameter.desc.1"))
+        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedParameter.desc.1"))
     }
 
     private fun checkInlineScript(element: PsiElement, holder: ProblemsHolder) {
@@ -53,11 +53,11 @@ class UnsupportedParameterInspection : LocalInspectionTool() {
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
         val fix = getDeleteDefaultValueFix(element)
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameter.desc.2"), fix)
+        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedParameter.desc.2"), fix)
     }
 
     private fun getDeleteDefaultValueFix(element: PsiElement): DeleteStringByElementTypeFix {
-        val name = PlsBundle.message("inspection.script.unsupportedParameter.fix.1.name")
+        val name = ChronicleBundle.message("inspection.script.unsupportedParameter.fix.1.name")
         return DeleteStringByElementTypeFix(element, name, ParadoxScriptElementTypes.PIPE, ParadoxScriptElementTypes.PARAMETER_END)
     }
 }

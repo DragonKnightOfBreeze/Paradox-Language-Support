@@ -6,10 +6,10 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
-import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
@@ -37,7 +37,7 @@ class StellarisEventTreeDiagramSettings(
         var attribute by linkedMap<String, Boolean>()
     }
 
-    override val groupName: String = PlsDiagramBundle.message("eventTree.name.stellaris")
+    override val groupName: String = ChronicleDiagramBundle.message("eventTree.name.stellaris")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -48,13 +48,13 @@ class StellarisEventTreeDiagramSettings(
         settings.updateSettings()
 
         row {
-            label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
+            label(ChronicleDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
-            PlsDocBundle.eventType(key, gameType)
+        checkBoxGroup(settings.type, ChronicleDiagramBundle.message("eventTree.settings.type"), { key ->
+            ChronicleDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
-            PlsDocBundle.eventAttribute(key, gameType)
+        checkBoxGroup(settings.attribute, ChronicleDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            ChronicleDocBundle.eventAttribute(key, gameType)
         })
     }
 }
@@ -84,7 +84,7 @@ class StellarisTechTreeDiagramSettings(
         var attribute by linkedMap<String, Boolean>()
     }
 
-    override val groupName: String = PlsDiagramBundle.message("techTree.name.stellaris")
+    override val groupName: String = ChronicleDiagramBundle.message("techTree.name.stellaris")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -104,23 +104,23 @@ class StellarisTechTreeDiagramSettings(
         categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationUtil.getNameTextOrKey(it) } }
 
         row {
-            label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
+            label(ChronicleDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.tier, PlsDiagramBundle.message("techTree.settings.tier"), { key ->
-            PlsDocBundle.technologyTier(key, gameType)
+        checkBoxGroup(settings.tier, ChronicleDiagramBundle.message("techTree.settings.tier"), { key ->
+            ChronicleDocBundle.technologyTier(key, gameType)
         })
-        checkBoxGroup(settings.area, PlsDiagramBundle.message("techTree.settings.area"), { key ->
-            PlsDocBundle.message("default.technology.area", key)
+        checkBoxGroup(settings.area, ChronicleDiagramBundle.message("techTree.settings.area"), { key ->
+            ChronicleDocBundle.message("default.technology.area", key)
         }) { key ->
             areaNameProviders[key]?.invoke()
         }
-        checkBoxGroup(settings.category, PlsDiagramBundle.message("techTree.settings.category"), { key ->
-            PlsDocBundle.message("default.technology.category", key)
+        checkBoxGroup(settings.category, ChronicleDiagramBundle.message("techTree.settings.category"), { key ->
+            ChronicleDocBundle.message("default.technology.category", key)
         }) { key ->
             categoryNameProviders[key]?.invoke()
         }
-        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("techTree.settings.attribute"), { key ->
-            PlsDocBundle.technologyAttribute(key, gameType)
+        checkBoxGroup(settings.attribute, ChronicleDiagramBundle.message("techTree.settings.attribute"), { key ->
+            ChronicleDocBundle.technologyAttribute(key, gameType)
         })
     }
 }

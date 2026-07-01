@@ -5,7 +5,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
@@ -23,11 +23,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 提供内联脚本用法（inlineScriptUsage）的导航到对应的内联脚本（inlineScript）的装订线图标。
  */
 class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.inlineScripts")
+    override fun getName() = ChronicleBundle.message("script.gutterIcon.inlineScripts")
 
     override fun getIcon() = PlsIcons.Gutter.InlineScripts
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.inlineScripts.group")
+    override fun getGroup() = ChronicleBundle.message("script.gutterIcon.inlineScripts.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 inlineScriptUsage
@@ -46,15 +46,15 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.inlineScripts.title"))
+            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.inlineScripts.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.inlineScripts") }
+            .setNamer { ChronicleBundle.message("script.gutterIcon.inlineScripts") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = PlsBundle.message("script.gutterIcon.inlineScripts.action")
+        val actionText = ChronicleBundle.message("script.gutterIcon.inlineScripts.action")
         NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoInlineScripts)
     }
 }

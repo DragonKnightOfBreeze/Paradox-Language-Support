@@ -17,7 +17,7 @@ import com.intellij.refactoring.listeners.RefactoringEventData
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.values.singletonList
@@ -38,7 +38,7 @@ class ParadoxScriptedTriggerInlineProcessor(
 ) : BaseRefactoringProcessor(project, scope, null) {
     private val descriptiveName = DescriptiveNameUtil.getDescriptiveName(element)
 
-    override fun getCommandName() = PlsBundle.message("inline.scriptedTrigger.command", descriptiveName)
+    override fun getCommandName() = ChronicleBundle.message("inline.scriptedTrigger.command", descriptiveName)
 
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = ParadoxInlineViewDescriptor(element)
 

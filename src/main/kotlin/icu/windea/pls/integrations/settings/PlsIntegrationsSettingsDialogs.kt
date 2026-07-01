@@ -7,7 +7,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
-import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.LintHighlightSeverity
 import icu.windea.pls.integrations.lints.TigerLintResult.*
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
@@ -42,13 +42,13 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
     }
 
     init {
-        title = PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.dialog.title")
+        title = ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.dialog.title")
         init()
     }
 
     override fun createCenterPanel(): JComponent = panel {
         row {
-            comment(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment"))
+            comment(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment"))
         }
         createMapping()
     }
@@ -61,14 +61,14 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
     //
     //         if (m.mark()) separator()
     //         row {
-    //             label(PlsBundle.message("lint.tiger.severity")).widthGroup("tiger.label.0")
+    //             label(ChronicleBundle.message("lint.tiger.severity")).widthGroup("tiger.label.0")
     //             label(TigerLintToolManager.getSeverityDisplayName(severity)).widthGroup("tiger.label.1")
     //             highlightSeverityComboBox(mergedOption).applyToComponent { mergedCb = this }
-    //             button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
+    //             button(ChronicleBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
     //         }
     //         var i = 0
     //         row {
-    //             label(PlsBundle.message("lint.tiger.confidence")).widthGroup("tiger.label.0")
+    //             label(ChronicleBundle.message("lint.tiger.confidence")).widthGroup("tiger.label.0")
     //             propertyGroup.getValue(severity).forEach { (confidence, option) ->
     //                 i++
     //                 label(TigerLintToolManager.getConfidenceDisplayName(confidence)).widthGroup("tiger.label.$i")
@@ -81,12 +81,12 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
 
     // 方案2：采用表格形式，行是严重度，列是置信度，重置按钮在每一行的所有cb之后
     private fun Panel.createMapping() {
-        val severityPrefix = PlsIntegrationsBundle.message("lint.tiger.severity")
-        val confidencePrefix = PlsIntegrationsBundle.message("lint.tiger.confidence")
+        val severityPrefix = ChronicleIntegrationsBundle.message("lint.tiger.severity")
+        val confidencePrefix = ChronicleIntegrationsBundle.message("lint.tiger.confidence")
 
         row {
             label("").widthGroup("tiger.c0")
-            label(confidencePrefix + PlsIntegrationsBundle.message("lint.tiger.confidence.all")).widthGroup("tiger.c1")
+            label(confidencePrefix + ChronicleIntegrationsBundle.message("lint.tiger.confidence.all")).widthGroup("tiger.c1")
             Confidence.entries.forEachIndexed { i, e -> label(confidencePrefix + TigerLintToolUtil.getConfidenceDisplayName(e)).widthGroup("tiger.c${i + 2}") }
         }
         Severity.entries.forEach { severity ->
@@ -102,7 +102,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
                     highlightSeverityComboBox(option).widthGroup("tiger.c${i + 1}")
                     forceRefreshMergedOption(option, mergedCb)
                 }
-                button(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
+                button(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
             }
         }
     }

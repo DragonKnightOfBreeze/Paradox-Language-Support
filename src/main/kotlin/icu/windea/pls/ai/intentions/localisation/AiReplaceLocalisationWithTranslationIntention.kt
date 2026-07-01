@@ -11,8 +11,8 @@ import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference
  * 【AI】替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
 class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsAiBundle.message("ai.intention.replaceLocalisationWithTranslation")
+    override fun getFamilyName() = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiSettings.getInstance().isEnabled()
@@ -44,7 +44,7 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsAiBundle.message("ai.intention.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -55,7 +55,7 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
                 val total = contextsToHandle.size
                 var current = 0
                 reportRawProgress { reporter ->
-                    reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.step"))
+                    reporter.text(ChronicleBundle.message("manipulation.localisation.translate.replace.progress.step"))
                     reporter.fraction(0.0)
 
                     val request = TranslateLocalisationAiRequest(project, file, contextsToHandle, selectedLocale, description)
@@ -64,7 +64,7 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
                         withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
 
                         current++
-                        reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.itemStep", data.key))
+                        reporter.text(ChronicleBundle.message("manipulation.localisation.translate.replace.progress.itemStep", data.key))
                         reporter.fraction(current / total.toDouble())
                     }
                     withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
@@ -86,24 +86,24 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
-        val commandName = PlsBundle.message("manipulation.localisation.command.ai.translate.replace")
+        val commandName = ChronicleBundle.message("manipulation.localisation.command.ai.translate.replace")
         ParadoxLocalisationManipulationService.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
+                val content = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
                 return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = PlsAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
+            val content = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
             return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
-        val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
+        val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
+        val content = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
         return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

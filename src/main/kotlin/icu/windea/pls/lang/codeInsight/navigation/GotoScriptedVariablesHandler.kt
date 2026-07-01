@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
@@ -29,7 +29,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         if (!ParadoxPsiMatcher.isScriptedVariable(element)) return null
         val name = element.name?.orNull() ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.scriptedVariables.search", name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.scriptedVariables.search", name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
@@ -54,15 +54,15 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
-        return PlsBundle.message("script.goto.scriptedVariables.chooseTitle", name.escapeXml())
+        return ChronicleBundle.message("script.goto.scriptedVariables.chooseTitle", name.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
-        return PlsBundle.message("script.goto.scriptedVariables.findUsagesTitle", name.escapeXml())
+        return ChronicleBundle.message("script.goto.scriptedVariables.findUsagesTitle", name.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.scriptedVariables.notFoundMessage")
+        return ChronicleBundle.message("script.goto.scriptedVariables.notFoundMessage")
     }
 }

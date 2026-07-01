@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.tools
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.tools.SpecialPathService
@@ -11,7 +11,7 @@ import java.nio.file.Path
 
 interface SpecialPathProviders {
     class Steam : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.steam")
+        override val text get() = ChronicleEpBundle.message("special.path.steam")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             return SpecialPathService.getInstance().getSteamPath()
@@ -19,7 +19,7 @@ interface SpecialPathProviders {
     }
 
     class SteamGame : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.steamGame")
+        override val text get() = ChronicleEpBundle.message("special.path.steamGame")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -28,7 +28,7 @@ interface SpecialPathProviders {
     }
 
     class SteamWorkshop : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.steamWorkshop")
+        override val text get() = ChronicleEpBundle.message("special.path.steamWorkshop")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -37,7 +37,7 @@ interface SpecialPathProviders {
     }
 
     class GameData : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.gameData")
+        override val text get() = ChronicleEpBundle.message("special.path.gameData")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -46,7 +46,7 @@ interface SpecialPathProviders {
     }
 
     class Game : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.game")
+        override val text get() = ChronicleEpBundle.message("special.path.game")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
@@ -56,7 +56,7 @@ interface SpecialPathProviders {
     }
 
     class Mod : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.mod")
+        override val text get() = ChronicleEpBundle.message("special.path.mod")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
@@ -66,7 +66,7 @@ interface SpecialPathProviders {
     }
 
     class GameExecutable : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.gameExecutable")
+        override val text get() = ChronicleEpBundle.message("special.path.gameExecutable")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val rootInfo = ParadoxAnalysisManager.getSelectedRootInfo(file, gameType)
@@ -79,7 +79,7 @@ interface SpecialPathProviders {
     }
 
     class GameModDirectory : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.gameModDirectory")
+        override val text get() = ChronicleEpBundle.message("special.path.gameModDirectory")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -89,7 +89,7 @@ interface SpecialPathProviders {
     }
 
     class GameSaveGames : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.gameSaveGames")
+        override val text get() = ChronicleEpBundle.message("special.path.gameSaveGames")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)
@@ -99,7 +99,7 @@ interface SpecialPathProviders {
     }
 
     class GameLogs : SpecialPathProvider {
-        override val text get() = PlsEpBundle.message("special.path.gameLogs")
+        override val text get() = ChronicleEpBundle.message("special.path.gameLogs")
 
         override fun getPath(file: VirtualFile?, gameType: ParadoxGameType?): Path? {
             val gameType = ParadoxAnalysisManager.getSelectedGameType(file, gameType)

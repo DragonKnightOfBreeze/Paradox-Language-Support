@@ -11,7 +11,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
@@ -36,7 +36,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) continue  // no `triggered` subtype declared, skip
             if ("inherited" in definitionInfo.subtypes) continue  // ignore inherited events
             if ("triggered" in definitionInfo.subtypes) continue
-            val description = PlsBundle.message("inspection.script.nonTriggeredEvent.desc")
+            val description = ChronicleBundle.message("inspection.script.nonTriggeredEvent.desc")
             val fixes = getFixes(element)
             holder.registerProblem(element.propertyKey, description, *fixes)
         }
@@ -55,7 +55,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
         // add `is_triggered_only = yes` into declaration (after `id` field or at start)
 
-        override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
+        override fun getText() = ChronicleBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
 
         override fun getFamilyName() = text
 

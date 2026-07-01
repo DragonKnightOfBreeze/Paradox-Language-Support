@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxDescriptorModBasedModMetadata
@@ -34,13 +34,13 @@ class ParadoxGameTypeMismatchedEditorNotificationProvider : EditorNotificationPr
             is ParadoxDescriptorModBasedModMetadata -> {
                 when {
                     gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> null
-                    else -> PlsBundle.message("editor.notification.3.text.1", gameType.title)
+                    else -> ChronicleBundle.message("editor.notification.3.text.1", gameType.title)
                 }
             }
             is ParadoxMetadataJsonBasedModMetadata -> {
                 when {
                     gameType matchesBy ParadoxGameTypeConstraint.MetadataJsonUsed -> null
-                    else -> PlsBundle.message("editor.notification.3.text.2", gameType.title)
+                    else -> ChronicleBundle.message("editor.notification.3.text.2", gameType.title)
                 }
             }
             else -> null

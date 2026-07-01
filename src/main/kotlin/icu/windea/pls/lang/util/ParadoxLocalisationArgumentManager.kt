@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
@@ -47,26 +47,26 @@ object ParadoxLocalisationArgumentManager {
             val c = text[i]
             when {
                 c == '*' || c == '^' -> {
-                    set += PlsDocBundle.message("formattingTag.1")
+                    set += ChronicleDocBundle.message("formattingTag.1")
                 }
                 c == '=' -> {
-                    set += PlsDocBundle.message("formattingTag.2")
+                    set += ChronicleDocBundle.message("formattingTag.2")
                 }
                 c.isExactDigit() -> {
-                    set += PlsDocBundle.message("formattingTag.3")
+                    set += ChronicleDocBundle.message("formattingTag.3")
                 }
                 c == '%' -> {
                     if (text.getOrNull(i + 1) != '%') {
-                        set += PlsDocBundle.message("formattingTag.4")
+                        set += ChronicleDocBundle.message("formattingTag.4")
                     } else {
-                        set += PlsDocBundle.message("formattingTag.5")
+                        set += ChronicleDocBundle.message("formattingTag.5")
                     }
                 }
                 c == '+' -> {
-                    set += PlsDocBundle.message("formattingTag.6")
+                    set += ChronicleDocBundle.message("formattingTag.6")
                 }
                 c == '-' -> {
-                    set += PlsDocBundle.message("formattingTag.7")
+                    set += ChronicleDocBundle.message("formattingTag.7")
                 }
             }
             i++

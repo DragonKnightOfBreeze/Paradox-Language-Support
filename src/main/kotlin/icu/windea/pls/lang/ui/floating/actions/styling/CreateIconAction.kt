@@ -10,7 +10,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -20,10 +20,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
 class CreateIconAction : ToggleAction(), DumbAware {
     private val wrapActionName: String
-        get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.text")
+        get() = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.text")
 
     private val unwrapActionName: String
-        get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.text")
+        get() = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.text")
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -44,13 +44,13 @@ class CreateIconAction : ToggleAction(), DumbAware {
             // wrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = wrapActionName
-            event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.description")
+            event.presentation.description = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.description")
             false
         } else {
             // unwrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = unwrapActionName
-            event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.description")
+            event.presentation.description = ChronicleBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.description")
             true
         }
     }

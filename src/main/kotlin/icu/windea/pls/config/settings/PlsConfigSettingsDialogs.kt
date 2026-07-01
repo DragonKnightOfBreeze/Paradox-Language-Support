@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.Entry
 import icu.windea.pls.model.ParadoxGameType
@@ -17,7 +17,7 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
     val properties = list.associateBy({ it.key }, { graph.property(it.value) })
 
     init {
-        title = PlsBundle.message("settings.config.configRepositoryUrls.dialog.title")
+        title = ChronicleBundle.message("settings.config.configRepositoryUrls.dialog.title")
         init()
     }
 
@@ -33,10 +33,10 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
                         .columns(COLUMNS_LARGE)
                         .align(AlignX.FILL)
                         .resizableColumn()
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) } // If not configured, do not use default repo urls
+                        .applyToComponent { setEmptyState(ChronicleBundle.message("not.configured")) } // If not configured, do not use default repo urls
                         .validationOnInput { CwtConfigRepositoryManager.validateUrl(this, gameType, configRepositoryUrlProperty.get()) }
 
-                    button(PlsBundle.message("reset")) { configRepositoryUrlProperty.set(CwtConfigRepositoryManager.getDefaultUrl(gameType)) }
+                    button(ChronicleBundle.message("reset")) { configRepositoryUrlProperty.set(CwtConfigRepositoryManager.getDefaultUrl(gameType)) }
                         .align(AlignX.RIGHT)
                 }
             }

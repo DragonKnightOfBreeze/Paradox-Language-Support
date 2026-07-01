@@ -5,7 +5,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
@@ -26,11 +26,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 提供定义（definition）的装订线图标。
  */
 class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.definition")
+    override fun getName() = ChronicleBundle.message("script.gutterIcon.definition")
 
     override fun getIcon() = PlsIcons.Gutter.Definition
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.definition.group")
+    override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definition.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 definition
@@ -53,15 +53,15 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))
+            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definition.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.definition") }
+            .setNamer { ChronicleBundle.message("script.gutterIcon.definition") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = PlsBundle.message("script.gutterIcon.definition.action")
+        val actionText = ChronicleBundle.message("script.gutterIcon.definition.action")
         NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoDefinitions)
     }
 }

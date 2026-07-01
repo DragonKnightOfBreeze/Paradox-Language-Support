@@ -8,7 +8,7 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
@@ -33,7 +33,7 @@ sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<Para
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.quoteIdentifier")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
@@ -45,7 +45,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteIdentifier")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())

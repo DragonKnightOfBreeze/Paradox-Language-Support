@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
 
@@ -15,8 +15,8 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
     init {
         templatePresentation.icon = AllIcons.Actions.Close
         templatePresentation.hoveredIcon = AllIcons.Actions.CloseHovered
-        templatePresentation.text = PlsBundle.message("configGroup.action.refresh.hide.text")
-        templatePresentation.description = PlsBundle.message("configGroup.action.refresh.hide.desc")
+        templatePresentation.text = ChronicleBundle.message("configGroup.action.refresh.hide.text")
+        templatePresentation.description = ChronicleBundle.message("configGroup.action.refresh.hide.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

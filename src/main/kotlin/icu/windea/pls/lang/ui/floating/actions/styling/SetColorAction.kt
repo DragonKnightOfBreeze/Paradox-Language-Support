@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.model.ParadoxTextColorInfo
@@ -17,7 +17,7 @@ import icu.windea.pls.model.ParadoxTextColorInfo
 class SetColorAction(
     val colorConfig: ParadoxTextColorInfo
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
-    private val setColorActionBaseName = PlsBundle.message("action.Pls.Localisation.Styling.SetColor.text")
+    private val setColorActionBaseName = ChronicleBundle.message("action.Pls.Localisation.Styling.SetColor.text")
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

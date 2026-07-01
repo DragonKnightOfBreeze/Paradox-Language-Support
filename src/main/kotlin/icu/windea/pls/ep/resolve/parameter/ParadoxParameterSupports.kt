@@ -7,7 +7,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypeSets
@@ -275,7 +275,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = parameterElement.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
         appendBr().appendIndent()
-        append(PlsBundle.message("ofDefinition")).append(" ")
+        append(ChronicleBundle.message("ofDefinition")).append(" ")
         val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType.first(), gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = parameterElement)
         append(": ")
@@ -637,7 +637,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         // 加上所属内联脚本信息
         val gameType = parameterElement.gameType
         appendBr().appendIndent()
-        append(PlsBundle.message("ofInlineScript")).append(" ")
+        append(ChronicleBundle.message("ofInlineScript")).append(" ")
         val link = ReferenceLinkType.FilePath.createLink(filePath, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = parameterElement)
         return true

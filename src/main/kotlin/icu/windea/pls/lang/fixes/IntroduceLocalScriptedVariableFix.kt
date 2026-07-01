@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
@@ -23,15 +23,15 @@ class IntroduceLocalScriptedVariableFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.TOP
 
-    override fun getText() = PlsBundle.message("fix.introduceLocalScriptedVariable.name", variableName)
+    override fun getText() = ChronicleBundle.message("fix.introduceLocalScriptedVariable.name", variableName)
 
-    override fun getFamilyName() = PlsBundle.message("fix.introduceLocalScriptedVariable.familyName")
+    override fun getFamilyName() = ChronicleBundle.message("fix.introduceLocalScriptedVariable.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = startElement
         val containerElement = selectScope { element.parentDefinitionCandidate() } ?: element.containingFile as? ParadoxScriptFile ?: return
 
-        val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
+        val commandName = ChronicleBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) c@{
             // 声明对应名字的封装变量，默认值给0
             val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", containerElement, project)

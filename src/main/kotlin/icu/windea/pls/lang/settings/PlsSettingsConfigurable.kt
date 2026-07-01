@@ -9,7 +9,7 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.CallbackLock
@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
 
-class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
+class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("settings")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
     override fun getId() = "pls"
@@ -30,25 +30,25 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         callbackLock.reset()
         return panel {
             // general
-            group(PlsBundle.message("settings.general")) { configureGroupForGeneral() }
+            group(ChronicleBundle.message("settings.general")) { configureGroupForGeneral() }
             // documentation
-            collapsibleGroup(PlsBundle.message("settings.documentation")) { configureGroupForDocumentation() }
+            collapsibleGroup(ChronicleBundle.message("settings.documentation")) { configureGroupForDocumentation() }
             // completion
-            collapsibleGroup(PlsBundle.message("settings.completion")) { configureGroupForCompletion() }
+            collapsibleGroup(ChronicleBundle.message("settings.completion")) { configureGroupForCompletion() }
             // folding
-            collapsibleGroup(PlsBundle.message("settings.folding")) { configureGroupForFolding() }
+            collapsibleGroup(ChronicleBundle.message("settings.folding")) { configureGroupForFolding() }
             // generation
-            collapsibleGroup(PlsBundle.message("settings.generation")) { configureGroupForGeneration() }
+            collapsibleGroup(ChronicleBundle.message("settings.generation")) { configureGroupForGeneration() }
             // hierarchy
-            collapsibleGroup(PlsBundle.message("settings.hierarchy")) { configureGroupForHierarchy() }
+            collapsibleGroup(ChronicleBundle.message("settings.hierarchy")) { configureGroupForHierarchy() }
             // diff
-            collapsibleGroup(PlsBundle.message("settings.diff")) { configureGroupForDiff() }
+            collapsibleGroup(ChronicleBundle.message("settings.diff")) { configureGroupForDiff() }
             // navigation
-            collapsibleGroup(PlsBundle.message("settings.navigation")) { configureGroupForNavigation() }
+            collapsibleGroup(ChronicleBundle.message("settings.navigation")) { configureGroupForNavigation() }
             // inference
-            collapsibleGroup(PlsBundle.message("settings.inference")) { configureGroupForInference() }
+            collapsibleGroup(ChronicleBundle.message("settings.inference")) { configureGroupForInference() }
             // others
-            collapsibleGroup(PlsBundle.message("settings.others")) { configureGroupForOthers() }
+            collapsibleGroup(ChronicleBundle.message("settings.others")) { configureGroupForOthers() }
         }
     }
 
@@ -60,8 +60,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // defaultGameType
         row {
-            label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupName)
-                .comment(PlsBundle.message("settings.general.defaultGameType.comment"))
+            label(ChronicleBundle.message("settings.general.defaultGameType")).widthGroup(groupName)
+                .comment(ChronicleBundle.message("settings.general.defaultGameType.comment"))
             var defaultGameType = settings.defaultGameType
             comboBox(gameTypes, textListCellRenderer { it?.title })
                 .bindItem(settings::defaultGameType.toNullableProperty())
@@ -75,8 +75,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         }
         // defaultGameDirectories
         row {
-            label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
-                .comment(PlsBundle.message("settings.general.defaultGameDirectories.comment"))
+            label(ChronicleBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
+                .comment(ChronicleBundle.message("settings.general.defaultGameDirectories.comment"))
             val defaultGameDirectories = settings.defaultGameDirectories
             gameTypes.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
             val defaultList = defaultGameDirectories.toMutableEntryList()
@@ -85,7 +85,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 val dialog = DefaultGameDirectoriesDialog(list)
                 if (dialog.showAndGet()) list = dialog.resultList
             }
-            link(PlsBundle.message("link.configure"), action)
+            link(ChronicleBundle.message("link.configure"), action)
                 .onApply {
                     val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
                     val newDefaultGameDirectories = list.toMutableMap()
@@ -98,8 +98,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         }
         // preferredLocale
         row {
-            label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupName)
-                .comment(PlsBundle.message("settings.general.preferredLocale.comment"))
+            label(ChronicleBundle.message("settings.general.preferredLocale")).widthGroup(groupName)
+                .comment(ChronicleBundle.message("settings.general.preferredLocale.comment"))
             var preferredLocale = settings.preferredLocale
             localeComboBox(locales)
                 .bindItem(settings::preferredLocale.toNullableProperty())
@@ -113,8 +113,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         }
         // ignoredFileNames
         row {
-            label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup(groupName)
-                .comment(PlsBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
+            label(ChronicleBundle.message("settings.general.ignoredFileNames")).widthGroup(groupName)
+                .comment(ChronicleBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
             var ignoredFileNameSet = settings.ignoredFileNameSet
             expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                 .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
@@ -139,87 +139,87 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // renderLineComment
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderLineComment"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderLineComment"))
                 .bindSelected(settings::renderLineComment)
-            contextHelp(PlsBundle.message("settings.documentation.renderLineComment.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderLineComment.tip"))
         }
         // renderRelatedLocalisationsForScriptedVariables
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables"))
                 .bindSelected(settings::renderRelatedLocalisationsForScriptedVariables)
-            contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables.tip"))
         }
         // renderRelatedLocalisationsForDefinitions
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions"))
                 .bindSelected(settings::renderRelatedLocalisationsForDefinitions)
-            contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions.tip"))
         }
         // renderRelatedImagesForDefinitions
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderRelatedImagesForDefinitions"))
                 .bindSelected(settings::renderRelatedImagesForDefinitions)
-            contextHelp(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tip"))
         }
         // renderNameDescForModifiers
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderNameDescForModifiers"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderNameDescForModifiers"))
                 .bindSelected(settings::renderNameDescForModifiers)
-            contextHelp(PlsBundle.message("settings.documentation.renderNameDescForModifiers.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderNameDescForModifiers.tip"))
         }
         // renderLocalisationForLocalisations
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderIconForModifiers"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderIconForModifiers"))
                 .bindSelected(settings::renderIconForModifiers)
-            contextHelp(PlsBundle.message("settings.documentation.renderIconForModifiers.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderIconForModifiers.tip"))
         }
         // renderLocalisationForLocalisations
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderLocalisationForLocalisations"))
                 .bindSelected(settings::renderLocalisationForLocalisations)
-            contextHelp(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderLocalisationForLocalisations.tip"))
         }
         // renderRelatedLocalisationsForComplexEnumValues
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues"))
                 .bindSelected(settings::renderRelatedLocalisationsForComplexEnumValues)
-            contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues.tip"))
         }
         // renderRelatedLocalisationsForDynamicValues
         row {
-            checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues"))
+            checkBox(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues"))
                 .bindSelected(settings::renderRelatedLocalisationsForDynamicValues)
-            contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues.tip"))
         }
         // showScopes
         row {
-            checkBox(PlsBundle.message("settings.documentation.showScopes"))
+            checkBox(ChronicleBundle.message("settings.documentation.showScopes"))
                 .bindSelected(settings::showScopes)
-            contextHelp(PlsBundle.message("settings.documentation.showScopes.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.showScopes.tip"))
         }
         // showScopeContext
         row {
-            checkBox(PlsBundle.message("settings.documentation.showScopeContext"))
+            checkBox(ChronicleBundle.message("settings.documentation.showScopeContext"))
                 .bindSelected(settings::showScopeContext)
-            contextHelp(PlsBundle.message("settings.documentation.showScopeContext.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.showScopeContext.tip"))
         }
         // showParameters
         row {
-            checkBox(PlsBundle.message("settings.documentation.showParameters"))
+            checkBox(ChronicleBundle.message("settings.documentation.showParameters"))
                 .bindSelected(settings::showParameters)
-            contextHelp(PlsBundle.message("settings.documentation.showParameters.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.showParameters.tip"))
         }
         // showGeneratedModifiers
         row {
-            checkBox(PlsBundle.message("settings.documentation.showGeneratedModifiers"))
+            checkBox(ChronicleBundle.message("settings.documentation.showGeneratedModifiers"))
                 .bindSelected(settings::showGeneratedModifiers)
-            contextHelp(PlsBundle.message("settings.documentation.showGeneratedModifiers.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.showGeneratedModifiers.tip"))
         }
         // showOverrideStrategies
         row {
-            checkBox(PlsBundle.message("settings.documentation.showOverrideStrategy"))
+            checkBox(ChronicleBundle.message("settings.documentation.showOverrideStrategy"))
                 .bindSelected(settings::showOverrideStrategy)
-            contextHelp(PlsBundle.message("settings.documentation.showOverrideStrategy.tip"))
+            contextHelp(ChronicleBundle.message("settings.documentation.showOverrideStrategy.tip"))
         }
     }
 
@@ -228,73 +228,73 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // completeScriptedVariableNames
         row {
-            checkBox(PlsBundle.message("settings.completion.completeScriptedVariableNames"))
+            checkBox(ChronicleBundle.message("settings.completion.completeScriptedVariableNames"))
                 .bindSelected(settings::completeScriptedVariableNames)
         }
         // completeDefinitionNames
         row {
-            checkBox(PlsBundle.message("settings.completion.completeDefinitionNames"))
+            checkBox(ChronicleBundle.message("settings.completion.completeDefinitionNames"))
                 .bindSelected(settings::completeDefinitionNames)
         }
         // completeLocalisationNames
         row {
-            checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
+            checkBox(ChronicleBundle.message("settings.completion.completeLocalisationNames"))
                 .bindSelected(settings::completeLocalisationNames)
         }
         // completeDefineNames
         row {
-            checkBox(PlsBundle.message("settings.completion.completeDefineNames"))
+            checkBox(ChronicleBundle.message("settings.completion.completeDefineNames"))
                 .bindSelected(settings::completeDefineNames)
         }
         // completeVariableNames
         row {
-            checkBox(PlsBundle.message("settings.completion.completeVariableNames"))
+            checkBox(ChronicleBundle.message("settings.completion.completeVariableNames"))
                 .bindSelected(settings::completeVariableNames)
         }
         // completeInlineScriptUsage
         row {
-            checkBox(PlsBundle.message("settings.completion.completeInlineScriptUsage"))
+            checkBox(ChronicleBundle.message("settings.completion.completeInlineScriptUsage"))
                 .bindSelected(settings::completeInlineScriptUsages)
         }
         // completeDefinitionInjectionExpressions
         row {
-            checkBox(PlsBundle.message("settings.completion.completeDefinitionInjectionExpressions"))
+            checkBox(ChronicleBundle.message("settings.completion.completeDefinitionInjectionExpressions"))
                 .bindSelected(settings::completeDefinitionInjectionExpressions)
         }
         // completeWithValue
         row {
-            checkBox(PlsBundle.message("settings.completion.completeWithValue"))
+            checkBox(ChronicleBundle.message("settings.completion.completeWithValue"))
                 .bindSelected(settings::completeWithValue)
-            contextHelp(PlsBundle.message("settings.completion.completeWithValue.tip"))
+            contextHelp(ChronicleBundle.message("settings.completion.completeWithValue.tip"))
         }
         // completeWithClauseTemplate
         row {
-            checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
+            checkBox(ChronicleBundle.message("settings.completion.completeWithClauseTemplate"))
                 .bindSelected(settings::completeWithClauseTemplate)
-            contextHelp(PlsBundle.message("settings.completion.completeWithClauseTemplate.tip"))
+            contextHelp(ChronicleBundle.message("settings.completion.completeWithClauseTemplate.tip"))
 
-            link(PlsBundle.message("link.configure")) {
+            link(ChronicleBundle.message("link.configure")) {
                 val dialog = ClauseTemplateSettingsDialog()
                 dialog.show()
             }
         }
         // completeOnlyScopeIsMatched
         row {
-            checkBox(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched"))
+            checkBox(ChronicleBundle.message("settings.completion.completeOnlyScopeIsMatched"))
                 .bindSelected(settings::completeOnlyScopeIsMatched)
-            contextHelp(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tip"))
+            contextHelp(ChronicleBundle.message("settings.completion.completeOnlyScopeIsMatched.tip"))
         }
         // completeByLocalizedName
         row {
-            checkBox(PlsBundle.message("settings.completion.completeByLocalizedName"))
+            checkBox(ChronicleBundle.message("settings.completion.completeByLocalizedName"))
                 .bindSelected(settings::completeByLocalizedName)
-            contextHelp(PlsBundle.message("settings.completion.completeByLocalizedName.tip"))
+            contextHelp(ChronicleBundle.message("settings.completion.completeByLocalizedName.tip"))
         }
         // completeByExtendedConfigs
         row {
-            checkBox(PlsBundle.message("settings.completion.completeByExtendedConfigs"))
+            checkBox(ChronicleBundle.message("settings.completion.completeByExtendedConfigs"))
                 .bindSelected(settings::completeByExtendedConfigs)
-            contextHelp(PlsBundle.message("settings.completion.completeByExtendedConfigs.tip"))
+            contextHelp(ChronicleBundle.message("settings.completion.completeByExtendedConfigs.tip"))
         }
     }
 
@@ -304,106 +304,106 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         // comments & commentsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.comments"))
+            checkBox(ChronicleBundle.message("settings.folding.comments"))
                 .bindSelected(settings::comments)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::commentsByDefault)
                 .enabledIf(cb.selected)
         }
         // conditionalBlocks & conditionalBlocksByDefault
         row {
-            checkBox(PlsBundle.message("settings.folding.conditionalBlocks"))
+            checkBox(ChronicleBundle.message("settings.folding.conditionalBlocks"))
                 .bindSelected(settings::conditionalBlocks)
                 .enabled(false)
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::conditionalBlocksByDefault)
         }
         // inlineMaths & inlineMathsByDefault
         row {
-            checkBox(PlsBundle.message("settings.folding.inlineMaths"))
+            checkBox(ChronicleBundle.message("settings.folding.inlineMaths"))
                 .bindSelected(settings::inlineMaths)
                 .enabled(false)
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::inlineMathsByDefault)
         }
         // localisationTexts & localisationTextsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.localisationTexts"))
+            checkBox(ChronicleBundle.message("settings.folding.localisationTexts"))
                 .bindSelected(settings::localisationTexts)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationTextsByDefault)
                 .enabledIf(cb.selected)
         }
         // localisationParametersFully & localisationParametersFullyByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.localisationParametersFully"))
+            checkBox(ChronicleBundle.message("settings.folding.localisationParametersFully"))
                 .bindSelected(settings::localisationParametersFully)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationParametersFullyByDefault)
                 .enabledIf(cb.selected)
         }
         // localisationIconsFully & localisationIconsFullyByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
+            checkBox(ChronicleBundle.message("settings.folding.localisationIconsFully"))
                 .bindSelected(settings::localisationIconsFully)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationIconsFullyByDefault)
                 .enabledIf(cb.selected)
         }
         // localisationCommands & localisationCommandsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.localisationCommands"))
+            checkBox(ChronicleBundle.message("settings.folding.localisationCommands"))
                 .bindSelected(settings::localisationCommands)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationCommandsByDefault)
                 .enabledIf(cb.selected)
         }
         // localisationConceptCommands & localisationConceptCommandsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.localisationConceptCommands"))
+            checkBox(ChronicleBundle.message("settings.folding.localisationConceptCommands"))
                 .bindSelected(settings::localisationConceptCommands)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationConceptCommandsByDefault)
                 .enabledIf(cb.selected)
         }
         // localisationConceptTexts & localisationConceptTextsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
+            checkBox(ChronicleBundle.message("settings.folding.localisationConceptTexts"))
                 .bindSelected(settings::localisationConceptTexts)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationConceptTextsByDefault)
                 .enabledIf(cb.selected)
         }
         // scriptedVariableReferences & scriptedVariableReferencesByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
+            checkBox(ChronicleBundle.message("settings.folding.scriptedVariableReferences"))
                 .bindSelected(settings::scriptedVariableReferences)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::scriptedVariableReferencesByDefault)
                 .enabledIf(cb.selected)
         }
         // variableOperationExpressions & variableOperationExpressionsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
+            checkBox(ChronicleBundle.message("settings.folding.variableOperationExpressions"))
                 .bindSelected(settings::variableOperationExpressions)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.folding.byDefault"))
+            checkBox(ChronicleBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::variableOperationExpressionsByDefault)
                 .enabledIf(cb.selected)
         }
@@ -416,7 +416,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         // localisationStrategy
         row {
             val property = AtomicProperty(settings.localisationStrategy)
-            label(PlsBundle.message("settings.generation.localisationStrategy"))
+            label(ChronicleBundle.message("settings.generation.localisationStrategy"))
             comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::localisationStrategy.toNullableProperty())
                 .bindItem(property)
@@ -427,12 +427,12 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         }
         // blankLineBetweenLocalisationGroups
         row {
-            checkBox(PlsBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
+            checkBox(ChronicleBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
                 .bindSelected(settings::blankLineBetweenLocalisationGroups)
         }
         // moveIntoLocalisationGroups
         row {
-            checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
+            checkBox(ChronicleBundle.message("settings.generation.moveIntoLocalisationGroups"))
                 .bindSelected(settings::moveIntoLocalisationGroups)
         }
     }
@@ -442,31 +442,31 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // showLocalizedName
         row {
-            checkBox(PlsBundle.message("settings.hierarchy.showLocalizedName"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showLocalizedName"))
                 .bindSelected(settings::showLocalizedName)
         }
         // showLocationInfo
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.hierarchy.showLocationInfo"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showLocationInfo"))
                 .bindSelected(settings::showLocationInfo)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.hierarchy.showLocationInfoByPath"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showLocationInfoByPath"))
                 .bindSelected(settings::showLocationInfoByPath)
                 .enabledIf(cb.selected)
-            checkBox(PlsBundle.message("settings.hierarchy.showLocationInfoByRootInfo"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showLocationInfoByRootInfo"))
                 .bindSelected(settings::showLocationInfoByRootInfo)
                 .enabledIf(cb.selected)
         }
 
         // showScriptedVariablesInCallHierarchy
         row {
-            checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
                 .bindSelected(settings::showScriptedVariablesInCallHierarchy)
         }
         // showDefinitionsInCallHierarchy
         row {
-            checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
                 .bindSelected(settings::showDefinitionsInCallHierarchy)
 
             val definitionTypeBindingsInCallHierarchy = settings.definitionTypeBindingsInCallHierarchy
@@ -476,59 +476,59 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 val dialog = DefinitionTypeBindingsInCallHierarchyDialog(list)
                 if (dialog.showAndGet()) list = dialog.resultList
             }
-            link(PlsBundle.message("settings.hierarchy.definitionTypeBindings.link"), action)
+            link(ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.link"), action)
                 .onApply { settings.definitionTypeBindingsInCallHierarchy = list.toMutableMap() }
                 .onReset { list = defaultList }
                 .onIsModified { list != defaultList }
         }
         // showLocalisationsInCallHierarchy
         row {
-            checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
                 .bindSelected(settings::showLocalisationsInCallHierarchy)
         }
 
         // showEventInfo
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.hierarchy.showEventInfo"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showEventInfo"))
                 .bindSelected(settings::showEventInfo)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByType"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showEventInfoByType"))
                 .bindSelected(settings::showEventInfoByType)
                 .enabledIf(cb.selected)
-            checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByAttributes"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showEventInfoByAttributes"))
                 .bindSelected(settings::showEventInfoByAttributes)
                 .enabledIf(cb.selected)
         }
         // showTechInfo
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.hierarchy.showTechInfo"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showTechInfo"))
                 .bindSelected(settings::showTechInfo)
                 .applyToComponent { cb = this }
-            checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByTier"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showTechInfoByTier"))
                 .bindSelected(settings::showTechInfoByTier)
                 .enabledIf(cb.selected)
-            checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByArea"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showTechInfoByArea"))
                 .bindSelected(settings::showTechInfoByArea)
                 .enabledIf(cb.selected)
-            checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByCategories"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showTechInfoByCategories"))
                 .bindSelected(settings::showTechInfoByCategories)
                 .enabledIf(cb.selected)
-            checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByAttributes"))
+            checkBox(ChronicleBundle.message("settings.hierarchy.showTechInfoByAttributes"))
                 .bindSelected(settings::showTechInfoByAttributes)
                 .enabledIf(cb.selected)
         }
 
         // eventTreeGrouping
         row {
-            label(PlsBundle.message("settings.hierarchy.eventTreeGrouping"))
+            label(ChronicleBundle.message("settings.hierarchy.eventTreeGrouping"))
             comboBox(EventTreeGrouping.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::eventTreeGrouping.toNullableProperty())
         }
         // techTreeGrouping
         row {
-            label(PlsBundle.message("settings.hierarchy.techTreeGrouping"))
+            label(ChronicleBundle.message("settings.hierarchy.techTreeGrouping"))
             comboBox(TechTreeGrouping.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::techTreeGrouping.toNullableProperty())
         }
@@ -539,7 +539,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // defaultDiffGroup
         row {
-            label(PlsBundle.message("settings.diff.defaultDiffGroup"))
+            label(ChronicleBundle.message("settings.diff.defaultDiffGroup"))
             comboBox(DiffGroup.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::defaultDiffGroup.toNullableProperty())
         }
@@ -550,43 +550,43 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // seForTargets
         row {
-            label(PlsBundle.message("settings.navigation.seForTargets"))
-            contextHelp(PlsBundle.message("settings.navigation.seForTargets.tip"))
+            label(ChronicleBundle.message("settings.navigation.seForTargets"))
+            contextHelp(ChronicleBundle.message("settings.navigation.seForTargets.tip"))
         }
         indent {
             row {
-                checkBox(PlsBundle.message("settings.navigation.seForScriptedVariables"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForScriptedVariables"))
                     .bindSelected(settings::seForScriptedVariables)
-                checkBox(PlsBundle.message("settings.navigation.seForDefinitions"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForDefinitions"))
                     .bindSelected(settings::seForDefinitions)
-                checkBox(PlsBundle.message("settings.navigation.seForLocalisations"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForLocalisations"))
                     .bindSelected(settings::seForLocalisations)
-                checkBox(PlsBundle.message("settings.navigation.seForSyncedLocalisations"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForSyncedLocalisations"))
                     .bindSelected(settings::seForSyncedLocalisations)
             }
         }
         indent {
             row {
-                checkBox(PlsBundle.message("settings.navigation.seForTargetByText"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForTargetByText"))
                     .bindSelected(settings::seForTargetsByText)
-                contextHelp(PlsBundle.message("settings.navigation.seForTargetByText.tip"))
+                contextHelp(ChronicleBundle.message("settings.navigation.seForTargetByText.tip"))
             }
         }
 
         // seForConfigs
         row {
-            label(PlsBundle.message("settings.navigation.seForConfigs"))
-            contextHelp(PlsBundle.message("settings.navigation.seForConfigs.tip"))
+            label(ChronicleBundle.message("settings.navigation.seForConfigs"))
+            contextHelp(ChronicleBundle.message("settings.navigation.seForConfigs.tip"))
         }
         indent {
             row {
-                checkBox(PlsBundle.message("settings.navigation.seForTypeConfigs"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForTypeConfigs"))
                     .bindSelected(settings::seForTypeConfigs)
-                checkBox(PlsBundle.message("settings.navigation.seForComplexEnumConfigs"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForComplexEnumConfigs"))
                     .bindSelected(settings::seForComplexEnumConfigs)
-                checkBox(PlsBundle.message("settings.navigation.seForTriggerConfigs"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForTriggerConfigs"))
                     .bindSelected(settings::seForTriggerConfigs)
-                checkBox(PlsBundle.message("settings.navigation.seForEffectConfigs"))
+                checkBox(ChronicleBundle.message("settings.navigation.seForEffectConfigs"))
                     .bindSelected(settings::seForEffectConfigs)
             }
         }
@@ -597,98 +597,98 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // injectionForParameterValue
         row {
-            checkBox(PlsBundle.message("settings.inference.injectionForParameterValue"))
+            checkBox(ChronicleBundle.message("settings.inference.injectionForParameterValue"))
                 .bindSelected(settings::injectionForParameterValue)
                 .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
-            contextHelp(PlsBundle.message("settings.inference.injectionForParameterValue.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.injectionForParameterValue.tip"))
         }
         // injectionForLocalisationText
         row {
-            checkBox(PlsBundle.message("settings.inference.injectionForLocalisationText"))
+            checkBox(ChronicleBundle.message("settings.inference.injectionForLocalisationText"))
                 .bindSelected(settings::injectionForLocalisationText)
                 .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
-            contextHelp(PlsBundle.message("settings.inference.injectionForLocalisationText.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.injectionForLocalisationText.tip"))
         }
         // configContextForParameters
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
+            checkBox(ChronicleBundle.message("settings.inference.configContextForParameters"))
                 .bindSelected(settings::configContextForParameters)
                 .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                 .applyToComponent { cb = this }
-            contextHelp(PlsBundle.message("settings.inference.configContextForParameters.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.configContextForParameters.tip"))
 
             // configContextForParametersFast
-            checkBox(PlsBundle.message("settings.inference.fast"))
+            checkBox(ChronicleBundle.message("settings.inference.fast"))
                 .bindSelected(settings::configContextForParametersFast)
                 .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
-            contextHelp(PlsBundle.message("settings.inference.fast.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.fast.tip"))
 
             // configContextForParametersFromUsages
-            checkBox(PlsBundle.message("settings.inference.fromUsages"))
+            checkBox(ChronicleBundle.message("settings.inference.fromUsages"))
                 .bindSelected(settings::configContextForParametersFromUsages)
                 .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
-            contextHelp(PlsBundle.message("settings.inference.fromUsages.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.fromUsages.tip"))
 
             // configContextForParametersFromConfig
-            checkBox(PlsBundle.message("settings.inference.fromConfig"))
+            checkBox(ChronicleBundle.message("settings.inference.fromConfig"))
                 .bindSelected(settings::configContextForParametersFromConfig)
                 .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
-            contextHelp(PlsBundle.message("settings.inference.fromConfig.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.fromConfig.tip"))
         }
         // configContextForInlineScripts
         row {
             lateinit var cb: JBCheckBox
-            checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
+            checkBox(ChronicleBundle.message("settings.inference.configContextForInlineScripts"))
                 .bindSelected(settings::configContextForInlineScripts)
                 .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .applyToComponent { cb = this }
-            contextHelp(PlsBundle.message("settings.inference.configContextForInlineScripts.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.configContextForInlineScripts.tip"))
 
             // configContextForInlineScriptsFast
-            checkBox(PlsBundle.message("settings.inference.fast"))
+            checkBox(ChronicleBundle.message("settings.inference.fast"))
                 .bindSelected(settings::configContextForInlineScriptsFast)
                 .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
-            contextHelp(PlsBundle.message("settings.inference.fast.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.fast.tip"))
 
             // configContextForInlineScriptsFromUsages
-            checkBox(PlsBundle.message("settings.inference.fromUsages"))
+            checkBox(ChronicleBundle.message("settings.inference.fromUsages"))
                 .bindSelected(settings::configContextForInlineScriptsFromUsages)
                 .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
-            contextHelp(PlsBundle.message("settings.inference.fromUsages.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.fromUsages.tip"))
 
             // configContextForInlineScriptsFromConfig
-            checkBox(PlsBundle.message("settings.inference.fromConfig"))
+            checkBox(ChronicleBundle.message("settings.inference.fromConfig"))
                 .bindSelected(settings::configContextForInlineScriptsFromConfig)
                 .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
-            contextHelp(PlsBundle.message("settings.inference.fromConfig.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.fromConfig.tip"))
         }
         // scopeContext
         row {
-            checkBox(PlsBundle.message("settings.inference.scopeContext"))
+            checkBox(ChronicleBundle.message("settings.inference.scopeContext"))
                 .bindSelected(settings::scopeContext)
                 .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
-            contextHelp(PlsBundle.message("settings.inference.scopeContext.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.scopeContext.tip"))
         }
         // scopeContextForEvents
         row {
-            checkBox(PlsBundle.message("settings.inference.scopeContextForEvents"))
+            checkBox(ChronicleBundle.message("settings.inference.scopeContextForEvents"))
                 .bindSelected(settings::scopeContextForEvents)
                 .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
-            contextHelp(PlsBundle.message("settings.inference.scopeContextForEvents.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.scopeContextForEvents.tip"))
         }
         // scopeContextForOnActions
         row {
-            checkBox(PlsBundle.message("settings.inference.scopeContextForOnActions"))
+            checkBox(ChronicleBundle.message("settings.inference.scopeContextForOnActions"))
                 .bindSelected(settings::scopeContextForOnActions)
                 .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
-            contextHelp(PlsBundle.message("settings.inference.scopeContextForOnActions.tip"))
+            contextHelp(ChronicleBundle.message("settings.inference.scopeContextForOnActions.tip"))
         }
     }
 
@@ -697,28 +697,28 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         // showEditorContextToolbar
         row {
-            checkBox(PlsBundle.message("settings.others.showEditorContextToolbar"))
+            checkBox(ChronicleBundle.message("settings.others.showEditorContextToolbar"))
                 .bindSelected(settings::showEditorContextToolbar)
         }
         // showLaunchGameActionInEditorContextToolbar
         row {
-            checkBox(PlsBundle.message("settings.others.showLaunchGameActionInEditorContextToolbar"))
+            checkBox(ChronicleBundle.message("settings.others.showLaunchGameActionInEditorContextToolbar"))
                 .bindSelected(settings::showLaunchGameActionInEditorContextToolbar)
         }
         // showLocalisationFloatingToolbar
         row {
-            checkBox(PlsBundle.message("settings.others.showLocalisationFloatingToolbar"))
+            checkBox(ChronicleBundle.message("settings.others.showLocalisationFloatingToolbar"))
                 .bindSelected(settings::showLocalisationFloatingToolbar)
         }
         // highlightLocalisationColorId
         row {
-            checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
+            checkBox(ChronicleBundle.message("settings.others.highlightLocalisationColorId"))
                 .bindSelected(settings::highlightLocalisationColorId)
                 .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
         }
         // renderLocalisationColorfulText
         row {
-            checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
+            checkBox(ChronicleBundle.message("settings.others.renderLocalisationColorfulText"))
                 .bindSelected(settings::renderLocalisationColorfulText)
                 .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
         }

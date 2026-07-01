@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.tools.PlsToolsBundle
+import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
 import icu.windea.pls.tools.ui.GenerateConfigDialog
 import kotlinx.coroutines.CancellationException
@@ -98,14 +98,14 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
 
     private suspend fun executeGenerator(project: Project, generator: CwtConfigGenerator, params: Params): CwtConfigGenerator.Hint? {
         return try {
-            withBackgroundProgress(project, PlsToolsBundle.message("config.generation.progress.title", generator.getName())) {
+            withBackgroundProgress(project, ChronicleToolsBundle.message("config.generation.progress.title", generator.getName())) {
                 val (gameType, inputPath, outputPath) = params
                 generator.generate(gameType, inputPath, outputPath)
             }
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsToolsBundle.message("config.generation.notification.failed") + e.message.errorDetails
+            val content = ChronicleToolsBundle.message("config.generation.notification.failed") + e.message.errorDetails
             PlsNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)
             null
         }
@@ -133,7 +133,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         ConsoleViewUtil.enableReplaceActionForConsoleViewEditor(console.editor!!)
         console.editor!!.settings.isCaretRowShown = true
 
-        val tabTitle = PlsToolsBundle.message("config.generation.console.title", generator.getName())
+        val tabTitle = ChronicleToolsBundle.message("config.generation.console.title", generator.getName())
         val descriptor = object : RunContentDescriptor(consoleView, null, consoleComponent, tabTitle) {
             override fun isContentReuseProhibited() = true
         }
@@ -199,9 +199,9 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val contentFactory = getInstance()
         val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
         val right = contentFactory.create(project, hint.fileText, CwtFileType)
-        val title = PlsToolsBundle.message("config.generation.console.diff.title", generator.getName())
-        val title1 = PlsToolsBundle.message("config.generation.console.diff.current")
-        val title2 = PlsToolsBundle.message("config.generation.console.diff.generated")
+        val title = ChronicleToolsBundle.message("config.generation.console.diff.title", generator.getName())
+        val title1 = ChronicleToolsBundle.message("config.generation.console.diff.current")
+        val title2 = ChronicleToolsBundle.message("config.generation.console.diff.generated")
         val request = SimpleDiffRequest(title, left, right, title1, title2)
         val requests = SimpleDiffRequestChain(request)
 

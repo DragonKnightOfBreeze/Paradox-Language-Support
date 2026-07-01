@@ -17,7 +17,7 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText
 import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.tools.PlsToolsBundle
+import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
 import icu.windea.pls.tools.config.generators.CwtConfigGeneratorUtil
 import kotlin.io.path.extension
@@ -53,26 +53,26 @@ class GenerateConfigDialog(
     val outputPath by outputPathProperty
 
     init {
-        title = PlsToolsBundle.message("config.generation.dialog.title", generator.getName())
+        title = ChronicleToolsBundle.message("config.generation.dialog.title", generator.getName())
         init()
     }
 
     override fun createCenterPanel(): DialogPanel {
         return panel {
             // gameType
-            row(PlsToolsBundle.message("config.generation.dialog.field.gameType")) {
+            row(ChronicleToolsBundle.message("config.generation.dialog.field.gameType")) {
                 comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
             }
 
             // inputPath
-            row(PlsToolsBundle.message("config.generation.dialog.field.inputPath")) {
+            row(ChronicleToolsBundle.message("config.generation.dialog.field.inputPath")) {
                 val descriptor0 = when {
                     generator.fromScripts -> FileChooserDescriptorFactory.singleDir()
                     else -> FileChooserDescriptorFactory.singleFile().withExtensionFilter("log")
                 }
                 val descriptor = descriptor0
-                    .withTitle(PlsToolsBundle.message("config.generation.dialog.field.inputPath.title"))
+                    .withTitle(ChronicleToolsBundle.message("config.generation.dialog.field.inputPath.title"))
                 textFieldWithHistoryWithBrowseButton(descriptor, project, { getInputPathHistories() })
                     .align(Align.FILL)
                     .bindText(inputPathProperty.trim())
@@ -80,40 +80,40 @@ class GenerateConfigDialog(
             }
             row {
                 when {
-                    generator.fromScripts -> comment(PlsToolsBundle.message("config.generation.dialog.field.inputPath.commentFromScripts"))
-                    else -> comment(PlsToolsBundle.message("config.generation.dialog.field.inputPath.comment"))
+                    generator.fromScripts -> comment(ChronicleToolsBundle.message("config.generation.dialog.field.inputPath.commentFromScripts"))
+                    else -> comment(ChronicleToolsBundle.message("config.generation.dialog.field.inputPath.comment"))
                 }
             }
             row {
-                comment(PlsToolsBundle.message("config.generation.dialog.field.inputPath.commentForName", generator.getDefaultInputName()))
+                comment(ChronicleToolsBundle.message("config.generation.dialog.field.inputPath.commentForName", generator.getDefaultInputName()))
             }
 
             // outputPath
-            row(PlsToolsBundle.message("config.generation.dialog.field.outputPath")) {
+            row(ChronicleToolsBundle.message("config.generation.dialog.field.outputPath")) {
                 val descriptor = FileChooserDescriptorFactory.singleFile()
                     .withExtensionFilter("cwt")
-                    .withTitle(PlsToolsBundle.message("config.generation.dialog.field.outputPath.title"))
+                    .withTitle(ChronicleToolsBundle.message("config.generation.dialog.field.outputPath.title"))
                 textFieldWithHistoryWithBrowseButton(descriptor, project, { getOutputPathHistories() })
                     .align(Align.FILL)
                     .bindText(outputPathProperty.trim())
                     .validationOnApply { validateOutputPath() }
             }
             row {
-                comment(PlsToolsBundle.message("config.generation.dialog.field.outputPath.comment"))
+                comment(ChronicleToolsBundle.message("config.generation.dialog.field.outputPath.comment"))
             }
             row {
-                comment(PlsToolsBundle.message("config.generation.dialog.field.outputPath.commentForName", generator.getDefaultOutputName()))
+                comment(ChronicleToolsBundle.message("config.generation.dialog.field.outputPath.commentForName", generator.getDefaultOutputName()))
             }
 
             // quickSelect
             row {
-                link(PlsToolsBundle.message("config.generation.dialog.quickSelect.inputPath")) f@{
+                link(ChronicleToolsBundle.message("config.generation.dialog.quickSelect.inputPath")) f@{
                     val quickInputPath = CwtConfigGeneratorUtil.getQuickInputPath(gameType, generator)?.toString()?.orNull() ?: return@f
                     inputPathProperty.set(quickInputPath)
                 }
                 when {
-                    generator.fromScripts -> contextHelp(PlsToolsBundle.message("config.generation.dialog.quickSelect.inputPath.tipFromScripts"))
-                    else -> contextHelp(PlsToolsBundle.message("config.generation.dialog.quickSelect.inputPath.tip"))
+                    generator.fromScripts -> contextHelp(ChronicleToolsBundle.message("config.generation.dialog.quickSelect.inputPath.tipFromScripts"))
+                    else -> contextHelp(ChronicleToolsBundle.message("config.generation.dialog.quickSelect.inputPath.tip"))
                 }
             }
         }.withPreferredWidth(preferredDialogWidth)
@@ -147,27 +147,27 @@ class GenerateConfigDialog(
 
     private fun ValidationInfoBuilder.validateInputPath(): ValidationInfo? {
         val v = inputPath
-        if (v.isEmpty()) return error(PlsToolsBundle.message("config.generation.dialog.validation.path.empty"))
+        if (v.isEmpty()) return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.empty"))
         val p = v.toPathOrNull()
         when {
-            p == null -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.invalid"))
-            generator.fromScripts && !p.isDirectory() -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.invalid"))
-            !generator.fromScripts && !p.extension.equals("log", true) -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.invalid"))
-            !generator.fromScripts && !p.isAbsolute -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.absolute"))
-            p.notExists() -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.notExists"))
+            p == null -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
+            generator.fromScripts && !p.isDirectory() -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !generator.fromScripts && !p.extension.equals("log", true) -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !generator.fromScripts && !p.isAbsolute -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.absolute"))
+            p.notExists() -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.notExists"))
         }
         return null
     }
 
     private fun ValidationInfoBuilder.validateOutputPath(): ValidationInfo? {
         val v = outputPath
-        if (v.isEmpty()) return error(PlsToolsBundle.message("config.generation.dialog.validation.path.empty"))
+        if (v.isEmpty()) return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.empty"))
         val p = v.toPathOrNull()
         when {
-            p == null -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.invalid"))
-            !p.isRegularFile() || !p.extension.equals("cwt", true) -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.invalid"))
-            !p.isAbsolute -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.absolute"))
-            p.notExists() -> return error(PlsToolsBundle.message("config.generation.dialog.validation.path.notExists"))
+            p == null -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !p.isRegularFile() || !p.extension.equals("cwt", true) -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !p.isAbsolute -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.absolute"))
+            p.notExists() -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.notExists"))
         }
         return null
     }

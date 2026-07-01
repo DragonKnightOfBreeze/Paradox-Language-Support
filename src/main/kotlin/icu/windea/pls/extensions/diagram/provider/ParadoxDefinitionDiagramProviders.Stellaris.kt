@@ -12,7 +12,7 @@ import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.StellarisEventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.StellarisTechTreeDiagramSettings
@@ -31,7 +31,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.stellaris")
+    override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.stellaris")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
@@ -68,7 +68,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("techTree.name.stellaris")
+    override fun getPresentableName() = ChronicleDiagramBundle.message("techTree.name.stellaris")
 
     override fun getColorManager() = _colorManager
 

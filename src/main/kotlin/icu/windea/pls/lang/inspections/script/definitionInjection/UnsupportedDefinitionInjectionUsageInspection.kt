@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.script.definitionInjection
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -30,6 +30,6 @@ class UnsupportedDefinitionInjectionUsageInspection : DefinitionInjectionInspect
         if (definitionInjectionInfo.target.isNullOrEmpty()) return // considered "incorrect"
         if (!definitionInjectionInfo.type.isNullOrEmpty()) return
         if (definitionInjectionInfo.typeConfig != null) return
-        holder.registerProblem(element.propertyKey, PlsBundle.message("inspection.script.unsupportedDefinitionInjectionUsage.desc.1"))
+        holder.registerProblem(element.propertyKey, ChronicleBundle.message("inspection.script.unsupportedDefinitionInjectionUsage.desc.1"))
     }
 }

@@ -3,7 +3,7 @@
     <psi.implicitReferenceProvider implementation="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
 
     <localInspection language="Markdown" shortName="PlsMarkdownUnresolvedReferenceLink"
-                     bundle="messages.PlsExtensionsBundle"
+                     bundle="messages.ChronicleExtensionsBundle"
                      key="inspection.markdown.unresolvedReferenceLinks" groupKey="inspection.markdown.group"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.extensions.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection"/>

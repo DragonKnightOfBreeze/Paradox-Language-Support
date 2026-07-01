@@ -5,7 +5,7 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.util.values.FallbackStrings
 import org.jetbrains.uast.kotlin.orAnonymous
@@ -41,7 +41,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     }
 
     override fun getErrorHint(): String {
-        return PlsBundle.message("no.expression.found")
+        return ChronicleBundle.message("no.expression.found")
     }
 
     override fun hasAdvancedInformation(): Boolean {
@@ -51,29 +51,29 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getAdvancedInformationHint(element: PsiElement): String {
         val map = buildMap {
             val type = ParadoxTypeManager.getType(element)
-            type?.let { this[PlsBundle.message("title.type")] = it.id }
+            type?.let { this[ChronicleBundle.message("title.type")] = it.id }
 
             val name = ParadoxTypeManager.getName(element)
-            name?.let { this[PlsBundle.message("title.name")] = it.orAnonymous() }
+            name?.let { this[ChronicleBundle.message("title.name")] = it.orAnonymous() }
 
             val definitionType = ParadoxTypeManager.getDefinitionType(element)
-            definitionType?.let { this[PlsBundle.message("title.definitionType")] = it }
+            definitionType?.let { this[ChronicleBundle.message("title.definitionType")] = it }
 
             val localisationType = ParadoxTypeManager.getLocalisationType(element)
-            localisationType?.let { this[PlsBundle.message("title.localisationType")] = it.id }
+            localisationType?.let { this[ChronicleBundle.message("title.localisationType")] = it.id }
 
             val expression = ParadoxTypeManager.getExpression(element)
-            expression?.let { this[PlsBundle.message("title.expression")] = it }
+            expression?.let { this[ChronicleBundle.message("title.expression")] = it }
 
             val configExpression = ParadoxTypeManager.getConfigExpression(element)
-            configExpression?.let { this[PlsBundle.message("title.configExpression")] = it }
+            configExpression?.let { this[ChronicleBundle.message("title.configExpression")] = it }
 
             val priority = ParadoxTypeManager.getOverrideStrategy(element)
-            priority?.let { this[PlsBundle.message("title.overrideStrategy")] = it.toString() }
+            priority?.let { this[ChronicleBundle.message("title.overrideStrategy")] = it.toString() }
 
             val scopeContext = ParadoxTypeManager.getScopeContext(element)
             val scopeContextString = scopeContext?.toScopeMap()?.entries?.joinToString("\n") { (key, value) -> "$key = $value" }
-            scopeContextString?.let { this[PlsBundle.message("title.scopeContext")] = it }
+            scopeContextString?.let { this[ChronicleBundle.message("title.scopeContext")] = it }
         }
         return buildHtml(map)
     }

@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.util.function.Supplier
 
-object PlsEpBundle {
+object ChronicleEpBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsEpBundle"
-    private val INSTANCE = DynamicBundle(PlsEpBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.ChronicleEpBundle"
+    private val INSTANCE = DynamicBundle(ChronicleEpBundle::class.java, BUNDLE)
 
     @JvmStatic
     @Nls

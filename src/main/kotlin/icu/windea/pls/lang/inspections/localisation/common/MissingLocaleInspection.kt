@@ -7,7 +7,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
@@ -42,7 +42,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         if (file !is ParadoxLocalisationFile) return null
         if (file.propertyLists.all { it.locale != null }) return null // 没有问题，跳过
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("inspection.localisation.missingLocale.desc")
+        val description = ChronicleBundle.message("inspection.localisation.missingLocale.desc")
         holder.registerProblem(file, description)
         return holder.resultsArray
     }
@@ -51,10 +51,10 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         return panel {
             // ignoredFileNames
             row {
-                label(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames"))
+                label(ChronicleBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.patterns"))
+                    .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

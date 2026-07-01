@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -30,7 +30,7 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
             override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
                 ProgressManager.checkCanceled()
                 if (!ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)) return
-                val description = PlsBundle.message("inspection.script.conditionalStatementToPropertyForm.desc")
+                val description = ChronicleBundle.message("inspection.script.conditionalStatementToPropertyForm.desc")
                 val fixes = getFixes(element)
                 holder.registerProblem(element, description, *fixes)
             }
@@ -44,7 +44,7 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
     private class Fix(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        override fun getText() = PlsBundle.message("inspection.script.conditionalStatementToPropertyForm.fix.1.name")
+        override fun getText() = ChronicleBundle.message("inspection.script.conditionalStatementToPropertyForm.fix.1.name")
 
         override fun getFamilyName() = text
 

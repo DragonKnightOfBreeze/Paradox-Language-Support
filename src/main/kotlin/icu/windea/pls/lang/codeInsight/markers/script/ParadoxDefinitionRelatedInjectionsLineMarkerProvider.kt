@@ -5,7 +5,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
@@ -25,11 +25,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 提供定义（definition）的相关注入（relatedInjections，对应定义注入）的装订线图标。
  */
 class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.definitionRelatedInjections")
+    override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedDefinitionInjections
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.definitionRelatedInjections.group")
+    override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 definition，且存在对应的 definitionInjection
@@ -51,15 +51,15 @@ class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemL
         ProgressManager.checkCanceled()
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.definitionRelatedInjections.title"))
+            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.definitionRelatedInjections") }
+            .setNamer { ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = PlsBundle.message("script.gutterIcon.definitionRelatedInjections.action")
+        val actionText = ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections.action")
         NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedDefinitionInjections)
     }
 }

@@ -4,51 +4,51 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.localisation.ParadoxLocalisationConstants
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.operator"), ParadoxLocalisationHighlighterColors.OPERATOR),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.marker"), ParadoxLocalisationHighlighterColors.MARKER),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.comment"), ParadoxLocalisationHighlighterColors.COMMENT),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.keyword"), ParadoxLocalisationHighlighterColors.KEYWORD),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationHighlighterColors.LOCALE),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.number"), ParadoxLocalisationHighlighterColors.NUMBER),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationHighlighterColors.PROPERTY_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.atSign"), ParadoxLocalisationHighlighterColors.AT_SIGN),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedVariableReference"), ParadoxLocalisationHighlighterColors.SCRIPTED_VARIABLE_REFERENCE),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.parameter"), ParadoxLocalisationHighlighterColors.PARAMETER),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.argument"), ParadoxLocalisationHighlighterColors.ARGUMENT),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.text"), ParadoxLocalisationHighlighterColors.TEXT),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationHighlighterColors.COLOR),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationHighlighterColors.ICON),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.command"), ParadoxLocalisationHighlighterColors.COMMAND),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.concept"), ParadoxLocalisationHighlighterColors.CONCEPT), // #008080
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.textIcon"), ParadoxLocalisationHighlighterColors.TEXT_ICON),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.textFormat"), ParadoxLocalisationHighlighterColors.TEXT_FORMAT),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.validEscape"), ParadoxLocalisationHighlighterColors.VALID_ESCAPE),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.invalidEscape"), ParadoxLocalisationHighlighterColors.INVALID_ESCAPE),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.badCharacter"), ParadoxLocalisationHighlighterColors.BAD_CHARACTER),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.operator"), ParadoxLocalisationHighlighterColors.OPERATOR),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.marker"), ParadoxLocalisationHighlighterColors.MARKER),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.comment"), ParadoxLocalisationHighlighterColors.COMMENT),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.keyword"), ParadoxLocalisationHighlighterColors.KEYWORD),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.locale"), ParadoxLocalisationHighlighterColors.LOCALE),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.number"), ParadoxLocalisationHighlighterColors.NUMBER),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationHighlighterColors.PROPERTY_KEY),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.atSign"), ParadoxLocalisationHighlighterColors.AT_SIGN),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.scriptedVariableReference"), ParadoxLocalisationHighlighterColors.SCRIPTED_VARIABLE_REFERENCE),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.parameter"), ParadoxLocalisationHighlighterColors.PARAMETER),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.argument"), ParadoxLocalisationHighlighterColors.ARGUMENT),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.text"), ParadoxLocalisationHighlighterColors.TEXT),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.color"), ParadoxLocalisationHighlighterColors.COLOR),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.icon"), ParadoxLocalisationHighlighterColors.ICON),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.command"), ParadoxLocalisationHighlighterColors.COMMAND),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.concept"), ParadoxLocalisationHighlighterColors.CONCEPT), // #008080
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.textIcon"), ParadoxLocalisationHighlighterColors.TEXT_ICON),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.textFormat"), ParadoxLocalisationHighlighterColors.TEXT_FORMAT),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.validEscape"), ParadoxLocalisationHighlighterColors.VALID_ESCAPE),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.invalidEscape"), ParadoxLocalisationHighlighterColors.INVALID_ESCAPE),
+        AttributesDescriptor(ChronicleBundle.message("localisation.displayName.badCharacter"), ParadoxLocalisationHighlighterColors.BAD_CHARACTER),
 
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.operator"), ParadoxLocalisationHighlighterColors.SEMANTIC_OPERATOR),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.marker"), ParadoxLocalisationHighlighterColors.SEMANTIC_MARKER),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.keyword"), ParadoxLocalisationHighlighterColors.SEMANTIC_KEYWORD),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.string"), ParadoxLocalisationHighlighterColors.SEMANTIC_STRING),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.operator"), ParadoxLocalisationHighlighterColors.SEMANTIC_OPERATOR),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.marker"), ParadoxLocalisationHighlighterColors.SEMANTIC_MARKER),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.keyword"), ParadoxLocalisationHighlighterColors.SEMANTIC_KEYWORD),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.string"), ParadoxLocalisationHighlighterColors.SEMANTIC_STRING),
 
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.definitionReference"), ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.localisationReference"), ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.dynamicValue"), ParadoxLocalisationHighlighterColors.DYNAMIC_VALUE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.variable"), ParadoxLocalisationHighlighterColors.VARIABLE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.systemCommandScope"), ParadoxLocalisationHighlighterColors.SYSTEM_COMMAND_SCOPE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.commandScope"), ParadoxLocalisationHighlighterColors.COMMAND_SCOPE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.commandScopePrefix"), ParadoxLocalisationHighlighterColors.COMMAND_SCOPE_PREFIX),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.commandField"), ParadoxLocalisationHighlighterColors.COMMAND_FIELD),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.commandFieldPrefix"), ParadoxLocalisationHighlighterColors.COMMAND_FIELD_PREFIX),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.databaseObjectType"), ParadoxLocalisationHighlighterColors.DATABASE_OBJECT_TYPE),
-        AttributesDescriptor(PlsBundle.message("semantic.displayName.databaseObject"), ParadoxLocalisationHighlighterColors.DATABASE_OBJECT),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.definitionReference"), ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.localisationReference"), ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.dynamicValue"), ParadoxLocalisationHighlighterColors.DYNAMIC_VALUE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.variable"), ParadoxLocalisationHighlighterColors.VARIABLE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.systemCommandScope"), ParadoxLocalisationHighlighterColors.SYSTEM_COMMAND_SCOPE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.commandScope"), ParadoxLocalisationHighlighterColors.COMMAND_SCOPE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.commandScopePrefix"), ParadoxLocalisationHighlighterColors.COMMAND_SCOPE_PREFIX),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.commandField"), ParadoxLocalisationHighlighterColors.COMMAND_FIELD),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.commandFieldPrefix"), ParadoxLocalisationHighlighterColors.COMMAND_FIELD_PREFIX),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.databaseObjectType"), ParadoxLocalisationHighlighterColors.DATABASE_OBJECT_TYPE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.displayName.databaseObject"), ParadoxLocalisationHighlighterColors.DATABASE_OBJECT),
 
     )
 
@@ -81,7 +81,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
     override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName() = PlsBundle.message("localisation.settings.name")
+    override fun getDisplayName() = ChronicleBundle.message("localisation.settings.name")
 
     override fun getDemoText() = ParadoxLocalisationConstants.colorSettingsText
 }

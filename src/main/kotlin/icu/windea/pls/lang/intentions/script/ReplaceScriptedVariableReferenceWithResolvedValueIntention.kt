@@ -4,7 +4,7 @@ import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
  */
 @Suppress("UnstableApiUsage")
 class ReplaceScriptedVariableReferenceWithResolvedValueIntention : PsiUpdateModCommandAction<ParadoxScriptedVariableReference>(ParadoxScriptedVariableReference::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
+    override fun getFamilyName() = ChronicleBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptedVariableReference, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return

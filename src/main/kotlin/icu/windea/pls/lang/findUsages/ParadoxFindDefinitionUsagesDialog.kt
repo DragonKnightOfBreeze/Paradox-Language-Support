@@ -3,7 +3,7 @@ package icu.windea.pls.lang.findUsages
 import com.intellij.find.findUsages.FindUsagesOptions
 import com.intellij.openapi.project.Project
 import com.intellij.ui.StateRestoringCheckBox
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import javax.swing.BoxLayout
 import javax.swing.JPanel
@@ -32,7 +32,7 @@ class ParadoxFindDefinitionUsagesDialog(
     override fun createFindWhatPanel(): JPanel {
         val panel = JPanel()
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        cbUsages = addCheckboxToPanel(PlsBundle.message("find.what.usages.checkbox"), findOptions.isUsages, panel, true)
+        cbUsages = addCheckboxToPanel(ChronicleBundle.message("find.what.usages.checkbox"), findOptions.isUsages, panel, true)
         return panel
     }
 

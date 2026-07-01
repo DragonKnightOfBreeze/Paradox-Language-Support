@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ReferenceLinkType
 
 /**
@@ -24,7 +24,7 @@ interface ReferenceLinkProvider {
 
         @JvmStatic
         fun getDefaultUnresolvedMessage(link: String): String {
-            return PlsEpBundle.message("reference.link.unresolved", link)
+            return ChronicleEpBundle.message("reference.link.unresolved", link)
         }
     }
 }

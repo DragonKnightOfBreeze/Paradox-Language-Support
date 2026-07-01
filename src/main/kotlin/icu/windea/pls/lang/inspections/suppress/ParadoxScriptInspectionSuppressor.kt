@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -76,8 +76,8 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptFile::class.java) {
         override fun getText(): String {
             return when (toolId) {
-                SuppressionUtil.ALL -> PlsBundle.message("suppress.for.file.all", fileName)
-                else -> PlsBundle.message("suppress.for.file", fileName)
+                SuppressionUtil.ALL -> ChronicleBundle.message("suppress.for.file.all", fileName)
+                else -> ChronicleBundle.message("suppress.for.file", fileName)
             }
         }
 
@@ -97,7 +97,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         // definition here should be a property, not a file
 
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.definition", name)
+            return ChronicleBundle.message("suppress.for.definition", name)
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -113,7 +113,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         // definition here should be a property, not a file
 
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.definitionInjection", name)
+            return ChronicleBundle.message("suppress.for.definitionInjection", name)
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -125,7 +125,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         toolId: String
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.member")
+            return ChronicleBundle.message("suppress.for.member")
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {

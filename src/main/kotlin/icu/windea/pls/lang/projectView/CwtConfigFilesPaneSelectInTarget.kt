@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.util.PsiUtilCore
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 
@@ -27,5 +27,5 @@ class CwtConfigFilesPaneSelectInTarget(private val project: Project) : ProjectVi
 
     override fun getWeight() = 200.0f // lower than ParadoxFilesPaneSelectInTarget
 
-    override fun toString() = PlsBundle.message("select.in.cwt.config.files")
+    override fun toString() = ChronicleBundle.message("select.in.cwt.config.files")
 }

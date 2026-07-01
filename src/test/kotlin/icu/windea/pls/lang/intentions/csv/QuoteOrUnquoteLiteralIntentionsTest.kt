@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.csv
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -29,7 +29,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testQuoteLiteral_basic() {
-        val intentionName = PlsBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
         myFixture.configureByText("quote_column.test.csv", "name;age\nalice;<caret>18")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -38,7 +38,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testQuoteLiteral_columnContainsBlank() {
-        val intentionName = PlsBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
         myFixture.configureByText("quote_column_contains_blank.test.csv", "name;desc\nalice;<caret>a b")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -47,7 +47,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testQuoteLiteral_notAvailableWhenAlreadyQuoted() {
-        val intentionName = PlsBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
         myFixture.configureByText("quote_not_available_quoted.test.csv", "name;age\nalice;<caret>\"18\"")
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -55,7 +55,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testUnquoteLiteral_basic() {
-        val intentionName = PlsBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
         myFixture.configureByText("unquote_column.test.csv", "name;age\nalice;<caret>\"18\"")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -64,7 +64,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testUnquoteLiteral_notAvailableWhenUnquoted() {
-        val intentionName = PlsBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
         myFixture.configureByText("unquote_not_available_unquoted.test.csv", "name;age\nalice;<caret>18")
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -72,7 +72,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testUnquoteLiteral_notAvailableWhenContainsBlank() {
-        val intentionName = PlsBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
         myFixture.configureByText("unquote_not_available_blank.test.csv", "name;desc\nalice;<caret>\"a b\"")
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })

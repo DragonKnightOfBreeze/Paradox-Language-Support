@@ -12,7 +12,7 @@ import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.PopupHandler
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.actions.PlsActions
@@ -104,9 +104,9 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
 
     override fun getPrevOccurenceActionNameImpl(): String {
         return when (type) {
-            Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsBundle.message("hierarchy.eventTree.prev.occurrence.name")
-            Type.TechTreePre, Type.TechTreePost -> PlsBundle.message("hierarchy.techTree.prev.occurrence.name")
-            else -> PlsBundle.message("hierarchy.definition.prev.occurrence.name")
+            Type.EventTreeInvoker, Type.EventTreeInvoked -> ChronicleBundle.message("hierarchy.eventTree.prev.occurrence.name")
+            Type.TechTreePre, Type.TechTreePost -> ChronicleBundle.message("hierarchy.techTree.prev.occurrence.name")
+            else -> ChronicleBundle.message("hierarchy.definition.prev.occurrence.name")
         }
     }
 
@@ -116,9 +116,9 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
 
     override fun getNextOccurenceActionNameImpl(): String {
         return when (type) {
-            Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsBundle.message("hierarchy.eventTree.next.occurrence.name")
-            Type.TechTreePre, Type.TechTreePost -> PlsBundle.message("hierarchy.techTree.next.occurrence.name")
-            else -> PlsBundle.message("hierarchy.definition.next.occurrence.name")
+            Type.EventTreeInvoker, Type.EventTreeInvoked -> ChronicleBundle.message("hierarchy.eventTree.next.occurrence.name")
+            Type.TechTreePre, Type.TechTreePost -> ChronicleBundle.message("hierarchy.techTree.next.occurrence.name")
+            else -> ChronicleBundle.message("hierarchy.definition.next.occurrence.name")
         }
     }
 

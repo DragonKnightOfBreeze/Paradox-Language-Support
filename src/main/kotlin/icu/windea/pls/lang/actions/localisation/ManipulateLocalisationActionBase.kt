@@ -10,7 +10,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
@@ -81,8 +81,8 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         // 弹出对话框，以确认是否真的要处理本地化
         val actionName = e.presentation.text
         val toProcess = files.size
-        val title = PlsBundle.message("manipulation.confirm.title")
-        val message = PlsBundle.message("manipulation.confirm.message", actionName, toProcess)
+        val title = ChronicleBundle.message("manipulation.confirm.title")
+        val message = ChronicleBundle.message("manipulation.confirm.message", actionName, toProcess)
         return MessageDialogBuilder.okCancel(title, message).ask(project)
     }
 
@@ -178,8 +178,8 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     }
 
     object Messages {
-        fun success(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.0", processed)
-        fun failed(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.1", processed)
-        fun partialSuccess(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.2", processed)
+        fun success(processed: Int) = ChronicleBundle.message("action.manipulateLocalisation.status.0", processed)
+        fun failed(processed: Int) = ChronicleBundle.message("action.manipulateLocalisation.status.1", processed)
+        fun partialSuccess(processed: Int) = ChronicleBundle.message("action.manipulateLocalisation.status.2", processed)
     }
 }

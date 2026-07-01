@@ -5,7 +5,7 @@ import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
@@ -30,8 +30,8 @@ import javax.imageio.ImageIO
 class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.localisationIcon")
 
-    override val name get() = PlsBundle.message("localisation.hints.localisationIcon")
-    override val description get() = PlsBundle.message("localisation.hints.localisationIcon.description")
+    override val name get() = ChronicleBundle.message("localisation.hints.localisationIcon")
+    override val description get() = ChronicleBundle.message("localisation.hints.localisationIcon.description")
     override val key get() = settingsKey
 
     override val renderIcon get() = true

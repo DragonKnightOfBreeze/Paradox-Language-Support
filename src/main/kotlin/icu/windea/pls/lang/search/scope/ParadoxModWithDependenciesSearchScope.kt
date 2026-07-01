@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search.scope
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.selectRootFile
 
 @Suppress("EqualsOrHashCode")
@@ -17,7 +17,7 @@ class ParadoxModWithDependenciesSearchScope(
     override fun ensureMatchGameType() = true
 
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.name.mod.withDependencies")
+        return ChronicleBundle.message("search.scope.name.mod.withDependencies")
     }
 
     override fun containsFromTop(topFile: VirtualFile): Boolean {

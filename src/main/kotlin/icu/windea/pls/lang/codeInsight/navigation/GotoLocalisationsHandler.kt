@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -29,7 +29,7 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         // if (!ParadoxPsiMatcher.isLocalisation(element)) return null // 不需要
         val type = element.type ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.localisations.search", element.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", element.name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -52,15 +52,15 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
-        return PlsBundle.message("script.goto.localisations.chooseTitle", name.escapeXml())
+        return ChronicleBundle.message("script.goto.localisations.chooseTitle", name.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
-        return PlsBundle.message("script.goto.localisations.findUsagesTitle", name.escapeXml())
+        return ChronicleBundle.message("script.goto.localisations.findUsagesTitle", name.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.localisations.notFoundMessage")
+        return ChronicleBundle.message("script.goto.localisations.notFoundMessage")
     }
 }

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.overrides
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingDefinitionsFix
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
@@ -37,7 +37,7 @@ class OverrideForDefinitionInspection : OverrideRelatedInspectionBase() {
 
                 val locationElement = element.propertyKey
                 val (key, target, results) = overrideResult
-                val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
+                val description = ChronicleBundle.message("inspection.overrideForDefinition.desc", key)
                 val fix = NavigateToOverridingDefinitionsFix(key, target, results)
                 holder.registerProblem(locationElement, description, fix)
             }

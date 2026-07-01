@@ -10,7 +10,7 @@ import com.intellij.openapi.ui.popup.util.MinimizeButton
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
@@ -57,16 +57,16 @@ object ParadoxLocalisationAiManipulationService {
             returns() implies (resultFlow != null)
         }
         if (resultFlow == null) { // 这意味着 AI 设置不正确，例如 API KEY 未填写（但不包括已填写但不正确的情况）
-            throw IllegalStateException(PlsAiBundle.message("ai.manipulation.localisation.error.1"))
+            throw IllegalStateException(ChronicleAiBundle.message("ai.manipulation.localisation.error.1"))
         }
     }
 
     private fun checkResult(context: ParadoxLocalisationManipulationContext, result: LocalisationAiResult) {
         if (result.key.isEmpty()) { // 输出内容的格式不正确
-            throw IllegalStateException(PlsAiBundle.message("ai.manipulation.localisation.error.2"))
+            throw IllegalStateException(ChronicleAiBundle.message("ai.manipulation.localisation.error.2"))
         }
         if (result.key != context.key) { // 输出的本地化的键不匹配
-            throw IllegalStateException(PlsAiBundle.message("ai.manipulation.localisation.error.3", context.key, result.key))
+            throw IllegalStateException(ChronicleAiBundle.message("ai.manipulation.localisation.error.3", context.key, result.key))
         }
     }
 
@@ -87,20 +87,20 @@ object ParadoxLocalisationAiManipulationService {
                 cell(textField).align(AlignX.FILL).focused().smaller()
             }
             row {
-                comment(PlsAiBundle.message("ai.manipulation.localisation.popup.comment")).align(AlignX.LEFT).smaller()
-                button(PlsAiBundle.message("ai.manipulation.localisation.popup.button.submit")) { submitted.set(true) }.align(AlignX.RIGHT).smaller()
+                comment(ChronicleAiBundle.message("ai.manipulation.localisation.popup.comment")).align(AlignX.LEFT).smaller()
+                button(ChronicleAiBundle.message("ai.manipulation.localisation.popup.button.submit")) { submitted.set(true) }.align(AlignX.RIGHT).smaller()
             }
             separator()
             row {
-                text(PlsAiBundle.message("ai.manipulation.localisation.popup.tip")).align(AlignX.LEFT).smaller().smallerFont()
+                text(ChronicleAiBundle.message("ai.manipulation.localisation.popup.tip")).align(AlignX.LEFT).smaller().smallerFont()
 
-                label(PlsAiBundle.message("ai.popup.provider"))
+                label(ChronicleAiBundle.message("ai.popup.provider"))
                 comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text }).align(AlignX.RIGHT).bindItem(providerType)
             }
         }
         val popup = JBPopupFactory.getInstance()
             .createComponentPopupBuilder(panel, textField)
-            .setTitle(PlsAiBundle.message("ai.manipulation.localisation.popup.title"))
+            .setTitle(ChronicleAiBundle.message("ai.manipulation.localisation.popup.title"))
             .setProject(project)
             .setResizable(true)
             .setMovable(true)

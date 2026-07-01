@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
@@ -42,7 +42,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Highli
     @Test
     fun simple_fios() {
         val key = "var"
-        val description = PlsBundle.message("inspection.overrideForScriptedVariable.desc", key)
+        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
         val tag = description.toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/99_scripted_variables.txt")
@@ -62,7 +62,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Highli
     @Test
     fun simple_lios() {
         val key = "var"
-        val description = PlsBundle.message("inspection.overrideForScriptedVariable.desc", key)
+        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
         val tag = description.toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
@@ -82,7 +82,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Highli
     @Test
     fun simple_samePath() {
         val key = "var"
-        val description = PlsBundle.message("inspection.overrideForScriptedVariable.desc", key)
+        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
         val tag = description.toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")

@@ -2,7 +2,7 @@ package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 
 @Suppress("CanBeParameter")
@@ -13,7 +13,7 @@ class ParadoxLocaleCheckBoxDialog(
     val localeStatusMap = allLocales.associateWithTo(mutableMapOf()) { it in selectedLocales }
 
     init {
-        title = PlsBundle.message("ui.selectLocales.title")
+        title = ChronicleBundle.message("ui.selectLocales.title")
         init()
     }
 

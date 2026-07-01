@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.Processors
@@ -24,7 +24,7 @@ class AutomaticLocalisationsRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.localisation.overrides")
+        return ChronicleBundle.message("rename.localisation.overrides")
     }
 
     override fun isEnabled(): Boolean {

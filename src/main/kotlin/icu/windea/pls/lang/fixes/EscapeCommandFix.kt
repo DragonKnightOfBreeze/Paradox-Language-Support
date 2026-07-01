@@ -7,14 +7,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 
 class EscapeCommandFix(
     element: PsiElement
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-    override fun getText() = PlsBundle.message("fix.escapeCommand.name")
+    override fun getText() = ChronicleBundle.message("fix.escapeCommand.name")
 
     override fun getFamilyName() = text
 

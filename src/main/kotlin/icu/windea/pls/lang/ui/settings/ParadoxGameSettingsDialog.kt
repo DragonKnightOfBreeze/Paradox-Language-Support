@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
@@ -35,7 +35,7 @@ class ParadoxGameSettingsDialog(
     private val modDependencies = settings.copyModDependencies()
 
     init {
-        title = PlsBundle.message("game.settings")
+        title = ChronicleBundle.message("game.settings")
         init()
     }
 
@@ -44,14 +44,14 @@ class ParadoxGameSettingsDialog(
         return panel {
             row {
                 // gameType
-                label(PlsBundle.message("game.settings.gameType")).widthGroup("left")
+                label(ChronicleBundle.message("game.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
                 // gameVersion
-                label(PlsBundle.message("game.settings.gameVersion")).widthGroup("right")
+                label(ChronicleBundle.message("game.settings.gameVersion")).widthGroup("right")
                 textField()
                     .text(settings.gameVersion.orEmpty())
                     .align(Align.FILL)
@@ -60,9 +60,9 @@ class ParadoxGameSettingsDialog(
             }
             row {
                 // gameDirectory
-                label(PlsBundle.message("game.settings.gameDirectory")).widthGroup("left")
+                label(ChronicleBundle.message("game.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
-                    .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
+                    .withTitle(ChronicleBundle.message("game.settings.gameDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.gameDirectory.orEmpty())
@@ -72,25 +72,25 @@ class ParadoxGameSettingsDialog(
             }
 
             // options
-            collapsibleGroup(PlsBundle.message("mod.options"), false) {
+            collapsibleGroup(ChronicleBundle.message("mod.options"), false) {
                 // disableTiger
                 row { // 尽管目前仅适用于模组目录……
-                    checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
+                    checkBox(ChronicleBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
+                    browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
                 row {
-                    comment(PlsBundle.message("mod.options.comment.1"))
+                    comment(ChronicleBundle.message("mod.options.comment.1"))
                 }
             }
 
             // modDependencies
-            collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
+            collapsibleGroup(ChronicleBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)
                 }.resizableRow() // 占据额外的垂直空间
                 row {
-                    comment(PlsBundle.message("mod.dependencies.comment.1"))
+                    comment(ChronicleBundle.message("mod.dependencies.comment.1"))
                 }
             }.resizableRow() // 占据额外的垂直空间
         }

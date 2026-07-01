@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
@@ -46,6 +46,6 @@ class UnsupportedInlineMathInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun checkInAssetFile(element: ParadoxScriptInlineMath, holder: ProblemsHolder) {
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineMath.desc.1"))
+        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedInlineMath.desc.1"))
     }
 }

@@ -9,7 +9,7 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -36,8 +36,8 @@ class ParadoxScriptElementDescriptionProvider : ElementDescriptionProvider {
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is ParadoxScriptScriptedVariable -> PlsBundle.message("script.description.scriptedVariable")
-            is ParadoxScriptProperty -> PlsBundle.message("script.description.property")
+            is ParadoxScriptScriptedVariable -> ChronicleBundle.message("script.description.scriptedVariable")
+            is ParadoxScriptProperty -> ChronicleBundle.message("script.description.property")
             else -> null
         }
     }

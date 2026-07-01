@@ -2,7 +2,7 @@ package icu.windea.pls.lang.search.scope
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.fileInfo
 
@@ -13,7 +13,7 @@ class ParadoxWithFilePathSearchScope(
     val fileExtension: String? = null
 ) : ParadoxSearchScope(delegate.project, null) {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.name.filePathAware", delegate.displayName, filePath, fileExtension.orEmpty())
+        return ChronicleBundle.message("search.scope.name.filePathAware", delegate.displayName, filePath, fileExtension.orEmpty())
     }
 
     override fun containsFromTop(topFile: VirtualFile): Boolean {

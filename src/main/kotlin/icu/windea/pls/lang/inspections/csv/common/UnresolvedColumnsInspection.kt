@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -47,11 +47,11 @@ class UnresolvedColumnsInspection : LocalInspectionTool() {
 
                 val hasEmpty = unresolvedKeys.remove("")
                 if (unresolvedKeys.isNotEmpty()) {
-                    val description = PlsBundle.message("inspection.csv.unresolvedColumns.desc.1", unresolvedKeys.joinToString(", "), rowConfig.name)
+                    val description = ChronicleBundle.message("inspection.csv.unresolvedColumns.desc.1", unresolvedKeys.joinToString(", "), rowConfig.name)
                     holder.registerProblem(file, description)
                 }
                 if (hasEmpty) {
-                    val description = PlsBundle.message("inspection.csv.unresolvedColumns.desc.2", rowConfig.name)
+                    val description = ChronicleBundle.message("inspection.csv.unresolvedColumns.desc.2", rowConfig.name)
                     holder.registerProblem(file, description)
                 }
             }
@@ -62,7 +62,7 @@ class UnresolvedColumnsInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

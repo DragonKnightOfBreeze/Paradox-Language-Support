@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -40,7 +40,7 @@ class DuplicateColumnsInspection : LocalInspectionTool() {
                 val duplicateKeys = headerColumns.groupBy { it.name }.filterValues { it.size > 1 }.keys
                 if (duplicateKeys.isEmpty()) return
 
-                val description = PlsBundle.message("inspection.csv.duplicateColumns.desc.1", duplicateKeys.joinToString(", "), rowConfig.name)
+                val description = ChronicleBundle.message("inspection.csv.duplicateColumns.desc.1", duplicateKeys.joinToString(", "), rowConfig.name)
                 holder.registerProblem(file, description)
             }
         }
@@ -50,7 +50,7 @@ class DuplicateColumnsInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

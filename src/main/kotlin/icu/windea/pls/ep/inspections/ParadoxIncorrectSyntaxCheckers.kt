@@ -5,10 +5,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
@@ -33,7 +33,7 @@ class ParadoxComparisonOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         val allowed = ParadoxSyntaxService.isComparisonOperatorAllowed(propertyElement)
         if (allowed == false) {
-            val description = PlsEpBundle.message("incorrectSyntax.comparison.desc.1")
+            val description = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.1")
             context.holder.registerProblem(element, description)
             return
         }
@@ -45,7 +45,7 @@ class ParadoxComparisonOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         val valid = ParadoxSyntaxService.isComparisonOperatorValid(propertyElement)
         if (valid == false) {
-            val description = PlsEpBundle.message("incorrectSyntax.comparison.desc.2")
+            val description = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.2")
             context.holder.registerProblem(element, description)
             return
         }
@@ -70,7 +70,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
-        val name = PlsBundle.message("incorrectSyntax.desc.safeAssignOperators")
+        val name = ChronicleBundle.message("incorrectSyntax.desc.safeAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return
 
         // check on grammar level
@@ -78,7 +78,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // 所在属性的键的表达式类型是字符串
         val allowed = ParadoxSyntaxService.isSafeAssignOperatorAllowed(propertyElement)
         if (!allowed) {
-            val description = PlsEpBundle.message("incorrectSyntax.safeAssign.desc.1")
+            val description = ChronicleEpBundle.message("incorrectSyntax.safeAssign.desc.1")
             context.holder.registerProblem(element, description)
             return
         }
@@ -91,7 +91,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         val configGroup = PlsFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)
         if (!valid) {
-            val description = PlsEpBundle.message("incorrectSyntax.safeAssign.desc.2")
+            val description = ChronicleEpBundle.message("incorrectSyntax.safeAssign.desc.2")
             context.holder.registerProblem(element, description)
             return
         }
@@ -103,7 +103,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
-        val name = PlsBundle.message("incorrectSyntax.desc.safeCallAssignOperators")
+        val name = ChronicleBundle.message("incorrectSyntax.desc.safeCallAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return
 
         // check on grammar level
@@ -111,7 +111,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // 所在属性的键的表达式类型是字符串
         val allowed = ParadoxSyntaxService.isSafeAssignOperatorAllowed(propertyElement)
         if (!allowed) {
-            val description = PlsEpBundle.message("incorrectSyntax.safeAssign.desc.3")
+            val description = ChronicleEpBundle.message("incorrectSyntax.safeAssign.desc.3")
             context.holder.registerProblem(element, description)
             return
         }
@@ -124,7 +124,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         val configGroup = PlsFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)
         if (!valid) {
-            val description = PlsEpBundle.message("incorrectSyntax.safeAssign.desc.4")
+            val description = ChronicleEpBundle.message("incorrectSyntax.safeAssign.desc.4")
             context.holder.registerProblem(element, description)
             return
         }
@@ -146,15 +146,15 @@ class ParadoxDanglingRichTextEndMarkerChecker : ParadoxIncorrectSyntaxChecker {
 
     private fun checkDanglingColorfulTextEndMarker(element: PsiElement, context: ParadoxSyntaxInspectionContext) {
         if (!ParadoxSyntaxService.isDanglingColorfulTextEndMarker(element)) return
-        val description = PlsEpBundle.message("incorrectSyntax.danglingEndMarker.desc.1")
-        val fix = DeleteStringByElementTypeFix(element, PlsEpBundle.message("incorrectSyntax.danglingEndMarker.fix"))
+        val description = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.1")
+        val fix = DeleteStringByElementTypeFix(element, ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.fix"))
         context.holder.registerProblem(element, description, fix)
     }
 
     private fun checkDanglingTextFormatEndMarker(element: PsiElement, context: ParadoxSyntaxInspectionContext) {
         if (!ParadoxSyntaxService.isDanglingTextFormatEndMarker(element)) return
-        val description = PlsEpBundle.message("incorrectSyntax.danglingEndMarker.desc.2")
-        val fix = DeleteStringByElementTypeFix(element, PlsEpBundle.message("incorrectSyntax.danglingEndMarker.fix"))
+        val description = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.2")
+        val fix = DeleteStringByElementTypeFix(element, ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.fix"))
         context.holder.registerProblem(element, description, fix)
     }
 }
@@ -166,11 +166,11 @@ class ParadoxLeftBracketEscapeChecker : ParadoxIncorrectSyntaxChecker {
     override fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext) {
         val indices = ParadoxSyntaxService.getIncorrectLeftBracketEscapeIndices(element, context.holder.file)
         if (indices.isEmpty()) return
-        val description = PlsEpBundle.message("incorrectSyntax.leftBracketEscape.desc")
+        val description = ChronicleEpBundle.message("incorrectSyntax.leftBracketEscape.desc")
         val startOffset = element.startOffset
         for (index in indices) {
             val rangeInElement = TextRange.from(index, 2)
-            val fix = ReplaceStringFix(element, PlsEpBundle.message("incorrectSyntax.leftBracketEscape.fix"), "[[", startOffset + index, 2)
+            val fix = ReplaceStringFix(element, ChronicleEpBundle.message("incorrectSyntax.leftBracketEscape.fix"), "[[", startOffset + index, 2)
             context.holder.registerProblem(element, rangeInElement, description, fix)
         }
     }

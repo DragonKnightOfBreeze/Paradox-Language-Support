@@ -4,7 +4,7 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.GotoInlineScriptUsagesFix
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
@@ -19,7 +19,7 @@ class DeclaredInlineScriptInspection: InlineScriptInspectionBase() {
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("inspection.script.declaredInlineScript.desc", inlineScriptExpression)
+        val description = ChronicleBundle.message("inspection.script.declaredInlineScript.desc", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix(file))
         return holder.resultsArray
     }

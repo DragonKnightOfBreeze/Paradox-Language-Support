@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -28,11 +28,11 @@ class AutomaticScriptedVariableRelatedLocalisationsRenamer(element: PsiElement, 
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.scriptedVariable.relatedLocalisations.title")
+    override fun getDialogTitle() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.scriptedVariable.relatedLocalisations.desc")
+    override fun getDialogDescription() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations.desc")
 
-    override fun entityName() = PlsBundle.message("rename.scriptedVariable.relatedLocalisations.entityName")
+    override fun entityName() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
         if (element !is ParadoxScriptScriptedVariable) return

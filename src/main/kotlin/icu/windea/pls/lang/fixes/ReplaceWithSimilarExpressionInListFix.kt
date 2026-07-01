@@ -10,7 +10,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.match.similarity.SimilarityMatchResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -22,7 +22,7 @@ class ReplaceWithSimilarExpressionInListFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText() = PlsBundle.message("fix.replaceWithSimilarExpressionInList.name")
+    override fun getText() = ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.name")
 
     override fun getFamilyName() = text
 
@@ -35,7 +35,7 @@ class ReplaceWithSimilarExpressionInListFix(
             return
         }
         if (editor == null) return
-        val step = object : BaseListPopupStep<SimilarityMatchResult>(PlsBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
+        val step = object : BaseListPopupStep<SimilarityMatchResult>(ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
             override fun getTextFor(value: SimilarityMatchResult) = value.render()
 
             override fun getDefaultOptionIndex() = 0
@@ -53,7 +53,7 @@ class ReplaceWithSimilarExpressionInListFix(
     private fun doReplace(project: Project, element: ParadoxExpressionElement, replacement: SimilarityMatchResult) {
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            writeCommandAction(project, PlsBundle.message("fix.replaceWithSimilarExpression.command")) {
+            writeCommandAction(project, ChronicleBundle.message("fix.replaceWithSimilarExpression.command")) {
                 element.setValue(replacement.value)
             }
         }

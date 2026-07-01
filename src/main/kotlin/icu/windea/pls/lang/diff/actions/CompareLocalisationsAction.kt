@@ -24,7 +24,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
@@ -96,7 +96,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val file = element.containingFile?.virtualFile ?: return null
         val localisationName = element.name
         val localisations = mutableListOf<ParadoxLocalisationProperty>()
-        runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.localisations.collect.title")) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("diff.compare.localisations.collect.title")) {
             readAction {
                 val selector = ParadoxLocalisationSearch.selector(project, file)
                 val result = ParadoxLocalisationSearch.searchNormal(localisationName, selector).findAll()
@@ -105,7 +105,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         if (localisations.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.localisations.content.notification.empty")
+            val content = ChronicleBundle.message("diff.compare.localisations.content.notification.empty")
             PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
@@ -193,7 +193,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息
         val name = localisation.name
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, path, qualifiedName)
+        return ChronicleBundle.message("diff.compare.localisations.dialog.title", name, path, qualifiedName)
     }
 
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
@@ -206,8 +206,8 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息
         val name = localisation.name
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, path, qualifiedName)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, path, qualifiedName)
+            original -> ChronicleBundle.message("diff.compare.localisations.originalContent.title", name, path, qualifiedName)
+            else -> ChronicleBundle.message("diff.compare.localisations.content.title", name, path, qualifiedName)
         }
     }
 
@@ -241,7 +241,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息（这里还会显示语言环境信息）
             val name = otherLocalisationName
             val localeId = locale.id
-            return PlsBundle.message("diff.compare.localisations.popup.name", name, localeId, path, qualifiedName)
+            return ChronicleBundle.message("diff.compare.localisations.popup.name", name, localeId, path, qualifiedName)
         }
     }
 
@@ -259,7 +259,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
 
         private inner class Popup : BaseListPopupStep<ParadoxDiffRequestProducer>(
-            PlsBundle.message("diff.compare.localisations.popup.title"),
+            ChronicleBundle.message("diff.compare.localisations.popup.title"),
             chain.requests
         ) {
             init {

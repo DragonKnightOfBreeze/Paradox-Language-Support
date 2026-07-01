@@ -2,8 +2,7 @@ package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
@@ -32,7 +31,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
 
     @Test
     fun leftBracketEscape() {
-        val description = PlsEpBundle.message("incorrectSyntax.leftBracketEscape.desc")
+        val description = ChronicleEpBundle.message("incorrectSyntax.leftBracketEscape.desc")
         val tag = description.toWarningTag()
 
         myFixture.configureByText("test.yml", """
@@ -47,9 +46,9 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
 
     @Test
     fun danglingEndMarker() {
-        val description1 = PlsEpBundle.message("incorrectSyntax.danglingEndMarker.desc.1")
+        val description1 = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.1")
         val tag1 = description1.toWarningTag()
-        val description2 = PlsEpBundle.message("incorrectSyntax.danglingEndMarker.desc.2")
+        val description2 = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.2")
         val tag2 = description2.toWarningTag()
 
         myFixture.configureByText("test.yml", """

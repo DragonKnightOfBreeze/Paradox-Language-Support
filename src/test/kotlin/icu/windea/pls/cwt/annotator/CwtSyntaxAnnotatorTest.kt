@@ -2,7 +2,7 @@ package icu.windea.pls.cwt.annotator
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.test.HighlightingTestScope
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,8 +18,8 @@ class CwtSyntaxAnnotatorTest : BasePlatformTestCase(), HighlightingTestScope {
 
     @Test
     fun testMissingQuotes_errors() {
-        val openingMsg = PlsBundle.message("message.missing.opening.quote")
-        val closingMsg = PlsBundle.message("message.missing.closing.quote")
+        val openingMsg = ChronicleBundle.message("message.missing.opening.quote")
+        val closingMsg = ChronicleBundle.message("message.missing.closing.quote")
         val openingMsgTag = openingMsg.toErrorTag()
         val closingMsgTag = closingMsg.toErrorTag()
 

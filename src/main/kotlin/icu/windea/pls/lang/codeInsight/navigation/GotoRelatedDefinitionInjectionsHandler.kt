@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
@@ -37,7 +37,7 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         val definitionInfo = definition.definitionInfo ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return null // 排除不期望匹配的定义
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedDefinitionInjections.search", definitionInfo.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitionInjections.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionInjectionSearch.selector(project, definition).contextSensitive()
@@ -59,16 +59,16 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.orNull() ?: return ""
-        return PlsBundle.message("script.goto.relatedDefinitionInjections.chooseTitle", definitionName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.orNull() ?: return ""
-        return PlsBundle.message("script.goto.relatedDefinitionInjections.findUsagesTitle", definitionName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.findUsagesTitle", definitionName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedDefinitionInjections.notFoundMessage")
+        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.notFoundMessage")
     }
 }

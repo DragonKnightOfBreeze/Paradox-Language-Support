@@ -15,7 +15,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexService
@@ -132,11 +132,11 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.0", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.0", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.0.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.0.conflict", definitionInfo.name)
     }
 }
 
@@ -238,11 +238,11 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.1", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.1", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.1.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.1.conflict", definitionInfo.name)
     }
 }
 
@@ -388,11 +388,11 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.2", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.2", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.2.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.2.conflict", definitionInfo.name)
     }
 }
 
@@ -541,10 +541,10 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.3", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.3", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsEpBundle.message("scopeContext.inference.3.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.3.conflict", definitionInfo.name)
     }
 }

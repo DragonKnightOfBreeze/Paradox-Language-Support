@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.psi.PsiDirectory
 import com.intellij.util.concurrency.annotations.RequiresBackgroundThread
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.withGameType
@@ -25,7 +25,7 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
         const val ID = "ParadoxFilesPane"
     }
 
-    override fun getTitle() = PlsBundle.message("title.paradox.files")
+    override fun getTitle() = ChronicleBundle.message("title.paradox.files")
 
     override fun getIcon() = AllIcons.Nodes.CopyOfFolder
 

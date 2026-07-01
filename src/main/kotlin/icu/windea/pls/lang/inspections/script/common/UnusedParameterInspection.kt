@@ -9,7 +9,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -91,7 +91,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-                val description = PlsBundle.message("inspection.script.unusedParameter.desc", name)
+                val description = ChronicleBundle.message("inspection.script.unusedParameter.desc", name)
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }

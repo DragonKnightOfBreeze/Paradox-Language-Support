@@ -4,7 +4,7 @@ import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.util.evaluators.ParadoxArrayDefineReferenceExpressionEvaluator
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  */
 @Suppress("UnstableApiUsage")
 class ReplaceArrayDefineReferenceWithEvaluationResultIntention : PsiUpdateModCommandAction<ParadoxScriptStringExpressionElement>(ParadoxScriptStringExpressionElement::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
+    override fun getFamilyName() = ChronicleBundle.message("intention.replaceArrayDefineReferenceWithEvaluationResult")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptStringExpressionElement, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return

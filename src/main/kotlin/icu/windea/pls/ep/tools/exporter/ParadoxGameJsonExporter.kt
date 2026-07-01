@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
@@ -26,16 +26,16 @@ import kotlin.io.path.notExists
  * 参见：[JsonExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/JsonExporter.cs)
  */
 class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
-    override val text get() = PlsEpBundle.message("mod.exporter.game")
+    override val text get() = ChronicleEpBundle.message("mod.exporter.game")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         val gameType = modSetInfo.gameType
         val gameDataDirPath = SpecialPathService.getInstance().getGameDataPath(gameType)
         if (gameDataDirPath == null) {
-            throw IllegalStateException(PlsEpBundle.message("mod.exporter.error.gameDataDirNotFound"))
+            throw IllegalStateException(ChronicleEpBundle.message("mod.exporter.error.gameDataDirNotFound"))
         }
         if (gameDataDirPath.notExists()) {
-            throw IllegalStateException(PlsEpBundle.message("mod.exporter.error.gameDataDirNotExist", gameDataDirPath))
+            throw IllegalStateException(ChronicleEpBundle.message("mod.exporter.error.gameDataDirNotExist", gameDataDirPath))
         }
 
         val enabledMods = modSetInfo.mods.filter { it.enabled }
@@ -75,7 +75,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
 
     override fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor {
         val jsonFileName = getJsonFileName(gameType)
-        return FileSaverDescriptor(PlsEpBundle.message("mod.exporter.game.title", jsonFileName), "", "json")
+        return FileSaverDescriptor(ChronicleEpBundle.message("mod.exporter.game.title", jsonFileName), "", "json")
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {

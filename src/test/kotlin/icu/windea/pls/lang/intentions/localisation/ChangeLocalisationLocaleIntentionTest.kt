@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -39,7 +39,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testAvailable_onLocaleToken() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "<caret>l_english:\n key: \"value\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -48,7 +48,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testAvailable_onLocaleTokenMiddle() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "l_eng<caret>lish:\n key: \"value\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -57,7 +57,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testAvailable_onLocaleTokenEnd() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "l_english<caret>:\n key: \"value\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -66,7 +66,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testNotAvailable_afterColon() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "l_english:<caret>\n key: \"value\"")
         val available = myFixture.availableIntentions
@@ -75,7 +75,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testNotAvailable_onKey() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "l_english:\n <caret>key: \"value\"")
         val available = myFixture.availableIntentions
@@ -84,7 +84,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testNotAvailable_onValue() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "l_english:\n key: \"<caret>value\"")
         val available = myFixture.availableIntentions
@@ -93,7 +93,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testAvailable_onGermanLocale() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "<caret>l_german:\n key: \"value\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -102,7 +102,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testAvailable_onSimpChineseLocale() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml", "<caret>l_simp_chinese:\n key: \"value\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -111,7 +111,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
 
     @Test
     fun testAvailable_multipleLocalesInFile() {
-        val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
+        val intentionName = ChronicleBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("locale.test.yml",
             "l_english:\n key: \"English\"\n\n<caret>l_german:\n key: \"Deutsch\"")

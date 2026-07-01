@@ -21,7 +21,7 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.registerDoubleClickListener
 import icu.windea.pls.ep.tools.SpecialPathProvider
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -56,10 +56,10 @@ class BrowseSpecialPathsDialog(
 
     private val tableModel = ListTableModel(
         arrayOf(
-            object : ColumnInfo<SpecialPathProvider, String>(PlsBundle.message("dialog.table.column.description")) {
+            object : ColumnInfo<SpecialPathProvider, String>(ChronicleBundle.message("dialog.table.column.description")) {
                 override fun valueOf(item: SpecialPathProvider) = item.text
             },
-            object : ColumnInfo<SpecialPathProvider, String>(PlsBundle.message("dialog.table.column.path")) {
+            object : ColumnInfo<SpecialPathProvider, String>(ChronicleBundle.message("dialog.table.column.path")) {
                 override fun valueOf(item: SpecialPathProvider) = item.getPath(selectedFile, selectedGameType)?.toString() ?: ""
             },
         ),
@@ -89,20 +89,20 @@ class BrowseSpecialPathsDialog(
     }
 
     init {
-        title = PlsBundle.message("dialog.title.browseSpecialPaths")
-        setOKButtonText(PlsBundle.message("action.copyAll"))
-        setCancelButtonText(PlsBundle.message("action.close"))
+        title = ChronicleBundle.message("dialog.title.browseSpecialPaths")
+        setOKButtonText(ChronicleBundle.message("action.copyAll"))
+        setCancelButtonText(ChronicleBundle.message("action.close"))
         init()
         pack()
     }
 
     override fun createCenterPanel(): DialogPanel {
         return panel {
-            row(PlsBundle.message("dialog.field.selectedGameType")) {
+            row(ChronicleBundle.message("dialog.field.selectedGameType")) {
                 comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(selectedGameTypeProperty)
                     .applyToComponent { addActionListener { tableModel.fireTableDataChanged() } }
-                button(PlsBundle.message("reset")) { selectedGameTypeProperty.set(defaultSelectedGameType) }
+                button(ChronicleBundle.message("reset")) { selectedGameTypeProperty.set(defaultSelectedGameType) }
                     .align(AlignX.RIGHT)
             }
 
@@ -115,12 +115,12 @@ class BrowseSpecialPathsDialog(
 
     override fun createActions(): Array<out Action?> {
         // copyAll + copy + open + close
-        val copyAction = object : AbstractAction(PlsBundle.message("action.copy")) {
+        val copyAction = object : AbstractAction(ChronicleBundle.message("action.copy")) {
             override fun actionPerformed(e: ActionEvent?) {
                 copy()
             }
         }
-        val openAction = object : AbstractAction(PlsBundle.message("action.open")) {
+        val openAction = object : AbstractAction(ChronicleBundle.message("action.open")) {
             override fun actionPerformed(e: ActionEvent?) {
                 open()
             }
@@ -139,12 +139,12 @@ class BrowseSpecialPathsDialog(
     private fun createPopupActions(): ActionGroup {
         // copy + open
         val actionGroup = DefaultActionGroup()
-        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.CopyPath.text")) {
+        actionGroup.addAction(object : AnAction(ChronicleBundle.message("dialog.table.popup.action.CopyPath.text")) {
             override fun actionPerformed(e: AnActionEvent) {
                 copy()
             }
         })
-        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.OpenPath.text")) {
+        actionGroup.addAction(object : AnAction(ChronicleBundle.message("dialog.table.popup.action.OpenPath.text")) {
             override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
             override fun update(e: AnActionEvent) {

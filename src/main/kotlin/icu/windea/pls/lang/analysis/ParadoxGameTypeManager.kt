@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.analysis
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.data.ChronicleJsonService
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -64,7 +64,7 @@ object ParadoxGameTypeManager {
     fun getModQualifiedName(gameType: ParadoxGameType, name: String?, version: String?): String {
         return buildString {
             append(gameType.title).append(" Mod: ")
-            append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
+            append(name?.orNull() ?: ChronicleBundle.message("root.name.unnamed"))
             version?.orNull()?.let { version -> append("@").append(version) }
         }
     }

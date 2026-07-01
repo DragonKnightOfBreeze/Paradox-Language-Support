@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.util.PsiUtilCore
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fileInfo
 
 class ParadoxFilesPaneSelectInTarget(project: Project) : ProjectViewSelectInTarget(project) {
@@ -22,5 +22,5 @@ class ParadoxFilesPaneSelectInTarget(project: Project) : ProjectViewSelectInTarg
 
     override fun getWeight() = 100.0f // very low
 
-    override fun toString() = PlsBundle.message("select.in.paradox.files")
+    override fun toString() = ChronicleBundle.message("select.in.paradox.files")
 }

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
@@ -31,8 +31,8 @@ import icu.windea.pls.script.psi.isExpression
 class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.dynamicValueHintText")
 
-    override val name get() = PlsBundle.message("script.hints.dynamicValueHintText")
-    override val description get() = PlsBundle.message("script.hints.dynamicValueHintText.description")
+    override val name get() = ChronicleBundle.message("script.hints.dynamicValueHintText")
+    override val description get() = ChronicleBundle.message("script.hints.dynamicValueHintText.description")
     override val key get() = settingsKey
 
     override val renderLocalisation get() = true

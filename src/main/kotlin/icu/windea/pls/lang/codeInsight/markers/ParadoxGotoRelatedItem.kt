@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers
 import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
@@ -28,6 +28,6 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
         val fileInfo = file.fileInfo ?: return file.virtualFile.path
         val path = fileInfo.path.path
         val qualifiedName = fileInfo.rootInfo.qualifiedName
-        return PlsBundle.message("goto.related.item.container.name", path, qualifiedName)
+        return ChronicleBundle.message("goto.related.item.container.name", path, qualifiedName)
     }
 }

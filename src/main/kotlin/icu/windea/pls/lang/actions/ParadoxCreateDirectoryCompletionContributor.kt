@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiDirectory
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
@@ -31,7 +31,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         "localisation",
     )
 
-    override fun getDescription() = PlsBundle.message("create.directory.completion.description")
+    override fun getDescription() = ChronicleBundle.message("create.directory.completion.description")
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()

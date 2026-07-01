@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -68,7 +68,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
         val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
         val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
         val range = TextRange.create(startOffset, endOffset)
-        val description = PlsBundle.message("inspection.script.incorrectScopeLinkChain.desc.1", max, actual)
+        val description = ChronicleBundle.message("inspection.script.incorrectScopeLinkChain.desc.1", max, actual)
         holder.registerProblem(element, range, description)
     }
 }

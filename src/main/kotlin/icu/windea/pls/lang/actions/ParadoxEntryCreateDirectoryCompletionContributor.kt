@@ -3,7 +3,7 @@ package icu.windea.pls.lang.actions
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.psi.PsiDirectory
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
@@ -18,7 +18,7 @@ import icu.windea.pls.model.ParadoxFileInfo
  * NOTE 2.1.5 入口目录的补全与普通目录的补全目前是上下文无关的（尽管游戏的实际行为可能确实是上下文有关的）。
  */
 class ParadoxEntryCreateDirectoryCompletionContributor : CreateDirectoryCompletionContributor {
-    override fun getDescription() = PlsBundle.message("create.directory.completion.entry.description")
+    override fun getDescription() = ChronicleBundle.message("create.directory.completion.entry.description")
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()

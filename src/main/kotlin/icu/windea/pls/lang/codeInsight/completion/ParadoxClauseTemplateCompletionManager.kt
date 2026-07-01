@@ -11,7 +11,7 @@ import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.psi.PsiDocumentManager
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -129,7 +129,7 @@ object ParadoxClauseTemplateCompletionManager {
                 val multiline = descriptors.size > PlsSettings.getInstance().state.completion.clauseTemplate.maxMemberCountInOneLine
                 val around = ParadoxScriptCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
 
-                val commandName = PlsBundle.message("script.command.expandClauseTemplate.name")
+                val commandName = ChronicleBundle.message("script.command.expandClauseTemplate.name")
                 executeWriteCommand(project, commandName, makeWritable = file) {
                     val documentManager = PsiDocumentManager.getInstance(project)
                     documentManager.commitDocument(editor.document)

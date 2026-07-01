@@ -4,12 +4,12 @@ import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.extensions.PlsExtensionsBundle
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.extensions.ChronicleExtensionsBundle
 import icu.windea.pls.ide.help.PlsHelpTopics
 import icu.windea.pls.model.constants.PlsConstants
 
-class PlsExtensionsSettingsConfigurable : BoundConfigurable(PlsExtensionsBundle.message("settings")), SearchableConfigurable {
+class PlsExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExtensionsBundle.message("settings")), SearchableConfigurable {
     // private val callbackLock = CallbackLock()
 
     override fun getId() = "pls.extensions"
@@ -20,7 +20,7 @@ class PlsExtensionsSettingsConfigurable : BoundConfigurable(PlsExtensionsBundle.
         // callbackLock.reset()
         return panel {
             // markdown
-            group(PlsExtensionsBundle.message("settings.markdown")) { configureGroupForMarkdown() }
+            group(ChronicleExtensionsBundle.message("settings.markdown")) { configureGroupForMarkdown() }
         }
     }
 
@@ -29,21 +29,21 @@ class PlsExtensionsSettingsConfigurable : BoundConfigurable(PlsExtensionsBundle.
 
         // resolveLinks
         row {
-            checkBox(PlsExtensionsBundle.message("settings.markdown.resolveLinks")).bindSelected(settings::resolveLinks)
-            contextHelp(PlsExtensionsBundle.message("settings.markdown.resolveLinks.tip"))
-            browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("extensions.html#md-link"))
+            checkBox(ChronicleExtensionsBundle.message("settings.markdown.resolveLinks")).bindSelected(settings::resolveLinks)
+            contextHelp(ChronicleExtensionsBundle.message("settings.markdown.resolveLinks.tip"))
+            browserLink(ChronicleBundle.message("link.documentation"), PlsConstants.docUrl("extensions.html#md-link"))
         }
         // resolveInlineCodes
         row {
-            checkBox(PlsExtensionsBundle.message("settings.markdown.resolveInlineCodes")).bindSelected(settings::resolveInlineCodes)
-            contextHelp(PlsExtensionsBundle.message("settings.markdown.resolveInlineCodes.tip"))
-            browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("extensions.html#md-inline-code"))
+            checkBox(ChronicleExtensionsBundle.message("settings.markdown.resolveInlineCodes")).bindSelected(settings::resolveInlineCodes)
+            contextHelp(ChronicleExtensionsBundle.message("settings.markdown.resolveInlineCodes.tip"))
+            browserLink(ChronicleBundle.message("link.documentation"), PlsConstants.docUrl("extensions.html#md-inline-code"))
         }
         // injectCodeBlocks
         row {
-            checkBox(PlsExtensionsBundle.message("settings.markdown.injectCodeBlocks")).bindSelected(settings::injectCodeBlocks)
-            contextHelp(PlsExtensionsBundle.message("settings.markdown.injectCodeBlocks.tip"))
-            browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("extensions.html#md-code-block"))
+            checkBox(ChronicleExtensionsBundle.message("settings.markdown.injectCodeBlocks")).bindSelected(settings::injectCodeBlocks)
+            contextHelp(ChronicleExtensionsBundle.message("settings.markdown.injectCodeBlocks.tip"))
+            browserLink(ChronicleBundle.message("link.documentation"), PlsConstants.docUrl("extensions.html#md-code-block"))
         }
     }
 }

@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.base.annotations.WithGameTypeEP
-import icu.windea.pls.ep.PlsEpBundle
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -31,12 +31,12 @@ interface ParadoxDefinitionInferredScopeContextProvider {
 
         @JvmStatic
         fun getDefaultMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-            return PlsEpBundle.message("scopeContext.inference", definitionInfo.name)
+            return ChronicleEpBundle.message("scopeContext.inference", definitionInfo.name)
         }
 
         @JvmStatic
         fun getDefaultErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-            return PlsEpBundle.message("scopeContext.inference.conflict", definitionInfo.name)
+            return ChronicleEpBundle.message("scopeContext.inference.conflict", definitionInfo.name)
         }
     }
 }

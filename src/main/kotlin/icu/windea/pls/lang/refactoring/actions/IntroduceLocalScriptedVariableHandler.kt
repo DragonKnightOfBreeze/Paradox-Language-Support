@@ -15,7 +15,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
@@ -54,7 +54,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         // 2.1.0 兼容定义注入
         val containerElement = selectScope { element.parentDefinitionCandidate().asProperty() } ?: return false
 
-        val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
+        val commandName = ChronicleBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) {
             // 用封装变量引用替换当前位置的字面量
             var newVariableReference = ParadoxScriptElementFactory.createScriptedVariableReference(project, name)

@@ -4,7 +4,7 @@ import com.intellij.ide.util.treeView.smartTree.ActionPresentation
 import com.intellij.ide.util.treeView.smartTree.ActionPresentationData
 import com.intellij.ide.util.treeView.smartTree.Filter
 import com.intellij.ide.util.treeView.smartTree.TreeElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.definitionInfo
 
@@ -19,7 +19,7 @@ interface ParadoxScriptStructureFilters {
         }
 
         override fun getPresentation(): ActionPresentation {
-            return ActionPresentationData(PlsBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.Nodes.ScriptedVariable)
+            return ActionPresentationData(ChronicleBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.Nodes.ScriptedVariable)
         }
     }
 
@@ -34,7 +34,7 @@ interface ParadoxScriptStructureFilters {
         }
 
         override fun getPresentation(): ActionPresentation {
-            return ActionPresentationData(PlsBundle.message("script.structureView.showDefinitions"), null, PlsIcons.Nodes.Definition)
+            return ActionPresentationData(ChronicleBundle.message("script.structureView.showDefinitions"), null, PlsIcons.Nodes.Definition)
         }
     }
 
@@ -48,7 +48,7 @@ interface ParadoxScriptStructureFilters {
         }
 
         override fun getPresentation(): ActionPresentation {
-            return ActionPresentationData(PlsBundle.message("script.structureView.showProperties"), null, PlsIcons.Nodes.Property)
+            return ActionPresentationData(ChronicleBundle.message("script.structureView.showProperties"), null, PlsIcons.Nodes.Property)
         }
     }
 
@@ -62,7 +62,7 @@ interface ParadoxScriptStructureFilters {
         }
 
         override fun getPresentation(): ActionPresentation {
-            return ActionPresentationData(PlsBundle.message("script.structureView.showValues"), null, PlsIcons.Nodes.Value)
+            return ActionPresentationData(ChronicleBundle.message("script.structureView.showValues"), null, PlsIcons.Nodes.Value)
         }
     }
 }

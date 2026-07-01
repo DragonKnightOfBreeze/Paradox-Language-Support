@@ -15,7 +15,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.config.util.CwtConfigManager
@@ -51,7 +51,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         // 必须先切换到 EDT
         withContext(Dispatchers.EDT) {
             // 显示可以取消的模态进度条
-            val title = PlsBundle.message("configGroup.refresh.builtin.progress.title")
+            val title = ChronicleBundle.message("configGroup.refresh.builtin.progress.title")
             runWithModalProgressBlocking(project, title) {
                 files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
             }
@@ -89,9 +89,9 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             reportProgress(toProcess.size) { reporter ->
                 toProcess.forEachConcurrent { configGroup ->
                     val step = if (configGroup.project.isDefault) {
-                        PlsBundle.message("configGroup.process.step.application", configGroup.gameType.id)
+                        ChronicleBundle.message("configGroup.process.step.application", configGroup.gameType.id)
                     } else {
-                        PlsBundle.message("configGroup.process.step.project", configGroup.gameType.id)
+                        ChronicleBundle.message("configGroup.process.step.project", configGroup.gameType.id)
                     }
                     reporter.itemStep(step) {
                         configGroup.init()
@@ -110,7 +110,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 init(configGroups, project)
             } else {
                 // 显示不可取消的后台进度条
-                val title = PlsBundle.message("configGroup.init.progress.title")
+                val title = ChronicleBundle.message("configGroup.init.progress.title")
                 withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
                     init(configGroups, project)
                 }
@@ -171,7 +171,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             // 显示可以取消的后台进度条
-            val title = PlsBundle.message("configGroup.refresh.progress.title")
+            val title = ChronicleBundle.message("configGroup.refresh.progress.title")
             withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
                 refresh(configGroups, project)
             }
@@ -181,16 +181,16 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
-                val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
+                val title = ChronicleBundle.message("configGroup.refresh.notification.cancelled.title")
                 PlsNotificationGroups.global().createNotification(title, "", NotificationType.INFORMATION).notify(project)
             } else if (e == null) {
                 updateRefreshStatus()
-                val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
+                val action = NotificationAction.createSimple(ChronicleBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseAllFilesInRootFilePaths(configGroups)
                     refreshRootsForLibraries(project, force = true)
                 }
-                val title = PlsBundle.message("configGroup.refresh.notification.finished.title")
-                val content = PlsBundle.message("configGroup.refresh.notification.finished.content")
+                val title = ChronicleBundle.message("configGroup.refresh.notification.finished.title")
+                val content = ChronicleBundle.message("configGroup.refresh.notification.finished.content")
                 PlsNotificationGroups.global().createNotification(title, content, NotificationType.INFORMATION).addAction(action).notify(project)
             }
         }

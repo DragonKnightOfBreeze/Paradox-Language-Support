@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CustomShortcutSet
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 
 interface ElementsToolbarActions {
     /**
@@ -15,7 +15,7 @@ interface ElementsToolbarActions {
         private val elementsList: ElementsListTable
     ) : AnAction(AllIcons.Actions.Copy) {
         init {
-            templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate")
+            templatePresentation.text = ChronicleBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt C"), null)
         }
 
@@ -37,7 +37,7 @@ interface ElementsToolbarActions {
         private val elementsList: ElementsListTable
     ) : AnAction(AllIcons.General.ArrowLeft) {
         init {
-            templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev")
+            templatePresentation.text = ChronicleBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt P"), null)
         }
 
@@ -64,7 +64,7 @@ interface ElementsToolbarActions {
         private val elementsList: ElementsListTable
     ) : AnAction(AllIcons.General.ArrowRight) {
         init {
-            templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext")
+            templatePresentation.text = ChronicleBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt N"), null)
         }
 

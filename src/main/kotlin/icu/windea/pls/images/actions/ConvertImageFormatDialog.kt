@@ -24,7 +24,7 @@ import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeCommand
 
 // com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
@@ -46,7 +46,7 @@ class ConvertImageFormatDialog(
     private var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
 
     init {
-        title = PlsBundle.message("convertImageFormat.dialog.title", targetFormatName)
+        title = ChronicleBundle.message("convertImageFormat.dialog.title", targetFormatName)
         init()
     }
 
@@ -60,17 +60,17 @@ class ConvertImageFormatDialog(
                 val text = when {
                     files.size == 1 -> {
                         val virtualFile = files.first().virtualFile
-                        PlsBundle.message("convertImageFormat.dialog.info.0", shortenPath(virtualFile), targetFormatName)
+                        ChronicleBundle.message("convertImageFormat.dialog.info.0", shortenPath(virtualFile), targetFormatName)
                     }
                     else -> {
-                        PlsBundle.message("convertImageFormat.dialog.info.1", targetFormatName)
+                        ChronicleBundle.message("convertImageFormat.dialog.info.1", targetFormatName)
                     }
                 }
                 label(text).bold()
             }
             if (files.size == 1) {
                 row {
-                    label(PlsBundle.message("convertImageFormat.dialog.newFileName")).widthGroup("left")
+                    label(ChronicleBundle.message("convertImageFormat.dialog.newFileName")).widthGroup("left")
                     cell(initNewFileNameField())
                         .align(Align.FILL)
                         .resizableColumn()
@@ -78,7 +78,7 @@ class ConvertImageFormatDialog(
                 }
             }
             row {
-                label(PlsBundle.message("convertImageFormat.dialog.targetDirectory")).widthGroup("left")
+                label(ChronicleBundle.message("convertImageFormat.dialog.targetDirectory")).widthGroup("left")
                 cell(initTargetDirectoryField())
                     .align(Align.FILL)
                     .resizableColumn()
@@ -115,8 +115,8 @@ class ConvertImageFormatDialog(
         if (recentEntries != null) targetDirectoryComponent.history = recentEntries
         targetDirectoryComponent.text = targetPath
         val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
-            .withTitle(PlsBundle.message("convertImageFormat.dialog.targetDirectory.title"))
-            .withDescription(PlsBundle.message("convertImageFormat.dialog.targetDirectory.description"))
+            .withTitle(ChronicleBundle.message("convertImageFormat.dialog.targetDirectory.title"))
+            .withDescription(ChronicleBundle.message("convertImageFormat.dialog.targetDirectory.description"))
         targetDirectoryField.addBrowseFolderListener(project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT)
         return targetDirectoryField
     }
@@ -129,20 +129,20 @@ class ConvertImageFormatDialog(
         newFileNameField?.let {
             val newFileName = newFileName
             if (newFileName.isNullOrEmpty()) {
-                Messages.showErrorDialog(project, PlsBundle.message("convertImageFormat.dialog.newFileName.error"), PlsBundle.message("error.title"))
+                Messages.showErrorDialog(project, ChronicleBundle.message("convertImageFormat.dialog.newFileName.error"), ChronicleBundle.message("error.title"))
                 return
             }
         }
         targetDirectoryField?.let {
             val targetDirectoryName = targetDirectoryField!!.childComponent.text
             if (targetDirectoryName.isEmpty()) {
-                Messages.showErrorDialog(project, PlsBundle.message("convertImageFormat.dialog.targetDirectory.error"), PlsBundle.message("error.title"))
+                Messages.showErrorDialog(project, ChronicleBundle.message("convertImageFormat.dialog.targetDirectory.error"), ChronicleBundle.message("error.title"))
                 return
             }
 
             RecentsManager.getInstance(project).registerRecentEntry(recentKeys, targetDirectoryName)
 
-            executeCommand(project, PlsBundle.message("create.directory")) {
+            executeCommand(project, ChronicleBundle.message("create.directory")) {
                 runWriteAction {
                     try {
                         val path = FileUtil.toSystemIndependentName(targetDirectoryName)
@@ -153,7 +153,7 @@ class ConvertImageFormatDialog(
                 }
             }
             if (targetDirectory == null) {
-                Messages.showErrorDialog(project, PlsBundle.message("cannot.create.directory"), PlsBundle.message("error.title"))
+                Messages.showErrorDialog(project, ChronicleBundle.message("cannot.create.directory"), ChronicleBundle.message("error.title"))
                 return
             }
             targetDirectory?.let {

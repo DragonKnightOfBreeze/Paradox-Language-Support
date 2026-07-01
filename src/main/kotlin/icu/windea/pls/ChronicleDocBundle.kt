@@ -17,11 +17,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.util.function.Supplier
 
-@Suppress("unused")
-object PlsDocBundle {
+object ChronicleDocBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsDocBundle"
-    private val INSTANCE = DynamicBundle(PlsDocBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.ChronicleDocBundle"
+    private val INSTANCE = DynamicBundle(ChronicleDocBundle::class.java, BUNDLE)
 
     @JvmStatic
     @Nls

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -129,19 +129,19 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if (isKey) {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.desc.1.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.tooManyExpression.desc.1.2", configExpression)
+                            isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1.1", configExpression)
+                            else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1.2", configExpression)
                         }
                     } else {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.desc.2.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.tooManyExpression.desc.2.2", configExpression)
+                            isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2.1", configExpression)
+                            else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2.2", configExpression)
                         }
                     }
                     val maxDefine = occurrence.maxDefine
                     val detail = when {
-                        maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
-                        else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
+                        maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
+                        else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
                     val highlightType = InspectionService.getWeakerHighlightType(lenientMax)
                     val fileLevel = element is PsiFile
@@ -158,22 +158,22 @@ class TooManyExpressionInspection : LocalInspectionTool() {
         return panel {
             // firstOnly
             row {
-                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnly"))
+                checkBox(ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnly"))
                     .bindSelected(::firstOnly.toAtomicProperty())
             }
             // firstOnlyOnFile
             row {
-                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile"))
+                checkBox(ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile"))
                     .bindSelected(::firstOnlyOnFile.toAtomicProperty())
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

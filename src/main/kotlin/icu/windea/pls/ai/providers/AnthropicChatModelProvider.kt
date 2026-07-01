@@ -7,7 +7,7 @@ import dev.langchain4j.model.anthropic.AnthropicChatModel
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ai.AiConstants
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
@@ -49,11 +49,11 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
         }
         when {
             PlsFacade.isUnitTestMode() -> runBlocking { action() }
-            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsAiBundle.message("ai.test.progress.title")) { action() }
+            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleAiBundle.message("ai.test.progress.title")) { action() }
         }
 
         ref.get()?.let { return it }
-        return StatusResult(true, PlsAiBundle.message("ai.test.success.title"), PlsAiBundle.message("ai.test.success.service", baseUrl))
+        return StatusResult(true, ChronicleAiBundle.message("ai.test.success.title"), ChronicleAiBundle.message("ai.test.success.service", baseUrl))
     }
 
     private suspend fun checkHelloWorld(options: Options, baseUrl: String, ref: AtomicReference<StatusResult>) {
@@ -62,7 +62,7 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
                 val chatModel = doGetChatModel(options)
                 chatModel.chat("Say 'hello world'")
             } catch (e: Exception) {
-                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
+                val r = StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
                 ref.set(r)
             }
         }

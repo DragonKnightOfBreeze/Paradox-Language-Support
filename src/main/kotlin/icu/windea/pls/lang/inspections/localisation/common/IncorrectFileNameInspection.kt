@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
@@ -47,10 +47,10 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         return panel {
             // ignoredFilePaths
             row {
-                label(PlsBundle.message("incorrectFileName.option.ignoredFilePaths"))
+                label(ChronicleBundle.message("incorrectFileName.option.ignoredFilePaths"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.antPatterns"))
+                    .comment(ChronicleBundle.message("comment.antPatterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

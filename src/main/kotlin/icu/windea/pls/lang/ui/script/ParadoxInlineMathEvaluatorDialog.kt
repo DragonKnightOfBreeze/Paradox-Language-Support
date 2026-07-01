@@ -16,7 +16,7 @@ import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
 import com.intellij.util.ui.TextTransferable
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.math.MathResult
@@ -78,10 +78,10 @@ class ParadoxInlineMathEvaluatorDialog(
     }
     private val tableModel = ListTableModel(
         arrayOf(
-            object : ColumnInfo<ParadoxInlineMathArgument, String>(PlsBundle.message("ui.dialog.evaluator.inlineMath.table.column.expression")) {
+            object : ColumnInfo<ParadoxInlineMathArgument, String>(ChronicleBundle.message("ui.dialog.evaluator.inlineMath.table.column.expression")) {
                 override fun valueOf(item: ParadoxInlineMathArgument): String = item.expression
             },
-            object : ColumnInfo<ParadoxInlineMathArgument, String>(PlsBundle.message("ui.dialog.evaluator.inlineMath.table.column.value")) {
+            object : ColumnInfo<ParadoxInlineMathArgument, String>(ChronicleBundle.message("ui.dialog.evaluator.inlineMath.table.column.value")) {
                 override fun isCellEditable(item: ParadoxInlineMathArgument?): Boolean = true
 
                 override fun valueOf(item: ParadoxInlineMathArgument): String = item.value
@@ -94,7 +94,7 @@ class ParadoxInlineMathEvaluatorDialog(
                     return DefaultCellEditor(JBTextField())
                 }
             },
-            object : ColumnInfo<ParadoxInlineMathArgument, String>(PlsBundle.message("ui.dialog.evaluator.inlineMath.table.column.defaultValue")) {
+            object : ColumnInfo<ParadoxInlineMathArgument, String>(ChronicleBundle.message("ui.dialog.evaluator.inlineMath.table.column.defaultValue")) {
                 override fun valueOf(item: ParadoxInlineMathArgument): String = item.defaultValue
             },
         ),
@@ -115,16 +115,16 @@ class ParadoxInlineMathEvaluatorDialog(
     }
 
     init {
-        title = PlsBundle.message("ui.dialog.evaluator.inlineMath.title")
-        setOKButtonText(PlsBundle.message("action.copy"))
-        setCancelButtonText(PlsBundle.message("action.close"))
+        title = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.title")
+        setOKButtonText(ChronicleBundle.message("action.copy"))
+        setCancelButtonText(ChronicleBundle.message("action.close"))
         init()
         pack()
     }
 
     override fun createCenterPanel(): DialogPanel {
         val panel = panel {
-            row(PlsBundle.message("ui.dialog.evaluator.inlineMath.label.expression")) {
+            row(ChronicleBundle.message("ui.dialog.evaluator.inlineMath.label.expression")) {
                 cell(expressionField).align(Align.FILL)
             }
 
@@ -133,7 +133,7 @@ class ParadoxInlineMathEvaluatorDialog(
                 cell(scrollPane).align(Align.FILL)
             }.resizableRow()
 
-            row(PlsBundle.message("ui.dialog.evaluator.inlineMath.label.result")) {
+            row(ChronicleBundle.message("ui.dialog.evaluator.inlineMath.label.result")) {
                 val scrollPane = JBScrollPane().apply { setViewportView(resultTextArea) }
                 cell(scrollPane).align(Align.FILL)
             }
@@ -170,7 +170,7 @@ class ParadoxInlineMathEvaluatorDialog(
     private fun evaluate(args: Map<String, String>) {
         if (!isValid) {
             currentResult = null
-            currentResultText = PlsBundle.message("ui.dialog.evaluator.inlineMath.message.invalid")
+            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.invalid")
             return
         }
 
@@ -178,7 +178,7 @@ class ParadoxInlineMathEvaluatorDialog(
         if (element == null) {
             isValid = false
             currentResult = null
-            currentResultText = PlsBundle.message("ui.dialog.evaluator.inlineMath.message.invalid")
+            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.invalid")
             return
         }
 
@@ -197,7 +197,7 @@ class ParadoxInlineMathEvaluatorDialog(
             }
             isInitialized = true
             currentResult = null
-            currentResultText = PlsBundle.message("ui.dialog.evaluator.inlineMath.message.exception") + message.errorDetails
+            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.exception") + message.errorDetails
         }
     }
 

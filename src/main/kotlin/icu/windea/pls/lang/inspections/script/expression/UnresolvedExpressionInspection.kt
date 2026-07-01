@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.isAncestor
 import com.intellij.psi.util.parentOfType
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -244,14 +244,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         }
         val message = when (element) {
             is ParadoxScriptValue -> when {
-                expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
-                expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
-                else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
+                expect == null -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
+                expect.isNotEmpty() -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
+                else -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
             }
             else -> when {
-                expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", element.expression)
-                expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", element.expression, expect)
-                else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.3", element.expression)
+                expect == null -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.1.1", element.expression)
+                expect.isNotEmpty() -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.1.2", element.expression, expect)
+                else -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.1.3", element.expression)
             }
         }
         return message
@@ -279,22 +279,22 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
             // ignoredByConfigs
             row {
-                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                checkBox(ChronicleBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
             // showExpectInfo
             row {
-                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
+                checkBox(ChronicleBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
                     .bindSelected(::showExpectInfo.toAtomicProperty())
             }
         }

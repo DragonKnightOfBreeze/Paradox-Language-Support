@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
@@ -58,7 +58,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     if (scopeContext.scope.id == ParadoxScopeConstants.unknownScope) {
                         val definitionType = definitionType ?: continue
                         if (definitionType in config.configGroup.typesModel.skipCheckSystemScope) continue
-                        val description = PlsBundle.message("inspection.script.incorrectScopeSwitch.desc.3", node.text)
+                        val description = ChronicleBundle.message("inspection.script.incorrectScopeSwitch.desc.3", node.text)
                         holder.registerProblem(propertyKey, rangeInExpression, description)
                     }
                 }
@@ -67,7 +67,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val inputScopes = node.config.inputScopes
                     val configGroup = config.configGroup
                     if (ParadoxScopeManager.matchesScope(parentScopeContext, inputScopes, configGroup)) continue
-                    val description = PlsBundle.message("inspection.script.incorrectScopeSwitch.desc.1", node.text, inputScopes.joinToString(), parentScopeContext.scope.id)
+                    val description = ChronicleBundle.message("inspection.script.incorrectScopeSwitch.desc.1", node.text, inputScopes.joinToString(), parentScopeContext.scope.id)
                     holder.registerProblem(propertyKey, rangeInExpression, description)
                 }
                 // TODO 1.3.0+ dynamic value
@@ -93,7 +93,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
         return panel {
             // checkForSystemScopes
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemScope"))
+                checkBox(ChronicleBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemScope"))
                     .bindSelected(::checkForSystemScopes.toAtomicProperty())
             }
         }

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression.util
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 
 object ParadoxComplexExpressionErrors {
     const val UNRESOLVED_TEMPLATE_SNIPPET = 100
@@ -38,175 +38,175 @@ object ParadoxComplexExpressionErrors {
 
     fun unresolvedTemplateSnippet(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_TEMPLATE_SNIPPET
-        val description = PlsBundle.message("complexExpression.unresolvedTemplateSnippet", value, type)
+        val description = ChronicleBundle.message("complexExpression.unresolvedTemplateSnippet", value, type)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedScopeLink(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_SCOPE_LINK
-        val description = PlsBundle.message("complexExpression.unresolvedScopeLink", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedScopeLink", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedValueField(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_VALUE_FIELD
-        val description = PlsBundle.message("complexExpression.unresolvedValueField", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedValueField", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedDataSource(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_DATA_SOURCE
-        val description = PlsBundle.message("complexExpression.unresolvedDataSource", value, type)
+        val description = ChronicleBundle.message("complexExpression.unresolvedDataSource", value, type)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedScriptValue(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_SCRIPT_VALUE
-        val description = PlsBundle.message("complexExpression.unresolvedScriptValue", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedScriptValue", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedDatabaseObjectType(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_DATABASE_OBJECT_TYPE
-        val description = PlsBundle.message("complexExpression.unresolvedDatabaseObjectType", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedDatabaseObjectType", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedDatabaseObject(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_DATABASE_OBJECT
-        val description = PlsBundle.message("complexExpression.unresolvedDatabaseObject", value, type)
+        val description = ChronicleBundle.message("complexExpression.unresolvedDatabaseObject", value, type)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedDefineNamespace(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_DEFINE_NAMESPACE
-        val description = PlsBundle.message("complexExpression.unresolvedDefineNamespace", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedDefineNamespace", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedDefineVariable(rangeInExpression: TextRange, value: String, namespace: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_DEFINE_VARIABLE
-        val description = PlsBundle.message("complexExpression.unresolvedDefineVariable", value, namespace)
+        val description = ChronicleBundle.message("complexExpression.unresolvedDefineVariable", value, namespace)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedNamePartsList(rangeInExpression: TextRange, value: String, definitionType: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_NAME_PARTS_LIST
-        val description = PlsBundle.message("complexExpression.unresolvedNamePartsList", value, definitionType)
+        val description = ChronicleBundle.message("complexExpression.unresolvedNamePartsList", value, definitionType)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedNameFormatLocalisation(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_NAME_FORMAT_LOCALISATION
-        val description = PlsBundle.message("complexExpression.unresolvedNameFormatLocalisation", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedNameFormatLocalisation", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedCommandScope(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_COMMAND_SCOPE
-        val description = PlsBundle.message("complexExpression.unresolvedCommandScope", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedCommandScope", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun unresolvedCommandField(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = UNRESOLVED_COMMAND_FIELD
-        val description = PlsBundle.message("complexExpression.unresolvedCommandField", value)
+        val description = ChronicleBundle.message("complexExpression.unresolvedCommandField", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedScopeFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_SCOPE_FIELD_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedScopeFieldExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedScopeFieldExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedValueFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_VALUE_FIELD_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedValueFieldExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedValueFieldExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedVariableFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_VARIABLE_FIELD_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedVariableFieldExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedVariableFieldExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedDynamicValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_DYNAMIC_VALUE_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedDynamicValueExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedDynamicValueExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedScriptValueReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_SCRIPT_VALUE_REFERENCE_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedScriptValueReferenceExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedScriptValueReferenceExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedDatabaseObjectExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_DATABASE_OBJECT_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedDatabaseObjectExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedDatabaseObjectExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_DEFINE_REFERENCE_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedDefineReferenceExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedDefineReferenceExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedArrayDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_ARRAY_DEFINE_REFERENCE_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedArrayDefineReferenceExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedArrayDefineReferenceExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedTagsExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_TAGS_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedTagsExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedTagsExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedNameFormatExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_NAME_FORMAT_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedNameFormatExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedNameFormatExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun malformedCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = MALFORMED_COMMAND_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedCommandExpression", text)
+        val description = ChronicleBundle.message("complexExpression.malformedCommandExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun notArrayDefine(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = ARRAY_DEFINE_REFERENCE_FORM
-        val description = PlsBundle.message("complexExpression.notArrayDefine", text)
+        val description = ChronicleBundle.message("complexExpression.notArrayDefine", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun indexNotInt(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = ARRAY_DEFINE_REFERENCE_INDEX
-        val description = PlsBundle.message("complexExpression.indexNotInt", text)
+        val description = ChronicleBundle.message("complexExpression.indexNotInt", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun indexOutOfBounds(rangeInExpression: TextRange, index: Int, length: Int?): ParadoxComplexExpressionError {
         val code = ARRAY_DEFINE_REFERENCE_INDEX
-        val description = PlsBundle.message("complexExpression.indexOutOfBounds", index, length ?: "?")
+        val description = ChronicleBundle.message("complexExpression.indexOutOfBounds", index, length ?: "?")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun notCondition(rangeInExpression: TextRange): ParadoxComplexExpressionError {
         val code = NEGATED_TAG
-        val description = PlsBundle.message("complexExpression.notCondition")
+        val description = ChronicleBundle.message("complexExpression.notCondition")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
     fun notQuoted(rangeInExpression: TextRange): ParadoxComplexExpressionError {
         val code = EXPRESSION_NOT_QUOTED
-        val description = PlsBundle.message("complexExpression.notQuoted")
+        val description = ChronicleBundle.message("complexExpression.notQuoted")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 }

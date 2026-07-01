@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.escapeXml
@@ -535,11 +535,11 @@ object ParadoxDocumentationManager {
         val contextElement = element
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
-            sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
+            sections[ChronicleBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
         }
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-        sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+        sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
     }
 
     private fun DocumentationBuilder.buildShaderEffectDefinition(element: ParadoxShaderEffectLightElement) {
@@ -569,7 +569,7 @@ object ParadoxDocumentationManager {
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
-        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
@@ -691,7 +691,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val gameType = definitionInfo.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
-        appendIndent().append(PlsBundle.message("inherits")).append(" ")
+        appendIndent().append(ChronicleBundle.message("inherits")).append(" ")
         val name = definitionInfo.name
         val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
@@ -821,11 +821,11 @@ object ParadoxDocumentationManager {
         val modifierCategories = ParadoxDefinitionService.getModifierCategories(definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
-            sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)
+            sections[ChronicleBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)
         }
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-        sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, element)
     }
 
     private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
@@ -842,7 +842,7 @@ object ParadoxDocumentationManager {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getScopeContext(element)
         if (scopeContext == null) return
-        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
@@ -955,7 +955,7 @@ object ParadoxDocumentationManager {
         }
         val richText = ParadoxLocalisationTextQuickDocRenderer().render(usedElement)
         if (richText.isEmpty()) return
-        sections[PlsBundle.message("sectionTitle.text")] = richText
+        sections[ChronicleBundle.message("sectionTitle.text")] = richText
     }
 
     private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
@@ -975,7 +975,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildLocalisationArgumentInfo(element: ParadoxLocalisationArgument) {
         val sections = getSections(SECTIONS_INFO) ?: return
         ParadoxLocalisationArgumentManager.getInfo(element).let {
-            sections.put(PlsBundle.message("sectionTitle.formattingTags"), it)
+            sections.put(ChronicleBundle.message("sectionTitle.formattingTags"), it)
         }
     }
 
@@ -1000,7 +1000,7 @@ object ParadoxDocumentationManager {
             }
             append("</pre>")
         }
-        sections[PlsBundle.message("sectionTitle.parameters")] = parametersText
+        sections[ChronicleBundle.message("sectionTitle.parameters")] = parametersText
     }
 
     private fun DocumentationBuilder.addOverrideStrategy(element: PsiElement) {
@@ -1008,7 +1008,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_EXTRA) ?: return
         val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return
-        sections[PlsBundle.message("sectionTitle.overrideStrategy")] = overrideStrategy.id
+        sections[ChronicleBundle.message("sectionTitle.overrideStrategy")] = overrideStrategy.id
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {

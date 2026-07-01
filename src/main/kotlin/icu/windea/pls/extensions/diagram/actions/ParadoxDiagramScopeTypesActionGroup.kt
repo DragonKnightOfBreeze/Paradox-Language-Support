@@ -9,8 +9,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Toggleable
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 
@@ -18,7 +18,7 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 
 class ParadoxDiagramScopeTypesActionGroup(
     val builder: DiagramBuilder
-) : ActionGroup(PlsDiagramBundle.message("group.scopeTypes.name"), true), Toggleable, DumbAware {
+) : ActionGroup(ChronicleDiagramBundle.message("group.scopeTypes.name"), true), Toggleable, DumbAware {
     init {
         templatePresentation.icon = AllIcons.General.Filter
     }

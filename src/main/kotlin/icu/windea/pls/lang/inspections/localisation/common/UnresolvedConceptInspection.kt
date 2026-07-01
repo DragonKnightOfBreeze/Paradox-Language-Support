@@ -7,7 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.toAtomicProperty
@@ -47,7 +47,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.conceptName ?: return
-                val description = PlsBundle.message("inspection.localisation.unresolvedConcept.desc", name)
+                val description = ChronicleBundle.message("inspection.localisation.unresolvedConcept.desc", name)
                 holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
@@ -66,12 +66,12 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredByConfigs
             row {
-                checkBox(PlsBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
+                checkBox(ChronicleBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
         }

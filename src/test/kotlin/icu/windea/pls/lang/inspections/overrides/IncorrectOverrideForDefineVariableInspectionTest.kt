@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
@@ -44,7 +44,7 @@ class IncorrectOverrideForDefineVariableInspectionTest  : BasePlatformTestCase()
     fun simple_fios() {
         val key = "Namespace.Variable"
         val overrideStrategy = ParadoxOverrideStrategy.LIOS
-        val description = PlsBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
+        val description = ChronicleBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
         val tag = description.toWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")

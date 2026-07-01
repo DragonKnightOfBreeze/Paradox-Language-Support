@@ -8,13 +8,13 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 class GotoInlineScriptUsagesFix(
     element: PsiFile
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-    override fun getText() = PlsBundle.message("fix.gotoInlineScriptUsages.fix")
+    override fun getText() = ChronicleBundle.message("fix.gotoInlineScriptUsages.fix")
 
     override fun getFamilyName() = text
 

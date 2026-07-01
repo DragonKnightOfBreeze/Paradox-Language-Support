@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxRecursionManager
@@ -38,7 +38,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 ParadoxRecursionManager.checkLocalisation(element, recursions)
                 if (recursions.isEmpty()) return
                 val location = element.propertyKey
-                val description = PlsBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
+                val description = ChronicleBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
                 holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
             }
         }

@@ -7,7 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -38,7 +38,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
-                val description = PlsBundle.message("inspection.localisation.unresolvedColor.desc", name)
+                val description = ChronicleBundle.message("inspection.localisation.unresolvedColor.desc", name)
                 holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
@@ -48,7 +48,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

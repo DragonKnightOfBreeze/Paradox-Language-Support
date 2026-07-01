@@ -8,7 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
@@ -44,12 +44,12 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val message = PlsBundle.message("editor.notification.1.text")
+            val message = ChronicleBundle.message("editor.notification.1.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
-            panel.createActionLabel(PlsBundle.message("editor.notification.1.action.1")) {
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.1.action.1")) {
                 showModSettingsDialog(project, rootInfo, modSettings)
             }
-            panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.1.action.2")) action@{
                 configureDefaultGameDirectories()
             }
             panel

@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ide.analysis.PlsAnalysisManager
@@ -75,7 +75,7 @@ class ParadoxLibraryService(private val project: Project) {
 
     @Suppress("UnstableApiUsage")
     private fun refreshRoots(oldRoots: Set<VirtualFile>, newRoots: Set<VirtualFile>) {
-        val libraryName = PlsBundle.message("library.name")
+        val libraryName = ChronicleBundle.message("library.name")
         AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
     }
 

@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -45,11 +45,11 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
         // TODO [compatibility] `ActionPlaces.isPopupPlace(String)` is deprecated - But else how can I get `AnActionEvent` here?
         val useShortName = actionPlace != null && (ActionPlaces.MAIN_MENU == actionPlace || ActionPlaces.isPopupPlace(actionPlace))
         if (useShortName) {
-            presentation.text = PlsBundle.message("action.GotoSuperDefinition.MainMenu.text")
+            presentation.text = ChronicleBundle.message("action.GotoSuperDefinition.MainMenu.text")
         } else {
-            presentation.text = PlsBundle.message("action.GotoSuperDefinition.text")
+            presentation.text = ChronicleBundle.message("action.GotoSuperDefinition.text")
         }
-        presentation.description = PlsBundle.message("action.GotoSuperDefinition.description")
+        presentation.description = ChronicleBundle.message("action.GotoSuperDefinition.description")
     }
 
     override fun startInWriteAction() = false

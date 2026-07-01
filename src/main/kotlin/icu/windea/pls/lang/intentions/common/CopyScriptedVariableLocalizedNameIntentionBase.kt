@@ -5,7 +5,7 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 复制封装变量的显示名称到剪贴板。
  */
 abstract class CopyScriptedVariableLocalizedNameIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyScriptedVariableLocalizedName")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyScriptedVariableLocalizedName")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null

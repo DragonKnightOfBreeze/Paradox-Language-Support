@@ -11,8 +11,8 @@ import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportRawProgress
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
@@ -45,7 +45,7 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
 
         val (files, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsAiBundle.message("ai.action.replaceLocalisationWithPolishing.progress.title")) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.progress.title")) action@{
             val total = files.size
             val allContexts = mutableListOf<ParadoxLocalisationManipulationContext>().synced()
             val processedRef = AtomicInteger()
@@ -53,7 +53,7 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
             var withWarnings = false
 
             reportRawProgress { rawReporter ->
-                val stepText = PlsBundle.message("manipulation.localisation.polish.replace.progress.filesStep", total)
+                val stepText = ChronicleBundle.message("manipulation.localisation.polish.replace.progress.filesStep", total)
                 rawReporter.text(stepText)
 
                 files.forEachConcurrent { file ->
@@ -93,24 +93,24 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
-        val commandName = PlsBundle.message("manipulation.localisation.command.ai.polish.replace")
+        val commandName = ChronicleBundle.message("manipulation.localisation.command.ai.polish.replace")
         ParadoxLocalisationManipulationService.replaceText(context, project, commandName)
     }
 
     private fun createNotification(processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.success(processed))
+                val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.success(processed))
                 return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = PlsAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed))
+            val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed))
             return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
-        val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed)) + errorDetails
+        val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
+        val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed)) + errorDetails
         return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

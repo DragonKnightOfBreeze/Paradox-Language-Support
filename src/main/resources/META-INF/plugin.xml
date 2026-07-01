@@ -7,7 +7,7 @@
   <!-- With the title of breeze, the dragon knight embarks on her Journey to seek in the wonderful world. -->
   <vendor email="dk_breeze@qq.com" url="https://github.com/DragonKnightOfBreeze">DragonKnightOfBreeze</vendor>
 
-  <resource-bundle>messages.PlsBundle</resource-bundle>
+  <resource-bundle>messages.ChronicleBundle</resource-bundle>
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>

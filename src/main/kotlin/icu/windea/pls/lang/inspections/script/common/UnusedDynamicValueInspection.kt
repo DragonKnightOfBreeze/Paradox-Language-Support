@@ -9,7 +9,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
@@ -91,7 +91,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
-                val description = PlsBundle.message("inspection.script.unusedDynamicValue.desc", name, dynamicValueType)
+                val description = ChronicleBundle.message("inspection.script.unusedDynamicValue.desc", name, dynamicValueType)
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }

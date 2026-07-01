@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toPsiFile
@@ -25,7 +25,7 @@ class GotoFilesHandler : GotoTargetHandler() {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path.path
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.files.search", file.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.files.search", file.name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxFilePathSearch.selector(project, file).contextSensitive()
@@ -43,15 +43,15 @@ class GotoFilesHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val fileName = sourceElement.castOrNull<PsiFile>()?.name ?: return ""
-        return PlsBundle.message("script.goto.files.chooseTitle", fileName.escapeXml())
+        return ChronicleBundle.message("script.goto.files.chooseTitle", fileName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val fileName = sourceElement.castOrNull<PsiFile>()?.name ?: return ""
-        return PlsBundle.message("script.goto.files.findUsagesTitle", fileName.escapeXml())
+        return ChronicleBundle.message("script.goto.files.findUsagesTitle", fileName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.files.notFoundMessage")
+        return ChronicleBundle.message("script.goto.files.notFoundMessage")
     }
 }

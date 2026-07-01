@@ -9,7 +9,7 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
@@ -57,27 +57,27 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is ParadoxScriptProperty -> element.definitionInfo?.let { PlsBundle.message("type.definition") }
+            is ParadoxScriptProperty -> element.definitionInfo?.let { ChronicleBundle.message("type.definition") }
             is ParadoxLocalisationProperty -> {
                 when (element.type) {
-                    ParadoxLocalisationType.Normal -> PlsBundle.message("type.localisation")
-                    ParadoxLocalisationType.Synced -> PlsBundle.message("type.syncedLocalisation")
+                    ParadoxLocalisationType.Normal -> ChronicleBundle.message("type.localisation")
+                    ParadoxLocalisationType.Synced -> ChronicleBundle.message("type.syncedLocalisation")
                     null -> null
                 }
             }
             is ParadoxDynamicValueLightElement -> {
                 val dynamicValueType = element.types.firstOrNull() ?: return null
                 when (dynamicValueType) {
-                    "variable" -> PlsBundle.message("type.variable")
-                    else -> PlsBundle.message("type.dynamicValue")
+                    "variable" -> ChronicleBundle.message("type.variable")
+                    else -> ChronicleBundle.message("type.dynamicValue")
                 }
             }
-            is ParadoxComplexEnumValueLightElement -> PlsBundle.message("type.complexEnumValue")
-            is ParadoxParameterLightElement -> PlsBundle.message("type.parameter")
-            is ParadoxLocalisationParameterLightElement -> PlsBundle.message("type.localisationParameter")
-            is ParadoxModifierLightElement -> PlsBundle.message("type.modifier")
-            is ParadoxShaderEffectLightElement -> PlsBundle.message("type.shaderEffect")
-            is ParadoxMeshLocatorLightElement -> PlsBundle.message("type.meshLocator")
+            is ParadoxComplexEnumValueLightElement -> ChronicleBundle.message("type.complexEnumValue")
+            is ParadoxParameterLightElement -> ChronicleBundle.message("type.parameter")
+            is ParadoxLocalisationParameterLightElement -> ChronicleBundle.message("type.localisationParameter")
+            is ParadoxModifierLightElement -> ChronicleBundle.message("type.modifier")
+            is ParadoxShaderEffectLightElement -> ChronicleBundle.message("type.shaderEffect")
+            is ParadoxMeshLocatorLightElement -> ChronicleBundle.message("type.meshLocator")
             else -> null
         }
     }

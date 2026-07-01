@@ -1,7 +1,7 @@
 package icu.windea.pls.cwt.codeInsight.unwrap
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
@@ -9,8 +9,8 @@ import icu.windea.pls.cwt.psi.isBlockValue
 class CwtValueRemover : CwtUnwrapper() {
     override fun getDescription(e: PsiElement): String {
         return when (e) {
-            is CwtBlock -> PlsBundle.message("cwt.remove.block")
-            is CwtValue -> PlsBundle.message("cwt.remove.value", e.name)
+            is CwtBlock -> ChronicleBundle.message("cwt.remove.block")
+            is CwtValue -> ChronicleBundle.message("cwt.remove.value", e.name)
             else -> throw IllegalStateException()
         }
     }

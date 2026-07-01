@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 
@@ -74,7 +74,7 @@ sealed interface ParadoxRootInfo {
         override val gameType: ParadoxGameType,
         override val gameVersion: String? = null,
     ) : ParadoxRootInfo {
-        override val qualifiedName: String get() = PlsBundle.message("root.name.injected")
+        override val qualifiedName: String get() = ChronicleBundle.message("root.name.injected")
         override val steamId: String? get() = null
 
         override fun toString() = qualifiedName

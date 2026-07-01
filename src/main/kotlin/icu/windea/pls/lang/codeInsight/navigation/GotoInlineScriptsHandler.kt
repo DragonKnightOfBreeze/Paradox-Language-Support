@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
@@ -30,7 +30,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return null
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.inlineScripts.search", expression)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.inlineScripts.search", expression)) {
             // need read actions here if necessary
             readAction {
                 ParadoxInlineScriptManager.getInlineScriptFiles(expression, project, element).let { targets.addAll(it) }
@@ -51,17 +51,17 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         if (sourceElement !is ParadoxScriptProperty) return ""
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
         if (expression.isNullOrEmpty()) return ""
-        return PlsBundle.message("script.goto.inlineScripts.chooseTitle", expression.escapeXml())
+        return ChronicleBundle.message("script.goto.inlineScripts.chooseTitle", expression.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         if (sourceElement !is ParadoxScriptProperty) return ""
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
         if (expression.isNullOrEmpty()) return ""
-        return PlsBundle.message("script.goto.inlineScripts.findUsagesTitle", expression.escapeXml())
+        return ChronicleBundle.message("script.goto.inlineScripts.findUsagesTitle", expression.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.inlineScripts.notFoundMessage")
+        return ChronicleBundle.message("script.goto.inlineScripts.notFoundMessage")
     }
 }

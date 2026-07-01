@@ -8,7 +8,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.tools.PlsToolsBundle
+import icu.windea.pls.tools.ChronicleToolsBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,8 +26,8 @@ class ParadoxLaunchGameServiceImpl : ParadoxLaunchGameService {
         val gameType = rootInfo.gameType
         val gameVersion = if (rootInfo is ParadoxRootInfo.MetadataBased) rootInfo.version else null
         val content = when {
-            gameVersion == null -> PlsToolsBundle.message("game.launcher.notification.content.1", gameType.title)
-            else -> PlsToolsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
+            gameVersion == null -> ChronicleToolsBundle.message("game.launcher.notification.content.1", gameType.title)
+            else -> ChronicleToolsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
         }
         val notification = PlsNotificationGroups.global().createNotification(content, NotificationType.INFORMATION)
         notification.notify(project)

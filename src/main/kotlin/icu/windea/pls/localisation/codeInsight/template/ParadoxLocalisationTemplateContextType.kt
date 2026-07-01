@@ -5,7 +5,7 @@ import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighter
 import icu.windea.pls.localisation.editor.ParadoxLocalisationTextSyntaxHighlighter
@@ -21,7 +21,7 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
 
     abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
 
-    class Base : ParadoxLocalisationTemplateContextType(PlsBundle.message("localisation.templateContextType")) {
+    class Base : ParadoxLocalisationTemplateContextType(ChronicleBundle.message("localisation.templateContextType")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             return true
         }
@@ -31,7 +31,7 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
         }
     }
 
-    class LocalisationText : ParadoxLocalisationTemplateContextType(PlsBundle.message("localisation.templateContextType.localisationText")) {
+    class LocalisationText : ParadoxLocalisationTemplateContextType(ChronicleBundle.message("localisation.templateContextType.localisationText")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             val file = templateActionContext.file
             val startOffset = templateActionContext.startOffset

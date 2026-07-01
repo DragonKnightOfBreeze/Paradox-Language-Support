@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.refactoring.util.CommonRefactoringUtil
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.ParadoxLanguage
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
-    override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.scriptedVariable")
+    override fun getActionName(element: PsiElement?) = ChronicleBundle.message("title.inline.scriptedVariable")
 
     override fun isEnabledForLanguage(language: Language) = language is ParadoxLanguage
 
@@ -34,7 +34,7 @@ class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptScriptedVariable, reference: PsiReference?) {
         val isRecursive = ParadoxRecursionManager.checkScriptedVariable(element)
         if (isRecursive) {
-            val message = PlsBundle.message("refactoring.scriptedVariable.recursive", getRefactoringName())
+            val message = ChronicleBundle.message("refactoring.scriptedVariable.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
@@ -43,6 +43,6 @@ class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
         dialog.show()
     }
 
-    private fun getRefactoringName() = PlsBundle.message("title.inline.scriptedVariable")
+    private fun getRefactoringName() = ChronicleBundle.message("title.inline.scriptedVariable")
 }
 

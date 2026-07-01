@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -75,8 +75,8 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 if (skipCheck(element, configs)) return
                 val isKey = position is ParadoxScriptPropertyKey
                 val description = when {
-                    isKey -> PlsBundle.message("inspection.script.conflictingResolvedExpression.desc.1", expression)
-                    else -> PlsBundle.message("inspection.script.conflictingResolvedExpression.desc.2", expression)
+                    isKey -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.1", expression)
+                    else -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.2", expression)
                 }
                 holder.registerProblem(position, description)
             }
@@ -116,12 +116,12 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

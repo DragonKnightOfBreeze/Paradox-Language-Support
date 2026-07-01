@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
@@ -26,7 +26,7 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
         val element = findElement(file, offset) ?: return null
         if (!ParadoxPsiMatcher.isNormalLocalisation(element)) return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedDefinitions.search", element.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitions.search", element.name)) {
             // need read actions here if necessary
             readAction {
                 val resolved = ParadoxLocalisationManager.getRelatedDefinitions(element)
@@ -47,16 +47,16 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return PlsBundle.message("script.goto.relatedDefinitions.chooseTitle", localisationName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedDefinitions.chooseTitle", localisationName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return PlsBundle.message("script.goto.relatedDefinitions.findUsagesTitle", localisationName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedDefinitions.findUsagesTitle", localisationName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedDefinitions.notFoundMessage")
+        return ChronicleBundle.message("script.goto.relatedDefinitions.notFoundMessage")
     }
 }
 

@@ -9,7 +9,7 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class ParadoxLocalisationElementDescriptionProvider : ElementDescriptionProvider {
@@ -34,7 +34,7 @@ class ParadoxLocalisationElementDescriptionProvider : ElementDescriptionProvider
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is ParadoxLocalisationProperty -> PlsBundle.message("cwt.type.property")
+            is ParadoxLocalisationProperty -> ChronicleBundle.message("cwt.type.property")
             else -> null
         }
     }
