@@ -66,8 +66,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-// NOTE 在这些实现代码中，对于传入参数的名字，要求不为空，但不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
-
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxDefinitionElement): Boolean {
         if (element !is ParadoxScriptProperty) return false

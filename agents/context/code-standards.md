@@ -10,7 +10,7 @@ updated: 2026-04-28
 - **Cache strength**: Global caches → strong refs + size+TTL; large/config caches → soft refs
 - **Indexing**: File-level analysis → `FileBasedIndex`; PSI-structure-dependent → `StubIndex`; ref-resolve-dependent → `FileBasedIndex` 
 - **Change scope**: Keep changes minimal and localized; prefer existing EPs to new ones
-- **Config access**: `PlsFacade.getConfigGroup(project, gameType)` / `PlsFacade.getConfigGroup(gameType)`
-- **Coroutine scope**: `PlsFacade.getCoroutineScope(project)` / `PlsFacade.getCoroutineScope()`
+- **Config access**: `ChronicleFacade.getConfigGroup(project, gameType)` / `ChronicleFacade.getConfigGroup(gameType)`
+- **Coroutine scope**: `ChronicleFacade.getCoroutineScope(project)` / `ChronicleFacade.getCoroutineScope()`
 - **Config context**: `ParadoxConfigManager.getConfigContext(element)`
 - **Matched configs**: `ParadoxConfigManager.getConfigs(element, options)`

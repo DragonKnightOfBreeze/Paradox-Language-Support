@@ -204,8 +204,8 @@ Service vs Manager vs Util:
 
 Here are some common code patterns:
 
-- Get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
-- Get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
+- Get the coroutine scope: Use `ChronicleFacade.getCoroutineScope(project)` (or `ChronicleFacade.getCoroutineScope()` for application level).
+- Get the config group: Use `ChronicleFacade.getConfigGroup(project, gameType)` (or `ChronicleFacade.getConfigGroup(gameType)` for application level).
 - Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
 - Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
