@@ -915,6 +915,24 @@ database_object_types = {
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
+#### 并集规则 {#config-union}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
+
+并集规则用于提供一组数据表达式的候选项，以进行并集匹配，匹配时会递归展开并依次尝试其中的候选项。
+不同于枚举规则，这里的可选项可以是各种数据类型的数据表达式。
+
+路径定位：
+- `union[{name}]`。其中 `{name}` 匹配规则名称。
+
+示例：
+
+```cwt
+union[loc_or_text] = { localisation scalar }
+```
+
+> CWTools 兼容性：不兼容，插件作为扩展提供。
+
 #### 宏规则 {#config-macro}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
@@ -922,10 +940,11 @@ database_object_types = {
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-宏规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的宏可以拥有不同的规则结构。
+宏规则用于描述脚本文件中区别于一般抽象的特殊的语言构造（表达式、语句等），并提供额外的用于提示和验证的元数据。
+这些语言构造会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
+不同的宏可以拥有不同的规则结构。
 
 目前涉及的宏包括：
-
 - **内联脚本（inline_script）**：（Stellaris）在解析阶段被替换为目标文件的内容，且可以指定参数。
 - **定义注入（definition_injection）**：（VIC3 / EU5）在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
 

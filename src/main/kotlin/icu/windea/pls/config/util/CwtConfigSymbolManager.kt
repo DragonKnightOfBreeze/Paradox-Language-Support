@@ -200,6 +200,13 @@ object CwtConfigSymbolManager {
                 infos += info
             }
         }
+        run {
+            val (prefix, suffix) = CwtConfigTextPatterns.union
+            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
+            val nextOffset = offset + prefix.length
+            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Union.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            infos += info
+        }
     }
 
     private fun collectInfosFromAliasDataExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
@@ -225,6 +232,7 @@ object CwtConfigSymbolManager {
             CwtConfigTypes.DynamicValueType -> configType
             CwtConfigTypes.SingleAlias -> configType
             CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> CwtConfigTypes.Alias
+            CwtConfigTypes.Union -> configType
             CwtConfigTypes.Macro -> configType
             else -> null
         }

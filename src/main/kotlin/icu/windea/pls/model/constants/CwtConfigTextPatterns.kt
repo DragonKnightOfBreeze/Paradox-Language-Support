@@ -19,6 +19,7 @@ object CwtConfigTextPatterns {
     val aliasKeysField = TextPattern.from("alias_keys_field[", "]")
     val singleAlias = TextPattern.from("single_alias[", "]")
     val alias = TextPattern.from("alias[", "]", ":")
+    val union = TextPattern.from("union[", "]")
     val macro = TextPattern.from("macro[", "]")
     val definition = TextPattern.from("<", ">")
 }

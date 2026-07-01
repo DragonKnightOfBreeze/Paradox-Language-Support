@@ -24,6 +24,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -150,6 +151,10 @@ object CwtConfigMatchService {
             }
             CwtTypeConfig::class.java -> {
                 val source = configGroup.types
+                source.processValue(id) { processor.process(it.cast()) }
+            }
+            CwtUnionConfig::class.java -> {
+                val source = configGroup.unions
                 source.processValue(id) { processor.process(it.cast()) }
             }
             CwtExtendedScriptedVariableConfig::class.java -> {

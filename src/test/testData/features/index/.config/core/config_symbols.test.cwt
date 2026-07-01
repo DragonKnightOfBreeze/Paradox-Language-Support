@@ -34,6 +34,8 @@ alias[ref_alias_value:value[dynamic_in_alias]] = scalar
 
 alias[alias_no_colon] = scalar
 
+union[test_union] = { int float }
+
 macro[test_macro] = scalar
 
 links = {

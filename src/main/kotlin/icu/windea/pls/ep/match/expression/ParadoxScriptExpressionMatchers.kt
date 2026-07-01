@@ -5,11 +5,14 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.ignoreCase
+import icu.windea.pls.config.processUnionCandidates
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
@@ -138,6 +141,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.Parameter -> matchParameter(context)
             CwtDataTypes.ParameterValue -> matchParameterValue(context)
             CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
+            CwtDataTypes.UnionValue -> matchUnion(context)
             CwtDataTypes.ShaderEffect -> matchShaderEffect(context)
             CwtDataTypes.MeshLocator -> matchMeshLocator(context)
             CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
@@ -280,6 +284,18 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
+    }
+
+    private fun matchUnion(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
+        unionConfig.processUnionCandidates { valueConfig ->
+            val nextContext = context.copy(configExpression = valueConfig.configExpression)
+            val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
+            if (r.get(context.options)) return r
+            true
+        }
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchScriptValueReferenceExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

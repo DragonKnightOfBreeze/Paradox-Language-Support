@@ -22,6 +22,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -104,6 +105,7 @@ interface CwtConfigGroupDataHolder {
     // name - config
     val databaseObjectTypes: Map<String, CwtDatabaseObjectTypeConfig>
 
+    val unions: Map<String, CwtUnionConfig>
     val macros: List<CwtMacroConfig>
 
     // endregion

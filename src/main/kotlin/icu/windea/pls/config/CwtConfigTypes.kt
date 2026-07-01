@@ -22,6 +22,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
@@ -117,7 +118,7 @@ object CwtConfigTypes {
      * 枚举规则。
      *
      * 路径定位：
-     * - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
+     * - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称（即枚举名）。
      *
      * @see CwtEnumConfig
      */
@@ -143,7 +144,7 @@ object CwtConfigTypes {
      * 复杂枚举规则。
      *
      * 路径定位：
-     * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
+     * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称（即枚举名）。
      *
      * @see CwtComplexEnumConfig
      */
@@ -169,7 +170,7 @@ object CwtConfigTypes {
      * 动态值。
      *
      * 路径定位：
-     * - `values/value[{type}]/-`。其中 {type} 匹配动态值类型名。
+     * - `values/value[{type}]/-`。其中 `{type}` 匹配动态值类型名。
      *
      * @see CwtDynamicValueTypeConfig
      *  */
@@ -205,6 +206,19 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.Alias)
         prefix("(alias)")
         description(PlsBundle.message("config.description.alias"))
+    }
+    /**
+     * 并集规则。
+     *
+     * 路径定位：
+     * - `union[{name}]`。其中 `{name}` 匹配规则名称。
+     *
+     * @see CwtUnionConfig
+     */
+    val Union = CwtConfigType.builder("Union").reference().build {
+        icon(PlsIcons.Configs.Union)
+        prefix("(union)")
+        description(PlsBundle.message("config.description.union"))
     }
     /**
      * 宏规则。

@@ -72,6 +72,7 @@
         "dynamicValueType.svg": "icons/configs/dynamicValueType.svg",
         "dynamicValue.svg": "icons/configs/dynamicValue.svg",
         "alias.svg": "icons/configs/alias.svg",
+        "union.svg": "icons/configs/union.svg",
         "macro.svg": "icons/configs/macro.svg",
         "link.svg": "icons/configs/link.svg",
         "localisationPromotion.svg": "icons/configs/localisationPromotion.svg",

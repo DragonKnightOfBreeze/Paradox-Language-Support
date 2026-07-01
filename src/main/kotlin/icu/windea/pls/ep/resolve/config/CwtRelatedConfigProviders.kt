@@ -118,14 +118,26 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                     configExpression.type in CwtDataTypeSets.DynamicValue -> {
                         val type = configExpression.value
                         if (type != null) {
-                            configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result += it }
+                            val dynamicValueConfig = configGroup.dynamicValueTypes[type]
+                            dynamicValueConfig?.also { result += it }
+                            dynamicValueConfig?.valueConfigMap?.get(name)?.also { result += it }
                         }
                     }
                     configExpression.type == CwtDataTypes.EnumValue -> {
                         val enumName = configExpression.value
                         if (enumName != null) {
-                            configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result += it }
-                            configGroup.complexEnums[enumName]?.also { result += it }
+                            val enumConfig = configGroup.enums[enumName]
+                            enumConfig?.also { result += it }
+                            enumConfig?.valueConfigMap?.get(name)?.also { result += it }
+                            val complexEnumConfig = configGroup.complexEnums[enumName]
+                            complexEnumConfig?.also { result += it }
+                        }
+                    }
+                    configExpression.type == CwtDataTypes.UnionValue -> {
+                        val unionName = configExpression.value
+                        if (unionName != null) {
+                            val unionConfig = configGroup.unions[unionName]
+                            unionConfig?.also { result += it }
                         }
                     }
                     configExpression.type == CwtDataTypes.Modifier -> {

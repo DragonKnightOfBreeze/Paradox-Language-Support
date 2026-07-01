@@ -44,7 +44,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("value[$]")
     val name: String
-    @FromMember("values: template_expression[]")
+    @FromMember("values: string[]")
     val values: Set<String>
 
     val valueConfigMap: Map<String, CwtValueConfig>

@@ -123,6 +123,7 @@ object PlsIcons {
         @JvmField val DynamicValueType = getIcon("/icons/configs/dynamicValueType.svg")
         @JvmField val DynamicValue = getIcon("/icons/configs/dynamicValue.svg")
         @JvmField val Alias = getIcon("/icons/configs/alias.svg")
+        @JvmField val Union = getIcon("/icons/configs/union.svg")
         @JvmField val Macro = getIcon("/icons/configs/macro.svg")
         @JvmField val Link = getIcon("/icons/configs/link.svg")
         @JvmField val LocalisationPromotion = getIcon("/icons/configs/localisationPromotion.svg")

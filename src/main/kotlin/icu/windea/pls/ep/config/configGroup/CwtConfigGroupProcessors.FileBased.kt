@@ -27,6 +27,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -397,6 +398,11 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         if (CwtConfigService.filter(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
+                    }
+                    run {
+                        val unionConfig = CwtUnionConfig.resolve(property) ?: return@run
+                        if (CwtConfigService.filter(unionConfig)) return@run
+                        initializer.unions[unionConfig.name] = unionConfig
                     }
                     run {
                         val macroConfig = CwtMacroConfig.resolve(property) ?: return@run

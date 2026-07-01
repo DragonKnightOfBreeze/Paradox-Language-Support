@@ -698,6 +698,18 @@ object CwtDataTypes {
         withPriority(10.0)
     }
 
+    /**
+     * 并集值类型。
+     *
+     * 匹配对应的并集规则中的其中一个候选项。
+     *
+     * 对应的数据表达式的格式：
+     * - `union[{name}]` - 其中 `{name}` 匹配并集规则的名字。
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val UnionValue = CwtDataType.builder("Union").reference().build()
+
     // endregion
 
     // region Alias Data Types

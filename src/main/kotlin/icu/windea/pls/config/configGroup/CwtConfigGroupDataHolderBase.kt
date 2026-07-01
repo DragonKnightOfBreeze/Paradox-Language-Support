@@ -24,6 +24,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -78,6 +79,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val modifierCategories by registerKey<FastMap<String, CwtModifierCategoryConfig>, UserDataHolder>(this) { FastMap() }
         val modifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val databaseObjectTypes by registerKey<FastMap<String, CwtDatabaseObjectTypeConfig>, UserDataHolder>(this) { FastMap() }
+        val unions by registerKey<FastMap<String, CwtUnionConfig>, UserDataHolder>(this) { FastMap() }
         val macros by registerKey<FastList<CwtMacroConfig>, UserDataHolder>(this) { FastList() }
         val extendedScriptedVariables by registerKey<FastMap<String, CwtExtendedScriptedVariableConfig>, UserDataHolder>(this) { FastMap() }
         val extendedDefinitions by registerKey<FastMap<String, FastList<CwtExtendedDefinitionConfig>>, UserDataHolder>(this) { FastMap() }
@@ -134,6 +136,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val modifierCategories by Keys.modifierCategories
     final override val modifiers by Keys.modifiers
     final override val databaseObjectTypes by Keys.databaseObjectTypes
+    final override val unions by Keys.unions
     final override val macros by Keys.macros
     final override val extendedScriptedVariables by Keys.extendedScriptedVariables
     final override val extendedDefinitions by Keys.extendedDefinitions
@@ -182,6 +185,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         declarations.trim()
         rows.trim()
         defineNamespaces.trim()
+        unions.trim()
         enums.trim()
         complexEnums.trim()
         dynamicValueTypes.trim()

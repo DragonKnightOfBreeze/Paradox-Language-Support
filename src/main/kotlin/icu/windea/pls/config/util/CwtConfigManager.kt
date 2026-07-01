@@ -20,12 +20,14 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.match.CwtConfigMatchService
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -37,6 +39,7 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
@@ -173,6 +176,20 @@ object CwtConfigManager {
     @Deprecated("Use `CwtConfigMatchService.matchesFilePath`", ReplaceWith("icu.windea.pls.config.match.CwtConfigMatchService.matchesFilePath(config, filePath)"))
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig<*>, filePath: ParadoxPath): Boolean {
         return CwtConfigMatchService.matchesFilePath(config, filePath)
+    }
+
+    inline fun processUnionCandidates(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
+        if (config.valueConfigs.isEmpty()) return true
+        withRecursionGuard("processUnionCandidates") { // 这里需要防止递归
+            withRecursionCheck(config.name) {
+                config.valueConfigs.forEachFast { valueConfig ->
+                    ProgressManager.checkCanceled()
+                    val r = processor(valueConfig)
+                    if (!r) return false
+                }
+            }
+        }
+        return true
     }
 
     fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {

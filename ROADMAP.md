@@ -100,7 +100,7 @@
 - [x] P2 提取 EP `incorrectSyntaxChecker` - 对齐已有的 `incorrectExpressionChecker`
 - [x] P3 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式*
 - [ ] P3 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340))
-- [ ] P3 支持 *并集规则（unionConfig）*，类似枚举规则（enumConfig），但是其中预定义的是任意数据表达式
+- [x] P3 支持 *并集规则（unionConfig）*，类似枚举规则（enumConfig），但是其中预定义的是任意数据表达式
 
 ## v3.0.0-the-great-renaming {#v3-0-0}
 

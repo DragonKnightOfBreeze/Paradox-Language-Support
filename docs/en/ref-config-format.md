@@ -117,7 +117,7 @@ priorities = {
 }
 ```
 
-Example:
+Examples:
 
 ```cwt
 priorities = {
@@ -151,7 +151,7 @@ Field Explanation:
 
 System scope configs, together with [scope configs and scope group configs](#config-scope), determine scope checking and hints. In some [extended configs](#configs-extended), the option `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in the current context (e.g. mapping `this` / `root` / `from` to `country`). Note that `## replace_scopes` does not support replacing `prev`-series system scopes.
 
-Example:
+Examples:
 
 ```cwt
 # from `system_scopes.core.cwt` of core config group
@@ -190,7 +190,7 @@ Field Explanation:
 - `codes: string[]`: List of language codes contained in this locale (e.g. `en`, `zh-CN`). Default is empty.
 - `supports: boolean`: Whether this locale is supported by the current game type. Default is `yes`.
 
-Example:
+Examples:
 
 ```cwt
 locales = {
@@ -269,7 +269,7 @@ Matching Flow (for subtype configs):
 
 Type configs cooperate with [declaration configs](#config-declaration) to provide context and structural constraints for specific definition declarations.
 
-Example:
+Examples:
 
 ```cwt
 # from `events/events.cwt` of stellaris config group
@@ -355,7 +355,7 @@ Path Location:
 - Localisation: `types/type[{type}]/localisation`, where `{type}` is the definition type.
 - Images: `types/type[{type}]/images`, where `{type}` is the definition type.
 
-Example:
+Examples:
 
 ```cwt
 types = {
@@ -402,7 +402,7 @@ Path Location:
 - `{name}`, where `{name}` is the config name.
 - Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being resolved as declaration configs.
 
-Example:
+Examples:
 
 ```cwt
 # from `common/buildings.cwt` of stellaris config group
@@ -464,7 +464,7 @@ Aliases support specifying scope constraints via options: `## scope` / `## scope
 
 At the usage site, the alias body is copied as a regular property config (key = sub-name, value and sub-configs deep-copied, options preserved). If the value side of the expanded result is still `single_alias_right[...]`, cascading expansion continues. Aliases are commonly used in combination with [declaration configs](#config-declaration) to reuse trigger / effect fragments within definition declarations.
 
-Example:
+Examples:
 
 ```cwt
 # Alias: define an effect fragment
@@ -522,7 +522,7 @@ Field Explanation:
 
 The path matching logic of row configs is the same as in [type configs](#config-type).
 
-Example:
+Examples:
 
 ```cwt
 rows = {
@@ -552,7 +552,7 @@ Path Location:
 - Define namespace: `defines/{namespace}`, where `{namespace}` is the namespace (i.e. the config name).
 - Define variable: `defines/{namespace}/{variable}`, where `{namespace}` is the namespace and `{variable}` is the variable name (i.e. the config name).
 
-Example:
+Examples:
 
 ```cwt
 defines = {
@@ -586,7 +586,7 @@ The values of a simple enum must be constants, and are case-insensitive.
 Path Location:
 - `enums/enum[{name}]` – where `{name}` matches the config name.
 
-Example:
+Examples:
 
 ```cwt
 enums = {
@@ -629,7 +629,7 @@ The specific steps are: first, locate the config entry containing `enum_name` wi
 If `enum_name` is on the property key side, then that property key is the enum value anchor; if on the property value side, then the property's value is the anchor; if it is a block member value, that value itself is the anchor.
 Finally, match upward from the anchor level by level against the parent structure, until reaching the root of the `name` section (when `start_from_root` is `yes`, must reach the file root level; otherwise, reaching the level just below the top-level property is sufficient).
 
-Example:
+Examples:
 
 ```cwt
 enums = {
@@ -658,7 +658,7 @@ Event targets, variables, flags, etc. are usually considered dynamic values.
 Path Location:
 - `values/value[{name}]`, where `{name}` is the config name.
 
-Example:
+Examples:
 
 ```cwt
 values = {
@@ -693,7 +693,7 @@ Field Explanation:
 
 Static and dynamic: Links without a declared `data_source` are static links, representing only a fixed node name (e.g. `owner`). Links with a declared `data_source` and/or `prefix` / `from_*` are dynamic links that can carry dynamic data (e.g. `modifier:x`, `relations(x)`, `var:x`).
 
-Example:
+Examples:
 
 ```cwt
 # from `links.cwt` of stellaris config group
@@ -756,7 +756,7 @@ Path Location:
 
 Both contain the `supported_scopes` field, which declares the set of allowed scope types.
 
-Example:
+Examples:
 
 ```cwt
 # from `localisation.cwt` of stellaris config group
@@ -802,7 +802,7 @@ Modifier category fields: `name` is the category name (e.g. `Pops`), and `suppor
 
 Modifier configs work in conjunction with the `modifiers` section of [type configs](#config-type): Modifier names declared in type configs use `$` as a placeholder, which is replaced with `<{type}>` or `<{type}.{subtype}>` during resolving, thereby deriving type-bound modifier configs.
 
-Example:
+Examples:
 
 ```cwt
 # from `modifiers.cwt` and `modifiers.categories.cwt` of stellaris config group
@@ -853,7 +853,7 @@ Path Location:
 - Scope: `scopes/{name}`, where `{name}` is the config name.
 - Scope group: `scope_groups/{name}`, where `{name}` is the config name.
 
-Example:
+Examples:
 
 ```cwt
 # from `scopes.cwt` of stellaris config group
@@ -893,7 +893,7 @@ Field Explanation:
 - `swap_type`: If present, treats the `swap` in `prefix:object:swap` as a swapped type definition reference.
 - `localisation`: If present, treats the `object` in `prefix:object` as a localisation key.
 
-Example:
+Examples:
 
 ```cwt
 # from `database_object_types.cwt` of stellaris config group
@@ -915,6 +915,24 @@ database_object_types = {
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
+#### Union Config {#config-union}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
+
+Union configs are used to provide a set of candidate data expressions for union matching. During matching, the candidates are recursively expanded and attempted in order.
+Unlike enum configs, the options here can be data expressions of various data types.
+
+Path location:
+- `union[{name}]` – where `{name}` matches the config name.
+
+Examples:
+
+```cwt
+union[loc_or_text] = { localisation scalar }
+```
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
 #### Macro Config {#config-macro}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
@@ -922,17 +940,18 @@ database_object_types = {
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-Macro configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script resolver, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
+Macro configs are used to describe special language constructs (expressions, statements, etc.) in script files that differ from general abstractions, and to provide additional metadata for hints and validation.
+These language constructs alter the behaviour of the game's script parser at runtime, thereby modifying, extending, or reusing existing script fragments.
+Different macros can have different config structures.
 
-Currently involved directives include:
+Currently, the macros covered include:
+- **Inline Script (inline_script)**: (Stellaris) Replaced by the content of the target file during parsing, with support for parameters.
+- **Definition Injection (definition_injection)**: (VIC3 / EU5) Injects or replaces the declaration of a target definition during parsing, with modes to specify the exact behaviour.
 
-- **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during resolving, with parameters support.
-- **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during resolving, with mode support to determine specific behavior.
+Path location:
+- `macro[{name}]` – where `{name}` matches the config name.
 
-Path Location:
-- `macro[{name}]`, where `{name}` is the config name.
-
-Example:
+Examples:
 
 ```cwt
 macro[inline_script] = filepath[common/inline_scripts/,.txt]
@@ -1047,7 +1066,7 @@ game_rules = {
 }
 ```
 
-Example:
+Examples:
 
 ```cwt
 # from `game_rules.cwt` of stellaris config group
@@ -1094,7 +1113,7 @@ on_actions = {
 }
 ```
 
-Example:
+Examples:
 
 ```cwt
 # from `on_actions.cwt` of stellaris config group
@@ -1381,7 +1400,7 @@ Default and boundary behaviors:
 - When no known data type can be matched, falls back to `Constant`, using the original string as the constant value.
 - Definition references should use the angle-bracket form (e.g. `<event>`), not the bracket form with prefix (e.g. `definiton[event]`, which is an incorrect notation).
 
-Example:
+Examples:
 
 ```cwt
 int                         # integer
@@ -1408,7 +1427,7 @@ Resolving constraints:
 - Multiple fragments use a "leftmost earliest match" splitting strategy.
 - Each fragment ultimately delegates to data expression resolving; when no known type is matched, it degrades to a constant fragment.
 
-Example:
+Examples:
 
 The following examples demonstrate typical usage of template expressions, with `#` comments annotating the splitting of fragments:
 
@@ -1442,7 +1461,7 @@ Default and boundary behaviors:
 - Missing the `..` separator is treated as invalid, producing no constraint.
 - When `min > max`, treated as invalid, producing no constraint.
 
-Example:
+Examples:
 
 ```cwt
 ## cardinality = 0..1     # optional, at most 1 occurrence
@@ -1478,7 +1497,7 @@ Argument conventions:
 - The argument `u` forces the final name to uppercase (only effective when using placeholders).
 - When `$` arguments appear repeatedly, the later one takes precedence.
 
-Example:
+Examples:
 
 ```cwt
 $_desc
@@ -1502,7 +1521,7 @@ Argument conventions:
 - Other arguments represent "frame source paths" (supporting comma-separated multiple paths), used for image frame slicing.
 - When arguments of the same type appear repeatedly, the later one takes precedence.
 
-Example:
+Examples:
 
 ```cwt
 gfx/interface/icons/modifiers/mod_$.dds
@@ -2171,7 +2190,7 @@ Notes:
 Corresponding data expression format:
 - `icon[{path}]` – where `{path}` matches a path pattern (e.g., `gfx/interface/icons`).
 
-Corresponding data expression example:
+Corresponding data expression Examples:
 - `icon[gfx/interface/icons]`
 
 > CWTools Compatibility: Compatible.
@@ -2381,7 +2400,7 @@ The following examples demonstrate the progression from simple literals to compl
 - `a_enum[weight_or_base]_b`: Template containing the enum reference `enum[weight_or_base]`, can match `a_weight_b` and `a_base_b`.
 - `a_value[anything]_b`: Template containing the dynamic value reference `value[anything]`. Since `value[anything]` typically has no value restrictions, the effect is similar to the regex `a_.*_b`.
 
-Example:
+Examples:
 
 ```cwt
 x
@@ -2402,7 +2421,7 @@ ANT path patterns used here support the following wildcards:
 - `*`: Matches any characters (excluding `/`).
 - `**`: Matches any characters (including `/`).
 
-Example:
+Examples:
 
 ```cwt
 ant:/foo/bar?/*
@@ -2417,7 +2436,7 @@ Starting from plugin version 1.3.6, regular expressions can be used in data expr
 Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive.
 The part after the prefix is a standard regular expression.
 
-Example:
+Examples:
 
 ```cwt
 re:foo.*
@@ -2434,7 +2453,7 @@ The value of this option is a [cardinality expression](#config-expression-cardin
 
 If not explicitly specified, and the data type of this member config is constant or enum value, it is inferred as `1..~1`; otherwise, it defaults to `0..inf`.
 
-Example:
+Examples:
 
 ```cwt
 # optional, redeclaration is not allowed
@@ -2463,7 +2482,7 @@ In config files, scope context is specified via the options `## push_scope` and 
 
 `## replace_scopes = { this = x root = y}` replaces the specified system scope to scope type mappings into the current scope context. Only `this`, `root`, and `from`-based system scopes are supported; `prev`-based system scopes are not supported.
 
-Example:
+Examples:
 
 ```cwt
 # for this example, the next this scope will be `country`
@@ -2482,7 +2501,7 @@ some_config = single_alias_right[trigger_clause]
 
 In config files, the supported scopes for triggers and effects are specified via the option `## scopes` (or `## scope`).
 
-Example:
+Examples:
 
 ```cwt
 # for this example, the supported scope type of trigger `has_country_flag` is `country`
@@ -2551,7 +2570,7 @@ By specifying allowed extensions, the plugin can limit the file extensions that 
 
 Note that path references of some data types (such as [Icon](#data-type-icon)) and formats (such as extension information has been specified) will not carry extension information, so this option should not be used.
 
-Example:
+Examples:
 
 ```cwt
 ## file_extensions = { png dds tga }

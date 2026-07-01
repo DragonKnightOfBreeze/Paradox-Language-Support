@@ -2,9 +2,11 @@ package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.processUnionCandidates
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.model.type.ParadoxExpressionType
@@ -90,6 +92,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             CwtDataTypes.Definition -> matchDefinition(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
             in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
+            CwtDataTypes.UnionValue -> matchUnion(context)
             else -> null
         }
     }
@@ -125,5 +128,17 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         val dynamicValueType = context.configExpression.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch
+    }
+
+    private fun matchUnion(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
+        unionConfig.processUnionCandidates { valueConfig ->
+            val nextContext = context.copy(configExpression = valueConfig.configExpression)
+            val r = ParadoxExpressionMatchService.matchCsvExpression(nextContext)
+            if (r.get()) return r
+            true
+        }
+        return ParadoxMatchResult.NotMatch
     }
 }

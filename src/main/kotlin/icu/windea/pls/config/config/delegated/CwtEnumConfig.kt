@@ -44,7 +44,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("enum[$]")
     val name: String
-    @FromMember("values: template_expression[]")
+    @FromMember("values: string[]")
     val values: Set<@CaseInsensitive String>
 
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
