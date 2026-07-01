@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
@@ -25,7 +25,7 @@ import icu.windea.pls.model.constants.PlsStrings
 class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("localisation.gutterIcon.relatedDefinitions")
 
-    override fun getIcon() = PlsIcons.Gutter.RelatedDefinitions
+    override fun getIcon() = ChronicleIcons.Gutter.RelatedDefinitions
 
     override fun getGroup() = ChronicleBundle.message("localisation.gutterIcon.relatedDefinitions.group")
 
@@ -42,7 +42,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
         if (targets.isEmpty()) return
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.RelatedDefinitions
+        val icon = ChronicleIcons.Gutter.RelatedDefinitions
         val prefix = PlsStrings.relatedDefinitionPrefix
         val tooltipLines = targets.mapNotNull { target ->
             target.definitionInfo?.let { "$prefix ${it.name}: ${it.typeText}" }

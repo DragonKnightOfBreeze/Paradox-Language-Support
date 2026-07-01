@@ -6,7 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.getKeyword
@@ -46,7 +46,7 @@ class ParadoxEventIdCompletionProvider : ParadoxCompletionProvider() {
             val name = eventNamespace.value ?: continue
             val typeFile = eventNamespace.containingFile
             val lookupElement = LookupElementBuilder.create(eventNamespace, name)
-                .withIcon(PlsIcons.Nodes.EventNamespace)
+                .withIcon(ChronicleIcons.Nodes.EventNamespace)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCompletionId()
             result.addElement(lookupElement, context)

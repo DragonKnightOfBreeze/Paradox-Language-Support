@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.navigation
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
@@ -35,7 +35,7 @@ object ParadoxLocalisationNavigationManager {
             is ParadoxLocalisationProperty -> {
                 run {
                     if (element.type == null) return@run
-                    return PlsIcons.Nodes.Localisation
+                    return ChronicleIcons.Nodes.Localisation
                 }
             }
         }

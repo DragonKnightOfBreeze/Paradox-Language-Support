@@ -1,7 +1,7 @@
 package icu.windea.pls.script
 
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.ParadoxFileType
 
 object ParadoxScriptFileType : ParadoxFileType(ParadoxScriptLanguage) {
@@ -13,5 +13,5 @@ object ParadoxScriptFileType : ParadoxFileType(ParadoxScriptLanguage) {
 
     override fun getDefaultExtension() = "txt"
 
-    override fun getIcon() = PlsIcons.FileTypes.ParadoxScript
+    override fun getIcon() = ChronicleIcons.FileTypes.ParadoxScript
 }

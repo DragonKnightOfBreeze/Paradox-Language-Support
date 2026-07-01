@@ -11,7 +11,7 @@ import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.selectGameType
@@ -50,7 +50,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
 
         override fun getPresentation(context: ActionContext, element: ParadoxLocalisationLocale): Presentation {
-            return Presentation.of(localeConfig.idWithText).withIcon(PlsIcons.Nodes.LocalisationLocale)
+            return Presentation.of(localeConfig.idWithText).withIcon(ChronicleIcons.Nodes.LocalisationLocale)
         }
 
         override fun invoke(context: ActionContext, element: ParadoxLocalisationLocale, updater: ModPsiUpdater) {

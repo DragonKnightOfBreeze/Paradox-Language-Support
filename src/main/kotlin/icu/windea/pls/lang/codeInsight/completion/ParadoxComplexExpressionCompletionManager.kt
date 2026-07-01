@@ -5,7 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -784,7 +784,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from system scopes"
             val typeFile = systemScopeConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.SystemScope)
+                .withIcon(ChronicleIcons.Nodes.SystemScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -809,7 +809,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from links"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.StaticScope)
+                .withIcon(ChronicleIcons.Nodes.StaticScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -836,7 +836,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicScope)
+                .withIcon(ChronicleIcons.Nodes.DynamicScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(ChronicleInsertHandlers.addParentheses())
@@ -857,7 +857,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicScope)
+                .withIcon(ChronicleIcons.Nodes.DynamicScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
@@ -902,7 +902,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from links"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.StaticValueField)
+                .withIcon(ChronicleIcons.Nodes.StaticValueField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -928,7 +928,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicValueField)
+                .withIcon(ChronicleIcons.Nodes.DynamicValueField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(ChronicleInsertHandlers.addParentheses())
@@ -949,7 +949,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicValueField)
+                .withIcon(ChronicleIcons.Nodes.DynamicValueField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ChronicleCompletionPriorities.prefix)
@@ -994,7 +994,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from system scopes"
             val typeFile = systemScopeConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.SystemCommandScope)
+                .withIcon(ChronicleIcons.Nodes.SystemCommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -1020,7 +1020,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from localisation links"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.StaticCommandScope)
+                .withIcon(ChronicleIcons.Nodes.StaticCommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -1047,7 +1047,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicCommandScope)
+                .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(ChronicleInsertHandlers.addParentheses())
@@ -1069,7 +1069,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicCommandScope)
+                .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
@@ -1111,7 +1111,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from localisation commands"
             val typeFile = localisationCommand.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.StaticCommandField)
+                .withIcon(ChronicleIcons.Nodes.StaticCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -1132,7 +1132,7 @@ object ParadoxComplexExpressionCompletionManager {
             val tailText = " from localisation links"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.StaticCommandField)
+                .withIcon(ChronicleIcons.Nodes.StaticCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
@@ -1158,7 +1158,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicCommandField)
+                .withIcon(ChronicleIcons.Nodes.DynamicCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(ChronicleInsertHandlers.addParentheses())
@@ -1179,7 +1179,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.DynamicCommandField)
+                .withIcon(ChronicleIcons.Nodes.DynamicCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ChronicleCompletionPriorities.prefix)
@@ -1223,7 +1223,7 @@ object ParadoxComplexExpressionCompletionManager {
             val defineInfo = element.defineNamespaceInfo ?: return@p true
             val namespace = defineInfo.namespace
             val lookupElement = LookupElementBuilder.create(element, namespace)
-                .withPatchableIcon(PlsIcons.Nodes.DefineNamespace)
+                .withPatchableIcon(ChronicleIcons.Nodes.DefineNamespace)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -1244,7 +1244,7 @@ object ParadoxComplexExpressionCompletionManager {
             val defineInfo = element.defineVariableInfo ?: return@p true
             val variable = defineInfo.variable
             val lookupElement = LookupElementBuilder.create(element, variable)
-                .withPatchableIcon(PlsIcons.Nodes.DefineVariable)
+                .withPatchableIcon(ChronicleIcons.Nodes.DefineVariable)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -1262,7 +1262,7 @@ object ParadoxComplexExpressionCompletionManager {
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.DatabaseObjectType)
+                .withIcon(ChronicleIcons.Nodes.DatabaseObjectType)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ChronicleCompletionPriorities.prefix)
                 .withPatchableTailText(tailText)

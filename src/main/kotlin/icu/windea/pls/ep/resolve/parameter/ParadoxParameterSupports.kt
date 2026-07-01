@@ -9,7 +9,7 @@ import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -139,7 +139,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -190,7 +190,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionName = context.name
         val definitionTypes = definitionInfo.types
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionInfo.type)
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionInfo.type)
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
@@ -217,7 +217,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
         val name = element.name.orNull() ?: return null
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = config.configGroup.gameType
@@ -362,7 +362,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
         val offset = ParadoxExpressionManager.getExpressionOffset(expressionElement)
         val startOffset = element.startOffset + offset
@@ -421,7 +421,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         } as? ParadoxScriptValueArgumentNameNode ?: return null
         val name = argumentNode.text.orNull() ?: return null
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
         val readWriteAccess = ReadWriteAccess.Write
         val gameType = configGroup.gameType
@@ -512,7 +512,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = configGroup.project
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Macro
+        val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -561,7 +561,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
-        val contextIcon = PlsIcons.Nodes.Macro
+        val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$expression"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
@@ -588,7 +588,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Macro
+        val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val readWriteAccess = ReadWriteAccess.Write
         val gameType = config.configGroup.gameType

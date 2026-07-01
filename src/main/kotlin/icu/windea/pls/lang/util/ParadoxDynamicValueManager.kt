@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -18,7 +18,7 @@ import javax.swing.Icon
 object ParadoxDynamicValueManager {
     fun getPresentableIcon(types: Set<String>): Icon {
         val type = types.first() // first is ok
-        return PlsIcons.Nodes.DynamicValue(type)
+        return ChronicleIcons.Nodes.DynamicValue(type)
     }
 
     fun getPresentableType(types: Set<String>): String {

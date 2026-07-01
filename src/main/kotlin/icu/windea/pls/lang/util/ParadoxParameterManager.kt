@@ -13,7 +13,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -199,7 +199,7 @@ object ParadoxParameterManager {
             } ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
                 .forExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -237,7 +237,7 @@ object ParadoxParameterManager {
                 } ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                    .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
             }

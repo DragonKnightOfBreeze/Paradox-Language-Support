@@ -4,7 +4,7 @@ import com.intellij.ide.actions.CreateDirectoryCompletionContributor
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.psi.PsiDirectory
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
@@ -25,7 +25,7 @@ class ParadoxEntryCreateDirectoryCompletionContributor : CreateDirectoryCompleti
         if (fileInfo.inMainOrExtraEntry) return emptySet() // 必须不位于合法的入口目录中（同时又位于根目录中）
         val result = sortedSetOf<String>()
         processFromPredefined(result, fileInfo)
-        return result.map { Variant(it, null, PlsIcons.General.EntryDirectory) }
+        return result.map { Variant(it, null, ChronicleIcons.General.EntryDirectory) }
     }
 
     private fun processFromPredefined(result: MutableSet<String>, fileInfo: ParadoxFileInfo) {

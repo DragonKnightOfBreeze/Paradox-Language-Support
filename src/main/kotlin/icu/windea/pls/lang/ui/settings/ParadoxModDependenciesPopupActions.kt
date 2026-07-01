@@ -3,7 +3,7 @@ package icu.windea.pls.lang.ui.settings
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.actions.HandlePathActionBase
@@ -38,7 +38,7 @@ interface ParadoxModDependenciesPopupActions {
     }
 
     class OpenModPathAction(private val table: ParadoxModDependenciesTable) : HandlePathActionBase(
-        PlsIcons.General.ModDirectory,
+        ChronicleIcons.General.ModDirectory,
         ChronicleBundle.message("mod.dependencies.popup.action.OpenModPath.text"),
     ) {
         override fun actionPerformed(e: AnActionEvent) = openPath(e)
@@ -50,7 +50,7 @@ interface ParadoxModDependenciesPopupActions {
     }
 
     class OpenModPageInSteamAction(private val table: ParadoxModDependenciesTable) : HandleUrlActionBase(
-        PlsIcons.General.Steam,
+        ChronicleIcons.General.Steam,
         ChronicleBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.text"),
     ) {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
@@ -63,7 +63,7 @@ interface ParadoxModDependenciesPopupActions {
     }
 
     class OpenModPageInSteamWebsiteAction(private val table: ParadoxModDependenciesTable) : HandleUrlActionBase(
-        PlsIcons.General.Steam,
+        ChronicleIcons.General.Steam,
         ChronicleBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.text"),
     ) {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)

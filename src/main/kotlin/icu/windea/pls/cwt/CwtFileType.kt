@@ -2,7 +2,7 @@ package icu.windea.pls.cwt
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 
 object CwtFileType : LanguageFileType(CwtLanguage) {
     override fun getName() = "Cwt"
@@ -13,5 +13,5 @@ object CwtFileType : LanguageFileType(CwtLanguage) {
 
     override fun getDefaultExtension() = "cwt"
 
-    override fun getIcon() = PlsIcons.FileTypes.Cwt
+    override fun getIcon() = ChronicleIcons.FileTypes.Cwt
 }

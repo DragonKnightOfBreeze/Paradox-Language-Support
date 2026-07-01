@@ -6,7 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.icon
@@ -90,7 +90,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
         val name = element.name.orNull() ?: return true
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.DefineNamespace)
+            .withIcon(ChronicleIcons.Nodes.DefineNamespace)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .forExpression(context)
         result.addElement(lookupElement, context)
@@ -104,7 +104,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
         val name = element.name.orNull() ?: return true
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.DefineVariable)
+            .withIcon(ChronicleIcons.Nodes.DefineVariable)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .forExpression(context)
         result.addElement(lookupElement, context)

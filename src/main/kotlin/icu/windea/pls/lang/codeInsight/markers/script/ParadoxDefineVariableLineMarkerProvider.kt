@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.defineVariable")
 
-    override fun getIcon() = PlsIcons.Gutter.DefineVariable
+    override fun getIcon() = ChronicleIcons.Gutter.DefineVariable
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.defineVariable.group")
 
@@ -36,7 +36,7 @@ class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProv
         val defineVariableInfo = element.defineVariableInfo ?: return
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.DefineVariable
+        val icon = ChronicleIcons.Gutter.DefineVariable
         val prefix = PlsStrings.defineVariablePrefix
         val tooltip = "$prefix <b>${defineVariableInfo.namespace.escapeXml()}.${defineVariableInfo.variable.escapeXml()}</b>"
         val targets by lazy {

@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations")
 
-    override fun getIcon() = PlsIcons.Gutter.RelatedLocalisations
+    override fun getIcon() = ChronicleIcons.Gutter.RelatedLocalisations
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.group")
 
@@ -40,7 +40,7 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         val targets = targets0.optimized()
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.RelatedLocalisations
+        val icon = ChronicleIcons.Gutter.RelatedLocalisations
         val prefix = PlsStrings.relatedLocalisationPrefix
         val tooltip = "$prefix $name"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

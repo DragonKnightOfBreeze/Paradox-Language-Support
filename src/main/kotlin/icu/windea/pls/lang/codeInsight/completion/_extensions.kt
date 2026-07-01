@@ -8,7 +8,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.ui.JBColor
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -200,7 +200,7 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
     if (icon == null) return null
     when (config) {
         is CwtValueConfig -> {
-            if (config.tagType != null) return PlsIcons.Nodes.Tag
+            if (config.tagType != null) return ChronicleIcons.Nodes.Tag
         }
         is CwtAliasConfig -> {
             val aliasConfig = config
@@ -208,9 +208,9 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
             if (type !in CwtDataTypeSets.ConstantAware) return icon
             val aliasName = aliasConfig.name
             return when {
-                aliasName == "modifier" -> PlsIcons.Nodes.Modifier
-                aliasName == "trigger" -> PlsIcons.Nodes.Trigger
-                aliasName == "effect" -> PlsIcons.Nodes.Effect
+                aliasName == "modifier" -> ChronicleIcons.Nodes.Modifier
+                aliasName == "trigger" -> ChronicleIcons.Nodes.Trigger
+                aliasName == "effect" -> ChronicleIcons.Nodes.Effect
                 else -> icon
             }
         }

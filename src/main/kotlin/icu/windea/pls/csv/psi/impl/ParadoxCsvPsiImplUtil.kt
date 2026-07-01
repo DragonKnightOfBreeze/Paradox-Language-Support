@@ -9,7 +9,7 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
@@ -33,7 +33,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvHeader, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Row
+        return ChronicleIcons.Nodes.Row
     }
 
     // endregion
@@ -42,7 +42,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Row
+        return ChronicleIcons.Nodes.Row
     }
 
     // endregion
@@ -51,7 +51,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvColumn, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Column
+        return ChronicleIcons.Nodes.Column
     }
 
     @JvmStatic

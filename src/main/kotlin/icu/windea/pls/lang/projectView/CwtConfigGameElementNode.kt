@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 
@@ -85,7 +85,7 @@ class CwtConfigGameElementNode(
 
     override fun update(presentation: PresentationData) {
         if (value == null) return
-        presentation.setIcon(PlsIcons.General.GameDirectory)
+        presentation.setIcon(ChronicleIcons.General.GameDirectory)
         presentation.presentableText = value.gameType.title
     }
 

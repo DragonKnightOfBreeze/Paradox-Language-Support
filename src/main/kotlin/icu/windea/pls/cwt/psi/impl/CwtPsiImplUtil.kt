@@ -11,7 +11,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
@@ -64,7 +64,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Option
+        return ChronicleIcons.Nodes.Option
     }
 
     @JvmStatic
@@ -92,7 +92,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Option
+        return ChronicleIcons.Nodes.Option
     }
 
     @JvmStatic
@@ -111,7 +111,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -157,7 +157,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -178,7 +178,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
+        return ChronicleIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -225,7 +225,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Block
+        return ChronicleIcons.Nodes.Block
     }
 
     @JvmStatic

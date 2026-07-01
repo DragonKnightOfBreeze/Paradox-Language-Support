@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.icon
@@ -27,7 +27,7 @@ object ParadoxExtendedCompletionManager {
             val element = config0.pointer.element ?: return@f
             val typeFile = config0.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Configs.ExtendedScriptedVariable)
+                .withIcon(ChronicleIcons.Configs.ExtendedScriptedVariable)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withCompletionId()
@@ -63,7 +63,7 @@ object ParadoxExtendedCompletionManager {
                     val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withItemTextUnderlined(true) // used for completions from extended configs
-                        .withPatchableIcon(PlsIcons.Configs.ExtendedDefinition)
+                        .withPatchableIcon(ChronicleIcons.Configs.ExtendedDefinition)
                         .withPatchableTailText(tailText)
                         .forExpression(context)
                     result.addElement(lookupElement, context)
@@ -81,7 +81,7 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Configs.ExtendedGameRule)
+                    .withPatchableIcon(ChronicleIcons.Configs.ExtendedGameRule)
                     .withPatchableTailText(tailText)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
@@ -98,7 +98,7 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Configs.ExtendedOnAction)
+                    .withPatchableIcon(ChronicleIcons.Configs.ExtendedOnAction)
                     .withPatchableTailText(tailText)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
@@ -125,7 +125,7 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Configs.ExtendedParameter)
+                    .withPatchableIcon(ChronicleIcons.Configs.ExtendedParameter)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
             }
@@ -149,7 +149,7 @@ object ParadoxExtendedCompletionManager {
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableIcon(PlsIcons.Configs.ExtendedComplexEnumValue)
+                .withPatchableIcon(ChronicleIcons.Configs.ExtendedComplexEnumValue)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -179,7 +179,7 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
+                    .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
                     .withPatchableTailText(tailText)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
@@ -201,7 +201,7 @@ object ParadoxExtendedCompletionManager {
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                .withIcon(PlsIcons.Configs.ExtendedInlineScript)
+                .withIcon(ChronicleIcons.Configs.ExtendedInlineScript)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withPatchableTailText(tailText)

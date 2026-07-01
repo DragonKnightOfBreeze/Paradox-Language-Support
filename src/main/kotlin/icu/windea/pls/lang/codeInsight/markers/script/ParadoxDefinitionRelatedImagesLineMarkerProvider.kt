@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages")
 
-    override fun getIcon() = PlsIcons.Gutter.RelatedImages
+    override fun getIcon() = ChronicleIcons.Gutter.RelatedImages
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.group")
 
@@ -38,7 +38,7 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
 
         // 显示在提示中 & 可导航：定义名或文件路径，不包括没有对应的图片的项，按解析顺序排序
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.RelatedImages
+        val icon = ChronicleIcons.Gutter.RelatedImages
         val prefix = PlsStrings.relatedImagePrefix
         val tooltipLines = mutableSetOf<String>()
         val keys0 = mutableSetOf<String>()

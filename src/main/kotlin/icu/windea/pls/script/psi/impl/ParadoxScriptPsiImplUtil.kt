@@ -53,7 +53,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -121,7 +121,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -194,7 +194,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -215,7 +215,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
+        return ChronicleIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -236,7 +236,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
+        return ChronicleIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -282,7 +282,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Block
+        return ChronicleIcons.Nodes.Block
     }
 
     @JvmStatic
@@ -321,7 +321,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ConditionalBlock
+        return ChronicleIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
@@ -376,7 +376,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ConditionalBlock
+        return ChronicleIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
@@ -426,7 +426,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptConditionalBlockParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Parameter
+        return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
@@ -507,7 +507,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -540,7 +540,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -572,7 +572,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Parameter
+        return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
@@ -621,7 +621,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Parameter
+        return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic

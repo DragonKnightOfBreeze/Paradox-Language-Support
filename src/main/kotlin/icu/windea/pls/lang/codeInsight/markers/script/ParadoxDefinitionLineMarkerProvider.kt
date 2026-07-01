@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definition")
 
-    override fun getIcon() = PlsIcons.Gutter.Definition
+    override fun getIcon() = ChronicleIcons.Gutter.Definition
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definition.group")
 
@@ -42,7 +42,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.Definition
+        val icon = ChronicleIcons.Gutter.Definition
         val prefix = PlsStrings.definitionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typeText}"
         val targets by lazy {

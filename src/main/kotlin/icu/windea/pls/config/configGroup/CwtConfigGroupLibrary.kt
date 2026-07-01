@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.SyntheticLibrary
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import javax.swing.Icon
 
 /**
@@ -27,7 +27,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
     }
 
     override fun getIcon(unused: Boolean): Icon {
-        return PlsIcons.General.Library
+        return ChronicleIcons.General.Library
     }
 
     override fun getPresentableText(): String {

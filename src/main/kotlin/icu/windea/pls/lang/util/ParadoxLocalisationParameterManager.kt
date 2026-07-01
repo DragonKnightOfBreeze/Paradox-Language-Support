@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -112,7 +112,7 @@ object ParadoxLocalisationParameterManager {
             for (parameterName in parameterNames) {
                 val parameter = ParadoxLocalisationParameterService.resolveParameter(localisation, parameterName) ?: continue
                 val lookupElement = LookupElementBuilder.create(parameter, parameterName)
-                    .withIcon(PlsIcons.Nodes.Parameter)
+                    .withIcon(ChronicleIcons.Nodes.Parameter)
                     .withTypeText(localisationName, localisationIcon, true)
                 result.addElement(lookupElement)
             }

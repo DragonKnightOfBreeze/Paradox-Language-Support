@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
 
@@ -14,7 +14,7 @@ import icu.windea.pls.lang.fileInfo
 
 class ConfigGroupForceRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
     init {
-        templatePresentation.icon = PlsIcons.Actions.ForceRefreshConfigGroups
+        templatePresentation.icon = ChronicleIcons.Actions.ForceRefreshConfigGroups
         templatePresentation.text = ChronicleBundle.message("configGroup.action.refresh.force.text")
         templatePresentation.description = ChronicleBundle.message("configGroup.action.refresh.force.desc")
     }

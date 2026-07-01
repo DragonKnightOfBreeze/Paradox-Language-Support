@@ -7,7 +7,7 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -115,7 +115,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withModifierLocalizedNamesIfNecessary(name, element)
@@ -193,7 +193,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
                     .withModifierLocalizedNamesIfNecessary(name, element)
@@ -392,7 +392,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
-            val typeIcon = PlsIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
+            val typeIcon = ChronicleIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
             for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
                 // 排除重复的
@@ -401,7 +401,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeText, typeIcon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withModifierLocalizedNamesIfNecessary(name, element)
                     .forExpression(context)

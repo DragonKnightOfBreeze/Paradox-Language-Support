@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Comparing
 import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.ChronicleDocBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.values.anonymous
@@ -170,7 +170,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     }
 
     override fun getIcon(element: PsiElement): Icon? {
-        if (nodeType.grouped) return PlsIcons.Nodes.DefinitionGroup
+        if (nodeType.grouped) return ChronicleIcons.Nodes.DefinitionGroup
         return super.getIcon(element)
     }
 

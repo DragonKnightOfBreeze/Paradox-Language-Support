@@ -5,7 +5,7 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.StandardPatterns
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -98,7 +98,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = localisation.containingFile
             val lookupElement = LookupElementBuilder.create(localisation, name)
                 .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Localisation)
+                .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -131,7 +131,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = syncedLocalisation.containingFile
             val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
                 .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Localisation)
+                .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -167,7 +167,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = definition.containingFile
             val lookupElement = LookupElementBuilder.create(definition, name)
                 .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
+                .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withDefinitionLocalizedNamesIfNecessary(definition)
@@ -199,7 +199,7 @@ object ParadoxExpressionCompletionManager {
                 val name = pathReferenceExpressionSupport.extract(configExpression, context.file, filePath) ?: return@p true
                 val lookupElement = LookupElementBuilder.create(file, name)
                     .withTypeText(file.name, file.icon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.PathReference(config.configExpression))
+                    .withPatchableIcon(ChronicleIcons.Nodes.PathReference(config.configExpression))
                     .withPatchableTailText(tailText)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
@@ -240,7 +240,7 @@ object ParadoxExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ChronicleCompletionPriorities.enumValue)
-                .withPatchableIcon(PlsIcons.Nodes.EnumValue)
+                .withPatchableIcon(ChronicleIcons.Nodes.EnumValue)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -267,7 +267,7 @@ object ParadoxExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
                 .withPriority(ChronicleCompletionPriorities.complexEnumValue)
-                .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
+                .withPatchableIcon(ChronicleIcons.Nodes.ComplexEnumValue(enumName))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -302,7 +302,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = valueConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
+                .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -323,7 +323,7 @@ object ParadoxExpressionCompletionManager {
             val readWriteAccess = info.readWriteAccess
             val element = ParadoxDynamicValueLightElement(context.contextElement, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
+                .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -374,8 +374,8 @@ object ParadoxExpressionCompletionManager {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val icon = when {
-            configExpression.isKey -> PlsIcons.Nodes.Property
-            else -> PlsIcons.Nodes.Value
+            configExpression.isKey -> ChronicleIcons.Nodes.Property
+            else -> ChronicleIcons.Nodes.Value
         }
         val name = configExpression.value ?: return
         if (!configExpression.isKey) {
@@ -428,7 +428,7 @@ object ParadoxExpressionCompletionManager {
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxShaderEffectLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withPatchableIcon(PlsIcons.Nodes.ShaderEffect)
+                .withPatchableIcon(ChronicleIcons.Nodes.ShaderEffect)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -453,7 +453,7 @@ object ParadoxExpressionCompletionManager {
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxMeshLocatorLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withPatchableIcon(PlsIcons.Nodes.MeshLocator)
+                .withPatchableIcon(ChronicleIcons.Nodes.MeshLocator)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)

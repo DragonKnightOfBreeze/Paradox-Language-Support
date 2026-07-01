@@ -7,7 +7,7 @@
 
     <webHelpProvider implementation="icu.windea.pls.ide.help.PlsHelpProvider"/>
     <postStartupActivity implementation="icu.windea.pls.ide.PlsLifecycleListener"/>
-    <iconMapper mappingFile="PlsIconMappings.json"/>
+    <iconMapper mappingFile="ChronicleIconMappings.json"/>
   </extensions>
 
   <applicationListeners>

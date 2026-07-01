@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections")
 
-    override fun getIcon() = PlsIcons.Gutter.RelatedDefinitionInjections
+    override fun getIcon() = ChronicleIcons.Gutter.RelatedDefinitionInjections
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionRelatedInjections.group")
 
@@ -40,7 +40,7 @@ class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemL
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.RelatedDefinitionInjections
+        val icon = ChronicleIcons.Gutter.RelatedDefinitionInjections
         val prefix = PlsStrings.definitionInjectionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
         val project = element.project

@@ -5,7 +5,7 @@ import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.rootInfo
@@ -35,8 +35,8 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         run {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return@run
             val icon = when (rootInfo) {
-                is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
-                is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+                is ParadoxRootInfo.Game -> ChronicleIcons.General.GameDirectory
+                is ParadoxRootInfo.Mod -> ChronicleIcons.General.ModDirectory
             }
             data.setIcon(icon)
         }
@@ -57,7 +57,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         if (fileInfo.path.isNotEmpty()) return false
 
         // 特殊图标
-        data.setIcon(PlsIcons.General.EntryDirectory)
+        data.setIcon(ChronicleIcons.General.EntryDirectory)
 
         return true
     }
@@ -71,7 +71,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         val definitionInfo = file.definitionInfo ?: return false
 
         // 特殊图标
-        data.setIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
+        data.setIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
 
         // 定义名（通常等同于去掉扩展名后的文件名）
         data.presentableText = definitionInfo.name

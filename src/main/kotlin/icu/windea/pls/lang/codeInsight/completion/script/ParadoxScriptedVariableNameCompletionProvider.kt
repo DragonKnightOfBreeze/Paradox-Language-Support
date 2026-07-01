@@ -6,7 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.icon
@@ -61,7 +61,7 @@ class ParadoxScriptedVariableNameCompletionProvider : ParadoxCompletionProvider(
         val tailText = element.value?.let { " = $it" }
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.ScriptedVariable)
+            .withIcon(ChronicleIcons.Nodes.ScriptedVariable)
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withScriptedVariableLocalizedNamesIfNecessary(element)

@@ -5,7 +5,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.csv.ParadoxCsvConstants
 import icu.windea.pls.csv.ParadoxCsvLanguage
 
@@ -44,7 +44,7 @@ class ParadoxCsvColorSettingsPage : ColorSettingsPage {
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = _tagToDescriptorMap
 
-    override fun getIcon() = PlsIcons.FileTypes.ParadoxCsv
+    override fun getIcon() = ChronicleIcons.FileTypes.ParadoxCsv
 
     override fun getAttributeDescriptors() = _attributesDescriptors
 

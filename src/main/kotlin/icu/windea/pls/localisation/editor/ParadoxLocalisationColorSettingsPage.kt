@@ -5,7 +5,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.localisation.ParadoxLocalisationConstants
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
@@ -75,7 +75,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = _tagToDescriptorMap
 
-    override fun getIcon() = PlsIcons.FileTypes.ParadoxLocalisation
+    override fun getIcon() = ChronicleIcons.FileTypes.ParadoxLocalisation
 
     override fun getAttributeDescriptors() = _attributesDescriptors
 

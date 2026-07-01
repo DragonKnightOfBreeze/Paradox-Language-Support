@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
@@ -25,7 +25,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("localisation.gutterIcon.localisation")
 
-    override fun getIcon() = PlsIcons.Gutter.Localisation
+    override fun getIcon() = ChronicleIcons.Gutter.Localisation
 
     override fun getGroup() = ChronicleBundle.message("localisation.gutterIcon.localisation.group")
 
@@ -38,7 +38,7 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
         if (type == null) return
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.Localisation
+        val icon = ChronicleIcons.Gutter.Localisation
         val tooltip = "($type) <b>$name</b>"
         val targets by lazy {
             val project = element.project

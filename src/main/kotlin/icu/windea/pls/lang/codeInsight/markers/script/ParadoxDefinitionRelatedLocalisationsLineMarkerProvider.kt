@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations")
 
-    override fun getIcon() = PlsIcons.Gutter.RelatedLocalisations
+    override fun getIcon() = ChronicleIcons.Gutter.RelatedLocalisations
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.group")
 
@@ -41,7 +41,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
 
         // 显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.RelatedLocalisations
+        val icon = ChronicleIcons.Gutter.RelatedLocalisations
         val prefix = PlsStrings.relatedLocalisationPrefix
         val tooltipLines = mutableSetOf<String>()
         val keys0 = mutableSetOf<String>()

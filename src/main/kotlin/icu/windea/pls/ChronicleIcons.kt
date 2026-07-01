@@ -9,8 +9,8 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.Icon
 
 @Suppress("unused")
-object PlsIcons {
-    private fun getIcon(path: String): Icon = IconLoader.getIcon(path, PlsIcons.javaClass.classLoader)
+object ChronicleIcons {
+    private fun getIcon(path: String): Icon = IconLoader.getIcon(path, ChronicleIcons.javaClass.classLoader)
 
     object General {
         @JvmField val GameDirectory = AllIcons.Nodes.Module

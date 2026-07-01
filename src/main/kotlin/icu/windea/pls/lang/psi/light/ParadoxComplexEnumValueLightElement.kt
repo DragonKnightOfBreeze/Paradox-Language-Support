@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueLightElement(
             else -> ParadoxSearchScopeTypes.All
         }
 
-    override fun getIcon(flags: Int) = PlsIcons.Nodes.ComplexEnumValue(enumName)
+    override fun getIcon(flags: Int) = ChronicleIcons.Nodes.ComplexEnumValue(enumName)
 
     override fun getName() = name
 

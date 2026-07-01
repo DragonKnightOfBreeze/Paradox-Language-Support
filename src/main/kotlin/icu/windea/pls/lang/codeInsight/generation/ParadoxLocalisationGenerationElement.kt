@@ -4,7 +4,7 @@ import com.intellij.codeInsight.generation.ClassMember
 import com.intellij.codeInsight.generation.MemberChooserObject
 import com.intellij.codeInsight.generation.MemberChooserObjectBase
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
@@ -15,7 +15,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         val name: String,
         val info: ParadoxLocalisationCodeInsightInfo,
         val context: ParadoxLocalisationCodeInsightContext
-    ) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Localisation), ClassMember {
+    ) : ParadoxLocalisationGenerationElement(name, ChronicleIcons.Nodes.Localisation), ClassMember {
         override fun getParentNodeDelegate(): MemberChooserObject? {
             return when (context.type) {
                 Type.Definition -> Definition(context.name)
@@ -34,7 +34,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "item: $name"
     }
 
-    class Definition(val name: String) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Definition) {
+    class Definition(val name: String) : ParadoxLocalisationGenerationElement(name, ChronicleIcons.Nodes.Definition) {
         override fun equals(other: Any?) = this === other || (other is Definition && name == other.name)
 
         override fun hashCode() = name.hashCode()
@@ -42,7 +42,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "definition group: $name"
     }
 
-    class Modifier(val name: String) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Modifier) {
+    class Modifier(val name: String) : ParadoxLocalisationGenerationElement(name, ChronicleIcons.Nodes.Modifier) {
         override fun equals(other: Any?) = this === other || (other is Modifier && name == other.name)
 
         override fun hashCode() = name.hashCode()

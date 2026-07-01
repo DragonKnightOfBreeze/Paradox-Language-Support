@@ -13,7 +13,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ElementManipulators
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
@@ -60,7 +60,7 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
         override fun getFamilyName() = ChronicleBundle.message("intention.changeDefinitionInjectionMode.item", mode)
 
         override fun getPresentation(context: ActionContext, element: ParadoxScriptProperty): Presentation {
-            return Presentation.of(mode).withIcon(PlsIcons.Nodes.Macro)
+            return Presentation.of(mode).withIcon(ChronicleIcons.Nodes.Macro)
         }
 
         override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {

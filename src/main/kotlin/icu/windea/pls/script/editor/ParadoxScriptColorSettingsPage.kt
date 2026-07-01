@@ -5,7 +5,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.script.ParadoxScriptConstants
 import icu.windea.pls.script.ParadoxScriptLanguage
 
@@ -119,7 +119,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = _tagToDescriptorMap
 
-    override fun getIcon() = PlsIcons.FileTypes.ParadoxScript
+    override fun getIcon() = ChronicleIcons.FileTypes.ParadoxScript
 
     override fun getAttributeDescriptors() = _attributesDescriptors
 

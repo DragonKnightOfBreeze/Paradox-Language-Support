@@ -16,7 +16,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -173,10 +173,10 @@ object CwtConfigCompletionManager {
     private fun completeBySchemaExpression(schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression, processor: Processor<LookupElementBuilder>): Boolean {
         val icon = when {
             schemaExpression is CwtSchemaExpression.Enum -> AllIcons.Nodes.Enum
-            config is CwtOptionConfig -> PlsIcons.Nodes.Option
-            config is CwtOptionValueConfig -> PlsIcons.Nodes.Value
-            config is CwtPropertyConfig -> PlsIcons.Nodes.Property
-            config is CwtValueConfig -> PlsIcons.Nodes.Value
+            config is CwtOptionConfig -> ChronicleIcons.Nodes.Option
+            config is CwtOptionValueConfig -> ChronicleIcons.Nodes.Value
+            config is CwtPropertyConfig -> ChronicleIcons.Nodes.Property
+            config is CwtValueConfig -> ChronicleIcons.Nodes.Value
             else -> null
         }
         val typeFile = schema.file.pointer.element

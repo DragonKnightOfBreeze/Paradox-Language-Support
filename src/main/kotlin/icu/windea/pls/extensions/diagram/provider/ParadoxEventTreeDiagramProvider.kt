@@ -17,7 +17,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -49,9 +49,9 @@ import javax.swing.JComponent
  */
 abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
     object Categories {
-        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.type"), PlsIcons.Nodes.Type, true, false)
-        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val LocalizedName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.localizedName"), PlsIcons.Nodes.Localisation, false, false)
+        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
+        val LocalizedName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.localizedName"), ChronicleIcons.Nodes.Localisation, false, false)
 
         val All = arrayOf(Type, Properties, LocalizedName)
     }
@@ -157,8 +157,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Type -> PlsIcons.Nodes.Type
-                is Items.Property -> PlsIcons.Nodes.Property
+                is Items.Type -> ChronicleIcons.Nodes.Type
+                is Items.Property -> ChronicleIcons.Nodes.Property
                 else -> null
             }
         }

@@ -3,7 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.ide.util.ModuleRendererFactory
 import com.intellij.psi.PsiElement
 import com.intellij.util.TextWithIcon
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.CwtLanguage
 
@@ -25,6 +25,6 @@ class CwtConfigModuleRenderFactory : ModuleRendererFactory() {
         val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return null
         val gameType = configGroup.gameType
         val text = "${gameType.title} Config"
-        return TextWithIcon(text, PlsIcons.General.ConfigGroupDirectory)
+        return TextWithIcon(text, ChronicleIcons.General.ConfigGroupDirectory)
     }
 }

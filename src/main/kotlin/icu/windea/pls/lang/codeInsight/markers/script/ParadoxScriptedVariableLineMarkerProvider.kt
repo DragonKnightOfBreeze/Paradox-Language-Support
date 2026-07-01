@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.scriptedVariable")
 
-    override fun getIcon() = PlsIcons.Gutter.ScriptedVariable
+    override fun getIcon() = ChronicleIcons.Gutter.ScriptedVariable
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.scriptedVariable.group")
 
@@ -49,7 +49,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         }
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.ScriptedVariable
+        val icon = ChronicleIcons.Gutter.ScriptedVariable
         val prefix = PlsStrings.scriptedVariablePrefix
         val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

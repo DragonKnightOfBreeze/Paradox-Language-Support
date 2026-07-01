@@ -1,7 +1,7 @@
 package icu.windea.pls.csv
 
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.ParadoxFileType
 
 object ParadoxCsvFileType : ParadoxFileType(ParadoxCsvLanguage) {
@@ -13,5 +13,5 @@ object ParadoxCsvFileType : ParadoxFileType(ParadoxCsvLanguage) {
 
     override fun getDefaultExtension() = "csv"
 
-    override fun getIcon() = PlsIcons.FileTypes.ParadoxCsv
+    override fun getIcon() = ChronicleIcons.FileTypes.ParadoxCsv
 }

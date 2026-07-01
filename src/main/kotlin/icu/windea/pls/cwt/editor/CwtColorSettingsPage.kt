@@ -5,7 +5,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.cwt.CwtConstants
 import icu.windea.pls.cwt.CwtLanguage
 
@@ -30,7 +30,7 @@ class CwtColorSettingsPage : ColorSettingsPage {
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = null
 
-    override fun getIcon() = PlsIcons.FileTypes.Cwt
+    override fun getIcon() = ChronicleIcons.FileTypes.Cwt
 
     override fun getAttributeDescriptors() = _attributesDescriptors
 

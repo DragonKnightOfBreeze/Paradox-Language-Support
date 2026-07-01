@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.inlineScripts")
 
-    override fun getIcon() = PlsIcons.Gutter.InlineScripts
+    override fun getIcon() = ChronicleIcons.Gutter.InlineScripts
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.inlineScripts.group")
 
@@ -37,7 +37,7 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element) ?: return
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.InlineScripts
+        val icon = ChronicleIcons.Gutter.InlineScripts
         val prefix = PlsStrings.inlineScriptPrefix
         val tooltip = "$prefix <b>${expression.escapeXml()}"
         val targets by lazy {

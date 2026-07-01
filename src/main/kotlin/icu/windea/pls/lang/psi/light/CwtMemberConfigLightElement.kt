@@ -2,7 +2,7 @@ package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -21,8 +21,8 @@ class CwtMemberConfigLightElement(
 ) : CwtConfigLightElementBase(parent) {
     override fun getIcon(flags: Int): Icon {
         return when (config) {
-            is CwtPropertyConfig -> PlsIcons.Nodes.Property
-            is CwtValueConfig -> PlsIcons.Nodes.Value
+            is CwtPropertyConfig -> ChronicleIcons.Nodes.Property
+            is CwtValueConfig -> ChronicleIcons.Nodes.Value
         }
     }
 

@@ -2,7 +2,7 @@ package icu.windea.pls.script.navigation
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -55,36 +55,36 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 模组描述符文件
                     if (!element.name.endsWith(".mod", true)) return@run
-                    return PlsIcons.FileTypes.ModDescriptor
+                    return ChronicleIcons.FileTypes.ModDescriptor
                 }
                 run {
                     // 作为定义的文件
                     val definitionInfo = element.definitionInfo ?: return@run
-                    return PlsIcons.Nodes.Definition(definitionInfo.type)
+                    return ChronicleIcons.Nodes.Definition(definitionInfo.type)
                 }
             }
             is ParadoxScriptProperty -> {
                 run {
                     // 作为内联脚本用法的属性
                     if (!ParadoxPsiMatcher.isInlineScriptUsage(element, selectGameType(element))) return@run
-                    return PlsIcons.Nodes.Macro
+                    return ChronicleIcons.Nodes.Macro
                 }
                 run {
                     // 作为定义注入的属性
                     if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, selectGameType(element))) return@run
-                    return PlsIcons.Nodes.Macro
+                    return ChronicleIcons.Nodes.Macro
                 }
                 run {
                     // 作为定义的属性
                     val definitionInfo = element.definitionInfo ?: return@run
-                    return PlsIcons.Nodes.Definition(definitionInfo.type)
+                    return ChronicleIcons.Nodes.Definition(definitionInfo.type)
                 }
                 run {
                     // 作为定值的命名空间或变量的属性
                     val defineInfo = element.defineInfo ?: return@run
                     return when (defineInfo) {
-                        is ParadoxDefineNamespaceInfo -> PlsIcons.Nodes.DefineNamespace
-                        is ParadoxDefineVariableInfo -> PlsIcons.Nodes.DefineVariable
+                        is ParadoxDefineNamespaceInfo -> ChronicleIcons.Nodes.DefineNamespace
+                        is ParadoxDefineVariableInfo -> ChronicleIcons.Nodes.DefineVariable
                     }
                 }
             }
@@ -92,7 +92,7 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 作为复杂枚举值的字符串表达式
                     val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
-                    return PlsIcons.Nodes.ComplexEnumValue(complexEnumValueInfo.enumName)
+                    return ChronicleIcons.Nodes.ComplexEnumValue(complexEnumValueInfo.enumName)
                 }
             }
         }

@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionInjectionTargets")
 
-    override fun getIcon() = PlsIcons.Gutter.DefinitionInjectionTargets
+    override fun getIcon() = ChronicleIcons.Gutter.DefinitionInjectionTargets
 
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionInjectionTargets.group")
 
@@ -40,7 +40,7 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
         if (!info.isTargetValid()) return // 排除目标或目标类型为空的情况
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.DefinitionInjectionTargets
+        val icon = ChronicleIcons.Gutter.DefinitionInjectionTargets
         val prefix = PlsStrings.definitionInjectionTargetPrefix
         val tooltip = "$prefix <b>${info.target.orEmpty().escapeXml()}</b>: ${info.typeText}"
         val targets by lazy {

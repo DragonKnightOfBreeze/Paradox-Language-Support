@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
@@ -70,10 +70,10 @@ object ParadoxFileManager {
 
     fun getFileTypeIcon(fileGroup: ParadoxFileGroup): Icon? {
         return when (fileGroup) {
-            ParadoxFileGroup.Script -> PlsIcons.FileTypes.ParadoxScript
-            ParadoxFileGroup.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
-            ParadoxFileGroup.Csv -> PlsIcons.FileTypes.ParadoxCsv
-            ParadoxFileGroup.ModDescriptor -> PlsIcons.FileTypes.ModDescriptor
+            ParadoxFileGroup.Script -> ChronicleIcons.FileTypes.ParadoxScript
+            ParadoxFileGroup.Localisation -> ChronicleIcons.FileTypes.ParadoxLocalisation
+            ParadoxFileGroup.Csv -> ChronicleIcons.FileTypes.ParadoxCsv
+            ParadoxFileGroup.ModDescriptor -> ChronicleIcons.FileTypes.ModDescriptor
             else -> null
         }
     }
