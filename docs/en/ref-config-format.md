@@ -525,7 +525,7 @@ Field Explanation:
 
 Field Explanation for Column Configs:
 
-- `## declare_complex_enum`: Indicates that this column declares a complex enum value of specified type (rather than a reference).
+- `## declare_complex_enum`: Indicates that this column declares a complex enum value of the specified type (rather than a reference).
 
 The path matching logic of row configs is the same as in [type configs](#config-type).
 

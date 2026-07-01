@@ -632,6 +632,11 @@ $$options = {
     #### Example: `## graph_related_types = { special_project anomaly_category }`
     graph_related_types
 
+    #### Indicates that the current column declares a complex enum value of the specified type (rather than a reference).
+    ####
+    #### Example: `## declare_complex_enum = weapon_tag`
+    declare_complex_enum
+
     #### Specifies the severity (for config-based code inspections).
     ####
     #### Example: `## severity = warning`

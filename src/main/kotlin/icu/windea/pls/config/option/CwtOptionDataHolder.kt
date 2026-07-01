@@ -413,6 +413,19 @@ interface CwtOptionDataHolder : UserDataHolder {
     val graphRelatedTypes: Set<String>?
 
     /**
+     * 表示当前列声明了一个指定类型的复杂枚举值（而非引用）。
+     *
+     * 示例：
+     *
+     * ```cwt
+     * ## declare_complex_enum = weapon_tag
+     * ```cwt
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val declareComplexEnum: String?
+
+    /**
      * 基于规则的代码检查的严重度（severity）。
      *
      * 示例：

@@ -38,6 +38,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val startsWith by registerKey<String?>(this)
         val onlyIfNot by registerKey<Set<String>?>(this)
         val graphRelatedTypes by registerKey<Set<String>?>(this)
+        val declareComplexEnum by registerKey<String?>(this)
         val severity by registerKey<String?>(this)
         val modifierCategories by registerKey<Set<String>?>(this)
         val colorType by registerKey<String?>(this)
@@ -74,6 +75,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     final override var startsWith by Keys.startsWith
     final override var onlyIfNot by Keys.onlyIfNot
     final override var graphRelatedTypes by Keys.graphRelatedTypes
+    final override var declareComplexEnum by Keys.declareComplexEnum
     final override var severity by Keys.severity
     final override var modifierCategories by Keys.modifierCategories
     final override var colorType by Keys.colorType
