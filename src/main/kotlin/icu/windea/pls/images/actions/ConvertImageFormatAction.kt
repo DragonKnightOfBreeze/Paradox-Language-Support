@@ -28,7 +28,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.images.ImageService
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
@@ -109,7 +109,7 @@ abstract class ConvertImageFormatAction(
                     files.size -> ChronicleBundle.message("convertImageFormat.error.1", targetFormatName)
                     else -> ChronicleBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
-                val notification = PlsNotificationGroups.global().createNotification(content, NotificationType.WARNING)
+                val notification = ChronicleNotificationGroups.global().createNotification(content, NotificationType.WARNING)
                 notification.notify(targetDirectory.project)
             }
         } catch (e: Exception) {

@@ -10,7 +10,7 @@ import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
@@ -92,7 +92,7 @@ object ParadoxLocalisationGenerationManager {
 
     private fun generateAndOpenFile(file: PsiFile, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocaleConfig, elements: List<ParadoxLocalisationGenerationElement.Item>) {
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val title = getProgressTitle(context)
             val generatedFile = withModalProgress(project, title) {

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -106,7 +106,7 @@ object ParadoxMatchResultProvider {
     fun getCached(element: PsiElement, project: Project, key: MatchResultNestedCacheKey, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
-        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
+        val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(rootFile))
         val cache = configGroup.getOrPutUserData(key).value.get(rootFile)
         return cache.get(cacheKey, matchResultProvider)
     }

@@ -11,7 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 // com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
 // org.intellij.grammar.inspection.BnfInspectionSuppressor
@@ -54,7 +54,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container !is PsiFile) return
-            val text = PlsConstants.suppressInspectionsTagName + " " + myID
+            val text = ChronicleConstants.suppressInspectionsTagName + " " + myID
             val comment = SuppressionUtil.createComment(project, text, ParadoxLocalisationLanguage)
             container.addAfter(comment, null)
         }

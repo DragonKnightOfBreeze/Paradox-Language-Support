@@ -12,7 +12,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementVisitor
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.integrations.translation.TranslationToolService
@@ -98,7 +98,7 @@ object ParadoxLocalisationManipulationService {
         return object : AnAction(ChronicleBundle.message("manipulation.localisation.revert")) {
             override fun actionPerformed(e: AnActionEvent) {
                 val project = e.project ?: return
-                val coroutineScope = PlsFacade.getCoroutineScope(project)
+                val coroutineScope = ChronicleFacade.getCoroutineScope(project)
                 coroutineScope.launch {
                     withBackgroundProgress(project, ChronicleBundle.message("manipulation.localisation.revert.progress.title")) {
                         writeCommandAction(project, ChronicleBundle.message("manipulation.localisation.revert.command")) {
@@ -118,7 +118,7 @@ object ParadoxLocalisationManipulationService {
         return object : AnAction(ChronicleBundle.message("manipulation.localisation.reapply")) {
             override fun actionPerformed(e: AnActionEvent) {
                 val project = e.project ?: return
-                val coroutineScope = PlsFacade.getCoroutineScope(project)
+                val coroutineScope = ChronicleFacade.getCoroutineScope(project)
                 coroutineScope.launch {
                     withBackgroundProgress(project, ChronicleBundle.message("manipulation.localisation.reapply.progress.title")) {
                         writeCommandAction(project, ChronicleBundle.message("manipulation.localisation.reapply.command")) {

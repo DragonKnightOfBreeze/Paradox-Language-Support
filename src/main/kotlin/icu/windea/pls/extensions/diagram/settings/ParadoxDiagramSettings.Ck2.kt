@@ -11,11 +11,11 @@ import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 @WithGameType(ParadoxGameType.Ck2)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Ck2.EventTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "ParadoxDiagramSettings.Ck2.EventTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class Ck2EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Ck2EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Ck2) {

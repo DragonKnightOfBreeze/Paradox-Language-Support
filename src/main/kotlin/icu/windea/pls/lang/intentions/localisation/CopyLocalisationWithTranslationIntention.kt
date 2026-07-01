@@ -16,7 +16,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
@@ -71,12 +71,12 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
             val content = ChronicleBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
-            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+            return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = ChronicleBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.failed()) + errorDetails
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

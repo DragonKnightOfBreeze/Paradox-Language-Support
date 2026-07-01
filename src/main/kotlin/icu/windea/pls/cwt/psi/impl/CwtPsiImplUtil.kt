@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -45,7 +45,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
@@ -230,12 +230,12 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
     fun getExpression(element: CwtBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic

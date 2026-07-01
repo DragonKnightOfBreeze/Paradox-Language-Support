@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.util.values.singletonList
@@ -104,7 +104,7 @@ object ParadoxTypeManager {
                     val complexEnumValueInfo = element.complexEnumValueInfo
                     if (complexEnumValueInfo != null) {
                         val gameType = complexEnumValueInfo.gameType
-                        val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
+                        val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
                         val enumName = complexEnumValueInfo.enumName
                         val config = configGroup.complexEnums[enumName] ?: return emptyList() // unexpected
                         val resolved = config.pointer.element ?: return emptyList()

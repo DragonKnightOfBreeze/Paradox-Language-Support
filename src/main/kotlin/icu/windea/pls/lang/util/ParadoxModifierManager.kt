@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -73,7 +73,7 @@ object ParadoxModifierManager {
         val name = element.value
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
 
@@ -189,7 +189,7 @@ object ParadoxModifierManager {
         val gameType = selectGameType(element) ?: return null
         val rootFile = selectRootFile(element) ?: return null
         val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = name
         val modifierInfo = cache.get(cacheKey) {
@@ -204,7 +204,7 @@ object ParadoxModifierManager {
         val gameType = modifierElement.gameType
         val rootFile = selectRootFile(modifierElement) ?: return null
         val project = modifierElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = modifierElement.name
         val modifierInfo = cache.get(cacheKey) {

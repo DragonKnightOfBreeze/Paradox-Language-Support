@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -21,7 +21,7 @@ class MissingColumnsInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的 CSV 文件
         return ParadoxPsiFileMatcher.isCsvFile(file, injectable = !ignoredInInjectedFiles)
     }

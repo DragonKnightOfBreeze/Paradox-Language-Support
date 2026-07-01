@@ -17,7 +17,7 @@ import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
@@ -57,12 +57,12 @@ interface ParadoxModDependenciesToolbarActions {
                     table.addModDependencies(newSettingsList)
 
                     val content = ChronicleBundle.message("mod.dependencies.add.info", count)
-                    PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
+                    ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
                     val content = ChronicleBundle.message("mod.dependencies.add.error") + e.message.errorDetails
-                    PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+                    ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
                 }
             }
         }

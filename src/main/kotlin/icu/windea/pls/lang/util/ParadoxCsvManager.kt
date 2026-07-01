@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.castOrNull
@@ -54,7 +54,7 @@ object ParadoxCsvManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val matchContext = CwtRowConfigMatchContext(configGroup, path)
         val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(matchContext)
         return rowConfig

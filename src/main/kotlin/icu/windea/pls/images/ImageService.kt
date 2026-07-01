@@ -10,7 +10,7 @@ import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.spi.DdsImageReaderSpi
 import icu.windea.pls.images.spi.TgaImageReaderSpi
 import icu.windea.pls.images.tga.TgaFileType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.awt.image.BufferedImage
 import java.io.InputStream
@@ -66,13 +66,13 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
-        if (pluginDescriptor.pluginId != PlsConstants.pluginId) return
+        if (pluginDescriptor.pluginId != ChronicleConstants.pluginId) return
         registerImageIOSpi()
         setFileNameMap()
     }
 
     override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
-        if (pluginDescriptor.pluginId != PlsConstants.pluginId) return
+        if (pluginDescriptor.pluginId != ChronicleConstants.pluginId) return
         deregisterImageIOSpi()
         resetFileNameMap()
     }

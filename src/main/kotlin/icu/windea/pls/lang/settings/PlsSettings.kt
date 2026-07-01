@@ -14,14 +14,14 @@ import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 /**
  * 插件的全局设置。
  */
 @Service
-@State(name = "PlsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     companion object {
         @JvmStatic

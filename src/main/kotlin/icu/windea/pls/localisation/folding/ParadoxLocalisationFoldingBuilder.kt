@@ -17,17 +17,17 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            COMMENT -> PlsStrings.commentFolder
-            PROPERTY_VALUE -> PlsStrings.quotedFolder
+            COMMENT -> ChronicleStrings.commentFolder
+            PROPERTY_VALUE -> ChronicleStrings.quotedFolder
             PARAMETER -> ""
             ICON -> ""
-            COMMAND -> PlsStrings.commandFolder
-            CONCEPT_COMMAND -> PlsStrings.conceptCommandFolder
+            COMMAND -> ChronicleStrings.commandFolder
+            CONCEPT_COMMAND -> ChronicleStrings.conceptCommandFolder
             CONCEPT_TEXT -> "..."
             else -> null
         }
@@ -87,12 +87,12 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             }
             COMMAND -> run {
                 if (!settings.localisationCommands) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, PlsStrings.commandFolder))
+                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, ChronicleStrings.commandFolder))
             }
             CONCEPT_COMMAND -> run {
                 if (!settings.localisationConceptCommands) return@run
                 val conceptTextNode = element.findChild { it.elementType == CONCEPT_TEXT }
-                val placeholder = if (conceptTextNode == null) PlsStrings.conceptCommandFolder else PlsStrings.conceptCommandWithTextFolder
+                val placeholder = if (conceptTextNode == null) ChronicleStrings.conceptCommandFolder else ChronicleStrings.conceptCommandWithTextFolder
                 descriptors.add(FoldingDescriptor(element.node, element.textRange, null, placeholder))
             }
             CONCEPT_TEXT -> run {

@@ -3,7 +3,7 @@ package icu.windea.pls.inject
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
@@ -30,7 +30,7 @@ object CodeInjectorContext {
     @PublishedApi @JvmField internal val continueInvocationException: ContinueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
 
     fun init() {
-        if (!PlsFacade.isUnitTestMode()) {
+        if (!ChronicleFacade.isUnitTestMode()) {
             application.putUserData(applyInjectionMethodKey, CodeInjectorContext.javaClass.methods.first { it.name == "applyInjection" })
         }
 
@@ -78,7 +78,7 @@ object CodeInjectorContext {
     }
 
     fun cleanUp() {
-        if (!PlsFacade.isUnitTestMode()) {
+        if (!ChronicleFacade.isUnitTestMode()) {
             application.putUserData(applyInjectionMethodKey, null)
         }
 
@@ -129,7 +129,7 @@ object CodeInjectorContext {
         try {
             return method.invoke(codeInjector, *finalArgs)
         } catch (e: InvocationTargetException) {
-            if (!PlsFacade.isUnitTestMode()) {
+            if (!ChronicleFacade.isUnitTestMode()) {
                 throw e.targetException ?: e
             }
             throw e

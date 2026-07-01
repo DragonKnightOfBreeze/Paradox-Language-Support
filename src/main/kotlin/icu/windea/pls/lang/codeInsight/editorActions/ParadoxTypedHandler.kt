@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -36,7 +36,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         if (element == null) return null
 
         val gameType = selectGameType(file) ?: return null
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
         if (complexExpression == null) return null
 

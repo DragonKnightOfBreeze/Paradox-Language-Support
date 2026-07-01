@@ -8,7 +8,7 @@ import com.intellij.openapi.command.writeCommandAction
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.context
@@ -34,7 +34,7 @@ sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActi
         val container = anchorRow.parent ?: return
         val project = file.project
         val header = file.castOrNull<ParadoxCsvFile>()?.header ?: return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
@@ -66,7 +66,7 @@ sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowAction
         // 实际上是交换而非移动
 
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch
@@ -122,7 +122,7 @@ class SelectRowAction : ManipulateRowActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
         val project = file.project
         val editor = e.editor ?: return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch
@@ -146,7 +146,7 @@ class RemoveRowAction : ManipulateRowActionBase() {
 
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.index
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.model.ParadoxGameType
@@ -19,7 +19,7 @@ data class ParadoxComplexEnumValueIndexInfo(
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
     val config: CwtComplexEnumConfig?
-        get() = PlsFacade.getConfigGroup(gameType).complexEnums[enumName]
+        get() = ChronicleFacade.getConfigGroup(gameType).complexEnums[enumName]
     val caseInsensitive: Boolean
         get() = config?.caseInsensitive ?: false
 

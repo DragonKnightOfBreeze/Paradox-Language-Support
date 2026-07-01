@@ -10,13 +10,13 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.integrations.lints.TigerLintResult.*
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * 插件的集成设置。
  */
 @Service
-@State(name = "PlsIntegrationsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsIntegrationsSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSettings.State>(State()) {
     companion object {
         @JvmStatic

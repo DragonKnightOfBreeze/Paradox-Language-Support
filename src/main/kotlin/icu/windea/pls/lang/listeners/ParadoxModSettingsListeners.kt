@@ -7,7 +7,7 @@ import com.intellij.ui.EditorNotifications
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.ParadoxLibrary
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
@@ -39,8 +39,8 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         }
 
         // 重新解析根目录下已打开的文件
-        val allOpenFiles = PlsAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
-        PlsAnalysisManager.reparseFiles(allOpenFiles)
+        val allOpenFiles = ChronicleAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
+        ChronicleAnalysisManager.reparseFiles(allOpenFiles)
     }
 }
 

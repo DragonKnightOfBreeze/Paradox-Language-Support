@@ -4,13 +4,13 @@ import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 
 class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
     private val defaultTemplates by lazy {
         buildSet<PostfixTemplate> {
             val provider = this@ParadoxPostfixTemplateProvider
-            val postfixTemplateSettings = PlsFacade.getConfigGroup().postfixTemplateSettings
+            val postfixTemplateSettings = ChronicleFacade.getConfigGroup().postfixTemplateSettings
             for ((groupName, settings) in postfixTemplateSettings) {
                 when (groupName) {
                     ParadoxVariableOperationExpressionPostfixTemplate.Constants.groupName -> {

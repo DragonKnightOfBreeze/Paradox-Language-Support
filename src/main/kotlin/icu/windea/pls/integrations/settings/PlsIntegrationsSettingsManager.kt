@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
@@ -65,7 +65,7 @@ object PlsIntegrationsSettingsManager {
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onTigerSettingsChanged")) return
 
-        PlsAnalysisManager.refreshInlayHints()
+        ChronicleAnalysisManager.refreshInlayHints()
     }
 
     fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {

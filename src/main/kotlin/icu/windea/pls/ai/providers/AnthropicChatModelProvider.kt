@@ -5,7 +5,7 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import dev.langchain4j.model.anthropic.AnthropicChatModel
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
@@ -48,7 +48,7 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
             checkHelloWorld(options, baseUrl, ref)
         }
         when {
-            PlsFacade.isUnitTestMode() -> runBlocking { action() }
+            ChronicleFacade.isUnitTestMode() -> runBlocking { action() }
             else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleAiBundle.message("ai.test.progress.title")) { action() }
         }
 
@@ -80,7 +80,7 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
         companion object {
             fun get(): Options? {
                 return when {
-                    PlsFacade.isUnitTestMode() -> forUnitTest()
+                    ChronicleFacade.isUnitTestMode() -> forUnitTest()
                     else -> fromSettings()
                 }
             }

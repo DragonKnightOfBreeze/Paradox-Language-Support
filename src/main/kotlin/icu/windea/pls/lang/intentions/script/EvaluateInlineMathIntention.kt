@@ -11,7 +11,7 @@ import com.intellij.modcommand.PsiBasedModCommandAction
 import com.intellij.openapi.application.EDT
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
@@ -35,7 +35,7 @@ class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInline
     override fun perform(context: ActionContext, element: ParadoxScriptInlineMath): ModCommand {
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return ModCommand.nop()
         val project = context.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
                 val dialog = ParadoxInlineMathEvaluatorDialog(project, element)

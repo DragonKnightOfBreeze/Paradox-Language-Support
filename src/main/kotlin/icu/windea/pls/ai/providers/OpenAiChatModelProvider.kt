@@ -7,7 +7,7 @@ import com.intellij.util.io.HttpRequests
 import dev.langchain4j.model.chat.Capability
 import dev.langchain4j.model.openai.OpenAiChatModel
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
@@ -58,7 +58,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
             checkHelloWorld(options, baseUrl, ref)
         }
         when {
-            PlsFacade.isUnitTestMode() -> runBlocking { action() }
+            ChronicleFacade.isUnitTestMode() -> runBlocking { action() }
             else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleAiBundle.message("ai.test.progress.title")) { action() }
         }
 
@@ -105,7 +105,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
         companion object {
             fun get(): Options? {
                 return when {
-                    PlsFacade.isUnitTestMode() -> forUnitTest()
+                    ChronicleFacade.isUnitTestMode() -> forUnitTest()
                     else -> fromSettings()
                 }
             }

@@ -287,12 +287,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
     fun getExpression(element: ParadoxScriptBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
@@ -346,7 +346,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptConditionalBlock): String? {
-        return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
+        return element.conditionExpression?.let { ChronicleStrings.conditionalBlockFolder(it) }
     }
 
     @JvmStatic
@@ -401,7 +401,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptInlineConditionalBlock): String? {
-        return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
+        return element.conditionExpression?.let { ChronicleStrings.conditionalBlockFolder(it) }
     }
 
     @JvmStatic
@@ -459,12 +459,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return PlsStrings.inlineMathFolder
+        return ChronicleStrings.inlineMathFolder
     }
 
     @JvmStatic
     fun getExpression(element: ParadoxScriptInlineMath): String {
-        return PlsStrings.inlineMathFolder
+        return ChronicleStrings.inlineMathFolder
     }
 
     @JvmStatic

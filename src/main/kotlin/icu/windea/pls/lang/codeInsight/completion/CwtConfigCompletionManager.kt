@@ -36,7 +36,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.type.CwtExpressionType
 
@@ -431,7 +431,7 @@ object CwtConfigCompletionManager {
             else -> return null
         }
         val valueText = when {
-            insertCurlyBraces -> PlsStrings.blockFolder
+            insertCurlyBraces -> ChronicleStrings.blockFolder
             config is CwtOptionMemberConfig<*> -> config.value
             config is CwtMemberConfig<*> -> config.value
             else -> return null

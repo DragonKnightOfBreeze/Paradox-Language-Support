@@ -15,7 +15,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
@@ -149,7 +149,7 @@ class TigerLintToolService : Disposable {
         val title = ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
         val content = e.message?.let { message -> ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        PlsNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
+        ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
     }
 
     override fun dispose() {

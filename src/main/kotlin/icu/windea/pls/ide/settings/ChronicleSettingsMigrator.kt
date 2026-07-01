@@ -5,13 +5,13 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import java.nio.file.Paths
 import kotlin.io.path.notExists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
-class PlsSettingsMigrator : AppLifecycleListener {
+class ChronicleSettingsMigrator : AppLifecycleListener {
     private val logger = thisLogger()
     private val migrationPropertyName = "pls.settings.migration"
     private val migrationVersion = 2
@@ -49,7 +49,7 @@ class PlsSettingsMigrator : AppLifecycleListener {
         if (v >= migrationVersion) return
 
         val optionsPath = PathManager.getOptionsPath()
-        val settingsFileName = PlsConstants.pluginSettingsFileName
+        val settingsFileName = ChronicleConstants.pluginSettingsFileName
         val settingsFile = Paths.get(optionsPath, settingsFileName)
         if (settingsFile.notExists()) return
 

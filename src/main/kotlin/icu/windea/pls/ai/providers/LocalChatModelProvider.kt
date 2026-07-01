@@ -6,7 +6,7 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.io.HttpRequests
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
@@ -54,7 +54,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
             checkHelloWorld(options, baseUrl, ref)
         }
         when {
-            PlsFacade.isUnitTestMode() -> runBlocking { action() }
+            ChronicleFacade.isUnitTestMode() -> runBlocking { action() }
             else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleAiBundle.message("ai.test.progress.title")) { action() }
         }
 
@@ -115,7 +115,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
         companion object {
             fun get(): Options? {
                 return when {
-                    PlsFacade.isUnitTestMode() -> forUnitTest()
+                    ChronicleFacade.isUnitTestMode() -> forUnitTest()
                     else -> fromSettings()
                 }
             }

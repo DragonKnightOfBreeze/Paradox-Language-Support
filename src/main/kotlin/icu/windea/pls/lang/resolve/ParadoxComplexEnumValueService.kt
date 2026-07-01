@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -26,7 +26,7 @@ object ParadoxComplexEnumValueService {
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
         if (ParadoxInlineScriptManager.isMatched(name, gameType)) return null // 排除是内联脚本用法的情况
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
         val config = ParadoxConfigMatchService.getMatchedComplexEnumConfig(matchContext, element) ?: return null
         val enumName = config.name

@@ -16,7 +16,7 @@ import com.intellij.platform.util.progress.reportSequentialProgress
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -300,7 +300,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         }
 
         override fun getModificationTracker(): ModificationTracker {
-            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(project, provider.gameType)
             return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }

@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
@@ -23,7 +23,7 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
     private val counter = AtomicInteger()
     private val unresolved = FallbackStrings.unresolved
-    private val blockFolder = PlsStrings.blockFolder
+    private val blockFolder = ChronicleStrings.blockFolder
 
     override fun getTestDataPath() = "src/test/testData"
 

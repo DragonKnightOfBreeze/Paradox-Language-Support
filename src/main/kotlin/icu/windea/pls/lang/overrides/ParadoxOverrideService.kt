@@ -3,7 +3,7 @@ package icu.windea.pls.lang.overrides
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
@@ -170,7 +170,7 @@ object ParadoxOverrideService {
     }
 
     private fun isValid(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo is ParadoxRootInfo.MetadataBased || PlsFacade.isUnitTestMode()
+        return fileInfo.rootInfo is ParadoxRootInfo.MetadataBased || ChronicleFacade.isUnitTestMode()
     }
 
     private fun isVanilla(fileInfo: ParadoxFileInfo): Boolean {

@@ -1,6 +1,6 @@
 package icu.windea.pls.ide.help
 
-object PlsHelpTopics {
+object ChronicleHelpTopics {
     const val configSettings = "icu.windea.pls.config.settings"
     const val integrationsSettings = "icu.windea.pls.integrations.settings"
     const val aiSettings = "icu.windea.pls.ai.settings"

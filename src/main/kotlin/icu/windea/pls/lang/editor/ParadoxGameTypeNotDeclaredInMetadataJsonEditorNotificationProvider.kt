@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
@@ -56,7 +56,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
     }
 
     private fun declareGameType(project: Project, gameType: ParadoxGameType, metadata: ParadoxMetadataJsonBasedModMetadata) {
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch {
             writeCommandAction(project, ChronicleBundle.message("editor.notification.2.action.command")) {
                 updateGameType(metadata, gameType)

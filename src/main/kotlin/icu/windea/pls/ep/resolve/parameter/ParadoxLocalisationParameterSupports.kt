@@ -20,7 +20,7 @@ import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ReferenceLinkType
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
@@ -64,7 +64,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
 
         // 加上名字
         val name = element.name
-        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
 
         // 加上所属本地化信息
         val gameType = element.gameType

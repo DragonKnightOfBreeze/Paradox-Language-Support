@@ -16,7 +16,7 @@ import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * 插件的资料设置。
@@ -24,7 +24,7 @@ import icu.windea.pls.model.constants.PlsConstants
  * 由插件自动根据游戏信息与模组信息进行配置。
  */
 @Service
-@State(name = "PlsProfilesSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsProfilesSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettings.State>(State()) {
     fun getGameSettings(rootInfo: ParadoxRootInfo.Game): ParadoxGameSettingsState? {
         return state.gameSettings.get(rootInfo.rootFile.path)

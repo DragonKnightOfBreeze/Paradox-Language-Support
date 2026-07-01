@@ -2,7 +2,7 @@ package icu.windea.pls.config.attributes
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -36,7 +36,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun loadDeclarations(): Map<String, CwtDeclarationConfig> {
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return configGroup.declarations
     }
 

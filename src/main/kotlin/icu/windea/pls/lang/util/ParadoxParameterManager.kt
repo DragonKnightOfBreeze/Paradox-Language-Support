@@ -12,7 +12,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -269,7 +269,7 @@ object ParadoxParameterManager {
     fun getParameterInfo(parameterElement: ParadoxParameterLightElement): ParadoxParameterInfo? {
         val rootFile = selectRootFile(parameterElement) ?: return null
         val project = parameterElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, parameterElement.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, parameterElement.gameType)
         val cache = configGroup.parameterInfoCache.get(rootFile)
         val cacheKey = "${parameterElement.name}@${parameterElement.contextKey}"
         val parameterInfo = cache.get(cacheKey) {

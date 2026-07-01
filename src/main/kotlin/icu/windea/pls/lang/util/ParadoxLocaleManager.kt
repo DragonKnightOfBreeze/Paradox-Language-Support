@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.DynamicBundle
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.pinned
@@ -28,7 +28,7 @@ object ParadoxLocaleManager {
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {
-        val configGroup = PlsFacade.getConfigGroup()
+        val configGroup = ChronicleFacade.getConfigGroup()
 
         val locales = configGroup.locales
         val locale = locales[id]
@@ -54,7 +54,7 @@ object ParadoxLocaleManager {
             if (id == ID_AUTO) return CwtLocaleConfig.resolveAuto()
             if (id == ID_AUTO_OS) return CwtLocaleConfig.resolveAutoOs()
         }
-        val configGroup = PlsFacade.getConfigGroup()
+        val configGroup = ChronicleFacade.getConfigGroup()
         val locale = configGroup.locales[id] ?: return null
         if (!includeDefault) {
             if (locale.id == ID_DEFAULT) return null
@@ -74,11 +74,11 @@ object ParadoxLocaleManager {
         return locale
     }
 
-    fun getGlobalLocales(configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
+    fun getGlobalLocales(configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
         return collectLocaleConfigs(configGroup.globalLocales, includeAuto, includeDefault, pinPreferred)
     }
 
-    fun getSupportedLocales(configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
+    fun getSupportedLocales(configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
         return collectLocaleConfigs(configGroup.supportedLocales, includeAuto, includeDefault, pinPreferred)
     }
 

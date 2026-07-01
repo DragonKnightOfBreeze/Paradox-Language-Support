@@ -8,13 +8,13 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * 插件的规则设置。
  */
 @Service
-@State(name = "PlsConfigSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsConfigSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State>(State()) {
     companion object {
         @JvmStatic

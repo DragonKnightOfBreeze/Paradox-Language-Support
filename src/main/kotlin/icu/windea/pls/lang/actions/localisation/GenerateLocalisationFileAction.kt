@@ -15,7 +15,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -25,7 +25,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -150,7 +150,7 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                PlsNotificationGroups.global().createNotification(
+                ChronicleNotificationGroups.global().createNotification(
                     ChronicleBundle.message("notification.generateLocalisationFile.success.title"),
                     ChronicleBundle.message("notification.generateLocalisationFile.success.content", generated, total),
                     NotificationType.INFORMATION
@@ -175,7 +175,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     private fun findLocales(e: AnActionEvent): Map<String, CwtLocaleConfig> {
-        val configGroup = PlsFacade.getConfigGroup(e)
+        val configGroup = ChronicleFacade.getConfigGroup(e)
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
         return supportedLocales.associateBy { it.shortId }
     }

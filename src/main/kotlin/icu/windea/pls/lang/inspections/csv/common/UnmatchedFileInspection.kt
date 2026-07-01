@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
@@ -40,7 +40,7 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
         // 忽略直接位于游戏或入口目录下的文件
         if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的 CSV 文件
         return ParadoxPsiFileMatcher.isCsvFile(file)
     }

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.collections.orNull
@@ -34,7 +34,7 @@ object ParadoxDefinitionInjectionService {
         if (expression.isParameterized()) return null // 忽略带参数的情况
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val config = configGroup.macrosModel.forDefinitionInjections ?: return null
         val modeConfig = config.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)

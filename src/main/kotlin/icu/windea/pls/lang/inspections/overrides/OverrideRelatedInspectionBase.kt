@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.overrides
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
@@ -21,7 +21,7 @@ abstract class OverrideRelatedInspectionBase : LocalInspectionTool() {
         val vFile = file.virtualFile ?: return false
         if (VirtualFileService.isLightFile(vFile)) return false // skip for in-memory files
         val fileInfo = file.fileInfo ?: return false
-        if (PlsFacade.isUnitTestMode()) return true // make compatible with tests
+        if (ChronicleFacade.isUnitTestMode()) return true // make compatible with tests
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return false // only for game or mod files
         if (!ProjectFileIndex.getInstance(file.project).isInContent(vFile)) return false // only for project files
         return true

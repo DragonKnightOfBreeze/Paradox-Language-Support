@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
@@ -27,7 +27,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val gameType = fileInfo.rootInfo.gameType
         val filePath = fileInfo.path.path
         val project = queryParameters.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val extraWords = getExtraWords(target, filePath, configGroup)
         if (extraWords.isEmpty()) return
 

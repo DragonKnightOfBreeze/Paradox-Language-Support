@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
@@ -31,7 +31,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val directoryName = relativePath.substringBefore('/')
         val gameTypeId = getGameTypeIdFromDirectoryName(project, directoryName) ?: return null
         val gameType = ParadoxGameType.get(gameTypeId) ?: ParadoxGameType.Core
-        return PlsFacade.getConfigGroup(project, gameType)
+        return ChronicleFacade.getConfigGroup(project, gameType)
     }
 
     override fun processFiles(configGroup: CwtConfigGroup, rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean): Boolean {

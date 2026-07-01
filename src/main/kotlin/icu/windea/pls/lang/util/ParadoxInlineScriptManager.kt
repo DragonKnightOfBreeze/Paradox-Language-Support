@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
@@ -43,7 +43,7 @@ object ParadoxInlineScriptManager {
      */
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
         val configs = configGroup.macrosModel.forInlineScripts
         if (configs.isEmpty()) return false
         return true

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvi
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -37,7 +37,7 @@ class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProv
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.DefineVariable
-        val prefix = PlsStrings.defineVariablePrefix
+        val prefix = ChronicleStrings.defineVariablePrefix
         val tooltip = "$prefix <b>${defineVariableInfo.namespace.escapeXml()}.${defineVariableInfo.variable.escapeXml()}</b>"
         val targets by lazy {
             val project = element.project

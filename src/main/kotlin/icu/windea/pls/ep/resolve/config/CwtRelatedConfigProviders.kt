@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.config
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -60,7 +60,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         // 包括其他一些相关的规则
 
         val element = ParadoxPsiFileManager.findScriptExpression(file, offset) ?: return emptySet()
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
 
         val result = mutableSetOf<CwtConfig<*>>()
 
@@ -171,7 +171,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
         }
         if (element == null) return emptySet()
 
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
         val textRange = element.textRange
         val offsetInExpression = offset - textRange.startOffset - ParadoxExpressionManager.getExpressionOffset(element)
         if (offsetInExpression < 0) return emptySet()
@@ -197,7 +197,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         // 包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
 
         val result = mutableSetOf<CwtConfig<*>>()
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
 
         run {
             val element = ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@run

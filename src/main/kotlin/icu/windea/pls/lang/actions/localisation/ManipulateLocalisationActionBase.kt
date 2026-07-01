@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.editor
@@ -89,7 +89,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     protected abstract fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>)
 
     protected fun doHandleAllAsync(e: AnActionEvent, project: Project, context: C) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             doHandleAll(e, project, context)
         }
@@ -109,7 +109,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     abstract class WithLocalePopup : ManipulateLocalisationActionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
-            val configGroup = PlsFacade.getConfigGroup(e)
+            val configGroup = ChronicleFacade.getConfigGroup(e)
             val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
             return ParadoxLocaleListPopup(supportedLocales)
         }
@@ -148,7 +148,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationActionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
-            val configGroup = PlsFacade.getConfigGroup(e)
+            val configGroup = ChronicleFacade.getConfigGroup(e)
             val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
             return ParadoxLocaleListPopup(supportedLocales)
         }

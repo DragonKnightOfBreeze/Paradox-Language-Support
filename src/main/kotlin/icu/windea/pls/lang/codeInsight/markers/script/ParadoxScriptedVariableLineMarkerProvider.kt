@@ -18,7 +18,7 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -50,7 +50,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.ScriptedVariable
-        val prefix = PlsStrings.scriptedVariablePrefix
+        val prefix = ChronicleStrings.scriptedVariablePrefix
         val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)

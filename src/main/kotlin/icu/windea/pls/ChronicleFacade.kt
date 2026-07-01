@@ -13,7 +13,7 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CoroutineScope
 
 @Suppress("unused")
-object PlsFacade {
+object ChronicleFacade {
     // from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
     @Service(Service.Level.APP, Service.Level.PROJECT)
@@ -83,6 +83,6 @@ object PlsFacade {
     // TODO [compatibility] `PluginManagerCore.getPlugin(PluginId)` is internal since IDEA-262 - Commented out since this method is currently not used
     // /** 是否是开发中版本。 */
     // fun isDevVersion(): Boolean {
-    //     return PluginManagerCore.getPlugin(PlsConstants.pluginId)?.version?.endsWith("-dev") == true
+    //     return PluginManagerCore.getPlugin(ChronicleConstants.pluginId)?.version?.endsWith("-dev") == true
     // }
 }

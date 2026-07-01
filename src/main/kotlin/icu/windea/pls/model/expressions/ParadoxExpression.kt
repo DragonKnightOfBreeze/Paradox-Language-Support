@@ -16,7 +16,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
@@ -83,7 +83,7 @@ interface ParadoxExpression {
 // region Implementations
 
 private object ParadoxExpressionResolver {
-    private val blockExpression: ParadoxExpression = ParadoxExpressionImpl(PlsStrings.blockFolder, PlsStrings.blockFolder, false, ParadoxExpressionType.Block, ParadoxExpressionRole.Value)
+    private val blockExpression: ParadoxExpression = ParadoxExpressionImpl(ChronicleStrings.blockFolder, ChronicleStrings.blockFolder, false, ParadoxExpressionType.Block, ParadoxExpressionRole.Value)
     private val unknownExpression: ParadoxExpression = ParadoxExpressionImpl("", "", false, ParadoxExpressionType.Unknown, ParadoxExpressionRole.Other)
 
     fun resolveBlock(): ParadoxExpression = blockExpression

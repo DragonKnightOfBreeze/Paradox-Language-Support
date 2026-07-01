@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
@@ -42,7 +42,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
         val project = contextElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val categories = ReferenceLinkType.CwtConfig.Categories
         return when (category) {
             categories.types -> {
@@ -288,7 +288,7 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
         val gameType = gameType0 ?: selectGameType(contextElement) ?: ParadoxGameType.Core
         val name = remain
         val project = contextElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return ParadoxModifierManager.resolveModifier(name, contextElement, configGroup)
     }
 

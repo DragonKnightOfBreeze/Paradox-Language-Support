@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.match.similarity.SimilarityMatchResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class ReplaceWithSimilarExpressionFix(
 
     @Suppress("UnstableApiUsage")
     private fun doReplace(project: Project, element: ParadoxExpressionElement) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             writeCommandAction(project, ChronicleBundle.message("fix.replaceWithSimilarExpression.command")) {
                 element.setValue(replacement.value)

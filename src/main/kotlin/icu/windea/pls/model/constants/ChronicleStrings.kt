@@ -1,6 +1,6 @@
 package icu.windea.pls.model.constants
 
-object PlsStrings {
+object ChronicleStrings {
     const val optionPrefix = "(option)"
     const val optionFlagPrefix = "(option flag)"
     const val complexEnumValuePrefix = "(complex enum value)"

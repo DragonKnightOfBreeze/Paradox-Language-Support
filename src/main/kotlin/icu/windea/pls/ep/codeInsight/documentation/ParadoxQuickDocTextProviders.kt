@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.codeInsight.documentation
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.documentation
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.match.findByPattern
@@ -42,7 +42,7 @@ class ParadoxExtendedScriptedVariableQuickDocTextProvider : ParadoxQuickDocTextP
     override fun doGetQuickDocText(element: ParadoxScriptScriptedVariable, name: String): String? {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
@@ -93,7 +93,7 @@ class ParadoxExtendedParameterQuickDocTextProvider : ParadoxQuickDocTextProvider
 
     override fun doGetQuickDocText(element: ParadoxParameterLightElement): String? {
         val name = element.name
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
         val config = configs.findLast { it.contextKey.matchesByPattern(element.contextKey, element, configGroup) } ?: return null
         val quickDoc = config.config.documentation?.orNull()
@@ -106,7 +106,7 @@ class ParadoxExtendedComplexEnumValueQuickDocTextProvider : ParadoxQuickDocTextP
 
     override fun doGetQuickDocText(element: ParadoxComplexEnumValueLightElement): String? {
         val name = element.name
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
         val config = configs.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
@@ -119,7 +119,7 @@ class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProvi
 
     override fun doGetQuickDocText(element: ParadoxDynamicValueLightElement): String? {
         val name = element.name
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
         for (type in element.types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findByPattern(name, element, configGroup) ?: continue
@@ -136,7 +136,7 @@ class ParadoxExtendedInlineScriptQuickDocTextProvider : ParadoxQuickDocTextProvi
     override fun doGetQuickDocText(element: ParadoxScriptFile, expression: String): String? {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val config = configGroup.extendedInlineScripts.findByPattern(expression, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc

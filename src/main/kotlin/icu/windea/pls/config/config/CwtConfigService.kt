@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
@@ -96,7 +96,7 @@ object CwtConfigService {
     fun getContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
         val gameType = getGameTypeFromRepoFile(file, project)
         if (gameType == null) return null
-        return PlsFacade.getConfigGroup(project, gameType)
+        return ChronicleFacade.getConfigGroup(project, gameType)
     }
 
     fun getGameTypeFromRepoFile(file: VirtualFile, project: Project): ParadoxGameType? {

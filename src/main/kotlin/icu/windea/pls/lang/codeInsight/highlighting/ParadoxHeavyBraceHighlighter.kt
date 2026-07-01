@@ -6,7 +6,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -48,7 +48,7 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
 
         val project = file.project
         val gameType = selectGameType(file) ?: return null
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
         if (complexExpression == null) return null
 

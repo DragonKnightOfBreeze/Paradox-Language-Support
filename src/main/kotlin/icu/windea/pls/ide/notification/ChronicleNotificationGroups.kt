@@ -3,7 +3,7 @@ package icu.windea.pls.ide.notification
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationGroupManager
 
-object PlsNotificationGroups {
+object ChronicleNotificationGroups {
     fun global(): NotificationGroup {
         return NotificationGroupManager.getInstance().getNotificationGroup("pls")
     }

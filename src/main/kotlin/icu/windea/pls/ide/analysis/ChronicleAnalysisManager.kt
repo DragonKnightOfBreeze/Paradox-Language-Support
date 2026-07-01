@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
@@ -24,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-object PlsAnalysisManager {
+object ChronicleAnalysisManager {
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
         // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
         // exclude some specific root file paths to avoid parsing and indexing unexpected files
@@ -123,7 +123,7 @@ object PlsAnalysisManager {
     fun refreshFiles() {
         val allEditors = EditorFactory.getInstance().allEditors
         if (allEditors.isEmpty()) return
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch {
             readAction {
                 for (editor in allEditors) {
@@ -156,7 +156,7 @@ object PlsAnalysisManager {
      */
     fun reparseFiles(files: Collection<VirtualFile>) {
         if (files.isEmpty()) return
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch {
             // refresh file trackers
             refreshFileModificationTrackers()

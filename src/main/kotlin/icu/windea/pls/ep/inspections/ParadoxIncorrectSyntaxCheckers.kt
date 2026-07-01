@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
@@ -88,7 +88,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
         if (DumbService.isDumb(context.holder.project)) return
 
-        val configGroup = PlsFacade.getConfigGroup(context.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)
         if (!valid) {
             val description = ChronicleEpBundle.message("incorrectSyntax.safeAssign.desc.2")
@@ -121,7 +121,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
         if (DumbService.isDumb(context.holder.project)) return
 
-        val configGroup = PlsFacade.getConfigGroup(context.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)
         if (!valid) {
             val description = ChronicleEpBundle.message("incorrectSyntax.safeAssign.desc.4")

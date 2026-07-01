@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.overrides
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
@@ -21,7 +21,7 @@ class ParadoxForcedDefinitionOverrideStrategyProvider : ParadoxOverrideStrategyP
         if (searchParameters !is ParadoxDefinitionSearch.Parameters) return null
         val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
         val gameType = searchParameters.selector.gameType ?: return null
-        val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(searchParameters.project, gameType)
         val typeConfig = configGroup.types.get(definitionType) ?: return null
         return getOverrideStrategy(typeConfig)
     }

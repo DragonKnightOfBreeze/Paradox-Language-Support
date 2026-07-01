@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -60,7 +60,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.model.ReferenceLinkType
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -99,7 +99,7 @@ object CwtDocumentationManager {
         val name = element.name.orNull() ?: return null
         return buildDocumentation {
             definition {
-                append(PlsStrings.optionPrefix).append(" ").append(name)
+                append(ChronicleStrings.optionPrefix).append(" ").append(name)
             }
             if (hint) return@buildDocumentation
             val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
@@ -111,7 +111,7 @@ object CwtDocumentationManager {
         val name = element.name.orNull() ?: return null
         return buildDocumentation {
             definition {
-                append(PlsStrings.optionFlagPrefix).append(" ").append(name)
+                append(ChronicleStrings.optionFlagPrefix).append(" ").append(name)
             }
             if (hint) return@buildDocumentation
             val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
@@ -141,7 +141,7 @@ object CwtDocumentationManager {
             val name = element.name
             val configType = element.configType
             val project = element.project
-            val configGroup = PlsFacade.getConfigGroup(project, element.gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(project, element.gameType)
             buildConfigSymbolDefinition(element, originalElement, name, configType, configGroup)
         }
     }
@@ -151,7 +151,7 @@ object CwtDocumentationManager {
             val name = element.name
             val configType = null
             val project = element.project
-            val configGroup = PlsFacade.getConfigGroup(project, element.gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(project, element.gameType)
             if (!hint) initSections()
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
             if (hint) return@buildDocumentation
@@ -216,17 +216,17 @@ object CwtDocumentationManager {
             val semanticProperty = when {
                 referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
-                referenceElement is ParadoxScriptPropertyKey -> PlsStrings.definitionPropertyPrefix
-                referenceElement is ParadoxScriptValue -> PlsStrings.definitionValuePrefix
-                element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig -> PlsStrings.definitionPropertyPrefix
-                element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> PlsStrings.definitionValuePrefix
+                referenceElement is ParadoxScriptPropertyKey -> ChronicleStrings.definitionPropertyPrefix
+                referenceElement is ParadoxScriptValue -> ChronicleStrings.definitionValuePrefix
+                element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig -> ChronicleStrings.definitionPropertyPrefix
+                element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> ChronicleStrings.definitionValuePrefix
                 else -> configType?.prefix
             }
 
             val prefix = when {
                 semanticProperty != null -> semanticProperty
-                element is CwtProperty -> PlsStrings.propertyPrefix
-                element is CwtString -> PlsStrings.stringPrefix
+                element is CwtProperty -> ChronicleStrings.propertyPrefix
+                element is CwtString -> ChronicleStrings.stringPrefix
                 else -> null
             }
             if (prefix != null) {
@@ -251,9 +251,9 @@ object CwtDocumentationManager {
             val sourceName = if (semanticName == name) null else name.orNull()
             if (sourceName != null) {
                 val sourcePrefix = when {
-                    element is CwtProperty -> PlsStrings.sourcePropertyPrefix
-                    element is CwtString -> PlsStrings.sourceStringPrefix
-                    else -> PlsStrings.sourcePrefix
+                    element is CwtProperty -> ChronicleStrings.sourcePropertyPrefix
+                    element is CwtString -> ChronicleStrings.sourceStringPrefix
+                    else -> ChronicleStrings.sourcePrefix
                 }
                 appendBr()
                 grayed {
@@ -305,14 +305,14 @@ object CwtDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
         }
         run {
             if (descLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
         }
@@ -350,7 +350,7 @@ object CwtDocumentationManager {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
             appendBr()
-            append(PlsStrings.relatedImagePrefix).append(" ")
+            append(ChronicleStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = contextElement)
         }
@@ -482,7 +482,7 @@ object CwtDocumentationManager {
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
         if (originalElement != null && originalElement.language is ParadoxLanguage) {
             val gameType = selectGameType(originalElement)
-            if (gameType != null) return PlsFacade.getConfigGroup(project, gameType)
+            if (gameType != null) return ChronicleFacade.getConfigGroup(project, gameType)
         }
         if (element.language is CwtLanguage) {
             return CwtConfigManager.getContainingConfigGroup(element)

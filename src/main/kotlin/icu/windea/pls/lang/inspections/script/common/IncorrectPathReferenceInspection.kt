@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.toAtomicProperty
@@ -33,7 +33,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 判断是否需要忽略内联脚本文件
         if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
         // 要求是可接受的脚本文件

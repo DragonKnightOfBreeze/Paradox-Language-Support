@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
@@ -125,7 +125,7 @@ object ParadoxFileManager {
     }
 
     fun isTestDataFile(file: VirtualFile): Boolean {
-        if (!PlsFacade.isUnitTestMode()) return false
+        if (!ChronicleFacade.isUnitTestMode()) return false
         val name = file.nameWithoutExtension
         return name.split('_', '.').any { it == "test" }
     }

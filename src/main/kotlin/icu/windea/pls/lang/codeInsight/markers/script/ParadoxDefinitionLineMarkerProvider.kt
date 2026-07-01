@@ -19,7 +19,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -43,7 +43,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.Definition
-        val prefix = PlsStrings.definitionPrefix
+        val prefix = ChronicleStrings.definitionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typeText}"
         val targets by lazy {
             val project = element.project

@@ -12,7 +12,7 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ElementManipulators
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
@@ -37,7 +37,7 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
     override fun perform(context: ActionContext): ModCommand {
         val element = findElement(context) ?: return ModCommand.nop()
         val gameType = selectGameType(context.file) ?: return ModCommand.nop()
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
         val modes = configGroup.macrosModel.forDefinitionInjections?.modeConfigs?.keys?.orNull() ?: return ModCommand.nop()
         val items = modes.map { ItemIntention(element, it) }
         return ModCommand.chooseAction(ChronicleBundle.message("intention.changeDefinitionInjectionMode.title"), items)

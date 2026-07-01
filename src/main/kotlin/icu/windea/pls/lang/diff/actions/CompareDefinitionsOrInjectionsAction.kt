@@ -33,7 +33,7 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -136,7 +136,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         if (definitionCandidates.size <= 1) {
             // unexpected
             val content = ChronicleBundle.message("diff.compare.definitionsOrInjections.content.notification.empty")
-            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
+            ChronicleNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 

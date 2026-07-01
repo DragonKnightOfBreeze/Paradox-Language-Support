@@ -6,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.isExpression
 
 class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)

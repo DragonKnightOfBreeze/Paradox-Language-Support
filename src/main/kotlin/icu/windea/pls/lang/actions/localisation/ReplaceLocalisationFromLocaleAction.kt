@@ -14,7 +14,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -85,12 +85,12 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?): Notification {
         if (error == null) {
             val content = ChronicleBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale.text, Messages.success(processed))
-            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+            return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = ChronicleBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale.text, Messages.failed(processed)) + errorDetails
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

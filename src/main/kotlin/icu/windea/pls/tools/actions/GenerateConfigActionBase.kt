@@ -27,13 +27,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.unscramble.AnalyzeStacktraceUtil
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.ChronicleToolsBundle
@@ -79,7 +79,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     }
 
     private fun execute(project: Project, generator: CwtConfigGenerator, params: Params) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             doExecute(project, generator, params)
         }
@@ -106,7 +106,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             val content = ChronicleToolsBundle.message("config.generation.notification.failed") + e.message.errorDetails
-            PlsNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)
+            ChronicleNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)
             null
         }
     }

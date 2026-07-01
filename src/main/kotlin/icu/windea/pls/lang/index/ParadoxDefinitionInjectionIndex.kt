@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
@@ -78,7 +78,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         ProgressManager.checkCanceled()
 
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
-        val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
         val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)

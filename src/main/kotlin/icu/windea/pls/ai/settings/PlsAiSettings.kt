@@ -13,13 +13,13 @@ import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.core.getValue
 import icu.windea.pls.core.setValue
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * 插件的 AI 设置。
  */
 @Service
-@State(name = "PlsAiSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsAiSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettings.State>(State()) {
     fun isEnabled() = state.enable
 

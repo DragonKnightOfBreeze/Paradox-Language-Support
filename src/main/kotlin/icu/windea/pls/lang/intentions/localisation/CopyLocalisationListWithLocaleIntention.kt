@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationListManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
@@ -29,7 +29,7 @@ class CopyLocalisationListWithLocaleIntention : ManipulateLocalisationListIntent
         val localeElement = element.locale
         val locale = selectLocale(localeElement)?.text ?: localeElement?.name ?: FallbackStrings.unknown
         val content = ChronicleBundle.message("intention.copyLocalisationList.notification", locale)
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
     }
 
     override fun generatePreview(project: Project, editor: Editor, psiFile: PsiFile) = IntentionPreviewInfo.EMPTY

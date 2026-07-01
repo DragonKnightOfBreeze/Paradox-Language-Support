@@ -8,14 +8,14 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.ide.help.PlsHelpTopics
+import icu.windea.pls.ide.help.ChronicleHelpTopics
 
 class PlsDiagramSettingsConfigurable(
     private val project: Project
 ) : BoundConfigurable(ChronicleDiagramBundle.message("settings.diagram")), SearchableConfigurable {
     override fun getId() = "pls.diagram"
 
-    override fun getHelpTopic() = PlsHelpTopics.diagramSettings
+    override fun getHelpTopic() = ChronicleHelpTopics.diagramSettings
 
     override fun createPanel(): DialogPanel {
         return panel {

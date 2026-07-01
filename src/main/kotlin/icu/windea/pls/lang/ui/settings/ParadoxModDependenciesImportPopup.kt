@@ -13,7 +13,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
@@ -70,13 +70,13 @@ class ParadoxModDependenciesImportPopup(
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             val content = ChronicleBundle.message("mod.dependencies.import.error") + e.message.errorDetails
-            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+            ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
         val from = result.newModSetInfo.name
         if (result.actualTotal == 0) {
             val content = ChronicleBundle.message("mod.dependencies.import.empty", from)
-            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+            ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
 
@@ -85,11 +85,11 @@ class ParadoxModDependenciesImportPopup(
 
         if (result.warning != null) {
             val content = ChronicleBundle.message("mod.dependencies.import.info", from, result.actualTotal) + result.warning.errorDetails
-            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+            ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
         val content = ChronicleBundle.message("mod.dependencies.import.info", from, result.actualTotal)
-        PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
+        ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
     }
 
     companion object {

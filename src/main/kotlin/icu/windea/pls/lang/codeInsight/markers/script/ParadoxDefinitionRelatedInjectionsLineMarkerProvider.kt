@@ -18,7 +18,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -41,7 +41,7 @@ class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemL
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.RelatedDefinitionInjections
-        val prefix = PlsStrings.definitionInjectionPrefix
+        val prefix = ChronicleStrings.definitionInjectionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
         val project = element.project
         val selector = ParadoxDefinitionInjectionSearch.selector(project, element).contextSensitive()

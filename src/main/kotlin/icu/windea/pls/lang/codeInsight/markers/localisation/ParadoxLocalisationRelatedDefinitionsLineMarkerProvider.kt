@@ -17,7 +17,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 
 /**
  * 提供本地化（localisation）的相关定义的装订线图标。
@@ -43,7 +43,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.RelatedDefinitions
-        val prefix = PlsStrings.relatedDefinitionPrefix
+        val prefix = ChronicleStrings.relatedDefinitionPrefix
         val tooltipLines = targets.mapNotNull { target ->
             target.definitionInfo?.let { "$prefix ${it.name}: ${it.typeText}" }
         }

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -36,7 +36,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxTagsExpression? {
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val config = CwtValueConfig.createMock(configGroup, "value[tag]")
         return mark(incomplete) { ParadoxTagsExpression.resolve(text, null, configGroup, config) }
     }

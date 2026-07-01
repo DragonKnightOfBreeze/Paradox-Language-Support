@@ -35,7 +35,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.model.type.CwtExpressionType
@@ -134,7 +134,7 @@ object ParadoxConfigMatchService {
             val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
             // 兼容进行代码补全时用户输入未完成的情况
             val isIncomplete = propertyValue.elementType == STRING
-                && propertyValue.text == PlsConstants.dummyIdentifier
+                && propertyValue.text == ChronicleConstants.dummyIdentifier
                 && propertyValue.isIncomplete()
             if (isIncomplete) return@run
             val isBlock = propertyValue.elementType == BLOCK

@@ -18,12 +18,12 @@ import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
-import icu.windea.pls.ide.help.PlsHelpTopics
+import icu.windea.pls.ide.help.ChronicleHelpTopics
 
 class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
 
-    override fun getHelpTopic() = PlsHelpTopics.aiSettings
+    override fun getHelpTopic() = ChronicleHelpTopics.aiSettings
 
     override fun createPanel(): DialogPanel {
         return panel {

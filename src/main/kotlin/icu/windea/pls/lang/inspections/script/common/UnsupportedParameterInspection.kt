@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptParameter
 class UnsupportedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的脚本文件
         return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
     }

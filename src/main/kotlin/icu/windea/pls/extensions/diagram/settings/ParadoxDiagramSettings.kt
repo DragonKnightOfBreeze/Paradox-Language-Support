@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.ThreeStateCheckBox
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.toMutableProperty
@@ -53,7 +53,7 @@ abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
     ) {
         if (map.isEmpty()) return
 
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         lateinit var cb: Cell<ThreeStateCheckBox>
         row {
             cell(ThreeStateCheckBox(groupText))

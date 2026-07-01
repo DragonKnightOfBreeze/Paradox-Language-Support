@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstance
@@ -77,14 +77,14 @@ object ParadoxEventManipulationService {
     fun getEventDeclarationFromEventId(element: ParadoxScriptStringExpressionElement, gameType: ParadoxGameType? = selectGameType(element)): ParadoxScriptProperty? {
         // if (element.text.isParameterized()) return null // can be parameterized
         if (gameType == null || gameType == ParadoxGameType.Core) return null
-        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
+        val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
         return getEventDeclarationFromEventIdInternal(eventConfig, element)
     }
 
     fun getEventDeclarationCandidateFromEventId(element: ParadoxScriptStringExpressionElement, gameType: ParadoxGameType? = selectGameType(element)): ParadoxScriptMember? {
         // if (element.text.isParameterized()) return null // can be parameterized
         if (gameType == null || gameType == ParadoxGameType.Core) return null
-        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
+        val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
         if (eventConfig.nameField == null) {
             // for code completion
             if (element is ParadoxScriptString && element.parent is ParadoxScriptRootBlock) return element

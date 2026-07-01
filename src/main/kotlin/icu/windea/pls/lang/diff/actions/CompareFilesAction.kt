@@ -28,7 +28,7 @@ import com.intellij.util.Consumer
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -85,7 +85,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         if (virtualFiles.size <= 1) {
             // unexpected
             val content = ChronicleBundle.message("diff.compare.files.content.notification.empty")
-            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
+            ChronicleNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 

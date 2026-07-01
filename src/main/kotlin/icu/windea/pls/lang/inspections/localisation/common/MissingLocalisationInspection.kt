@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
@@ -58,7 +58,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
         val supportedLocaleMap = supportedLocales.associateBy { it.id }
         val locales = mutableSetOf<CwtLocaleConfig>()
@@ -147,7 +147,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
-                    val configGroup = PlsFacade.getConfigGroup()
+                    val configGroup = ChronicleFacade.getConfigGroup()
                     val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
                     val globalLocaleMap = globalLocales.associateBy { it.id }
                     val selectedLocales = localeSet.mapNotNull { globalLocaleMap.get(it) }

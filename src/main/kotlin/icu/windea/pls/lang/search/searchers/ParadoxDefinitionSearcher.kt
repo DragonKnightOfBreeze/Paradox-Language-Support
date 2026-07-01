@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -125,7 +125,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         override val project: Project,
         override val scope: GlobalSearchScope,
     ) : ParadoxSearchContext {
-        val configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val typeConfig: CwtTypeConfig? = type?.orNull()?.let { configGroup.types[it] }
         val swappedType: String? = type?.orNull()?.let { configGroup.typesModel.base2Swapped[it] }?.takeIf { it != type }
     }

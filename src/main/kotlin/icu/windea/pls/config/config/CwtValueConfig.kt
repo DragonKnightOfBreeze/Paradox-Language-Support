@@ -22,7 +22,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -163,7 +163,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
     }
 }
 
-private const val blockValue = PlsStrings.blockFolder
+private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24

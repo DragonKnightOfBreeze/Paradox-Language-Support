@@ -14,7 +14,7 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.IconUtil
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import java.awt.Color
 import java.awt.Image
 import java.awt.event.MouseEvent
@@ -49,7 +49,7 @@ class DelegatedIcon(private val delegate: Icon) : Icon by delegate {
  *
  * 注意：应传入反射路径（如 `"/icons/xxx.svg"` 或 `Icons.Test`）或 URL（而非文件系统路径）。
  */
-fun String.toIconOrNull(locationClass: Class<*> = PlsFacade::class.java): Icon? {
+fun String.toIconOrNull(locationClass: Class<*> = ChronicleFacade::class.java): Icon? {
     // 注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）
     return IconLoader.findIcon(this, locationClass)
 }

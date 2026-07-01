@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
@@ -34,7 +34,7 @@ class ConfigGroupForcePlusRefreshAction : DumbAwareAction(), TooltipDescriptionP
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val configGroupService = CwtConfigGroupService.getInstance(project)
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             // do first
             configGroupService.refreshBuiltInConfigFiles(project)

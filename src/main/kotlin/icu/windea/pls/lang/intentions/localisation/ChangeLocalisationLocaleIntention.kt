@@ -10,7 +10,7 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
@@ -32,7 +32,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         val element = findElement(context) ?: return ModCommand.nop()
         val project = context.project
         val gameType = selectGameType(context.file)
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val localeConfigs = configGroup.supportedLocales
         if (localeConfigs.isEmpty()) return ModCommand.nop()
         val items = localeConfigs.map { ItemIntention(element, it) }

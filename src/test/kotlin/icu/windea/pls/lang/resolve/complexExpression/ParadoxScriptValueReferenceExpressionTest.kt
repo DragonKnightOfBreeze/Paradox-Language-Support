@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -33,7 +33,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxScriptValueReferenceExpression? {
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return mark(incomplete) { ParadoxScriptValueReferenceExpression.resolve(text, null, configGroup) }
     }
 

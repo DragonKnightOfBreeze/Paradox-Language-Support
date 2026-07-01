@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
@@ -76,7 +76,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         ProgressManager.checkCanceled()
 
         // 2.1.3 要求存在候选项
-        val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
         val fileLevelConfigs = ParadoxConfigMatchService.getComplexEnumConfigCandidates(fileLevelMatchContext)

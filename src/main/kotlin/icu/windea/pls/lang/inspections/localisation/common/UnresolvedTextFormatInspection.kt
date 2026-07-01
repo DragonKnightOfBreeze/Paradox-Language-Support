@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
@@ -35,7 +35,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
         // 要求游戏类型支持文本格式
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = !ignoredInInjectedFiles)
     }

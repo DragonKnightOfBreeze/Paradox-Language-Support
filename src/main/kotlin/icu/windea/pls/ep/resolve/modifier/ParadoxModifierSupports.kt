@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataTypes
@@ -51,8 +51,8 @@ import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -220,7 +220,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         // 加上名字
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
-        append(PlsStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上模板信息
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
@@ -313,7 +313,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val gameType = definitionInfo.gameType
         for (modifier in modifiers) {
             appendBr()
-            append(PlsStrings.generatedModifierPrefix).append(" ")
+            append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
             // 2.1.8 文本可能过长，因此这里目前改为不显示
@@ -418,7 +418,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory // may be null
-        val configGroup = PlsFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
         return ParadoxModifierManager.resolveModifierCategory(modifierCategory, configGroup)
     }
 
@@ -429,7 +429,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
         // 加上名字
         val name = modifierElement.name.orNull()
-        append(PlsStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济分类信息
         appendBr().appendIndent()
         append(ChronicleBundle.message("generatedFromEconomicCategory"))
@@ -459,7 +459,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
-            append(PlsStrings.generatedModifierPrefix).append(" ")
+            append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
             appendPsiLink(modifierLink.escapeXml(), modifierInfo.name.escapeXml())
             if (modifierInfo.resource != null) {

@@ -2,7 +2,7 @@ package icu.windea.pls.model.constants
 
 import com.intellij.openapi.extensions.PluginId
 
-object PlsConstants {
+object ChronicleConstants {
     val pluginId = PluginId.getId("icu.windea.pls")
     const val pluginSettingsFileName = "paradox-language-support.xml"
 

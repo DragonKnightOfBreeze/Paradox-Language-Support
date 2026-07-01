@@ -14,11 +14,11 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class StellarisEventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {
@@ -61,7 +61,7 @@ class StellarisEventTreeDiagramSettings(
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Stellaris.TechTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "ParadoxDiagramSettings.Stellaris.TechTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class StellarisTechTreeDiagramSettings(
     project: Project
 ) : ParadoxTechTreeDiagramSettings<StellarisTechTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {

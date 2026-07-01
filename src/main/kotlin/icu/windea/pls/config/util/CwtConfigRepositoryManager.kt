@@ -13,7 +13,7 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.config.settings.PlsConfigSettings
@@ -24,7 +24,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -122,12 +122,12 @@ object CwtConfigRepositoryManager {
         val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = ChronicleBundle.message("config.repo.sync.createDirectoryFailed")
-            val notification = PlsNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.ERROR)
+            val notification = ChronicleNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.ERROR)
             notification.notify(project)
             return
         }
 
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch c@{
             val results = withBackgroundProgress(project, ChronicleBundle.message("config.repo.sync.progress.title"), cancellable = true) p@{
                 reportRawProgress { reporter ->
@@ -153,7 +153,7 @@ object CwtConfigRepositoryManager {
             // 如果存在报错，发送通知并直接返回
             if (results.any { it.isFailure }) {
                 val warningMessage = ChronicleBundle.message("config.repo.sync.result.2")
-                val notification = PlsNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.WARNING)
+                val notification = ChronicleNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.WARNING)
                     .addAction(action)
                 notification.notify(project)
                 return@c
@@ -163,7 +163,7 @@ object CwtConfigRepositoryManager {
 
             // 发送成功的通知
             val successMessage = if (updated) ChronicleBundle.message("config.repo.sync.result.0") else ChronicleBundle.message("config.repo.sync.result.1")
-            val notification = PlsNotificationGroups.global().createNotification(notificationTitle, successMessage, NotificationType.INFORMATION)
+            val notification = ChronicleNotificationGroups.global().createNotification(notificationTitle, successMessage, NotificationType.INFORMATION)
                 .addAction(action)
             notification.notify(project)
 

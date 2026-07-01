@@ -16,13 +16,13 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            COMMENT -> PlsStrings.commentFolder
-            BLOCK -> PlsStrings.blockFolder
+            COMMENT -> ChronicleStrings.commentFolder
+            BLOCK -> ChronicleStrings.blockFolder
             else -> null
         }
     }

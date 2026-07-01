@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.overrides
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.filePathPatternsForPriority
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
@@ -94,7 +94,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
             searchParameters is ParadoxDefinitionSearch.Parameters -> {
                 val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
                 val gameType = searchParameters.selector.gameType ?: return null
-                val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
+                val configGroup = ChronicleFacade.getConfigGroup(searchParameters.project, gameType)
                 val config = configGroup.types.get(definitionType) ?: return emptySet()
                 config.filePathPatternsForPriority
             }

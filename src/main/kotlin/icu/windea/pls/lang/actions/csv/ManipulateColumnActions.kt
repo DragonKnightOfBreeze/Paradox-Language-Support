@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.editor
@@ -27,7 +27,7 @@ class SelectColumnCellAction : ManipulateColumnActionBase() {
 
         val project = file.project
         val editor = e.editor ?: return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val column = readAction { elements.firstOrNull() } ?: return@launch
             val commandName = e.presentation.text
@@ -41,7 +41,7 @@ class SelectColumnCellAction : ManipulateColumnActionBase() {
 sealed class InsertColumnActionBase(private val left: Boolean) : ManipulateColumnActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>) {
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
@@ -88,7 +88,7 @@ sealed class MoveColumnActionBase(private val left: Boolean) : ManipulateColumnA
         // 实际上是交换而非移动
 
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
@@ -128,7 +128,7 @@ class SelectColumnAction : ManipulateColumnActionBase() {
 
         val project = file.project
         val editor = e.editor ?: return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
@@ -148,7 +148,7 @@ class RemoveColumnAction : ManipulateColumnActionBase() {
         // 目前不支持批量处理
 
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {

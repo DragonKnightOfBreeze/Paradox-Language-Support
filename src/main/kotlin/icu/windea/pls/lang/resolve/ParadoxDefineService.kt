@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefineManager.isDefineFile
@@ -26,7 +26,7 @@ object ParadoxDefineService {
             is ParadoxScriptPropertyStub.DefineNamespace -> {
                 val namespace = stub.namespace
                 val gameType = stub.gameType
-                val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+                val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
                 val config = configGroup.defineNamespaces.get(namespace)
                 ParadoxDefineNamespaceInfo(stub.namespace, configGroup, config)
             }
@@ -34,7 +34,7 @@ object ParadoxDefineService {
                 val namespace = stub.namespace
                 val variable = stub.variable
                 val gameType = stub.gameType
-                val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+                val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
                 val config = configGroup.defineNamespaces.get(namespace)?.variables?.get(variable)
                 ParadoxDefineVariableInfo(namespace, variable, configGroup, config)
             }
@@ -49,7 +49,7 @@ object ParadoxDefineService {
         if (parent is ParadoxScriptRootBlock) {
             val namespace = element.name
             if (namespace.isEmpty() || namespace.isParameterized()) return null
-            val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
             val config = configGroup.defineNamespaces.get(namespace)
             return ParadoxDefineNamespaceInfo(namespace, configGroup, config)
         } else if (parent is ParadoxScriptBlock) {
@@ -60,7 +60,7 @@ object ParadoxDefineService {
             if (namespace.isEmpty() || namespace.isParameterized()) return null
             val variable = element.name
             if (variable.isEmpty() || variable.isParameterized()) return null
-            val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
             val config = configGroup.defineNamespaces.get(namespace)?.variables?.get(variable)
             return ParadoxDefineVariableInfo(namespace, variable, configGroup, config)
         }

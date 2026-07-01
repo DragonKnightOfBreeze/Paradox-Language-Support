@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.hints.csv
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -28,7 +28,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider
         if (resolved !is ParadoxComplexEnumValueLightElement) return
 
         val enumName = resolved.enumName
-        val configGroup = PlsFacade.getConfigGroup(resolved.project, resolved.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(resolved.project, resolved.gameType)
         val config = configGroup.complexEnums[enumName] ?: return
         sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": ")

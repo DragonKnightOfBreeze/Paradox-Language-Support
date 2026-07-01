@@ -10,7 +10,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
@@ -102,7 +102,7 @@ private object CwtDataExpressionResolver {
 
     private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant, "")
     private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant, "")
-    private val blockExpression = CwtDataExpressionImpl(PlsStrings.blockFolder, false, CwtDataTypes.Block)
+    private val blockExpression = CwtDataExpressionImpl(ChronicleStrings.blockFolder, false, CwtDataTypes.Block)
 
     fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
         if (expressionString.isEmpty()) return resolveEmpty(isKey)

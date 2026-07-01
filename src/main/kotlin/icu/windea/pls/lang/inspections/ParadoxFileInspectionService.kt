@@ -14,7 +14,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringSettings
 import com.intellij.refactoring.rename.RenameProcessor
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.matchesAntPatterns
@@ -91,7 +91,7 @@ object ParadoxFileInspectionService {
         if (fileInfo.path.path.matchesAntPatterns(ignoredFilePaths, ignoreCase = true)) return null // 忽略
 
         val gameType = fileInfo.rootInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val matched = ParadoxConfigMatchService.isMatchedOnFileLevel(file, configGroup, fileInfo.path)
         if (matched) return null
 

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.core.ReadWriteAccess
@@ -22,7 +22,7 @@ class ParadoxComplexEnumValueLightElement(
     private val project: Project,
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner, PsiReadWriteAccessAwareElement {
     val config: CwtComplexEnumConfig?
-        get() = PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
+        get() = ChronicleFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
     val caseInsensitive: Boolean
         get() = config?.caseInsensitive ?: false
     val searchScopeType: ParadoxSearchScopeType

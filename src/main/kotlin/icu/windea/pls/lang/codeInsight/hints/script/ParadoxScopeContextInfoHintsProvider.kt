@@ -9,7 +9,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.psi.PsiService
@@ -61,7 +61,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
 
         if (context.settings.showScopeContextOnlyIfIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return
 
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         sink.addInlinePresentation(leftCurlyBrace.endOffset) {
             val scopeMap = scopeContext.toScopeMap(showPrev = false)
             val m = OnceMarker()

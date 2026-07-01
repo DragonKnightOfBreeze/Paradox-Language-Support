@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.resolve.scope
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -13,7 +13,7 @@ class ParadoxBaseDynamicValueScopeContextProvider : ParadoxDynamicValueScopeCont
     override fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val name = element.name
         val types = element.types
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
         for (type in types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findByPattern(name, element, configGroup) ?: continue

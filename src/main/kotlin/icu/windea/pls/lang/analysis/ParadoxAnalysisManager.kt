@@ -15,7 +15,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -213,7 +213,7 @@ object ParadoxAnalysisManager {
     private fun doResolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         val localeId = ParadoxAnalysisService.resolveLocaleId(file, project) ?: return null
         val gameType = selectGameType(file)
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return configGroup.locales.get(localeId)
     }
 
@@ -291,7 +291,7 @@ object ParadoxAnalysisManager {
                 val localeId = runSmartReadAction { from.name }
                 val project = from.project
                 val gameType = selectGameType(from)
-                val configGroup = PlsFacade.getConfigGroup(project, gameType)
+                val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
                 configGroup.locales.get(localeId)
             }
             from is ParadoxLocalisationPropertyList -> {
@@ -311,7 +311,7 @@ object ParadoxAnalysisManager {
                 val file = from.containingFileStub?.psi ?: return null
                 val project = file.project
                 val gameType = selectGameType(from)
-                val configGroup = PlsFacade.getConfigGroup(project, gameType)
+                val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
                 configGroup.locales.get(localeId)
             }
             else -> ParadoxLocaleManager.getPreferredLocaleConfig()

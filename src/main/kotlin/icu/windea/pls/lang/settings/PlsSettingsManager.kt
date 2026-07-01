@@ -2,7 +2,7 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.util.application
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
@@ -39,8 +39,8 @@ object PlsSettingsManager {
     fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
-        val files = PlsAnalysisManager.findAllFilesByFileNames(fileNames)
-        PlsAnalysisManager.reparseFiles(files)
+        val files = ChronicleAnalysisManager.findAllFilesByFileNames(fileNames)
+        ChronicleAnalysisManager.reparseFiles(files)
     }
 
     fun refreshForParameterInference(callbackLock: CallbackLock) {
@@ -60,8 +60,8 @@ object PlsSettingsManager {
         ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
-        val files = PlsAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
-        PlsAnalysisManager.reparseFiles(files)
+        val files = ChronicleAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
+        ChronicleAnalysisManager.reparseFiles(files)
     }
 
     fun refreshForScopeContextInference(callbackLock: CallbackLock) {
@@ -76,12 +76,12 @@ object PlsSettingsManager {
     fun refreshFiles(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshFiles")) return
 
-        PlsAnalysisManager.refreshFiles()
+        ChronicleAnalysisManager.refreshFiles()
     }
 
     fun refreshInlayHints(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshInlayHints")) return
 
-        PlsAnalysisManager.refreshInlayHints()
+        ChronicleAnalysisManager.refreshInlayHints()
     }
 }

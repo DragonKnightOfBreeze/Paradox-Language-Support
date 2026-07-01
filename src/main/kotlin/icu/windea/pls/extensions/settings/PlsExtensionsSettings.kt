@@ -6,13 +6,13 @@ import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * 插件的扩展设置。
  */
 @Service
-@State(name = "PlsExtensionsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsExtensionsSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class PlsExtensionsSettings : SimplePersistentStateComponent<PlsExtensionsSettings.State>(State()) {
     companion object {
         @JvmStatic

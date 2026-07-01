@@ -22,7 +22,7 @@ import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
@@ -109,16 +109,16 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
         if (error == null) {
             if (!withWarnings) {
                 val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
-                return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+                return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
             val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess())
-            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
+            return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

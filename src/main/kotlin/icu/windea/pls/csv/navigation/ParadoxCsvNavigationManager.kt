@@ -12,7 +12,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.settings.PlsInternalSettings
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
 object ParadoxCsvNavigationManager {
@@ -36,9 +36,9 @@ object ParadoxCsvNavigationManager {
             // 文件名
             is ParadoxCsvFile -> element.name
             // 特殊标记
-            is ParadoxCsvHeader -> PlsStrings.headerMarker
+            is ParadoxCsvHeader -> ChronicleStrings.headerMarker
             // 特殊标记
-            is ParadoxCsvRow -> PlsStrings.rowMarker
+            is ParadoxCsvRow -> ChronicleStrings.rowMarker
             // 截断后的名字
             is ParadoxCsvColumn -> element.name.formatted()
             // 回退

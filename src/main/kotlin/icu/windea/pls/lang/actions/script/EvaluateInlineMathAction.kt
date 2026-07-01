@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.EDT
 import com.intellij.psi.util.PsiUtilBase
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
@@ -42,7 +42,7 @@ class EvaluateInlineMathAction : AnAction() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
                 val dialog = ParadoxInlineMathEvaluatorDialog(project, element)

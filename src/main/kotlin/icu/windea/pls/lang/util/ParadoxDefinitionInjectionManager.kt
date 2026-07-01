@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -47,7 +47,7 @@ object ParadoxDefinitionInjectionManager {
      */
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
         val config = configGroup.macrosModel.forDefinitionInjections
         if (config == null) return false
         return true
@@ -59,7 +59,7 @@ object ParadoxDefinitionInjectionManager {
     fun isSupported(mode: String, gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
         if (mode.isEmpty()) return false
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
         val config = configGroup.macrosModel.forDefinitionInjections
         if (config == null) return false
         if (config.modeConfigs[mode] == null) return false // 这里忽略 `prefix` 的大小写

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvi
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -38,7 +38,7 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.InlineScripts
-        val prefix = PlsStrings.inlineScriptPrefix
+        val prefix = ChronicleStrings.inlineScriptPrefix
         val tooltip = "$prefix <b>${expression.escapeXml()}"
         val targets by lazy {
             val targets0 = ParadoxInlineScriptManager.getInlineScriptFiles(expression, element.project, element)

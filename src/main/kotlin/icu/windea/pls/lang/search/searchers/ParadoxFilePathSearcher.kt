@@ -9,7 +9,7 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.toPsiFile
@@ -114,7 +114,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
 
     private fun getFilePathsIgnoreLocale(filePath: String): Set<String>? {
         if (!filePath.endsWith(".yml", true)) return null // 仅限本地化文件
-        val configGroup = PlsFacade.getConfigGroup()
+        val configGroup = ChronicleFacade.getConfigGroup()
         val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
         val localeStrings = globalLocales.map { it.shortId }
         var index = 0

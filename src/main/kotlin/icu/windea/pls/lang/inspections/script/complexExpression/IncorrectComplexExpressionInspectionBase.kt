@@ -7,7 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.fixes.QuoteLiteralFix
@@ -27,13 +27,13 @@ import icu.windea.pls.script.psi.isExpression
 abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 要求是可接受的脚本文件
         return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)

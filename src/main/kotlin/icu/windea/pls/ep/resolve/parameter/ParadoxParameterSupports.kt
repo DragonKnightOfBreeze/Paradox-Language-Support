@@ -8,7 +8,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -53,8 +53,8 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -230,7 +230,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
-        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
         return configGroup.definitionParameterModificationTracker
     }
 
@@ -265,7 +265,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
         // 加上名字
         val name = parameterElement.name
-        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {
@@ -433,7 +433,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
         return configGroup.scriptValueModificationTracker
     }
 
@@ -628,7 +628,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
         // 加上名字
         val name = parameterElement.name
-        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {

@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -55,7 +55,7 @@ class ParadoxScriptSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase
         val file = element.containingFile ?: return
         val expressionText = ParadoxExpressionManager.getExpressionText(element)
         if (expressionText.isEmpty()) return
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return
 

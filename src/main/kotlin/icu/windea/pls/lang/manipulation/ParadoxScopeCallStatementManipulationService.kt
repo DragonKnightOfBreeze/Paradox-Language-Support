@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
@@ -73,7 +73,7 @@ object ParadoxScopeCallStatementManipulationService {
      * @see ParadoxLinkedExpression
      */
     fun isNormalForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         if (!ParadoxSyntaxService.isStringLiteral(propertyKey)) return false
@@ -93,7 +93,7 @@ object ParadoxScopeCallStatementManipulationService {
      * - [element] 的属性键必须能解析为链式表达式（[ParadoxLinkedExpression]）。
      */
     fun isSafeForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         if (!ParadoxSyntaxService.isStringLiteral(propertyKey)) return false
@@ -116,7 +116,7 @@ object ParadoxScopeCallStatementManipulationService {
      * @see ParadoxLinkedExpression
      */
     fun isNestedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         val separator = propertyKey.siblings(withSelf = false).find { ParadoxSyntaxService.isPropertySeparator(it) } ?: return false
@@ -146,7 +146,7 @@ object ParadoxScopeCallStatementManipulationService {
      * @see ParadoxLinkedExpression
      */
     fun isChainedForm(element: ParadoxScriptProperty, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         if (!ParadoxSyntaxService.isStringLiteral(propertyKey)) return false
@@ -294,7 +294,7 @@ object ParadoxScopeCallStatementManipulationService {
                 .filterIsInstance<ParadoxScriptProperty>()
                 .toList()
             if (existsProperties.isEmpty()) return@run
-            val configGroup = PlsFacade.getConfigGroup(gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(gameType)
             val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
             if (complexExpression !is ParadoxLinkedExpression) return@run
             val linkNodes = complexExpression.linkNodes
@@ -352,7 +352,7 @@ object ParadoxScopeCallStatementManipulationService {
      * @see ParadoxLinkedExpression
      */
     fun convertToNestedForm(element: ParadoxScriptProperty, project: Project, caretOffset: Int, gameType: ParadoxGameType? = selectGameType(element)): Int {
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)
@@ -441,7 +441,7 @@ object ParadoxScopeCallStatementManipulationService {
      * @see ParadoxLinkedExpression
      */
     fun convertToChainedForm(element: ParadoxScriptProperty, project: Project, gameType: ParadoxGameType? = selectGameType(element)) {
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
 
         val propertyKey = element.propertyKey
         val complexExpression = ParadoxComplexExpression.resolve(propertyKey, configGroup)

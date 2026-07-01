@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import java.awt.datatransfer.StringSelection
 
 /**
@@ -28,6 +28,6 @@ class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(),
 
     private fun createNotification(): Notification {
         val content = ChronicleBundle.message("intention.copyLocalisation.notification", Messages.success())
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
     }
 }

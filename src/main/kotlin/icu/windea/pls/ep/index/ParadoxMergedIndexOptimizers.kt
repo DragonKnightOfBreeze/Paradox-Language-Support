@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.index
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributes
 import icu.windea.pls.config.attributes.CwtRowConfigAttributes
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
@@ -25,7 +25,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
     override fun isAvailableForScriptFile(file: ParadoxScriptFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.rootInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
         val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
@@ -99,7 +99,7 @@ class ParadoxRowBasedMergedIndexOptimizer: ParadoxMergedIndexOptimizer {
     override fun isAvailableForCsvFile(file: ParadoxCsvFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.rootInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtRowConfigMatchContext(configGroup, path)
         val fileLevelRowConfigs = ParadoxConfigMatchService.getRowConfigCandidates(fileLevelMatchContext)

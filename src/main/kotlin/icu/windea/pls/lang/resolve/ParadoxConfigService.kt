@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
@@ -138,7 +138,7 @@ object ParadoxConfigService {
         val gameType = selectGameType(file) ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
         val memberRole = ParadoxTypeResolver.resolveMemberRole(element)
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f

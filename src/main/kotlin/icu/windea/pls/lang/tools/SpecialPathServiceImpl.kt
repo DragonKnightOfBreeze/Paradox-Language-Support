@@ -4,7 +4,7 @@ import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.util.system.OS
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.execution.CommandType
 import icu.windea.pls.core.formatted
@@ -31,7 +31,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
     // 游戏模组安装目录：`~\Documents\Paradox Interactive\{gameName}\mod`
 
     override fun initAsync() {
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch { getSteamPath() }
         ParadoxGameType.getAllSpecific().forEach { gameType ->
             coroutineScope.launch { getSteamGamePath(gameType.steamId, gameType.title) }

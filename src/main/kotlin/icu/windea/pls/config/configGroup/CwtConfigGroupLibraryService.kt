@@ -9,9 +9,9 @@ import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
@@ -19,7 +19,7 @@ class CwtConfigGroupLibraryService(private val project: Project) {
     val library = CwtConfigGroupLibrary(project)
 
     fun refreshRootsAsync(force: Boolean = false) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val oldRoots = if (force) emptySet() else library.roots
             val newRoots = readAction { computeRoots() }
@@ -40,7 +40,7 @@ class CwtConfigGroupLibraryService(private val project: Project) {
             if (projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
-        newRoots.removeIf { PlsAnalysisManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { ChronicleAnalysisManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 
