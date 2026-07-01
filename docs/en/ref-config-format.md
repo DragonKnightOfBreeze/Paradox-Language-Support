@@ -519,9 +519,8 @@ Field Explanation:
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
 - `type`: Row type (`key`/`index`, default is `key`). Decide how to match each of these columns. Match by column name (column names cannot be repeated), or by column index in containing row (column names can be repeated).
 - `skip_last_row`: Whether to ignore the last row when resolving and matching. Default is `no`.
-- `skip_last_column`: Whether to ignore the last column when resolving and matching. Default is `no`.
+- `skip_last_column`: Whether to ignore the last column when resolving and matching, if column index out of range. Default is `no`.
 - `columns`: Column config list (a set of property configs, where the key is the column name and the value is the data expression to be matched).
-- `end_column`: Declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
 
 Field Explanation for Column Configs:
 

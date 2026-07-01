@@ -56,9 +56,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property name 规则名称。
  * @property type 行类型（`key`/`index`，默认为 `key`）。决定如何匹配其中的每一列。
  * @property skipLastRow 解析与匹配时，是否忽略最后一行。
- * @property skipLastColumn 解析与匹配时，是否忽略最后一列。
+ * @property skipLastColumn 解析与匹配时，如果列索引越界，是否忽略最后一列。
  * @property columns 列规则的列表（一组属性规则，键为列名，值为需要匹配的数据表达式）。
- * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  * @property attributes 综合属性。
  */
 interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
@@ -72,8 +71,6 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     val skipLastColumn: Boolean
     @FromMember("columns: ColumnConfigs")
     val columns: List<CwtPropertyConfig>
-    @FromMember("end_column: string?")
-    val endColumn: String?
 
     val attributes: CwtRowConfigAttributes
 
@@ -109,13 +106,12 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         val skipLastRow = propGroup.getOne("skip_last_row")?.booleanValue ?: false
         val skipLastColumn = propGroup.getOne("skip_last_column")?.booleanValue ?: false
         val columns = propGroup.getOne("columns")?.properties?.optimized().orEmpty()
-        val endColumn = propGroup.getOne("end_column")?.stringValue
 
         logger.debug { "Resolved row config (name: $name).".withLocationPrefix(config) }
         return CwtRowConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
-            type, skipLastRow, skipLastColumn, columns, endColumn
+            type, skipLastRow, skipLastColumn, columns
         )
     }
 }
@@ -132,7 +128,6 @@ private class CwtRowConfigImpl(
     override val skipLastRow: Boolean,
     override val skipLastColumn: Boolean,
     override val columns: List<CwtPropertyConfig>,
-    override val endColumn: String?
 ) : UserDataHolderBase(), CwtRowConfig {
     override val attributes: CwtRowConfigAttributes by lazy { CwtRowConfigAttributesEvaluator().evaluate(this) }
 

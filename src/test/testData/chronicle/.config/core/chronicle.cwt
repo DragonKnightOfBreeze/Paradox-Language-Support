@@ -91,12 +91,12 @@ rows = {
     row[chapter_page] = {
         path = "game/common/chapters"
         path_extension = .csv
+        skip_last_column = yes
         columns = {
             name = <chapter>
             page = int
             category = enum[chapter_category]
         }
-        end_column = end
     }
 }
 
