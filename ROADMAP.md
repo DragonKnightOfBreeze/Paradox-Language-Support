@@ -89,11 +89,11 @@
 ### 计划
 
 - [x] P2/MS 支持在 CSV 文件中声明复杂枚举值（通过在列规则上使用 `## declare_complex_enum = x`） ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
-- [ ] P2/MS 为行规则添加字段 type，可选值包括 key/index，默认 key。表示是按键还是按索引来匹配行中的每一列 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
-- [ ] P2/MS 为行规则添加字段 skip_last_row 和 skip_last_column，值为布尔值。表示匹配与解析时是否忽略最后一列/最后一行 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] P2/MS 为行规则添加字段 type，可选值包括 key/index，默认 key。表示是按键还是按索引来匹配行中的每一列 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] P2/MS 为行规则添加字段 skip_last_row 和 skip_last_column，值为布尔值。表示匹配与解析时是否忽略最后一列/最后一行 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
 - [x] P2/MS 调整复杂枚举值索引的逻辑，以兼容在 CSV 文件中的复杂枚举值声明
 - [x] P2/MS 调整合并索引的逻辑，以兼容在 CSV 文件中的动态值引用
-- [ ] P2/MS 调整 CSV 文件的相关代码检查的代码
+- [x] P2/MS 调整 CSV 文件的相关代码检查的代码
 
 ### 附加
 

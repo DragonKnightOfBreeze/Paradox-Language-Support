@@ -4,10 +4,14 @@
 
 ## 2.2.0-dev
 
-- [x] 修复本地化悬浮工具栏无法正常显示的BUG / Fix a bug where the localisation floating toolbar cannot be displayed properly 
 - [x] Missing localizations false positive ([#347](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/347))
+- [x] 修复本地化悬浮工具栏无法正常显示的BUG / Fix a bug where the localisation floating toolbar cannot be displayed properly
 - [x] 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式* / For *pattern-aware data types*, in addition to *constants/templates/ANT path patterns/regular expressions*, additionally support *GLOB patterns* ([doc](https://windea.icu/Paradox-Language-Support/ref-config-format.md#data-types-pattern-aware))
 - [x] 支持 *并集规则*，不同于枚举规则，其可选项可以是各种数据类型的数据表达式 / Supports *union configs*, which are different from enum configs in that their available values can be data expressions of various data types ([doc](https://windea.icu/Paradox-Language-Support/ref-config-format.md#config-union))
+- [x] 调整行规则的格式，以兼容按列索引（而非列名）的匹配 / Adjust the format of row configs to be compatible with matching by column index (rather than column name) ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] 调整行规则的格式，以兼容在匹配和解析时，按需忽略最后一行或最后一列 / Adjust the format of row configs to be compatible with optionally ignoring last row or last column during matching and resolution ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] 调整构建索引时的逻辑，以兼容 CSV 文件中的复杂枚举值声明和动态值引用 / Adjust the logic when building indexes to be compatible with complex enum value declarations and dynamic value references in CSV files ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] 调整 CSV 文件相关的代码检查的逻辑 / Adjust the logic for code inspections related to CSV files ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.10 - 2026-06-24

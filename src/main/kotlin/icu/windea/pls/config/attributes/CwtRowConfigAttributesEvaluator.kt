@@ -16,7 +16,7 @@ class CwtRowConfigAttributesEvaluator {
     private var involvesDynamicValue = false
 
     fun evaluate(config: CwtRowConfig): CwtRowConfigAttributes {
-        for (columnConfig in config.columnMap.values) {
+        for (columnConfig in config.columns) {
             processColumnConfig(columnConfig)
         }
         return buildAttributes()

@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util
 
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.castOrNull
@@ -16,14 +15,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
-import icu.windea.pls.csv.psi.getHeaderColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.match.CwtRowConfigMatchContext
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService
-import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.lang.resolve.ParadoxCsvService
 
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {
@@ -31,61 +24,38 @@ object ParadoxCsvManager {
     }
 
     fun getRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
-        return getRowConfigFromCache(file)
+        // from cache
+        // when the file content changes, the cache here does not need to be refreshed
+        return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
+            val value = ParadoxCsvService.resolveRowConfig(file)
+            value.withDependencyItems(ComputedModificationTracker { file.fileInfo })
+        }
     }
 
     fun getRowConfig(element: ParadoxCsvRowElement): CwtRowConfig? {
-        val file = element.containingFile
-        if (file !is ParadoxCsvFile) return null
-        return getRowConfigFromCache(file)
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        return getRowConfig(file)
     }
 
-    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
-        // when the file content changes, the cache here does not need to be refreshed
-        return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
-            val value = resolveRowConfig(file)
-            val tracker = ComputedModificationTracker { file.fileInfo }
-            value.withDependencyItems(tracker)
-        }
+    fun getRowConfig(element: ParadoxCsvColumn): CwtRowConfig? {
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        return getRowConfig(file)
     }
 
-    private fun resolveRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
-        val project = file.project
-        val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.path
-        val gameType = fileInfo.rootInfo.gameType
-        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        val matchContext = CwtRowConfigMatchContext(configGroup, path)
-        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(matchContext)
-        return rowConfig
+    fun getColumnConfig(element: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {
+        return ParadoxCsvService.getColumnConfig(element, rowConfig)
     }
 
-    fun getColumnConfig(column: ParadoxCsvColumn): CwtPropertyConfig? {
-        val file = column.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        val rowConfig = getRowConfig(file) ?: return null
-        return getColumnConfig(column, rowConfig)
-    }
-
-    fun getColumnConfig(column: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {
-        val headerName = when {
-            column.isHeaderColumn() -> column.name
-            else -> column.getHeaderColumn()?.name
-        }
-        if (headerName.isNullOrEmpty()) return null
-        return rowConfig.columnMap[headerName]
+    fun getColumnConfig(element: ParadoxCsvColumn): CwtPropertyConfig? {
+        val rowConfig = getRowConfig(element) ?: return null
+        return getColumnConfig(element, rowConfig)
     }
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {
-        if (column.isHeaderColumn()) {
-            return column.value == columnConfig.key
-        }
-        val configExpression = columnConfig.valueConfig?.configExpression ?: return false
-        val configGroup = columnConfig.configGroup
-        val expression = ParadoxExpression.resolve(column)
-        val context = ParadoxCsvExpressionMatchContext(column, expression, configExpression, configGroup)
-        return ParadoxExpressionMatchService.matchCsvExpression(context).get()
+        return ParadoxCsvService.isMatchedColumnConfig(column, columnConfig)
     }
 
+    @Deprecated("")
     fun getExpectedHeaderColumnSize(element: ParadoxCsvHeader): Int {
         val columnList = element.columnList
         if (lastIsEndColumn(element, columnList)) return columnList.size - 1

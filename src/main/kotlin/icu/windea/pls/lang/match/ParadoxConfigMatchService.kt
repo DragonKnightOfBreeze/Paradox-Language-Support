@@ -605,20 +605,7 @@ object ParadoxConfigMatchService {
         return true
     }
 
-    fun getMatchedColumnConfig(rowConfig: CwtRowConfig, columnName: String, columnIndex: Int): CwtPropertyConfig? {
-        if (columnIndex < 0) return null
-        if (rowConfig.columns.isEmpty()) return null
-        return when (rowConfig.type) {
-            CwtRowType.Key -> {
-                rowConfig.columns.find { it.key == columnName }
-            }
-            CwtRowType.Index -> {
-                rowConfig.columns.getOrNull(columnIndex)
-            }
-        }
-    }
-
-    fun getMatchedColumnConfig(rowConfig: CwtRowConfig, columnNames: List<String>, columnIndex: Int): CwtPropertyConfig? {
+    fun getColumnConfig(rowConfig: CwtRowConfig, columnNames: List<String>, columnIndex: Int): CwtPropertyConfig? {
         if (columnIndex < 0) return null
         if (columnNames.isEmpty()) return null
         if (rowConfig.columns.isEmpty()) return null

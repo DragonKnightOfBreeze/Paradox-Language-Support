@@ -2,6 +2,10 @@
 
 package icu.windea.pls.csv.psi
 
+fun ParadoxCsvFile.getColumnNames(): List<String> = ParadoxCsvPsiService.getColumnNames(this)
+
+fun ParadoxCsvRowElement.getColumnNames(): List<String> = ParadoxCsvPsiService.getColumnNames(this)
+
 fun ParadoxCsvRowElement.getColumnSize(): Int = ParadoxCsvPsiService.getColumnSize(this)
 
 fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? = ParadoxCsvPsiService.getColumn(this, index)
@@ -10,6 +14,6 @@ fun ParadoxCsvColumn.isEmptyColumn(): Boolean = ParadoxCsvPsiService.isEmptyColu
 
 fun ParadoxCsvColumn.isHeaderColumn(): Boolean = ParadoxCsvPsiService.isHeaderColumn(this)
 
-fun ParadoxCsvColumn.getColumnIndex(): Int = ParadoxCsvPsiService.getColumnIndex(this)
-
 fun ParadoxCsvColumn.getHeaderColumn(): ParadoxCsvColumn? = ParadoxCsvPsiService.getHeaderColumn(this)
+
+fun ParadoxCsvColumn.getColumnIndex(): Int = ParadoxCsvPsiService.getColumnIndex(this)

@@ -12,8 +12,6 @@ import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * @see ParadoxCsvSyntaxAnnotator
@@ -24,16 +22,13 @@ class ParadoxCsvSemanticAnnotator : Annotator {
     }
 
     private fun annotateExpression(element: ParadoxCsvExpressionElement, holder: AnnotationHolder) {
-        // 不高亮表格头中的列
-        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return
+        if (element !is ParadoxCsvColumn) return
+        if (element.isHeaderColumn()) return // 不高亮表格头中的列
 
         // 高亮复杂枚举值声明
         if (annotateComplexEnumValue(element, holder)) return
 
-        val columnConfig = when (element) {
-            is ParadoxCsvColumn -> ParadoxCsvManager.getColumnConfig(element)
-            else -> null
-        }
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element)
         val config = columnConfig?.valueConfig ?: return
         ParadoxExpressionManager.annotateCsvExpression(element, null, config, holder)
     }

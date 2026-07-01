@@ -58,7 +58,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property skipLastRow 解析与匹配时，是否忽略最后一行。
  * @property skipLastColumn 解析与匹配时，是否忽略最后一列。
  * @property columns 列规则的列表（一组属性规则，键为列名，值为需要匹配的数据表达式）。
- * @property columnMap 每一列的列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  * @property attributes 综合属性。
  */
@@ -73,8 +72,6 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     val skipLastColumn: Boolean
     @FromMember("columns: ColumnConfigs")
     val columns: List<CwtPropertyConfig>
-    @FromMember("columns: ColumnConfigs")
-    val columnMap: Map<String, CwtPropertyConfig>
     @FromMember("end_column: string?")
     val endColumn: String?
 
@@ -137,8 +134,6 @@ private class CwtRowConfigImpl(
     override val columns: List<CwtPropertyConfig>,
     override val endColumn: String?
 ) : UserDataHolderBase(), CwtRowConfig {
-    override val columnMap: Map<String, CwtPropertyConfig> = columns.associateBy { it.key }
-
     override val attributes: CwtRowConfigAttributes by lazy { CwtRowConfigAttributesEvaluator().evaluate(this) }
 
     override fun toString() = "CwtRowConfigImpl(name='$name')"

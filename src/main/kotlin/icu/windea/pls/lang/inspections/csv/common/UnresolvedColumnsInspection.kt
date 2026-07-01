@@ -41,7 +41,7 @@ class UnresolvedColumnsInspection : LocalInspectionTool() {
                 val header = file.header ?: return
                 val headerColumns = header.columnList
                 val unresolvedKeys = headerColumns.map { it.name }.toMutableSet()
-                unresolvedKeys -= rowConfig.columnMap.keys
+                unresolvedKeys -= rowConfig.columns.map { it.key }.toSet()
                 rowConfig.endColumn?.let { endColumn -> unresolvedKeys -= endColumn }
                 if (unresolvedKeys.isEmpty()) return
 
