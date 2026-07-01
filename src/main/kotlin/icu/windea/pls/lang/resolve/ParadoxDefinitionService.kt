@@ -30,7 +30,7 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
@@ -88,7 +88,7 @@ object ParadoxDefinitionService {
         val source = resolveSource(element) ?: return null
         val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
         // 忽略 rootKeys 深度超出限制，或者带参数的情况
-        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
         val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return null
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)

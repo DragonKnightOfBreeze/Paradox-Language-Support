@@ -29,7 +29,7 @@ import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
@@ -96,7 +96,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         ParadoxMemberService.injectRootKeys(psiFile, rootKeyStack)
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
-        val maxDefinitionDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val maxDefinitionDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
         val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
         val effectiveMaxDepth = (minOf(maxRootKeyDepth, maxDefinitionDepth) - rootKeyStack.size).coerceAtLeast(0)
 

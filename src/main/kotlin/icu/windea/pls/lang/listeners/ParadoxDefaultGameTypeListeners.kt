@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
 class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeListener {
     override fun onChange(oldGameType: ParadoxGameType, newGameType: ParadoxGameType) {
         val modDirectories = mutableSetOf<String>()
-        PlsProfilesSettings.getInstance().state.modDescriptorSettings.values.forEach { settings ->
+        ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.values.forEach { settings ->
             if (settings.gameType == null) {
                 // 这里可能包含不在项目中（以及库中）的根目录
                 settings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }

@@ -10,7 +10,7 @@ import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.ide.help.ChronicleHelpTopics
 
-class PlsDiagramSettingsConfigurable(
+class ChronicleDiagramSettingsConfigurable(
     private val project: Project
 ) : BoundConfigurable(ChronicleDiagramBundle.message("settings.diagram")), SearchableConfigurable {
     override fun getId() = "pls.diagram"

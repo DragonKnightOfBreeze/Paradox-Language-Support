@@ -13,7 +13,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
@@ -34,7 +34,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
             PROPERTY_VALUE -> settings.localisationTextsByDefault
@@ -48,18 +48,18 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
         collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
         collectCommentDescriptors(element, descriptors, settings)
         val r = collectOtherDescriptors(element, descriptors, settings)
         if (!r) return
         element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
         if (!settings.comments) return
         val allSiblingLineComments = PsiService.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
@@ -71,7 +71,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
     }
 
-    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState): Boolean {
+    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState): Boolean {
         when (element.elementType) {
             PROPERTY_VALUE -> run {
                 if (!settings.localisationTexts) return@run

@@ -11,8 +11,8 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import java.awt.event.ActionEvent
@@ -59,7 +59,7 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     private fun Panel.configureOptionsGroup() {
-        val settings = PlsSettings.getInstance().state.generation
+        val settings = ChronicleSettings.getInstance().state.generation
         val configGroup = context.locales.firstOrNull()?.configGroup ?: ChronicleFacade.getConfigGroup()
         val locales = ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
 

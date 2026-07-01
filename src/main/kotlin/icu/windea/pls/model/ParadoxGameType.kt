@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 
 /**
@@ -68,6 +68,6 @@ enum class ParadoxGameType(
         fun getSpecific(id: String): ParadoxGameType? = mapSpecific[id]
 
         @JvmStatic
-        fun getDefault(): ParadoxGameType = PlsSettings.getInstance().state.defaultGameType
+        fun getDefault(): ParadoxGameType = ChronicleSettings.getInstance().state.defaultGameType
     }
 }

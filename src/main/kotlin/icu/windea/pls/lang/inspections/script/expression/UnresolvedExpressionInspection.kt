@@ -32,7 +32,7 @@ import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.resolve.isDeclarationRoot
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -239,7 +239,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
             showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                .truncate(PlsInternalSettings.getInstance().itemLimit).joinToString()
+                .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }
         val message = when (element) {

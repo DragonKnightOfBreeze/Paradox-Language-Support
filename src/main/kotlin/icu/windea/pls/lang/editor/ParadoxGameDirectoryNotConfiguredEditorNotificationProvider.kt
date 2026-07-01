@@ -16,8 +16,8 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.settings.DefaultGameDirectoriesDialog
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.ui.settings.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -39,7 +39,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
         if (!isInProject) return null
 
-        val modSettings = PlsProfilesSettings.getInstance().state.modSettings.get(rootFile.path) ?: return null
+        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path) ?: return null
         if (modSettings.finalGameDirectory.isNotNullOrEmpty()) return null
 
         return Function f@{ fileEditor ->
@@ -62,7 +62,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
     }
 
     private fun configureDefaultGameDirectories() {
-        val settings = PlsSettings.getInstance().state
+        val settings = ChronicleSettings.getInstance().state
         val defaultGameDirectories = settings.defaultGameDirectories
         ParadoxGameType.getAllSpecific().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
         val defaultList = defaultGameDirectories.toMutableEntryList()

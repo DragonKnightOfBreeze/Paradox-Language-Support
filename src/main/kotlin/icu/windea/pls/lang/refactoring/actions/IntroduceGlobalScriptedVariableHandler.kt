@@ -18,7 +18,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -47,7 +47,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
 
         // 打开对话框
         val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return true
-        val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsInternalSettings.getInstance().defaultScriptedVariableName)
+        val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, ChronicleInternalSettings.getInstance().defaultScriptedVariableName)
         if (!dialog.showAndGet()) return true // 取消
 
         val variableNameToUse = dialog.variableName

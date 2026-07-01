@@ -9,7 +9,7 @@ import icu.windea.pls.extensions.ChronicleExtensionsBundle
 import icu.windea.pls.ide.help.ChronicleHelpTopics
 import icu.windea.pls.model.constants.ChronicleConstants
 
-class PlsExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExtensionsBundle.message("settings")), SearchableConfigurable {
+class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExtensionsBundle.message("settings")), SearchableConfigurable {
     // private val callbackLock = CallbackLock()
 
     override fun getId() = "pls.extensions"
@@ -25,7 +25,7 @@ class PlsExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExtensionsB
     }
 
     private fun Panel.configureGroupForMarkdown() {
-        val settings = PlsExtensionsSettings.getInstance().state.markdown
+        val settings = ChronicleExtensionsSettings.getInstance().state.markdown
 
         // resolveLinks
         row {

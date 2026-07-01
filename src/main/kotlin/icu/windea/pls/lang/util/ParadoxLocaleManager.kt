@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 object ParadoxLocaleManager {
     object Keys : KeyRegistry() {
@@ -24,7 +24,7 @@ object ParadoxLocaleManager {
     const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocaleConfig {
-        return getResolvedLocaleConfig(PlsSettings.getInstance().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
+        return getResolvedLocaleConfig(ChronicleSettings.getInstance().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {

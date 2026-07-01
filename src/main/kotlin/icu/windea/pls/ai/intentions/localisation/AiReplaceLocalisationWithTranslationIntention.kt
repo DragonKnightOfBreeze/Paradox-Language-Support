@@ -17,7 +17,7 @@ import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
@@ -33,7 +33,7 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
     override fun getFamilyName() = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
-        return super.isAvailable(project, editor, file) && PlsAiSettings.getInstance().isEnabled()
+        return super.isAvailable(project, editor, file) && ChronicleAiSettings.getInstance().isEnabled()
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {

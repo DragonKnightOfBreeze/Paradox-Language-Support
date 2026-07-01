@@ -16,8 +16,8 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -83,7 +83,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsSettings.getInstance().state.hierarchy.eventTreeGrouping
+        val groupingStrategy = ChronicleSettings.getInstance().state.hierarchy.eventTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
@@ -118,7 +118,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsSettings.getInstance().state.hierarchy.techTreeGrouping
+        val groupingStrategy = ChronicleSettings.getInstance().state.hierarchy.techTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {

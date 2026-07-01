@@ -10,7 +10,7 @@ import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxGameType
 
-object PlsSettingsManager {
+object ChronicleSettingsManager {
     fun onDefaultGameTypeChanged(callbackLock: CallbackLock, oldDefaultGameType: ParadoxGameType, newDefaultGameType: ParadoxGameType) {
         if (!callbackLock.check("onDefaultGameTypeChanged")) return
 

@@ -9,7 +9,7 @@ import icu.windea.pls.core.orNull
  * 插件的全局内部设置。可以通过 Registry 页面进行调整。
  */
 @Service
-class PlsInternalSettings {
+class ChronicleInternalSettings {
     /**
      * 渲染本地化文本时，使用的文本字体大小。这会影响在快速文档中渲染图标时，使用的最终缩放。
      */
@@ -59,6 +59,6 @@ class PlsInternalSettings {
 
     companion object {
         @JvmStatic
-        fun getInstance(): PlsInternalSettings = service()
+        fun getInstance(): ChronicleInternalSettings = service()
     }
 }

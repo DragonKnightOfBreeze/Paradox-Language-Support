@@ -18,7 +18,7 @@ import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.services.PolishLocalisationAiService
 import icu.windea.pls.ai.services.TranslateLocalisationAiService
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
@@ -79,7 +79,7 @@ object ParadoxLocalisationAiManipulationService {
         val textField = JBTextField().apply { addActionListener { submitted.set(true) } } // 目前不使用 TextFieldWithStoredHistory
 
         // 需要在 UI 发生变化时就更新设置
-        val settings = PlsAiSettings.getInstance().state
+        val settings = ChronicleAiSettings.getInstance().state
         val providerType = AtomicProperty(settings.providerType).apply { afterChange { settings.providerType = it } }
 
         val panel = panel {

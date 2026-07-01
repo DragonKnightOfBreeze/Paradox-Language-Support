@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.settings
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
+import icu.windea.pls.ai.settings.ChronicleAiSettingsConfigurable
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
@@ -17,8 +17,7 @@ import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.model.ParadoxGameType
 
-@Suppress("unused")
-object PlsIntegrationsSettingsManager {
+object ChronicleIntegrationsSettingsManager {
     // Image Tools
 
     fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
@@ -37,12 +36,12 @@ object PlsIntegrationsSettingsManager {
     }
 
     fun openAiSettingsPage() {
-        OptionsService.select<PlsAiSettingsConfigurable>()
+        OptionsService.select<ChronicleAiSettingsConfigurable>()
     }
 
     // Lint Tools
 
-    fun getTigerSettingsMap(settings: PlsIntegrationsSettings.State) = buildMap {
+    fun getTigerSettingsMap(settings: ChronicleIntegrationsSettings.State) = buildMap {
         put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
         put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
         put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))
@@ -56,6 +55,7 @@ object PlsIntegrationsSettingsManager {
         return builder.warning(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerPath.invalid"))
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
         val path = button.text.trim()
         if (path.endsWith(".conf", true)) return null

@@ -13,10 +13,10 @@ import icu.windea.pls.model.constants.ChronicleConstants
  */
 @Service
 @State(name = "PlsExtensionsSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
-class PlsExtensionsSettings : SimplePersistentStateComponent<PlsExtensionsSettings.State>(State()) {
+class ChronicleExtensionsSettings : SimplePersistentStateComponent<ChronicleExtensionsSettings.State>(State()) {
     companion object {
         @JvmStatic
-        fun getInstance(): PlsExtensionsSettings = service()
+        fun getInstance(): ChronicleExtensionsSettings = service()
     }
 
     /**

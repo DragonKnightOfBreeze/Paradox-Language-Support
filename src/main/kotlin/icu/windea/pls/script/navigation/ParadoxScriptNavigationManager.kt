@@ -17,7 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -205,7 +205,7 @@ object ParadoxScriptNavigationManager {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(PlsInternalSettings.getInstance().textLengthLimitForPresentation)
+            else -> truncate(ChronicleInternalSettings.getInstance().textLengthLimitForPresentation)
         }
     }
 }

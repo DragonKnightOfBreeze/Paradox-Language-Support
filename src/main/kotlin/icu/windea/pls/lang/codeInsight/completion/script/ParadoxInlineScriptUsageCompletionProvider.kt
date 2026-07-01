@@ -15,7 +15,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -36,7 +36,7 @@ class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeInlineScriptUsages) return
+        if (!ChronicleSettings.getInstance().state.completion.completeInlineScriptUsages) return
 
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return

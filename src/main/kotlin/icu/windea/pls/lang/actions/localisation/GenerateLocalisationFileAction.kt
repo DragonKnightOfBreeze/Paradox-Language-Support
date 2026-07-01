@@ -31,8 +31,8 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsStrategies
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -71,7 +71,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 val fileDocumentManager = FileDocumentManager.getInstance()
                 val documentManager = PsiDocumentManager.getInstance(project)
 
-                val generationSettings = PlsSettings.getInstance().state.generation
+                val generationSettings = ChronicleSettings.getInstance().state.generation
                 val strategy = generationSettings.localisationStrategy
 
                 val specificText = generationSettings.localisationStrategyText.orEmpty()
@@ -125,13 +125,13 @@ class GenerateLocalisationFileAction : AnAction() {
                                     e.setName(missingLocaleConfig.id)
                                 } else if (e is ParadoxLocalisationProperty) {
                                     when (strategy) {
-                                        PlsSettingsStrategies.LocalisationGeneration.EmptyText -> {
+                                        ChronicleSettingsStrategies.LocalisationGeneration.EmptyText -> {
                                             e.setValue("")
                                         }
-                                        PlsSettingsStrategies.LocalisationGeneration.SpecificText -> {
+                                        ChronicleSettingsStrategies.LocalisationGeneration.SpecificText -> {
                                             e.setValue(specificText)
                                         }
-                                        PlsSettingsStrategies.LocalisationGeneration.FromLocale -> {
+                                        ChronicleSettingsStrategies.LocalisationGeneration.FromLocale -> {
                                             // 使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
                                             val selector = ParadoxLocalisationSearch.selector(project, baseFile).contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.searchNormal(e.name, selector).find()

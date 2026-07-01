@@ -10,7 +10,7 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -22,10 +22,10 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
  */
 @Service
 @State(name = "PlsSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
-class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
+class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State>(State()) {
     companion object {
         @JvmStatic
-        fun getInstance(): PlsSettings = service()
+        fun getInstance(): ChronicleSettings = service()
     }
 
     /**

@@ -11,11 +11,11 @@ import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -76,7 +76,7 @@ class ParadoxGameSettingsDialog(
                 // disableTiger
                 row { // 尽管目前仅适用于模组目录……
                     checkBox(ChronicleBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
-                        .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                        .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
                 row {
@@ -100,7 +100,7 @@ class ParadoxGameSettingsDialog(
         super.doOKAction()
 
         settings.modDependencies = modDependencies
-        PlsProfilesSettings.getInstance().state.updateSettings()
+        ChronicleProfilesSettings.getInstance().state.updateSettings()
         application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
 

@@ -6,7 +6,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
@@ -38,7 +38,7 @@ object ParadoxGameTypeManager {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> rootInfo.metadata.gameType
             is ParadoxRootInfo.Mod -> rootInfo.metadata.gameTypeInfo?.gameType
-                ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
+                ?: ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
                 ?: ParadoxGameType.getDefault()
             else -> rootInfo.gameType
         }
@@ -47,7 +47,7 @@ object ParadoxGameTypeManager {
     fun getGameVersion(rootInfo: ParadoxRootInfo): String? {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> rootInfo.metadata.version
-            is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)?.gameVersion
+            is ParadoxRootInfo.Mod -> ChronicleProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)?.gameVersion
             else -> rootInfo.gameVersion
         }
     }

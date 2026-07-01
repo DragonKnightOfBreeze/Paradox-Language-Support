@@ -2,7 +2,7 @@ package icu.windea.pls.tools.actions
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.game.launch.ParadoxLaunchGameService
 
@@ -15,7 +15,7 @@ interface LaunchGameActions {
         override fun update(e: AnActionEvent) {
             // 判断是否需要显示在编辑器工具栏中
             if (e.place == ActionPlaces.EDITOR_TOOLBAR) {
-                val show = PlsSettings.getInstance().state.others.showLaunchGameActionInEditorContextToolbar
+                val show = ChronicleSettings.getInstance().state.others.showLaunchGameActionInEditorContextToolbar
                 e.presentation.isEnabledAndVisible = show
                 if (!show) return
             }

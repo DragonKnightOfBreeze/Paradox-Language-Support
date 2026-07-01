@@ -46,7 +46,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
@@ -282,7 +282,7 @@ object ParadoxParameterManager {
      * 尝试推断得到参数的上下文规则。基于用法和扩展规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
-        val inferenceSettings = PlsSettings.getInstance().state.inference
+        val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForParameters) return emptyList()
         val fast = inferenceSettings.configContextForParametersFast
 
@@ -307,7 +307,7 @@ object ParadoxParameterManager {
      * 尝试推断得到参数的上下文规则。基于扩展规则。
      */
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
-        val inferenceSettings = PlsSettings.getInstance().state.inference
+        val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForParameters) return emptyList()
         val fast = inferenceSettings.configContextForParametersFast
 

@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.folding
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -24,7 +24,7 @@ class ParadoxLocalisationFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_true_whenNotCollapsedByDefault() {
-        val folding = PlsSettings.getInstance().state.folding
+        val folding = ChronicleSettings.getInstance().state.folding
         folding.comments = true
         folding.commentsByDefault = false
         myFixture.testFoldingWithCollapseStatus("$testDataPath/localisation/folding/folding_comment_expand_true.test.yml")
@@ -32,7 +32,7 @@ class ParadoxLocalisationFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_false_whenCollapsedByDefault() {
-        val folding = PlsSettings.getInstance().state.folding
+        val folding = ChronicleSettings.getInstance().state.folding
         folding.comments = true
         folding.commentsByDefault = true
         myFixture.testFoldingWithCollapseStatus("$testDataPath/localisation/folding/folding_comment_expand_false.test.yml")

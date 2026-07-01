@@ -25,7 +25,7 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -50,7 +50,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContext) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContext) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -154,7 +154,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContextForEvents) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -265,7 +265,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContextForEvents) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -415,7 +415,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContextForOnActions) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContextForOnActions) return null
         return getScopeContextFromCache(definition)
     }
 

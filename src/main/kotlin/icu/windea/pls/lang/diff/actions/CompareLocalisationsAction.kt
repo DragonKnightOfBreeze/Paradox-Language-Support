@@ -38,7 +38,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -76,7 +76,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsSettings.getInstance().state.others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !ChronicleSettings.getInstance().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }

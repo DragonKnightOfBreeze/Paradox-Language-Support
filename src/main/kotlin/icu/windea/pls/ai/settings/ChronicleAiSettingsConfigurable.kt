@@ -20,7 +20,7 @@ import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
 import icu.windea.pls.ide.help.ChronicleHelpTopics
 
-class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("settings.ai")), SearchableConfigurable {
+class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
 
     override fun getHelpTopic() = ChronicleHelpTopics.aiSettings
@@ -41,7 +41,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("s
     }
 
     private fun Panel.configureGroupForGeneral() {
-        val settings = PlsAiSettings.getInstance().state
+        val settings = ChronicleAiSettings.getInstance().state
 
         // enable
         row {
@@ -63,7 +63,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("s
 
     private fun Panel.configureGroupForFeatures() {
         val group = "pls.ai.features"
-        val settings = PlsAiSettings.getInstance().state.features
+        val settings = ChronicleAiSettings.getInstance().state.features
 
         // localisationBatchSize
         row {
@@ -82,7 +82,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("s
     private fun Panel.configureGroupForOpenAi() {
         val group = "pls.ai.openAI"
         val properties = OpenAiChatModelProvider.Options.AtomicProperties()
-        val settings = PlsAiSettings.getInstance().state.openAI
+        val settings = ChronicleAiSettings.getInstance().state.openAI
 
         // modelName
         row {
@@ -143,7 +143,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("s
     private fun Panel.configureGroupForAnthropic() {
         val group = "pls.ai.anthropic"
         val properties = AnthropicChatModelProvider.Options.AtomicProperties()
-        val settings = PlsAiSettings.getInstance().state.anthropic
+        val settings = ChronicleAiSettings.getInstance().state.anthropic
 
         // modelName
         row {
@@ -204,7 +204,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("s
     private fun Panel.configureGroupForLocal() {
         val group = "pls.ai.local"
         val properties = LocalChatModelProvider.Options.AtomicProperties()
-        val settings = PlsAiSettings.getInstance().state.local
+        val settings = ChronicleAiSettings.getInstance().state.local
 
         // modelName
         row {

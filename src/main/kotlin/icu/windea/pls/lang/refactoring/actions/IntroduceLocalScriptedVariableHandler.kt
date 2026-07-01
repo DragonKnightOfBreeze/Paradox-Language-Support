@@ -24,7 +24,7 @@ import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -44,7 +44,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        val name = PlsInternalSettings.getInstance().defaultScriptedVariableName
+        val name = ChronicleInternalSettings.getInstance().defaultScriptedVariableName
 
         // 将光标移到 element 的结束位置并选中
         editor.caretModel.moveToOffset(element.endOffset)

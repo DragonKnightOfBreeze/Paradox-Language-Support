@@ -50,7 +50,7 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -75,7 +75,7 @@ object ParadoxCompletionManager {
         // 仅提示不在定义声明中的 key（顶级键和类型键）
         if (!configContext.inRoot()) {
             // 忽略 rootKeys 深度超出限制，或者带参数的情况
-            val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+            val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
             val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(context.contextElement) }
             val context = context.copy(isKey = true)

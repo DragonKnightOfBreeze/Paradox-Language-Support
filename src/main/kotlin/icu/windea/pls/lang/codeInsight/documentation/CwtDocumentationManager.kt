@@ -47,7 +47,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.text.appendConfigFileInfoHeader
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.text.getModifierCategoriesText
@@ -277,7 +277,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsSettings.getInstance().state.documentation.renderNameDescForModifiers
+        val render = ChronicleSettings.getInstance().state.documentation.renderNameDescForModifiers
         val contextElement = referenceElement
         if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
@@ -333,7 +333,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsSettings.getInstance().state.documentation.renderIconForModifiers
+        val render = ChronicleSettings.getInstance().state.documentation.renderIconForModifiers
         val contextElement = referenceElement
         if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
@@ -368,7 +368,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
         // 即使是在CWT文件中，如果可以推断得到规则分组，也显示作用域信息
 
-        if (!PlsSettings.getInstance().state.documentation.showScopes) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopes) return
 
         // 为 `link` 提示名字、描述、输入作用域、输出作用域的文档注释
         // 为 `alias` `modifier` `localisation_command` 等提供分类、支持的作用域的文档注释
@@ -457,7 +457,7 @@ object CwtDocumentationManager {
         // @Suppress("DEPRECATION")
         // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-        if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
 
         val sections = getSections(0) ?: return
         val gameType = configGroup.gameType

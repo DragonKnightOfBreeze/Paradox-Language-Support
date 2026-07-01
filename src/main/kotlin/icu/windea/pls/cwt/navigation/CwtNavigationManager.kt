@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import javax.swing.Icon
 
 object CwtNavigationManager {
@@ -63,7 +63,7 @@ object CwtNavigationManager {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(PlsInternalSettings.getInstance().textLengthLimitForPresentation)
+            else -> truncate(ChronicleInternalSettings.getInstance().textLengthLimitForPresentation)
         }
     }
 }

@@ -22,7 +22,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.SCRIPTED_VARIABLE_NAME_TOKENS
@@ -34,7 +34,7 @@ class ParadoxScriptedVariableNameCompletionProvider : ParadoxCompletionProvider(
     val elementPattern get() = psiElement().withElementType(SCRIPTED_VARIABLE_NAME_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeScriptedVariableNames) return
+        if (!ChronicleSettings.getInstance().state.completion.completeScriptedVariableNames) return
 
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptScriptedVariableName>() ?: return

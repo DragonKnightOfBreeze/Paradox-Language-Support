@@ -11,7 +11,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
@@ -69,7 +69,7 @@ object ParadoxCsvNavigationManager {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(PlsInternalSettings.getInstance().textLengthLimitForPresentation)
+            else -> truncate(ChronicleInternalSettings.getInstance().textLengthLimitForPresentation)
         }
     }
 }

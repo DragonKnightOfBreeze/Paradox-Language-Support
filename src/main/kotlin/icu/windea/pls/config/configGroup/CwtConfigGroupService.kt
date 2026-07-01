@@ -24,7 +24,7 @@ import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -208,10 +208,10 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         // 重新解析涉及的根路径下的所有文件
         val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
-        PlsProfilesSettings.getInstance().state.gameDescriptorSettings.values
+        ChronicleProfilesSettings.getInstance().state.gameDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.gameDirectory }
-        PlsProfilesSettings.getInstance().state.modDescriptorSettings.values
+        ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
         val files = ChronicleAnalysisManager.findAllFilesByRootFilePaths(rootFilePaths)

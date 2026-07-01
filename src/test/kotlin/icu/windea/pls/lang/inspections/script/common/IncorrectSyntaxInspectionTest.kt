@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
@@ -77,7 +77,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
         val description = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.2")
         val tag = description.toWarningTag()
 
-        val settings = PlsConfigSettings.getInstance().state.features
+        val settings = ChronicleConfigSettings.getInstance().state.features
         settings.checkComparisonOperators = true
         try {
             markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test.txt")

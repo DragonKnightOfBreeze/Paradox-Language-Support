@@ -44,7 +44,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.optimizedPath
-import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.collections.FastList
@@ -101,7 +101,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
 
         val overrideBuiltIn = configGroup.gameType != ParadoxGameType.Core
-            && PlsConfigSettings.getInstance().state.overrideBuiltIn
+            && ChronicleConfigSettings.getInstance().state.overrideBuiltIn
             && fileInfos.any { it.source == CwtConfigGroupFileSource.Remote }
         if (overrideBuiltIn) fileInfos.removeIf { it.source == CwtConfigGroupFileSource.BuiltIn }
 

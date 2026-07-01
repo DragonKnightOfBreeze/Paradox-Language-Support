@@ -15,7 +15,7 @@ import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.translation.TranslationToolConstants
 
 @Suppress("UnstableApiUsage")
-class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrationsBundle.message("settings.integrations")), SearchableConfigurable {
+class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrationsBundle.message("settings.integrations")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
     override fun getId() = "pls.integrations"
@@ -36,7 +36,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
 
     private fun Panel.configureGroupForImage() {
         val groupName = "pls.integrations.image"
-        val settings = PlsIntegrationsSettings.getInstance().state.image
+        val settings = ChronicleIntegrationsSettings.getInstance().state.image
 
         row {
             comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -64,7 +64,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
                 .bindText(settings::magickPath.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(ImageToolConstants.Magick.pathTip()) }
                 .align(Align.FILL)
-                .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
+                .validationOnInput { ChronicleIntegrationsSettingsManager.validateMagickPath(this, it) }
         }
     }
 
@@ -76,18 +76,18 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
             checkBox(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
                 .comment(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             browserLink(ChronicleBundle.message("link.website"), TranslationToolConstants.TranslationPlugin.url)
-            link(ChronicleBundle.message("link.install")) { PlsIntegrationsSettingsManager.installTranslationPlugin() }
+            link(ChronicleBundle.message("link.install")) { ChronicleIntegrationsSettingsManager.installTranslationPlugin() }
         }
         row {
             checkBox(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
                 .comment(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.ai.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-            link(ChronicleBundle.message("link.configureInSettingsPage")) { PlsIntegrationsSettingsManager.openAiSettingsPage() }
+            link(ChronicleBundle.message("link.configureInSettingsPage")) { ChronicleIntegrationsSettingsManager.openAiSettingsPage() }
         }
     }
 
     private fun Panel.configureGroupForLint() {
         val groupName = "pls.integrations.lint"
-        val settings = PlsIntegrationsSettings.getInstance().state.lint
+        val settings = ChronicleIntegrationsSettings.getInstance().state.lint
 
         row {
             comment(ChronicleIntegrationsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -97,11 +97,11 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
             checkBox(ChronicleIntegrationsBundle.message("settings.integrations.lint.tiger"))
                 .comment(ChronicleIntegrationsBundle.message("settings.integrations.lint.tiger.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableTiger)
-                .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
         }
 
-        val map = PlsIntegrationsSettingsManager.getTigerSettingsMap(PlsIntegrationsSettings.getInstance().state)
+        val map = ChronicleIntegrationsSettingsManager.getTigerSettingsMap(ChronicleIntegrationsSettings.getInstance().state)
         map.forEach { (gameType, tuple) ->
             val (name, pathProp, confPathProp) = tuple
 
@@ -113,8 +113,8 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
                     .bindText(pathProp.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(LintToolConstants.Tiger.pathTip(gameType)) }
                     .align(Align.FILL)
-                    .validationOnInput { PlsIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
-                    .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
+                    .validationOnInput { ChronicleIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
+                    .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
             }
             row {
                 label(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupName)
@@ -124,9 +124,9 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
                 textFieldWithBrowseButton(descriptor, null)
                     .bindText(confPathProp.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(LintToolConstants.Tiger.confPathTip(gameType)) }
-                    .validationOnInput { PlsIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
+                    .validationOnInput { ChronicleIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
                     .align(Align.FILL)
-                    .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
+                    .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
             }
         }
 
@@ -136,7 +136,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrati
             link(ChronicleBundle.message("link.configure")) {
                 // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                 val dialog = TigerHighlightDialog()
-                if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
+                if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
             }
             contextHelp(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
         }

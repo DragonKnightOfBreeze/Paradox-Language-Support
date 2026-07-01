@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.integrations.settings.TigerHighlightDialog
 import javax.swing.JComponent
 
@@ -43,7 +43,7 @@ class ChronicleTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBat
                 link(ChronicleBundle.message("link.configure")) {
                     // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                     val dialog = TigerHighlightDialog()
-                    if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
+                    if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                 }
             }
         }

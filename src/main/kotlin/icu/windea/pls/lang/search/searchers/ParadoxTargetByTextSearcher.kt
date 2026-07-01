@@ -12,7 +12,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxTargetByTextSearch.Parameters, consumer: Processor<in NavigatablePsiElement>) {
         // 检查是否启用
-        if (!PlsSettings.getInstance().state.navigation.seForTargetsByText) return
+        if (!ChronicleSettings.getInstance().state.navigation.seForTargetsByText) return
 
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
@@ -100,7 +100,7 @@ abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiEle
         val processedTargets: MutableSet<ParadoxTargetInfo> = ConcurrentHashMap.newKeySet()
 
         val types = queryParameters.types
-        val settings = PlsSettings.getInstance().state.navigation
+        val settings = ChronicleSettings.getInstance().state.navigation
         val includeScriptedVariables = types == null || ParadoxSearchTargetType.ScriptedVariable in types
         val includeDefinitions = types == null || ParadoxSearchTargetType.Definition in types
         val includeLocalisations = types == null || ParadoxSearchTargetType.Localisation in types

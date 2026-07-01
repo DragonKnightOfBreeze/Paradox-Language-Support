@@ -15,13 +15,13 @@ import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
 
-class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("settings")), SearchableConfigurable {
+class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("settings")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
     override fun getId() = "pls"
@@ -54,7 +54,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
 
     private fun Panel.configureGroupForGeneral() {
         val groupName = "general"
-        val settings = PlsSettings.getInstance().state
+        val settings = ChronicleSettings.getInstance().state
         val gameTypes = ParadoxGameType.getAllSpecific()
         val locales = ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
 
@@ -70,7 +70,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
                     val newDefaultGameType = settings.defaultGameType
                     if (oldDefaultGameType == newDefaultGameType) return@onApply
                     defaultGameType = newDefaultGameType
-                    PlsSettingsManager.onDefaultGameTypeChanged(callbackLock, oldDefaultGameType, newDefaultGameType)
+                    ChronicleSettingsManager.onDefaultGameTypeChanged(callbackLock, oldDefaultGameType, newDefaultGameType)
                 }
         }
         // defaultGameDirectories
@@ -91,7 +91,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
                     val newDefaultGameDirectories = list.toMutableMap()
                     if (oldDefaultGameDirectories == newDefaultGameDirectories) return@onApply
                     settings.defaultGameDirectories = newDefaultGameDirectories
-                    PlsSettingsManager.onDefaultGameDirectoriesChanged(callbackLock, oldDefaultGameDirectories, newDefaultGameDirectories)
+                    ChronicleSettingsManager.onDefaultGameDirectoriesChanged(callbackLock, oldDefaultGameDirectories, newDefaultGameDirectories)
                 }
                 .onReset { list = defaultList }
                 .onIsModified { list != defaultList }
@@ -108,7 +108,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
                     val newPreferredLocale = settings.preferredLocale.orEmpty()
                     if (oldPreferredLocale == newPreferredLocale) return@onApply
                     preferredLocale = newPreferredLocale
-                    PlsSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
+                    ChronicleSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
                 }
         }
         // ignoredFileNames
@@ -129,13 +129,13 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
                     fileNames += oldIgnoredFileNameSet
                     fileNames += newIgnoredFileNameSet
                     // 设置中的被忽略文件名被更改时，需要重新解析相关文件
-                    PlsSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames)
+                    ChronicleSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames)
                 }
         }
     }
 
     private fun Panel.configureGroupForDocumentation() {
-        val settings = PlsSettings.getInstance().state.documentation
+        val settings = ChronicleSettings.getInstance().state.documentation
 
         // renderLineComment
         row {
@@ -224,7 +224,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForCompletion() {
-        val settings = PlsSettings.getInstance().state.completion
+        val settings = ChronicleSettings.getInstance().state.completion
 
         // completeScriptedVariableNames
         row {
@@ -299,7 +299,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForFolding() {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
 
         // comments & commentsByDefault
         row {
@@ -410,7 +410,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForGeneration() {
-        val settings = PlsSettings.getInstance().state.generation
+        val settings = ChronicleSettings.getInstance().state.generation
         val locales = ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
 
         // localisationStrategy
@@ -438,7 +438,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForHierarchy() {
-        val settings = PlsSettings.getInstance().state.hierarchy
+        val settings = ChronicleSettings.getInstance().state.hierarchy
 
         // showLocalizedName
         row {
@@ -535,7 +535,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForDiff() {
-        val settings = PlsSettings.getInstance().state.diff
+        val settings = ChronicleSettings.getInstance().state.diff
 
         // defaultDiffGroup
         row {
@@ -546,7 +546,7 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForNavigation() {
-        val settings = PlsSettings.getInstance().state.navigation
+        val settings = ChronicleSettings.getInstance().state.navigation
 
         // seForTargets
         row {
@@ -593,20 +593,20 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
     }
 
     private fun Panel.configureGroupForInference() {
-        val settings = PlsSettings.getInstance().state.inference
+        val settings = ChronicleSettings.getInstance().state.inference
 
         // injectionForParameterValue
         row {
             checkBox(ChronicleBundle.message("settings.inference.injectionForParameterValue"))
                 .bindSelected(settings::injectionForParameterValue)
-                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
             contextHelp(ChronicleBundle.message("settings.inference.injectionForParameterValue.tip"))
         }
         // injectionForLocalisationText
         row {
             checkBox(ChronicleBundle.message("settings.inference.injectionForLocalisationText"))
                 .bindSelected(settings::injectionForLocalisationText)
-                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
             contextHelp(ChronicleBundle.message("settings.inference.injectionForLocalisationText.tip"))
         }
         // configContextForParameters
@@ -614,28 +614,28 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
             lateinit var cb: JBCheckBox
             checkBox(ChronicleBundle.message("settings.inference.configContextForParameters"))
                 .bindSelected(settings::configContextForParameters)
-                .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
                 .applyToComponent { cb = this }
             contextHelp(ChronicleBundle.message("settings.inference.configContextForParameters.tip"))
 
             // configContextForParametersFast
             checkBox(ChronicleBundle.message("settings.inference.fast"))
                 .bindSelected(settings::configContextForParametersFast)
-                .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBundle.message("settings.inference.fast.tip"))
 
             // configContextForParametersFromUsages
             checkBox(ChronicleBundle.message("settings.inference.fromUsages"))
                 .bindSelected(settings::configContextForParametersFromUsages)
-                .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBundle.message("settings.inference.fromUsages.tip"))
 
             // configContextForParametersFromConfig
             checkBox(ChronicleBundle.message("settings.inference.fromConfig"))
                 .bindSelected(settings::configContextForParametersFromConfig)
-                .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBundle.message("settings.inference.fromConfig.tip"))
         }
@@ -644,28 +644,28 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
             lateinit var cb: JBCheckBox
             checkBox(ChronicleBundle.message("settings.inference.configContextForInlineScripts"))
                 .bindSelected(settings::configContextForInlineScripts)
-                .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .applyToComponent { cb = this }
             contextHelp(ChronicleBundle.message("settings.inference.configContextForInlineScripts.tip"))
 
             // configContextForInlineScriptsFast
             checkBox(ChronicleBundle.message("settings.inference.fast"))
                 .bindSelected(settings::configContextForInlineScriptsFast)
-                .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBundle.message("settings.inference.fast.tip"))
 
             // configContextForInlineScriptsFromUsages
             checkBox(ChronicleBundle.message("settings.inference.fromUsages"))
                 .bindSelected(settings::configContextForInlineScriptsFromUsages)
-                .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBundle.message("settings.inference.fromUsages.tip"))
 
             // configContextForInlineScriptsFromConfig
             checkBox(ChronicleBundle.message("settings.inference.fromConfig"))
                 .bindSelected(settings::configContextForInlineScriptsFromConfig)
-                .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBundle.message("settings.inference.fromConfig.tip"))
         }
@@ -673,27 +673,27 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
         row {
             checkBox(ChronicleBundle.message("settings.inference.scopeContext"))
                 .bindSelected(settings::scopeContext)
-                .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForScopeContextInference(callbackLock) }
             contextHelp(ChronicleBundle.message("settings.inference.scopeContext.tip"))
         }
         // scopeContextForEvents
         row {
             checkBox(ChronicleBundle.message("settings.inference.scopeContextForEvents"))
                 .bindSelected(settings::scopeContextForEvents)
-                .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForScopeContextInference(callbackLock) }
             contextHelp(ChronicleBundle.message("settings.inference.scopeContextForEvents.tip"))
         }
         // scopeContextForOnActions
         row {
             checkBox(ChronicleBundle.message("settings.inference.scopeContextForOnActions"))
                 .bindSelected(settings::scopeContextForOnActions)
-                .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshForScopeContextInference(callbackLock) }
             contextHelp(ChronicleBundle.message("settings.inference.scopeContextForOnActions.tip"))
         }
     }
 
     private fun Panel.configureGroupForOthers() {
-        val settings = PlsSettings.getInstance().state.others
+        val settings = ChronicleSettings.getInstance().state.others
 
         // showEditorContextToolbar
         row {
@@ -714,13 +714,13 @@ class PlsSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("setti
         row {
             checkBox(ChronicleBundle.message("settings.others.highlightLocalisationColorId"))
                 .bindSelected(settings::highlightLocalisationColorId)
-                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
         }
         // renderLocalisationColorfulText
         row {
             checkBox(ChronicleBundle.message("settings.others.renderLocalisationColorfulText"))
                 .bindSelected(settings::renderLocalisationColorfulText)
-                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
+                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
         }
     }
 }

@@ -1,5 +1,5 @@
 package icu.windea.pls.lang.settings
 
-interface PlsSettingsStrategy {
+interface ChronicleSettingsStrategy {
     val text: String
 }

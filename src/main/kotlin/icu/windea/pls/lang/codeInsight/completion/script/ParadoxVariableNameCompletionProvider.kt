@@ -15,7 +15,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionComple
 import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -35,7 +35,7 @@ class ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeVariableNames) return
+        if (!ChronicleSettings.getInstance().state.completion.completeVariableNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return

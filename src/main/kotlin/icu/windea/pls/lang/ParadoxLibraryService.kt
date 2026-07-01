@@ -12,7 +12,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
@@ -34,7 +34,7 @@ class ParadoxLibraryService(private val project: Project) {
         // 这里仅需要收集不在项目中的游戏目录和模组目录
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val profilesSettings = PlsProfilesSettings.getInstance().state
+        val profilesSettings = ChronicleProfilesSettings.getInstance().state
         profilesSettings.modSettings.values.forEach f@{ modSettings ->
             val modDirectory = modSettings.modDirectory ?: return@f
             val modFile = modDirectory.toVirtualFile() ?: return@f

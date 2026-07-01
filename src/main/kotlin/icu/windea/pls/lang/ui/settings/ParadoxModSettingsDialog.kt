@@ -15,15 +15,15 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -38,7 +38,7 @@ class ParadoxModSettingsDialog(
     private val inferredGameTypeInfo = rootInfo.gameTypeInfo
 
     private val finalGameType = settings.finalGameType
-    private val defaultGameDirectory = PlsSettings.getInstance().state.defaultGameDirectories[finalGameType.id]
+    private val defaultGameDirectory = ChronicleSettings.getInstance().state.defaultGameDirectories[finalGameType.id]
     private val defaultGameVersion = ParadoxGameManager.getGameVersionFromGameDirectory(defaultGameDirectory)
 
     private val graph = PropertyGraph()
@@ -146,7 +146,7 @@ class ParadoxModSettingsDialog(
                 // disableTiger
                 row {
                     checkBox(ChronicleBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
-                        .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                        .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
                 row {
@@ -181,7 +181,7 @@ class ParadoxModSettingsDialog(
         settings.gameType = gameTypeProperty.get()
         settings.gameDirectory = gameDirectoryProperty.get()
         settings.modDependencies = modDependencies
-        PlsProfilesSettings.getInstance().state.updateSettings()
+        ChronicleProfilesSettings.getInstance().state.updateSettings()
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
         if (finalGameType != settings.gameType) {

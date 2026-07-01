@@ -9,7 +9,7 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 
@@ -33,8 +33,8 @@ abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?)
     val settings: ParadoxGameOrModSettingsState? by lazy {
         val rootInfo = file?.fileInfo?.rootInfo
         when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsProfilesSettings.getInstance().state.gameSettings.get(rootInfo.rootFile.path)
-            is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Game -> ChronicleProfilesSettings.getInstance().state.gameSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Mod -> ChronicleProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)
             else -> null
         }
     }

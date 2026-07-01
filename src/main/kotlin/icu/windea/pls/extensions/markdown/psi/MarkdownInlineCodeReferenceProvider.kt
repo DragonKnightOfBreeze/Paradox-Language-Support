@@ -11,7 +11,7 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
-import icu.windea.pls.extensions.settings.PlsExtensionsSettings
+import icu.windea.pls.extensions.settings.ChronicleExtensionsSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxNameValidators
 @Suppress("UnstableApiUsage")
 class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
     override fun getImplicitReference(element: PsiElement, offsetInElement: Int): PsiSymbolReference? {
-        if (!PlsExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
+        if (!ChronicleExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
 
         val identifier = MarkdownExtensionManager.getIdentifierFromInlineCode(element) ?: return null
         run {

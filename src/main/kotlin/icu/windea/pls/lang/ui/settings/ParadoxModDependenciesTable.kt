@@ -19,7 +19,7 @@ import icu.windea.pls.lang.actions.ChronicleActionPlaces
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(
@@ -121,7 +121,7 @@ class ParadoxModDependenciesTable(
             TableSpeedSearch.installOn(table) { e ->
                 val element = e as ParadoxModDependencySettingsState
                 val modDirectory = element.modDirectory.orEmpty()
-                val modDescriptorSettings = PlsProfilesSettings.getInstance().state.modDescriptorSettings.getValue(modDirectory)
+                val modDescriptorSettings = ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.getValue(modDirectory)
                 modDescriptorSettings.name.orEmpty()
             }.apply { comparator = SpeedSearchComparator(false) }
 

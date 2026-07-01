@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
@@ -49,7 +49,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
-        val hierarchySettings = PlsSettings.getInstance().state.hierarchy
+        val hierarchySettings = ChronicleSettings.getInstance().state.hierarchy
         val name = name.or.anonymous()
         myHighlightedText.ending.addText(name, getNameAttributes(myColor))
         run {

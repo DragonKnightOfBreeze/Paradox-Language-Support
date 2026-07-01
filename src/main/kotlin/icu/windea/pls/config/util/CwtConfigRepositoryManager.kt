@@ -16,7 +16,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
-import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -97,7 +97,7 @@ object CwtConfigRepositoryManager {
     }
 
     fun isValidToSync(): Boolean {
-        val settings = PlsConfigSettings.getInstance().state
+        val settings = ChronicleConfigSettings.getInstance().state
         val valid = settings.enableRemoteConfigGroups
             && settings.remoteConfigDirectory.isNotNullOrEmpty()
             && settings.configRepositoryUrls.isNotEmpty()
@@ -112,7 +112,7 @@ object CwtConfigRepositoryManager {
         // NOTE 这里需要先验证是否真的需要刷新
         if (!isValidToSync()) return
 
-        val settings = PlsConfigSettings.getInstance().state
+        val settings = ChronicleConfigSettings.getInstance().state
         val urlMap = settings.configRepositoryUrls.orNull() ?: return
         val parentDirectory = settings.remoteConfigDirectory?.orNull() ?: return
 

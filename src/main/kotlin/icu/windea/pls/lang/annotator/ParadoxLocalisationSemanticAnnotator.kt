@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.resolveLocalisation
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.annotator.ParadoxLocalisationSyntaxAnnotator
@@ -62,7 +62,7 @@ class ParadoxLocalisationSemanticAnnotator : Annotator {
 
     private fun annotateTextColor(element: ParadoxLocalisationTextColorAwareElement, holder: AnnotationHolder) {
         // 颜色高亮
-        if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return
+        if (!ChronicleSettings.getInstance().state.others.highlightLocalisationColorId) return
         val color = element.colorInfo?.color ?: return
         val attributesKey = ParadoxSemanticHighlighterColors.color(color)
         val (idElement, idOffset) = ParadoxTextColorManager.getIdElementAndOffset(element) ?: return

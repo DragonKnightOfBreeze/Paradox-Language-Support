@@ -25,7 +25,7 @@ import icu.windea.pls.model.constants.ChronicleConstants
  */
 @Service
 @State(name = "PlsProfilesSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
-class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettings.State>(State()) {
+class ChronicleProfilesSettings : SimplePersistentStateComponent<ChronicleProfilesSettings.State>(State()) {
     fun getGameSettings(rootInfo: ParadoxRootInfo.Game): ParadoxGameSettingsState? {
         return state.gameSettings.get(rootInfo.rootFile.path)
     }
@@ -44,7 +44,7 @@ class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettings.S
 
     companion object {
         @JvmStatic
-        fun getInstance(): PlsProfilesSettings = service()
+        fun getInstance(): ChronicleProfilesSettings = service()
     }
 
     class State : BaseState() {
@@ -136,7 +136,7 @@ interface ParadoxGameDescriptorAwareSettingsState {
     val gameDirectory: String?
 
     val gameDescriptorSettings: ParadoxGameDescriptorSettingsState?
-        get() = gameDirectory?.let { PlsProfilesSettings.getInstance().state.gameDescriptorSettings.get(it) }
+        get() = gameDirectory?.let { ChronicleProfilesSettings.getInstance().state.gameDescriptorSettings.get(it) }
 
     val gameType: ParadoxGameType? get() = gameDescriptorSettings?.gameType
     val gameVersion: String? get() = gameDescriptorSettings?.gameVersion
@@ -148,7 +148,7 @@ interface ParadoxModDescriptorAwareSettingsState {
     val modDirectory: String?
 
     val modDescriptorSettings: ParadoxModDescriptorSettingsState?
-        get() = modDirectory?.orNull()?.let { PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(it) }
+        get() = modDirectory?.orNull()?.let { ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.get(it) }
 
     val name: String? get() = modDescriptorSettings?.name
     val version: String? get() = modDescriptorSettings?.version
@@ -193,7 +193,7 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState, Para
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 
     override val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: ParadoxGameType.getDefault()
-    val finalGameDirectory: String? get() = gameDirectory?.orNull() ?: PlsSettings.getInstance().state.defaultGameDirectories[finalGameType.id]?.orNull()
+    val finalGameDirectory: String? get() = gameDirectory?.orNull() ?: ChronicleSettings.getInstance().state.defaultGameDirectories[finalGameType.id]?.orNull()
 }
 
 /**

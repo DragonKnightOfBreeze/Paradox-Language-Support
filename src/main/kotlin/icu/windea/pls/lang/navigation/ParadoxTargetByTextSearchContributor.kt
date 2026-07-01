@@ -20,7 +20,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.navigation.NavigationElement
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 提供来自本地化文本片段的随处搜索（Search Everywhere）。
@@ -90,7 +90,7 @@ class ParadoxTargetByTextSearchContributor(val event: AnActionEvent) : WeightedS
     }
 
     class Factory : SearchEverywhereContributorFactory<PsiElement> {
-        override fun isAvailable(project: Project?) = PlsSettings.getInstance().state.navigation.seForTargetsByText
+        override fun isAvailable(project: Project?) = ChronicleSettings.getInstance().state.navigation.seForTargetsByText
 
         override fun createContributor(initEvent: AnActionEvent): ParadoxTargetByTextSearchContributor {
             return ParadoxTargetByTextSearchContributor(initEvent)

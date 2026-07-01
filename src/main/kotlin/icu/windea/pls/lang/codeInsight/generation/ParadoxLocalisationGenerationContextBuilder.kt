@@ -4,7 +4,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 object ParadoxLocalisationGenerationContextBuilder {
     fun build(
@@ -44,7 +44,7 @@ object ParadoxLocalisationGenerationContextBuilder {
     }
 
     private fun handleGroup(group: MutableMap<String, MutableList<ParadoxLocalisationGenerationInfo>>) {
-        val settings = PlsSettings.getInstance().state.generation
+        val settings = ChronicleSettings.getInstance().state.generation
 
         // #296 如果某个来自本地化引用的本地化的名字与某个分组名匹配（将分组名作为前缀，移除后是空字符串，或者以有效分隔符开始的字符串），则移入此分组
         run {

@@ -8,7 +8,7 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettings
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.name
@@ -20,7 +20,7 @@ import kotlin.io.path.notExists
  */
 class MagickToolProvider : CommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
-        return PlsIntegrationsSettings.getInstance().state.image.enableMagick
+        return ChronicleIntegrationsSettings.getInstance().state.image.enableMagick
     }
 
     override fun isSupported(): Boolean {
@@ -28,7 +28,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     }
 
     override fun isValid(): Boolean {
-        val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
+        val toolPath = ChronicleIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) return false
         return isValidExePath(toolPath)
     }
@@ -70,7 +70,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
+        val toolPath = ChronicleIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) throw IllegalStateException()
 
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath

@@ -4,8 +4,8 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsManager
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
@@ -18,7 +18,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
 
     override fun createCenterPanel() = panel {
         row {
-            val settings = PlsSettings.getInstance().state
+            val settings = ChronicleSettings.getInstance().state
             val locales = ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
             var preferredLocale = settings.preferredLocale
             localeComboBox(locales)
@@ -28,7 +28,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                     val newPreferredLocale = settings.preferredLocale.orEmpty()
                     if (oldPreferredLocale == newPreferredLocale) return@onApply
                     preferredLocale = newPreferredLocale
-                    PlsSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
+                    ChronicleSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
                 }
         }
     }

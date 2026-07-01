@@ -17,7 +17,7 @@ import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBase.WithPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
-        return super.isAvailable(e, project) && PlsAiSettings.getInstance().isEnabled()
+        return super.isAvailable(e, project) && ChronicleAiSettings.getInstance().isEnabled()
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup {

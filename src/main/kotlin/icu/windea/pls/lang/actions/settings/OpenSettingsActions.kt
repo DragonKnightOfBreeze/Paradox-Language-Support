@@ -3,7 +3,7 @@ package icu.windea.pls.lang.actions.settings
 import com.intellij.openapi.project.Project
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.ui.settings.ParadoxGameSettingsDialog
 import icu.windea.pls.lang.ui.settings.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxRootInfo
@@ -22,7 +22,7 @@ class OpenGameSettingsAction : OpenSettingsActionBase() {
     override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
         if (rootInfo !is ParadoxRootInfo.Game) return
         val rootPath = rootInfo.rootFile.path
-        val gameSettings = PlsProfilesSettings.getInstance().state.gameSettings.get(rootPath) ?: return
+        val gameSettings = ChronicleProfilesSettings.getInstance().state.gameSettings.get(rootPath) ?: return
         val dialog = ParadoxGameSettingsDialog(project, rootInfo, gameSettings)
         dialog.show()
     }
@@ -42,7 +42,7 @@ class OpenModSettingsAction : OpenSettingsActionBase() {
     override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
         if (rootInfo !is ParadoxRootInfo.Mod) return
         val rootPath = rootInfo.rootFile.path
-        val modSettings = PlsProfilesSettings.getInstance().state.modSettings.get(rootPath) ?: return
+        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootPath) ?: return
         val dialog = ParadoxModSettingsDialog(project, rootInfo, modSettings)
         dialog.show()
     }

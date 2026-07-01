@@ -21,7 +21,7 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
@@ -162,7 +162,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val inferenceSettings = PlsSettings.getInstance().state.inference
+        val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForInlineScripts) return emptyList()
         val fast = inferenceSettings.configContextForInlineScriptsFast
 
@@ -185,7 +185,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
-        val inferenceSettings = PlsSettings.getInstance().state.inference
+        val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForInlineScripts) return emptyList()
         val fast = inferenceSettings.configContextForInlineScriptsFast
 

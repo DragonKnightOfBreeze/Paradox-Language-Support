@@ -10,7 +10,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope
@@ -153,7 +153,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
         )
 
         class AtomicProperties {
-            private val settings = PlsAiSettings.getInstance().state.local
+            private val settings = ChronicleAiSettings.getInstance().state.local
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

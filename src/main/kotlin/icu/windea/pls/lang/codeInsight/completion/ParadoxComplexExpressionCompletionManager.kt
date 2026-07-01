@@ -39,7 +39,7 @@ import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -707,7 +707,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private fun completeForScopeValueArgumentValueNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxScriptValueArgumentValueNode, offset: Int, element: ParadoxExpressionElement) {
-        if (!PlsSettings.getInstance().state.inference.configContextForParameters) return
+        if (!ChronicleSettings.getInstance().state.inference.configContextForParameters) return
 
         val expression = node.parent as? ParadoxScriptValueReferenceExpression ?: return // unexpected
         if (!expression.scriptValueNode.text.isNotEmpty()) return
@@ -802,7 +802,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linksConfigs) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -828,7 +828,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -849,7 +849,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -895,7 +895,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             // 排除 input_scopes 不匹配前一个 scope 的 output_scope 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -920,7 +920,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -941,7 +941,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1012,7 +1012,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             // optimize: make first char uppercase (e.g., owner -> Owner)
             val name = linkConfig.name.replaceFirstChar { it.uppercaseChar() }
@@ -1039,7 +1039,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1061,7 +1061,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1104,7 +1104,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (localisationCommand in localisationCommands.values) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, localisationCommand.supportedScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = localisationCommand.name
             val element = localisationCommand.pointer.element ?: continue
@@ -1125,7 +1125,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             // 排除 input_scopes 不匹配前一个 scope 的 output_scope 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -1150,7 +1150,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromArgument) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1171,7 +1171,7 @@ object ParadoxComplexExpressionCompletionManager {
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue

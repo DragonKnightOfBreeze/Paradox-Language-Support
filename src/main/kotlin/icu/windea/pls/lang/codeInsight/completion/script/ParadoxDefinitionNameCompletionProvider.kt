@@ -22,8 +22,8 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.PlsInternalSettings
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -39,7 +39,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeDefinitionNames) return
+        if (!ChronicleSettings.getInstance().state.completion.completeDefinitionNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
@@ -58,7 +58,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                 val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
                 // 忽略 rootKeys 深度超出限制，或者带参数的情况
-                val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+                val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
                 val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in context.configGroup.types.values) {

@@ -6,7 +6,7 @@ import icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.CallbackLock
 
-object PlsConfigSettingsManager {
+object ChronicleConfigSettingsManager {
     fun onConfigDirectoriesChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onConfigDirectoriesChanged")) return
 

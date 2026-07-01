@@ -39,7 +39,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withFileExtensions
 import icu.windea.pls.lang.search.util.withSearchScopeType
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -58,7 +58,7 @@ object ParadoxExpressionCompletionManager {
         if (configExpression.expressionString.isEmpty()) return
         // 要求匹配作用域
         val nextScopeMatched = ParadoxCompletionUtil.isNextScopeMatched(context)
-        if (!nextScopeMatched && !PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
+        if (!nextScopeMatched && !ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
         val context = context.copy(scopeMatched = nextScopeMatched)
         ParadoxExpressionService.completeScriptExpression(context, result)
     }
@@ -161,7 +161,7 @@ object ParadoxExpressionCompletionManager {
             // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
 
             val name = definitionInfo.name
             val typeFile = definition.containingFile

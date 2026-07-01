@@ -21,7 +21,7 @@ import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -37,7 +37,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeDefineNames) return
+        if (!ChronicleSettings.getInstance().state.completion.completeDefineNames) return
 
         val file = parameters.originalFile
         if (!ParadoxDefineManager.isDefineFile(file)) return

@@ -30,7 +30,7 @@ import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -333,7 +333,7 @@ object ParadoxAnalysisManager {
     fun getSelectedGameType(file: VirtualFile? = null, gameType: ParadoxGameType? = null): ParadoxGameType {
         gameType?.takeIf { it != ParadoxGameType.Core }?.let { return it }
         file?.let { selectGameType(it) }?.takeIf { it != ParadoxGameType.Core }?.let { return it }
-        return PlsSettings.getInstance().state.defaultGameType
+        return ChronicleSettings.getInstance().state.defaultGameType
     }
 
     fun getSelectedRootInfo(file: VirtualFile? = null, gameType: ParadoxGameType? = null): ParadoxRootInfo? {

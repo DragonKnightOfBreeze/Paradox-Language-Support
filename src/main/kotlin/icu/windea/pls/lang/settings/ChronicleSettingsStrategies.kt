@@ -2,11 +2,11 @@ package icu.windea.pls.lang.settings
 
 import icu.windea.pls.ChronicleBundle
 
-interface PlsSettingsStrategies {
+interface ChronicleSettingsStrategies {
     /**
      * 本地化的生成策略。
      */
-    enum class LocalisationGeneration(override val text: String) : PlsSettingsStrategy {
+    enum class LocalisationGeneration(override val text: String) : ChronicleSettingsStrategy {
         EmptyText(ChronicleBundle.message("settings.strategy.localisationGeneration.0")),
         SpecificText(ChronicleBundle.message("settings.strategy.localisationGeneration.1")),
         FromLocale(ChronicleBundle.message("settings.strategy.localisationGeneration.2")),
@@ -16,7 +16,7 @@ interface PlsSettingsStrategies {
     /**
      * 默认差异比较分组的策略。
      */
-    enum class DiffGroup(override val text: String) : PlsSettingsStrategy {
+    enum class DiffGroup(override val text: String) : ChronicleSettingsStrategy {
         Current(ChronicleBundle.message("settings.strategy.diffGroup.0")),
         Vanilla(ChronicleBundle.message("settings.strategy.diffGroup.1")),
         First(ChronicleBundle.message("settings.strategy.diffGroup.2")),
@@ -27,7 +27,7 @@ interface PlsSettingsStrategies {
     /**
      * 事件树的层级视图的分组策略。
      */
-    enum class EventTreeGrouping(override val text: String) : PlsSettingsStrategy {
+    enum class EventTreeGrouping(override val text: String) : ChronicleSettingsStrategy {
         None(ChronicleBundle.message("settings.strategy.eventTreeGrouping.0")),
         Type(ChronicleBundle.message("settings.strategy.eventTreeGrouping.1")),
         ;
@@ -36,7 +36,7 @@ interface PlsSettingsStrategies {
     /**
      * 科技树的层级视图的分组策略。
      */
-    enum class TechTreeGrouping(override val text: String) : PlsSettingsStrategy {
+    enum class TechTreeGrouping(override val text: String) : ChronicleSettingsStrategy {
         None(ChronicleBundle.message("settings.strategy.techTreeGrouping.0")),
         Tier(ChronicleBundle.message("settings.strategy.techTreeGrouping.1")),
         Area(ChronicleBundle.message("settings.strategy.techTreeGrouping.2")),

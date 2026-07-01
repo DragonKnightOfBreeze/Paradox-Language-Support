@@ -6,7 +6,7 @@ import com.intellij.psi.util.elementType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.resolved
@@ -105,7 +105,7 @@ object ParadoxSyntaxService {
      */
     fun isComparisonOperatorValid(element: ParadoxScriptProperty): Boolean? {
         // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
-        if (!PlsConfigSettings.getInstance().state.features.checkComparisonOperators) return null
+        if (!ChronicleConfigSettings.getInstance().state.features.checkComparisonOperators) return null
 
         // NOTE 2.1.4 所在属性对应的匹配的规则，不一定在触发器子句规则之内
 
