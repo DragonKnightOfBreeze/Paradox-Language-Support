@@ -41,8 +41,7 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
         val prefix = ChronicleStrings.inlineScriptPrefix
         val tooltip = "$prefix <b>${expression.escapeXml()}"
         val targets by lazy {
-            val targets0 = ParadoxInlineScriptManager.getInlineScriptFiles(expression, element.project, element)
-            targets0.optimized()
+            ParadoxInlineScriptManager.getInlineScriptFiles(expression, element.project, element).optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)

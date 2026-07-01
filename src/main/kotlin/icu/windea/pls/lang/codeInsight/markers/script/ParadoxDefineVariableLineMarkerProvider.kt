@@ -42,8 +42,7 @@ class ParadoxDefineVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProv
         val targets by lazy {
             val project = element.project
             val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
-            val targets0 = ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll()
-            targets0.optimized()
+            ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll().optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)

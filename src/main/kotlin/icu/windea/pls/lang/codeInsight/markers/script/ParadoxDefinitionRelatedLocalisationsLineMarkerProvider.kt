@@ -44,14 +44,14 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         val icon = ChronicleIcons.Gutter.RelatedLocalisations
         val prefix = ChronicleStrings.relatedLocalisationPrefix
         val tooltipLines = mutableSetOf<String>()
-        val keys0 = mutableSetOf<String>()
-        val targets0 = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
+        val keys = mutableSetOf<String>()
+        val targets = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
-            targets0.addAll(resolveResult.elements)
-            if (!keys0.add(key)) return
+            targets.addAll(resolveResult.elements)
+            if (!keys.add(key)) return
             when (resolveResult) {
                 is CwtLocalisationLocationResolveResult.Static -> {
                     if (resolveResult.elements.isEmpty()) continue
@@ -62,14 +62,13 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
                 }
             }
         }
-        if (keys0.isEmpty()) return
-        if (targets0.isEmpty()) return
-        val targets = targets0.optimized()
+        if (keys.isEmpty()) return
+        if (targets.isEmpty()) return
         ProgressManager.checkCanceled()
-        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets0) }
+        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.title"))
-            .setTargets { targets }
+            .setTargets { targets.optimized() }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations") }
             .createLineMarkerInfo(locationElement)

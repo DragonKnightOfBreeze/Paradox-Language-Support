@@ -41,13 +41,13 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
         val icon = ChronicleIcons.Gutter.RelatedImages
         val prefix = ChronicleStrings.relatedImagePrefix
         val tooltipLines = mutableSetOf<String>()
-        val keys0 = mutableSetOf<String>()
-        val targets0 = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重
+        val keys = mutableSetOf<String>()
+        val targets = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue
-            targets0.addAll(resolveResult.elements)
-            if (!keys0.add(key)) return
+            targets.addAll(resolveResult.elements)
+            if (!keys.add(key)) return
             when (resolveResult) {
                 is CwtImageLocationResolveResult.Static -> {
                     if (resolveResult.elements.isEmpty()) continue
@@ -58,14 +58,13 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
                 }
             }
         }
-        if (keys0.isEmpty()) return
-        if (targets0.isEmpty()) return
-        val targets = targets0.optimized()
+        if (keys.isEmpty()) return
+        if (targets.isEmpty()) return
         ProgressManager.checkCanceled()
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.title"))
-            .setTargets { targets }
+            .setTargets { targets.optimized() }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { ChronicleBundle.message("script.gutterIcon.definitionRelatedImages") }
             .createLineMarkerInfo(locationElement)

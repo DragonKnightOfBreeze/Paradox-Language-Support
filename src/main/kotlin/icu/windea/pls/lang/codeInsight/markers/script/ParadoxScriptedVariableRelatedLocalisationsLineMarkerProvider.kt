@@ -35,9 +35,8 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         val name = element.name?.orNull() ?: return
         // 目标：同名本地化
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        val targets0 = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale)
-        if (targets0.isEmpty()) return
-        val targets = targets0.optimized()
+        val targets = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale).optimized()
+        if (targets.isEmpty()) return
 
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.RelatedLocalisations

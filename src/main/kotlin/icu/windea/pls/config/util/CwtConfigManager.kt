@@ -173,11 +173,6 @@ object CwtConfigManager {
         }
     }
 
-    @Deprecated("Use `CwtConfigMatchService.matchesFilePath`", ReplaceWith("icu.windea.pls.config.match.CwtConfigMatchService.matchesFilePath(config, filePath)"))
-    fun matchesFilePathPattern(config: CwtFilePathMatchableConfig<*>, filePath: ParadoxPath): Boolean {
-        return CwtConfigMatchService.matchesFilePath(config, filePath)
-    }
-
     inline fun processUnionCandidates(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
         if (config.valueConfigs.isEmpty()) return true
         withRecursionGuard("processUnionCandidates") { // 这里需要防止递归
