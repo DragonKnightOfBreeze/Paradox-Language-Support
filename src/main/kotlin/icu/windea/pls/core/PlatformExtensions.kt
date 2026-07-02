@@ -55,7 +55,12 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.PsiUtil
+import com.intellij.psi.util.PsiUtilBase
+import com.intellij.psi.util.PsiUtilCore
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parents
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
@@ -73,17 +78,13 @@ import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import org.jetbrains.concurrency.CancellablePromise
 import org.jetbrains.concurrency.resolvedCancellablePromise
+import org.jetbrains.kotlin.idea.gradleTooling.get
 import java.nio.file.Path
 import java.util.concurrent.Callable
 import java.util.concurrent.Executor
 import kotlin.reflect.KProperty
 
 // region Common Extensions
-
-/** 忽略大小写的字符串比较。 */
-fun String.compareToIgnoreCase(other: String): Int {
-    return String.CASE_INSENSITIVE_ORDER.compare(this, other)
-}
 
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
     val oldValue = this.get()
@@ -411,53 +412,6 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
 }
 
 /**
- * 解析得到第一个结果。
- *
- * 如果当前引用是 [PsiPolyVariantReference]，则调用 `multiResolve` 并返回解析得到的第一个不为空的 [PsiElement]。
- * 否则直接调用 `resolve` 并返回解析得到的 [PsiElement]。
- */
-fun PsiReference.resolveFirst(): PsiElement? {
-    return when (this) {
-        is PsiPolyVariantReference -> {
-            this.multiResolve(false).firstNotNullOfOrNull { it.element }
-        }
-        else -> this.resolve()
-    }
-}
-
-/**
- * 收集引用。
- *
- * 如果当前引用是 [PsiCompositeReference]，则递归收集其中的引用。
- * 否则直接返回当前引用的单例数组。
- */
-fun PsiReference.collectReferences(): Array<out PsiReference> {
-    return when (this) {
-        is PsiCompositeReference -> {
-            val result = mutableListOf<PsiReference>()
-            doCollectReferences(this, result)
-            if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
-            result.toTypedArray()
-        }
-        else -> arrayOf(this)
-    }
-}
-
-private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
-    if (sourceReference is PsiCompositeReference) {
-        val references = sourceReference.getReferences()
-        if (references.isNotEmpty()) {
-            references.forEachFast { reference ->
-                ProgressManager.checkCanceled()
-                doCollectReferences(reference, result)
-            }
-            return
-        }
-    }
-    result.add(sourceReference)
-}
-
-/**
  * 判断两个 [PsiElement] 是否在同一 [VirtualFile] 的同一位置。
  */
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
@@ -513,20 +467,6 @@ inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiEleme
     }
     return true
 }
-
-// /** 获取指定子元素在同类元素中的索引。如果不存在则返回-1。 */
-// inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
-//     var child = if (forward) firstChild else lastChild
-//     var index = 0
-//     while (child != null) {
-//         when (child) {
-//             element -> return index
-//             is T -> index++
-//             else -> child = if (forward) child.nextSibling else child.prevSibling
-//         }
-//     }
-//     return -1
-// }
 
 /** 遍历当前 PSI 的所有父元素，直到 PSI 文件为止。 */
 inline fun PsiElement.forEachParent(withSelf: Boolean = false, action: (PsiElement) -> Unit) {
@@ -611,6 +551,53 @@ fun PsiElement.isIncomplete(): Boolean {
     if (e1.elementType != e2.elementType) return true
     if (e1.textLength != e2.textLength) return true
     return false
+}
+
+/**
+ * 解析得到第一个结果。
+ *
+ * 如果当前引用是 [PsiPolyVariantReference]，则调用 `multiResolve` 并返回解析得到的第一个不为空的 [PsiElement]。
+ * 否则直接调用 `resolve` 并返回解析得到的 [PsiElement]。
+ */
+fun PsiReference.resolveFirst(): PsiElement? {
+    return when (this) {
+        is PsiPolyVariantReference -> {
+            this.multiResolve(false).firstNotNullOfOrNull { it.element }
+        }
+        else -> this.resolve()
+    }
+}
+
+/**
+ * 收集引用。
+ *
+ * 如果当前引用是 [PsiCompositeReference]，则递归收集其中的引用。
+ * 否则直接返回当前引用的单例数组。
+ */
+fun PsiReference.collectReferences(): Array<out PsiReference> {
+    return when (this) {
+        is PsiCompositeReference -> {
+            val result = mutableListOf<PsiReference>()
+            doCollectReferences(this, result)
+            if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
+            result.toTypedArray()
+        }
+        else -> arrayOf(this)
+    }
+}
+
+private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
+    if (sourceReference is PsiCompositeReference) {
+        val references = sourceReference.getReferences()
+        if (references.isNotEmpty()) {
+            references.forEachFast { reference ->
+                ProgressManager.checkCanceled()
+                doCollectReferences(reference, result)
+            }
+            return
+        }
+    }
+    result.add(sourceReference)
 }
 
 context(reference: PsiReference)

@@ -5,4 +5,4 @@ package icu.windea.pls.script.psi
  * @see ParadoxScriptProperty
  * @see ParadoxScriptValue
  */
-interface ParadoxScriptMember : ParadoxScriptMemberContainer
+interface ParadoxScriptMember : ParadoxScriptStatement, ParadoxScriptMemberContainer

@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptConditionalBlock extends ParadoxScriptBoundMemberContainer {
+public interface ParadoxScriptConditionalBlock extends ParadoxScriptStatement, ParadoxScriptBoundMemberContainer {
 
   @NotNull
   List<ParadoxScriptConditionalBlock> getConditionalBlockList();

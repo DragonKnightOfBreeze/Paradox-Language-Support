@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement, ParadoxScriptLiteralValue {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement {
 
   @NotNull
   List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();

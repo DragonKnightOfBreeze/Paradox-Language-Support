@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtPropertyKey extends CwtStringExpressionElement, CwtLiteralValue {
+public interface CwtPropertyKey extends CwtLiteralValue, CwtStringExpressionElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

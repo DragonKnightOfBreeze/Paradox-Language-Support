@@ -8,7 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface CwtFloat extends CwtValue, CwtLiteralValue {
+public interface CwtFloat extends CwtValue, CwtLiteralValue, CwtNumberExpressionElement {
 
   @NotNull GlobalSearchScope getResolveScope();
 

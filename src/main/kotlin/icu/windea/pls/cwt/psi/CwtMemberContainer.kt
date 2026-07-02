@@ -12,4 +12,3 @@ interface CwtMemberContainer : PsiElement, NavigatablePsiElement {
     val membersRoot: CwtMemberContainer? get() = null
     val members: List<CwtMember>? get() = null
 }
-

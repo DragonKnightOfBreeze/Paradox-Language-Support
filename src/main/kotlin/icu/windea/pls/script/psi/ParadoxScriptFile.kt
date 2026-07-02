@@ -14,7 +14,7 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxFile, ParadoxScriptMember, ParadoxDefinitionElement, ParadoxScriptMemberContainer {
+) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxFile, ParadoxScriptMember, ParadoxScriptMemberContainer, ParadoxDefinitionElement {
     companion object {
         @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_SCRIPT_FILE", ParadoxScriptLanguage)
     }

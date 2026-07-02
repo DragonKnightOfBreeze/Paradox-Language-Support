@@ -43,6 +43,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
+    "icu.windea.pls.script.psi.ParadoxScriptStatement"
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
@@ -71,7 +72,6 @@ property ::= property_key property_separator property_value {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
-    "icu.windea.pls.script.psi.ParadoxScriptMember"
     "icu.windea.pls.script.psi.ParadoxDefinitionElement"
   ]
   methods=[
@@ -85,9 +85,9 @@ property ::= property_key property_separator property_value {
 // can be parameterized
 property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
-    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[
     getIdElement parameter=""
@@ -104,8 +104,8 @@ private property_value ::= scripted_variable_reference | boolean | int | float |
 value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
-    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
+    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
   ]
   methods=[getIcon getName getValue setValue getExpression]
 }
@@ -131,16 +131,16 @@ boolean ::= BOOLEAN_TOKEN {
 int ::= INT_TOKEN {
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
+    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
   ]
   methods=[getReference getReferences]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
+    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
   ]
   methods=[getReference getReferences]
 }
@@ -148,9 +148,9 @@ float ::= FLOAT_TOKEN {
 string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
   extends=value
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
-    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[
     getIdElement parameter=""
@@ -240,6 +240,7 @@ conditional_block ::= LEFT_BRACKET conditional_block_expr conditional_block_item
   pin=1
   recoverWhile="#auto" // continue parsing
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptStatement"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[

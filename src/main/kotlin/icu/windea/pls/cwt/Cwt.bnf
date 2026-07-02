@@ -50,8 +50,8 @@ property ::= property_key property_separator property_value {
   recoverWhile=auto_recover // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtMember"
+    "icu.windea.pls.cwt.psi.CwtMemberContainer"
   ]
   methods=[
     propertyKey="property_key" propertyValue="value"
@@ -61,8 +61,8 @@ property ::= property_key property_separator property_value {
 }
 property_key ::= PROPERTY_KEY_TOKEN {
   implements=[
-    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
     getIcon getName getValue setValue getExpression
@@ -75,8 +75,8 @@ private property_value ::= value
 value ::= boolean | int | float | string | block {
   implements=[
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
-    "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtMember"
+    "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
   methods=[getIcon getName getValue setValue getExpression]
@@ -91,20 +91,22 @@ int ::= INT_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
   ]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
   ]
 }
 string ::= STRING_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
     getIcon getName setName getNameIdentifier getValue setValue
