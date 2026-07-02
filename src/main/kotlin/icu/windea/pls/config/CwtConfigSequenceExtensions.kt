@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.collections.orNull
 
-// Builders
+// region Builders
 
 fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
     return configs?.orNull()?.asSequence().orEmpty()
@@ -26,3 +26,5 @@ fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberCon
     val current = if(withSelf) this else this.parentConfig
     return generateSequence(current) { it.parentConfig }
 }
+
+// endregion

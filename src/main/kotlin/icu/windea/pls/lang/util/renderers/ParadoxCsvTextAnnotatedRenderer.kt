@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.csv.psi.ParadoxCsvRowElement
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
 
@@ -23,12 +23,12 @@ class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<String, ParadoxCs
 class ParadoxCsvTextAnnotatedRenderContext(
     private val settings: ParadoxCsvTextAnnotatedRenderSettings,
 ) : ParadoxCsvTextPlainRenderContext(settings.toPlainSettings()) {
-    override fun renderRowElement(element: ParadoxCsvRowElement) {
+    override fun renderColumnContainer(element: ParadoxCsvColumnContainer) {
         renderAnnotations(element)
-        super.renderRowElement(element)
+        super.renderColumnContainer(element)
     }
 
-    fun renderAnnotations(element: ParadoxCsvRowElement) {
+    fun renderAnnotations(element: ParadoxCsvColumnContainer) {
         val annotations = getAnnotations(element)
         if (annotations.isEmpty()) return
         for (line in annotations) {
@@ -37,7 +37,7 @@ class ParadoxCsvTextAnnotatedRenderContext(
         }
     }
 
-    fun getAnnotations(element: ParadoxCsvRowElement): List<String> {
+    fun getAnnotations(element: ParadoxCsvColumnContainer): List<String> {
         return buildList {
             if (settings.level.includeType) {
                 ParadoxCsvAnnotatedManager.getTypeAnnotation(element)?.let { add(it) }

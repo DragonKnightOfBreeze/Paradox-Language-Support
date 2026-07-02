@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.csv.psi.ParadoxCsvRowElement
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -29,7 +29,7 @@ object ParadoxCsvService {
     }
 
     fun getColumnConfig(element: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {
-        val rowElement = element.parent?.castOrNull<ParadoxCsvRowElement>() ?: return null
+        val rowElement = element.parent?.castOrNull<ParadoxCsvColumnContainer>() ?: return null
         if (rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(rowElement)) return null // #314
         // if (rowConfig.skipLastColumn && ParadoxCsvPsiService.isLastColumn(element)) return null // #314 (not here, not such logic)
         val columnNames = ParadoxCsvPsiService.getColumnNames(rowElement).orNull() ?: return null

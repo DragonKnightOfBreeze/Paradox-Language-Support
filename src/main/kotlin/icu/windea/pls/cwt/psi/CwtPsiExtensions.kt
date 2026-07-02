@@ -9,25 +9,21 @@ import icu.windea.pls.core.toBooleanYesNo
 
 // region PSI Accessors
 
-val CwtExpressionElement.parentProperty: CwtProperty?
-    get() = parent?.castOrNull()
+val CwtExpressionElement.parentProperty: CwtProperty? get() = parent?.castOrNull()
 
-val CwtMember.parentBlock: CwtBlock?
-    get() = parent?.castOrNull()
+val CwtMember.parentBlock: CwtBlock? get() = parent?.castOrNull()
 
-val CwtPropertyKey.propertyValue: CwtValue?
-    get() = siblings(forward = true, withSelf = false).findIsInstance()
+val CwtMember.containingProperty: CwtProperty? get() = this as? CwtProperty ?: this.parent as? CwtProperty
 
-val CwtValue.propertyKey: CwtPropertyKey?
-    get() = siblings(forward = false, withSelf = false).findIsInstance()
+val CwtPropertyKey.propertyValue: CwtValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 
-inline fun <reified T : CwtValue> CwtProperty.propertyValue(): T? {
-    return propertyValue?.castOrNull<T>()
-}
+val CwtValue.propertyKey: CwtPropertyKey? get() = siblings(forward = false, withSelf = false).findIsInstance()
+
+inline fun <reified T : CwtValue> CwtProperty.propertyValue(): T? = propertyValue?.castOrNull()
 
 // endregion
 
-// region Predicates
+// region PSI Predicates
 
 fun CwtValue.isPropertyValue(): Boolean {
     val parent = parent

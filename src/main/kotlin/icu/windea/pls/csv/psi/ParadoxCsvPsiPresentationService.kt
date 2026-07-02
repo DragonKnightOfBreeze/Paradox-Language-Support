@@ -14,7 +14,7 @@ object ParadoxCsvPsiPresentationService {
         return when (element) {
             null -> false
             is ParadoxCsvFile -> forFile
-            is ParadoxCsvRowElement -> true
+            is ParadoxCsvColumnContainer -> true
             is ParadoxCsvColumn -> true
             else -> false
         }

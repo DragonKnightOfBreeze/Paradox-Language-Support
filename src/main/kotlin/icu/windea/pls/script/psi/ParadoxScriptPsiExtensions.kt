@@ -6,10 +6,6 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toBooleanYesNo
-import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.normalized
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl
 import icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
@@ -18,38 +14,25 @@ import java.awt.Color
 
 // region PSI Accessors
 
-val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty?
-    get() = parent?.castOrNull()
+val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty? get() = parent?.castOrNull()
 
-val ParadoxScriptMember.parentBlock: ParadoxScriptBlock?
-    get() = parent?.castOrNull()
+val ParadoxScriptMember.parentBlock: ParadoxScriptBlock? get() = parent?.castOrNull()
 
-val ParadoxScriptMember.property: ParadoxScriptProperty?
-    get() = when (this) {
-        is ParadoxScriptProperty -> this
-        is ParadoxScriptValue -> this.parent?.castOrNull()
-        else -> null
-    }
+val ParadoxScriptMember.containingProperty: ParadoxScriptProperty? get() = this as? ParadoxScriptProperty ?: this.parent as? ParadoxScriptProperty
 
-val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
-    get() = siblings(forward = true, withSelf = false).findIsInstance()
+val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 
-val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey?
-    get() = siblings(forward = false, withSelf = false).findIsInstance()
+val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(forward = false, withSelf = false).findIsInstance()
 
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
-    return propertyValue?.castOrNull<T>()
-}
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? = propertyValue?.castOrNull()
 
-val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub?
-    get() = this.castOrNull<ParadoxScriptScriptedVariableImpl>()?.greenStub
+val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub? get() = this.castOrNull<ParadoxScriptScriptedVariableImpl>()?.greenStub
 
-val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
-    get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub
+val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub? get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub
 
 // endregion
 
-// region Predicates
+// region PSI Predicates
 
 fun ParadoxScriptMember.isBlockMember(): Boolean {
     return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptConditionalBlock }
@@ -69,45 +52,6 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
         this is ParadoxScriptValue -> parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement || it is ParadoxScriptConditionalBlock }
         else -> false
     }
-}
-
-fun ParadoxScriptExpressionElement.isResolvableLiteralExpression(): Boolean {
-    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumberExpressionElement
-}
-
-/**
- * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的规则。
- */
-fun ParadoxScriptExpressionElement.isValidExpression(options: ParadoxMatchOptions? = null): Boolean {
-    return ParadoxConfigManager.getConfigs(this, options.normalized().copy(fallback = false)).size == 1
-}
-
-fun ParadoxScriptExpressionElement.isDefinitionTypeKeyOrName(): Boolean {
-    return when {
-        this is ParadoxScriptPropertyKey -> isDefinitionTypeKey()
-        this is ParadoxScriptValue -> isDefinitionName()
-        else -> false
-    }
-}
-
-fun ParadoxScriptPropertyKey.isDefinitionTypeKey(): Boolean {
-    val definition = parentProperty ?: return false
-    if (definition.definitionInfo != null) return true
-    return false
-}
-
-fun ParadoxScriptValue.isDefinitionName(): Boolean {
-    // #131
-    if (!isResolvableLiteralExpression()) return false
-
-    val nameProperty = parentProperty ?: return false
-    // def = def_name
-    if (nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
-    val block = nameProperty.parentBlock ?: return false
-    val definition = block.parentProperty ?: return false
-    // def = { name_prop = def_name }
-    if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
-    return false
 }
 
 // endregion

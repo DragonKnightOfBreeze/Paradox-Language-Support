@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isDefinitionName
+import icu.windea.pls.lang.psi.isDefinitionName
 
 /**
  * 提供已有的定义的名字的代码补全。

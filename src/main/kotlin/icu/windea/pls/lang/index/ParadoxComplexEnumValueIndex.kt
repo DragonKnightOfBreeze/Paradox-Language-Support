@@ -41,7 +41,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import java.io.DataInput
 import java.io.DataOutput
 

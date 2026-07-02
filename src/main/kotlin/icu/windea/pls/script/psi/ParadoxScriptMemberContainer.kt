@@ -1,7 +1,6 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.NavigatablePsiElement
-import com.intellij.psi.PsiElement
 
 /**
  * @see ParadoxScriptFile
@@ -9,7 +8,7 @@ import com.intellij.psi.PsiElement
  * @see ParadoxScriptBlockElement
  * @see ParadoxScriptConditionalBlock
  */
-interface ParadoxScriptMemberContainer : PsiElement, NavigatablePsiElement {
+interface ParadoxScriptMemberContainer : NavigatablePsiElement {
     val membersRoot: ParadoxScriptMemberContainer? get() = null
     val members: List<ParadoxScriptMember>? get() = null
 }

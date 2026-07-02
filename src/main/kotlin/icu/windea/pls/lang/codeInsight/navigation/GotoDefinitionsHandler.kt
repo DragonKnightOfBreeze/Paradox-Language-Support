@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 
 class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {

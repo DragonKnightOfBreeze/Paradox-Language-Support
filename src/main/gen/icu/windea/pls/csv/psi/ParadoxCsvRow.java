@@ -10,14 +10,14 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxCsvRow extends ParadoxCsvRowElement {
+public interface ParadoxCsvRow extends ParadoxCsvColumnContainer {
 
   @NotNull
   List<ParadoxCsvColumn> getColumnList();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull List<@NotNull ParadoxCsvColumn> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

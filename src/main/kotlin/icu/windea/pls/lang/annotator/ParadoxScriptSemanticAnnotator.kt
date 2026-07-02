@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 /**
  * @see ParadoxScriptSyntaxAnnotator

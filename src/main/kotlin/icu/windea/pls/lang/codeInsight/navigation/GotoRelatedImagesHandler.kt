@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
 

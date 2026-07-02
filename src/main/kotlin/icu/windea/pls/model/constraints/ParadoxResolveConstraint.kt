@@ -37,7 +37,7 @@ import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 enum class ParadoxResolveConstraint {
     ScriptedVariable {

@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvRowElement
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxCsvService
 
@@ -31,7 +31,7 @@ object ParadoxCsvManager {
         }
     }
 
-    fun getRowConfig(element: ParadoxCsvRowElement): CwtRowConfig? {
+    fun getRowConfig(element: ParadoxCsvColumnContainer): CwtRowConfig? {
         val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
         return getRowConfig(file)
     }

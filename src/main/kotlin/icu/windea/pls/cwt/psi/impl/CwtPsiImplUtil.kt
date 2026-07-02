@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.psi.impl
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
@@ -34,6 +35,7 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPsiPresentation
 import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtRootBlock
+import icu.windea.pls.cwt.psi.CwtStatement
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -286,6 +288,11 @@ object CwtPsiImplUtil {
     // endregion
 
     @JvmStatic
+    fun getComponents(element: PsiListLikeElement): List<CwtStatement> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
     fun getName(element: CwtExpressionElement): String {
         return element.value
     }
@@ -303,11 +310,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getExpression(element: CwtExpressionElement): String {
         return element.text
-    }
-
-    @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is CwtMember }
     }
 
     @JvmStatic

@@ -7,7 +7,7 @@ import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.csv.psi.ParadoxCsvRowElement
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 
 /**
  * 将 CSV 文本渲染为纯文本的渲染器。
@@ -36,18 +36,18 @@ open class ParadoxCsvTextPlainRenderContext(
             if (m.mark()) {
                 builder.append('\n')
             }
-            renderRowElement(header)
+            renderColumnContainer(header)
         }
         for (row in element.rows) {
             ProgressManager.checkCanceled()
             if (m.mark()) {
                 builder.append('\n')
             }
-            renderRowElement(row)
+            renderColumnContainer(row)
         }
     }
 
-    override fun renderRowElement(element: ParadoxCsvRowElement) {
+    override fun renderColumnContainer(element: ParadoxCsvColumnContainer) {
         val columns = element.columnList
         if (columns.isEmpty() && !hasTrailingSeparator(element)) return
         val m = OnceMarker()
@@ -80,7 +80,7 @@ open class ParadoxCsvTextPlainRenderContext(
         return value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
     }
 
-    fun hasTrailingSeparator(element: ParadoxCsvRowElement): Boolean {
+    fun hasTrailingSeparator(element: ParadoxCsvColumnContainer): Boolean {
         return element.lastChild?.text == ParadoxCsvPsiService.getSeparator().toString()
     }
 }

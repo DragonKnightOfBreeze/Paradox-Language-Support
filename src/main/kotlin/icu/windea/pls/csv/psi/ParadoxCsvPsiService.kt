@@ -24,7 +24,7 @@ object ParadoxCsvPsiService {
         return getColumnNamesFromCache(header)
     }
 
-    fun getColumnNames(element: ParadoxCsvRowElement): List<String> {
+    fun getColumnNames(element: ParadoxCsvColumnContainer): List<String> {
         val header = element.castOrNull<ParadoxCsvHeader>() ?: element.containingFile?.castOrNull<ParadoxCsvFile>()?.header ?: return emptyList()
         return getColumnNamesFromCache(header)
     }
@@ -36,11 +36,11 @@ object ParadoxCsvPsiService {
         }
     }
 
-    fun getColumnSize(element: ParadoxCsvRowElement): Int {
+    fun getColumnSize(element: ParadoxCsvColumnContainer): Int {
         return element.children().count { it is ParadoxCsvColumn }
     }
 
-    fun getColumn(element: ParadoxCsvRowElement, index: Int): ParadoxCsvColumn? {
+    fun getColumn(element: ParadoxCsvColumnContainer, index: Int): ParadoxCsvColumn? {
         return element.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
     }
 
@@ -53,7 +53,7 @@ object ParadoxCsvPsiService {
     }
 
     fun getColumnIndex(column: ParadoxCsvColumn): Int {
-        val rowElement = column.parent?.castOrNull<ParadoxCsvRowElement>() ?: return 0
+        val rowElement = column.parent?.castOrNull<ParadoxCsvColumnContainer>() ?: return 0
         val index = rowElement.children().takeWhile { it != column }.count { it is ParadoxCsvColumn }
         return index
     }
@@ -64,7 +64,7 @@ object ParadoxCsvPsiService {
         return getColumn(header, index)
     }
 
-    fun isLastRow(element: ParadoxCsvRowElement): Boolean {
+    fun isLastRow(element: ParadoxCsvColumnContainer): Boolean {
         if (element !is ParadoxCsvRow) return false
         return element.siblings(withSelf = false).none { it is ParadoxCsvRow }
     }

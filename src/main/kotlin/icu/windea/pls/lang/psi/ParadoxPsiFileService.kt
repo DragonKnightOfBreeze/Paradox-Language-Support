@@ -38,8 +38,6 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isDefinitionName
-import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.parentProperty
 

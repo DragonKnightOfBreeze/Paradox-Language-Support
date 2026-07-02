@@ -7,6 +7,6 @@ import com.intellij.psi.PsiListLikeElement
  * @see ParadoxCsvHeader
  * @see ParadoxCsvRow
  */
-interface ParadoxCsvRowElement : NavigatablePsiElement, PsiListLikeElement {
+interface ParadoxCsvColumnContainer : NavigatablePsiElement, PsiListLikeElement {
     val columnList: List<ParadoxCsvColumn>
 }

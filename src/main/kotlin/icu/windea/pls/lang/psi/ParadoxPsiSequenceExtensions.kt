@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-// Context Builders
+// region Context Builders
 
 /** 如果包含参数化快，是否需要处理其中的子节点。默认为 `false`。 */
  var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
@@ -29,7 +29,9 @@ var WalkingContext.inline: Boolean by registerKey(WalkingContext.Keys) { false }
 /** @see WalkingContext.inline */
 inline infix fun WalkingContext.Builder.inline(value: Boolean? = true) = apply { value?.let { context.inline = it } }
 
-// Builders
+// endregion
+
+// region Builders
 
 /** @see ParadoxPsiSequenceBuilder.members */
  fun ParadoxScriptMemberContainer.members(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptMember> {
@@ -45,3 +47,5 @@ inline infix fun WalkingContext.Builder.inline(value: Boolean? = true) = apply {
 inline fun ParadoxScriptMemberContainer.values(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptValue> {
     return members(conditional, inline).transform { filterIsInstance<ParadoxScriptValue>() }
 }
+
+// endregion

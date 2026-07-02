@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.script.psi.isExpression
 
 object ParadoxLocalisationCodeInsightContextBuilder {

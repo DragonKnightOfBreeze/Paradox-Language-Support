@@ -44,7 +44,7 @@ public class ParadoxCsvRowImpl extends ASTWrapperPsiElement implements ParadoxCs
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  public @NotNull List<@NotNull ParadoxCsvColumn> getComponents() {
     return ParadoxCsvPsiImplUtil.getComponents(this);
   }
 

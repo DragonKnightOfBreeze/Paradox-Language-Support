@@ -71,6 +71,7 @@ property ::= property_key property_separator property_value {
   stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
+    "icu.windea.pls.script.psi.ParadoxScriptMember"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxDefinitionElement"
   ]

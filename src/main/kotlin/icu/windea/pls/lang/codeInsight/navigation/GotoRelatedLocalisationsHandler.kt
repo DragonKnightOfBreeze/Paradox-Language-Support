@@ -31,7 +31,7 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
 

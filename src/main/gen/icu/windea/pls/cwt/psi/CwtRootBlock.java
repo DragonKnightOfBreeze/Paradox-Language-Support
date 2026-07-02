@@ -28,7 +28,7 @@ public interface CwtRootBlock extends CwtBlockElement, CwtMemberContainer {
 
   @NotNull List<@NotNull CwtMember> getMembers();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull List<@NotNull CwtStatement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

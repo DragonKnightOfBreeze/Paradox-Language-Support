@@ -13,18 +13,18 @@ public class ParadoxCsvVisitor extends PsiElementVisitor {
   }
 
   public void visitHeader(@NotNull ParadoxCsvHeader o) {
-    visitRowElement(o);
+    visitColumnContainer(o);
   }
 
   public void visitRow(@NotNull ParadoxCsvRow o) {
-    visitRowElement(o);
+    visitColumnContainer(o);
   }
 
-  public void visitExpressionElement(@NotNull ParadoxCsvExpressionElement o) {
+  public void visitColumnContainer(@NotNull ParadoxCsvColumnContainer o) {
     visitPsiElement(o);
   }
 
-  public void visitRowElement(@NotNull ParadoxCsvRowElement o) {
+  public void visitExpressionElement(@NotNull ParadoxCsvExpressionElement o) {
     visitPsiElement(o);
   }
 

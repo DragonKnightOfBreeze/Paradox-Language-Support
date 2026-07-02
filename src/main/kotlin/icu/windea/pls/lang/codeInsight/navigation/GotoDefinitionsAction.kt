@@ -9,7 +9,7 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 
 /**
  * 导航到当前定义的包括自身在内的拥有相同名称和主要类型的定义。

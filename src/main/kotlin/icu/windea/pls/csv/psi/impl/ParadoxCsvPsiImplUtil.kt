@@ -3,6 +3,7 @@ package icu.windea.pls.csv.psi.impl
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
@@ -72,6 +73,11 @@ object ParadoxCsvPsiImplUtil {
     // region Common Methods
 
     @JvmStatic
+    fun getComponents(element: PsiListLikeElement): List<ParadoxCsvColumn> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
     fun getName(element: ParadoxCsvExpressionElement): String {
         return element.value
     }
@@ -89,11 +95,6 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun getExpression(element: ParadoxCsvExpressionElement): String {
         return element.text
-    }
-
-    @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is ParadoxCsvColumn }
     }
 
     @JvmStatic

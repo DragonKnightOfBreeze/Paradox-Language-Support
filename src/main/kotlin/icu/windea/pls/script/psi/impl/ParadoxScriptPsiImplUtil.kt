@@ -667,6 +667,11 @@ object ParadoxScriptPsiImplUtil {
     // region Common Methods
 
     @JvmStatic
+    fun getComponents(element: PsiListLikeElement): List<ParadoxScriptStatement> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
     fun getName(element: ParadoxScriptExpressionElement): String {
         return element.value
     }
@@ -684,11 +689,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getExpression(element: ParadoxScriptExpressionElement): String {
         return element.text
-    }
-
-    @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is ParadoxScriptScriptedVariable || it is ParadoxScriptMember || it is ParadoxScriptConditionalBlock }
     }
 
     @JvmStatic

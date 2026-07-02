@@ -28,7 +28,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
@@ -68,7 +67,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.property
 import java.util.*
 import kotlin.concurrent.getOrSet
 
@@ -240,10 +238,9 @@ object ParadoxConfigService {
 
         val configGroup = context.configGroup
         val element = context.element
-        val property = element.property
-        val member = property ?: element
-        val parentMember = member.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isBlockMember() } ?: return emptyList()
-        val parentProperty = parentMember.castOrNull<ParadoxScriptProperty>()
+        val containingProperty = element as? ParadoxScriptProperty ?: element.parent as? ParadoxScriptProperty ?: return emptyList()
+        val parentMember = containingProperty.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isBlockMember() } ?: return emptyList()
+        val parentProperty = parentMember as? ParadoxScriptProperty
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
@@ -270,7 +267,7 @@ object ParadoxConfigService {
                     }
                 }
             } else {
-                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(property, expression) }
+                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingProperty, expression) }
 
                 matchedParentConfigs.forEachFast f1@{ parentConfig ->
                     val configs = parentConfig.properties

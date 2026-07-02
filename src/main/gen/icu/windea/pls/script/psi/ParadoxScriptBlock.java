@@ -43,7 +43,7 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @Nullable PsiElement getRightBound();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -27,14 +27,14 @@ root ::= COMMENT * header ? (row | COMMENT) *
 
 header ::= column_items {
   implements=[
-    "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
+    "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
   methods=[getIcon getComponents]
 }
 // EOL is recognized by a dedicated lexer token
 row ::= column_items {
   implements=[
-    "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
+    "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
   methods=[getIcon getComponents]
 }

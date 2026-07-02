@@ -38,7 +38,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isDefinitionName
+import icu.windea.pls.lang.psi.isDefinitionName
 
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {

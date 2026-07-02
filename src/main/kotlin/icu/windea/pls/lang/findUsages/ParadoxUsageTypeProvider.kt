@@ -34,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 /**
  * 在查找用法中，区分定义、本地化等各种声明的用法类型。

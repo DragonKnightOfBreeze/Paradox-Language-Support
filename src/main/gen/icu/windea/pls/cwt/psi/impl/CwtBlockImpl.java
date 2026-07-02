@@ -98,7 +98,7 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  public @NotNull List<@NotNull CwtStatement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
   }
 

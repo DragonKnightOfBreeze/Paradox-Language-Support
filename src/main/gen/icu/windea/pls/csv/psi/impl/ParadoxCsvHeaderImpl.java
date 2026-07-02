@@ -44,7 +44,7 @@ public class ParadoxCsvHeaderImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  public @NotNull List<@NotNull ParadoxCsvColumn> getComponents() {
     return ParadoxCsvPsiImplUtil.getComponents(this);
   }
 

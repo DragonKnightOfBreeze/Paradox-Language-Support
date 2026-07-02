@@ -72,9 +72,9 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKey
+import icu.windea.pls.lang.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
