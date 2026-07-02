@@ -242,6 +242,7 @@ conditional_block ::= LEFT_BRACKET conditional_block_expr conditional_block_item
   recoverWhile="#auto" // continue parsing
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
+    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[

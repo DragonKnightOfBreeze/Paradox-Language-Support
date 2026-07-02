@@ -27,6 +27,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {
     visitStatement(o);
+    // visitBlockElement(o);
     // visitBoundMemberContainer(o);
   }
 

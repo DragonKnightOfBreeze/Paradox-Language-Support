@@ -51,7 +51,7 @@ val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub? get() = this.cas
 /** 是否是直接位于块（文件顶级/子句）中的成员。 */
 fun ParadoxScriptMember.isBlockMember(): Boolean {
     val parent = parent ?: return false
-    return parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
+    return parent is ParadoxScriptBlockElement
 }
 
 /** 是否是位于子句结构（属性&值）中的，用于表示游戏数据的表达式元素。 */
@@ -60,7 +60,7 @@ fun ParadoxScriptExpressionElement.isDataExpression(): Boolean {
         is ParadoxScriptPropertyKey -> true
         is ParadoxScriptValue -> {
             val parent = parent ?: return false
-            parent is ParadoxScriptProperty || parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
+            parent is ParadoxScriptProperty || parent is ParadoxScriptBlockElement
         }
         else -> false
     }
@@ -76,7 +76,7 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
 
 fun ParadoxScriptValue.isBlockValue(): Boolean {
     val parent = parent ?: return false
-    return parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
+    return parent is ParadoxScriptBlockElement
 }
 
 // endregion
