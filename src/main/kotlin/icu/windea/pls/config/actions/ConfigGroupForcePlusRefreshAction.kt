@@ -24,11 +24,10 @@ class ConfigGroupForcePlusRefreshAction : DumbAwareAction(), TooltipDescriptionP
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
-        presentation.isEnabledAndVisible
+        e.presentation.isEnabledAndVisible
     }
 
     override fun actionPerformed(e: AnActionEvent) {

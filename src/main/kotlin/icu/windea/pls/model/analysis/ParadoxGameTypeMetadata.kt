@@ -26,19 +26,17 @@ import icu.windea.pls.model.paths.ParadoxPath
  */
 data class ParadoxGameTypeMetadata(
     val gameType: ParadoxGameType,
-    val gameMainEntries: Set<String> = singleEmptyStringSet,
-    val gameExtraEntries: Set<String> = emptySet(),
-    val modMainEntries: Set<String> = singleEmptyStringSet,
-    val modExtraEntries: Set<String> = emptySet(),
-    val executablePaths: Set<String> = emptySet(),
+    val gameMainEntries: Set<String>,
+    val gameExtraEntries: Set<String>,
+    val modMainEntries: Set<String>,
+    val modExtraEntries: Set<String>,
+    val executablePaths: Set<String>,
 ) {
-     val gameEntries: Set<String> = gameMainEntries + gameExtraEntries
-     val modEntries: Set<String> = modMainEntries + modExtraEntries
+    val gameEntries: Set<String> = gameMainEntries + gameExtraEntries
+    val modEntries: Set<String> = modMainEntries + modExtraEntries
 
-     val gameEntryPaths: Set<ParadoxPath> = gameEntries.toEntryPaths()
-     val modEntryPaths: Set<ParadoxPath> = modEntries.toEntryPaths()
+    val gameEntryPaths: Set<ParadoxPath> = gameEntries.toEntryPaths()
+    val modEntryPaths: Set<ParadoxPath> = modEntries.toEntryPaths()
 
     private fun Set<String>.toEntryPaths() = sortedDescending().mapTo(mutableSetOf()) { ParadoxPath.resolve(it) }
 }
-
-private val singleEmptyStringSet = setOf("")

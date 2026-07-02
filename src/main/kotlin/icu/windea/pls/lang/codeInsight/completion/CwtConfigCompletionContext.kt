@@ -13,7 +13,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes
@@ -66,7 +65,7 @@ private object CwtConfigCompletionContextBuilder {
         val contextElement = globalContext.contextElement
 
         val configGroup = CwtConfigManager.getContainingConfigGroup(globalContext.file) ?: return null
-        val keyword = globalContext.contextElement.getKeyword(globalContext.offsetInParent)
+        val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)
         val expressionElement = getExpressionElement(globalContext.contextElement) ?: return null
         val containerElement = getContainerElement(expressionElement) ?: return null
         val keyToMatch = getKeyToMatch(globalContext.contextElement)
@@ -109,6 +108,10 @@ private object CwtConfigCompletionContextBuilder {
             isKeyOnly = isKeyOnly,
             isValueOnly = isValueOnly,
         )
+    }
+
+    private fun getKeyword(element: PsiElement, offsetInParent: Int): String {
+        return element.text.substring(0, offsetInParent).unquote()
     }
 
     private fun getExpressionElement(element: PsiElement): CwtExpressionElement? {

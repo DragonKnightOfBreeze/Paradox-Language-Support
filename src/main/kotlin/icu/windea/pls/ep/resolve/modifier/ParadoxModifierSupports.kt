@@ -206,7 +206,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         // TODO 可以进一步缩小范围
-        return ParadoxModificationTrackers.scriptFileFromPatterns("**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromFilePathPatterns("**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
@@ -412,7 +412,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        return ParadoxModificationTrackers.scriptFileFromPatterns("common/economic_categories/**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromFilePathPatterns("common/economic_categories/**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {

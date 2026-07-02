@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DevelocitySettings">
+    <option name="configureTheBuild" value="true" />
+    <option name="develocityGradlePluginVersionSet" value="true" />
+    <option name="develocityGradlePluginVersion" value="4.3.2" />
+    <option name="tosAgree" value="true" />
+    <option name="queryPatterns">
+      <query-pattern>
+        <option name="name" value="All builds" />
+      </query-pattern>
+    </option>
+  </component>
+</project>

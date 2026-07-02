@@ -23,7 +23,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
     crossinline selector: (T) -> R?,
     crossinline comparableSelector: (R) -> C? = { null },
     crossinline pinPredicate: (R) -> Boolean = { false }
-): java.util.Comparator<T> {
+): Comparator<T> {
     return Comparator { a, b ->
         val a1 = selector(a)
         val b1 = selector(b)
@@ -51,7 +51,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
     crossinline selector: (T) -> R?,
     crossinline comparableSelector: (R) -> C? = { null },
     crossinline pinPredicate: (R) -> Boolean = { false }
-): java.util.Comparator<T> {
+): Comparator<T> {
     return Comparator { a, b ->
         val a1 = selector(a)
         val b1 = selector(b)

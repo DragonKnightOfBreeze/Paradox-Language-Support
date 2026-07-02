@@ -187,7 +187,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("common/on_actions/**/*.txt")
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromFilePathPatterns("common/on_actions/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
@@ -299,7 +299,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
@@ -452,7 +452,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 

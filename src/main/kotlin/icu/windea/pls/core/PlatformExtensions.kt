@@ -12,9 +12,8 @@ import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.lang.LighterASTTokenNode
 import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase
 import com.intellij.lang.tree.util.siblings
-import com.intellij.model.Symbol
-import com.intellij.model.psi.PsiSymbolService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -38,7 +37,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.wm.IdeFrame
 import com.intellij.openapi.wm.ex.WindowManagerEx
-import com.intellij.platform.backend.presentation.TargetPresentationBuilder
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -259,7 +257,14 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
 
 // region Event Extensions
 
+/** @see CommonDataKeys.EDITOR */
 val AnActionEvent.editor: Editor? get() = getData(CommonDataKeys.EDITOR)
+/** @see CommonDataKeys.PSI_FILE */
+val AnActionEvent.psiFile: PsiFile? get() = getData(CommonDataKeys.PSI_FILE)
+/** @see CommonDataKeys.VIRTUAL_FILE */
+val AnActionEvent.file: VirtualFile? get() = getData(CommonDataKeys.VIRTUAL_FILE)
+/** @see CommonDataKeys.VIRTUAL_FILE_ARRAY */
+val AnActionEvent.files: Array<VirtualFile> get() = getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
@@ -619,6 +624,7 @@ fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
     return PsiElementResolveResult.createResults(this)
 }
 
+context(_: GeneratedParserUtilBase)
 fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
     var offset = steps
     var token = rawLookup(offset)
@@ -633,52 +639,12 @@ fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, for
 
 // endregion
 
-// region Symbol Extensions
-
-/** 将 PSI 元素包装为 [Symbol]。 */
-fun PsiElement.asSymbol(): Symbol = PsiSymbolService.getInstance().asSymbol(this)
-
-// /** 将 PSI 引用包装为 [PsiSymbolReference]。 */
-// fun PsiReference.asSymbolReference(): PsiSymbolReference = PsiSymbolService.getInstance().asSymbolReference(this)
-//
-// /** 从 [Symbol] 中提取底层 PSI 元素。 */
-// fun Symbol.extractElement(): PsiElement? = PsiSymbolService.getInstance().extractElementFromSymbol(this)
-
-// endregion
-
-// region Presentation Extensions
-
-/** 在展示信息中附带文件名与图标。 */
-fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationBuilder {
-    val virtualFile = file.containingFile.virtualFile ?: return this
-    val fileType = virtualFile.fileType
-    return locationText(virtualFile.name, fileType.icon)
-}
-
-// endregion
-
 // region Code Insight Extensions
 
 typealias ReadWriteAccess = ReadWriteAccessDetector.Access
 
-/**
- * 获取包含当前位置（[offsetInParent]）之前的文本的关键字。用于代码补全。
- */
-fun PsiElement.getKeyword(offsetInParent: Int): String {
-    return text.substring(0, offsetInParent).unquote()
-}
-
-/**
- * 获取包含当前位置（[offsetInParent]）之前与之后的文本的完整关键字。用于代码补全。
- */
-fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): String {
-    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + dummyIdentifier.length)).unquote()
-}
-
-/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。 */
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
-/** 构建行内模板。 */
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
 // endregion

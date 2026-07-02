@@ -2,6 +2,7 @@ package icu.windea.pls.lang.analysis
 
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.data.ChronicleJsonService
+import icu.windea.pls.base.data.ParadoxGameTypeMetadataJson
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
@@ -19,14 +20,9 @@ object ParadoxGameTypeManager {
         val jsonData = ChronicleJsonService.gameTypeMetadataList
         val map = jsonData.associateBy { it.gameType }
         val gameTypes = ParadoxGameType.getAll()
-        return buildMap {
-            for (gameType in gameTypes) {
-                val json = map[gameType]
-                val metadata = json?.run {
-                    ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executablePaths)
-                } ?: ParadoxGameTypeMetadata(gameType)
-                put(gameType, metadata)
-            }
+        return gameTypes.associateWith { gameType ->
+            val json = map.getOrElse(gameType) { ParadoxGameTypeMetadataJson(gameType) }
+            with(json) { ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executablePaths) }
         }.optimized()
     }
 

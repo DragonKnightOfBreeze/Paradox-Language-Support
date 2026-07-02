@@ -50,7 +50,7 @@ class ParadoxDiagramChangeScopeTypeAction(
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = false
-        val dataModel = this.builder.dataModel
+        val dataModel = builder.dataModel
         if (dataModel !is ParadoxDiagramDataModel) return
         e.presentation.isEnabledAndVisible = true
         e.presentation.icon = getActionIcon()

@@ -1,8 +1,19 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.util
 
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.SimpleModificationTracker
 import icu.windea.pls.core.EMPTY_OBJECT
+
+/**
+ * 基于一组模式的修改追踪器。
+ */
+class PatternsBasedModificationTracker(val patterns: Collection<String>) : SimpleModificationTracker() {
+    companion object {
+        @JvmField val NEVER_CHANGED = PatternsBasedModificationTracker(emptySet())
+    }
+}
 
 /**
  * 合并型修改追踪器。
@@ -12,6 +23,10 @@ import icu.windea.pls.core.EMPTY_OBJECT
 class MergedModificationTracker(vararg val modificationTrackers: ModificationTracker) : ModificationTracker {
     override fun getModificationCount(): Long {
         return modificationTrackers.sumOf { it.modificationCount }
+    }
+
+    companion object {
+        @JvmField val NEVEL_CHANGED = MergedModificationTracker()
     }
 }
 
@@ -31,13 +46,8 @@ class ComputedModificationTracker(private val computable: () -> Any?) : SimpleMo
         computed = newComputed
         return super.getModificationCount()
     }
-}
 
-/**
- * 基于文件路径的修改追踪器。
- */
-class FilePathBasedModificationTracker(val patterns: Collection<String>) : SimpleModificationTracker() {
     companion object {
-        @JvmField val NEVER_CHANGED = FilePathBasedModificationTracker(emptySet())
+        @JvmField val NEVEL_CHANGED = ComputedModificationTracker({ null })
     }
 }

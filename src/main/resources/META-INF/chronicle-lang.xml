@@ -86,6 +86,7 @@
 
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>
     <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtKeywordCompletionProvider -->
+    <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtConfigCompletionProvider -->
     <completion.contributor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvCompletionContributor"/>
     <!-- icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvExpressionCompletionProvider -->
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptCompletionContributor"/>
@@ -95,7 +96,7 @@
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableReferenceCompletionProvidernProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider -->
-    <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventIdCompletionProvider -->
+    <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventNamespaceCompletionProviderrovider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxInlineScriptUsageCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionInjectionExpressionCompletionProvider -->

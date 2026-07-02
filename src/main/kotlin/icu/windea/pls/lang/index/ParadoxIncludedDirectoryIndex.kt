@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.util.indexing.DataIndexer
+import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.ScalarIndexExtension
 import com.intellij.util.io.EnumeratorStringDescriptor
-import icu.windea.pls.core.IndexInputFilter
 import icu.windea.pls.lang.fileInfo
 import java.util.*
 
@@ -18,7 +18,7 @@ import java.util.*
  * @see ChronicleIndexUtil.isIncludedDirectory
  */
 class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
-    private val inputFilter = IndexInputFilter { it.fileInfo != null }
+    private val inputFilter = FileBasedIndex.InputFilter { it.fileInfo != null }
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
