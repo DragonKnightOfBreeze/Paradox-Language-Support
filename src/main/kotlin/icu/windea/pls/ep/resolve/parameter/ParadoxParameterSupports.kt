@@ -103,7 +103,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 // infer context config
                 contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
                 if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
-                contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+                contextReferenceElement = selectScope { element.containingProperty()?.parentProperty() } ?: return null
             }
             // extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
@@ -209,7 +209,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     private fun doResolveArgument(element: ParadoxScriptPropertyKey, config: CwtPropertyConfig): ParadoxParameterLightElement? {
         val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
         if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
-        val contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+        val contextReferenceElement = selectScope { element.containingProperty()?.parentProperty() } ?: return null
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
@@ -478,7 +478,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 // infer inline config
                 val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
                 inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) } ?: return null
-                contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+                contextReferenceElement = selectScope { element.containingProperty()?.parentProperty() } ?: return null
             }
             // extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
@@ -581,7 +581,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
         val inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) }
         if (inlineConfig == null) return null
-        val contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+        val contextReferenceElement = selectScope { element.containingProperty()?.parentProperty() } ?: return null
         val argumentName = element.name.orNull()?.takeIf { it != "script" } ?: return null
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName

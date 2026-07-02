@@ -43,32 +43,32 @@ interface CwtConfigSelectScope {
 
     // region Queries
 
-    fun CwtMemberConfig<*>.selectLiteralValue(): String?
+    fun CwtMemberConfig<*>?.selectLiteralValue(): String?
 
-    fun CwtPropertyConfig.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
+    fun CwtPropertyConfig?.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
 
     fun Sequence<CwtPropertyConfig>.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig>
 
-    fun CwtPropertyConfig.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
+    fun CwtPropertyConfig?.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
 
     fun Sequence<CwtPropertyConfig>.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig>
 
-    fun <T : CwtMemberConfig<*>> T.ofValue(value: String, ignoreCase: Boolean = true): T?
+    fun <T : CwtMemberConfig<*>> T?.ofValue(value: String, ignoreCase: Boolean = true): T?
 
     fun <T : CwtMemberConfig<*>> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T>
 
-    fun <T : CwtMemberConfig<*>> T.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T?
+    fun <T : CwtMemberConfig<*>> T?.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T?
 
     fun <T : CwtMemberConfig<*>> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T>
 
     /** @see CwtConfigPath */
-    fun CwtMemberContainerConfig<*>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+    fun CwtMemberContainerConfig<*>?.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
     /** @see CwtConfigPath */
     fun Sequence<CwtMemberContainerConfig<*>>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
     /** @see CwtConfigPath */
-    fun CwtMemberContainerConfig<*>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+    fun CwtMemberContainerConfig<*>?.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
     /** @see CwtConfigPath */
     fun Sequence<CwtMemberContainerConfig<*>>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>

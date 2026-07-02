@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.containingConfig
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
@@ -145,15 +145,13 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
         // xxx_event = { id = <id> scopes = { ... } }
         val effectConfig = config.takeIf { it is CwtValueConfig }
-            ?.memberConfig
-            ?.takeIf { it is CwtPropertyConfig && it.key == "id" }
-            ?.parentConfig
-            ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
+            ?.containingConfig?.takeIf { it is CwtPropertyConfig && it.key == "id" }
+            ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
         if (effectConfig == null) return null
         if (element !is ParadoxScriptString) return -1
         val scopesConfig = effectConfig.configs?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
+        val scopesElement = selectScope { element.containingProperty()?.parentBlock()?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
         if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset
@@ -208,15 +206,13 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
         // fire_on_action = { on_action = <id> scopes = { ... } }
         val effectConfig = config.takeIf { it is CwtValueConfig }
-            ?.memberConfig
-            ?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
-            ?.parentConfig
-            ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
+            ?.containingConfig?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
+            ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
         if (effectConfig == null) return null
         if (element !is ParadoxScriptString) return -1
         val scopesConfig = effectConfig.configs?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
+        val scopesElement = selectScope { element.containingProperty()?.parentBlock()?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
         if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset

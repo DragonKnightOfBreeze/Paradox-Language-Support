@@ -2,7 +2,6 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -20,7 +19,6 @@ import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxMatchProvider {
@@ -69,9 +67,7 @@ object ParadoxMatchProvider {
     }
 
     /**
-     * 根据附加到 [config] 上的选项数据（[CwtOptionDataHolder.predicate]），
-     * 以及 [element] 所在的块（[ParadoxScriptBlockElement]）中的结构，
-     * 进行简单的结构匹配。
+     * 根据附加到 [config] 上的选项数据（[CwtOptionDataHolder.predicate]），以及 [element] 所在的块或文件中的结构，进行简单的结构匹配。
      *
      * @param element 上下文 PSI 元素。
      * @param config 用于获取选项数据的规则，也可以是属性值对应的规则。
@@ -80,7 +76,7 @@ object ParadoxMatchProvider {
         run {
             val predicate = config.optionData.predicate
             if (predicate.isNullOrEmpty()) return@run
-            val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
+            val parentBlock = selectScope { element.parentOfKey() } ?: return@run
             predicate.forEach f@{ (pk, pv) ->
                 val p1 = selectScope { parentBlock.properties(inline = true).ofKey(pk).one() }
                 val pv1 = p1?.propertyValue?.stringValue()

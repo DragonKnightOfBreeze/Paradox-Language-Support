@@ -12,7 +12,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.containingConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
@@ -95,7 +95,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isOverriddenConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
-                return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
+                return configs.any { it.containingConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
             }
 
             @Suppress("UNUSED_PARAMETER")

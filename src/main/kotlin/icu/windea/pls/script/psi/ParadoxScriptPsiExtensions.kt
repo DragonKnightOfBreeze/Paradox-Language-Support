@@ -75,6 +75,7 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
 }
 
 fun ParadoxScriptValue.isBlockValue(): Boolean {
+    val parent = parent ?: return false
     return parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
 }
 

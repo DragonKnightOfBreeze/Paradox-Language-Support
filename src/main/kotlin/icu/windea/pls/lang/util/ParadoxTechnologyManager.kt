@@ -173,7 +173,7 @@ object ParadoxTechnologyManager {
                     ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                        val rDefinition = selectScope { refElement.parentOfPath("prerequisites/-", definitionType = type).asProperty() } ?: return@p true
+                        val rDefinition = selectScope { refElement.parentOfPath("*/prerequisites/-").asProperty() } ?: return@p true
                         val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                         if (rDefinitionInfo.name.isEmpty()) return@p true
                         if (rDefinitionInfo.type != type) return@p true

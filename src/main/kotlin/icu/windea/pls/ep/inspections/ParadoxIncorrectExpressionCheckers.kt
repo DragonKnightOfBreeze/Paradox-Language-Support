@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.containingConfig
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.core.castOrNull
@@ -241,7 +241,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
 
         val propertyConfig = config.propertyConfig ?: return
         if (propertyConfig.key !in Constants.triggerKeys) return
-        val aliasConfig = config.memberConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
+        val aliasConfig = config.containingConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
         if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return
@@ -280,7 +280,7 @@ class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressi
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
-        val hasParameters = selectScope { element.parentOfKey()?.parentOfKey()?.properties()?.ofKey("parameters")?.one() } != null
+        val hasParameters = selectScope { element.containingProperty()?.parentBlock()?.properties()?.ofKey("parameters")?.one() } != null
         if (hasParameters) {
             if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
                 holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.complexTrigger.desc", element.expression))

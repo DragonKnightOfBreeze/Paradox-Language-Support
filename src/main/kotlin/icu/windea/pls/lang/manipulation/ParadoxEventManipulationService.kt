@@ -27,7 +27,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 
@@ -94,22 +93,24 @@ object ParadoxEventManipulationService {
 
     private fun getEventDeclarationFromEventIdInternal(eventConfig: CwtTypeConfig, element: ParadoxScriptStringExpressionElement): ParadoxScriptProperty? {
         // NOTE 2.1.10 simple check
+        // NOTE 2.2.0 no inline atm
+        val type = ParadoxDefinitionTypes.event
         return when {
             // from key
             eventConfig.nameField == null -> {
+                // 不处理内联的情况
                 if (element !is ParadoxScriptPropertyKey) return null
-                val event = element.parentProperty ?: return null
-                if (event.parent !is ParadoxScriptRootBlock) return null// NOTE 2.1.10 simple check
-                if (event.definitionInfo?.type != ParadoxDefinitionTypes.event) return null
+                val event = selectScope { element.parentOfKey("*").asDefinition(type) } ?: return null
+                if (event !is ParadoxScriptProperty) return null
+                if (event.parent !is ParadoxScriptRootBlock) return null
                 event
             }
             // from id field
             else -> {
                 if (element !is ParadoxScriptString) return null
-                val event = selectScope { element.parentOfPath("id") } // 不处理内联的情况
+                val event = selectScope { element.parentOfKey("id")?.parentOfKey("*").asDefinition(type) } ?: return null
                 if (event !is ParadoxScriptProperty) return null
-                if (event.parent !is ParadoxScriptRootBlock) return null// NOTE 2.1.10 simple check
-                if (event.definitionInfo?.type != ParadoxDefinitionTypes.event) return null
+                if (event.parent !is ParadoxScriptRootBlock) return null
                 event
             }
         }

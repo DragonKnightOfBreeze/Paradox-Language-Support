@@ -4,10 +4,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.parents
 import com.intellij.util.containers.TreeTraversal
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.generateSequenceFromSeeds
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processParent
@@ -21,7 +19,6 @@ import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -103,9 +100,10 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
 
     // region Queries
 
-    override fun ParadoxScriptMember.selectLiteralValue(): String? {
+    override fun ParadoxScriptMember?.literalValue(): String? {
+        if (this == null) return null
         return when (this) {
-            is ParadoxScriptProperty -> propertyValue?.selectLiteralValue()
+            is ParadoxScriptProperty -> propertyValue?.literalValue()
             is ParadoxScriptBoolean -> value
             is ParadoxScriptInt -> value
             is ParadoxScriptFloat -> value
@@ -114,17 +112,17 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         }
     }
 
-    override fun ParadoxScriptProperty.ofKey(key: String, ignoreCase: Boolean, usePattern: Boolean): ParadoxScriptProperty? {
-        if (key.isEmpty()) return null
+    override fun ParadoxScriptProperty?.ofKey(key: String, ignoreCase: Boolean, usePattern: Boolean): ParadoxScriptProperty? {
+        if (this == null) return null
         return takeIf { PathMatcher.matches(it.name, key, ignoreCase, usePattern) }
     }
 
     override fun Sequence<ParadoxScriptProperty>.ofKey(key: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<ParadoxScriptProperty> {
-        if (key.isEmpty()) return emptySequence()
         return filter { PathMatcher.matches(it.name, key, ignoreCase, usePattern) }
     }
 
-    override fun ParadoxScriptProperty.ofKeys(keys: Collection<String>, ignoreCase: Boolean, usePattern: Boolean): ParadoxScriptProperty? {
+    override fun ParadoxScriptProperty?.ofKeys(keys: Collection<String>, ignoreCase: Boolean, usePattern: Boolean): ParadoxScriptProperty? {
+        if (this == null) return null
         return takeIf { keys.any { key -> PathMatcher.matches(it.name, key, ignoreCase, usePattern) } }
     }
 
@@ -132,23 +130,26 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return filter { property -> keys.any { key -> PathMatcher.matches(property.name, key, ignoreCase, usePattern) } }
     }
 
-    override fun <T : ParadoxScriptMember> T.ofValue(value: String, ignoreCase: Boolean): T? {
-        return takeIf { selectLiteralValue().equals(value, ignoreCase) }
+    override fun <T : ParadoxScriptMember> T?.ofValue(value: String, ignoreCase: Boolean): T? {
+        if (this == null) return null
+        return takeIf { literalValue().equals(value, ignoreCase) }
     }
 
     override fun <T : ParadoxScriptMember> Sequence<T>.ofValue(value: String, ignoreCase: Boolean): Sequence<T> {
-        return filter { it.selectLiteralValue().equals(value, ignoreCase) }
+        return filter { it.literalValue().equals(value, ignoreCase) }
     }
 
-    override fun <T : ParadoxScriptMember> T.ofValues(values: Collection<String>, ignoreCase: Boolean): T? {
-        return takeIf { it.selectLiteralValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
+    override fun <T : ParadoxScriptMember> T?.ofValues(values: Collection<String>, ignoreCase: Boolean): T? {
+        if (this == null) return null
+        return takeIf { it.literalValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
     }
 
     override fun <T : ParadoxScriptMember> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean): Sequence<T> {
-        return filter { it.selectLiteralValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
+        return filter { it.literalValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
     }
 
-    override fun ParadoxScriptMemberContainer.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    override fun ParadoxScriptMemberContainer?.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+        if (this == null) return emptySequence()
         return ofPathInternal(path, ignoreCase, usePattern, conditional, inline)
     }
 
@@ -156,7 +157,8 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return flatMap { it.ofPathInternal(path, ignoreCase, usePattern, conditional, inline) }
     }
 
-    override fun ParadoxScriptMemberContainer.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    override fun ParadoxScriptMemberContainer?.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+        if (this == null) return emptySequence()
         return paths.asSequence().flatMap { path -> ofPathInternal(path, ignoreCase, usePattern, conditional, inline) }
     }
 
@@ -165,12 +167,13 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
     }
 
     private fun ParadoxScriptMemberContainer.ofPathInternal(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
-        ProgressManager.checkCanceled()
         if (path.isEmpty()) return emptySequence()
         var current: Sequence<ParadoxScriptMember>? = null
-        val expect = ParadoxMemberPath.resolve(path)
-        for (subPath in expect) {
+        val resolvedPath = ParadoxMemberPath.resolve(path)
+        val subPaths = resolvedPath.subPaths
+        for (i in 0..subPaths.lastIndex) {
             ProgressManager.checkCanceled()
+            val subPath = subPaths[i]
             if (current == null) {
                 current = when (subPath) {
                     "-" -> values(conditional, inline)
@@ -186,57 +189,107 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return current.orEmpty()
     }
 
-    // endregion
-
-    // region Utility
-
-    override fun PsiElement.parentMemberContainer(withSelf: Boolean): ParadoxScriptMemberContainer? {
+    override fun PsiElement?.containingProperty(): ParadoxScriptProperty? {
+        if (this == null) return null
+        if (this is ParadoxScriptProperty) return this
         if (language !is ParadoxScriptLanguage) return null
-        if (withSelf) this.castOrNull<ParadoxScriptMemberContainer>()?.let { return it }
-        return parents(withSelf = withSelf).findIsInstance<ParadoxScriptMemberContainer>()
+        return parentOfType()
     }
 
-    override fun PsiElement.parentOfKey(propertyName: String?, ignoreCase: Boolean, fromBlock: Boolean): ParadoxScriptMemberContainer? {
+    override fun PsiElement?.containingBlock(): ParadoxScriptBlock? {
+        if (this == null) return null
+        if (this is ParadoxScriptBlock) return this
         if (language !is ParadoxScriptLanguage) return null
-        var current = this
-        when {
-            fromBlock -> current = current.parentOfType<ParadoxScriptBlockElement>() ?: return null
-            current is ParadoxScriptMember -> current = current.parent ?: return null
-        }
+        return parentOfType()
+    }
+
+    override fun PsiElement?.containingMember(): ParadoxScriptMember? {
+        if (this == null) return null
+        if (this is ParadoxScriptMember) return this
+        if (language !is ParadoxScriptLanguage) return null
+        return parentOfType()
+    }
+
+    override fun PsiElement?.containingMemberContainer(): ParadoxScriptMemberContainer? {
+        if (this == null) return null
+        if (this is ParadoxScriptMemberContainer) return this
+        if (language !is ParadoxScriptLanguage) return null
+        return parentOfType()
+    }
+
+    override fun PsiElement?.parentProperty(): ParadoxScriptProperty? {
+        if (this == null) return null
+        if (language !is ParadoxScriptLanguage) return null
+        return parentOfType()
+    }
+
+    override fun PsiElement?.parentBlock(): ParadoxScriptBlock? {
+        if (this == null) return null
+        if (language !is ParadoxScriptLanguage) return null
+        return parentOfType()
+    }
+
+    override fun PsiElement?.parentMember(): ParadoxScriptMember? {
+        if (this == null) return null
+        if (language !is ParadoxScriptLanguage) return null
+        return parentOfType()
+    }
+
+    override fun PsiElement?.parentMemberContainer(): ParadoxScriptMemberContainer? {
+        if (this == null) return null
+        if (language !is ParadoxScriptLanguage) return null
+        return parentOfType()
+    }
+
+    override fun PsiElement?.parentOfKey(key: String?, ignoreCase: Boolean, usePattern: Boolean): ParadoxScriptMember? {
+        if (this == null) return null
+        if (language !is ParadoxScriptLanguage) return null
+        var current: PsiElement = parent ?: return null
         while (current !is PsiFile) {
-            if (current is ParadoxDefinitionElement) {
-                if (propertyName == null || propertyName.equals(current.name, ignoreCase)) return current
-            }
-            if (current is ParadoxScriptBlock && !current.isPropertyValue()) return null
-            current = current.parent ?: break
             ProgressManager.checkCanceled()
+            if (current is ParadoxScriptProperty) {
+                if (key == "-") return null
+                if (key == null || PathMatcher.matches(current.name, key, ignoreCase, usePattern)) return current
+                return null
+            } else if (current is ParadoxScriptBlock) {
+                if (key == null || key == "-") return current
+                if (!current.isPropertyValue()) return null
+            }
+            current = current.parent ?: break
         }
-        if (current is ParadoxScriptFile) return current
+        if (current is ParadoxScriptFile && (key == null || key == "-" || key == "*")) return current
         return null
     }
 
-    override fun ParadoxScriptMember.parentOfPath(path: String, ignoreCase: Boolean, definitionType: String?): ParadoxScriptMemberContainer? {
-        var current: ParadoxScriptMemberContainer = this
-        if (path.isNotEmpty()) {
-            val memberPath = ParadoxMemberPath.resolve(path)
-            for (subPath in memberPath.subPaths.reversed()) {
-                current = when (subPath) {
-                    "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
-                    else -> current.parentOfKey(subPath, ignoreCase) ?: return null
-                }
-                ProgressManager.checkCanceled()
-            }
+    override fun PsiElement?.parentOfPath(path: String, ignoreCase: Boolean, usePattern: Boolean): ParadoxScriptMember? {
+        if (this == null) return null
+        if (language !is ParadoxScriptLanguage) return null
+        if (path.isEmpty()) return null
+        var current: PsiElement = this
+        val resolvedPath = ParadoxMemberPath.resolve(path)
+        val subPaths = resolvedPath.subPaths
+        for (i in subPaths.lastIndex downTo 0) {
+            ProgressManager.checkCanceled()
+            val subPath = subPaths[i]
+            current = current.parentOfKey(subPath, ignoreCase, usePattern) ?: return null
         }
-        if (definitionType != null) {
-            val result = current.parentOfKey(null) ?: return null
-            if (result !is ParadoxDefinitionElement) return null
-            val definitionInfo = result.definitionInfo ?: return null
-            if (definitionType.isNotEmpty()) {
-                if (!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null
-            }
-            return result
-        }
-        return current
+        return current.castOrNull()
+    }
+
+    // endregion
+
+    // region Semantic Casts
+
+    override fun PsiElement?.asDefinition(typeExpression: String?): ParadoxDefinitionElement? {
+        if (this !is ParadoxDefinitionElement) return null
+        val definitionInfo = definitionInfo ?: return null
+        if (typeExpression == null) return this
+        if (ParadoxDefinitionTypeExpression.resolve(typeExpression).matches(definitionInfo)) return this
+        return null
+    }
+
+    override fun Sequence<PsiElement>.asDefinition(typeExpression: String?): Sequence<ParadoxDefinitionElement> {
+        return mapNotNull { it.asDefinition(typeExpression) }
     }
 
     // endregion

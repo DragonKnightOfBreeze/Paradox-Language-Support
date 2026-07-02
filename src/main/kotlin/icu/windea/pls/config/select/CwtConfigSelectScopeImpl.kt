@@ -64,21 +64,22 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
 
     // region Queries
 
-    override fun CwtMemberConfig<*>.selectLiteralValue(): String? {
+    override fun CwtMemberConfig<*>?.selectLiteralValue(): String? {
+        if (this == null) return null
         return if (configs == null) value else null
     }
 
-    override fun CwtPropertyConfig.ofKey(key: String, ignoreCase: Boolean, usePattern: Boolean): CwtPropertyConfig? {
-        if (key.isEmpty()) return null
+    override fun CwtPropertyConfig?.ofKey(key: String, ignoreCase: Boolean, usePattern: Boolean): CwtPropertyConfig? {
+        if (this == null) return null
         return takeIf { PathMatcher.matches(it.key, key, ignoreCase, usePattern) }
     }
 
     override fun Sequence<CwtPropertyConfig>.ofKey(key: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtPropertyConfig> {
-        if (key.isEmpty()) return emptySequence()
         return filter { PathMatcher.matches(it.key, key, ignoreCase, usePattern) }
     }
 
-    override fun CwtPropertyConfig.ofKeys(keys: Collection<String>, ignoreCase: Boolean, usePattern: Boolean): CwtPropertyConfig? {
+    override fun CwtPropertyConfig?.ofKeys(keys: Collection<String>, ignoreCase: Boolean, usePattern: Boolean): CwtPropertyConfig? {
+        if (this == null) return null
         return takeIf { keys.any { key -> PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
     }
 
@@ -86,7 +87,8 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
         return filter { keys.any { key -> PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
     }
 
-    override fun <T : CwtMemberConfig<*>> T.ofValue(value: String, ignoreCase: Boolean): T? {
+    override fun <T : CwtMemberConfig<*>> T?.ofValue(value: String, ignoreCase: Boolean): T? {
+        if (this == null) return null
         return takeIf { selectLiteralValue().equals(value, ignoreCase) }
     }
 
@@ -94,7 +96,8 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
         return filter { it.selectLiteralValue().equals(value, ignoreCase) }
     }
 
-    override fun <T : CwtMemberConfig<*>> T.ofValues(values: Collection<String>, ignoreCase: Boolean): T? {
+    override fun <T : CwtMemberConfig<*>> T?.ofValues(values: Collection<String>, ignoreCase: Boolean): T? {
+        if (this == null) return null
         return takeIf { it.selectLiteralValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
     }
 
@@ -102,7 +105,8 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
         return filter { it.selectLiteralValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
     }
 
-    override fun CwtMemberContainerConfig<*>.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
+    override fun CwtMemberContainerConfig<*>?.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
+        if (this == null) return emptySequence()
         return ofPathInternal(path, ignoreCase, usePattern)
     }
 
@@ -110,7 +114,8 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
         return flatMap { it.ofPathInternal(path, ignoreCase, usePattern) }
     }
 
-    override fun CwtMemberContainerConfig<*>.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
+    override fun CwtMemberContainerConfig<*>?.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
+        if (this == null) return emptySequence()
         return paths.asSequence().flatMap { path -> ofPathInternal(path, ignoreCase, usePattern) }
     }
 
@@ -119,12 +124,13 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
     }
 
     private fun CwtMemberContainerConfig<*>.ofPathInternal(path: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
-        ProgressManager.checkCanceled()
         if (path.isEmpty()) return emptySequence()
         var current: Sequence<CwtMemberConfig<*>>? = null
-        val expect = CwtConfigPath.resolve(path)
-        for (subPath in expect) {
+        val resolvedPath = CwtConfigPath.resolve(path)
+        val subPaths = resolvedPath.subPaths
+        for (i in 0..subPaths.lastIndex) {
             ProgressManager.checkCanceled()
+            val subPath = subPaths[i]
             if (current == null) {
                 current = when (subPath) {
                     "-" -> values()
