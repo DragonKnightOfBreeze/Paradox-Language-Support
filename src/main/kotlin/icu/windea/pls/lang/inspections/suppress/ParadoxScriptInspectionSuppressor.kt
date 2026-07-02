@@ -22,6 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 
 /**
  * 基于特定条件，禁用适用于脚本文件的代码检查。
@@ -34,7 +35,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         while (current !is PsiFile) {
             current = current.parent ?: return false
             ProgressManager.checkCanceled()
-            if (current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockMember())) {
+            if (current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockValue())) {
                 if (ChronicleSuppressionUtil.isSuppressedInComment(current, toolId)) return true
                 if (ChronicleSuppressionUtil.isSuppressedForDefinition(current, toolId)) return true
             }
@@ -131,7 +132,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
 
         override fun getContainer(context: PsiElement?): PsiElement? {
             if (context == null) return null
-            return context.parents(true).find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember()) }
+            return context.parents(true).find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue()) }
         }
     }
 }

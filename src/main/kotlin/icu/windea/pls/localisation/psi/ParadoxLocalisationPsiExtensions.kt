@@ -2,7 +2,7 @@
 
 package icu.windea.pls.localisation.psi
 
-// region Predicates
+// region PSI Predicates
 
 fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
     return isCommandExpression() || isDatabaseObjectExpression()
@@ -17,4 +17,3 @@ fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Bool
 }
 
 // endregion
-

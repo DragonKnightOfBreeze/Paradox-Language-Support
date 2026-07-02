@@ -58,6 +58,7 @@ import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
 
@@ -457,7 +458,7 @@ object ParadoxConfigMatchService {
             }
         } else if (config is CwtValueConfig) {
             if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString || !element.isBlockMember()) return false
+                if (element !is ParadoxScriptString || !element.isBlockValue()) return false
             } else {
                 return false
             }
@@ -492,7 +493,7 @@ object ParadoxConfigMatchService {
                 return parentElement == null
             } else {
                 return parentElement != null && parentElement.parents(false)
-                    .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember()) } == null
+                    .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue()) } == null
             }
         }
         if (parentElement == null) return false

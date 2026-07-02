@@ -31,7 +31,7 @@ object ParadoxScriptPsiPresentationService {
             null -> false
             is ParadoxScriptFile -> forFile
             is ParadoxScriptProperty -> true
-            is ParadoxScriptValue -> element.isBlockMember()
+            is ParadoxScriptValue -> element.isBlockValue()
             is ParadoxScriptScriptedVariable -> true
             is ParadoxScriptConditionalBlock -> true
             else -> false

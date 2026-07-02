@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 // com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 
@@ -73,7 +73,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                     element is ParadoxScriptedVariableReference -> {
                         addDescriptor(element) // scripted variable
                     }
-                    element is ParadoxScriptExpressionElement && element.isExpression() -> {
+                    element is ParadoxScriptExpressionElement && element.isDataExpression() -> {
                         addDescriptor(element) // definition | localisation
                     }
                     element is ParadoxLocalisationExpressionElement && element.isComplexExpression() -> {

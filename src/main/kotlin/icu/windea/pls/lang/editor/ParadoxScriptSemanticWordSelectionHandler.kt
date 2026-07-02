@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * @see ParadoxScriptWordSelectionHandler
@@ -51,7 +51,7 @@ class ParadoxScriptSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase
         // 2.1.10 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标
 
         ProgressManager.checkCanceled()
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val file = element.containingFile ?: return
         val expressionText = ParadoxExpressionManager.getExpressionText(element)
         if (expressionText.isEmpty()) return

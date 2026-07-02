@@ -10,7 +10,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 通过内嵌提示显示动态值信息，即类型。
@@ -20,7 +20,7 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         // ignored for `value_field` or `variable_field` or other variants
 
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val expression = element.name
         if (expression.isEmpty()) return
         if (expression.isParameterized()) return

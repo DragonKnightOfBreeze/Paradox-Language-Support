@@ -10,6 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -60,7 +61,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
 
     private fun findAllBlockValues(file: ParadoxScriptFile): List<ParadoxScriptValue> {
         return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptValue::class.java)
-            .filter { it.isBlockMember() }
+            .filter { it.isBlockValue() }
     }
 
     private fun findScriptedVariable(file: ParadoxScriptFile, name: String): ParadoxScriptScriptedVariable {
@@ -181,18 +182,18 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
     @Test
     fun getPath_parameterizedKey_parameterAwareTrue_returnsPath() {
         val file = configureScriptFile("root = { \"key_${p("PARAM")}\" = 1 }")
-        val props = findAllProperties(file, "key_\$PARAM\$")
+        val props = findAllProperties(file, "key_${p("PARAM")}")
         Assert.assertTrue(props.isNotEmpty())
         val prop = props.first()
         val path = ParadoxMemberService.getPath(prop, parameterAware = true)
         Assert.assertNotNull(path)
-        Assert.assertEquals("root/key_\$PARAM\$", path!!.path)
+        Assert.assertEquals("root/key_${p("PARAM")}", path!!.path)
     }
 
     @Test
     fun getPath_parameterizedKey_parameterAwareFalse_returnsNull() {
         val file = configureScriptFile("root = { \"key_${p("PARAM")}\" = 1 }")
-        val props = findAllProperties(file, "key_\$PARAM\$")
+        val props = findAllProperties(file, "key_${p("PARAM")}")
         Assert.assertTrue(props.isNotEmpty())
         val prop = props.first()
         val path = ParadoxMemberService.getPath(prop, parameterAware = false)

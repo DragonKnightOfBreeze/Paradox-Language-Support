@@ -41,7 +41,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
@@ -115,7 +115,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
             private fun visitValue(element: ParadoxScriptValue): Boolean {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return false // skip check if element is not an expression
+                if (!element.isDataExpression()) return false // skip check if element is not an expression
 
                 val disabledElement = disabledElement
                 if (disabledElement != null && disabledElement.isAncestor(element)) return true

@@ -30,7 +30,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScopeManager {
@@ -42,7 +42,7 @@ object ParadoxScopeManager {
 
     fun findParentMember(element: PsiElement, withSelf: Boolean): ParadoxScriptMember? {
         return element.parents(withSelf)
-            .find { it is ParadoxDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
+            .find { it is ParadoxDefinitionElement || (it is ParadoxScriptBlock && it.isBlockValue()) }
             .castOrNull<ParadoxScriptMember>()
     }
 

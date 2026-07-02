@@ -49,7 +49,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
@@ -159,7 +159,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
             is ParadoxScriptFile -> {
                 file.findElementAt(offset) {
                     it.parentOfType<ParadoxScriptExpressionElement>(false)
-                }?.takeIf { it.isExpression() }
+                }?.takeIf { it.isDataExpression() }
             }
             is ParadoxLocalisationFile -> {
                 file.findElementAt(offset) {

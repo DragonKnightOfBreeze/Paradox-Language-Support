@@ -22,7 +22,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.imageio.ImageIO
 
 /**
@@ -43,7 +43,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val name = element.name
         if (name.isEmpty()) return
         if (name.isParameterized()) return

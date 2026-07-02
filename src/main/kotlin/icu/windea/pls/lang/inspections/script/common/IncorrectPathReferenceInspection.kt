@@ -18,7 +18,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
@@ -48,7 +48,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
 
             private fun visitExpressionElement(element: ParadoxScriptString) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
 
                 // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return

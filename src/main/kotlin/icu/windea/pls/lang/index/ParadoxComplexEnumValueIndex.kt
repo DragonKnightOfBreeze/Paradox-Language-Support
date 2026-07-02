@@ -40,7 +40,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import java.io.DataInput
 import java.io.DataOutput
@@ -108,7 +108,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
             private fun visitStringExpressionElement(element: ParadoxScriptExpressionElement) {
                 if (!element.isResolvableLiteralExpression()) return
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
 
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
                 processComplexEnumValue(element)

@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 object ParadoxEventService {
     fun resolveInvocations(definition: ParadoxDefinitionElement): Set<String> {
@@ -37,7 +37,7 @@ object ParadoxEventService {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
                 val value = element.value
                 if (result.contains(value)) return
                 if (!isValidEventId(value)) return // 排除非法的事件ID

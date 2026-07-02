@@ -19,7 +19,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 不正确的复杂表达式（[ParadoxComplexExpression]）的代码检查的基类。
@@ -41,7 +41,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
                 val complexExpression = resolveComplexExpression(element, configGroup) ?: return
                 val errors = complexExpression.getAllErrors(element)
                 if (errors.isEmpty()) return

@@ -50,7 +50,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -140,7 +140,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
 
                 val definitionCandidateInfo = definitionCandidateInfoStack.lastOrNull()
                 val definitionAvailableStatus = definitionAvailableStatusStack.lastOrNull()

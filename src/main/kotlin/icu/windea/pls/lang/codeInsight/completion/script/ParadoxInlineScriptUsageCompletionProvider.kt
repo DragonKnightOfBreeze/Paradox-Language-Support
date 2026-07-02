@@ -27,6 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 import icu.windea.pls.script.psi.propertyValue
 
 /**
@@ -54,7 +55,7 @@ class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
 
         when (element) {
             is ParadoxScriptString -> {
-                if (!element.isBlockMember()) return
+                if (!element.isBlockValue()) return
             }
             is ParadoxScriptPropertyKey -> {
                 // if element is property key, related property value should be a string or clause (after resolving)

@@ -31,6 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.lang.psi.isDefinitionName
+import icu.windea.pls.script.psi.isBlockValue
 
 /**
  * 提供已有的定义的名字的代码补全。
@@ -54,7 +55,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
             // key_
             // key_ =
             // key_ = { ... }
-            element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
+            element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockValue()) -> {
                 val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
                 // 忽略 rootKeys 深度超出限制，或者带参数的情况

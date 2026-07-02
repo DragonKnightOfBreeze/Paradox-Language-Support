@@ -19,7 +19,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
@@ -52,7 +52,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
 
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return // skip check if element is not an expression
+                if (!element.isDataExpression()) return // skip check if element is not an expression
 
                 // 跳过一些脚本表达式类型
                 if (element is ParadoxScriptBlock) return

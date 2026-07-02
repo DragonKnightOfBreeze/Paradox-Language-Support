@@ -14,6 +14,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 
 /**
  * 解析定义键前缀引用。
@@ -25,7 +26,7 @@ class ParadoxScriptTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
         ProgressManager.checkCanceled()
 
         if (element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
-        if (!element.isBlockMember()) return PsiReference.EMPTY_ARRAY
+        if (!element.isBlockValue()) return PsiReference.EMPTY_ARRAY
         if (element.text.isParameterized()) return PsiReference.EMPTY_ARRAY // 不应当带有参数
         val rangeInElement = getRangeInElement(element) ?: return PsiReference.EMPTY_ARRAY
         val nextProperty = findNextProperty(element) ?: return PsiReference.EMPTY_ARRAY // 之后的兄弟节点必须是属性（跳过空白和注释）

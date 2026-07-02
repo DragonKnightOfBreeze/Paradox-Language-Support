@@ -5,6 +5,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isBlockValue
 
 class ParadoxScriptValueRemover : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {
@@ -16,7 +17,7 @@ class ParadoxScriptValueRemover : ParadoxScriptUnwrapper() {
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is ParadoxScriptValue && e.isBlockMember()
+        return e is ParadoxScriptValue && e.isBlockValue()
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

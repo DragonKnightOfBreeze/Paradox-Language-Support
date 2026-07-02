@@ -7,6 +7,18 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toBooleanYesNo
 
+// region PSI Value Accessors
+
+val CwtBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
+
+val CwtInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
+
+val CwtFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
+
+val CwtString.stringValue: String get() = this.value
+
+// endregion
+
 // region PSI Accessors
 
 val CwtExpressionElement.parentProperty: CwtProperty? get() = parent?.castOrNull()
@@ -25,44 +37,40 @@ inline fun <reified T : CwtValue> CwtProperty.propertyValue(): T? = propertyValu
 
 // region PSI Predicates
 
-fun CwtValue.isPropertyValue(): Boolean {
-    val parent = parent
-    return parent is CwtProperty
-}
-
-fun CwtValue.isBlockValue(): Boolean {
-    val parent = parent
+/** 是否是直接位于块（文件顶级/子句）中的成员。 */
+fun CwtMember.isBlockMember(): Boolean {
+    val parent = parent ?: return false
     return parent is CwtRootBlock || (parent is CwtBlock && parent.parent !is CwtOption)
 }
 
-fun CwtValue.isOptionValue(): Boolean {
-    val parent = parent
-    return parent is CwtOption
-}
-
-fun CwtValue.isOptionBlockValue(): Boolean {
-    val parent = parent
-    return parent is CwtOptionComment || (parent is CwtBlock && parent.parent is CwtOption)
-}
-
-fun CwtExpressionElement.isExpression(): Boolean {
-    return when {
-        this is CwtPropertyKey -> true
-        this is CwtValue -> parent.let { it is CwtProperty || it is CwtRootBlock || (it is CwtBlock && it.parent !is CwtOption) }
+/** 是否是位于子句结构（属性&值）中的，用于表示规则数据的表达式元素。 */
+fun CwtExpressionElement.isDataExpression(): Boolean {
+    return when (this) {
+        is CwtPropertyKey -> true
+        is CwtValue -> {
+            val parent = parent ?: return false
+            parent is CwtProperty || parent is CwtRootBlock || (parent is CwtBlock && parent.parent !is CwtOption)
+        }
         else -> false
     }
 }
 
-// endregion
+fun CwtValue.isPropertyValue(): Boolean {
+    return parent is CwtProperty
+}
 
-// region Value Accessors
+fun CwtValue.isBlockValue(): Boolean {
+    val parent = parent ?: return false
+    return parent is CwtRootBlock || (parent is CwtBlock && parent.parent !is CwtOption)
+}
 
-val CwtBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
+fun CwtValue.isOptionValue(): Boolean {
+    return parent is CwtOption
+}
 
-val CwtInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
-
-val CwtFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
-
-val CwtString.stringValue: String get() = this.value
+fun CwtValue.isOptionBlockValue(): Boolean {
+    val parent = parent ?: return false
+    return parent is CwtOptionComment || (parent is CwtBlock && parent.parent is CwtOption)
+}
 
 // endregion

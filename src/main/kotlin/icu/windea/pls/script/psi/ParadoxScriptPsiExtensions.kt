@@ -12,6 +12,20 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 import java.awt.Color
 
+// region PSI Value Accessors
+
+val ParadoxScriptBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
+
+val ParadoxScriptInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
+
+val ParadoxScriptFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
+
+val ParadoxScriptString.stringValue: String get() = this.value
+
+val ParadoxScriptColor.colorValue: Color? get() = this.color
+
+// endregion
+
 // region PSI Accessors
 
 val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty? get() = parent?.castOrNull()
@@ -34,8 +48,22 @@ val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub? get() = this.cas
 
 // region PSI Predicates
 
+/** 是否是直接位于块（文件顶级/子句）中的成员。 */
 fun ParadoxScriptMember.isBlockMember(): Boolean {
-    return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptConditionalBlock }
+    val parent = parent ?: return false
+    return parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
+}
+
+/** 是否是位于子句结构（属性&值）中的，用于表示游戏数据的表达式元素。 */
+fun ParadoxScriptExpressionElement.isDataExpression(): Boolean {
+    return when (this) {
+        is ParadoxScriptPropertyKey -> true
+        is ParadoxScriptValue -> {
+            val parent = parent ?: return false
+            parent is ParadoxScriptProperty || parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
+        }
+        else -> false
+    }
 }
 
 fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
@@ -46,26 +74,8 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
     return parent is ParadoxScriptProperty
 }
 
-fun ParadoxScriptExpressionElement.isExpression(): Boolean {
-    return when {
-        this is ParadoxScriptPropertyKey -> true
-        this is ParadoxScriptValue -> parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement || it is ParadoxScriptConditionalBlock }
-        else -> false
-    }
+fun ParadoxScriptValue.isBlockValue(): Boolean {
+    return parent is ParadoxScriptBlockElement || parent is ParadoxScriptConditionalBlock
 }
-
-// endregion
-
-// region Value Accessors
-
-val ParadoxScriptBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
-
-val ParadoxScriptInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
-
-val ParadoxScriptFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
-
-val ParadoxScriptString.stringValue: String get() = this.value
-
-val ParadoxScriptColor.colorValue: Color? get() = this.color
 
 // endregion

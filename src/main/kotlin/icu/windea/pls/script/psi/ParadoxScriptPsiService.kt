@@ -6,9 +6,10 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiService
 
+@Suppress("unused")
 object ParadoxScriptPsiService {
     fun canAttachComment(element: PsiElement): Boolean {
-        return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isBlockMember())
+        return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isBlockValue())
     }
 
     fun isMemberContextElement(element: PsiElement): Boolean {
@@ -20,7 +21,6 @@ object ParadoxScriptPsiService {
         return PsiService.isBeforeLeftBoundEnd(value, offset)
     }
 
-    @Suppress("unused")
     fun isBeforeBlockLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
         val block = element.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return true
         return PsiService.isBeforeLeftBoundEnd(block, offset)

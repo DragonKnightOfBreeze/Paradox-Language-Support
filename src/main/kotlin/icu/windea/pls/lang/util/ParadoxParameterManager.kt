@@ -60,7 +60,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import java.util.*
 
 object ParadoxParameterManager {
@@ -108,7 +108,7 @@ object ParadoxParameterManager {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
                 configs.filterIsInstance<CwtPropertyConfig>()
             }
-            expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+            expressionElement is ParadoxScriptString && expressionElement.isDataExpression() -> {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
                 configs.filterIsInstance<CwtValueConfig>()
             }

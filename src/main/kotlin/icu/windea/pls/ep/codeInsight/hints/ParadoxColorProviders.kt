@@ -26,6 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.lang.psi.isValidExpression
+import icu.windea.pls.script.psi.isBlockValue
 import java.awt.Color
 
 /**
@@ -165,7 +166,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     private fun getColorType(element: ParadoxScriptBlock): String? {
         val elementToGetOption: ParadoxScriptMember? = when {
             element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
-            element.isBlockMember() -> element
+            element.isBlockValue() -> element
             else -> null
         }
         if (elementToGetOption == null) return null

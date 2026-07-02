@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 object ParadoxLocalisationCodeInsightContextBuilder {
     fun fromContextElement(
@@ -219,7 +219,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         forReference: Boolean = true,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
-        if (!element.isExpression()) return null
+        if (!element.isDataExpression()) return null
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return null
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null

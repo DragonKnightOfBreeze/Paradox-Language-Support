@@ -25,7 +25,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
-import icu.windea.pls.cwt.psi.isExpression
+import icu.windea.pls.cwt.psi.isDataExpression
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.CwtConfigTextPatternSets
@@ -42,14 +42,14 @@ object CwtConfigSymbolManager {
 
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         ProgressManager.checkCanceled()
-        if (!element.isExpression()) return emptyList()
+        if (!element.isDataExpression()) return emptyList()
         val infos = getInfoFromCache(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
-        if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
+        if (!element.isDataExpression()) return PsiReference.EMPTY_ARRAY
         val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }

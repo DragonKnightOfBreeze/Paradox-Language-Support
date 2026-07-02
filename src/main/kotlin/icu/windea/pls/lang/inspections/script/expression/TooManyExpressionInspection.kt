@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 import javax.swing.JComponent
 
@@ -73,7 +73,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
 
             private fun visitBlock(element: ParadoxScriptBlock) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return // skip check if element is not an expression
+                if (!element.isDataExpression()) return // skip check if element is not an expression
 
                 // skip checking property if its property key may contain parameters
                 // position: (in property) property key / (standalone) left curly brace

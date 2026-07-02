@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 通过内嵌提示显示修正的显示名称。
@@ -41,7 +41,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         val type = config.configExpression.type
         if (type != CwtDataTypes.Modifier) return

@@ -22,7 +22,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.isPropertyValue
 
 /**
@@ -33,7 +34,7 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
@@ -43,8 +44,8 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
         // 兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
 
         val parameterValueQuoted = ParadoxConfigManager.getConfigContext(context.file)?.parameterValueQuoted
-        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
-        val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
+        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockValue()))
+        val mayBeValue = element is ParadoxScriptString && element.isBlockValue()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())
 
         val resultToUse = result.withPrefixMatcher(context.keyword)

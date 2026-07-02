@@ -34,7 +34,7 @@ import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isExpression
+import icu.windea.pls.cwt.psi.isDataExpression
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
@@ -176,7 +176,7 @@ object CwtDocumentationManager {
 
     private fun getStringDoc(element: CwtString, originalElement: PsiElement?, hint: Boolean): String? {
         // only for property value or block value
-        if (!element.isExpression()) return null
+        if (!element.isDataExpression()) return null
 
         return buildDocumentation {
             val name = element.name

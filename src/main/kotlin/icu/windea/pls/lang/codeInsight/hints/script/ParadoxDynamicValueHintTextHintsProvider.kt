@@ -18,7 +18,7 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 通过内嵌提示显示动态值的提示文本。
@@ -43,7 +43,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
         // ignored for `value_field` or `variable_field` or other variants
 
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val expression = element.name
         if (expression.isEmpty()) return
         if (expression.isParameterized()) return

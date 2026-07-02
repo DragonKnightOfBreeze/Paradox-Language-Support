@@ -73,7 +73,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.lang.psi.isDefinitionTypeKey
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 object ParadoxExpressionManager {
@@ -472,7 +472,7 @@ object ParadoxExpressionManager {
     fun getExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
         if (!element.isResolvableLiteralExpression() && element !is ParadoxScriptBlock) return PsiReference.EMPTY_ARRAY // #131
-        if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
+        if (!element.isDataExpression()) return PsiReference.EMPTY_ARRAY
         val cacheKey = getExpressionReferencesCacheKey()
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()

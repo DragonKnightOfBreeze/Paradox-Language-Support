@@ -38,7 +38,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 
 object ParadoxPsiFileService {
@@ -122,7 +122,7 @@ object ParadoxPsiFileService {
     fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxDefinitionElement? {
         if (offset < 0) return null
         val expressionElement by lazy {
-            file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isExpression() }
+            file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isDataExpression() }
         }
         val expressionReference by lazy {
             file.findReferenceAt(offset) {
@@ -164,7 +164,7 @@ object ParadoxPsiFileService {
     fun findDefinitionInjection(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptProperty? {
         if (offset < 0) return null
         val expressionElement by lazy {
-            file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isExpression() }
+            file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isDataExpression() }
         }
         if (file.language != ParadoxScriptLanguage) return null
         if (BitUtil.isSet(options, DefinitionInjectionOptions.DEFAULT)) {
@@ -250,7 +250,7 @@ object ParadoxPsiFileService {
         return file.findElementAt(offset) t@{
             if (fromToken && it.elementType !in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS) return@t null
             it.parentOfType<ParadoxScriptExpressionElement>(false)
-        }?.takeIf { it.isExpression() }
+        }?.takeIf { it.isDataExpression() }
     }
 
     fun findLocalisationExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxLocalisationExpressionElement? {
