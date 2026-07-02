@@ -19,6 +19,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.matchesAntPatterns
 import icu.windea.pls.core.vfs.VirtualFileBomService
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
 import icu.windea.pls.lang.fileInfo
@@ -34,8 +35,14 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ParadoxFileInspectionService {
     fun checkFileEncoding(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        if (!file.isValid) return null
+        if (file.textLength == 0) return null // 2.2.0 lenient check (skip for empty files)
         if (file !is ParadoxFile) return null
+
         val virtualFile = file.virtualFile ?: return null
+        if (VirtualFileService.isStubFile(virtualFile)) return null
+        if (!virtualFile.isValid) return null
+        if (virtualFile.length == 0L) return null // 2.2.0 lenient check (skip for empty files)
         val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
 
         val expectedCharset = ParadoxFileEncodingService.useCharset()
@@ -57,8 +64,12 @@ object ParadoxFileInspectionService {
     }
 
     fun checkFileName(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean, ignoredFilePaths: String): Array<ProblemDescriptor>? {
+        if (!file.isValid) return null
         if (file !is ParadoxLocalisationFile) return null
+
         val virtualFile = file.virtualFile ?: return null
+        if (VirtualFileService.isStubFile(virtualFile)) return null
+        if (!virtualFile.isValid) return null
         val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
 
         // 排除忽略的文件

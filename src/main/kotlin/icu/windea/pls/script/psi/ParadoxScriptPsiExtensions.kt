@@ -28,11 +28,11 @@ val ParadoxScriptColor.colorValue: Color? get() = this.color
 
 // region PSI Accessors
 
+val ParadoxScriptMember.containingMember: ParadoxScriptMember get() = castOrNull<ParadoxScriptValue>()?.parentProperty ?: this
+
 val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty? get() = parent?.castOrNull()
 
 val ParadoxScriptMember.parentBlock: ParadoxScriptBlock? get() = parent?.castOrNull()
-
-val ParadoxScriptMember.containingProperty: ParadoxScriptProperty? get() = this as? ParadoxScriptProperty ?: this.parent as? ParadoxScriptProperty
 
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 

@@ -21,11 +21,11 @@ val CwtString.stringValue: String get() = this.value
 
 // region PSI Accessors
 
+val CwtMember.containingMember: CwtMember get() = castOrNull<CwtValue>()?.parentProperty ?: this
+
 val CwtExpressionElement.parentProperty: CwtProperty? get() = parent?.castOrNull()
 
 val CwtMember.parentBlock: CwtBlock? get() = parent?.castOrNull()
-
-val CwtMember.containingProperty: CwtProperty? get() = this as? CwtProperty ?: this.parent as? CwtProperty
 
 val CwtPropertyKey.propertyValue: CwtValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 

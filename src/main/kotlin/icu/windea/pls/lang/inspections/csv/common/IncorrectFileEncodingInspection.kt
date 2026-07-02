@@ -17,6 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  *
  * 说明：
  * - 忽略注入的文件和临时文件。
+ * - 忽略空文件。
  *
  * 提供快速修复：
  * - 改为正确的文件编码

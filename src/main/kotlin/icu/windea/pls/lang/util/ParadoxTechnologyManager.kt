@@ -154,7 +154,7 @@ object ParadoxTechnologyManager {
                     this += rDefinition
                     true
                 }
-            }
+            }.distinct()
         }
 
         /**
@@ -171,13 +171,14 @@ object ParadoxTechnologyManager {
                 ParadoxDefinitionSearch.searchProperty(name, type, selector).process p0@{ definition0 ->
                     ProgressManager.checkCanceled()
                     ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
+                        ProgressManager.checkCanceled()
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                        val rDefinition = selectScope { refElement.parentOfPath("*/prerequisites/-").asProperty() } ?: return@p true
-                        val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
-                        if (rDefinitionInfo.name.isEmpty()) return@p true
-                        if (rDefinitionInfo.type != type) return@p true
-                        this += rDefinition
+                        val refDefinition = selectScope { refElement.parentOfPath("*/prerequisites/-").asProperty() } ?: return@p true
+                        val refDefinitionInfo = refDefinition.definitionInfo ?: return@p true
+                        if (refDefinitionInfo.name.isEmpty()) return@p true
+                        if (refDefinitionInfo.type != type) return@p true
+                        this += refDefinition
                         true
                     }
                     true
