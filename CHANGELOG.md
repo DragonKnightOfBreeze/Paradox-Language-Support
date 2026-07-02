@@ -5,6 +5,7 @@
 ## 2.2.0-dev
 
 - [x] Missing localizations false positive ([#347](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/347))
+- [x] [Stellaris] script_value reference broken [#348](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/348)
 - [x] 修复本地化悬浮工具栏无法正常显示的BUG / Fix a bug where the localisation floating toolbar cannot be displayed properly
 - [x] 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式* / For *pattern-aware data types*, in addition to *constants/templates/ANT path patterns/regular expressions*, additionally support *GLOB patterns* ([doc](https://windea.icu/Paradox-Language-Support/ref-config-format.md#data-types-pattern-aware))
 - [x] 支持 *并集规则*，不同于枚举规则，其可选项可以是各种数据类型的数据表达式 / Supports *union configs*, which are different from enum configs in that their available values can be data expressions of various data types ([doc](https://windea.icu/Paradox-Language-Support/ref-config-format.md#config-union))

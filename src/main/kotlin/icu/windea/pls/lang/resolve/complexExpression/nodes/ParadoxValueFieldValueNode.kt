@@ -140,11 +140,10 @@ class ParadoxValueFieldValueNode(
             configs.filter { it.configExpression?.type in CwtDataTypeSets.ValueField }.orNull()
                 ?.let { ParadoxValueFieldExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
-            if (text.contains('|')) { // optimize
-                configs.find { it.configExpression?.type == CwtDataTypes.ScriptValueReference }
-                    ?.let { ParadoxScriptValueReferenceExpression.resolve(text, textRange, configGroup) }
-                    ?.let { return it }
-            }
+            // #348 DO NOT apply optimization by checking '|' in `text` - Now use `$script_value_reference` as data source type, rather than `<script_value>`
+            configs.find { it.configExpression?.type == CwtDataTypes.ScriptValueReference }
+                ?.let { ParadoxScriptValueReferenceExpression.resolve(text, textRange, configGroup) }
+                ?.let { return it }
             configs.find { it.configExpression?.type == CwtDataTypes.DefineReference }
                 ?.let { ParadoxDefineReferenceExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
