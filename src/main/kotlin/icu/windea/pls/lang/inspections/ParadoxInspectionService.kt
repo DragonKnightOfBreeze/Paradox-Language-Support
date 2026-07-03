@@ -47,8 +47,8 @@ object ParadoxInspectionService {
         }
     }
 
-    @Optimized
     context(_: LocalInspectionTool)
+    @Optimized
     fun getDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
         if (expectedConfigs.isEmpty()) return null
         val gameType = expectedConfigs.first().configGroup.gameType
@@ -60,8 +60,8 @@ object ParadoxInspectionService {
         return null
     }
 
-    @Optimized
     context(_: LocalInspectionTool)
+    @Optimized
     fun getHighlightTypeForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
         if (expectedConfigs.isEmpty()) return null
         val gameType = expectedConfigs.first().configGroup.gameType
@@ -73,8 +73,8 @@ object ParadoxInspectionService {
         return null
     }
 
-    @Optimized
     context(_: LocalInspectionTool)
+    @Optimized
     fun getFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
         if (expectedConfigs.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         val result = mutableListOf<LocalQuickFix>()

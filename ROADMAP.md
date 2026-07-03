@@ -97,9 +97,9 @@
 
 ### 附加
 
+- [x] 重构：PSI 接口、select API、PSI predicates、以及更多
 - [x] P2 提取 EP `incorrectSyntaxChecker` - 对齐已有的 `incorrectExpressionChecker`
 - [x] P3 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式*
-- [ ] P3 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340))
 - [x] P3 支持 *并集规则（unionConfig）*，类似枚举规则（enumConfig），但是其中预定义的是任意数据表达式
 
 ## v3.0.0-the-great-renaming {#v3-0-0}
@@ -113,6 +113,15 @@
 - [ ] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
 - [ ] P2/MS 新增与补充 `CONTRIBUTING.md`（概述，说明如何贡献代码/文档/规则，包括步骤/建议/复杂性警告）
 - [ ] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
+
+### 附加
+
+- [ ] P2/MS 重构 select API，更好的链式调用方式，更好的向上或向下查询的方式
+- [ ] P2/MS 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
+- [ ] P2/QoL 支持扩展的规则选项 `## doc = some.md`，通过引用指定的文档路径，从而包含额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P2/QoL 支持扩展的规则选项 `## inject_doc`（使用当前规则路径）或 `## inject_doc = some/config.cwt@some/path`，通过引用指定的规则文件路径上的指定规则路径，从而注入额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P2/QoL 提供对规则文件中的文件路径引用和规则路径引用的引用解析
+- [ ] P3 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340))
 
 ## v3.1.0-complex-expression {#v3-1-0}
 
