@@ -28,8 +28,6 @@ val ParadoxScriptColor.colorValue: Color? get() = this.color
 
 // region PSI Accessors
 
-val ParadoxScriptMember.containingDirectMember: ParadoxScriptMember get() = castOrNull<ParadoxScriptValue>()?.parentProperty ?: this
-
 val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty? get() = parent?.castOrNull()
 
 val ParadoxScriptMember.parentBlock: ParadoxScriptBlock? get() = parent?.castOrNull()
@@ -48,7 +46,7 @@ val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub? get() = this.cas
 
 // region PSI Predicates
 
-/** 是否是成员（属性&值）结构中的，直接位于成员容器（顶级块、块、条件化块）中的成员。 */
+/** 是否是成员（属性&值）结构中的，直接位于成员容器中的成员。 */
 fun ParadoxScriptMember.isDirectMember(): Boolean {
     if (this is ParadoxScriptProperty) return true
     return parent is ParadoxScriptMemberContainer

@@ -95,24 +95,26 @@ object ParadoxEventManipulationService {
         // NOTE 2.1.10 simple check
         // NOTE 2.2.0 no inline atm
         val type = ParadoxDefinitionTypes.event
+        val nameField = eventConfig.nameField
         return when {
             // from key
-            eventConfig.nameField == null -> {
+            nameField == null -> {
                 // 不处理内联的情况
                 if (element !is ParadoxScriptPropertyKey) return null
-                val event = selectScope { element.parentOfKey("*").asDefinition(type) } ?: return null
+                val event = selectScope { element.queryParentBy("*").asDefinition(type) } ?: return null
                 if (event !is ParadoxScriptProperty) return null
                 if (event.parent !is ParadoxScriptRootBlock) return null
                 event
             }
             // from id field
-            else -> {
+            nameField.isNotEmpty() -> {
                 if (element !is ParadoxScriptString) return null
-                val event = selectScope { element.parentOfKey("id")?.parentOfKey("*").asDefinition(type) } ?: return null
+                val event = selectScope { element.queryParentBy("*/$nameField").asDefinition(type) } ?: return null
                 if (event !is ParadoxScriptProperty) return null
                 if (event.parent !is ParadoxScriptRootBlock) return null
                 event
             }
+            else -> null
         }
     }
 

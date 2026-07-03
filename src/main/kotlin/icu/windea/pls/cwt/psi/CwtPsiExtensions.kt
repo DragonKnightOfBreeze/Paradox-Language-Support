@@ -37,7 +37,7 @@ inline fun <reified T : CwtValue> CwtProperty.propertyValue(): T? = propertyValu
 
 // region PSI Predicates
 
-/** 是否是成员（属性&值）结构中的，直接位于成员容器（顶级块、块）中的成员。 */
+/** 是否是成员（属性&值）结构中的，直接位于成员容器中的成员。 */
 fun CwtMember.isDirectMember(): Boolean {
     if (this is CwtProperty) return true
     val parent = parent ?: return false

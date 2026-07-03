@@ -174,7 +174,7 @@ object ParadoxTechnologyManager {
                         ProgressManager.checkCanceled()
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                        val refDefinition = selectScope { refElement.parentOfPath("*/prerequisites/-").asProperty() } ?: return@p true
+                        val refDefinition = selectScope { refElement.queryParentBy("*/prerequisites/-").asProperty() } ?: return@p true
                         val refDefinitionInfo = refDefinition.definitionInfo ?: return@p true
                         if (refDefinitionInfo.name.isEmpty()) return@p true
                         if (refDefinitionInfo.type != type) return@p true

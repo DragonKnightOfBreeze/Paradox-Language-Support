@@ -31,7 +31,6 @@ import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentMap
 

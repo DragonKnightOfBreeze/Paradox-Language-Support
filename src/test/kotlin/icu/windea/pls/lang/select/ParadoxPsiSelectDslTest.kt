@@ -9,9 +9,9 @@ import com.intellij.util.containers.TreeTraversal
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
-import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -32,19 +32,24 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun configureScriptFile(@TestDataFile testDataPath: String): ParadoxScriptFile {
+        myFixture.configureByFile(testDataPath)
+        return myFixture.file as ParadoxScriptFile
+    }
+
     @Test
     fun byPath_simple() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").one() }
+        val k4 = selectScope { file.queryBy("k1/k2/k3/k4").one() }
         Assert.assertNotNull(k4)
-        val k4List = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().all() }
         Assert.assertEquals(3, k4List.size)
     }
 
     @Test
     fun walkDown_containsAllDescendants() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }!!
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }!!
 
         val descendants = selectScope { k1.walkDown().toList() }
         Assert.assertTrue(descendants.size >= 10)
@@ -58,7 +63,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun members_properties_values_basic() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }!!
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }!!
 
         val members = selectScope { k1.members().all() }
         Assert.assertEquals(3, members.size)
@@ -75,10 +80,10 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun asBlock_and_dashPathSegment() {
         val file = configureScriptFile("features/select/select_blocks.test.txt")
-        val block = selectScope { file.ofPath("list/-").asBlock().one() }
+        val block = selectScope { file.queryBy("list/-").asBlock().one() }
         Assert.assertNotNull(block)
 
-        val a = selectScope { file.ofPath("list/-/a").asProperty().one() }
+        val a = selectScope { file.queryBy("list/-/a").asProperty().one() }
         Assert.assertNotNull(a)
         Assert.assertEquals("a", a!!.name)
     }
@@ -93,7 +98,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofKey_ignoreCase_and_usePattern() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k2 = selectScope { file.ofPath("k1/k2").asProperty().one() }!!
+        val k2 = selectScope { file.queryBy("k1/k2").asProperty().one() }!!
 
         val k3IgnoreCase = selectScope {
             k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).all()
@@ -114,7 +119,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofKeys_basic() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k2 = selectScope { file.ofPath("k1/k2").asProperty().one() }!!
+        val k2 = selectScope { file.queryBy("k1/k2").asProperty().one() }!!
 
         val k3List = selectScope {
             k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).all()
@@ -123,29 +128,29 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun ofPath_usePattern_and_emptyPath() {
+    fun queryBy_usePattern_and_emptyPath() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
 
         val k4ListByPattern = selectScope {
-            file.ofPath("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
+            file.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
         }
         Assert.assertEquals(3, k4ListByPattern.size)
         Assert.assertTrue(k4ListByPattern.all { it.name == "k4" })
 
         val k4ListByLiteral = selectScope {
-            file.ofPath("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
+            file.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
         }
         Assert.assertEquals(0, k4ListByLiteral.size)
 
-        val empty = selectScope { file.ofPath("").all() }
+        val empty = selectScope { file.queryBy("").all() }
         Assert.assertTrue(empty.isEmpty())
     }
 
     @Test
-    fun ofPaths_basic() {
+    fun queryBy_basic() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val list = selectScope {
-            file.ofPaths(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
+            file.queryBy(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
         }
         val k4Count = list.count { it.name == "k4" }
         val k3Count = list.count { it.name == "k3" }
@@ -154,9 +159,9 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun ofPath_duplicateKeyOrderIsStable() {
+    fun queryBy_duplicateKeyOrderIsStable() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4List = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().all() }
         Assert.assertEquals(3, k4List.size)
 
         val k3Paths = selectScope {
@@ -166,19 +171,19 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun ofPath_usePattern_notMatchedShouldBeEmpty() {
+    fun queryBy_usePattern_notMatchedShouldBeEmpty() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val result = selectScope {
-            file.ofPath("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
+            file.queryBy("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
         }
         Assert.assertTrue(result.isEmpty())
     }
 
     @Test
-    fun ofPaths_shouldIgnoreEmptyOrInvalidPath() {
+    fun queryBy_shouldIgnoreEmptyOrInvalidPath() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val list = selectScope {
-            file.ofPaths(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
+            file.queryBy(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
                 .asProperty()
                 .all()
         }
@@ -187,18 +192,18 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun sequenceOfContainers_ofPath_and_ofPaths() {
+    fun sequenceOfContainers_queryBy_and_queryBy() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }!!
-        val k2 = selectScope { file.ofPath("k1/k2").asProperty().one() }!!
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }!!
+        val k2 = selectScope { file.queryBy("k1/k2").asProperty().one() }!!
 
         val k4FromContainers = selectScope {
-            sequenceOf(k1, k2).ofPath("k3/k4").asProperty().all()
+            sequenceOf(k1, k2).queryBy("k3/k4").asProperty().all()
         }
         Assert.assertEquals(3, k4FromContainers.size)
 
         val listFromContainers = selectScope {
-            sequenceOf(k1, k2).ofPaths(listOf("k3", "k3/k4")).asProperty().all()
+            sequenceOf(k1, k2).queryBy(listOf("k3", "k3/k4")).asProperty().all()
         }
         Assert.assertEquals(6, listFromContainers.size)
     }
@@ -206,7 +211,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun walkDown_withTraversalParameter() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }!!
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }!!
 
         val preOrder = selectScope { k1.walkDown(TreeTraversal.PRE_ORDER_DFS).toList() }
         val postOrder = selectScope { k1.walkDown(TreeTraversal.POST_ORDER_DFS).toList() }
@@ -243,7 +248,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun conditional_true_and_false() {
         val file = configureScriptFile("features/select/select_conditional.test.txt")
-        val settings = selectScope { file.ofPath("settings").asProperty().one() }!!
+        val settings = selectScope { file.queryBy("settings").asProperty().one() }!!
 
         val membersConditionalFalse = selectScope { settings.members(conditional = false).all() }
         Assert.assertEquals(2, membersConditionalFalse.size)
@@ -257,7 +262,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun walkUp_propertyChain() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
+        val k4 = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().one() }!!
 
         val keys = selectScope {
             k4.walkUp().asProperty().map { it.name }.toList()
@@ -266,167 +271,66 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun containingVsParent() {
+    fun queryParentBy_basic() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k2 = selectScope { file.ofPath("k1/k2").asProperty().one() }!!
 
-        val containingProperty = selectScope { k2.containingProperty() }!!
-        Assert.assertEquals("k2", containingProperty.name)
+        val k4 = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().one() }!!
+        Assert.assertEquals("k4", k4.name)
 
-        val parentProperty = selectScope { k2.parentProperty() }!!
-        Assert.assertEquals("k1", parentProperty.name)
-    }
-
-    @Test
-    fun parentMemberContainer_withSelf() {
-        val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
-
-        val parentContainer = selectScope { k4.parentMemberContainer() }
-        Assert.assertNotNull(parentContainer)
-        Assert.assertTrue(parentContainer!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "k4" })
-
-        val fileNoSelf = selectScope { file.parentMemberContainer() }
-        Assert.assertNull(fileNoSelf)
-    }
-
-    @Test
-    fun parentMemberContainer_insideConditionalBlock() {
-        val file = configureScriptFile("features/select/select_conditional.test.txt")
-        val settings = selectScope { file.ofPath("settings").asProperty().one() }!!
-        val conditionalBlockProperty = selectScope {
-            settings.members(conditional = true)
-                .asProperty()
-                .ofKey("conditional_block", ignoreCase = true, usePattern = false)
-                .one()
-        }!!
-
-        val container = selectScope { conditionalBlockProperty.parentMemberContainer() }
-        Assert.assertNotNull(container)
-        Assert.assertTrue(container!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "conditional_block" })
-    }
-
-    @Test
-    fun parentOffKey_ignoreCase_and_usePattern() {
-        val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4Value = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one()!!.propertyValue }!!
-
-        val parentK4 = selectScope { k4Value.parentOfKey(key = "K4", ignoreCase = true) }
-        Assert.assertNotNull(parentK4)
-        Assert.assertEquals("k4", parentK4!!.name)
-
-        val parentK3 = selectScope { parentK4.parentOfKey(key = "k*", usePattern = true) }
-        Assert.assertNotNull(parentK3)
-        Assert.assertEquals("k3", parentK3!!.name)
-
-        val notExists = selectScope { k4Value.parentOfKey(key = "not_exists") }
-        Assert.assertNull(notExists)
-    }
-
-    @Test
-    fun parentOfKey_shouldStopAtNonPropertyValueBlock() {
-        val file = configureScriptFile("features/select/select_blocks.test.txt")
-        val aValue = selectScope { file.ofPath("list/-/a").asProperty().one()!!.propertyValue }!!
-
-        val stopped = selectScope { aValue.parentOfKey(key = "list") }
-        Assert.assertNull(stopped)
-    }
-
-    @Test
-    fun parentOfKey_shouldReturnFileWhenReachedPsiFile() {
-        val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }!!
-
-        val r1 = selectScope { k1.parentOfKey(key = null) }
-        Assert.assertTrue(r1 is ParadoxScriptFile)
-
-        val r2 = selectScope { k1.parentOfKey(key = "*") }
-        Assert.assertTrue(r2 is ParadoxScriptFile)
-
-        val r3 = selectScope { k1.parentOfKey(key = "-") }
-        Assert.assertTrue(r3 is ParadoxScriptFile)
-
-        val r4 = selectScope { k1.parentOfKey(key = "not_exists") }
-        Assert.assertNull(r4)
-    }
-
-    @Test
-    fun parentOfKey_basic_and_edgeCases() {
-        val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
-
-        val parent = selectScope { k4.parentOfKey() }
-        Assert.assertNotNull(parent)
-        Assert.assertTrue(parent is ParadoxScriptBlock)
-
-        val parentK3 = selectScope { k4.parentOfKey("k3") }
-        Assert.assertNotNull(parentK3)
-        Assert.assertTrue(parentK3 is ParadoxScriptProperty)
-        Assert.assertEquals("k3", (parentK3 as ParadoxScriptProperty).name)
-
-        val parentKAny = selectScope { k4.parentOfKey("*") }
-        Assert.assertNotNull(parentK3)
-        Assert.assertTrue(parentKAny is ParadoxScriptProperty)
-        Assert.assertEquals("k3", (parentKAny as ParadoxScriptProperty).name)
-
-        val parentBlock = selectScope { k4.parentOfKey("-") }
-        Assert.assertNotNull(parentBlock)
-        Assert.assertTrue(parentBlock is ParadoxScriptBlock)
-
-        val invalid = selectScope { k4.parentOfKey("not_exists") }
-        Assert.assertNull(invalid)
-
-        val file2 = configureScriptFile("features/select/select_blocks.test.txt")
-        val a = selectScope { file2.ofPath("list/-/a").asProperty().one() }!!
-        val invalidShouldBeNull = selectScope { a.parentOfKey("list") }
-        Assert.assertNull(invalidShouldBeNull)
-    }
-
-    @Test
-    fun parentOfPath_basic_and_edgeCases() {
-        val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
-
-        val empty = selectScope { k4.parentOfPath("") }
+        val empty = selectScope { k4.queryParentBy("") }
         Assert.assertNull(empty)
 
-        val parentK3 = selectScope { k4.parentOfPath("k3") }
-        Assert.assertNotNull(parentK3)
-        Assert.assertTrue(parentK3 is ParadoxScriptProperty)
-        Assert.assertEquals("k3", (parentK3 as ParadoxScriptProperty).name)
+        val k4WithSelf = selectScope { k4.queryParentBy("k4").asProperty() }
+        Assert.assertEquals("k4", k4WithSelf?.name)
 
-        val parentKAny = selectScope { k4.parentOfPath("*") }
-        Assert.assertNotNull(parentK3)
-        Assert.assertTrue(parentKAny is ParadoxScriptProperty)
-        Assert.assertEquals("k3", (parentKAny as ParadoxScriptProperty).name)
+        val k3WithSelf = selectScope { k4.queryParentBy("k3/k4").asProperty() }
+        Assert.assertEquals("k3", k3WithSelf?.name)
 
-        val parentBlock = selectScope { k4.parentOfPath("-") }
-        Assert.assertNotNull(parentBlock)
-        Assert.assertFalse(parentBlock is ParadoxScriptProperty)
+        val k3 = selectScope { k4.queryParentBy("k3", withSelf = false).asProperty() }
+        Assert.assertEquals("k3", k3?.name)
 
-        val invalid = selectScope { k4.parentOfPath("not_exists") }
+        val k2AnyWithSelf = selectScope { k4.queryParentBy("*/k3/4").asProperty() }
+        Assert.assertEquals("k2", k2AnyWithSelf?.name)
+
+        val v2 = selectScope { file.queryBy("k1/k2/-").asValue().one() }!!
+        Assert.assertEquals("v2", v2.value)
+
+        val k2FromV2WithSelf = selectScope { v2.queryParentBy("k2/-").asProperty() }
+        Assert.assertEquals("k2", k2FromV2WithSelf?.name)
+
+        val invalidWithSelf = selectScope { k4.queryParentBy("not_exists") }
+        Assert.assertNull(invalidWithSelf)
+
+        val invalid = selectScope { k4.queryParentBy("not_exists", withSelf = true) }
         Assert.assertNull(invalid)
-
-        val file2 = configureScriptFile("features/select/select_blocks.test.txt")
-        val a = selectScope { file2.ofPath("list/-/a").asProperty().one() }!!
-        val invalidShouldBeNull = selectScope { a.parentOfPath("list") }
-        Assert.assertNull(invalidShouldBeNull)
     }
 
     @Test
-    fun upwardQueries_nonScriptLanguage_shouldReturnNull() {
-        myFixture.configureByText("a.java", "class A {}")
-        val file = myFixture.file
+    fun queryParentBy_directBlock() {
+        val file2 = configureScriptFile("features/select/select_blocks.test.txt")
 
-        val container = selectScope { file.parentMemberContainer() }
-        Assert.assertNull(container)
+        val directBlock = selectScope { file2.queryBy("list/-").asBlock().one() }!!
+        Assert.assertTrue(directBlock.isDirectValue())
 
-        val property = selectScope { file.parentProperty() }
-        Assert.assertNull(property)
-    }
+        val a = selectScope { file2.queryBy("list/-/a").asProperty().one() }!!
+        Assert.assertEquals("a", a.name)
 
-    private fun configureScriptFile(@TestDataFile testDataPath: String): ParadoxScriptFile {
-        myFixture.configureByFile(testDataPath)
-        return myFixture.file as ParadoxScriptFile
+        val directBlockFromA = selectScope { a.queryParentBy("-", withSelf = false).asBlock() }!!
+        Assert.assertTrue(directBlockFromA.isDirectValue())
+
+        val directBlockFromAWithSelf = selectScope { a.queryParentBy("-/a").asBlock() }!!
+        Assert.assertTrue(directBlockFromAWithSelf.isDirectValue())
+
+        val listFromDirectBlock = selectScope { directBlockFromAWithSelf.queryParentBy("list", withSelf = false).asProperty() }!!
+        Assert.assertEquals("list", listFromDirectBlock.name)
+
+        val listFromDirectBlockWithSelf = selectScope { directBlockFromAWithSelf.queryParentBy("list/-").asProperty() }!!
+        Assert.assertEquals("list", listFromDirectBlockWithSelf.name)
+
+        val invalidWithSelf = selectScope { a.queryParentBy("list") }
+        Assert.assertNull(invalidWithSelf)
+
+        val invalidCrossingDirectBlock = selectScope { a.queryParentBy("list", withSelf = false) }
+        Assert.assertNull(invalidCrossingDirectBlock)
     }
 }

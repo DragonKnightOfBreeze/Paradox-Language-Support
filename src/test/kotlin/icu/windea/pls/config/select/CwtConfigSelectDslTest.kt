@@ -33,9 +33,9 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun byPath_simple() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k4 = selectConfigScope { fileConfig.ofPath("k1/k2/k3/k4").one() }
+        val k4 = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").one() }
         Assert.assertNotNull(k4)
-        val k4List = selectConfigScope { fileConfig.ofPath("k1/k2/k3/k4").all() }
+        val k4List = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").all() }
         Assert.assertEquals(3, k4List.size)
     }
 
@@ -43,7 +43,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     fun walkUp_propertyChain() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val k4 = selectConfigScope {
-            fileConfig.ofPath("k1/k2/k3/k4").asProperty().one()
+            fileConfig.queryBy("k1/k2/k3/k4").asProperty().one()
         }!!
 
         val keys = selectConfigScope {
@@ -55,7 +55,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun walkDown_containsAllDescendants() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.queryBy("k1").asProperty().one() }!!
 
         val descendants = selectConfigScope { k1.walkDown().toList() }
         Assert.assertEquals(10, descendants.size)
@@ -69,7 +69,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun members_properties_values_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.queryBy("k1").asProperty().one() }!!
 
         val members = selectConfigScope { k1.members().all() }
         Assert.assertEquals(3, members.size)
@@ -89,7 +89,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
         val block = selectConfigScope { fileConfig.values().asBlock().one() }
         Assert.assertNotNull(block)
 
-        val a = selectConfigScope { fileConfig.ofPath("-/a").asProperty().one() }
+        val a = selectConfigScope { fileConfig.queryBy("-/a").asProperty().one() }
         Assert.assertNotNull(a)
         Assert.assertEquals("a", a!!.key)
     }
@@ -104,7 +104,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofKey_ignoreCase_and_usePattern() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k2 = selectConfigScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
+        val k2 = selectConfigScope { fileConfig.queryBy("k1/k2").asProperty().one() }!!
 
         val k3IgnoreCase = selectConfigScope {
             k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).all()
@@ -125,7 +125,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofKeys_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k2 = selectConfigScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
+        val k2 = selectConfigScope { fileConfig.queryBy("k1/k2").asProperty().one() }!!
 
         val k3List = selectConfigScope {
             k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).all()
@@ -134,29 +134,29 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun ofPath_usePattern_and_emptyPath() {
+    fun queryBy_usePattern_and_emptyPath() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
 
         val k4ListByPattern = selectConfigScope {
-            fileConfig.ofPath("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
+            fileConfig.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
         }
         Assert.assertEquals(3, k4ListByPattern.size)
         Assert.assertTrue(k4ListByPattern.all { it.key == "k4" })
 
         val k4ListByLiteral = selectConfigScope {
-            fileConfig.ofPath("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
+            fileConfig.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
         }
         Assert.assertEquals(0, k4ListByLiteral.size)
 
-        val empty = selectConfigScope { fileConfig.ofPath("").all() }
+        val empty = selectConfigScope { fileConfig.queryBy("").all() }
         Assert.assertTrue(empty.isEmpty())
     }
 
     @Test
-    fun ofPaths_basic() {
+    fun queryBy_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val list = selectConfigScope {
-            fileConfig.ofPaths(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
+            fileConfig.queryBy(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
         }
         val k4Count = list.count { it.key == "k4" }
         val k3Count = list.count { it.key == "k3" }
@@ -165,9 +165,9 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun ofPath_duplicateKeyOrderIsStable() {
+    fun queryBy_duplicateKeyOrderIsStable() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k4List = selectConfigScope { fileConfig.ofPath("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").asProperty().all() }
         Assert.assertEquals(3, k4List.size)
 
         val k3Paths = selectConfigScope {
@@ -177,19 +177,19 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun ofPath_usePattern_notMatchedShouldBeEmpty() {
+    fun queryBy_usePattern_notMatchedShouldBeEmpty() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val result = selectConfigScope {
-            fileConfig.ofPath("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
+            fileConfig.queryBy("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
         }
         Assert.assertTrue(result.isEmpty())
     }
 
     @Test
-    fun ofPaths_shouldIgnoreEmptyOrInvalidPath() {
+    fun queryBy_shouldIgnoreEmptyOrInvalidPath() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val list = selectConfigScope {
-            fileConfig.ofPaths(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
+            fileConfig.queryBy(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
                 .asProperty()
                 .all()
         }
@@ -198,18 +198,18 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun sequenceOfContainers_ofPath_and_ofPaths() {
+    fun sequenceOfContainers_queryBy_and_queryBy() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
-        val k2 = selectConfigScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.queryBy("k1").asProperty().one() }!!
+        val k2 = selectConfigScope { fileConfig.queryBy("k1/k2").asProperty().one() }!!
 
         val k4FromContainers = selectConfigScope {
-            sequenceOf(k1, k2).ofPath("k3/k4").asProperty().all()
+            sequenceOf(k1, k2).queryBy("k3/k4").asProperty().all()
         }
         Assert.assertEquals(3, k4FromContainers.size)
 
         val listFromContainers = selectConfigScope {
-            sequenceOf(k1, k2).ofPaths(listOf("k3", "k3/k4")).asProperty().all()
+            sequenceOf(k1, k2).queryBy(listOf("k3", "k3/k4")).asProperty().all()
         }
         Assert.assertEquals(6, listFromContainers.size)
     }
@@ -217,7 +217,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun walkDown_withTraversalParameter() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.queryBy("k1").asProperty().one() }!!
 
         val preOrder = selectConfigScope { k1.walkDown(TreeTraversal.PRE_ORDER_DFS).toList() }
         val postOrder = selectConfigScope { k1.walkDown(TreeTraversal.POST_ORDER_DFS).toList() }

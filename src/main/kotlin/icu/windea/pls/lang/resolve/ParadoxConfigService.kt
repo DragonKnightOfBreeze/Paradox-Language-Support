@@ -238,7 +238,6 @@ object ParadoxConfigService {
         val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
         val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
-        val configGroup = context.configGroup
         val element = context.element
         val containingMember = element.castOrNull<ParadoxScriptValue>()?.parentProperty ?: element
         val parentMember = containingMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
@@ -254,7 +253,7 @@ object ParadoxConfigService {
         var result = buildList {
             // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
             val matchedParentConfigs = when {
-                parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, configGroup, options)
+                parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, context.configGroup, options)
                 else -> parentConfigs
             }
 
@@ -312,7 +311,7 @@ object ParadoxConfigService {
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
-            result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
+            result = matchConfigsForConfigContext(element, expression, result, context.configGroup, options)
             result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 

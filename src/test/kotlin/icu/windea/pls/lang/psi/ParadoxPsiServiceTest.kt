@@ -30,14 +30,14 @@ class ParadoxPsiServiceTest : BasePlatformTestCase() {
 
         run {
             val expected = listOf("PARAM_1" to "foo", "PARAM_2" to "123", "PARAM_3" to "123.456")
-            val property = selectScope { file.ofPath("some_scripted_trigger").asProperty().one() }!!
+            val property = selectScope { file.queryBy("some_scripted_trigger").asProperty().one() }!!
             val args = ParadoxPsiService.getArgumentTupleList(property.block!!)
             Assert.assertEquals(expected, args)
         }
 
         run {
             val expected = listOf("VAR" to "@var", "PARAM" to "\$PARAM$", "NUM" to "@[ 1 + 1 ]")
-            val property = selectScope { file.ofPath("some_scripted_effect").asProperty().one() }!!
+            val property = selectScope { file.queryBy("some_scripted_effect").asProperty().one() }!!
             val args = ParadoxPsiService.getArgumentTupleList(property.block!!)
             Assert.assertEquals(expected, args)
         }
@@ -45,7 +45,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase() {
         run {
             // Keep quotes of argument values
             val expected = listOf("P1" to "\$PARAM$", "P2" to "\"\$OTHER_PARAM$\"", "P3" to "bar", "P4" to "yes")
-            val property = selectScope { file.ofPath("inline_script").asProperty().elementAt(0) }
+            val property = selectScope { file.queryBy("inline_script").asProperty().elementAt(0) }
             val args = ParadoxPsiService.getArgumentTupleList(property.block!!, "script")
             Assert.assertEquals(expected, args)
         }
@@ -53,7 +53,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase() {
         run {
             // Accept only valid identifier characters (leading numbers are allowed)
             val expected = listOf("VALID_IDENTIFIER" to "v", "00_INVALID_IDENTIFIER" to "v")
-            val property = selectScope { file.ofPath("inline_script").asProperty().elementAt(1) }
+            val property = selectScope { file.queryBy("inline_script").asProperty().elementAt(1) }
             val args = ParadoxPsiService.getArgumentTupleList(property.block!!, "script")
             Assert.assertEquals(expected, args)
         }

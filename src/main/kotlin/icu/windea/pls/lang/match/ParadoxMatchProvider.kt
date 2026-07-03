@@ -76,9 +76,9 @@ object ParadoxMatchProvider {
         run {
             val predicate = config.optionData.predicate
             if (predicate.isNullOrEmpty()) return@run
-            val parentBlock = selectScope { element.parentOfKey() } ?: return@run
+            val containerElement = selectScope { element.queryParent().queryParent(withSelf = false) } ?: return@run
             predicate.forEach f@{ (pk, pv) ->
-                val p1 = selectScope { parentBlock.properties(inline = true).ofKey(pk).one() }
+                val p1 = selectScope { containerElement.properties(inline = true).ofKey(pk).one() }
                 val pv1 = p1?.propertyValue?.stringValue()
                 val pr = pv.withOperator { it == pv1 }
                 if (!pr) return false

@@ -19,9 +19,11 @@ interface CwtConfigSelectScope {
 
     fun CwtMemberContainerConfig<*>.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS): Sequence<CwtMemberConfig<*>>
 
+    fun CwtMemberConfig<*>?.literalValue(): String?
+
     // endregion
 
-    // region Casts
+    // region Filters
 
     fun CwtMemberConfig<*>?.asProperty(): CwtPropertyConfig?
 
@@ -35,52 +37,85 @@ interface CwtConfigSelectScope {
 
     fun Sequence<CwtMemberConfig<*>>.asBlock(): Sequence<CwtValueConfig>
 
-    // endregion
-
-    // region Queries
-
-    fun CwtMemberConfig<*>?.selectLiteralValue(): String?
-
     fun CwtPropertyConfig?.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
 
     fun Sequence<CwtPropertyConfig>.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig>
+
+    fun CwtPropertyConfig?.ofKeys(vararg keys: String, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
+
+    fun Sequence<CwtPropertyConfig>.ofKeys(vararg keys: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig>
 
     fun CwtPropertyConfig?.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig?
 
     fun Sequence<CwtPropertyConfig>.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig>
 
-    fun <T : CwtMemberConfig<*>> T?.ofValue(value: String, ignoreCase: Boolean = true): T?
+    fun <T : CwtMemberConfig<*>> T?.ofValue(value: String, ignoreCase: Boolean = true, usePattern: Boolean = true): T?
 
-    fun <T : CwtMemberConfig<*>> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T>
+    fun <T : CwtMemberConfig<*>> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<T>
 
-    fun <T : CwtMemberConfig<*>> T?.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T?
+    fun <T : CwtMemberConfig<*>> T?.ofValues(vararg values: String, ignoreCase: Boolean = true, usePattern: Boolean = true): T?
 
-    fun <T : CwtMemberConfig<*>> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T>
+    fun <T : CwtMemberConfig<*>> Sequence<T>.ofValues(vararg values: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<T>
+
+    fun <T : CwtMemberConfig<*>> T?.ofValues(values: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): T?
+
+    fun <T : CwtMemberConfig<*>> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<T>
+
+    // endregion
+
+    // region Queries
+
     /**
-     * 根据指定的路径，向下查询并依次匹配位于子句结构（属性&值）中的，可能出现在文件顶部 除了属性值以外的属性或值。
-     *
-     * 说明：
-     * - 如果路径为空，则返回空序列。
-     * - 如果子路径为 `-`，则匹配当前深度的任意块。
-     * - 如果子路径为 `*`，则匹配当前深度的任意块值。
-     *
-     * - 如果 [key] 为 `null`，则匹配任意属性、块或文件。
-     * - 如果 [key] 为 `*`，则匹配任意属性或文件。
-     * - 如果 [key] 为 `-`，则匹配任意块或文件。
-     * - 如果 [key] 为其他情况，则仅匹配键名符合条件的属性。
+     * 向下查询直接位于成员容器中的所有成员对应的成员规则。
+     */
+    fun CwtMemberContainerConfig<*>?.query(): Sequence<CwtMemberConfig<*>>
+
+    /**
+     * 向下查询直接位于成员容器中的所有成员对应的成员规则。
+     */
+    fun Sequence<CwtMemberContainerConfig<*>>.query(): Sequence<CwtMemberConfig<*>>
+
+    /**
+     * 根据指定的路径，递归向下查询并匹配直接位于成员容器中的所有成员对应的成员规则。如果路径为空或者无法匹配，则直接返回空序列。
      *
      * @see CwtConfigPath
      */
-    fun CwtMemberContainerConfig<*>?.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+    fun CwtMemberContainerConfig<*>?.queryBy(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
-    /** @see CwtConfigPath */
-    fun Sequence<CwtMemberContainerConfig<*>>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+    /**
+     * 根据指定的路径，递归向下查询并匹配直接位于成员容器中的所有成员对应的成员规则。如果路径为空或者无法匹配，则直接返回空序列。
+     *
+     * @see CwtConfigPath
+     */
+    fun Sequence<CwtMemberContainerConfig<*>>.queryBy(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
-    /** @see CwtConfigPath */
-    fun CwtMemberContainerConfig<*>?.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+    /**
+     * 根据指定的一组路径，递归向下查询并匹配直接位于成员容器中的所有成员对应的成员规则。如果路径为空或者无法匹配，则直接返回空序列。
+     *
+     * @see CwtConfigPath
+     */
+    fun CwtMemberContainerConfig<*>?.queryBy(vararg paths: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
-    /** @see CwtConfigPath */
-    fun Sequence<CwtMemberContainerConfig<*>>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+    /**
+     * 根据指定的一组路径，递归向下查询并匹配直接位于成员容器中的所有成员对应的成员规则。如果路径为空或者无法匹配，则直接返回空序列。
+     *
+     * @see CwtConfigPath
+     */
+    fun Sequence<CwtMemberContainerConfig<*>>.queryBy(vararg paths: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+
+    /**
+     * 根据指定的一组路径，递归向下查询并匹配直接位于成员容器中的所有成员对应的成员规则。如果路径为空或者无法匹配，则直接返回空序列。
+     *
+     * @see CwtConfigPath
+     */
+    fun CwtMemberContainerConfig<*>?.queryBy(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
+
+    /**
+     * 根据指定的一组路径，递归向下查询并匹配直接位于成员容器中的所有成员对应的成员规则。如果路径为空或者无法匹配，则直接返回空序列。
+     *
+     * @see CwtConfigPath
+     */
+    fun Sequence<CwtMemberContainerConfig<*>>.queryBy(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>>
 
     // endregion
 

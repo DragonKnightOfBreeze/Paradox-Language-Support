@@ -1,7 +1,7 @@
 package icu.windea.pls.core.match
 
 /**
- * 子路径级别的匹配器。
+ * 子路径的匹配器。
  */
 object PathMatcher {
     /**

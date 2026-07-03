@@ -22,7 +22,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.select.selectScope
@@ -69,27 +68,28 @@ object ParadoxLocalisationParameterManager {
     }
 
     private fun findParameterPropertiesFromLocalisationProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): List<ParadoxScriptProperty> {
-        val configToUse = config.parentConfig?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } }
-        if (configToUse == null) return emptyList()
-        val context = selectScope { element.parentProperty()?.parentProperty() } ?: return emptyList()
-        val result = context.properties().flatMap { it.properties() }.filter { isMatchedProperty(it, configToUse) }.toList()
-        return result
+        // `__` - caret position
+        // `<container> = { description = __<loc> description_parameters = { <param> = <value> } }`
+        // -> `<container> = { description = <loc> __description_parameters = { <param> = <value> } }`
+
+        val configToUse = config.parentConfig?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } } ?: return emptyList()
+        val containerElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return emptyList()
+        return selectScope { containerElement.queryBy("*/*").asProperty().filter { isMatchedProperty(it, configToUse) }.all() }
     }
 
     private fun findLocalisationPropertyFromParameterProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptProperty? {
-        val configToUse = config.parentConfig?.parentConfig?.configs?.find { isLocalisationConfig(element, it) }
-        if (configToUse == null) return null
-        val context = selectScope { element.parentProperty()?.parentProperty()?.parentProperty() } ?: return null
-        val result = context.properties().find { isMatchedProperty(it, configToUse) }
-        return result
+        // `__` - caret position
+        // `<container> = { description = <loc> description_parameters = { __<param> = <value> } }`
+        // -> `<container> = { description = <loc> __description_parameters = { <param> = <value> } }`
+
+        val configToUse = config.parentConfig?.parentConfig?.configs?.find { isLocalisationConfig(element, it) } ?: return null
+        val containerElement = selectScope { element.queryParentBy("*/*/*").asProperty() } ?: return null
+        return selectScope { containerElement.queryBy("*").asProperty().filter { isMatchedProperty(it, configToUse) }.one() }
     }
 
-    private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
-        if (element is ParadoxScriptProperty) {
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
-            if (configs.any { it isSamePointer config }) return true
-        }
-        return false
+    private fun isMatchedProperty(element: ParadoxScriptProperty, config: CwtMemberConfig<*>): Boolean {
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        return configs.any { it isSamePointer config }
     }
 
     private fun isLocalisationConfig(element: PsiElement, config: CwtMemberConfig<*>): Boolean {

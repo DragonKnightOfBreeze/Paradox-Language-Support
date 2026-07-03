@@ -236,13 +236,13 @@ object ParadoxConfigExpressionService {
 
     private fun findValueElementByPath(definition: ParadoxDefinitionElement, path: String): ParadoxScriptValue? {
         if (path.isEmpty()) return null
-        val properties = selectScope { definition.ofPath(path, conditional = true, inline = true).asProperty() }
+        val properties = selectScope { definition.queryBy(path, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue }
     }
 
     private fun findValueByPaths(definition: ParadoxDefinitionElement, paths: Set<String>?): String? {
         if (paths.isNullOrEmpty()) return null
-        val properties = selectScope { definition.ofPaths(paths, conditional = true, inline = true).asProperty() }
+        val properties = selectScope { definition.queryBy(paths, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue?.stringValue() }
     }
 }

@@ -239,12 +239,13 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
 
         val propertyConfig = config.propertyConfig ?: return
         if (propertyConfig.key !in Constants.triggerKeys) return
-        val aliasConfig = config.containingDirectConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
+        val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
         if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
+
         if (resultTriggerConfigs.none { it.config.valueType != CwtExpressionType.Block }) {
             holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.simpleTrigger.desc", element.expression))
         }
@@ -265,6 +266,10 @@ class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressi
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+        // `__` - caret position
+        // `<container> = { <trigger_field> = __<trigger> parameters = { ... } }`
+        // -> `<container> = { <trigger_field> = <trigger> __parameters = { ... } }`
+
         if (element !is ParadoxScriptExpressionElement) return
 
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
@@ -278,7 +283,8 @@ class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressi
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
-        val hasParameters = selectScope { element.containingProperty()?.parentBlock()?.properties()?.ofKey("parameters")?.one() } != null
+
+        val hasParameters = selectScope { element.queryParentBy("*/*").asProperty().queryBy("parameters").asProperty().any() }
         if (hasParameters) {
             if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
                 holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.complexTrigger.desc", element.expression))
