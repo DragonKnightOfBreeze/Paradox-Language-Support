@@ -5,10 +5,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.model.constants.ChronicleStrings
 
 class CreateParameterAction : CreateRichTextAction() {
-    override val startMarker = "$"
-    override val endMarker = "$"
+    override val startMarker = ChronicleStrings.parameterStartMarker
+    override val endMarker = ChronicleStrings.parameterEndMarker
 
     override val wrapActionName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateParameter.text")
     override val wrapActionDescription get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateParameter.description")

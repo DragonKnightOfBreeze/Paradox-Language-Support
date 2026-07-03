@@ -5,6 +5,7 @@ import com.intellij.codeInsight.daemon.impl.analysis.ErrorQuickFixProvider
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.lang.fixes.InsertMissingTokenFix
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxParameter
 
@@ -17,7 +18,8 @@ class ParadoxScriptErrorQuickFixProvider : ErrorQuickFixProvider {
         when {
             errorElement.nextSibling == null && errorElement.parent is ParadoxParameter -> {
                 // PARAMETER_END
-                builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix(ChronicleStrings.parameterEndMarker, errorElement.startOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
         }
     }

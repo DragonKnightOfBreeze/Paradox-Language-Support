@@ -1,5 +1,6 @@
 package icu.windea.pls.model.constants
 
+@Suppress("unused")
 object ChronicleStrings {
     const val optionPrefix = "(option)"
     const val optionFlagPrefix = "(option flag)"
@@ -38,7 +39,24 @@ object ChronicleStrings {
 
     const val headerMarker = "<header>"
     const val rowMarker = "<row>"
-    // const val loadingMarker = "<loading...>"
+    const val loadingMarker = "<loading...>"
+
+    const val parameterMarker = '$'
+    const val colorMarker = '§'
+    const val iconMarker = '£'
+
+    const val parameterStartMarker = "$"
+    const val parameterEndMarker = "$"
+    const val commandStartMarker = "["
+    const val commandEndMarker = "]"
+    const val colorStartMarker = "§"
+    const val colorEndMarker = "§!"
+    const val iconStartMarker = "£"
+    const val iconEndMarker = "£"
+    const val textFormatStartMarker = "#"
+    const val textFormatEndMarker = "#!"
+    const val textIconStartMarker = "@"
+    const val textIconEndMarker = "!"
 
     const val commentFolder = "# ..."
     const val quotedFolder = "\"...\""
