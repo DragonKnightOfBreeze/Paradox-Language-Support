@@ -7,6 +7,7 @@ import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
+import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.model.type.ParadoxExpressionType
@@ -68,20 +69,20 @@ class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesFloatPercentageField(context.expression.value)
+        val r = ParadoxMatchProvider.matchesFloatPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchIntPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesIntPercentageField(context.expression.value)
+        val r = ParadoxMatchProvider.matchesIntPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDataField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.value
-        val r = TextMatcher.matchesDateField(context.expression.value, datePattern)
+        val r = ParadoxMatchProvider.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
     }
 }

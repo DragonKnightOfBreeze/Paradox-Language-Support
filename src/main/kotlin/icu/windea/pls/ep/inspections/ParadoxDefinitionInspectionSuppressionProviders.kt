@@ -19,12 +19,16 @@ class ParadoxBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInsp
 class StellarisBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
     override fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         // 1.1.2 传统的采纳和完成不需要有对应的图片
-        if ((definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") && definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {
-            return setOf("ParadoxScriptMissingImage")
+        if (definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") {
+            if (definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {
+                return setOf("ParadoxScriptMissingImage")
+            }
         }
         // 1.1.2 禁用名字以数字结尾的领袖特质的某些检查
-        if (definitionInfo.type == "trait" && definitionInfo.subtypes.contains("leader_trait") && definitionInfo.name.substringAfterLast('_', "").toIntOrNull() != null) {
-            return setOf("ParadoxScriptMissingLocalisation", "ParadoxScriptMissingImage")
+        if (definitionInfo.type == "trait" && definitionInfo.subtypes.contains("leader_trait")) {
+            if (definitionInfo.name.substringAfterLast('_', "").toIntOrNull() != null) {
+                return setOf("ParadoxScriptMissingLocalisation", "ParadoxScriptMissingImage")
+            }
         }
         return emptySet()
     }

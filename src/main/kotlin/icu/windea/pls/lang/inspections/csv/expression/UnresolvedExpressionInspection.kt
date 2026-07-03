@@ -13,6 +13,7 @@ import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
@@ -20,6 +21,7 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
@@ -70,9 +72,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
                 val expectedConfig = columnConfig.valueConfig
                 if (isSkipped(element, expectedConfig)) return
-                val description = getDescription(element, rowConfig, expectedConfig)
-                val highlightType = getHighlightType(element, rowConfig, expectedConfig)
-                val fixes = getFixes(element, rowConfig, expectedConfig)
+                val expectedConfigs = expectedConfig.to.singletonListOrEmpty()
+                val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, rowConfig, expectedConfig)
+                val highlightType = getHighlightType(element, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                val fixes = getFixes(element, expectedConfigs)
                 holder.registerProblem(location, description, highlightType, *fixes)
             }
 
@@ -101,7 +104,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         }
     }
 
-    private fun getDescription(element: ParadoxCsvColumn, rowConfig: CwtRowConfig, expectedConfig: CwtValueConfig?): String {
+    private fun getDefaultDescription(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, expectedConfig: CwtValueConfig?): String {
         val expect = when {
             expectedConfig == null -> ""
             showExpectInfo -> expectedConfig.configExpression.expressionString
@@ -115,18 +118,16 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return message
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun getHighlightType(element: ParadoxCsvColumn, rowConfig: CwtRowConfig, expectedConfig: CwtValueConfig?): ProblemHighlightType {
-        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+    private fun getDescription(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
+        return ParadoxInspectionService.getDescriptionForUnresolvedExpression(element, expectedConfigs)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun getFixes(element: ParadoxCsvColumn, rowConfig: CwtRowConfig, expectedConfig: CwtValueConfig?): Array<LocalQuickFix> {
-        val expectedConfigs = expectedConfig.to.singletonListOrEmpty()
-        val result = mutableListOf<LocalQuickFix>()
-        result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
+    private fun getHighlightType(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
+        return ParadoxInspectionService.getHighlightTypeForUnresolvedExpression(element, expectedConfigs)
+    }
+
+    private fun getFixes(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
+        return ParadoxInspectionService.getFixesForUnresolvedExpression(element, expectedConfigs)
     }
 
     override fun createOptionsPanel(): JComponent {

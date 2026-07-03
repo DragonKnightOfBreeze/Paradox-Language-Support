@@ -19,7 +19,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
@@ -39,7 +38,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
@@ -104,8 +102,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
                 val expectedConfigs = getExpectedConfigs(element)
                 if (isSkipped(propertyKey, expectedConfigs)) return true
-                val description = getDescription(propertyKey, expectedConfigs)
-                val highlightType = getHighlightType(propertyKey, expectedConfigs)
+                val description = getDescription(propertyKey, expectedConfigs) ?: getDefaultDescription(propertyKey, expectedConfigs)
+                val highlightType = getHighlightType(propertyKey, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                 val fixes = getFixes(propertyKey, expectedConfigs)
                 holder.registerProblem(element, description, highlightType, *fixes)
 
@@ -140,8 +138,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
                 val expectedConfigs = getExpectedConfigs(element, configContext)
                 if (isSkipped(element, expectedConfigs)) return true
-                val description = getDescription(element, expectedConfigs)
-                val highlightType = getHighlightType(element, expectedConfigs)
+                val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, expectedConfigs)
+                val highlightType = getHighlightType(element, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                 val fixes = getFixes(element, expectedConfigs)
                 holder.registerProblem(element, description, highlightType, *fixes)
 
@@ -210,7 +208,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         }
     }
 
-    private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
+    private fun getDefaultDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
             expectedConfigs.isEmpty() -> ""
             showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
@@ -232,22 +230,16 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return message
     }
 
-    private fun getHighlightType(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType {
-        run {
-            // localisation reference -> expression can be a string literal instead  -> use weaker highlight type
-            if (element !is ParadoxScriptStringExpressionElement) return@run
-            val r = expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.LocalisationReference }
-            if (r) return InspectionService.getWeakerHighlightType()
-        }
-        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+    private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
+        return ParadoxInspectionService.getDescriptionForUnresolvedExpression(element, expectedConfigs)
+    }
+
+    private fun getHighlightType(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
+        return ParadoxInspectionService.getHighlightTypeForUnresolvedExpression(element, expectedConfigs)
     }
 
     private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
-        val result = mutableListOf<LocalQuickFix>()
-        result += ParadoxInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        result += ParadoxInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
+        return ParadoxInspectionService.getFixesForUnresolvedExpression(element, expectedConfigs)
     }
 
     override fun createOptionsPanel(): JComponent {

@@ -8,6 +8,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigKeyManager
+import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
@@ -31,6 +32,18 @@ object ParadoxMatchProvider {
         return element.members(conditional = true, inline = true).any {
             if (it is ParadoxScriptProperty) it.name in keys else false
         }
+    }
+
+    fun matchesIntPercentageField(expression: String): Boolean {
+        return TextMatcher.matchesIntPercentageField(expression)
+    }
+
+    fun matchesFloatPercentageField(expression: String): Boolean {
+        return TextMatcher.matchesFloatPercentageField(expression)
+    }
+
+    fun matchesDateField(expression: String, pattern: String? = null): Boolean {
+        return TextMatcher.matchesDateField(expression, pattern)
     }
 
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
