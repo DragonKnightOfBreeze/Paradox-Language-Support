@@ -265,7 +265,7 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         var current = this
         for (i in subPaths.lastIndex downTo 0) {
             ProgressManager.checkCanceled()
-            if (i > 0) current = current.parent ?: return null
+            if (i != subPaths.lastIndex) current = current.parent ?: return null
             current = current.queryParentInternal() ?: return null
             val subPath = subPaths[i]
             current = when (subPath) {

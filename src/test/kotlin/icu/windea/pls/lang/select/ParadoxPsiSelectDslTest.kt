@@ -289,7 +289,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         val k3 = selectScope { k4.queryParentBy("k3", withSelf = false).asProperty() }
         Assert.assertEquals("k3", k3?.name)
 
-        val k2AnyWithSelf = selectScope { k4.queryParentBy("*/k3/4").asProperty() }
+        val k2AnyWithSelf = selectScope { k4.queryParentBy("*/k3/k4").asProperty() }
         Assert.assertEquals("k2", k2AnyWithSelf?.name)
 
         val v2 = selectScope { file.queryBy("k1/k2/-").asValue().one() }!!
