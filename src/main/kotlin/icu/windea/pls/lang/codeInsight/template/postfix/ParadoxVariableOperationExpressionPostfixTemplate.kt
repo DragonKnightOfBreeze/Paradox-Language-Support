@@ -20,8 +20,7 @@ import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider
@@ -40,7 +39,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         if (!ParadoxScriptTokenSets.VARIABLE_VALUE_TOKENS.contains(context.elementType)) return emptyList()
         ProgressManager.checkCanceled()
         val element = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
-        if (!element.isBlockValue()) return emptyList()
+        if (!element.isDirectValue()) return emptyList()
         val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return emptyList()
         val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return emptyList()

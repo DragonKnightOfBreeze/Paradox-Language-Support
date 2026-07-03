@@ -32,6 +32,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.forParadoxGameType
@@ -41,7 +42,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.isDataExpression
-import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -102,7 +102,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                     visitStringExpressionElement(element)
                 }
 
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

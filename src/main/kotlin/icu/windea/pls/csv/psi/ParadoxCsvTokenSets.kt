@@ -13,7 +13,6 @@ object ParadoxCsvTokenSets {
     @JvmField val COMMENT_TOKENS = TokenSet.create(COMMENT)
     @JvmField val LITERAL_TOKENS = TokenSet.create(COLUMN_TOKEN)
 
+    @JvmField val MERGED_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, COLUMN_TOKEN)
     @JvmField val EXPRESSION_TOKENS = TokenSet.create(COLUMN_TOKEN)
-
-    @JvmField val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE, COLUMN_TOKEN)
 }

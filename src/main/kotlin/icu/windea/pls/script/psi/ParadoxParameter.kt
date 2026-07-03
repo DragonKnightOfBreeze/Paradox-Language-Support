@@ -6,6 +6,12 @@ import com.intellij.psi.NavigatablePsiElement
 import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
 import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
 
+/**
+ * 参数。
+ *
+ * @see ParadoxScriptParameter
+ * @see ParadoxScriptInlineMathParameter
+ */
 interface ParadoxParameter : NavigatablePsiElement, ParadoxLanguageInjectionHost {
     override fun getName(): String?
 

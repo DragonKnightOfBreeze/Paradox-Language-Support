@@ -100,7 +100,7 @@ object CwtConfigCompletionManager {
                 }
             }
             is CwtValueConfig -> {
-                if (context.isBlockValue) {
+                if (context.isDirectValue) {
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
@@ -150,7 +150,7 @@ object CwtConfigCompletionManager {
                 }
             }
             is CwtOptionValueConfig -> {
-                if (context.isOptionBlockValue) {
+                if (context.isOptionDirectValue) {
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)

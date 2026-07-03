@@ -54,8 +54,8 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     private fun completeDefineName(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val element = context.contextElement
         val memberElement = element as? ParadoxScriptValue ?: element.parent as? ParadoxScriptProperty ?: return
-        val blockElement = element.parent
-        when (blockElement) {
+        val parentElement = element.parent
+        when (parentElement) {
             // possible define namespace input
             is ParadoxScriptRootBlock -> {
                 // property value must be null or a block
@@ -70,7 +70,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
             // possible define variable input
             is ParadoxScriptBlock -> {
                 // parent property must be a top level property
-                val parentPropertyElement = blockElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+                val parentPropertyElement = parentElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return
                 if (parentPropertyElement.parent !is ParadoxScriptRootBlock) return
 
                 val namespace = parentPropertyElement.name

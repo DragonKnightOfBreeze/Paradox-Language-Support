@@ -64,8 +64,8 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: String // TODO [config-system] 2.0.4+ 需要详细说明这个属性的用处与行为
 
-    /** 得到处理后的“上下文规则容器”。 */
-    fun getContainerConfig(): CwtMemberConfig<*>
+    /** 得到处理后的上下文容器规则。 */
+    fun getContextContainerConfig(): CwtMemberConfig<*>
 
     /** 得到由其声明的上下文规则列表。 */
     fun getContextConfigs(): List<CwtMemberConfig<*>>
@@ -97,30 +97,29 @@ private class CwtExtendedInlineScriptConfigImpl(
     override val name: String,
     override val contextConfigsType: String,
 ) : UserDataHolderBase(), CwtExtendedInlineScriptConfig {
-    private val _containerConfig by lazy { computeContainerConfig() }
+    private val _contextContainerConfig by lazy { computeContextContainerConfig() }
     private val _contextConfigs by lazy { computeContextConfigs() }
 
-    override fun getContainerConfig(): CwtMemberConfig<*> {
-        return _containerConfig
+    override fun getContextContainerConfig(): CwtMemberConfig<*> {
+        return _contextContainerConfig
     }
 
     override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         return _contextConfigs
     }
 
-    private fun computeContainerConfig(): CwtMemberConfig<*> {
+    private fun computeContextContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
         return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
-        val containerConfig = _containerConfig
-        if (containerConfig !is CwtPropertyConfig) return emptyList()
+        val contextContainerConfig = _contextContainerConfig
+        if (contextContainerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {
-            "multiple" -> containerConfig.configs.orEmpty()
-            // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
-            else -> containerConfig.valueConfig.to.singletonListOrEmpty()
+            "multiple" -> contextContainerConfig.configs.orEmpty()
+            else -> contextContainerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulationService.inlineWithConfigs(config, r, config.configGroup)

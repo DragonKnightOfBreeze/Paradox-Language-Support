@@ -9,7 +9,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 
 /**
  * 提供语言环境的名字的代码补全。
@@ -19,7 +19,7 @@ class ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() 
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position
-        if (!ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(element)) return
+        if (!ParadoxLocalisationPsiService.isLocalisationLocaleLike(element)) return
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)

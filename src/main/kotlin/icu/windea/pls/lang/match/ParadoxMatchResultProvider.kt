@@ -89,18 +89,18 @@ object ParadoxMatchResultProvider {
     }
 
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {
-        val blockElement = when (element) {
+        val block = when (element) {
             is ParadoxScriptProperty -> element.propertyValue()
             is ParadoxScriptBlock -> element
             else -> null
         } ?: return ParadoxMatchResult.NotMatch
         // 如果子句规则内容为空，则仅当子句内容为空时才认为匹配
         if (config.configs.isNullOrEmpty()) {
-            val r = blockElement.members().none()
+            val r = block.members().none()
             return ParadoxMatchResult.exactOrFallback(r)
         }
         // 使用检测子句内容的匹配
-        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
+        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(block, config) }
     }
 
     fun getCached(element: PsiElement, project: Project, key: MatchResultNestedCacheKey, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {

@@ -31,7 +31,7 @@ object ParadoxEventService {
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

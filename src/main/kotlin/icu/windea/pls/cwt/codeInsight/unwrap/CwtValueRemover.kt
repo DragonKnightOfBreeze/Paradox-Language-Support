@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.cwt.psi.isDirectValue
 
 class CwtValueRemover : CwtUnwrapper() {
     override fun getDescription(e: PsiElement): String {
@@ -16,7 +16,7 @@ class CwtValueRemover : CwtUnwrapper() {
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is CwtValue && e.isBlockValue()
+        return e is CwtValue && e.isDirectValue()
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

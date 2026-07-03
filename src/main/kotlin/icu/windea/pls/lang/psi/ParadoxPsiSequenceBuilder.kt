@@ -27,28 +27,29 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 
 object ParadoxPsiSequenceBuilder {
     // region Paradox Script
 
-    fun members(element: ParadoxScriptMemberContainer): WalkingSequence<ParadoxScriptMember> {
+    fun members(element: ParadoxScriptMemberContext): WalkingSequence<ParadoxScriptMember> {
         val context = WalkingContext()
         val delegate = with(context) { builderMembers(element) }
         return WalkingSequence(delegate, context)
     }
 
     context(context: WalkingContext)
-    private fun builderMembers(element: ParadoxScriptMemberContainer): Sequence<ParadoxScriptMember> {
-        val rootElement = element.membersRoot ?: return emptySequence()
+    private fun builderMembers(element: ParadoxScriptMemberContext): Sequence<ParadoxScriptMember> {
+        val containerElement = element.memberContainer ?: return emptySequence()
         return sequence {
-            yieldMembers(rootElement)
+            yieldMembers(containerElement)
         }
     }
 
     context(context: WalkingContext)
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContainer) {
-        element.children(context.forward).forEach { child ->
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContext) {
+        val containerElement = element.memberContainer ?: return
+        containerElement.children(context.forward).forEach { child ->
             when (child) {
                 is ParadoxScriptMember -> yieldMember(child)
                 is ParadoxScriptConditionalBlock -> if (context.conditional) yieldConditionalMembers(child)
@@ -73,15 +74,14 @@ object ParadoxPsiSequenceBuilder {
     private suspend fun SequenceScope<ParadoxScriptMember>.yieldInlineMember(element: ParadoxScriptMember) {
         ProgressManager.checkCanceled()
         // NOTE context recursion guard is required here (again)
-        val inlined = ParadoxInlineService.getInlinedElement(element) ?: return
+        val inlinedElement = ParadoxInlineService.getInlinedElement(element) ?: return
         withContextRecursionGuard(context, "ParadoxPsiSequenceBuilder.yieldInlineMember") {
-            withRecursionCheck(inlined) {
-                if (inlined is ParadoxScriptFile) {
-                    val rootElement = inlined.membersRoot ?: return
-                    yieldMembers(rootElement)
+            withRecursionCheck(inlinedElement) {
+                if (inlinedElement is ParadoxScriptFile) {
+                    yieldMembers(inlinedElement)
                     return
                 }
-                yieldMember(inlined)
+                yieldMember(inlinedElement)
             }
         }
     }

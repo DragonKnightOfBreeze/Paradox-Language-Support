@@ -63,7 +63,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         if (element.elementType == BLOCK) {
             descriptors.add(FoldingDescriptor(element, element.textRange))
         }
-        return CwtPsiService.isMemberContextElement(element)
+        return CwtPsiService.isStrictMemberContext(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

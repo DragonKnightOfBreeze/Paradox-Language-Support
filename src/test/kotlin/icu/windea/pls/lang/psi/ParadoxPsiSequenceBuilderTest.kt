@@ -134,7 +134,7 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun members_blockElement() {
+    fun members_fromFileAndBlock() {
         myFixture.configureByFile("features/walking/walking_test_2.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val block = file.block

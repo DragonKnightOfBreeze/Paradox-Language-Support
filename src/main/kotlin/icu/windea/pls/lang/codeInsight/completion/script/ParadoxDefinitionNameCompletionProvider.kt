@@ -16,6 +16,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.psi.isDefinitionName
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -29,9 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.lang.psi.isDefinitionName
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 
 /**
  * 提供已有的定义的名字的代码补全。
@@ -55,7 +54,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
             // key_
             // key_ =
             // key_ = { ... }
-            element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockValue()) -> {
+            element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isDirectValue()) -> {
                 val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
                 // 忽略 rootKeys 深度超出限制，或者带参数的情况

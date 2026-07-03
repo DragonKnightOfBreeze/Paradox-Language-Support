@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
 /**
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 class ParadoxScriptMover : ContainerBasedMover() {
     override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language is ParadoxScriptLanguage
 
-    override fun isContainerElement(element: PsiElement) = element is ParadoxScriptMemberContainer
+    override fun isContainerElement(element: PsiElement) = element is ParadoxScriptMemberContext
 
     override fun isMemberElement(element: PsiElement) = element is ParadoxScriptMember
 

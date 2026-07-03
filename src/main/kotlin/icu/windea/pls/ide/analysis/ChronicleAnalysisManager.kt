@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 
 object ChronicleAnalysisManager {
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
-        // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
+        // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
         // exclude some specific root file paths to avoid parsing and indexing unexpected files
         return rootFilePath.isEmpty() || rootFilePath == "/"
     }

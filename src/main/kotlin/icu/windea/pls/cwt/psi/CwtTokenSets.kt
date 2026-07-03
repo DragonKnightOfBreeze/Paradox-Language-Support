@@ -13,14 +13,11 @@ object CwtTokenSets {
     @JvmField val COMMENT_TOKENS = TokenSet.create(COMMENT, DOC_COMMENT_TOKEN)
     @JvmField val LITERAL_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
 
+    @JvmField val MERGED_TOKENS = TokenSet.create(TokenType.WHITE_SPACE/*not possible:*//*, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN*/, STRING_TOKEN)
     @JvmField val STRING_TOKENS = TokenSet.create(STRING_TOKEN)
     @JvmField val KEY_OR_STRING_TOKENS = TokenSet.create(OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN, STRING_TOKEN)
     @JvmField val STRING_EXPRESSION_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
+    @JvmField val MEMBER_CONTEXT_TOKENS = TokenSet.create(PROPERTY, BLOCK, ROOT_BLOCK)
 
-    @Suppress("unused")
     @JvmField val PROPERTY_SEPARATOR_TOKENS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, DOUBLE_EQUAL_SIGN)
-
-    @JvmField val MEMBER_CONTEXT = TokenSet.create(PROPERTY, ROOT_BLOCK, BLOCK)
-
-    @JvmField val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE/*not possible:*//*, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN*/, STRING_TOKEN)
 }

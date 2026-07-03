@@ -10,9 +10,9 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets.EXPRESSION_TOKENS
-import icu.windea.pls.localisation.psi.isComplexExpression
 
 /**
  * 提供本地化表达式相关的代码补全。基于规则文件。

@@ -423,12 +423,12 @@ object ParadoxScopeService {
             val configGroup = node.configGroup
             val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
             val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
-            val containerConfig = config.getContainerConfig(parameterElement)
+            val contextContainerConfig = config.getContextContainerConfig(parameterElement)
 
             // ex_param = scope[country]
             // result: country (don't validate & inline allowed)
             run r2@{
-                val inferredScope = containerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
+                val inferredScope = contextContainerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
                     ?.takeIf { it.type == CwtDataTypes.Scope }
                     ?.value?.orNull() ?: return@r2
                 return inputScopeContext.resolveNext(inferredScope)
@@ -438,7 +438,7 @@ object ParadoxScopeService {
             // ex_param = ...
             // result: country (don't validate & inline allowed)
             run r2@{
-                val inferredScopeContext = ParadoxScopeManager.getScopeContext(containerConfig, inputScopeContext) ?: return@r2
+                val inferredScopeContext = ParadoxScopeManager.getScopeContext(contextContainerConfig, inputScopeContext) ?: return@r2
                 return inferredScopeContext
             }
         }

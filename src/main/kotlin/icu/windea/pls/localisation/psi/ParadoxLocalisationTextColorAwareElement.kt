@@ -5,10 +5,13 @@ import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.ParadoxTextColorInfo
 
 /**
+ * 名字中可以带有文本颜色信息的 PSI 元素。
+ *
  * @see ParadoxLocalisationColorfulText
  * @see ParadoxLocalisationParameterArgument
  * @see ParadoxLocalisationCommandArgument
  */
+@Suppress("unused")
 interface ParadoxLocalisationTextColorAwareElement : PsiElement {
     val colorId: String? get() = ParadoxTextColorManager.getId(this)
     val colorInfo: ParadoxTextColorInfo? get() = ParadoxTextColorManager.getInfo(this)

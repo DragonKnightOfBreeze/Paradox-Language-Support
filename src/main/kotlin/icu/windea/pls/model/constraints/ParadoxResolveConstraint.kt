@@ -7,6 +7,11 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.isCommandExpression
+import icu.windea.pls.lang.psi.isComplexExpression
+import icu.windea.pls.lang.psi.isDatabaseObjectExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationConceptPsiReference
@@ -15,7 +20,6 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterP
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
-import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionTargetPsiReference
 import icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReference
@@ -29,15 +33,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.localisation.psi.isCommandExpression
-import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
-import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 enum class ParadoxResolveConstraint {
     ScriptedVariable {

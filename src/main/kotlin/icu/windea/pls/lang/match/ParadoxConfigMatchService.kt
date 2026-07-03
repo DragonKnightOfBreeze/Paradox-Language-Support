@@ -42,13 +42,13 @@ import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -57,8 +57,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
 
@@ -294,14 +293,12 @@ object ParadoxConfigMatchService {
         val childValueConfigs = propertyConfig.values.orEmpty()
         if (childValueConfigs.isNotEmpty()) {
             // 匹配值列表
-            val blockElement = definition.block
-            if (!matchesValuesForSubtype(context, blockElement, childValueConfigs)) return false // 继续匹配
+            if (!matchesValuesForSubtype(context, definition.block, childValueConfigs)) return false // 继续匹配
         }
         val childPropertyConfigs = propertyConfig.properties.orEmpty()
         if (childPropertyConfigs.isNotEmpty()) {
             // 匹配属性列表
-            val blockElement = definition.block
-            if (!matchesPropertiesForSubtype(context, definition, blockElement, childPropertyConfigs)) return false // 继续匹配
+            if (!matchesPropertiesForSubtype(context, definition, definition.block, childPropertyConfigs)) return false // 继续匹配
         }
         return true
     }
@@ -334,17 +331,17 @@ object ParadoxConfigMatchService {
                 return matchesAliasForSubtype(context, definition, property, propertyConfig)
             }
             propertyConfig.configs.orEmpty().isNotEmpty() -> {
-                val blockElement = property.block
+                val block = property.block
                 // 匹配值列表
-                if (!matchesValuesForSubtype(context, blockElement, propertyConfig.values.orEmpty())) return false
+                if (!matchesValuesForSubtype(context, block, propertyConfig.values.orEmpty())) return false
                 // 匹配属性列表
-                if (!matchesPropertiesForSubtype(context, definition, blockElement, propertyConfig.properties.orEmpty())) return false
+                if (!matchesPropertiesForSubtype(context, definition, block, propertyConfig.properties.orEmpty())) return false
             }
         }
         return true
     }
 
-    private fun matchesPropertiesForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, block: ParadoxScriptBlockElement?, propertyConfigs: List<CwtPropertyConfig>): Boolean {
+    private fun matchesPropertiesForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, block: ParadoxScriptMemberContainer?, propertyConfigs: List<CwtPropertyConfig>): Boolean {
         if (propertyConfigs.isEmpty()) return true
         if (block == null) return false
 
@@ -371,7 +368,7 @@ object ParadoxConfigMatchService {
         return occurrences.values.all { it.isValid(lenient = true) }
     }
 
-    private fun matchesValuesForSubtype(context: CwtSubtypeConfigMatchContext, block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>): Boolean {
+    private fun matchesValuesForSubtype(context: CwtSubtypeConfigMatchContext, block: ParadoxScriptMemberContainer?, valueConfigs: List<CwtValueConfig>): Boolean {
         if (valueConfigs.isEmpty()) return true
         if (block == null) return false
 
@@ -458,7 +455,7 @@ object ParadoxConfigMatchService {
             }
         } else if (config is CwtValueConfig) {
             if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString || !element.isBlockValue()) return false
+                if (element !is ParadoxScriptString || !element.isDirectValue()) return false
             } else {
                 return false
             }
@@ -472,8 +469,8 @@ object ParadoxConfigMatchService {
             if (element !is ParadoxScriptProperty) return false
             if (!matchesKeyForComplexEnum(element, config)) return false
         } else if (config is CwtValueConfig) {
-            // blockConfig vs blockElement
-            if (element !is ParadoxScriptBlockElement) return false
+            // blockConfig vs block
+            if (element !is ParadoxScriptMemberContainer) return false
         } else {
             return false
         }
@@ -482,18 +479,18 @@ object ParadoxConfigMatchService {
 
     private fun beforeMatchParentForComplexEnum(element: PsiElement, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
         val parentConfig = config.parentConfig ?: return false
-        val parentBlockElement = element.parentOfType<ParadoxScriptBlockElement>() ?: return false
+        val parentMemberContainer = element.parentOfType<ParadoxScriptMemberContainer>() ?: return false
         val parentElement = when {
-            parentBlockElement is ParadoxScriptRootBlock -> null
-            parentBlockElement is ParadoxScriptBlock && !parentBlockElement.isPropertyValue() -> parentBlockElement
-            else -> parentBlockElement.parentOfType<ParadoxScriptProperty>()
+            parentMemberContainer is ParadoxScriptRootBlock -> null
+            parentMemberContainer is ParadoxScriptBlock && !parentMemberContainer.isPropertyValue() -> parentMemberContainer
+            else -> parentMemberContainer.parentOfType<ParadoxScriptProperty>()
         }
         if (parentConfig == complexEnumConfig.nameConfig) {
             if (complexEnumConfig.startFromRoot) {
                 return parentElement == null
             } else {
                 return parentElement != null && parentElement.parents(false)
-                    .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue()) } == null
+                    .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isDirectValue()) } == null
             }
         }
         if (parentElement == null) return false
@@ -503,7 +500,7 @@ object ParadoxConfigMatchService {
                 c is CwtPropertyConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.properties(inline = true).none { propElement ->
+                    val notMatched = parentMemberContainer.properties(inline = true).none { propElement ->
                         matchesPropertyForComplexEnum(propElement, complexEnumConfig, c)
                     }
                     if (notMatched) return false
@@ -511,7 +508,7 @@ object ParadoxConfigMatchService {
                 c is CwtValueConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.values(inline = true).none { valueElement ->
+                    val notMatched = parentMemberContainer.values(inline = true).none { valueElement ->
                         matchesValueForComplexEnum(valueElement, complexEnumConfig, c)
                     }
                     if (notMatched) return false
@@ -527,54 +524,41 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesKeyForComplexEnum(propertyElement: ParadoxScriptProperty, config: CwtPropertyConfig): Boolean {
-        val key = config.key
-        when (key) {
-            "enum_name" -> return true
-            "scalar" -> return true
+        return when (config.key) {
+            "enum_name", "scalar" -> true
+            else -> propertyElement.name.equals(config.key, true)
         }
-        return key.equals(propertyElement.name, true)
     }
 
     private fun matchesValueForComplexEnum(valueElement: ParadoxScriptValue, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
-        if (config.valueType == CwtExpressionType.Block) {
-            val blockElement = valueElement.castOrNull<ParadoxScriptBlockElement>() ?: return false
-            if (!matchesBlockForComplexEnum(blockElement, complexEnumConfig, config)) return false
-            return true
-        } else if (config.stringValue != null) {
-            when (config.stringValue) {
-                "enum_name" -> return true
-                "scalar" -> return true
-                "float" -> return valueElement is ParadoxScriptFloat
-                "int" -> return valueElement is ParadoxScriptInt
-                "bool" -> return valueElement is ParadoxScriptBoolean
-            }
-            val stringElement = valueElement.castOrNull<ParadoxScriptString>() ?: return false
-            return stringElement.value.equals(config.stringValue, true)
-        } else if (config.floatValue != null) {
-            val floatElement = valueElement.castOrNull<ParadoxScriptFloat>() ?: return false
-            return floatElement.floatValue == config.floatValue
-        } else if (config.intValue != null) {
-            val intElement = valueElement.castOrNull<ParadoxScriptInt>() ?: return false
-            return intElement.intValue == config.intValue
-        } else if (config.booleanValue != null) {
-            val booleanElement = valueElement.castOrNull<ParadoxScriptBoolean>() ?: return false
-            return booleanElement.booleanValue == config.booleanValue
-        } else {
-            return false
+        return when (config.valueType) {
+            CwtExpressionType.Block -> valueElement is ParadoxScriptBlock && matchesBlockForComplexEnum(valueElement, complexEnumConfig, config)
+            CwtExpressionType.String ->
+                when (config.stringValue) {
+                    "enum_name", "scalar" -> true
+                    "float" -> valueElement is ParadoxScriptFloat
+                    "int" -> valueElement is ParadoxScriptInt
+                    "bool" -> valueElement is ParadoxScriptBoolean
+                    else -> valueElement is ParadoxScriptString && valueElement.value.equals(config.stringValue, true)
+                }
+            CwtExpressionType.Float -> valueElement is ParadoxScriptFloat && valueElement.floatValue == config.floatValue
+            CwtExpressionType.Int -> valueElement is ParadoxScriptInt && valueElement.intValue == config.intValue
+            CwtExpressionType.Boolean -> valueElement is ParadoxScriptBoolean && valueElement.booleanValue == config.booleanValue
+            else -> false
         }
     }
 
-    private fun matchesBlockForComplexEnum(blockElement: ParadoxScriptBlockElement, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
+    private fun matchesBlockForComplexEnum(memberContainerElement: ParadoxScriptMemberContainer, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
         config.properties?.forEach { propConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.properties(inline = true).none { propElement ->
+            val notMatched = memberContainerElement.properties(inline = true).none { propElement ->
                 matchesPropertyForComplexEnum(propElement, complexEnumConfig, propConfig)
             }
             if (notMatched) return false
         }
         config.values?.forEach { valueConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.values(inline = true).none { valueElement ->
+            val notMatched = memberContainerElement.values(inline = true).none { valueElement ->
                 matchesValueForComplexEnum(valueElement, complexEnumConfig, valueConfig)
             }
             if (notMatched) return false

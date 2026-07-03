@@ -9,11 +9,18 @@ import icu.windea.pls.core.psi.PsiService
 @Suppress("unused")
 object ParadoxScriptPsiService {
     fun canAttachComment(element: PsiElement): Boolean {
-        return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isBlockValue())
+        return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isDirectValue())
     }
 
-    fun isMemberContextElement(element: PsiElement): Boolean {
-        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
+    fun isLenientMemberContext(element: PsiElement): Boolean {
+        return element is ParadoxScriptMemberContext
+    }
+    fun isStrictMemberContext(element: PsiElement): Boolean {
+        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT_TOKENS
+    }
+
+    fun isPropertySeparator(element: PsiElement): Boolean {
+        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS
     }
 
     fun isBeforeValueLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {

@@ -51,7 +51,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is CwtStringExpressionElement) visitStringExpressionElement(element)
-                if (!CwtPsiService.isMemberContextElement(element)) return // optimize
+                if (!CwtPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

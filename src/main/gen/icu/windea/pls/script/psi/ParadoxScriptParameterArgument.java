@@ -8,7 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptParameterArgument extends ParadoxScriptArgument {
+public interface ParadoxScriptParameterArgument extends ParadoxArgument {
 
   @Nullable PsiElement getIdElement();
 

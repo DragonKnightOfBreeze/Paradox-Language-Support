@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.containingConfig
+import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
@@ -145,7 +145,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
         // xxx_event = { id = <id> scopes = { ... } }
         val effectConfig = config.takeIf { it is CwtValueConfig }
-            ?.containingConfig?.takeIf { it is CwtPropertyConfig && it.key == "id" }
+            ?.containingDirectConfig?.takeIf { it is CwtPropertyConfig && it.key == "id" }
             ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
         if (effectConfig == null) return null
         if (element !is ParadoxScriptString) return -1
@@ -206,7 +206,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
         // fire_on_action = { on_action = <id> scopes = { ... } }
         val effectConfig = config.takeIf { it is CwtValueConfig }
-            ?.containingConfig?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
+            ?.containingDirectConfig?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
             ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
         if (effectConfig == null) return null
         if (element !is ParadoxScriptString) return -1

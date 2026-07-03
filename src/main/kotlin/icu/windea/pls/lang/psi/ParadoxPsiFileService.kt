@@ -25,7 +25,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
-import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

@@ -14,18 +14,18 @@ import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.unquote
-import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtMemberContainer
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
-import icu.windea.pls.cwt.psi.isOptionBlockValue
+import icu.windea.pls.cwt.psi.isDirectValue
+import icu.windea.pls.cwt.psi.isOptionDirectValue
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
@@ -41,11 +41,11 @@ data class CwtConfigCompletionContext(
     val contextConfigs: List<CwtMemberConfig<*>> = emptyList(),
     val isOptionKey: Boolean = false,
     val isOptionValue: Boolean = false,
-    val isOptionBlockValue: Boolean = false,
+    val isOptionDirectValue: Boolean = false,
     val inOption: Boolean = false,
     val isPropertyKey: Boolean = false,
     val isPropertyValue: Boolean = false,
-    val isBlockValue: Boolean = false,
+    val isDirectValue: Boolean = false,
     val isKey: Boolean = false,
     val isKeyOnly: Boolean = false,
     val isValueOnly: Boolean = false,
@@ -74,13 +74,13 @@ private object CwtConfigCompletionContextBuilder {
         val schema = configGroup.schemas.firstOrNull() ?: return null
         val contextConfigs = CwtConfigSchemaManager.getContextConfigs(expressionElement, containerElement, globalContext.file, schema)
 
-        val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionBlockValue())
-        val isOptionBlockValue = contextElement is CwtString && contextElement.isOptionBlockValue()
+        val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionDirectValue())
+        val isOptionDirectValue = contextElement is CwtString && contextElement.isOptionDirectValue()
         val isOptionValue = contextElement is CwtString && contextElement.isOptionValue()
-        val inOption = isOptionKey || isOptionBlockValue || isOptionValue
+        val inOption = isOptionKey || isOptionDirectValue || isOptionValue
 
-        val isPropertyKey = expressionElement is CwtPropertyKey || expressionElement is CwtString && expressionElement.isBlockValue()
-        val isBlockValue = expressionElement is CwtString && expressionElement.isBlockValue()
+        val isPropertyKey = expressionElement is CwtPropertyKey || expressionElement is CwtString && expressionElement.isDirectValue()
+        val isDirectValue = expressionElement is CwtString && expressionElement.isDirectValue()
         val isPropertyValue = expressionElement is CwtString && expressionElement.isPropertyValue()
 
         val isKey = if (inOption) isOptionKey else isPropertyKey
@@ -99,11 +99,11 @@ private object CwtConfigCompletionContextBuilder {
             contextConfigs = contextConfigs,
             isOptionKey = isOptionKey,
             isOptionValue = isOptionValue,
-            isOptionBlockValue = isOptionBlockValue,
+            isOptionDirectValue = isOptionDirectValue,
             inOption = inOption,
             isPropertyKey = isPropertyKey,
             isPropertyValue = isPropertyValue,
-            isBlockValue = isBlockValue,
+            isDirectValue = isDirectValue,
             isKey = isKey,
             isKeyOnly = isKeyOnly,
             isValueOnly = isValueOnly,
@@ -115,7 +115,7 @@ private object CwtConfigCompletionContextBuilder {
     }
 
     private fun getExpressionElement(element: PsiElement): CwtExpressionElement? {
-        if (element is CwtOptionKey || (element is CwtString && (element.isOptionValue() || element.isOptionBlockValue()))) {
+        if (element is CwtOptionKey || (element is CwtString && (element.isOptionValue() || element.isOptionDirectValue()))) {
             val parentElementType = element.parent.elementType ?: return null
             if (parentElementType != CwtElementTypes.OPTION_COMMENT && parentElementType != CwtElementTypes.OPTION) return null
             val memberElement = element.parentOfType<CwtOptionComment>()?.siblings(withSelf = false)?.findIsInstance<CwtMember>() ?: return null
@@ -134,7 +134,7 @@ private object CwtConfigCompletionContextBuilder {
             expressionElement is CwtString -> expressionElement.parent
             else -> null
         }
-        if (result !is CwtProperty && result !is CwtBlockElement) return null
+        if (result !is CwtProperty && result !is CwtMemberContainer) return null
         return result
     }
 

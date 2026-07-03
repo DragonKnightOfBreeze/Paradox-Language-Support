@@ -8,13 +8,12 @@ import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
 import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 
 object ParadoxTagManager {
     fun getTagType(element: ParadoxScriptValue): ParadoxTagType? {
         if (element !is ParadoxScriptString) return null
-        if (!element.isBlockValue()) return null
+        if (!element.isDirectValue()) return null
         val references = element.references
         for (reference in references) {
             if (reference is ParadoxScriptTagAwarePsiReference) return reference.tagConfig?.tagType

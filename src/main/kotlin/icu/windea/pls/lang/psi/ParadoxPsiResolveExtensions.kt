@@ -12,6 +12,9 @@ import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -73,6 +76,18 @@ fun ParadoxScriptValue.isDefinitionName(): Boolean {
     // def = { name_prop = def_name }
     if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
     return false
+}
+
+fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
+    return isCommandExpression() || isDatabaseObjectExpression()
+}
+
+fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
+    return this is ParadoxLocalisationCommandText // 简单判断
+}
+
+fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Boolean = false): Boolean {
+    return this is ParadoxLocalisationConceptName && (!strict || this.textContains(':')) // 简单判断
 }
 
 // endregion

@@ -51,13 +51,13 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: CwtRootBlock): CwtRootBlock {
+    fun getMemberContainer(element: CwtRootBlock): CwtRootBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: CwtRootBlock): List<CwtMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     // endregion
@@ -144,13 +144,13 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: CwtProperty): CwtBlock? {
+    fun getMemberContainer(element: CwtProperty): CwtBlock? {
         return element.propertyValue?.castOrNull<CwtBlock>()
     }
 
     @JvmStatic
     fun getMembers(element: CwtProperty): List<CwtMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
+        return getMemberContainer(element)?.findChildren<_>()
     }
 
     // endregion
@@ -241,13 +241,13 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: CwtBlock): CwtBlock {
+    fun getMemberContainer(element: CwtBlock): CwtBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: CwtBlock): List<CwtMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic

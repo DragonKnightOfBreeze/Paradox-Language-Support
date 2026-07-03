@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class NonTriggeredEventInspection : EventInspectionBase() {
-    // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
+    // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null

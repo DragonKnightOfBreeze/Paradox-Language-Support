@@ -4,4 +4,4 @@ import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.MergingLexerAdapter
 import icu.windea.pls.cwt.psi.CwtTokenSets
 
-class CwtLexer : MergingLexerAdapter(FlexAdapter(_CwtLexer(null)), CwtTokenSets.TOKENS_TO_MERGE)
+class CwtLexer : MergingLexerAdapter(FlexAdapter(_CwtLexer(null)), CwtTokenSets.MERGED_TOKENS)

@@ -37,13 +37,13 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptRootBlock
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
+    fun getMemberContainer(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptRootBlock): List<ParadoxScriptMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     // endregion
@@ -173,13 +173,13 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptProperty): ParadoxScriptBlock? {
+    fun getMemberContainer(element: ParadoxScriptProperty): ParadoxScriptBlock? {
         return element.propertyValue.castOrNull()
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
+        return getMemberContainer(element)?.findChildren<_>()
     }
 
     // endregion
@@ -295,13 +295,13 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptBlock): ParadoxScriptBlock {
+    fun getMemberContainer(element: ParadoxScriptBlock): ParadoxScriptBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptBlock): List<ParadoxScriptMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic
@@ -349,13 +349,13 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
+    fun getMemberContainer(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptConditionalBlock): List<ParadoxScriptMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic

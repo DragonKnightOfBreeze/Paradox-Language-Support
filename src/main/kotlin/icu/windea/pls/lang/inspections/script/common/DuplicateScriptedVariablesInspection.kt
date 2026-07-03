@@ -39,7 +39,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!inInlineMath && !ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

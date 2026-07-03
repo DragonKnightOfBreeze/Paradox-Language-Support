@@ -58,7 +58,7 @@ class ParadoxLocalisationFloatingToolbar(
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
         // 要求开始位置和结束位置的左边或右边是STRING_TOKEN/LEFT_QUOTE/RIGHT_QUOTE，向上能查找到同一个ParadoxLocalisationPropertyValue
         if (elementAtStart == null || elementAtEnd == null) return false
-        val stringTokenOrQuote = ParadoxLocalisationTokenSets.STRING_TOKEN_OR_QUOTE
+        val stringTokenOrQuote = ParadoxLocalisationTokenSets.STRING_OR_QUOTE_TOKENS
         if (elementAtStart.elementType !in stringTokenOrQuote && elementAtStart.prevLeaf(false).elementType !in stringTokenOrQuote) return false
         if (elementAtEnd.elementType !in stringTokenOrQuote && elementAtEnd.nextLeaf(false).elementType !in stringTokenOrQuote) return false
         val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false

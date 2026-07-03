@@ -11,7 +11,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.containingConfig
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.core.castOrNull
@@ -23,7 +22,6 @@ import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
-import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -241,7 +239,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
 
         val propertyConfig = config.propertyConfig ?: return
         if (propertyConfig.key !in Constants.triggerKeys) return
-        val aliasConfig = config.containingConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
+        val aliasConfig = config.containingDirectConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
         if (aliasConfig.subName !in Constants.contextNames) return
 
         val triggerName = element.stringValue() ?: return

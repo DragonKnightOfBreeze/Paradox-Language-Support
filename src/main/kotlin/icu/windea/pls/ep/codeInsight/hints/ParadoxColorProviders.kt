@@ -13,6 +13,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.psi.isValidExpression
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxColorManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -23,10 +24,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.lang.psi.isValidExpression
-import icu.windea.pls.script.psi.isBlockValue
 import java.awt.Color
 
 /**
@@ -166,7 +165,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     private fun getColorType(element: ParadoxScriptBlock): String? {
         val elementToGetOption: ParadoxScriptMember? = when {
             element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
-            element.isBlockValue() -> element
+            element.isDirectValue() -> element
             else -> null
         }
         if (elementToGetOption == null) return null

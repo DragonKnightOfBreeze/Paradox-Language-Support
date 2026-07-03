@@ -110,7 +110,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                     if (depth > effectiveMaxDepth) return // optimize
                 }
 
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

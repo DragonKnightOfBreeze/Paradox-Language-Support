@@ -2,15 +2,14 @@ package icu.windea.pls.lang.select
 
 import com.intellij.psi.PsiElement
 import com.intellij.util.containers.TreeTraversal
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.ParadoxScriptFile
 
 @ParadoxPsiSelectDsl
 interface ParadoxPsiSelectScope {
@@ -20,13 +19,9 @@ interface ParadoxPsiSelectScope {
 
     fun <T : PsiElement> Sequence<T>.all(): List<T>
 
-    // endregion
+    fun ParadoxScriptMember.walkUp(): Sequence<ParadoxScriptMember>
 
-    // region Walks
-
-    fun PsiElement.walkUp(): Sequence<PsiElement>
-
-    fun ParadoxScriptMemberContainer.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS, conditional: Boolean? = null, inline: Boolean? = null): Sequence<ParadoxScriptMember>
+    fun ParadoxScriptMemberContext.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS, conditional: Boolean? = null, inline: Boolean? = null): Sequence<ParadoxScriptMember>
 
     // endregion
 
@@ -48,9 +43,9 @@ interface ParadoxPsiSelectScope {
 
     fun Sequence<PsiElement>.asMember(): Sequence<ParadoxScriptMember>
 
-    fun PsiElement?.asMemberContainer(): ParadoxScriptMemberContainer?
+    fun PsiElement?.asMemberContainer(): ParadoxScriptMemberContext?
 
-    fun Sequence<PsiElement>.asMemberContainer(): Sequence<ParadoxScriptMemberContainer>
+    fun Sequence<PsiElement>.asMemberContainer(): Sequence<ParadoxScriptMemberContext>
 
     // endregion
 
@@ -75,16 +70,16 @@ interface ParadoxPsiSelectScope {
     fun <T : ParadoxScriptMember> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T>
 
     /** @see @see ParadoxMemberPath */
-    fun ParadoxScriptMemberContainer?.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
+    fun ParadoxScriptMemberContext?.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
 
     /** @see @see ParadoxMemberPath */
-    fun Sequence<ParadoxScriptMemberContainer>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
+    fun Sequence<ParadoxScriptMemberContext>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
 
     /** @see @see ParadoxMemberPath */
-    fun ParadoxScriptMemberContainer?.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
+    fun ParadoxScriptMemberContext?.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
 
     /** @see @see ParadoxMemberPath */
-    fun Sequence<ParadoxScriptMemberContainer>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
+    fun Sequence<ParadoxScriptMemberContext>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember>
 
     /** 包含自身在内，向上查询父节点，返回第一个 [ParadoxScriptProperty]。 */
     fun PsiElement?.containingProperty(): ParadoxScriptProperty?
@@ -95,8 +90,8 @@ interface ParadoxPsiSelectScope {
     /** 包含自身在内，向上查询父节点，返回第一个 [ParadoxScriptMember]。 */
     fun PsiElement?.containingMember(): ParadoxScriptMember?
 
-    /** 包含自身在内，向上查询父节点，返回第一个 [ParadoxScriptMemberContainer]。 */
-    fun PsiElement?.containingMemberContainer(): ParadoxScriptMemberContainer?
+    /** 包含自身在内，向上查询父节点，返回第一个 [ParadoxScriptMemberContext]。 */
+    fun PsiElement?.containingMemberContainer(): ParadoxScriptMemberContext?
 
     /** 向上查询父节点，返回第一个 [ParadoxScriptProperty]。 */
     fun PsiElement?.parentProperty(): ParadoxScriptProperty?
@@ -107,11 +102,11 @@ interface ParadoxPsiSelectScope {
     /** 向上查询父节点，返回第一个 [ParadoxScriptMember]。 */
     fun PsiElement?.parentMember(): ParadoxScriptMember?
 
-    /** 向上查询父节点，返回第一个 [ParadoxScriptMemberContainer]。 */
-    fun PsiElement?.parentMemberContainer(): ParadoxScriptMemberContainer?
+    /** 向上查询父节点，返回第一个 [ParadoxScriptMemberContext]。 */
+    fun PsiElement?.parentMemberContainer(): ParadoxScriptMemberContext?
 
     /**
-     * 根据指定的 [key]，向上查询匹配的 [ParadoxScriptProperty]、[ParadoxScriptBlock] 或 [ParadoxScriptFile]。
+     * 在当前脚本文件中，包含自身在内，根据指定的 [key] 向上查询并依次匹配属性、块值（位于文件顶级，或者直接位于块中的值）或者文件。
      *
      * 说明：
      * - 如果 [key] 为 `null`，则匹配任意属性、块或文件。
@@ -122,7 +117,7 @@ interface ParadoxPsiSelectScope {
     fun PsiElement?.parentOfKey(key: String? = null, ignoreCase: Boolean = true, usePattern: Boolean = true): ParadoxScriptMember?
 
     /**
-     * 根据指定的 [path]，向上查询匹配的 [ParadoxScriptProperty]、[ParadoxScriptBlock] 或 [ParadoxScriptFile]。
+     * 在当前脚本文件中，包含自身在内，根据指定的 [path] 向上查询并依次匹配属性、块值（位于文件顶级，或者直接位于块中的值）或者文件。
      *
      * 说明：
      * - 如果 [path] 为空，则直接返回 `null`。
@@ -157,4 +152,8 @@ interface ParadoxPsiSelectScope {
     fun PsiElement.parentDefineVariable(withSelf: Boolean = true): ParadoxScriptProperty?
 
     // endregion
+
+    companion object {
+        @JvmStatic val INSTANCE = ParadoxPsiSelectScopeImpl()
+    }
 }

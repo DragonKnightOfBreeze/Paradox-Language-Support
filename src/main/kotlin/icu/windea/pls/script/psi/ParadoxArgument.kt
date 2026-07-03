@@ -3,6 +3,8 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.NavigatablePsiElement
 
 /**
+ * 传入参数。
+ *
  * @see ParadoxScriptParameterArgument
  */
-interface ParadoxScriptArgument : NavigatablePsiElement
+interface ParadoxArgument : NavigatablePsiElement

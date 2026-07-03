@@ -11,6 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.selectFile
@@ -18,7 +19,6 @@ import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -86,7 +86,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!inInlineMath && !ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

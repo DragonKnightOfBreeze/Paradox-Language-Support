@@ -20,8 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 
 object ParadoxMemberService {
     /**
@@ -38,7 +37,7 @@ object ParadoxMemberService {
         while (current !is PsiFile) {
             val p = when {
                 current is ParadoxScriptProperty -> current.name
-                current is ParadoxScriptValue && current.isBlockValue() -> "-"
+                current is ParadoxScriptValue && current.isDirectValue() -> "-"
                 else -> null
             }
             if (p != null) {
@@ -67,7 +66,7 @@ object ParadoxMemberService {
         while (current !is PsiFile) {
             val p = when {
                 current is ParadoxScriptProperty -> current.name
-                current is ParadoxScriptValue && current.isBlockValue() -> "-"
+                current is ParadoxScriptValue && current.isDirectValue() -> "-"
                 else -> null
             }
             if (p != null) {

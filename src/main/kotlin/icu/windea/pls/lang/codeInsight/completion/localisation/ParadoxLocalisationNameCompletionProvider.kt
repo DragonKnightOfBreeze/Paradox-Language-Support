@@ -11,7 +11,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 
 /**
  * 提供本地化的名字的代码补全。
@@ -23,7 +23,7 @@ class ParadoxLocalisationNameCompletionProvider : ParadoxCompletionProvider() {
         if (!ChronicleSettings.getInstance().state.completion.completeLocalisationNames) return
 
         val position = parameters.position
-        if (ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return
+        if (ParadoxLocalisationPsiService.isLocalisationLocaleLike(position)) return
         val element = position.parent as? ParadoxLocalisationPropertyKey ?: return
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)

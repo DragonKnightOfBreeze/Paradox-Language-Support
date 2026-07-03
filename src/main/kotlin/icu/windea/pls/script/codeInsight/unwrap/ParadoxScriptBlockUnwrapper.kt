@@ -3,8 +3,7 @@ package icu.windea.pls.script.codeInsight.unwrap
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 
 class ParadoxScriptBlockUnwrapper : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {
@@ -12,7 +11,7 @@ class ParadoxScriptBlockUnwrapper : ParadoxScriptUnwrapper() {
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is ParadoxScriptBlock && e.isBlockValue()
+        return e is ParadoxScriptBlock && e.isDirectValue()
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

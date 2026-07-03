@@ -33,7 +33,7 @@ val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtExpression
 val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtExpressionType.String) value else null
 
 /** 如果当前成员规则对应属性的值，则返回所属的属性规则。否则返回自身。 */
-val CwtMemberConfig<*>.containingConfig: CwtMemberConfig<*> get() = castOrNull<CwtValueConfig>()?.propertyConfig ?: this
+val CwtMemberConfig<*>.containingDirectConfig: CwtMemberConfig<*> get() = castOrNull<CwtValueConfig>()?.propertyConfig ?: this
 
 /** 绑定到当前属性规则的单别名规则（解析阶段填充）。 */
 var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by registerKey(CwtMemberConfig.Keys)

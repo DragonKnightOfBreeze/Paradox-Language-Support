@@ -11,7 +11,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
-    // visitBlockElement(o);
+    // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
   }
 
@@ -52,7 +52,6 @@ public class CwtVisitor extends PsiElementVisitor {
   public void visitProperty(@NotNull CwtProperty o) {
     visitNamedElement(o);
     // visitMember(o);
-    // visitMemberContainer(o);
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
@@ -61,8 +60,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
-    visitBlockElement(o);
-    // visitMemberContainer(o);
+    visitMemberContainer(o);
   }
 
   public void visitString(@NotNull CwtString o) {
@@ -75,7 +73,6 @@ public class CwtVisitor extends PsiElementVisitor {
   public void visitValue(@NotNull CwtValue o) {
     visitExpressionElement(o);
     // visitMember(o);
-    // visitMemberContainer(o);
     // visitOptionMember(o);
   }
 
@@ -87,15 +84,15 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitBlockElement(@NotNull CwtBlockElement o) {
-    visitPsiElement(o);
-  }
-
   public void visitExpressionElement(@NotNull CwtExpressionElement o) {
     visitPsiElement(o);
   }
 
   public void visitLiteralValue(@NotNull CwtLiteralValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMemberContainer(@NotNull CwtMemberContainer o) {
     visitPsiElement(o);
   }
 

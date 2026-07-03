@@ -11,9 +11,9 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.editorActions.ContainerBasedMover
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtBlock
-import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtMemberContainer
 import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
 
@@ -25,7 +25,7 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 class CwtMover : ContainerBasedMover() {
     override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language is CwtLanguage
 
-    override fun isContainerElement(element: PsiElement) = element is CwtBlockElement
+    override fun isContainerElement(element: PsiElement) = element is CwtMemberContainer
 
     override fun isMemberElement(element: PsiElement) = element is CwtMember || element is CwtOptionMember
 

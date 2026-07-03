@@ -85,7 +85,7 @@ class ParadoxDefineNamespaceSearcherTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun edge_notBlockValueNamespace() {
+    fun edge_notDirectValueNamespace() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val selector = ParadoxDefineNamespaceSearch.selector(project, myFixture.file)

@@ -20,10 +20,6 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
 
     override fun <T : CwtMemberConfig<*>> Sequence<T>.all(): List<T> = toList()
 
-    // endregion
-
-    // region Walks
-
     override fun CwtMemberConfig<*>.walkUp(): Sequence<CwtMemberConfig<*>> {
         return generateSequence(this) { it.parentConfig }
     }
@@ -134,12 +130,12 @@ class CwtConfigSelectScopeImpl: CwtConfigSelectScope {
             if (current == null) {
                 current = when (subPath) {
                     "-" -> values()
-                    else -> properties().ofKey(subPath, ignoreCase, usePattern)
+                    else -> properties().filter { p -> PathMatcher.matches(p.key, subPath, ignoreCase, usePattern) }
                 }
             } else {
                 current = when (subPath) {
                     "-" -> current.flatMap { it.values() }
-                    else -> current.flatMap { it.properties().ofKey(subPath, ignoreCase, usePattern) }
+                    else -> current.flatMap { it.properties().filter { p -> PathMatcher.matches(p.key, subPath, ignoreCase, usePattern) } }
                 }
             }
         }

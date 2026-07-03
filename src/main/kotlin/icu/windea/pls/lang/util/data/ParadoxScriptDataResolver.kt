@@ -5,8 +5,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.core.findChild
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -32,7 +32,7 @@ class ParadoxScriptDataResolver(
         return resolveBlock(rootBlock)
     }
 
-    fun resolveBlock(element: ParadoxScriptBlockElement): ParadoxScriptData {
+    fun resolveBlock(element: ParadoxScriptMemberContainer): ParadoxScriptData {
         val value = element as? ParadoxScriptBlock
         val children: MutableList<ParadoxScriptData> = mutableListOf()
         element.members(conditional = true, inline = true).forEach { e ->

@@ -37,13 +37,14 @@ inline fun <reified T : CwtValue> CwtProperty.propertyValue(): T? = propertyValu
 
 // region PSI Predicates
 
-/** 是否是直接位于块（文件顶级/子句）中的成员。 */
-fun CwtMember.isBlockMember(): Boolean {
+/** 是否是成员（属性&值）结构中的，直接位于成员容器（顶级块、块）中的成员。 */
+fun CwtMember.isDirectMember(): Boolean {
+    if (this is CwtProperty) return true
     val parent = parent ?: return false
     return parent is CwtRootBlock || (parent is CwtBlock && parent.parent !is CwtOption)
 }
 
-/** 是否是位于子句结构（属性&值）中的，用于表示规则数据的表达式元素。 */
+/** 是否是由成员（属性&值）组成的子句结构中的，用于表示规则数据的表达式元素。 */
 fun CwtExpressionElement.isDataExpression(): Boolean {
     return when (this) {
         is CwtPropertyKey -> true
@@ -59,7 +60,7 @@ fun CwtValue.isPropertyValue(): Boolean {
     return parent is CwtProperty
 }
 
-fun CwtValue.isBlockValue(): Boolean {
+fun CwtValue.isDirectValue(): Boolean {
     val parent = parent ?: return false
     return parent is CwtRootBlock || (parent is CwtBlock && parent.parent !is CwtOption)
 }
@@ -68,7 +69,7 @@ fun CwtValue.isOptionValue(): Boolean {
     return parent is CwtOption
 }
 
-fun CwtValue.isOptionBlockValue(): Boolean {
+fun CwtValue.isOptionDirectValue(): Boolean {
     val parent = parent ?: return false
     return parent is CwtOptionComment || (parent is CwtBlock && parent.parent is CwtOption)
 }

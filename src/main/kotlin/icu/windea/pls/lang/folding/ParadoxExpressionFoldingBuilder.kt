@@ -42,7 +42,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) visitProperty(element)
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

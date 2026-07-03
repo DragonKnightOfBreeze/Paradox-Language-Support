@@ -14,7 +14,7 @@ object CwtPsiPresentationService {
             null -> false
             is CwtFile -> forFile
             is CwtProperty -> true
-            is CwtValue -> element.isBlockValue()
+            is CwtValue -> element.isDirectValue()
             else -> false
         }
     }

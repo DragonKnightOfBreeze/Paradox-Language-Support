@@ -49,10 +49,13 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.isComplexExpression
+import icu.windea.pls.lang.psi.isDefinitionTypeKey
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
+import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
-import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -61,7 +64,6 @@ import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
-import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
@@ -72,9 +74,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isDataExpression
-import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {

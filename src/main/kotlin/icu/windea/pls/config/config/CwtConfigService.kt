@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.cwt.psi.isDirectValue
 import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
@@ -153,7 +153,7 @@ object CwtConfigService {
                     subPaths.addFirst(current.name)
                     depth++
                 }
-                current is CwtValue && current.isBlockValue() -> {
+                current is CwtValue && current.isDirectValue() -> {
                     subPaths.addFirst("-")
                     depth++
                 }

@@ -9,8 +9,8 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectMember
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -53,15 +53,15 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
             .filter { it.name == name }
     }
 
-    private fun findBlockValue(file: ParadoxScriptFile, text: String): ParadoxScriptValue {
+    private fun findDirectValue(file: ParadoxScriptFile, text: String): ParadoxScriptValue {
         return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptValue::class.java)
-            .firstOrNull { it.value == text && it.isBlockMember() }
+            .firstOrNull { it.value == text && it.isDirectMember() }
             ?: throw AssertionError("Block member value not found: $text")
     }
 
-    private fun findAllBlockValues(file: ParadoxScriptFile): List<ParadoxScriptValue> {
+    private fun findAllDirectValues(file: ParadoxScriptFile): List<ParadoxScriptValue> {
         return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptValue::class.java)
-            .filter { it.isBlockValue() }
+            .filter { it.isDirectValue() }
     }
 
     private fun findScriptedVariable(file: ParadoxScriptFile, name: String): ParadoxScriptScriptedVariable {
@@ -103,13 +103,13 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun getPath_blockMemberValue_usesHyphen() {
+    fun getPath_directMemberValue_usesHyphen() {
         val file = configureScriptFile(
             """
             list = { "item1" "item2" "item3" }
             """
         )
-        val item1 = findBlockValue(file, "item1")
+        val item1 = findDirectValue(file, "item1")
         val path = ParadoxMemberService.getPath(item1)
         Assert.assertEquals("list/-", path!!.path)
     }
@@ -126,7 +126,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
             }
             """
         )
-        val value1 = findBlockValue(file, "value1")
+        val value1 = findDirectValue(file, "value1")
         val path = ParadoxMemberService.getPath(value1)
         Assert.assertEquals("outer/inner/-", path!!.path)
     }
@@ -221,7 +221,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun getPath_multipleBlockValues_allHaveSamePath() {
+    fun getPath_multipleDirectValues_allHaveSamePath() {
         val file = configureScriptFile(
             """
             items = {
@@ -231,7 +231,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
             }
             """
         )
-        val values = findAllBlockValues(file)
+        val values = findAllDirectValues(file)
         Assert.assertEquals(3, values.size)
         for (v in values) {
             val path = ParadoxMemberService.getPath(v)
@@ -299,7 +299,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun getRootKeys_blockMemberValue_returnsParentKeys() {
+    fun getRootKeys_directMemberValue_returnsParentKeys() {
         val file = configureScriptFile(
             """
             list = {
@@ -309,7 +309,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
             }
             """
         )
-        val item = findBlockValue(file, "item")
+        val item = findDirectValue(file, "item")
         val rootKeys = ParadoxMemberService.getRootKeys(item)
         Assert.assertEquals(listOf("list", "nested"), rootKeys)
     }
@@ -476,7 +476,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun getKeyPrefixes_forBlockValue_returnsPrecedingStrings() {
+    fun getKeyPrefixes_forDirectValue_returnsPrecedingStrings() {
         val file = configureScriptFile(
             """
             block = {
@@ -485,7 +485,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
             }
             """
         )
-        val targetValue = findBlockValue(file, "target_value")
+        val targetValue = findDirectValue(file, "target_value")
         val prefixes = ParadoxMemberService.getKeyPrefixes(targetValue)
         Assert.assertEquals(listOf("prefix"), prefixes)
     }
@@ -762,8 +762,8 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
         )
         Assert.assertEquals("mixed/prop1", ParadoxMemberService.getPath(findProperty(file, "prop1"))!!.path)
         Assert.assertEquals("mixed/prop2", ParadoxMemberService.getPath(findProperty(file, "prop2"))!!.path)
-        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(findBlockValue(file, "value1"))!!.path)
-        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(findBlockValue(file, "value2"))!!.path)
+        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(findDirectValue(file, "value1"))!!.path)
+        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(findDirectValue(file, "value2"))!!.path)
     }
 
     // endregion

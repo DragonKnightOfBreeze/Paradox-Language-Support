@@ -94,7 +94,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
                     return // optimize (definition injections can be only on top level of a script file)
                 }
 
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 

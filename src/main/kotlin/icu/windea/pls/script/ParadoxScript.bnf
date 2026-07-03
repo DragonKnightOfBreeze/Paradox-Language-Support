@@ -27,10 +27,9 @@ root ::= root_block ?
 root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
   ]
-  methods=[getMembersRoot getMembers getComponents]
+  methods=[getMemberContainer getMembers getComponents]
 }
 private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | conditional_block
 private root_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
@@ -72,14 +71,13 @@ property ::= property_key property_separator property_value {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
-    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxDefinitionElement"
   ]
   methods=[
     property_key="property_key" property_value="value"
     getIcon getName setName getNameIdentifier getValue getExpression getBlock
     getIElementType isEquivalentTo
-    getMembersRoot getMembers
+    getMemberContainer getMembers
 
   ]
 }
@@ -106,7 +104,6 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
-    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
   ]
   methods=[getIcon getName getValue setValue getExpression]
 }
@@ -171,12 +168,12 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
     getIcon getValue getExpression getReference getReferences
-    getMembersRoot getMembers getLeftBound getRightBound getComponents
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
   ]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | conditional_block {
@@ -205,7 +202,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
-    "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
+    "icu.windea.pls.script.psi.ParadoxArgumentAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
@@ -217,7 +214,7 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
-    "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
+    "icu.windea.pls.script.psi.ParadoxArgumentAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
@@ -228,7 +225,7 @@ private parameter_name ::= PARAMETER_TOKEN
 private parameter_argument_part ::= PIPE parameter_argument ?
 parameter_argument ::= ARGUMENT_TOKEN {
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptArgument"
+    "icu.windea.pls.script.psi.ParadoxArgument"
   ]
   methods=[getIdElement]
 }
@@ -242,12 +239,12 @@ conditional_block ::= LEFT_BRACKET conditional_block_expr conditional_block_item
   recoverWhile="#auto" // continue parsing
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
-    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
     getIcon getConditionExpression getPresentationText
-    getMembersRoot getMembers getLeftBound getRightBound getComponents
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
   ]
 }
 private conditional_block_expr ::= NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET {

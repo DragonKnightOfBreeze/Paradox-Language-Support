@@ -21,8 +21,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.STRING_TOKENS
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isBlockValue
+import icu.windea.pls.script.psi.isDirectValue
 
 /**
  * 提供已有的变量的名字的代码补全。
@@ -41,7 +40,7 @@ class ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if (element.text.isParameterized()) return
-        if (!element.isBlockValue()) return
+        if (!element.isDirectValue()) return
         val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return
         val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return

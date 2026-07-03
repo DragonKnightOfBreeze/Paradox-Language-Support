@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -39,15 +39,11 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
 
     override fun <T : PsiElement> Sequence<T>.all(): List<T> = toList()
 
-    // endregion
-
-    // region Walks
-
-    override fun PsiElement.walkUp(): Sequence<PsiElement> {
-        return generateSequence(this) { if (it is PsiFile) null else it.parent }
+    override fun ParadoxScriptMember.walkUp(): Sequence<ParadoxScriptMember> {
+        return generateSequence<PsiElement>(this) { if (it is PsiFile) null else it.parent }.filterIsInstance<ParadoxScriptMember>()
     }
 
-    override fun ParadoxScriptMemberContainer.walkDown(traversal: TreeTraversal, conditional: Boolean?, inline: Boolean?): Sequence<ParadoxScriptMember> {
+    override fun ParadoxScriptMemberContext.walkDown(traversal: TreeTraversal, conditional: Boolean?, inline: Boolean?): Sequence<ParadoxScriptMember> {
         val seeds = members(conditional, inline).asIterable()
         return generateSequenceFromSeeds(traversal, seeds) { it.members(conditional, inline).asIterable() }
     }
@@ -88,12 +84,12 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return filterIsInstance<ParadoxScriptMember>()
     }
 
-    override fun PsiElement?.asMemberContainer(): ParadoxScriptMemberContainer? {
+    override fun PsiElement?.asMemberContainer(): ParadoxScriptMemberContext? {
         return this?.castOrNull()
     }
 
-    override fun Sequence<PsiElement>.asMemberContainer(): Sequence<ParadoxScriptMemberContainer> {
-        return filterIsInstance<ParadoxScriptMemberContainer>()
+    override fun Sequence<PsiElement>.asMemberContainer(): Sequence<ParadoxScriptMemberContext> {
+        return filterIsInstance<ParadoxScriptMemberContext>()
     }
 
     // endregion
@@ -148,25 +144,25 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return filter { it.literalValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
     }
 
-    override fun ParadoxScriptMemberContainer?.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    override fun ParadoxScriptMemberContext?.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
         if (this == null) return emptySequence()
         return ofPathInternal(path, ignoreCase, usePattern, conditional, inline)
     }
 
-    override fun Sequence<ParadoxScriptMemberContainer>.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    override fun Sequence<ParadoxScriptMemberContext>.ofPath(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
         return flatMap { it.ofPathInternal(path, ignoreCase, usePattern, conditional, inline) }
     }
 
-    override fun ParadoxScriptMemberContainer?.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    override fun ParadoxScriptMemberContext?.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
         if (this == null) return emptySequence()
         return paths.asSequence().flatMap { path -> ofPathInternal(path, ignoreCase, usePattern, conditional, inline) }
     }
 
-    override fun Sequence<ParadoxScriptMemberContainer>.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    override fun Sequence<ParadoxScriptMemberContext>.ofPaths(paths: Collection<String>, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
         return flatMap { paths.asSequence().flatMap { path -> it.ofPathInternal(path, ignoreCase, usePattern, conditional, inline) } }
     }
 
-    private fun ParadoxScriptMemberContainer.ofPathInternal(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
+    private fun ParadoxScriptMemberContext.ofPathInternal(path: String, ignoreCase: Boolean, usePattern: Boolean, conditional: Boolean, inline: Boolean): Sequence<ParadoxScriptMember> {
         if (path.isEmpty()) return emptySequence()
         var current: Sequence<ParadoxScriptMember>? = null
         val resolvedPath = ParadoxMemberPath.resolve(path)
@@ -177,12 +173,12 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
             if (current == null) {
                 current = when (subPath) {
                     "-" -> values(conditional, inline)
-                    else -> properties(conditional, inline).ofKey(subPath, ignoreCase, usePattern)
+                    else -> properties(conditional, inline).filter { p -> PathMatcher.matches(p.name, subPath, ignoreCase, usePattern) }
                 }
             } else {
                 current = when (subPath) {
                     "-" -> current.flatMap { it.values(conditional, inline) }
-                    else -> current.flatMap { it.properties(conditional, inline).ofKey(subPath, ignoreCase, usePattern) }
+                    else -> current.flatMap { it.properties(conditional, inline).filter { p -> PathMatcher.matches(p.name, subPath, ignoreCase, usePattern) } }
                 }
             }
         }
@@ -210,9 +206,9 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return parentOfType()
     }
 
-    override fun PsiElement?.containingMemberContainer(): ParadoxScriptMemberContainer? {
+    override fun PsiElement?.containingMemberContainer(): ParadoxScriptMemberContext? {
         if (this == null) return null
-        if (this is ParadoxScriptMemberContainer) return this
+        if (this is ParadoxScriptMemberContext) return this
         if (language !is ParadoxScriptLanguage) return null
         return parentOfType()
     }
@@ -235,7 +231,7 @@ class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
         return parentOfType()
     }
 
-    override fun PsiElement?.parentMemberContainer(): ParadoxScriptMemberContainer? {
+    override fun PsiElement?.parentMemberContainer(): ParadoxScriptMemberContext? {
         if (this == null) return null
         if (language !is ParadoxScriptLanguage) return null
         return parentOfType()

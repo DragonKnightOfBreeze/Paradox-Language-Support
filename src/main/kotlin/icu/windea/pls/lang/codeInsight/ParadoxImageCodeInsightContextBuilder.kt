@@ -36,7 +36,7 @@ object ParadoxImageCodeInsightContextBuilder {
                     is ParadoxDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
         })

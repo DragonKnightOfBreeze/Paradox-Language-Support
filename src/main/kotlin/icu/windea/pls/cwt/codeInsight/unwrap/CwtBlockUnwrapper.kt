@@ -3,7 +3,7 @@ package icu.windea.pls.cwt.codeInsight.unwrap
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.psi.CwtBlock
-import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.cwt.psi.isDirectValue
 
 class CwtBlockUnwrapper : CwtUnwrapper() {
     override fun getDescription(e: PsiElement): String {
@@ -11,7 +11,7 @@ class CwtBlockUnwrapper : CwtUnwrapper() {
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is CwtBlock && e.isBlockValue()
+        return e is CwtBlock && e.isDirectValue()
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

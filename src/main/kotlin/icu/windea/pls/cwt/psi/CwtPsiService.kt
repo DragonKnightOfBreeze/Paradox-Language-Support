@@ -9,11 +9,19 @@ import icu.windea.pls.core.psi.PsiService
 @Suppress("unused")
 object CwtPsiService {
     fun canAttachComment(element: PsiElement): Boolean {
-        return element is CwtProperty || (element is CwtString && element.isBlockValue())
+        return element is CwtProperty || (element is CwtString && element.isDirectValue())
     }
 
-    fun isMemberContextElement(element: PsiElement): Boolean {
-        return element is CwtFile || element.elementType in CwtTokenSets.MEMBER_CONTEXT
+    fun isLenientMemberContext(element: PsiElement): Boolean {
+        return element is CwtMemberContext
+    }
+
+    fun isStrictMemberContext(element: PsiElement): Boolean {
+        return element is CwtFile || element.elementType in CwtTokenSets.MEMBER_CONTEXT_TOKENS
+    }
+
+    fun isPropertySeparator(element: PsiElement): Boolean {
+        return element.elementType in CwtTokenSets.PROPERTY_SEPARATOR_TOKENS
     }
 
     fun isBeforeValueLeftBoundEnd(element: CwtProperty, offset: Int): Boolean {

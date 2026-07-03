@@ -12,7 +12,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxScriptArgumentAwareElement {
+public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxArgumentAwareElement {
 
   @Nullable PsiElement getIdElement();
 

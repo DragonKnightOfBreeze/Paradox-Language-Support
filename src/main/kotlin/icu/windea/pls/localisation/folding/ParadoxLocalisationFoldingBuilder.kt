@@ -16,7 +16,7 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.model.constants.ChronicleStrings
 
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
@@ -100,7 +100,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }
-        return ParadoxLocalisationPsiUtil.isRichTextContextElement(element)
+        return ParadoxLocalisationPsiService.isStrictRichTextContext(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

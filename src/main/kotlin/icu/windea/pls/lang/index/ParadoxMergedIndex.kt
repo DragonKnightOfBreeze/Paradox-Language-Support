@@ -41,7 +41,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.forParadoxGameType
@@ -199,7 +199,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                     return // optimize
                 }
 
-                if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
+                if (!ParadoxLocalisationPsiService.isStrictRichTextContext(element)) return // optimize
                 super.visitElement(element)
             }
 

@@ -66,7 +66,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testBlockValue_nestedMembers() {
+    fun testDirectValue_nestedMembers() {
         val (file, group) = prepare().let { it.first to it.second }
         val root = file.block!!
         val block = root.findChild<CwtValue> { it.value == "{...}" }!!

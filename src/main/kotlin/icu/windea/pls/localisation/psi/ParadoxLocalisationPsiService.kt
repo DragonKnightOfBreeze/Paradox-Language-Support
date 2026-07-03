@@ -6,24 +6,24 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.core.isExactLineBreak
 
-object ParadoxLocalisationPsiUtil {
+object ParadoxLocalisationPsiService {
     fun canAttachComment(element: PsiElement): Boolean {
         return element is ParadoxLocalisationProperty
     }
 
     fun isIdElement(element: PsiElement?): Boolean {
         if (element == null) return false
-        if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
-        if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
+        if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TOKENS) return false
+        if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TOKENS) return false
         return true
     }
 
-    fun isLocalisationContextElement(element: PsiElement): Boolean {
-        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.PROPERTY_CONTEXT
+    fun isStrictPropertyContext(element: PsiElement) : Boolean {
+        return element is ParadoxLocalisationFile || element is ParadoxLocalisationPropertyList
     }
 
-    fun isRichTextContextElement(element: PsiElement): Boolean {
-        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT
+    fun isStrictRichTextContext(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT_TOKENS
     }
 
     /**

@@ -28,7 +28,7 @@ val ParadoxScriptColor.colorValue: Color? get() = this.color
 
 // region PSI Accessors
 
-val ParadoxScriptMember.containingMember: ParadoxScriptMember get() = castOrNull<ParadoxScriptValue>()?.parentProperty ?: this
+val ParadoxScriptMember.containingDirectMember: ParadoxScriptMember get() = castOrNull<ParadoxScriptValue>()?.parentProperty ?: this
 
 val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty? get() = parent?.castOrNull()
 
@@ -48,19 +48,19 @@ val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub? get() = this.cas
 
 // region PSI Predicates
 
-/** 是否是直接位于块（文件顶级/子句）中的成员。 */
-fun ParadoxScriptMember.isBlockMember(): Boolean {
-    val parent = parent ?: return false
-    return parent is ParadoxScriptBlockElement
+/** 是否是成员（属性&值）结构中的，直接位于成员容器（顶级块、块、条件化块）中的成员。 */
+fun ParadoxScriptMember.isDirectMember(): Boolean {
+    if (this is ParadoxScriptProperty) return true
+    return parent is ParadoxScriptMemberContainer
 }
 
-/** 是否是位于子句结构（属性&值）中的，用于表示游戏数据的表达式元素。 */
+/** 是否是成员（属性&值）结构中的，用于表示游戏数据的表达式元素。 */
 fun ParadoxScriptExpressionElement.isDataExpression(): Boolean {
     return when (this) {
         is ParadoxScriptPropertyKey -> true
         is ParadoxScriptValue -> {
             val parent = parent ?: return false
-            parent is ParadoxScriptProperty || parent is ParadoxScriptBlockElement
+            parent is ParadoxScriptProperty || parent is ParadoxScriptMemberContainer
         }
         else -> false
     }
@@ -74,9 +74,8 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
     return parent is ParadoxScriptProperty
 }
 
-fun ParadoxScriptValue.isBlockValue(): Boolean {
-    val parent = parent ?: return false
-    return parent is ParadoxScriptBlockElement
+fun ParadoxScriptValue.isDirectValue(): Boolean {
+    return parent is ParadoxScriptMemberContainer
 }
 
 // endregion

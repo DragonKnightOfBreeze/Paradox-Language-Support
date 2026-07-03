@@ -32,9 +32,9 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtBlock
-import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtMemberContainer
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -48,7 +48,7 @@ object CwtConfigResolverManager {
 
     @Optimized
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
-        if (element !is CwtBlockElement) return null
+        if (element !is CwtMemberContainer) return null
         val configs: MutableList<CwtMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
             val resolved = when (e) {
