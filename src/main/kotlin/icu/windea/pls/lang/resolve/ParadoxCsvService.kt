@@ -6,9 +6,9 @@ import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService

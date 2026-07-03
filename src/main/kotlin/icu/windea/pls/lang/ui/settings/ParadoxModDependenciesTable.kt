@@ -16,10 +16,10 @@ import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.registerDoubleClickListener
 import icu.windea.pls.lang.actions.ChronicleActionPlaces
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(

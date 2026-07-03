@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxCsvExpressionSupport {
-    fun supports(config: CwtValueConfig, configExpression: CwtDataExpression) : Boolean
+    fun supports(config: CwtValueConfig, configExpression: CwtDataExpression): Boolean
 
     fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
 

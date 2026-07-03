@@ -8,9 +8,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
+import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext

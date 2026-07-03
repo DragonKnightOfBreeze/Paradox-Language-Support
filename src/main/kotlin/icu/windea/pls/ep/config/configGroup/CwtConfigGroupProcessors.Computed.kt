@@ -133,7 +133,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             val rootKeysList = typeConfig.skipRootKey.filter { it.isNotEmpty() }.orNull() ?: continue
             val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
             // NOTE 2.2.0 it's necessary to convert `any` to `*` in root keys before query by path
-            val rawPaths = rootKeysList.map { rootKeys -> rootKeys.drop(1).map { if(it == "any") "*" else it } + typeKey }
+            val rawPaths = rootKeysList.map { rootKeys -> rootKeys.drop(1).map { if (it == "any") "*" else it } + typeKey }
             val paths = rawPaths.map { CwtConfigPath.resolve(it).path }
             val rootConfig = baseDeclarationConfig.configForDeclaration
             val config = selectConfigScope { rootConfig.queryBy(paths).asProperty().one() } ?: continue

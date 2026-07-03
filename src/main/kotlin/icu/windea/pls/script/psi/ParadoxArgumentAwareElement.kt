@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement
  * @see ParadoxScriptParameter
  * @see ParadoxScriptInlineMathParameter
  */
-interface ParadoxArgumentAwareElement: PsiElement {
+interface ParadoxArgumentAwareElement : PsiElement {
     val argumentElement: ParadoxArgument?
 }

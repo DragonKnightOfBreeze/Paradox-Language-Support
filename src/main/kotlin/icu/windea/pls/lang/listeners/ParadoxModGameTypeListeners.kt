@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.listeners
 
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.model.ParadoxGameType
 
 /**

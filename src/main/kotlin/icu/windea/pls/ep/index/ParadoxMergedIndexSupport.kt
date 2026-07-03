@@ -5,8 +5,8 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.lang.index.ChronicleIndexStatisticService
+import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -48,6 +48,6 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     }
 
     companion object INSTANCE {
-        @JvmField  val EP_NAME = ExtensionPointName<ParadoxMergedIndexSupport<*>>("icu.windea.pls.mergedIndexSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxMergedIndexSupport<*>>("icu.windea.pls.mergedIndexSupport")
     }
 }

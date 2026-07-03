@@ -52,7 +52,7 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
     }
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-         ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
+        ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {

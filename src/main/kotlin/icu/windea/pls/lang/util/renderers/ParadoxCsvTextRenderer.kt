@@ -3,8 +3,8 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
+import icu.windea.pls.csv.psi.ParadoxCsvFile
 
 /**
  * CSV 文本的渲染器。

@@ -16,5 +16,4 @@ data class ParadoxInferredScopeContextAwareDefinitionIndexInfo(
 ) : ParadoxIndexInfo() {
     val definitionElement: ParadoxScriptProperty?
         get() = file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, definitionElementOffset) }
-            // ?.takeIf { ParadoxPsiMatchService.isDefinition(it) }
 }

@@ -63,8 +63,8 @@ object CwtConfigManipulationService {
     }
 
     /**
-    * 在声明规则上下文 [context] 中中，递归拷贝 [parentConfig] 中的所有子节点，并加入作为 [containerConfig] 的子规则。
-    */
+     * 在声明规则上下文 [context] 中中，递归拷贝 [parentConfig] 中的所有子节点，并加入作为 [containerConfig] 的子规则。
+     */
     @Optimized
     fun deepCopyConfigsInDeclaration(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*> = parentConfig, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
         return doDeepCopyConfigsInDeclaration(parentConfig, containerConfig, context)

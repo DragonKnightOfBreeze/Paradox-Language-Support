@@ -13,9 +13,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
+import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext

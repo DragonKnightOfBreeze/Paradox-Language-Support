@@ -28,6 +28,6 @@ interface CwtDataExpressionSupport {
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean = true
 
     companion object INSTANCE {
-        @JvmField  val EP_NAME = ExtensionPointName<CwtDataExpressionSupport>("icu.windea.pls.dataExpressionSupport")
+        @JvmField val EP_NAME = ExtensionPointName<CwtDataExpressionSupport>("icu.windea.pls.dataExpressionSupport")
     }
 }

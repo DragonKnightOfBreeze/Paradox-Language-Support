@@ -13,6 +13,6 @@ interface ParadoxRootMetadataProvider {
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata?
 
     companion object INSTANCE {
-        @JvmField  val EP_NAME = ExtensionPointName<ParadoxRootMetadataProvider>("icu.windea.pls.rootMetadataProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxRootMetadataProvider>("icu.windea.pls.rootMetadataProvider")
     }
 }

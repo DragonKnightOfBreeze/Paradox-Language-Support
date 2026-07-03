@@ -4,4 +4,4 @@ import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.MergingLexerAdapter
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
-class ParadoxScriptLexer: MergingLexerAdapter(FlexAdapter(_ParadoxScriptLexer()), ParadoxScriptTokenSets.MERGED_TOKENS)
+class ParadoxScriptLexer : MergingLexerAdapter(FlexAdapter(_ParadoxScriptLexer()), ParadoxScriptTokenSets.MERGED_TOKENS)

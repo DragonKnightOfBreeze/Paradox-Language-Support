@@ -89,7 +89,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
 
         abstract fun doGetHintText(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): String?
 
-        abstract  fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
+        abstract fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
     }
 
     abstract class DynamicValue : ParadoxHintTextProviderBase() {

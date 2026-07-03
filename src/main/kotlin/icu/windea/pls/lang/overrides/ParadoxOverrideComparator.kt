@@ -3,8 +3,8 @@ package icu.windea.pls.lang.overrides
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 

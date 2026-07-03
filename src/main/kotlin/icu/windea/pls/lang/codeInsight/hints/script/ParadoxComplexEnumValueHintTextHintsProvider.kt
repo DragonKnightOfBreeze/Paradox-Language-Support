@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see ParadoxHintTextProviderBase.ComplexEnumValue
  */
 @Suppress("UnstableApiUsage")
-class ParadoxComplexEnumValueHintTextHintsProvider: ParadoxHintsProvider() {
+class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.complexEnumValueHintText")
 
     override val name get() = ChronicleBundle.message("script.hints.complexEnumValueHintText")

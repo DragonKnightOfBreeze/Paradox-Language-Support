@@ -14,8 +14,8 @@ import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
-import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 

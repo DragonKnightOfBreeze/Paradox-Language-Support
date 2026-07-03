@@ -408,7 +408,7 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
 
     // endregion
 
-    //region ParadoxScriptInlineConditionalBlockUnwrapper
+    // region ParadoxScriptInlineConditionalBlockUnwrapper
 
     @Test
     fun testInlineConditionalBlockUnwrapper() {
@@ -443,5 +443,5 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
         assertUnwrapped(before, after, 1)
     }
 
-    //endregion
+    // endregion
 }

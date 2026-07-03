@@ -2,9 +2,9 @@ package icu.windea.pls.core.util.recursion
 
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.core.collections.FastMap
 
 @Optimized
 @PublishedApi

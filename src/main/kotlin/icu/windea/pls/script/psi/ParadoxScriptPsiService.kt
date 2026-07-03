@@ -15,6 +15,7 @@ object ParadoxScriptPsiService {
     fun isLenientMemberContext(element: PsiElement): Boolean {
         return element is ParadoxScriptMemberContext
     }
+
     fun isStrictMemberContext(element: PsiElement): Boolean {
         return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT_TOKENS
     }

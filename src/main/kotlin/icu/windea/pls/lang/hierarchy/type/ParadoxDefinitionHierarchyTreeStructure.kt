@@ -222,15 +222,15 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun getGroupingRules(descriptor: ParadoxDefinitionHierarchyNodeDescriptor): List<Pair<NodeType, String>> {
         return buildList {
-                var currentDescriptor = descriptor
-                while (true) {
-                    val currentNodeType = currentDescriptor.nodeType
-                    if (currentNodeType.grouped) {
-                        this += tupleOf(currentNodeType, currentDescriptor.name)
-                    }
-                    currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
+            var currentDescriptor = descriptor
+            while (true) {
+                val currentNodeType = currentDescriptor.nodeType
+                if (currentNodeType.grouped) {
+                    this += tupleOf(currentNodeType, currentDescriptor.name)
                 }
-            }.optimized()
+                currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
+            }
+        }.optimized()
     }
 
     private fun filterDefinitionChild(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, definition: ParadoxDefinitionElement, groupingRules: List<Tuple2<NodeType, String>>): Boolean {

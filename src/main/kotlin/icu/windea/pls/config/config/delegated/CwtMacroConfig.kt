@@ -114,7 +114,8 @@ private object CwtMacroConfigResolver : CwtConfigResolverScope {
                 }?.optimized().orEmpty()
                 logger.debug { "Resolved macro config for definition injections (name: $name).".withLocationPrefix(config) }
                 CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, lenientModes, replaceModes, createModes)
-            } else -> {
+            }
+            else -> {
                 logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
                 CwtMacroConfigImpl(config, name)
             }

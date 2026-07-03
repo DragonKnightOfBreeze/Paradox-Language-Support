@@ -23,7 +23,7 @@ fun CwtMemberContainerConfig<*>.values(): Sequence<CwtValueConfig> {
 }
 
 fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberConfig<*>> {
-    val current = if(withSelf) this else this.parentConfig
+    val current = if (withSelf) this else this.parentConfig
     return generateSequence(current) { it.parentConfig }
 }
 

@@ -106,7 +106,7 @@ private object ParadoxDataObjectExpressionResolver {
     }
 }
 
-private object ParadoxDatabaseObjectExpressionValidator: ParadoxComplexExpressionValidatorScope {
+private object ParadoxDatabaseObjectExpressionValidator : ParadoxComplexExpressionValidatorScope {
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxDatabaseObjectExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()

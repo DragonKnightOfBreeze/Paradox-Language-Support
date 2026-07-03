@@ -95,7 +95,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
  * 基于列的优化方案。
  * - 检查文件级别的列规则候选项是否存在、以及对应的列规则的综合属性。
  */
-class ParadoxRowBasedMergedIndexOptimizer: ParadoxMergedIndexOptimizer {
+class ParadoxRowBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
     override fun isAvailableForCsvFile(file: ParadoxCsvFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.rootInfo.gameType
@@ -114,9 +114,9 @@ class ParadoxRowBasedMergedIndexOptimizer: ParadoxMergedIndexOptimizer {
         return false
     }
 
-    private fun isInvolvedRowConfig(rowConfig: CwtRowConfig) : Boolean {
+    private fun isInvolvedRowConfig(rowConfig: CwtRowConfig): Boolean {
         val attributes = rowConfig.attributes
-        if(attributes === CwtRowConfigAttributes.EMPTY) return false
+        if (attributes === CwtRowConfigAttributes.EMPTY) return false
         return when {
             // see: icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport
             attributes.involvesDynamicValue -> true

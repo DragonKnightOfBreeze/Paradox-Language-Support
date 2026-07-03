@@ -106,7 +106,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             }
 
             private fun getDescription(configExpression: CwtDataExpression, pathReference: String): String {
-                return when(configExpression.type) {
+                return when (configExpression.type) {
                     CwtDataTypes.Icon -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
                     CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
                     CwtDataTypes.FileName -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)

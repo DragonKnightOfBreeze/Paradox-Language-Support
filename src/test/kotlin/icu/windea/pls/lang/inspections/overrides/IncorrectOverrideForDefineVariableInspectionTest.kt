@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class IncorrectOverrideForDefineVariableInspectionTest  : BasePlatformTestCase(), HighlightingTestScope {
+class IncorrectOverrideForDefineVariableInspectionTest : BasePlatformTestCase(), HighlightingTestScope {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"

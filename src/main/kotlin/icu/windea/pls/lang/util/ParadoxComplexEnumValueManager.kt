@@ -13,11 +13,11 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 
 @Suppress("unused")
 object ParadoxComplexEnumValueManager {

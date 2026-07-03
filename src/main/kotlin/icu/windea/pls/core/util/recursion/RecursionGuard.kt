@@ -1,7 +1,7 @@
 package icu.windea.pls.core.util.recursion
 
 import com.intellij.openapi.util.StackOverflowPreventedException
-import java.util.ArrayDeque
+import java.util.*
 
 /**
  * 递归守卫。

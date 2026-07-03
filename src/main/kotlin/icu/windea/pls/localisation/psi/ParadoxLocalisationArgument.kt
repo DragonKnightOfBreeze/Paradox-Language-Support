@@ -9,4 +9,4 @@ import com.intellij.psi.NavigatablePsiElement
  * @see ParadoxLocalisationCommandArgument
  * @see ParadoxLocalisationIconArgument
  */
-interface ParadoxLocalisationArgument: NavigatablePsiElement
+interface ParadoxLocalisationArgument : NavigatablePsiElement

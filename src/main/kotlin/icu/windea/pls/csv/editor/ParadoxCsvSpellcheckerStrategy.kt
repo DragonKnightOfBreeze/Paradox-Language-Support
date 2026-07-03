@@ -16,7 +16,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 // com.intellij.spellchecker.JavaSpellcheckingStrategy
 // org.jetbrains.kotlin.idea.spellchecker.KotlinSpellcheckingStrategy
 
-class ParadoxCsvSpellcheckerStrategy : SpellcheckingStrategy(),DumbAware {
+class ParadoxCsvSpellcheckerStrategy : SpellcheckingStrategy(), DumbAware {
     val emptyTokenizer = EMPTY_TOKENIZER
     private val blankAwareTokenizer = BlankAwareTokenizer()
 

@@ -65,7 +65,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, selectedLocale: CwtLocaleConfig) {
         val locale = selectLocale(context.element) ?: return
-         ParadoxLocalisationManipulationService.handleTextWithTranslation(context, locale, selectedLocale)
+        ParadoxLocalisationManipulationService.handleTextWithTranslation(context, locale, selectedLocale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

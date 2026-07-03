@@ -8,4 +8,4 @@ import com.intellij.psi.NavigatablePsiElement
  * @see CwtOption
  * @see CwtValue
  */
-interface CwtOptionMember: NavigatablePsiElement
+interface CwtOptionMember : NavigatablePsiElement

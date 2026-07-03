@@ -10,10 +10,14 @@ class ReflectionExtensionsTest {
         private var _active: Boolean = false
 
         fun getFoo(): String? = _foo
-        fun setFoo(v: String?) { _foo = v }
+        fun setFoo(v: String?) {
+            _foo = v
+        }
 
         fun isActive(): Boolean = _active
-        fun setActive(v: Boolean) { _active = v }
+        fun setActive(v: Boolean) {
+            _active = v
+        }
 
         // Non-accessor methods
         fun getValueX() = 1

@@ -3,7 +3,7 @@ package icu.windea.pls.extensions.markdown.psi
 import com.intellij.model.Symbol
 import com.intellij.model.psi.ImplicitReferenceProvider
 import com.intellij.model.psi.PsiSymbolReference
-import com.intellij.model.psi.PsiSymbolService.getInstance
+import com.intellij.model.psi.PsiSymbolService.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.containsBlank

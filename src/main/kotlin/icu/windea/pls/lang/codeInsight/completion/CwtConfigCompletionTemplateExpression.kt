@@ -34,7 +34,7 @@ sealed class CwtConfigCompletionTemplateExpression(
 
     class Parameter(context: CwtConfigCompletionContext, range: TextRange, text: String, val name: String) : CwtConfigCompletionTemplateExpression(context, range, text)
 
-    companion object  {
+    companion object {
         @JvmStatic
         fun resolve(context: CwtConfigCompletionContext, range: TextRange, text: String): CwtConfigCompletionTemplateExpression? {
             run {

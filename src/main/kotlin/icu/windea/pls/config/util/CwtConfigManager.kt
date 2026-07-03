@@ -26,7 +26,6 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
@@ -47,7 +46,6 @@ import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.paths.CwtConfigPath
-import icu.windea.pls.model.paths.ParadoxPath
 import kotlin.io.path.name
 
 object CwtConfigManager {

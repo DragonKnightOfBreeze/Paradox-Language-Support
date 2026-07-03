@@ -46,7 +46,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
                 val description = ChronicleBundle.message("inspection.localisation.unresolvedTextIcon.desc", name)
-                holder.registerProblem(location,  description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }

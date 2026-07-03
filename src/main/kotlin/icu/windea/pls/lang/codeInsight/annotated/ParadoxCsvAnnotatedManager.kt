@@ -2,8 +2,8 @@ package icu.windea.pls.lang.codeInsight.annotated
 
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.model.type.ParadoxTypeResolver
 

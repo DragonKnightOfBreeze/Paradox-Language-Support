@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.actions.settings
 
 import com.intellij.openapi.project.Project
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.ui.settings.ParadoxGameSettingsDialog
 import icu.windea.pls.lang.ui.settings.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxRootInfo

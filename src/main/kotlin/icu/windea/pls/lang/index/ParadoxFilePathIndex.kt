@@ -14,7 +14,7 @@ import java.util.*
  * 键为相对于入口目录的路径。
  */
 class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
-    private val inputFilter = FileBasedIndex.InputFilter {  it.fileInfo != null }
+    private val inputFilter = FileBasedIndex.InputFilter { it.fileInfo != null }
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 

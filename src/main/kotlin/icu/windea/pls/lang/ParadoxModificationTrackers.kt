@@ -5,8 +5,8 @@ import com.intellij.openapi.util.SimpleModificationTracker
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filePathPatterns
-import icu.windea.pls.core.util.PatternsBasedModificationTracker
 import icu.windea.pls.core.util.MergedModificationTracker
+import icu.windea.pls.core.util.PatternsBasedModificationTracker
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement

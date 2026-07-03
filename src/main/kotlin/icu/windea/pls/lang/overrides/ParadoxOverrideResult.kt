@@ -15,7 +15,7 @@ import com.intellij.psi.PsiElement
  * @see ParadoxOverrideStrategy
  * @see ParadoxOverrideService
  */
-data class ParadoxOverrideResult<T: PsiElement>(
+data class ParadoxOverrideResult<T : PsiElement>(
     val key: String,
     val target: T,
     val results: List<T>,

@@ -7,4 +7,4 @@ import com.intellij.psi.PsiLiteralValue
  * @see CwtNumberExpressionElement
  * @see CwtStringExpressionElement
  */
-interface CwtLiteralValue: PsiLiteralValue
+interface CwtLiteralValue : PsiLiteralValue

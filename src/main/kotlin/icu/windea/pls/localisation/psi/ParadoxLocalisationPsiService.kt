@@ -18,7 +18,7 @@ object ParadoxLocalisationPsiService {
         return true
     }
 
-    fun isStrictPropertyContext(element: PsiElement) : Boolean {
+    fun isStrictPropertyContext(element: PsiElement): Boolean {
         return element is ParadoxLocalisationFile || element is ParadoxLocalisationPropertyList
     }
 

@@ -13,7 +13,6 @@ import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import kotlin.collections.plusAssign
 
 object ParadoxExpressionInspectionService {
     fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {

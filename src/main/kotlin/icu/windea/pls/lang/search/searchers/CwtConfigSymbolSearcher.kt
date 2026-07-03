@@ -8,8 +8,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.lang.index.CwtConfigSymbolIndex
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.CwtConfigSymbolIndex
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.CwtConfigSearchContext

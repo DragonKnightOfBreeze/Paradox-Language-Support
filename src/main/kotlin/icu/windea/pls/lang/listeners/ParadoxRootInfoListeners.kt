@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.listeners
 
 import com.intellij.util.application
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.settings.ParadoxGameDescriptorSettingsState
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**

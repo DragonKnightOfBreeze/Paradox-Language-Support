@@ -6,7 +6,7 @@ import icu.windea.pls.core.lookupWithOffset
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 @Suppress("UNUSED_PARAMETER")
-object CwtParserUtil: GeneratedParserUtilBase() {
+object CwtParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkEol(b: PsiBuilder, l: Int): Boolean {
         val (next) = b.lookupWithOffset(0, forward = true)

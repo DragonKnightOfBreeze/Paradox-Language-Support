@@ -49,7 +49,6 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(ChronicleBundle.message("semantic.displayName.commandFieldPrefix"), ParadoxLocalisationHighlighterColors.COMMAND_FIELD_PREFIX),
         AttributesDescriptor(ChronicleBundle.message("semantic.displayName.databaseObjectType"), ParadoxLocalisationHighlighterColors.DATABASE_OBJECT_TYPE),
         AttributesDescriptor(ChronicleBundle.message("semantic.displayName.databaseObject"), ParadoxLocalisationHighlighterColors.DATABASE_OBJECT),
-
     )
 
     private val _tagToDescriptorMap = mapOf(

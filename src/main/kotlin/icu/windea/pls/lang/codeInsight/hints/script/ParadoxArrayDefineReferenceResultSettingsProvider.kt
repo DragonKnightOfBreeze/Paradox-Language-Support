@@ -15,7 +15,7 @@ import javax.swing.JComponent
 /**
  * @see ParadoxArrayDefineReferenceResultHintsProvider
  */
-class ParadoxArrayDefineReferenceResultSettingsProvider: InlayHintsCustomSettingsProvider<Settings> {
+class ParadoxArrayDefineReferenceResultSettingsProvider : InlayHintsCustomSettingsProvider<Settings> {
     data class Settings(
         val showArrayValue: Boolean,
         val truncateArrayValue: Int,

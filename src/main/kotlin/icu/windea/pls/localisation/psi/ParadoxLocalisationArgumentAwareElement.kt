@@ -9,6 +9,6 @@ import com.intellij.psi.PsiElement
  * @see ParadoxLocalisationCommand
  * @see ParadoxLocalisationIcon
  */
-interface ParadoxLocalisationArgumentAwareElement: PsiElement {
+interface ParadoxLocalisationArgumentAwareElement : PsiElement {
     val argumentElement: ParadoxLocalisationArgument?
 }

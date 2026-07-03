@@ -56,7 +56,7 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
     }
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-         ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
+        ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

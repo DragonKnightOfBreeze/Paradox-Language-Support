@@ -32,7 +32,7 @@ abstract class CopyLocalisationNameIntentionBase : ModCommandAction, DumbAware {
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileService.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE}
+        return ParadoxPsiFileService.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }
 

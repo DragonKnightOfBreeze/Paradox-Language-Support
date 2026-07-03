@@ -66,7 +66,7 @@ sealed interface ParadoxMatchResult {
             if (skip(options)) return true
 
             val cache = value
-            if(cache is Boolean) return cache
+            if (cache is Boolean) return cache
 
             // NOTE 2.1.1 it's necessary to suppress outputting error logs and throwing exceptions here
             // - java.lang.Throwable: Indexing process should not rely on non-indexed file data.

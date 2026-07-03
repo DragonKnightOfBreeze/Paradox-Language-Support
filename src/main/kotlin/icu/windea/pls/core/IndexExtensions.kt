@@ -2,9 +2,7 @@
 
 package icu.windea.pls.core
 
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.stubs.StubIndexExtension
-import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil

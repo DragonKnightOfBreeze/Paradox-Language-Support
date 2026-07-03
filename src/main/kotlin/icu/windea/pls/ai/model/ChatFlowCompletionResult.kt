@@ -9,7 +9,7 @@ class ChatFlowCompletionResult {
     val text = StringBuilder()
     var response: ChatResponse? = null
     var error: Throwable? = null
-    
+
     fun statusText(): String {
         return when (status) {
             ChatFlowCompletionStatus.Processing -> "Processing"

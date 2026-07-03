@@ -11,7 +11,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 /***
  * 检查当前脚本文件是否被声明为内联脚本。
  */
-class DeclaredInlineScriptInspection: InlineScriptInspectionBase() {
+class DeclaredInlineScriptInspection : InlineScriptInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         // still check if `inference.inlineScriptConfig` is not enabled
         // if (!getSettings().inference.inlineScriptConfig) return null

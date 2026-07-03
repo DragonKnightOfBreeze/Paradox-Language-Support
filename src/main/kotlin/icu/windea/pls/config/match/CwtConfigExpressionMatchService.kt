@@ -37,7 +37,7 @@ object CwtConfigExpressionMatchService {
         return definitionType == ParadoxDefinitionTypes.event
     }
 
-    fun matchesExternalReference(dataExpression: CwtDataExpression) : Boolean {
+    fun matchesExternalReference(dataExpression: CwtDataExpression): Boolean {
         return matchesShaderEffect(dataExpression) || matchesMeshLocator(dataExpression)
     }
 

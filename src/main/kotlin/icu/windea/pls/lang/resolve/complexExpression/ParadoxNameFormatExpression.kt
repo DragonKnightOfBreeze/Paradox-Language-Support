@@ -413,7 +413,7 @@ private object ParadoxNameFormatExpressionResolver {
     }
 }
 
-private object ParadoxNameFormatExpressionValidator: ParadoxComplexExpressionValidatorScope {
+private object ParadoxNameFormatExpressionValidator : ParadoxComplexExpressionValidatorScope {
     @Suppress("UNUSED_PARAMETER")
     fun validate(expression: ParadoxNameFormatExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()

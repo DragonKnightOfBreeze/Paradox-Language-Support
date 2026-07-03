@@ -22,7 +22,7 @@ import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 /**
  * @see CwtDataTypes.ShaderEffect
  */
-class ParadoxShaderEffectExpressionSupport: ParadoxScriptExpressionSupportBase() {
+class ParadoxShaderEffectExpressionSupport : ParadoxScriptExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.ShaderEffect
     }
@@ -48,7 +48,7 @@ class ParadoxShaderEffectExpressionSupport: ParadoxScriptExpressionSupportBase()
 /**
  * @see CwtDataTypes.MeshLocator
  */
-class ParadoxMeshLocatorExpressionSupport: ParadoxScriptExpressionSupportBase() {
+class ParadoxMeshLocatorExpressionSupport : ParadoxScriptExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.MeshLocator
     }

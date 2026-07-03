@@ -43,7 +43,7 @@ sealed interface MathOperator {
             override val precedence get() = 2
         }
 
-        data object Pow: Binary {
+        data object Pow : Binary {
             override val precedence get() = 2
         }
     }

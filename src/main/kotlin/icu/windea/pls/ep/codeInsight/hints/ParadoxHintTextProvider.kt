@@ -52,7 +52,7 @@ interface ParadoxHintTextProvider {
     }
 
     companion object INSTANCE {
-        @JvmField  val EP_NAME = ExtensionPointName<ParadoxHintTextProvider>("icu.windea.pls.hintTextProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxHintTextProvider>("icu.windea.pls.hintTextProvider")
     }
 }
 

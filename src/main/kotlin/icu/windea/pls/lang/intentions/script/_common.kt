@@ -17,10 +17,10 @@ class CopyDefinitionNameIntention : CopyDefinitionNameIntentionBase()
 
 class CopyDefinitionLocalizedNameIntention : CopyDefinitionLocalizedNameIntentionBase()
 
-class CopyLocalisationNameIntention: CopyLocalisationNameIntentionBase()
+class CopyLocalisationNameIntention : CopyLocalisationNameIntentionBase()
 
-class CopyLocalisationTextIntention: CopyLocalisationTextIntentionBase()
+class CopyLocalisationTextIntention : CopyLocalisationTextIntentionBase()
 
-class CopyLocalisationTextAsPlainIntention: CopyLocalisationTextAsPlainIntentionBase()
+class CopyLocalisationTextAsPlainIntention : CopyLocalisationTextAsPlainIntentionBase()
 
-class CopyLocalisationTextAsHtmlIntention: CopyLocalisationTextAsHtmlIntentionBase()
+class CopyLocalisationTextAsHtmlIntention : CopyLocalisationTextAsHtmlIntentionBase()

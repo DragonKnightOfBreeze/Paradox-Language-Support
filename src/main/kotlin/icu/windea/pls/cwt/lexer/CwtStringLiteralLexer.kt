@@ -5,4 +5,4 @@ import com.intellij.psi.tree.IElementType
 
 class CwtStringLiteralLexer(
     originalLiteralToken: IElementType
-): StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$", false, false)
+) : StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$", false, false)

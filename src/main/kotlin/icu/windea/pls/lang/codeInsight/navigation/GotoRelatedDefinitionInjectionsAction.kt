@@ -9,11 +9,11 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 
 /**
  * 导航到当前定义的相关注入。

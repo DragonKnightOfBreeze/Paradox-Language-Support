@@ -7,7 +7,7 @@ package icu.windea.pls.ai.model.errors
 data class AnthropicErrorInfo(
     val type: String, // "error"
     val error: Error,
-): AiErrorInfo {
+) : AiErrorInfo {
     data class Error(
         val type: String,
         val message: String,

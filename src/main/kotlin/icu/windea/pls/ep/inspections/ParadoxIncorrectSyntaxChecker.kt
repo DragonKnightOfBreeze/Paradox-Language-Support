@@ -20,7 +20,7 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
  * @see icu.windea.pls.lang.inspections.localisation.common.IncorrectSyntaxInspection
  */
 @WithGameTypeEP
-interface ParadoxIncorrectSyntaxChecker: DumbAware {
+interface ParadoxIncorrectSyntaxChecker : DumbAware {
     fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext)
 
     companion object INSTANCE {

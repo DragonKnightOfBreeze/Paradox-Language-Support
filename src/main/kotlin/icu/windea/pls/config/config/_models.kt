@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 
 /**
  * @see CwtMemberConfig
