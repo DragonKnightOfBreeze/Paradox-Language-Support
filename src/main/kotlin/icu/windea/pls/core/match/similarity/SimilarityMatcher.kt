@@ -7,7 +7,7 @@ package icu.windea.pls.core.match.similarity
  */
 interface SimilarityMatcher {
     /**
-     * 判断输入的字符串（[input]）是否匹配指定的候选项([candidate])。
+     * 判断输入的字符串（[input]）是否匹配指定的候选项（[candidate]）。
      *
      * @param ignoreCase 是否忽略大小写。
      */

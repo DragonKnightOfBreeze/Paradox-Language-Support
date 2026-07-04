@@ -5,6 +5,7 @@ import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 class ReplaceWithSimilarExpressionInListFix(
     element: PsiElement,
     private val replacements: Collection<SimilarityMatchResult>,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction, DumbAware {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
     override fun getText() = ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.name")

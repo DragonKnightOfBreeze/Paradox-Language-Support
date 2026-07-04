@@ -94,7 +94,7 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
 
     @Test
     fun rowTypeIsKey_unknown_failed() {
-        val tag = "Unexpected column name (row config: test_row_key, expect one of: id, number, status, flag)".toErrorTag()
+        val tag = "Unexpected column name (row config: test_row_key, expect one of: flag)".toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """

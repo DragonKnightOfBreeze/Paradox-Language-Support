@@ -8,6 +8,9 @@ import java.text.DecimalFormat
  * @property value 匹配项。
  * @property score 匹配分数。
  * @property strategy 匹配策略。
+ *
+ * @see SimilarityMatcher
+ * @see SimilarityMatchService
  */
 data class SimilarityMatchResult(
     val value: String,
