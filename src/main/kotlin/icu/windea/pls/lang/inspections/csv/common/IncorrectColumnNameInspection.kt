@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -37,23 +38,34 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val header = file.header
-        if (header == null) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-
-        val expectColumnSize = rowConfig.columns.size
 
         return object : ParadoxCsvVisitor() {
             override fun visitHeader(element: ParadoxCsvHeader) {
                 ProgressManager.checkCanceled()
-                // TODO 2.2.0
-                // val columnSize = ParadoxCsvPsiService.getColumnSize(element)
-                // if (columnSize == expectColumnSize) return
-                // if (rowConfig.skipLastRow && columnSize == expectColumnSize + 1) return
-                // val location = element.lastChild ?: return // latest non-empty column or separator
-                // val description = ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
-                // holder.registerProblem(location, description)
+                when (rowConfig.type) {
+                    CwtRowType.Key -> {
+                        val expectColumnNames = rowConfig.columns.mapTo(mutableSetOf()) { it.key }
+                        if (expectColumnNames.isEmpty()) return // skip (checked by `IncorrectColumnSizeInspection`)
+                        val expect = expectColumnNames.joinToString()
+                        for (columnElement in element.columnList) {
+                            if (columnElement.name in expectColumnNames) continue // continue (matched)
+                            val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expect)
+                            holder.registerProblem(columnElement, description)
+                        }
+                    }
+                    CwtRowType.Index -> {
+                        for ((columnIndex, columnElement) in element.columnList.withIndex()) {
+                            val columnConfig = rowConfig.columns.getOrNull(columnIndex) // skip (checked by `IncorrectColumnSizeInspection`)
+                            if (columnConfig == null) return
+                            val expectColumnName = columnConfig.key
+                            if (columnElement.name == expectColumnName) continue // continue (matched)
+                            val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
+                            holder.registerProblem(columnElement, description)
+                        }
+                    }
+                }
             }
         }
     }

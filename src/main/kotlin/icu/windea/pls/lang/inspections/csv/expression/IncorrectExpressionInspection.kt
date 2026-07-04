@@ -42,8 +42,6 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val header = file.header
-        if (header == null) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
