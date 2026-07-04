@@ -229,10 +229,10 @@ object CwtConfigSymbolManager {
         return when (configType) {
             CwtConfigTypes.Type, CwtConfigTypes.Subtype -> configType
             CwtConfigTypes.Enum, CwtConfigTypes.ComplexEnum -> CwtConfigTypes.Enum
+            CwtConfigTypes.Union -> configType
             CwtConfigTypes.DynamicValueType -> configType
             CwtConfigTypes.SingleAlias -> configType
             CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> CwtConfigTypes.Alias
-            CwtConfigTypes.Union -> configType
             CwtConfigTypes.Macro -> configType
             else -> null
         }

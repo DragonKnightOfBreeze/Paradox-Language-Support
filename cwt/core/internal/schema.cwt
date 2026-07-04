@@ -170,6 +170,15 @@ enums = {
     }
 }
 
+#### Container property to introduce [Union Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-union).
+unions = {
+    #### Introduce a [Union Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-union)
+    #### to apply union match with several data expression candidates.
+    union[$union$] = {
+        $data_expression
+    }
+}
+
 #### Container property to introduce [Dynamic Value Type Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-dynamic-value-type).
 values = {
     #### Introduce a [Dynamic Value Type Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-dynamic-value-type),
@@ -308,12 +317,6 @@ single_alias[$single_alias$] = $declaration
 #### for reusable config fragments. `{subName}` is a restricted data expression.
 ## api_status = $enum:api_status$
 alias_name[$alias_name$:$alias_sub_name$] = $declaration
-
-#### Introduce a [Union Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-union)
-#### to apply union match with several data expression candidates.
-union[$union$] = {
-    $data_expression
-}
 
 #### Introduce a [Macro Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-macro)
 #### to describe special language constructs (expressions, statements, etc.) that alter the game's runtime script parser behavior.

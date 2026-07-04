@@ -23,7 +23,8 @@ class ScopeCallStatementToNestedFormIntention : PsiUpdateModCommandAction<Parado
     override fun getFamilyName() = ChronicleBundle.message("intention.scopeCallStatementToNestedForm")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
-        val moveTo = ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, context.project, updater.caretOffset)
+        // 2.2.0 should use `context.offset` here to get expected behaviour
+        val moveTo = ParadoxScopeCallStatementManipulationService.convertToNestedForm(element, context.project, context.offset)
         if (moveTo >= 0) updater.moveCaretTo(moveTo)
     }
 

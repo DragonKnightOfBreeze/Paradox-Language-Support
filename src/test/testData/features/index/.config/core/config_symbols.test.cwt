@@ -12,6 +12,10 @@ enums = {
     }
 }
 
+unions = {
+    union[test_union] = { int float }
+}
+
 values = {
     value[test_value] = {
         dyn_value
@@ -33,8 +37,6 @@ alias[ref_alias_enum:enum[enum_in_alias]] = scalar
 alias[ref_alias_value:value[dynamic_in_alias]] = scalar
 
 alias[alias_no_colon] = scalar
-
-union[test_union] = { int float }
 
 macro[test_macro] = scalar
 
