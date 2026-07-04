@@ -10,8 +10,9 @@
 [![Discord][badge:discord]][url:discord]
 <br/>
 [![GitHub][badge:github]][url:github]
-[![Release][badge:release]][url:release]
+[![Build][badge:build]][url:build]
 [![License][badge:license]][url:license]
+[![Release][badge:release]][url:release]
 [![Plugin Homepage][badge:plugin-homepage]][url:plugin-homepage]
 [![Plugin Version][badge:plugin-version]][url:plugin-versions]
 [![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
@@ -220,8 +221,9 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 [badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
 [badge:doc-ref]: https://img.shields.io/badge/Reference%20Docs-2f89d7.svg
 [badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
-[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
+[badge:build]: https://img.shields.io/endpoint?label=build&url=https%3A%2F%2Factions-badge.atrox.dev%2FDragonKnightOfBreeze%2FParadox-Language-Support%2Fbadge%3Fref%3Dmaster
 [badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
+[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
 [badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg?logo=jetbrains
 [badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
 [badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
@@ -233,8 +235,9 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
-[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
+[url:build]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/workflows/build.yml
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
+[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
 [url:discord]: https://discord.gg/vBpbET2bXT

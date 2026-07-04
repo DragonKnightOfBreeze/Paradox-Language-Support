@@ -6,18 +6,18 @@
 # excluded local cwt configs
 cwt/cwtools-*-config
 
-# excluded ai workflow files
-CHRO*.md
-opencode.json*
-.opencode
-.firebender
-.idea/firebender
-
-# misc
-notebook
+# excluded local files
 lib
 tmp
 local.properties
+
+# excluded ai workflow files
+.opencode
+opencode.json*
+
+# excluded non-public documents
+notebook
+CHRONICLE.md
 
 ### Kotlin template
 # Compiled class file

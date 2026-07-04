@@ -11,8 +11,9 @@
 [![群聊][badge:qq-group]][url:qq-group]
 <br/>
 [![GitHub][badge:github]][url:github]
-[![Release][badge:release]][url:release]
+[![Build][badge:build]][url:build]
 [![License][badge:license]][url:license]
+[![Release][badge:release]][url:release]
 [![Plugin Homepage][badge:plugin-homepage]][url:plugin-homepage]
 [![Plugin Version][badge:plugin-version]][url:plugin-versions]
 [![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
@@ -235,8 +236,9 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
-[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
+[url:build]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/workflows/build.yml
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
+[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
