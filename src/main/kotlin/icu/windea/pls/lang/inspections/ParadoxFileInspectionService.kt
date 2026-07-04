@@ -17,6 +17,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.matchesAntPatterns
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -128,7 +129,7 @@ object ParadoxFileInspectionService {
         return buildList {
             this += RenameFileFix(locale, expectedFileName)
             if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
-        }.toTypedArray()
+        }.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 
     // org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention

@@ -3,6 +3,7 @@ package icu.windea.pls.extensions.diagram
 import com.intellij.diagram.DiagramCategoriesHolder
 import com.intellij.diagram.DiagramCategory
 import com.intellij.diagram.DiagramNodeContentManager
+import icu.windea.pls.core.collections.toArray
 import java.util.*
 
 /**
@@ -25,6 +26,6 @@ abstract class OrderedDiagramNodeContentManager : DiagramNodeContentManager {
     }
 
     override fun getEnabledCategories(): Array<DiagramCategory> {
-        return _enabledCategories.toTypedArray()
+        return _enabledCategories.toArray(DiagramCategory.EMPTY_ARRAY)
     }
 }

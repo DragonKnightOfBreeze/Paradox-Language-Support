@@ -12,6 +12,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
@@ -44,9 +45,9 @@ class NonTriggeredEventInspection : EventInspectionBase() {
     }
 
     private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
-        return buildList {
-            if (element.block != null) this += Fix()
-        }.toTypedArray()
+        val result = mutableListOf<LocalQuickFix>()
+        if (element.block != null) result += Fix()
+        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {

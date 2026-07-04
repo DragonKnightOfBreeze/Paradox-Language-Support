@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.fixes.QuoteLiteralFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -65,7 +66,6 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
         for (error in errors) {
             if (error.code == ParadoxComplexExpressionErrors.EXPRESSION_NOT_QUOTED) result += QuoteLiteralFix()
         }
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
+        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 }

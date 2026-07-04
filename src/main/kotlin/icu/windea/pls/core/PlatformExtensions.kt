@@ -65,6 +65,7 @@ import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.util.Tuple2
@@ -573,8 +574,7 @@ fun PsiReference.collectReferences(): Array<out PsiReference> {
         is PsiCompositeReference -> {
             val result = mutableListOf<PsiReference>()
             doCollectReferences(this, result)
-            if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
-            result.toTypedArray()
+            result.toArray(PsiReference.EMPTY_ARRAY)
         }
         else -> arrayOf(this)
     }

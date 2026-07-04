@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.ChronicleDocBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
@@ -29,8 +30,7 @@ object ParadoxLocalisationArgumentManager {
             val reference = ParadoxLocalisationTextColorPsiReference(element, rangeInElement)
             references += reference
         }
-        if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return references.toTypedArray()
+        return references.toArray(PsiReference.EMPTY_ARRAY)
     }
 
     fun getInfo(element: ParadoxLocalisationArgument): String {

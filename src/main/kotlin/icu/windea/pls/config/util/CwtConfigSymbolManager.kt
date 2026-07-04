@@ -12,6 +12,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.findKeywordsWithTextRanges
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.optimized
@@ -53,8 +54,7 @@ object CwtConfigSymbolManager {
         val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
-        if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return references.toTypedArray()
+        return references.toArray(PsiReference.EMPTY_ARRAY)
     }
 
     private fun getInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {

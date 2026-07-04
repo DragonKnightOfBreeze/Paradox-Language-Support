@@ -8,6 +8,7 @@ import com.intellij.ui.tree.LeafState
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.optimized
@@ -67,8 +68,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                 }
             }
         }
-        if (descriptors.isEmpty()) return HierarchyNodeDescriptor.EMPTY_ARRAY
-        return descriptors.toTypedArray()
+        return descriptors.toArray(HierarchyNodeDescriptor.EMPTY_ARRAY)
     }
 
     private fun buildSubtypeConfigChildren(descriptors: MutableList<HierarchyNodeDescriptor>, descriptor: ParadoxDefinitionHierarchyNodeDescriptor) {

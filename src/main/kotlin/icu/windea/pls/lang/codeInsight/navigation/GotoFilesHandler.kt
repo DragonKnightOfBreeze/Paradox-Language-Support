@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
@@ -34,7 +35,7 @@ class GotoFilesHandler : GotoTargetHandler() {
             }
         }
         if (targets.isNotEmpty()) targets.removeIf { it == file } // remove current file from targets
-        return GotoData(file, targets.distinct().toTypedArray(), emptyList())
+        return GotoData(file, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {

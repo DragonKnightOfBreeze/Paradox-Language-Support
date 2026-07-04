@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.inspections.ChronicleSuppressionUtil
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -28,10 +29,10 @@ class ParadoxCsvInspectionSuppressor : InspectionSuppressor {
         return buildList {
             run {
                 val fileName = file.name
-                add(SuppressForFileFix(SuppressionUtil.ALL, fileName))
-                add(SuppressForFileFix(toolId, fileName))
+                this += SuppressForFileFix(SuppressionUtil.ALL, fileName)
+                this += SuppressForFileFix(toolId, fileName)
             }
-        }.toTypedArray()
+        }.toArray(SuppressQuickFix.EMPTY_ARRAY)
     }
 
     private class SuppressForFileFix(

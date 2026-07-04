@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 
@@ -27,7 +28,7 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
         } ?: return null
         val relatedConfigs = ParadoxConfigService.getRelatedConfigs(file, offset)
         val targets = relatedConfigs.mapNotNull { it.pointer.element }
-        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {

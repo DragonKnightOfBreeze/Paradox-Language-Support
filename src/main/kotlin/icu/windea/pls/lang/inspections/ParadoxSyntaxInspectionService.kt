@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ReplaceStringFix
@@ -58,8 +59,7 @@ object ParadoxSyntaxInspectionService {
             }
             else -> {}
         }
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
+        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 
     private fun getReplaceWithAssignOperatorFix(element: PsiElement, context: ParadoxSyntaxInspectionContext): ReplaceStringFix {

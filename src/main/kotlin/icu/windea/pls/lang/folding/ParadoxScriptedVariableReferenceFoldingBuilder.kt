@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -65,6 +66,6 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
                 }
             }
         })
-        return allDescriptors.toTypedArray()
+        return allDescriptors.toArray(FoldingDescriptor.EMPTY_ARRAY)
     }
 }

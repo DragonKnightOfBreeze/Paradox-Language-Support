@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -49,15 +50,15 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         return buildList {
             run {
                 val fileName = file.name
-                add(SuppressForFileFix(SuppressionUtil.ALL, fileName))
-                add(SuppressForFileFix(toolId, fileName))
+                this += SuppressForFileFix(SuppressionUtil.ALL, fileName)
+                this += SuppressForFileFix(toolId, fileName)
             }
             run {
                 val definition = selectScope { element.parentDefinition().asProperty() } ?: return@run
                 val definitionInfo = definition.definitionInfo ?: return@run
                 val name = definitionInfo.name
                 val containerPointer = definition.createPointer<PsiElement>(file)
-                add(SuppressForDefinitionFix(toolId, name, containerPointer))
+                this += SuppressForDefinitionFix(toolId, name, containerPointer)
             }
             run {
                 // 2.1.0 兼容定义注入
@@ -65,10 +66,10 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return@run
                 val expression = definitionInjectionInfo.expression
                 val containerPointer = definitionInjection.createPointer<PsiElement>(file)
-                add(SuppressForDefinitionInjectionFix(toolId, expression, containerPointer))
+                this += SuppressForDefinitionInjectionFix(toolId, expression, containerPointer)
             }
-            add(SuppressForMemberFix(toolId))
-        }.toTypedArray()
+            this += SuppressForMemberFix(toolId)
+        }.toArray(SuppressQuickFix.EMPTY_ARRAY)
     }
 
     private class SuppressForFileFix(

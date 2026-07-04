@@ -9,6 +9,7 @@ import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
@@ -84,7 +85,6 @@ object ParadoxInspectionService {
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.collectFixes(element, expectedConfigs, result)
         }
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
+        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 }

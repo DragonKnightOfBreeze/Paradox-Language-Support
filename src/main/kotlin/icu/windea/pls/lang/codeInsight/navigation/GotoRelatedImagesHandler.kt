@@ -12,6 +12,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.anonymous
@@ -60,7 +61,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                         }
                     }
                 }
-                return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
+                return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
             }
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
@@ -76,7 +77,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                         if (iconFiles != null) targets.addAll(targets)
                     }
                 }
-                return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+                return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
             }
         }
     }

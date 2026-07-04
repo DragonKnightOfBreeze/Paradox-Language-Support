@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
@@ -36,7 +37,7 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
             }
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
-        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {

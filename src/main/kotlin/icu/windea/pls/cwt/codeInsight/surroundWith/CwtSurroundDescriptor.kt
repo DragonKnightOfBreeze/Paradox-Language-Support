@@ -8,6 +8,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 
@@ -25,7 +26,7 @@ class CwtSurroundDescriptor : SurroundDescriptor {
         return PsiFileService.findElementsBetween(file, startOffset, endOffset) { getContainer(it, startOffset, endOffset) }
             .filter { it !is PsiWhiteSpace }
             .toList()
-            .toTypedArray<PsiElement>()
+            .toArray(PsiElement.EMPTY_ARRAY)
     }
 
     private fun getContainer(element: PsiElement, startOffset: Int, endOffset: Int): CwtBoundMemberContainer? {

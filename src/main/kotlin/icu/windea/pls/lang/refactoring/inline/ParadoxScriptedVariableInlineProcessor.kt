@@ -19,6 +19,7 @@ import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -54,7 +55,7 @@ class ParadoxScriptedVariableInlineProcessor(
             ProgressManager.checkCanceled()
             usages.add(UsageInfo(reference.element))
         }
-        return usages.toTypedArray()
+        return usages.toArray(UsageInfo.EMPTY_ARRAY)
     }
 
     override fun refreshElements(elements: Array<out PsiElement>) {

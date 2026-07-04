@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
@@ -57,7 +58,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         targets.addAll(result)
                     }
                 }
-                return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+                return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
             }
             element !is ParadoxScriptStringExpressionElement -> return null
             element.isDefinitionTypeKeyOrName() -> {
@@ -79,7 +80,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         }
                     }
                 }
-                return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
+                return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
             }
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
@@ -107,7 +108,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         if (result != null) targets.addAll(result)
                     }
                 }
-                return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+                return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
             }
         }
     }

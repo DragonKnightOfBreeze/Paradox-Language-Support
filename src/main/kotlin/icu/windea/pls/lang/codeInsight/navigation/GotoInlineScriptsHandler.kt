@@ -8,6 +8,7 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
@@ -36,7 +37,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
                 ParadoxInlineScriptManager.getInlineScriptFiles(expression, project, element).let { targets.addAll(it) }
             }
         }
-        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {

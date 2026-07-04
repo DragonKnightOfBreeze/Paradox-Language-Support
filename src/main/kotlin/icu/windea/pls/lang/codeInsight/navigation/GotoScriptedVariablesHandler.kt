@@ -8,6 +8,7 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
@@ -41,7 +42,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
             }
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
-        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {
