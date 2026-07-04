@@ -9,3 +9,11 @@ guide_example = {
 guide_example = {
     name = on_the_way
 }
+
+guide_example = {
+    name = hello_the_awakened
+}
+
+guide_example = {
+    name = hi_the_forever_seeker
+}

@@ -1,0 +1,7 @@
+d_percentage_field;d_int_percentage_field;d_date_field;d_date_field_formatted
+## @type string;string;string;string
+## @config_expression percentage_field;int_percentage_field;date_field;date_field[yyyy.MM.dd]
+0.1%;0%;2000.1.1;2000.01.01
+## @type string;string;string;string
+## @config_expression percentage_field;int_percentage_field;date_field;date_field[yyyy.MM.dd]
+99.9%;99%;2200.1.1;2200.01.01

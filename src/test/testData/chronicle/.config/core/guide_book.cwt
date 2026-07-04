@@ -1,13 +1,14 @@
 types = {
     ## type_key_filter = guide
-    type[guide] = {
-        path = "game/common/guides"
+    type[guide_for_data_types] = {
+        path = "game/common/guides/data_types"
         path_extension = .txt
         name_field = name
 
-        subtype[data_type] = {
-            category = data_type
-        }
+        subtype[basic] = { category = basic }
+        subtype[extra_basic] = { category = extra_basic }
+        subtype[complex] = { category = complex }
+        subtype[pattern_aware] = { category = pattern_aware }
     }
 
     ## type_key_filter = guide_example
@@ -19,115 +20,152 @@ types = {
 }
 
 ## replace_scopes = { this = any root = any }
-guide = {
+guide_for_data_types = {
     name = scalar
     category = enum[guide_category]
 
-    subtype[data_type] = {
+    subtype[basic] = {
         ## cardinality = 0..inf
-        basic_data_types = {
-            ## cardinality = 0..inf
-            d_any = $any
-            ## cardinality = 0..inf
-            d_bool = bool
-            ## cardinality = 0..inf
-            d_int = int
-            ## cardinality = 0..inf
-            d_int_ranged = int[0..10]
-            ## cardinality = 0..inf
-            d_float = float
-            ## cardinality = 0..inf
-            d_float_ranged = float[0.0..10.0]
-            ## cardinality = 0..inf
-            d_scalar = scalar
-            ## cardinality = 0..inf
-            d_color_field = color_field
-            ## cardinality = 0..inf
-            d_color_field_rgb = color[rgb]
-        }
+        d_any = $any
+        ## cardinality = 0..inf
+        d_bool = bool
+        ## cardinality = 0..inf
+        d_int = int
+        ## cardinality = 0..inf
+        d_int_ranged = int[0..10]
+        ## cardinality = 0..inf
+        d_float = float
+        ## cardinality = 0..inf
+        d_float_ranged = float[0.0..10.0]
+        ## cardinality = 0..inf
+        d_scalar = scalar
+        ## cardinality = 0..inf
+        d_color_field = color_field
+        ## cardinality = 0..inf
+        d_color_field_rgb = color[rgb]
+    }
 
+    subtype[extra_basic] = {
         ## cardinality = 0..inf
-        extra_basic_data_types = {
-            ## cardinality = 0..inf
+        d_percentage_field = percentage_field
+        ## cardinality = 0..inf
+        d_int_percentage_field = int_percentage_field
+        ## cardinality = 0..inf
+        d_date_field = date_field
+        ## cardinality = 0..inf
+        d_date_field_formatted = date_field[yyyy.MM.dd]
+    }
+
+    subtype[complex] = {
+        ## cardinality = 0..inf
+        d_definition = <guide_example>
+        ## cardinality = 0..inf
+        d_localisation = localisation
+        ## cardinality = 0..inf
+        d_synced_localisation = localisation_synced
+        ## cardinality = 0..inf
+        d_inline_localisation = localisation_inline
+        ## cardinality = 0..inf
+        d_modifier = <modifier>
+        ## cardinality = 0..inf
+        d_enum_value = enum[guide_example_enum]
+        ## cardinality = 0..inf
+        d_value = value[guide_example_tag]
+        ## cardinality = 0..inf
+        d_value_set = value_set[guide_example_tag]
+        ## cardinality = 0..inf
+        d_dynamic_value = dynamic_value[guide_example_tag]
+        ## cardinality = 0..inf
+        d_scope_field = scope_field
+        ## cardinality = 0..inf
+        d_scope = scope[[any]
+        ## cardinality = 0..inf
+        d_scope_character = scope[character]
+        ## cardinality = 0..inf
+        d_scope_group_geography = scope_group[geography]
+        ## cardinality = 0..inf
+        d_value_field = value_field
+        ## cardinality = 0..inf
+        d_value_field_ranged = value_field[0..10]
+        ## cardinality = 0..inf
+        d_int_value_field = int_value_field
+        ## cardinality = 0..inf
+        d_int_value_field_ranged = int_value_field[0..10]
+        ## cardinality = 0..inf
+        d_variable_field = variable_field
+        ## cardinality = 0..inf
+        d_variable_field_ranged = variable_field[0..10]
+        ## cardinality = 0..inf
+        d_int_variable_field = int_variable_field
+        ## cardinality = 0..inf
+        d_int_variable_field_ranged = int_variable_field[0..10]
+        ## cardinality = 0..inf
+        d_script_value_reference = $script_value_reference
+        ## cardinality = 0..inf
+        d_define_reference = $define_reference
+        ## cardinality = 0..inf
+        d_array_define_reference = $array_define_reference
+        ## cardinality = 0..inf
+        d_tags = $tags
+        ## cardinality = 0..inf
+        d_database_object = $database_object
+        ## cardinality = 0..inf
+        d_name_format_note = $name_format[note]
+        ## cardinality = 0..inf
+        d_union_value = union[guide_example_union]
+    }
+
+    subtype[pattern_aware] = {
+        ## cardinality = 0..inf
+        d_template == <guide_example>__enum[guide_example_enum]__value[guide_example_tag]
+        ## cardinality = 0..inf
+        d_glob = glob:hello*
+        ## cardinality = 0..inf
+        d_ant = ant:say/hello*
+        ## cardinality = 0..inf
+        d_regex = re:hello.*
+    }
+}
+
+rows = {
+    row[guide_table_for_data_types_basic] = {
+        path_pattern = "game/common/guides/data_types/*.basic.csv"
+
+        # d_any;d_bool;d_int;d_int_ranged;d_float;d_float_ranged;d_scalar
+        columns = {
+            d_any = $any
+            d_bool = bool
+            d_int = int
+            d_int_ranged = int[0..10]
+            d_float = float
+            d_float_ranged = float[0.0..10.0]
+            d_scalar = scalar
+        }
+    }
+
+    row[guide_table_for_data_types_extra_basic] = {
+        path_pattern = "game/common/guides/data_types/*.extra_basic.csv"
+
+        # d_percentage_field;d_int_percentage_field;d_date_field;d_date_field_formatted
+        columns = {
             d_percentage_field = percentage_field
-            ## cardinality = 0..inf
             d_int_percentage_field = int_percentage_field
-            ## cardinality = 0..inf
             d_date_field = date_field
-            ## cardinality = 0..inf
             d_date_field_formatted = date_field[yyyy.MM.dd]
         }
+    }
 
-        ## cardinality = 0..inf
-        complex_data_types = {
-            ## cardinality = 0..inf
+    row[guide_table_for_data_types_complex] = {
+        path_pattern = "game/common/guides/data_types/*.complex.csv"
+
+        # d_definition;d_enum_value;d_union_value;d_value;d_value_set;d_dynamic_value
+        columns = {
             d_definition = <guide_example>
-            ## cardinality = 0..inf
-            d_localisation = localisation
-            ## cardinality = 0..inf
-            d_synced_localisation = localisation_synced
-            ## cardinality = 0..inf
-            d_inline_localisation = localisation_inline
-            ## cardinality = 0..inf
-            d_modifier = <modifier>
-            ## cardinality = 0..inf
             d_enum_value = enum[guide_example_enum]
-            ## cardinality = 0..inf
-            d_value = value[guide_example_tag]
-            ## cardinality = 0..inf
-            d_value_set = value_set[guide_example_tag]
-            ## cardinality = 0..inf
-            d_dynamic_value = dynamic_value[guide_example_tag]
-            ## cardinality = 0..inf
-            d_scope_field = scope_field
-            ## cardinality = 0..inf
-            d_scope = scope[[any]
-            ## cardinality = 0..inf
-            d_scope_character = scope[character]
-            ## cardinality = 0..inf
-            d_scope_group_geography = scope_group[geography]
-            ## cardinality = 0..inf
-            d_value_field = value_field
-            ## cardinality = 0..inf
-            d_value_field_ranged = value_field[0..10]
-            ## cardinality = 0..inf
-            d_int_value_field = int_value_field
-            ## cardinality = 0..inf
-            d_int_value_field_ranged = int_value_field[0..10]
-            ## cardinality = 0..inf
-            d_variable_field = variable_field
-            ## cardinality = 0..inf
-            d_variable_field_ranged = variable_field[0..10]
-            ## cardinality = 0..inf
-            d_int_variable_field = int_variable_field
-            ## cardinality = 0..inf
-            d_int_variable_field_ranged = int_variable_field[0..10]
-            ## cardinality = 0..inf
-            d_script_value_reference = $script_value_reference
-            ## cardinality = 0..inf
-            d_define_reference = $define_reference
-            ## cardinality = 0..inf
-            d_array_define_reference = $array_define_reference
-            ## cardinality = 0..inf
-            d_tags = $tags
-            ## cardinality = 0..inf
-            d_database_object = $database_object
-            ## cardinality = 0..inf
-            d_name_format_note = $name_format[note]
-            ## cardinality = 0..inf
             d_union_value = union[guide_example_union]
-        }
-
-        ## cardinality = 0..inf
-        pattern_aware_data_types = {
-            ## cardinality = 0..inf
-            d_template == <guide_example>__enum[guide_example_enum]__value[guide_example_tag]
-            ## cardinality = 0..inf
-            d_glob = glob:hello*
-            ## cardinality = 0..inf
-            d_ant = ant:say/hello*
-            ## cardinality = 0..inf
-            d_regex = re:hello.*
+            d_value = value[guide_example_tag]
+            d_value_set = value_set[guide_example_tag]
+            d_dynamic_value = dynamic_value[guide_example_tag]
         }
     }
 }
@@ -138,7 +176,10 @@ guide_example = {
 
 enums = {
     enum[guide_category] = {
-        data_type
+        basic
+        extra_basic
+        complex
+        pattern_aware
     }
     enum[guide_example_enum] = {
         garden
@@ -147,12 +188,16 @@ enums = {
         domain
         world
         universe
+
+        unrevealed
     }
 }
 
-union[guide_example_union] = {
-    bool
-    enum[guide_example_enum]
-    <guide_example>
-    localisation
+unions = {
+    union[guide_example_union] = {
+        bool
+        enum[guide_example_enum]
+        <guide_example>
+        localisation
+    }
 }

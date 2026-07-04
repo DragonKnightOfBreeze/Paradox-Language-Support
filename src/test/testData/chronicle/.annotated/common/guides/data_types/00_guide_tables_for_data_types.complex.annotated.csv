@@ -1,0 +1,7 @@
+d_definition;d_enum_value;d_union_value;d_value;d_value_set;d_dynamic_value
+## @type string;string;boolean;string;string;string
+## @config_expression <guide_example>;enum[guide_example_enum];union[guide_example_union];value[guide_example_tag];value_set[guide_example_tag];dynamic_value[guide_example_tag]
+hello_the_awakened;unrevealed;no;name_is;what;ellipsis
+## @type string;string;boolean;string;string;string
+## @config_expression <guide_example>;enum[guide_example_enum];union[guide_example_union];value[guide_example_tag];value_set[guide_example_tag];dynamic_value[guide_example_tag]
+hi_the_forever_seeker;unrevealed;yes;name_is;the_unique_symbol;of_a_person

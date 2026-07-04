@@ -1,0 +1,10 @@
+d_any;d_bool;d_int;d_int_ranged;d_float;d_float_ranged;d_scalar
+## @type string;boolean;int;int;float;float;string
+## @config_expression $any;bool;int;int[0..10];float;float[0.0..10.0];scalar
+hello;yes;0;1;10.0;9.0;world
+## @type string;boolean;int;int;float;float;string
+## @config_expression $any;bool;int;int[0..10];float;float[0.0..10.0];scalar
+there_is;no;0;1;10.0;9.0;innate_wisdom_here
+## @type string;boolean;int;int;float;float;string
+## @config_expression $any;bool;int;int[0..10];float;float[0.0..10.0];scalar
+so_it's;yes;0;1;4.0;6.0;_time_to_waiting

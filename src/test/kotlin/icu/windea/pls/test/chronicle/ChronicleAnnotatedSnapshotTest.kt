@@ -5,6 +5,8 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.util.Tuple3
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.fileInfo
@@ -78,14 +80,24 @@ class ChronicleAnnotatedSnapshotTest : ChronicleSnapshotTest() {
 
     private fun annotateDataFiles(files: MutableList<VirtualFile>) {
         val annotatedLevel = ParadoxAnnotatedLevel.ALL
+        val failedInfos = mutableListOf<Tuple3<String, String, String>>()
         for (file in files) {
             val result = render(file, annotatedLevel) ?: continue
             val path = file.fileInfo?.path?.path ?: throw IllegalStateException()
             val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
             val annotatedFile = myFixture.configureByFile("chronicle/.annotated/$annotatedPath")
             println("Assert annotated data file: ${annotatedPath}")
-            assertEquals(annotatedFile.text.trimEnd(), result.trimEnd())
+            val expect = annotatedFile.text.trimEnd()
+            val actual = result.trimEnd()
+            if (expect != actual) failedInfos += tupleOf(annotatedPath, expect, actual)
         }
+        if (failedInfos.isEmpty()) return
+        for ((annotatedPath, expect) in failedInfos) {
+            println("Annotated file path: ${annotatedPath}")
+            println("Expect:\n${expect}")
+        }
+        val (_, expect, actual) = failedInfos.first()
+        assertEquals(expect, actual)
     }
 
     private fun render(file: VirtualFile, annotatedLevel: ParadoxAnnotatedLevel): String? {
