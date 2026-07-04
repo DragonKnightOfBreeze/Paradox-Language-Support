@@ -14,13 +14,12 @@ class GotoRelatedConfigsAction : BaseCodeInsightAction() {
 
     override fun getHandler() = handler
 
-    override fun update(event: AnActionEvent) {
-        val presentation = event.presentation
-        presentation.isEnabledAndVisible = false
-        val project = event.project ?: return
-        val editor = event.editor ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file.language !is ParadoxLanguage) return
-        presentation.isEnabledAndVisible = true
+        e.presentation.isEnabledAndVisible = true
     }
 }

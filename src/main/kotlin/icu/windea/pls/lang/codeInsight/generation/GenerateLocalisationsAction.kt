@@ -16,18 +16,17 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
 
     override fun getHandler() = handler
 
-    override fun update(event: AnActionEvent) {
-        val presentation = event.presentation
-        presentation.isEnabledAndVisible = false
-        val project = event.project ?: return
-        val editor = event.editor ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file !is ParadoxScriptFile && file !is ParadoxLocalisationFile) return
         if (file.fileInfo == null) return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         handler.updateContext(file, editor)
         if (handler.context == null) return
-        presentation.isEnabled = true
+        e.presentation.isEnabled = true
     }
 
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {

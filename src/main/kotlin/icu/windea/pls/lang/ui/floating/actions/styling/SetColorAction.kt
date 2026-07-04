@@ -26,10 +26,10 @@ class SetColorAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(event: AnActionEvent) {
-        val editor = event.editor ?: return
-        event.presentation.isEnabled = editor.document.isWritable
-        super.update(event)
+    override fun update(e: AnActionEvent) {
+        val editor = e.editor ?: return
+        e.presentation.isEnabled = editor.document.isWritable
+        super.update(e)
     }
 
     override fun isSelected(event: AnActionEvent): Boolean {

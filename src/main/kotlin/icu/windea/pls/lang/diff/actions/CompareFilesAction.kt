@@ -64,10 +64,9 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
 
         // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val file = findFile(e)
-        presentation.isEnabledAndVisible = file != null
+        e.presentation.isEnabledAndVisible = file != null
     }
 
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {

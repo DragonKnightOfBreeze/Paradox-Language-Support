@@ -27,8 +27,7 @@ sealed class OpenSettingsActionBase : DumbAwareAction() {
             return
         }
 
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         // 这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e) ?: return
         val rootInfo = file.fileInfo?.rootInfo ?: return
@@ -37,7 +36,7 @@ sealed class OpenSettingsActionBase : DumbAwareAction() {
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return
-        presentation.isEnabledAndVisible = true
+        e.presentation.isEnabledAndVisible = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {

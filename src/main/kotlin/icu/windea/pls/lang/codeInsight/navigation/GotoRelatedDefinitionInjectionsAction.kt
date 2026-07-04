@@ -22,22 +22,21 @@ class GotoRelatedDefinitionInjectionsAction : BaseCodeInsightAction() {
 
     override fun getHandler() = handler
 
-    override fun update(event: AnActionEvent) {
-        val presentation = event.presentation
-        presentation.isEnabledAndVisible = false
-        val project = event.project ?: return
-        val editor = event.editor ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
         if (!ParadoxPsiFileMatchService.isScriptFile(file)) return // 仅限有效的脚本文件
         if (!ParadoxPsiFileMatchService.isDefinitionInjectionSupported(file)) return // 忽略游戏类型不支持的情况
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         val element = findElement(file, editor.caretModel.offset) ?: return
         if (!element.isDefinitionTypeKeyOrName()) return
         val definition = selectScope { element.parentDefinition() } ?: return
         val definitionInfo = definition.definitionInfo ?: return
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
-        presentation.isEnabled = true
+        e.presentation.isEnabled = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {

@@ -22,15 +22,14 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         val project = e.project ?: return
         val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
-        presentation.isEnabled = configGroups.isNotEmpty()
+        e.presentation.isEnabled = configGroups.isNotEmpty()
     }
 
     override fun actionPerformed(e: AnActionEvent) {

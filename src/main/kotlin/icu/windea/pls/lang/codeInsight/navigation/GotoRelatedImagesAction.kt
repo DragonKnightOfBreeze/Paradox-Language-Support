@@ -26,17 +26,16 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
 
     override fun getHandler() = handler
 
-    override fun update(event: AnActionEvent) {
-        val presentation = event.presentation
-        presentation.isEnabledAndVisible = false
-        val project = event.project ?: return
-        val editor = event.editor ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
         if (!ParadoxPsiFileMatchService.isScriptFile(file)) return // 仅限有效的脚本文件
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         if (file.definitionInfo != null) {
-            presentation.isEnabled = true
+            e.presentation.isEnabled = true
             return
         }
         val element = findElement(file, editor.caretModel.offset) ?: return
@@ -45,7 +44,7 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
             element.isDefinitionTypeKeyOrName() -> true
             else -> ParadoxModifierManager.resolveModifier(element) != null
         }
-        presentation.isEnabled = isEnabled
+        e.presentation.isEnabled = isEnabled
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {

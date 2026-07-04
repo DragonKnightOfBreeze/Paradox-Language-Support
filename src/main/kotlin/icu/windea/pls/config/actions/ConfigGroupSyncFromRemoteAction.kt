@@ -22,12 +22,11 @@ class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
         // 如果当前文件是游戏或模组文件，相关配置启用且合法，则可见
         // 如果可见，则总是可用，即使本地规则仓库的状态是最新的
 
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
         val valid = CwtConfigRepositoryManager.isValidToSync()
-        presentation.isEnabledAndVisible = valid
+        e.presentation.isEnabledAndVisible = valid
     }
 
     override fun actionPerformed(e: AnActionEvent) {

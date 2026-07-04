@@ -20,11 +20,10 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
 
     override fun getHandler() = handler
 
-    override fun update(event: AnActionEvent) {
-        val presentation = event.presentation
-        presentation.isEnabledAndVisible = false
-        val project = event.project ?: return
-        val editor = event.editor ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
         if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage)) return // 仅限有效的脚本文件
@@ -32,7 +31,7 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
         val gameType = selectGameType(file) ?: return
         val element = findElement(file, editor.caretModel.offset) ?: return // 只要向上能找到符合条件的属性就行
         if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return
-        presentation.isEnabledAndVisible = true
+        e.presentation.isEnabledAndVisible = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {

@@ -17,15 +17,14 @@ abstract class HandlePathActionBase(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         if (!isVisible(e)) return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         if (!isEnabled(e)) return
         val targetPath = getTargetPath(e)
         if (targetPath == null) return
-        presentation.isEnabled = true
-        presentation.description = templatePresentation.description + " (" + targetPath + ")"
+        e.presentation.isEnabled = true
+        e.presentation.description = templatePresentation.description + " (" + targetPath + ")"
     }
 
     protected open fun isVisible(e: AnActionEvent): Boolean = true

@@ -38,9 +38,8 @@ interface ParadoxHierarchyActions {
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
-            val presentation = e.presentation
             val scopeType = settings.scopeType
-            presentation.text = ParadoxSearchScopeTypes.get(scopeType).text
+            e.presentation.text = ParadoxSearchScopeTypes.get(scopeType).text
         }
 
         override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
@@ -88,10 +87,9 @@ interface ParadoxHierarchyActions {
                 else -> null
             }
 
-            val presentation = e.presentation
             val visible = strategy != null
-            presentation.isEnabledAndVisible = visible
-            if (strategy != null) presentation.text = strategy.text
+            e.presentation.isEnabledAndVisible = visible
+            if (strategy != null) e.presentation.text = strategy.text
         }
 
         override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {

@@ -18,14 +18,14 @@ interface ParadoxDefinitionHierarchyActions {
     ) : ChangeHierarchyViewActionBase(text, description, icon) {
         override fun getTypeName() = type.text
 
-        override fun update(event: AnActionEvent) {
-            super.update(event)
-            val hierarchyBrowser = getHierarchyBrowser(event.dataContext)
+        override fun update(e: AnActionEvent) {
+            super.update(e)
+            val hierarchyBrowser = getHierarchyBrowser(e.dataContext)
             val definitionInfo = hierarchyBrowser?.castOrNull<ParadoxDefinitionHierarchyBrowser>()
                 ?.element?.castOrNull<ParadoxDefinitionElement>()
                 ?.definitionInfo
             val visible = definitionInfo != null && type.predicate(definitionInfo)
-            event.presentation.isVisible = visible
+            e.presentation.isVisible = visible
         }
 
         override fun actionPerformed(event: AnActionEvent) {

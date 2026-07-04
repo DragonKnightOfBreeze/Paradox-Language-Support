@@ -21,17 +21,16 @@ class EvaluateInlineMathAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
         val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file !is ParadoxScriptFile) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
-        presentation.isEnabled = true
+        e.presentation.isEnabled = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {

@@ -27,12 +27,12 @@ sealed class CreateRichTextAction : ToggleAction(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(event: AnActionEvent) {
-        val originalIcon = event.presentation.icon
-        super.update(event)
-        if (event.isFromContextMenu) {
+    override fun update(e: AnActionEvent) {
+        val originalIcon = e.presentation.icon
+        super.update(e)
+        if (e.isFromContextMenu) {
             // Restore original icon, as it will be disabled in popups, and we still want to show in GeneratePopup
-            event.presentation.icon = originalIcon
+            e.presentation.icon = originalIcon
         }
     }
 
