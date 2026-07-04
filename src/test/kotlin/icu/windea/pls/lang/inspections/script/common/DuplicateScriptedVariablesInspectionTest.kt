@@ -59,8 +59,7 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Highlig
     @Test
     fun smokeTest_failed() {
         val key = "message"
-        val description = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", key)
-        val tag = description.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", key).toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
         myFixture.configureByText("test.txt", """

@@ -1,0 +1,70 @@
+rows = {
+    row[test_row_key] = {
+        path = "common/test_rows/key"
+        type = key
+        columns = {
+            id = scalar
+            number = int[1..10]
+            status = bool
+            flag = value[test_column_flag]
+        }
+    }
+    row[test_row_key_skip_last_row] = {
+        path = "common/test_rows/key_skip_last_row"
+        type = key
+        skip_last_row = yes
+        columns = {
+            id = scalar
+            number = int[1..10]
+            status = bool
+            flag = value[test_column_flag]
+        }
+    }
+    row[test_row_key_skip_last_column] = {
+        path = "common/test_rows/key_skip_last_column"
+        type = key
+        skip_last_column = yes
+        columns = {
+            id = scalar
+            number = int[1..10]
+            status = bool
+            flag = value[test_column_flag]
+        }
+    }
+
+    row[test_row_index] = {
+        path = "common/test_rows/index"
+        type = value
+        columns = {
+            id = scalar
+            number = int[1..10]
+            status = bool
+            flag = value[test_column_flag]
+            status = bool
+        }
+    }
+    row[test_row_index_skip_last_row] = {
+        path = "common/test_rows/index_skip_last_row"
+        type = index
+        skip_last_row = yes
+        columns = {
+            id = scalar
+            number = int[1..10]
+            status = bool
+            flag = value[test_column_flag]
+            status = bool
+        }
+    }
+    row[test_row_index_skip_last_column] = {
+        path = "common/test_rows/index_skip_last_column"
+        type = index
+        skip_last_column = yes
+        columns = {
+            id = scalar
+            number = int[1..10]
+            status = bool
+            flag = value[test_column_flag]
+            status = bool
+        }
+    }
+}

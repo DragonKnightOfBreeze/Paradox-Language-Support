@@ -93,8 +93,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun stellaris_invalidNoDot() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -107,8 +107,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun stellaris_invalidEmptyPrefix() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", ".1")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", ".1").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -121,8 +121,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun stellaris_invalidEmptyNumber() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test.")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test.").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -135,8 +135,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun stellaris_invalidNonNumeric() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test.abc")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test.abc").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -149,8 +149,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun stellaris_invalidHyphen() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test-name.1")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test-name.1").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -163,8 +163,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun stellaris_invalidMultipleDots() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test.1.2")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test.1.2").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -209,8 +209,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun eu5_invalidNoDot() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test").toWarningTag()
+
         markFileInfo(ParadoxGameType.Eu5, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test
@@ -223,8 +223,8 @@ class IncorrectEventIdInspectionTest : BasePlatformTestCase(), HighlightingTestS
 
     @Test
     fun eu5_invalidHyphen() {
-        val desc = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test-name.1")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventId.desc", "test-name.1").toWarningTag()
+
         markFileInfo(ParadoxGameType.Eu5, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = test

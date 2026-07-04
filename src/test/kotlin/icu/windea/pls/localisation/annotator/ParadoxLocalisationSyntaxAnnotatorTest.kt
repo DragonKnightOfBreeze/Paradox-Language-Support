@@ -28,15 +28,14 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Highlight
 
     @Test
     fun testAdjacentIcons_errorAndFix() {
-        val msg = ChronicleBundle.message("message.adjacent.icon.unexpected")
-        val msgTag = msg.toErrorTag()
+        val tag = ChronicleBundle.message("message.adjacent.icon.unexpected").toErrorTag()
 
         // 两个相邻图标：£a££b£，应在第二个图标上报错
         myFixture.configureByText(
             "annotator_adjacent_icons.test.yml",
             """
             l_english:
-             KEY1:0 "£a£${msgTag.start}£b£${msgTag.end}"
+             KEY1:0 "£a£${tag.start}£b£${tag.end}"
             """.trimIndent()
         )
         myFixture.checkHighlighting(true, true, true)

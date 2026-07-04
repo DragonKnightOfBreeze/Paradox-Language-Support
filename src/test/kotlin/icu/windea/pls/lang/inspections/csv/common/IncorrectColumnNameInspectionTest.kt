@@ -6,8 +6,10 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.markRootDirectory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -25,6 +27,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     @Before
     fun doSetUp() {
         markIntegrationTest()
+        markRootDirectory("features/inspections")
+        markConfigDirectory("features/inspections/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
         myFixture.enableInspections(IncorrectColumnNameInspection::class.java)
     }
@@ -32,16 +36,159 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    // region noSmantic
+
     @Test
-    fun smokeTest_success() {
-        // TODO 2.2.0
+    fun noSemantic_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
         myFixture.configureByText("test.csv", """
-            key;number;status;tag;
-            k1;0;yes;red_tag;
+            id;number;status;flag;
+            k1;0;yes;red_flag;
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
-        myFixture.checkHighlighting(true, true, true)
+        myFixture.checkHighlighting()
     }
+
+    // endregion
+
+    // region rowTypeIsKey
+
+    @Test
+    fun rowTypeIsKey_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;
+            k1;0;yes;red_flag;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_missing_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;
+            k1;0;yes;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_unsorted_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;flag;status;
+            k1;0;red_flag;yes;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_unknown_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;unknown;
+            k1;0;yes;unknown;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_extraUnknown_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;unknown;
+            k1;0;yes;red_flag;unknown;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // region rowTypeIsIndex
+
+    @Test
+    fun rowTypeIsIndex_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;
+            k1;0;yes;red_flag;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_missing_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;
+            k1;0;yes;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_unsorted_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;flag;status;
+            k1;0;red_flag;yes;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_unknown_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;unknown;
+            k1;0;yes;unknown;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_extraUnknown_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;unknown;
+            k1;0;yes;red_flag;unknown;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_mismatchedSize_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;
+            k1;0;yes;red_flag;white_flag;another_flag;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
 }

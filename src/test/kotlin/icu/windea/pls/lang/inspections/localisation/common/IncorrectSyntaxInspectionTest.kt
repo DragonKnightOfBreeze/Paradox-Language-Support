@@ -31,8 +31,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
 
     @Test
     fun leftBracketEscape() {
-        val description = ChronicleEpBundle.message("incorrectSyntax.leftBracketEscape.desc")
-        val tag = description.toWarningTag()
+        val tag = ChronicleEpBundle.message("incorrectSyntax.leftBracketEscape.desc").toWarningTag()
 
         myFixture.configureByText("test.yml", """
             l_english:
@@ -46,10 +45,8 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
 
     @Test
     fun danglingEndMarker() {
-        val description1 = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.1")
-        val tag1 = description1.toWarningTag()
-        val description2 = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.2")
-        val tag2 = description2.toWarningTag()
+        val tag1 = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.1").toWarningTag()
+        val tag2 = ChronicleEpBundle.message("incorrectSyntax.danglingEndMarker.desc.2").toWarningTag()
 
         myFixture.configureByText("test.yml", """
             l_english:

@@ -46,9 +46,10 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         return object : ParadoxCsvVisitor() {
             override fun visitColumnContainer(element: ParadoxCsvColumnContainer) {
                 ProgressManager.checkCanceled()
+                if(rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
                 val columnSize = ParadoxCsvPsiService.getColumnSize(element)
                 if (columnSize == expectColumnSize) return
-                if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return
+                if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
                 val location = element.lastChild ?: return // latest non-empty column or separator
                 val description = ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
                 holder.registerProblem(location, description)

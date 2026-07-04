@@ -49,7 +49,8 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                         val expectColumnNames = rowConfig.columns.mapTo(mutableSetOf()) { it.key }
                         if (expectColumnNames.isEmpty()) return // skip (checked by `IncorrectColumnSizeInspection`)
                         val expect = expectColumnNames.joinToString()
-                        for (columnElement in element.columnList) {
+                        for ((columnIndex, columnElement) in element.columnList.withIndex()) {
+                            if (columnIndex >= rowConfig.columns.size) return // skip (checked by `IncorrectColumnSizeInspection`)
                             if (columnElement.name in expectColumnNames) continue // continue (matched)
                             val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expect)
                             holder.registerProblem(columnElement, description)
@@ -57,8 +58,8 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                     }
                     CwtRowType.Index -> {
                         for ((columnIndex, columnElement) in element.columnList.withIndex()) {
-                            val columnConfig = rowConfig.columns.getOrNull(columnIndex) // skip (checked by `IncorrectColumnSizeInspection`)
-                            if (columnConfig == null) return
+                            if (columnIndex >= rowConfig.columns.size) return // skip (checked by `IncorrectColumnSizeInspection`)
+                            val columnConfig = rowConfig.columns[columnIndex]
                             val expectColumnName = columnConfig.key
                             if (columnElement.name == expectColumnName) continue // continue (matched)
                             val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)

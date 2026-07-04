@@ -48,8 +48,7 @@ class UnsupportedInlineMathInspectionTest : BasePlatformTestCase(), Highlighting
 
     @Test
     fun assetFile_stellaris() {
-        val description = ChronicleBundle.message("inspection.script.unsupportedInlineMath.desc.1")
-        val tag = description.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.unsupportedInlineMath.desc.1").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.stellaris.asset")
         myFixture.configureByText("test.stellaris.asset", "key = ${tag.start}@[ 1 + 1 ]${tag.end}")

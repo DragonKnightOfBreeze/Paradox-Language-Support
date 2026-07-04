@@ -42,8 +42,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Highli
     @Test
     fun simple_fios() {
         val key = "var"
-        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/99_scripted_variables.txt")
         myFixture.configureByText("99_scripted_variables.txt", """
@@ -62,8 +61,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Highli
     @Test
     fun simple_lios() {
         val key = "var"
-        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """
@@ -82,8 +80,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Highli
     @Test
     fun simple_samePath() {
         val key = "var"
-        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """

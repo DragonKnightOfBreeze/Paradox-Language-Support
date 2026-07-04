@@ -45,8 +45,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
         // 比较运算符，值可表示数值 - 不应触发警告
         // 非比较运算符 - 不应触发警告
 
-        val description = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.1")
-        val tag = description.toWarningTag()
+        val tag = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.1").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
         myFixture.configureByText("test.txt", """
@@ -74,8 +73,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), HighlightingTestSc
         // 匹配的规则使用 = 分隔符，比较运算符不被允许 - 应触发警告
         // 匹配的规则使用 == 分隔符，比较运算符被允许 - 不应触发警告
 
-        val description = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.2")
-        val tag = description.toWarningTag()
+        val tag = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.2").toWarningTag()
 
         val settings = ChronicleConfigSettings.getInstance().state.features
         settings.checkComparisonOperators = true
