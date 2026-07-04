@@ -67,8 +67,8 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
     }
 
     @Test
-    fun rowTypeIsKey_smoke_failed() {
-        val tag1 = "Cannot resolve expression `1.234` (row config: test_row_key, expect matching: int[1..10])".toErrorTag()
+    fun rowTypeIsKey_failed() {
+        val tag1 = "Cannot resolve expression `1.234` (row config: test_row_key, expect matching: int[0..10])".toErrorTag()
         val tag2 = "Cannot resolve expression `not` (row config: test_row_key, expect matching: bool)".toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
@@ -82,7 +82,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
     }
 
     @Test
-    fun rowTypeIsKey_smoke_lastRowIgnored() {
+    fun rowTypeIsKey_skipLastRow_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_row/test.csv")
         myFixture.configureByText("test.csv", """
             id;number;status;flag
@@ -95,7 +95,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
     }
 
     @Test
-    fun rowTypeIsKey_smoke_lastColumnIgnored() {
+    fun rowTypeIsKey_skipLastColumn_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
         myFixture.configureByText("test.csv", """
             id;number;status;flag;ignored
@@ -123,8 +123,8 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
     }
 
     @Test
-    fun rowTypeIsIndex_smoke_failed() {
-        val tag1 = "Cannot resolve expression `1.234` (row config: test_row_index, expect matching: int[1..10])".toErrorTag()
+    fun rowTypeIsIndex_failed() {
+        val tag1 = "Cannot resolve expression `1.234` (row config: test_row_index, expect matching: int[0..10])".toErrorTag()
         val tag2 = "Cannot resolve expression `not` (row config: test_row_index, expect matching: bool)".toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
@@ -138,7 +138,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
     }
 
     @Test
-    fun rowTypeIsIndex_smoke_lastRowIgnored() {
+    fun rowTypeIsIndex_skipLastRow_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_row/test.csv")
         myFixture.configureByText("test.csv", """
             id;number;status;flag;status
@@ -151,7 +151,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
     }
 
     @Test
-    fun rowTypeIsIndex_smoke_lastColumnIgnored() {
+    fun rowTypeIsIndex_skipLastColumn_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_column/test.csv")
         myFixture.configureByText("test.csv", """
             id;number;status;flag;status;ignored

@@ -50,7 +50,12 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                         if (expectColumnNames.isEmpty()) return // skip (checked by `IncorrectColumnSizeInspection`)
                         val expect = expectColumnNames.joinToString()
                         for ((columnIndex, columnElement) in element.columnList.withIndex()) {
-                            if (columnIndex >= rowConfig.columns.size) return // skip (checked by `IncorrectColumnSizeInspection`)
+                            if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) continue // ignored
+                            if (columnIndex >= rowConfig.columns.size) {
+                                val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.3", rowConfig.name)
+                                holder.registerProblem(columnElement, description)
+                                return // skip (no future checks)
+                            }
                             if (columnElement.name in expectColumnNames) continue // continue (matched)
                             val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expect)
                             holder.registerProblem(columnElement, description)
@@ -58,7 +63,12 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                     }
                     CwtRowType.Index -> {
                         for ((columnIndex, columnElement) in element.columnList.withIndex()) {
-                            if (columnIndex >= rowConfig.columns.size) return // skip (checked by `IncorrectColumnSizeInspection`)
+                            if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) continue // ignored
+                            if (columnIndex >= rowConfig.columns.size) {
+                                val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.3", rowConfig.name)
+                                holder.registerProblem(columnElement, description)
+                                return // skip (no future checks)
+                            }
                             val columnConfig = rowConfig.columns[columnIndex]
                             val expectColumnName = columnConfig.key
                             if (columnElement.name == expectColumnName) continue // continue (matched)

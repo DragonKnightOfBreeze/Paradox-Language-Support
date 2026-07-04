@@ -41,13 +41,12 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
-        val expectColumnSize = rowConfig.columns.size
-
         return object : ParadoxCsvVisitor() {
             override fun visitColumnContainer(element: ParadoxCsvColumnContainer) {
                 ProgressManager.checkCanceled()
                 if(rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
                 val columnSize = ParadoxCsvPsiService.getColumnSize(element)
+                val expectColumnSize = rowConfig.columns.size
                 if (columnSize == expectColumnSize) return
                 if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
                 val location = element.lastChild ?: return // latest non-empty column or separator

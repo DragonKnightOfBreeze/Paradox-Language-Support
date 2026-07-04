@@ -36,16 +36,14 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // TODO 2.2.0 pass
-
     // region noSmantic
 
     @Test
     fun noSemantic_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;
+            id;number;status;flag
+            k1;0;yes;red_flag
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -60,8 +58,8 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsKey_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;
+            id;number;status;flag
+            k1;0;yes;red_flag
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -69,11 +67,13 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsKey_smoke_failed() {
+    fun rowTypeIsKey_failed() {
+        val tag = "Number out of range (expect matching range: [0..10], actual: 9,999)".toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;9999;yes;red_flag;
+            id;number;status;flag
+            k1;${tag.start}9999${tag.end};yes;red_flag
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -81,12 +81,24 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsKey_some_lastRowIgnored() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+    fun rowTypeIsKey_skipLastRow_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_row/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;9999;yes;red_flag;
-            k1;4444;yes;red_flag;
+            id;number;status;flag
+            k1;0;yes;red_flag
+            k1;4444;yes;red_flag
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_skipLastColumn_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;ignored
+            k1;0;yes;red_flag;ignored
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -110,11 +122,13 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsIndex_smoke_failed() {
+    fun rowTypeIsIndex_failed() {
+        val tag = "Number out of range (expect matching range: [0..10], actual: 9,999)".toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
             id;number;status;flag;status
-            k1;9999;yes;red_flag;no
+            k1;${tag.start}9999${tag.end};yes;red_flag;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -122,12 +136,24 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsIndex_some_lastRowIgnored() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+    fun rowTypeIsIndex_skipLastRow_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_row/test.csv")
         myFixture.configureByText("test.csv", """
             id;number;status;flag;status
-            k1;9999;yes;red_flag;no
+            k1;0;yes;red_flag;no
             k1;4444;yes;red_flag;no
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_skipLastColumn_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;status;ignored
+            k1;0;yes;red_flag;no;ignored
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)

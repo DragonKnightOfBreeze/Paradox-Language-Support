@@ -44,8 +44,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun noSemantic_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;
+            id;number;status;flag
+            k1;0;yes;red_flag
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -60,8 +60,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsKey_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;
+            id;number;status;flag
+            k1;0;yes;red_flag
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -72,8 +72,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsKey_missing_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;
-            k1;0;yes;
+            id;number;status
+            k1;0;yes
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -84,8 +84,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsKey_unsorted_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;flag;status;
-            k1;0;red_flag;yes;
+            id;number;flag;status
+            k1;0;red_flag;yes
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -94,10 +94,12 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
 
     @Test
     fun rowTypeIsKey_unknown_failed() {
+        val tag = "Unexpected column name (row config: test_row_key, expect one of: id, number, status, flag)".toErrorTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;unknown;
-            k1;0;yes;unknown;
+            id;number;status;${tag.start}unknown${tag.end}
+            k1;0;yes;unknown
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -105,11 +107,75 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsKey_extraUnknown_ignored() {
+    fun rowTypeIsKey_extraUnknown_failed() {
+        val tag = "Unexpected column name (row config: test_row_key, column index out of bound)".toErrorTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;unknown;
-            k1;0;yes;red_flag;unknown;
+            id;number;status;flag;${tag.start}unknown${tag.end}
+            k1;0;yes;red_flag;unknown
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_mismatchedHeaderSize_failed() {
+        val tag = "Unexpected column name (row config: test_row_key, column index out of bound)".toErrorTag()
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;${tag.start}plus${tag.end}
+            k1;0;yes;red_flag
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_mismatchedRowSize_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag
+            k1;0;yes;red_flag;plus;plus
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_skipLastColumn_correct_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag
+            k1;0;yes;red_flag
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_skipLastColumn_ignoreHeaderColumn_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;end_column
+            k1;0;yes;red_flag;
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsKey_skipLastColumn_ignoreRowColumn_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;end_column
+            k1;0;yes;red_flag;123
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -124,8 +190,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsIndex_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;
+            id;number;status;flag;status
+            k1;0;yes;red_flag;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -136,8 +202,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsIndex_missing_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;
-            k1;0;yes;
+            id;number;status
+            k1;0;yes
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -146,10 +212,13 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
 
     @Test
     fun rowTypeIsIndex_unsorted_failed() {
+        val tag2 = "Unexpected column name (row config: test_row_index, expect: status)".toErrorTag()
+        val tag3 = "Unexpected column name (row config: test_row_index, expect: flag)".toErrorTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;flag;status;
-            k1;0;red_flag;yes;
+            id;number;${tag2.start}flag${tag2.end};${tag3.start}status${tag3.end};status
+            k1;0;red_flag;yes;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -158,10 +227,12 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
 
     @Test
     fun rowTypeIsIndex_unknown_failed() {
+        val tag = "Unexpected column name (row config: test_row_index, expect: status)".toErrorTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;unknown;
-            k1;0;yes;unknown;
+             id;number;status;flag;${tag.start}unknown${tag.end}
+            k1;0;yes;red_flag;unknown
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -169,11 +240,13 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsIndex_extraUnknown_ignored() {
+    fun rowTypeIsIndex_extraUnknown_failed() {
+        val tag = "Unexpected column name (row config: test_row_index, column index out of bound)".toErrorTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;unknown;
-            k1;0;yes;red_flag;unknown;
+             id;number;status;flag;status;${tag.start}unknown${tag.end}
+            k1;0;yes;red_flag;no;unknown
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -181,16 +254,67 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     }
 
     @Test
-    fun rowTypeIsIndex_mismatchedSize_failed() {
+    fun rowTypeIsIndex_mismatchedHeaderSize_failed() {
+        val tag = "Unexpected column name (row config: test_row_index, column index out of bound)".toErrorTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;white_flag;another_flag;
+            id;number;status;flag;status;${tag.start}addon${tag.end}
+            k1;0;yes;red_flag;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
+
+    @Test
+    fun rowTypeIsIndex_mismatchedColumnSize_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;status
+            k1;0;yes;red_flag;no;addon;another
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_skipLastColumn_correct_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;status
+            k1;0;yes;red_flag;no
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_skipLastColumn_ignoreHeaderColumn_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;status;end_column
+            k1;0;yes;red_flag;no
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun rowTypeIsIndex_skipLastColumn_ignoreRowColumn_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_column/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag;status;end_column
+            k1;0;yes;red_flag;no;123
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
 
     // endregion
 }
