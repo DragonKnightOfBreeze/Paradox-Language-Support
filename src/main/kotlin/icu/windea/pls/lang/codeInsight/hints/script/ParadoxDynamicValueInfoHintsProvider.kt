@@ -17,8 +17,6 @@ import icu.windea.pls.script.psi.isDataExpression
  */
 class ParadoxDynamicValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
-        // ignored for `value_field` or `variable_field` or other variants
-
         if (element !is ParadoxScriptStringExpressionElement) return
         if (!element.isDataExpression()) return
         val expression = element.name

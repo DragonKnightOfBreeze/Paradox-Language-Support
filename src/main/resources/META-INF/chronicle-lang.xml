@@ -227,6 +227,15 @@
         bundle="messages.ChronicleBundle"
         nameKey="csv.hints.complexEnumValueInfo"
         descriptionKey="csv.hints.complexEnumValueInfo.description"/>
+    <codeInsight.declarativeInlayProvider
+        language="PARADOX_CSV"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDynamicValueInfoHintsProvider"
+        isEnabledByDefault="true"
+        group="OTHER_GROUP"
+        providerId="paradox.csv.dynamicValueInfo"
+        bundle="messages.ChronicleBundle"
+        nameKey="csv.hints.dynamicValueInfo"
+        descriptionKey="csv.hints.dynamicValueInfo.description"/>
 
     <codeInsight.declarativeInlayProviderCustomSettingsProvider
         language="PARADOX_SCRIPT"
@@ -267,6 +276,7 @@
                                settingsKeyId="paradox.localisation.localisationReference" isEnabledByDefault="false"/>
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxComplexEnumValueHintTextHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDynamicValueHintTextHintsProvider"/>
 
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider"/>

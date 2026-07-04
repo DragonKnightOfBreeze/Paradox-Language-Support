@@ -96,6 +96,7 @@ rows = {
             name = <chapter>
             page = int
             category = enum[chapter_category]
+            tag = value[chapter_tag]
         }
     }
 }

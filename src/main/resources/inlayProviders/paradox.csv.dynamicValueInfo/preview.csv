@@ -1,0 +1,4 @@
+# common/chapters/00_chapter_pages.csv
+name;page;category;tag
+awakening;1;narrative;hello_world/*<# : chapter_tag #>*/
+guidance;2;narrative;on_the_way/*<# : chapter_tag #>*/

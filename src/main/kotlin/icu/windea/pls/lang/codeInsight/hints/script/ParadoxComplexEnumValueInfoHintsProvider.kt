@@ -30,8 +30,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider
         if (resolved !is ParadoxComplexEnumValueLightElement) return
 
         val enumName = resolved.enumName
-        val configGroup = ChronicleFacade.getConfigGroup(resolved.project, resolved.gameType)
-        val config = configGroup.complexEnums[enumName] ?: return
+        val config = resolved.config ?: return
         sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": ")
             text(enumName, config.pointer)
