@@ -26,7 +26,7 @@ class ConfigGroupForceRefreshAction : DumbAwareAction(), TooltipDescriptionProvi
         presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
-        presentation.isEnabledAndVisible
+        e.presentation.isEnabledAndVisible = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {
