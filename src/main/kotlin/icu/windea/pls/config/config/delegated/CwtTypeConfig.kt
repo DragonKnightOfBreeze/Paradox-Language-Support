@@ -8,7 +8,6 @@ import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -20,6 +19,7 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.resolveElementWithConfig
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne

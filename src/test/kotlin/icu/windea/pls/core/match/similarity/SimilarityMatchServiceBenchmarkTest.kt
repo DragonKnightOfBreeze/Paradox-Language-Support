@@ -1,29 +1,21 @@
 package icu.windea.pls.core.match.similarity
 
 import com.github.benmanes.caffeine.cache.Cache
-import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.ChronicleAssume
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
-/**
- * SimilarityMatchService 的缓存基准测试。
- *
- * 运行方式：
- * - 默认被忽略（见 [AssumePredicates.includeBenchmark]）。
- * - 执行时添加 -Dpls.test.include.all=true 可启用；建议同时添加 -Dpls.record.cache.status=true。
- * - 若未传入 `pls.record.cache.status=true`，本测试会在 [setup] 中强制开启（仅对当前 JVM 的测试影响）。
- */
 class SimilarityMatchServiceBenchmarkTest {
     @Before
     fun doSetUp() {
         // benchmark 默认忽略，需要显示包含
-        AssumePredicates.includeBenchmark()
+        ChronicleAssume.includeBenchmark()
         // 确保启用 Caffeine 的 recordStats()，以便获取命中率等统计
-        if (!java.lang.Boolean.getBoolean("pls.record.cache.status")) {
-            System.setProperty("pls.record.cache.status", "true")
+        if (!java.lang.Boolean.getBoolean("chronicle.capacities.recordCacheStats")) {
+            System.setProperty("chronicle.capacities.recordCacheStats", "true")
         }
         // 尽量清理缓存，避免不同测试方法之间的相互影响（统计不会被重置，后续取增量）
         cache().invalidateAll()

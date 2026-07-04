@@ -21,14 +21,14 @@ import kotlin.io.path.isRegularFile
  * - SQLite：launcher-v2.sqlite（或 launcher-v2_openbeta.sqlite）
  *
  * 仅在本地环境运行（CI 默认跳过）：
- *   -Dpls.test.include.local.env=true
+ *   -Dchronicle.test.include.local.env=true
  */
 class DataModelsLocalValidationTest {
     private val gameDataDir = SpecialPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris)
 
     // 不需要
     // @Before
-    // fun before() = AssumePredicates.includeLocalEnv()
+    // fun before() = ChronicleAssume.includeLocalEnv()
 
     @Test
     fun readDlcLoadJson_ifExists() {

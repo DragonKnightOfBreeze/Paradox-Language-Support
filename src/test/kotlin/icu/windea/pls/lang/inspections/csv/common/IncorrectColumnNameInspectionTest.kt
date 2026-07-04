@@ -36,6 +36,8 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), HighlightingTe
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    // TODO 2.2.0 pass
+
     // region noSmantic
 
     @Test

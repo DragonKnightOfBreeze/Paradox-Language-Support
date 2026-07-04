@@ -36,6 +36,8 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    // TODO 2.2.0 pass
+
     // region noSmantic
 
     @Test
@@ -99,8 +101,8 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsIndex_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;0;yes;red_flag;
+            id;number;status;flag;status
+            k1;0;yes;red_flag;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -111,8 +113,8 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsIndex_smoke_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;9999;yes;red_flag;
+            id;number;status;flag;status
+            k1;9999;yes;red_flag;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
@@ -123,9 +125,9 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), HighlightingTe
     fun rowTypeIsIndex_some_lastRowIgnored() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """
-            id;number;status;flag;
-            k1;9999;yes;red_flag;
-            k1;4444;yes;red_flag;
+            id;number;status;flag;status
+            k1;9999;yes;red_flag;no
+            k1;4444;yes;red_flag;no
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)

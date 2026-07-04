@@ -2,7 +2,7 @@ package icu.windea.pls.ai.providers
 
 import icu.windea.pls.ai.model.chatFlow
 import icu.windea.pls.ai.model.toCompletionResult
-import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.ChronicleAssume
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Assume
@@ -11,7 +11,7 @@ import org.junit.Test
 
 class ChatModelProviderTest {
     @Before
-    fun doSetUp() = AssumePredicates.includeAi()
+    fun doSetUp() = ChronicleAssume.includeAi()
 
     @Test
     fun testOpenAi() {

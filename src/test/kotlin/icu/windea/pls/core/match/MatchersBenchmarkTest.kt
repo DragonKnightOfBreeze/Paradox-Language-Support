@@ -1,6 +1,6 @@
 package icu.windea.pls.core.match
 
-import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.ChronicleAssume
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -8,7 +8,7 @@ import kotlin.system.measureTimeMillis
 
 class MatchersBenchmarkTest {
     @Before
-    fun doSetUp() = AssumePredicates.includeBenchmark()
+    fun doSetUp() = ChronicleAssume.includeBenchmark()
 
     @Suppress("DEPRECATION")
     @Test

@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.optimized

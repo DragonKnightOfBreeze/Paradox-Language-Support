@@ -2,14 +2,14 @@ package icu.windea.pls.integrations.lints
 
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.toFile
-import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.ChronicleAssume
 import org.junit.Before
 import org.junit.Test
 import kotlin.time.measureTime
 
 class RunTigerTest {
     @Before
-    fun doSetUp() = AssumePredicates.includeLocalEnv()
+    fun doSetUp() = ChronicleAssume.includeLocalEnv()
 
     @Test
     fun runTiger() {

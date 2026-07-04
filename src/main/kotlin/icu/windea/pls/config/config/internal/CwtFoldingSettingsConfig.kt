@@ -2,10 +2,10 @@ package icu.windea.pls.config.config.internal
 
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder

@@ -6,7 +6,7 @@ import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
-import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.ChronicleAssume
 import icu.windea.pls.test.addAdditionalAllowedRoots
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -29,7 +29,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        AssumePredicates.includeLocalEnv()
+        ChronicleAssume.includeLocalEnv()
         addAdditionalAllowedRoots(
             SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
             SpecialPathService.getInstance().getGameDataPath(gameType),

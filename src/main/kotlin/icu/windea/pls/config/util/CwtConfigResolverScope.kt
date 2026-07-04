@@ -1,8 +1,9 @@
-package icu.windea.pls.config.config
+package icu.windea.pls.config.util
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 interface CwtConfigResolverScope {

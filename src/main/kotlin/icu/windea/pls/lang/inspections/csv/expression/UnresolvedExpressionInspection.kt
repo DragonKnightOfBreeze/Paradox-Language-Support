@@ -68,7 +68,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // - 如果存在对应的列规则且匹配，则直接跳过
                 // - 按需忽略最后一行
 
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
+                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
 
                 val expectedConfig = columnConfig.valueConfig

@@ -51,8 +51,8 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
                 if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
-                if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+                if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
                 val config = columnConfig.valueConfig ?: return
 
                 // 开始检查

@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
