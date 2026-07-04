@@ -10,7 +10,7 @@ object ChronicleConstants {
     val normalLocalisationRoots = arrayOf("localisation", "localization")
     val syncedLocalisationRoots = arrayOf("localisation_synced", "localization_synced")
 
-    val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "font", "lines", "dlc", "settings")
+    val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "font", "lines", "dlc", "settings", "map", "heightmap")
     val localisationFileExtensions = arrayOf("yml")
     val csvFileExtensions = arrayOf("csv")
     val imageFileExtensions = arrayOf("png", "dds", "tga")
