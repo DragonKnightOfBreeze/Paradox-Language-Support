@@ -23,6 +23,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.fixes.BrowseUrlFix
 import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxFile
@@ -31,6 +32,7 @@ import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import icu.windea.pls.model.constants.ChronicleUrls
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ParadoxFileInspectionService {
@@ -112,7 +114,11 @@ object ParadoxFileInspectionService {
             file is ParadoxCsvFile -> ChronicleBundle.message("unmatchedFile.desc.csv")
             else -> return null
         }
-        holder.registerProblem(file, description)
+        val fixes = arrayOf(
+            BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.1"), ChronicleUrls.contributing),
+            BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
+        )
+        holder.registerProblem(file, description, *fixes)
         return holder.resultsArray
     }
 

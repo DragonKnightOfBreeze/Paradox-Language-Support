@@ -6,9 +6,6 @@ object ChronicleConstants {
     val pluginId = PluginId.getId("icu.windea.pls")
     const val pluginSettingsFileName = "paradox-language-support.xml"
 
-    const val docUrl = "https://windea.icu/Paradox-Language-Support"
-    fun docUrl(path: String) = "$docUrl/$path"
-
     val localisationRoots = arrayOf("localisation", "localization", "localisation_synced", "localization_synced")
     val normalLocalisationRoots = arrayOf("localisation", "localization")
     val syncedLocalisationRoots = arrayOf("localisation_synced", "localization_synced")

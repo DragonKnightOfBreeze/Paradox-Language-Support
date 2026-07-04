@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.ide.help.ChronicleHelpTopics
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.ChronicleConstants
+import icu.windea.pls.model.constants.ChronicleUrls
 import java.awt.event.ActionEvent
 
 @Suppress("UnstableApiUsage")
@@ -46,7 +46,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
                 .comment(ChronicleBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                 .bindSelected(settings::enableBuiltInConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-            browserLink(ChronicleBundle.message("link.documentation"), ChronicleConstants.docUrl("config.html#config-group-builtin"))
+            browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-builtin"))
         }
         // enableRemoteConfigGroups
         row {
@@ -54,7 +54,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
                 .comment(ChronicleBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                 .bindSelected(settings::enableRemoteConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-            browserLink(ChronicleBundle.message("link.documentation"), ChronicleConstants.docUrl("config.html#config-group-remote"))
+            browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-remote"))
         }
         // enableLocalConfigGroups
         row {
@@ -62,7 +62,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
                 .comment(ChronicleBundle.message("settings.config.enableLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableLocalConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-            browserLink(ChronicleBundle.message("link.documentation"), ChronicleConstants.docUrl("config.html#config-group-local"))
+            browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-local"))
         }
         // enableProjectLocalConfigGroups
         row {
@@ -70,7 +70,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
                 .comment(ChronicleBundle.message("settings.config.enableProjectLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableProjectLocalConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-            browserLink(ChronicleBundle.message("link.documentation"), ChronicleConstants.docUrl("config.html#config-group-project-local"))
+            browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-project-local"))
         }
 
         // remoteConfigDirectory
