@@ -654,6 +654,26 @@ enums = {
 
 > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
 
+#### 并集规则 {#config-union}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
+
+并集规则用于提供一组数据表达式的候选项，以进行并集匹配，匹配时会递归展开并依次尝试其中的候选项。
+不同于枚举规则，这里的可选项可以是各种数据类型的数据表达式。
+
+路径定位：
+- `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
+
+示例：
+
+```cwt
+unions = {
+    union[loc_or_text] = { localisation scalar }
+}
+```
+
+> CWTools 兼容性：不兼容，插件作为扩展提供。
+
 #### 动态值类型规则 {#config-dynamic-value-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
@@ -923,24 +943,6 @@ database_object_types = {
 ```
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
-
-#### 并集规则 {#config-union}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
-
-并集规则用于提供一组数据表达式的候选项，以进行并集匹配，匹配时会递归展开并依次尝试其中的候选项。
-不同于枚举规则，这里的可选项可以是各种数据类型的数据表达式。
-
-路径定位：
-- `union[{name}]`。其中 `{name}` 匹配规则名称。
-
-示例：
-
-```cwt
-union[loc_or_text] = { localisation scalar }
-```
-
-> CWTools 兼容性：不兼容，插件作为扩展提供。
 
 #### 宏规则 {#config-macro}
 
@@ -1809,11 +1811,25 @@ icon|p1,p2
 
 > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
+#### UnionValue {#data-type-union-value}
+
+并集值类型。
+
+匹配对应的并集规则中的其中一个候选项。
+
+对应的数据表达式的格式：
+- `union[{name}]` – 其中 `{name}` 匹配并集的名字。
+
+对应的数据表达式的示例：
+- `union[loc_or_text]`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### Value {#data-type-value}
 
 动态值读取类型。
 
-匹配动态值表达式（如 `target` `target@root` `target@root.owner`），表示对已声明动态值的读取引用。
+匹配动态值表达式（如 `target` `target@root` `target@root.owner`），表示对动态值的读取引用。
 动态值的名字须为合法标识符（允许 `.`）。
 
 对应的数据表达式的格式：

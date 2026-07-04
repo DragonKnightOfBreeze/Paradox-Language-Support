@@ -303,9 +303,21 @@ object CwtDataTypes {
     }
 
     /**
+     * 并集值类型。
+     *
+     * 匹配对应的并集规则中的其中一个候选项。
+     *
+     * 对应的数据表达式的格式：
+     * - `unions/union[{name}]` - 其中 `{name}` 匹配并集规则的名字。
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val UnionValue = CwtDataType.builder("Union").reference().build()
+
+    /**
      * 动态值读取类型。
      *
-     * 匹配动态值表达式（如 `target` `target@root` `target@root.owner`），表示对已声明动态值的读取引用。
+     * 匹配动态值表达式（如 `target` `target@root` `target@root.owner`），表示对动态值的读取引用。
      * 动态值的名字须为合法标识符（允许 `.`）。
      *
      * 对应的数据表达式的格式：
@@ -697,18 +709,6 @@ object CwtDataTypes {
     val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference().build {
         withPriority(10.0)
     }
-
-    /**
-     * 并集值类型。
-     *
-     * 匹配对应的并集规则中的其中一个候选项。
-     *
-     * 对应的数据表达式的格式：
-     * - `union[{name}]` - 其中 `{name}` 匹配并集规则的名字。
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     */
-    val UnionValue = CwtDataType.builder("Union").reference().build()
 
     // endregion
 

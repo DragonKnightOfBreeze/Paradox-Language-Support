@@ -654,6 +654,26 @@ enums = {
 
 > CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
+#### Union Config {#config-union}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
+
+Union configs are used to provide a set of candidate data expressions for union matching. During matching, the candidates are recursively expanded and attempted in order.
+Unlike enum configs, the available values here can be data expressions of various data types.
+
+Path location:
+- `unions/union[{name}]` – where `{name}` matches the config name.
+
+Examples:
+
+```cwt
+unions = {
+    union[loc_or_text] = { localisation scalar }
+}
+```
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
 #### Dynamic Value Type Config {#config-dynamic-value-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
@@ -920,24 +940,6 @@ database_object_types = {
         localisation = job_
     }
 }
-```
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
-
-#### Union Config {#config-union}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
-
-Union configs are used to provide a set of candidate data expressions for union matching. During matching, the candidates are recursively expanded and attempted in order.
-Unlike enum configs, the available values here can be data expressions of various data types.
-
-Path location:
-- `union[{name}]` – where `{name}` matches the config name.
-
-Examples:
-
-```cwt
-union[loc_or_text] = { localisation scalar }
 ```
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
@@ -1808,6 +1810,20 @@ Examples of corresponding data expressions:
 - `enum[ship_class]`
 
 > CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
+
+#### UnionValue {#data-type-union-value}
+
+Union value type.
+
+Matches one of the candidates in the corresponding union config.
+
+Format of corresponding data expressions:
+- `union[{name}]` – where `{name}` matches a union name.
+
+Examples of corresponding data expressions:
+- `union[loc_or_text]`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Value {#data-type-value}
 

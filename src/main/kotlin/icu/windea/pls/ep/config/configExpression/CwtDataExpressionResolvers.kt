@@ -73,6 +73,8 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
 
         fromParameterized(CwtDataTypes.EnumValue, "enum[", "]") { value = it.orNull() }
 
+        fromParameterized(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
+
         fromLiteral(CwtDataTypes.ScopeField, "scope_field")
         fromParameterized(CwtDataTypes.Scope, "scope[", "]") { value = it.orNull().takeIf { v -> v != "any" } }
         fromParameterized(CwtDataTypes.ScopeGroup, "scope_group[", "]") { value = it.orNull() }
@@ -112,8 +114,6 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromLiteral(CwtDataTypes.Parameter, "\$parameter")
         fromLiteral(CwtDataTypes.ParameterValue, "\$parameter_value")
         fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
-
-        fromParameterized(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
     }
 }
 

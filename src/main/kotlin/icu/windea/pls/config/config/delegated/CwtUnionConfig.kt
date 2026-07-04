@@ -21,12 +21,14 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 不同于枚举规则，这里的可选项可以是各种数据类型的数据表达式。
  *
  * 路径定位：
- * - `union[{name}]`。其中 `{name}` 匹配规则名称。
+ * - `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
  *
  * 示例：
  *
  * ```cwt
- * union[loc_or_text] = { localisation scalar }
+ * unions = {
+ *     union[loc_or_text] = { localisation scalar }
+ * }
  * ```
  *
  * > CWTools 兼容性：不兼容，插件作为扩展提供。

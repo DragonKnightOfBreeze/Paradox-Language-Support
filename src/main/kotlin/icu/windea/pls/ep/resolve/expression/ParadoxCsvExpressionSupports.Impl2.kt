@@ -92,30 +92,6 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
 }
 
 /**
- * @see CwtDataTypeSets.DynamicValue
- */
-class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.DynamicValue
-    }
-
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
-        val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
-    }
-
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolutionManager.resolveDynamicValue(element, text, config)
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
-    }
-}
-
-/**
  * @see CwtDataTypes.UnionValue
  */
 class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
@@ -153,5 +129,29 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         // if (context.keyword.isParameterized()) return // 2.2.0 兼容可能带参数的情况
         ParadoxExpressionCompletionManager.completeCsvUnionValue(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypeSets.DynamicValue
+ */
+class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeSets.DynamicValue
+    }
+
+    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+        val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
+        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+    }
+
+    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+        return ParadoxResolutionManager.resolveDynamicValue(element, text, config)
+    }
+
+    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
     }
 }

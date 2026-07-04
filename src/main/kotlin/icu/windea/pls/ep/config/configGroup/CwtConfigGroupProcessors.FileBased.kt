@@ -216,6 +216,16 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         }
                     }
                 }
+                key == "unions" -> {
+                    val configs = property.properties ?: continue
+                    for (config in configs) {
+                        run {
+                            val unionConfig = CwtUnionConfig.resolve(config) ?: return@run
+                            if (CwtConfigService.filter(unionConfig)) return@run
+                            initializer.unions[unionConfig.name] = unionConfig
+                        }
+                    }
+                }
                 key == "values" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
@@ -385,11 +395,6 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         if (CwtConfigService.filter(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
-                    }
-                    run {
-                        val unionConfig = CwtUnionConfig.resolve(property) ?: return@run
-                        if (CwtConfigService.filter(unionConfig)) return@run
-                        initializer.unions[unionConfig.name] = unionConfig
                     }
                     run {
                         val macroConfig = CwtMacroConfig.resolve(property) ?: return@run

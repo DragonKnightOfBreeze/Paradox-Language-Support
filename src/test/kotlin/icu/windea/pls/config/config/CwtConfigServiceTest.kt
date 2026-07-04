@@ -169,6 +169,15 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testResolveConfigType_union() {
+        assertResolveConfigType("""
+            unions = {
+                <caret>union[loc_or_text] = { localisation scalar }
+            }
+        """.trimIndent(), CwtConfigTypes.Union)
+    }
+
+    @Test
     fun testResolveConfigType_dynamicValueType() {
         assertResolveConfigType("""
             values = {
@@ -222,13 +231,6 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
         assertResolveConfigType("""
             <caret>alias[effect:my_effect] = something
         """.trimIndent(), CwtConfigTypes.Effect)
-    }
-
-    @Test
-    fun testResolveConfigType_union() {
-        assertResolveConfigType("""
-            <caret>union[loc_or_text] = { localisation scalar }
-        """.trimIndent(), CwtConfigTypes.Union)
     }
 
     @Test
@@ -461,6 +463,11 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testResolveNameByConfigType_union() {
+        assertEquals("loc_or_text", CwtConfigService.resolveNameByConfigType("union[loc_or_text]", CwtConfigTypes.Union))
+    }
+
+    @Test
     fun testResolveNameByConfigType_dynamicValueType() {
         assertEquals("my_value", CwtConfigService.resolveNameByConfigType("value[my_value]", CwtConfigTypes.DynamicValueType))
     }
@@ -495,11 +502,6 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     fun testResolveNameByConfigType_modifier_plainText() {
         // 纯文本格式（来自 modifiers/* 或 types/type[*]/modifiers/**）
         assertEquals("my_modifier", CwtConfigService.resolveNameByConfigType("my_modifier", CwtConfigTypes.Modifier))
-    }
-
-    @Test
-    fun testResolveNameByConfigType_union() {
-        assertEquals("loc_or_text", CwtConfigService.resolveNameByConfigType("union[loc_or_text]", CwtConfigTypes.Union))
     }
 
     @Test

@@ -119,6 +119,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.InlineLocalisation -> matchInlineLocalisation(context)
             in CwtDataTypeSets.PathReference -> matchPathReference(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
+            CwtDataTypes.UnionValue -> matchUnionValue(context)
             in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
             in CwtDataTypeSets.ScopeField -> matchScopeFieldExpression(context)
             in CwtDataTypeSets.ValueField -> matchValueFieldExpression(context)
@@ -138,7 +139,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.Parameter -> matchParameter(context)
             CwtDataTypes.ParameterValue -> matchParameterValue(context)
             CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
-            CwtDataTypes.UnionValue -> matchUnion(context)
             CwtDataTypes.ShaderEffect -> matchShaderEffect(context)
             CwtDataTypes.MeshLocator -> matchMeshLocator(context)
             CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
@@ -197,6 +197,18 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val complexEnumConfig = context.configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
             return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, name, enumName, complexEnumConfig)
+        }
+        return ParadoxMatchResult.NotMatch
+    }
+
+    private fun matchUnionValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
+        unionConfig.processUnionCandidates { valueConfig ->
+            val nextContext = context.copy(configExpression = valueConfig.configExpression)
+            val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
+            if (r.get(context.options)) return r
+            true
         }
         return ParadoxMatchResult.NotMatch
     }
@@ -281,18 +293,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
-    }
-
-    private fun matchUnion(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
-        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
-        unionConfig.processUnionCandidates { valueConfig ->
-            val nextContext = context.copy(configExpression = valueConfig.configExpression)
-            val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
-            if (r.get(context.options)) return r
-            true
-        }
-        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchScriptValueReferenceExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

@@ -66,6 +66,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val defineNamespaces by registerKey<FastMap<String, CwtDefineNamespaceConfig>, UserDataHolder>(this) { FastMap() }
         val enums by registerKey<FastMap<String, CwtEnumConfig>, UserDataHolder>(this) { FastMap() }
         val complexEnums by registerKey<FastMap<String, CwtComplexEnumConfig>, UserDataHolder>(this) { FastMap() }
+        val unions by registerKey<FastMap<String, CwtUnionConfig>, UserDataHolder>(this) { FastMap() }
         val dynamicValueTypes by registerKey<FastMap<String, CwtDynamicValueTypeConfig>, UserDataHolder>(this) { FastMap() }
         val links by registerKey<FastCustomMap<@CaseInsensitive String, CwtLinkConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val localisationLinks by registerKey<FastCustomMap<@CaseInsensitive String, CwtLinkConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
@@ -79,7 +80,6 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val modifierCategories by registerKey<FastMap<String, CwtModifierCategoryConfig>, UserDataHolder>(this) { FastMap() }
         val modifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val databaseObjectTypes by registerKey<FastMap<String, CwtDatabaseObjectTypeConfig>, UserDataHolder>(this) { FastMap() }
-        val unions by registerKey<FastMap<String, CwtUnionConfig>, UserDataHolder>(this) { FastMap() }
         val macros by registerKey<FastList<CwtMacroConfig>, UserDataHolder>(this) { FastList() }
         val extendedScriptedVariables by registerKey<FastMap<String, CwtExtendedScriptedVariableConfig>, UserDataHolder>(this) { FastMap() }
         val extendedDefinitions by registerKey<FastMap<String, FastList<CwtExtendedDefinitionConfig>>, UserDataHolder>(this) { FastMap() }
@@ -123,6 +123,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val defineNamespaces by Keys.defineNamespaces
     final override val enums by Keys.enums
     final override val complexEnums by Keys.complexEnums
+    final override val unions by Keys.unions
     final override val dynamicValueTypes by Keys.dynamicValueTypes
     final override val links by Keys.links
     final override val localisationLinks by Keys.localisationLinks
@@ -136,7 +137,6 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val modifierCategories by Keys.modifierCategories
     final override val modifiers by Keys.modifiers
     final override val databaseObjectTypes by Keys.databaseObjectTypes
-    final override val unions by Keys.unions
     final override val macros by Keys.macros
     final override val extendedScriptedVariables by Keys.extendedScriptedVariables
     final override val extendedDefinitions by Keys.extendedDefinitions
@@ -185,9 +185,9 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         declarations.trim()
         rows.trim()
         defineNamespaces.trim()
-        unions.trim()
         enums.trim()
         complexEnums.trim()
+        unions.trim()
         dynamicValueTypes.trim()
         links.trim()
         localisationLinks.trim()

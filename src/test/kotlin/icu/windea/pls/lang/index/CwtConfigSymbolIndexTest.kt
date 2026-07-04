@@ -47,6 +47,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Type.id, "test_type", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Subtype.id, "test_subtype", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Enum.id, "test_enum", ReadWriteAccess.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Union.id, "test_union", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.DynamicValueType.id, "test_value", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.SingleAlias.id, "test_single_alias", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Alias.id, "test_modifier", ReadWriteAccess.Write, ParadoxGameType.Core)
@@ -59,7 +60,6 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Effect.id, "effect_const", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertNoSymbol(scope, CwtConfigTypes.Trigger.id, "enum[not_const]")
         assertSymbol(scope, CwtConfigTypes.Alias.id, "alias_no_colon", ReadWriteAccess.Write, ParadoxGameType.Core)
-        assertSymbol(scope, CwtConfigTypes.Union.id, "test_union", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Macro.id, "test_macro", ReadWriteAccess.Write, ParadoxGameType.Core)
     }
 

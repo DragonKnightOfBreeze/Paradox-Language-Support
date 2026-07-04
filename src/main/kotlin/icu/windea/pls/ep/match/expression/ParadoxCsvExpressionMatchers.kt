@@ -91,8 +91,8 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         return when (context.dataType) {
             CwtDataTypes.Definition -> matchDefinition(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
+            CwtDataTypes.UnionValue -> matchUnionValue(context)
             in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
-            CwtDataTypes.UnionValue -> matchUnion(context)
             else -> null
         }
     }
@@ -122,15 +122,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         return ParadoxMatchResult.NotMatch
     }
 
-    private fun matchDynamicValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        val name = context.expression.value
-        if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
-        val dynamicValueType = context.configExpression.value
-        if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
-        return ParadoxMatchResult.FallbackMatch
-    }
-
-    private fun matchUnion(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+    private fun matchUnionValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
         unionConfig.processUnionCandidates { valueConfig ->
@@ -140,5 +132,13 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             true
         }
         return ParadoxMatchResult.NotMatch
+    }
+
+    private fun matchDynamicValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        val name = context.expression.value
+        if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
+        val dynamicValueType = context.configExpression.value
+        if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
+        return ParadoxMatchResult.FallbackMatch
     }
 }

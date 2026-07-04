@@ -181,6 +181,13 @@ object CwtConfigSymbolManager {
             infos += info
         }
         run {
+            val (prefix, suffix) = CwtConfigTextPatterns.union
+            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
+            val nextOffset = offset + prefix.length
+            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Union.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            infos += info
+        }
+        run {
             val patternSet = CwtConfigTextPatternSets.dynamicValueReference
             patternSet.forEach f@{ pattern ->
                 val (prefix, suffix) = pattern
@@ -199,13 +206,6 @@ object CwtConfigSymbolManager {
                 val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.SingleAlias.id, readWriteAccess, nextOffset, element.startOffset, gameType)
                 infos += info
             }
-        }
-        run {
-            val (prefix, suffix) = CwtConfigTextPatterns.union
-            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
-            val nextOffset = offset + prefix.length
-            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Union.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
         }
     }
 

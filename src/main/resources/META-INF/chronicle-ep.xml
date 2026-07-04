@@ -214,20 +214,21 @@
     <declarationConfigContextProvider id="gameRule" implementation="icu.windea.pls.ep.resolve.config.CwtGameRuleDeclarationConfigContextProvider"/>
     <declarationConfigContextProvider id="onAction" implementation="icu.windea.pls.ep.resolve.config.CwtOnActionDeclarationConfigContextProvider"/>
 
+    <!-- Basic -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptBlockExpressionSupport"/>
-
+    <!-- Core -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDefinitionExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptModifierExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptEnumValueExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptUnionValueExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptConstantExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptPathReferenceExpressionSupport"/>
-
+    <!-- Complex Expressions -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTemplateExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDynamicValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptScopeFieldExpressionSupport"/>
@@ -239,22 +240,24 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTagsExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDatabaseObjectExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptNameFormatExpressionSupport"/>
-
+    <!-- Parameters -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptParameterExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>
-
+    <!-- Extra -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxShaderEffectExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxMeshLocatorExpressionSupport"/>
-
+    <!-- Game Type Specific -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTechnologyWithLevelExpressionSupport"/>
 
     <localisationExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxLocalisationCommandExpressionSupport"/>
     <localisationExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxLocalisationDatabaseObjectExpressionSupport"/>
 
+    <!-- Basic -->
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvBoolExpressionSupport"/>
+    <!-- Core (limited support) -->
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvDefinitionExpressionSupport"/>
-    <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvEnumValueExpressionSupport"/>
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvDynamicValueExpressionSupport"/>
+    <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvEnumValueExpressionSupport"/>
     <csvExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCsvUnionValueExpressionSupport"/>
 
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxIconReferenceExpressionSupport"/>

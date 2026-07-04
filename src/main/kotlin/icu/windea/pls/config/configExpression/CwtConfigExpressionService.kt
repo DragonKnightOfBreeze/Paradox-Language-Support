@@ -62,6 +62,15 @@ object CwtConfigExpressionService {
                 val values = nextConfig.values
                 result += values
             }
+            CwtDataTypes.UnionValue -> {
+                val name = configExpression.value ?: return
+                val unionConfig = configGroup.unions[name] ?: return
+                unionConfig.processUnionCandidates { valueConfig ->
+                    val e = valueConfig.configExpression
+                    collectLiterals(e, configGroup, result)
+                    true
+                }
+            }
             CwtDataTypes.SingleAliasRight -> {
                 val name = configExpression.value ?: return
                 val singleAliasConfig = configGroup.singleAliases[name] ?: return
@@ -82,15 +91,6 @@ object CwtConfigExpressionService {
                             collectLiterals(e, configGroup, result)
                         }
                     }
-                }
-            }
-            CwtDataTypes.UnionValue -> {
-                val name = configExpression.value ?: return
-                val unionConfig = configGroup.unions[name] ?: return
-                unionConfig.processUnionCandidates { valueConfig ->
-                    val e = valueConfig.configExpression
-                    collectLiterals(e, configGroup, result)
-                    true
                 }
             }
         }

@@ -275,6 +275,32 @@ object ParadoxExpressionCompletionManager {
         }
     }
 
+    fun completeCsvUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup
+        val config = context.config ?: return
+        val unionName = config.configExpression?.value ?: return
+        val unionConfig = configGroup.unions[unionName] ?: return
+        unionConfig.processUnionCandidates { valueConfig ->
+            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
+            completeCsvExpression(context, result)
+            true
+        }
+    }
+
+    fun completeScriptUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup
+        val config = context.config ?: return
+        val unionName = config.configExpression?.value ?: return
+        val unionConfig = configGroup.unions[unionName] ?: return
+        unionConfig.processUnionCandidates { valueConfig ->
+            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
+            completeScriptExpression(context, result)
+            true
+        }
+    }
+
     fun completeDynamicValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config
         val configs = context.configs
@@ -340,32 +366,6 @@ object ParadoxExpressionCompletionManager {
         for (aliasConfigs in aliasGroup.values) {
             val context = context.copy(config = aliasConfigs.first(), configs = aliasConfigs)
             completeScriptExpression(context, result)
-        }
-    }
-
-    fun completeCsvUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val config = context.config ?: return
-        val unionName = config.configExpression?.value ?: return
-        val unionConfig = configGroup.unions[unionName] ?: return
-        unionConfig.processUnionCandidates { valueConfig ->
-            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
-            completeCsvExpression(context, result)
-            true
-        }
-    }
-
-    fun completeScriptUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val config = context.config ?: return
-        val unionName = config.configExpression?.value ?: return
-        val unionConfig = configGroup.unions[unionName] ?: return
-        unionConfig.processUnionCandidates { valueConfig ->
-            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
-            completeScriptExpression(context, result)
-            true
         }
     }
 

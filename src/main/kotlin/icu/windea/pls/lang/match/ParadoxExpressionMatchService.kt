@@ -52,11 +52,6 @@ object ParadoxExpressionMatchService {
                 val enumConfig = configGroup.enums[enumName] ?: return false
                 enumConfig.values.contains(expression.value)
             }
-            CwtDataTypes.Value, CwtDataTypes.DynamicValue -> {
-                val type = configExpression.value ?: return false
-                val dynamicValueConfig = configGroup.dynamicValueTypes[type] ?: return false
-                dynamicValueConfig.values.contains(expression.value)
-            }
             CwtDataTypes.UnionValue -> {
                 val unionName = configExpression.value ?: return false
                 val unionConfig = configGroup.unions[unionName] ?: return false
@@ -65,6 +60,11 @@ object ParadoxExpressionMatchService {
                     true
                 }
                 false
+            }
+            CwtDataTypes.Value, CwtDataTypes.DynamicValue -> {
+                val type = configExpression.value ?: return false
+                val dynamicValueConfig = configGroup.dynamicValueTypes[type] ?: return false
+                dynamicValueConfig.values.contains(expression.value)
             }
             else -> false
         }
@@ -75,18 +75,6 @@ object ParadoxExpressionMatchService {
             ParadoxExpressionRole.Key -> configExpression.isKey
             ParadoxExpressionRole.Value -> !configExpression.isKey
             else -> true
-        }
-    }
-
-    fun getMatchedAliasKey(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(expression.value) // 不区分大小写
-        if (constKey != null) return constKey
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        return keys.find { key ->
-            ProgressManager.checkCanceled()
-            val configExpression = CwtDataExpression.resolve(key, true)
-            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
-            matchScriptExpression(context).get(options)
         }
     }
 
@@ -110,5 +98,17 @@ object ParadoxExpressionMatchService {
             true
         }
         return null
+    }
+
+    fun getMatchedAliasKey(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(expression.value) // 不区分大小写
+        if (constKey != null) return constKey
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
+        return keys.find { key ->
+            ProgressManager.checkCanceled()
+            val configExpression = CwtDataExpression.resolve(key, true)
+            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
+            matchScriptExpression(context).get(options)
+        }
     }
 }

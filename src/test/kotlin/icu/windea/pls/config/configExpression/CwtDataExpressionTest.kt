@@ -207,6 +207,17 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.Definition, e.type)
             assertEquals("my_def", e.value)
         }
+
+        run {
+            assertEquals("blue", CwtDataExpression.resolve("enum[blue]", false).value)
+        }
+
+        run {
+            val e = CwtDataExpression.resolve("union[loc_or_text]", false)
+            assertEquals(CwtDataTypes.UnionValue, e.type)
+            assertEquals("loc_or_text", e.value)
+        }
+
         run {
             assertEquals("foo", CwtDataExpression.resolve("value[foo]", false).value)
         }
@@ -215,9 +226,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         }
         run {
             assertEquals("foo", CwtDataExpression.resolve("dynamic_value[foo]", false).value)
-        }
-        run {
-            assertEquals("blue", CwtDataExpression.resolve("enum[blue]", false).value)
         }
 
         // scope / scope_group
@@ -336,12 +344,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.Parameter, CwtDataExpression.resolve("\$parameter", false).type)
             assertEquals(CwtDataTypes.ParameterValue, CwtDataExpression.resolve("\$parameter_value", false).type)
             assertEquals(CwtDataTypes.LocalisationParameter, CwtDataExpression.resolve("\$localisation_parameter", false).type)
-        }
-
-        run {
-            val e = CwtDataExpression.resolve("union[loc_or_text]", false)
-            assertEquals(CwtDataTypes.UnionValue, e.type)
-            assertEquals("loc_or_text", e.value)
         }
     }
 

@@ -175,7 +175,7 @@ object CwtConfigService {
         val length = configPath.length
         val s0 = configPath.get(0)
 
-        // depth 1: single_alias[*], alias[*], union[*], macro[*]
+        // depth 1: single_alias[*], alias[*], macro[*]
         if (length == 1 && isProperty) {
             return when {
                 s0.surroundsWith("single_alias[", "]") -> CwtConfigTypes.SingleAlias
@@ -188,7 +188,6 @@ object CwtConfigService {
                         else -> CwtConfigTypes.Alias
                     }
                 }
-                s0.surroundsWith("union[", "]") -> CwtConfigTypes.Union
                 s0.surroundsWith("macro[", "]") -> CwtConfigTypes.Macro
                 else -> null
             }
@@ -239,6 +238,15 @@ object CwtConfigService {
                     else -> null
                 }
             }
+            "unions" -> {
+                val s1 = configPath.get(1)
+                if (!s1.surroundsWith("union[", "]")) return null
+                when {
+                    isProperty && length == 2 -> CwtConfigTypes.Union
+                    !isProperty && length == 3 -> CwtConfigTypes.UnionValue
+                    else -> null
+                }
+            }
             "values" -> {
                 val s1 = configPath.get(1)
                 if (!s1.surroundsWith("value[", "]")) return null
@@ -281,13 +289,13 @@ object CwtConfigService {
             CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
             CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
             CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
+            CwtConfigTypes.Union -> text.removeSurroundingOrNull("union[", "]")
             CwtConfigTypes.DynamicValueType -> text.removeSurroundingOrNull("value[", "]")
             CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
             CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
             CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
             CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
             CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
-            CwtConfigTypes.Union -> text.removeSurroundingOrNull("union[", "]")
             CwtConfigTypes.Macro -> text.removeSurroundingOrNull("macro[", "]")
             else -> text
         }?.orNull()

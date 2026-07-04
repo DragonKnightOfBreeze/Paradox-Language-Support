@@ -83,6 +83,8 @@ interface CwtConfigGroupDataHolder {
     // 基于 enum_name 进行定位，对应的可能是 key/value
     val complexEnums: Map<String, CwtComplexEnumConfig>
 
+    val unions: Map<String, CwtUnionConfig>
+
     val dynamicValueTypes: Map<String, CwtDynamicValueTypeConfig>
 
     val links: Map<@CaseInsensitive String, CwtLinkConfig>
@@ -105,7 +107,6 @@ interface CwtConfigGroupDataHolder {
     // name - config
     val databaseObjectTypes: Map<String, CwtDatabaseObjectTypeConfig>
 
-    val unions: Map<String, CwtUnionConfig>
     val macros: List<CwtMacroConfig>
 
     // endregion

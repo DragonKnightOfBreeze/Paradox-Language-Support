@@ -128,7 +128,7 @@ object CwtConfigTypes {
         description(ChronicleBundle.message("config.description.enum"))
     }
     /**
-     * 枚举值。
+     * 枚举值规则。
      *
      * 路径定位：
      * - `enums/enum[{enum}]/-`。其中 {enum} 匹配枚举名。
@@ -154,6 +154,32 @@ object CwtConfigTypes {
         description(ChronicleBundle.message("config.description.complexEnum"))
     }
     /**
+     * 并集规则。
+     *
+     * 路径定位：
+     * - `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
+     *
+     * @see CwtUnionConfig
+     */
+    val Union = CwtConfigType.builder("Union").reference().build {
+        icon(ChronicleIcons.Configs.Union)
+        prefix("(union)")
+        description(ChronicleBundle.message("config.description.union"))
+    }
+    /**
+     * 并集值规则。
+     *
+     * 路径定位：
+     * - `unions/union[{union}]/-`。其中 {union} 匹配并集名。
+     *
+     * @see CwtUnionConfig
+     */
+    val UnionValue = CwtConfigType.builder("UnionValue", "unions").reference().build {
+        icon(ChronicleIcons.Configs.UnionValue)
+        prefix("(union value)")
+        description(ChronicleBundle.message("config.description.unionValue"))
+    }
+    /**
      * 动态值类型规则。
      *
      * 路径定位：
@@ -167,7 +193,7 @@ object CwtConfigTypes {
         description(ChronicleBundle.message("config.description.dynamicValueType"))
     }
     /**
-     * 动态值。
+     * 动态值规则。
      *
      * 路径定位：
      * - `values/value[{type}]/-`。其中 `{type}` 匹配动态值类型名。
@@ -206,19 +232,6 @@ object CwtConfigTypes {
         icon(ChronicleIcons.Configs.Alias)
         prefix("(alias)")
         description(ChronicleBundle.message("config.description.alias"))
-    }
-    /**
-     * 并集规则。
-     *
-     * 路径定位：
-     * - `union[{name}]`。其中 `{name}` 匹配规则名称。
-     *
-     * @see CwtUnionConfig
-     */
-    val Union = CwtConfigType.builder("Union").reference().build {
-        icon(ChronicleIcons.Configs.Union)
-        prefix("(union)")
-        description(ChronicleBundle.message("config.description.union"))
     }
     /**
      * 宏规则。

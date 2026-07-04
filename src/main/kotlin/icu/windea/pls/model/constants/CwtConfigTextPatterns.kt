@@ -9,7 +9,7 @@ object CwtConfigTextPatterns {
     val row = TextPattern.from("row[", "]")
     val enum = TextPattern.from("enum[", "]")
     val complexEnum = TextPattern.from("complex_enum[", "]")
-    val enumValue = TextPattern.from("enum_value[", "]")
+    val union = TextPattern.from("union[", "]")
     val value = TextPattern.from("value[", "]")
     val valueSet = TextPattern.from("value_set[", "]")
     val dynamicValue = TextPattern.from("dynamic_value[", "]")
@@ -19,7 +19,6 @@ object CwtConfigTextPatterns {
     val aliasKeysField = TextPattern.from("alias_keys_field[", "]")
     val singleAlias = TextPattern.from("single_alias[", "]")
     val alias = TextPattern.from("alias[", "]", ":")
-    val union = TextPattern.from("union[", "]")
     val macro = TextPattern.from("macro[", "]")
     val definition = TextPattern.from("<", ">")
 }
