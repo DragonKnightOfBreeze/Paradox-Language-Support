@@ -15,6 +15,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxScriptedVariableSearch
+ * @see icu.windea.pls.lang.search.searchers.ParadoxScriptedVariableSearcher
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {

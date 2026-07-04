@@ -1,0 +1,31 @@
+name;level;form
+
+# 百科全书
+
+# 风刃
+wind_blade;1;elemental
+# 龙卷
+tornado;4;elemental
+# 守护之风
+protective_wind;3;elemental_protection
+
+# 武装之书
+
+# 光铸军刀
+auther_saber;5;weapon_processed
+# 月之剑
+lunar_blade;5;weapon_processed
+# 川流
+streaming_stream;5;weapon_processed
+# 烈风
+attacking_wind;5;weapon_processed
+
+# 波纹之书
+
+# 光枪
+shining_spear;3;shining
+# 心灵之火
+inner_fire;3;shining_protection
+# 薄暮龙舞
+dragon_dance_at_dusk;6;shining_special
+

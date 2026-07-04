@@ -1,0 +1,13 @@
+rows = {
+    row[grimoire_toc] = {
+        path = "common/grimoire_tocs"
+
+        # name;level;form
+        columns = {
+            name = scalar
+            level = int
+            ## declare_complex_enum = magic_form
+            form = scalar
+        }
+    }
+}

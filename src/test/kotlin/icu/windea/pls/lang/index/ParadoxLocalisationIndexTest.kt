@@ -16,6 +16,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxLocalisationNameIndex
+ * @see ParadoxSyncedLocalisationNameIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationIndexTest : BasePlatformTestCase() {

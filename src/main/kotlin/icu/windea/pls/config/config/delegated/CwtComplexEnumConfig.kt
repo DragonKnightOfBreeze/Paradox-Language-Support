@@ -70,7 +70,7 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val perDefinition: Boolean
 
     val searchScopeType: String?
-    val nameConfig: CwtPropertyConfig
+    val nameConfig: CwtPropertyConfig?
     val enumNameConfigs: List<CwtMemberConfig<*>>
 
     companion object {
@@ -78,6 +78,11 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
         @JvmStatic
         fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
             return CwtComplexEnumConfigResolver.resolve(config)
+        }
+
+        /** 由列规则解析为复杂枚举规则。 */
+        fun resolveFromColumnConfig(config: CwtPropertyConfig): CwtComplexEnumConfig? {
+            return CwtComplexEnumConfigResolver.resolveFromColumnConfig(config)
         }
     }
 }
@@ -116,6 +121,11 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
             startFromRoot, caseInsensitive, perDefinition, nameConfig
         )
+    }
+
+    fun resolveFromColumnConfig(config: CwtPropertyConfig): CwtComplexEnumConfig? {
+        val name = config.declareComplexEnum?.orNull() ?: return null
+        return CwtComplexEnumConfigFromColumnConfig(config, name)
     }
 }
 
@@ -156,6 +166,20 @@ private class CwtComplexEnumConfigImpl(
     }
 
     override fun toString() = "CwtComplexEnumConfigImpl(name='$name')"
+}
+
+private class CwtComplexEnumConfigFromColumnConfig(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+) : UserDataHolderBase(), CwtComplexEnumConfig {
+    override val startFromRoot: Boolean get() = false
+    override val caseInsensitive: Boolean get() = false
+    override val perDefinition: Boolean get() = false
+    override val searchScopeType: String? get() = null
+    override val nameConfig: CwtPropertyConfig? get() = null
+    override val enumNameConfigs: List<CwtMemberConfig<*>> get() = emptyList()
+
+    override fun toString() = "CwtComplexEnumConfigFromColumnConfig(name='$name')"
 }
 
 // endregion

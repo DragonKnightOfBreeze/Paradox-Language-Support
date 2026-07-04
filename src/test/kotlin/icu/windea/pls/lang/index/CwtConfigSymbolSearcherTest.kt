@@ -20,6 +20,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see CwtConfigSymbolSearch
+ * @see icu.windea.pls.lang.search.searchers.CwtConfigSymbolSearcher
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {

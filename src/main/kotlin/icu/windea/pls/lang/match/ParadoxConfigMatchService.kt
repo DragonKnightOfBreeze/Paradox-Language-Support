@@ -485,7 +485,8 @@ object ParadoxConfigMatchService {
             parentMemberContainer is ParadoxScriptBlock && !parentMemberContainer.isPropertyValue() -> parentMemberContainer
             else -> parentMemberContainer.parentOfType<ParadoxScriptProperty>()
         }
-        if (parentConfig == complexEnumConfig.nameConfig) {
+        val nameConfig = complexEnumConfig.nameConfig ?: return false
+        if (parentConfig == nameConfig) {
             if (complexEnumConfig.startFromRoot) {
                 return parentElement == null
             } else {

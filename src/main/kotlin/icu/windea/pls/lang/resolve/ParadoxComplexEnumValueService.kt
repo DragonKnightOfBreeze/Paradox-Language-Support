@@ -43,7 +43,7 @@ object ParadoxComplexEnumValueService {
         if (name.isParameterized()) return null // 排除可能带参数的情况
         val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
         val enumName = columnConfig.optionData.declareComplexEnum?.orNull() ?: return null
-        val config = columnConfig // 这里改为使用列规则
+        val config = columnConfig.configGroup.complexEnumsFromColumns[enumName] ?: return null // 这里使用来自列规则的复杂枚举规则
         return ParadoxComplexEnumValueInfo(name, enumName, config)
     }
 

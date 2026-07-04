@@ -11,7 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  *
  * @property name 名字。
  * @property enumName 枚举名。
- * @property config 对应的复杂枚举规则（如果声明于脚本文件中），或者列规则（如果声明于 CSV 文件中）。
+ * @property config 对应的复杂枚举规则。
  *
  * @see CwtComplexEnumConfig
  * @see CwtExtendedComplexEnumValueConfig
@@ -19,7 +19,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 data class ParadoxComplexEnumValueInfo(
     val name: String,
     val enumName: String,
-    val config: CwtConfig<*>,
+    val config: CwtComplexEnumConfig,
 ) {
     val configGroup: CwtConfigGroup get() = config.configGroup
     val project: Project get() = configGroup.project

@@ -18,6 +18,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxFilePathSearch
+ * @see icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFilePathSearcherTest : BasePlatformTestCase() {

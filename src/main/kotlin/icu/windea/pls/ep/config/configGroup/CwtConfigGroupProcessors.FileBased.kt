@@ -191,6 +191,14 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         val rowConfig = CwtRowConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(rowConfig)) continue
                         initializer.rows[rowConfig.name] = rowConfig
+
+                        // collect complex enum configs from column configs
+                        for (columnConfig in rowConfig.columns) {
+                            val complexEnumConfig = CwtComplexEnumConfig.resolveFromColumnConfig(columnConfig) ?: continue
+                            if (CwtConfigService.filter(complexEnumConfig)) continue
+                            initializer.complexEnums[complexEnumConfig.name] = complexEnumConfig
+                            initializer.complexEnumsFromColumns[complexEnumConfig.name] = complexEnumConfig
+                        }
                     }
                 }
                 key == "defines" -> {

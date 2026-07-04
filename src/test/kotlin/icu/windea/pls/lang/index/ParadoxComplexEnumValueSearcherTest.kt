@@ -21,6 +21,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxComplexEnumValueSearch
+ * @see icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
@@ -361,6 +365,47 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("repeat_first", results.single().name)
         Assert.assertEquals("repeat_typed_enum", results.single().enumName)
+    }
+
+    // endregion
+
+    // region From Columns
+
+    @Test
+    fun testComplexEnumValueIndex_FromColumn() {
+        markFileInfo(gameType, "common/grimoire_tocs/00_grimoire_tocs.csv")
+        myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
+
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+
+        val results = ParadoxComplexEnumValueSearch.search("auther_saber", "magic_form", selector).findAll().toList()
+
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals("auther_saber", results.single().name)
+        Assert.assertEquals("magic_form", results.single().enumName)
+    }
+
+    @Test
+    fun testComplexEnumValueIndex_FromColumn_FindAll() {
+        markFileInfo(gameType, "common/grimoire_tocs/00_grimoire_tocs.csv")
+        myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
+
+        val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+
+        val results = ParadoxComplexEnumValueSearch.search(null, "magic_form", selector).findAll().toList()
+
+        val magicForms = results.map { it.name }.toSet()
+        assertNotEmpty(magicForms)
+
+        val expected = setOf(
+            "elemental",
+            "elemental_protection",
+            "weapon_processed",
+            "shining",
+            "shining_protection",
+            "shining_special",
+        )
+        Assert.assertEquals(expected.sorted(), magicForms.sorted())
     }
 
     // endregion

@@ -20,6 +20,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxDefinitionInjectionSearch
+ * @see icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {

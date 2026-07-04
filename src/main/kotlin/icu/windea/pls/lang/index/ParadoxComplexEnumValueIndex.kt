@@ -23,6 +23,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
@@ -58,7 +59,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType) return false
+        if (fileType != ParadoxScriptFileType && fileType != ParadoxCsvFileType) return false
         if (file.fileInfo == null) return false
         return true
     }

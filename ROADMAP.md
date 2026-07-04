@@ -94,6 +94,7 @@
 - [x] P2/MS 调整复杂枚举值索引的逻辑，以兼容在 CSV 文件中的复杂枚举值声明
 - [x] P2/MS 调整合并索引的逻辑，以兼容在 CSV 文件中的动态值引用
 - [x] P2/MS 调整 CSV 文件的相关代码检查的代码
+- [x] P2/MS 让 `CwtComplexEnumConfig` 不仅可以来自显式的规则（`complex_enum[x] = {...}`），也可以来自注有 `## declare_complex_enum = x` 的列规则
 
 ### 附加
 

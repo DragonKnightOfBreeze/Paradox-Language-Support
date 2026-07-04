@@ -18,6 +18,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxComplexEnumValueIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
@@ -407,6 +410,34 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(expected, values.map { it.name }.toSet())
         Assert.assertTrue(values.all { it.enumName == "repeat_typed_enum" })
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
+    }
+
+    // endregion
+
+    // region From Columns
+
+    @Test
+    fun testComplexEnumValueIndex_FromColumn() {
+        markFileInfo(gameType, "common/grimoire_tocs/00_grimoire_tocs.csv")
+        myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
+
+        val project = project
+        val scope = GlobalSearchScope.projectScope(project)
+        val key = ChronicleIndexUtil.createTypeKey("magic_form")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
+
+        val magicForms = values.map { it.name }.toSet()
+        assertNotEmpty(magicForms)
+
+        val expected = setOf(
+            "elemental",
+            "elemental_protection",
+            "weapon_processed",
+            "shining",
+            "shining_protection",
+            "shining_special",
+        )
+        Assert.assertEquals(expected.sorted(), magicForms.sorted())
     }
 
     // endregion
