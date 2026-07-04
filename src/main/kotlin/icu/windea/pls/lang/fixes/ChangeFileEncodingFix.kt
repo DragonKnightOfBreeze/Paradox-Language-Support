@@ -22,9 +22,9 @@ class ChangeFileEncodingFix(
     private val charset: Charset,
     private val addBom: Boolean?,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-    override fun getText() = ChronicleBundle.message("fix.changeFileEncoding.name")
+    override fun getText() = familyName
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = ChronicleBundle.message("fix.changeFileEncoding.name")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val virtualFile = file.virtualFile

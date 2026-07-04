@@ -1,18 +1,17 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.editor.Editor
+import com.intellij.modcommand.ModPsiUpdater
+import com.intellij.modcommand.PsiUpdateModCommandQuickFix
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
@@ -46,28 +45,33 @@ class NonTriggeredEventInspection : EventInspectionBase() {
 
     private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
         return buildList {
-            if (element.block != null) this += Fix(element)
+            if (element.block != null) this += Fix()
         }.toTypedArray()
     }
 
-    private class Fix(
-        element: PsiElement
-    ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        // add `is_triggered_only = yes` into declaration (after `id` field or at start)
+    private class Fix : PsiUpdateModCommandQuickFix() {
+        override fun getFamilyName() = ChronicleBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
 
-        override fun getText() = ChronicleBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
-
-        override fun getFamilyName() = text
-
-        override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            val element = startElement.castOrNull<ParadoxScriptProperty>() ?: return
+        override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
+            val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return
             val definitionInfo = element.definitionInfo ?: return
             val block = element.block ?: return
             val nameField = definitionInfo.typeConfig.nameField
-            val insertAfterElement = if (nameField == null) null else selectScope { element.properties().ofKey(nameField).one() }
+
             val textToInsert = "is_triggered_only = yes"
+            val propertiesToDelete = selectScope { block.properties().ofKey("is_triggered_only").all() }
+            val insertAfterElement = when {
+                propertiesToDelete.isNotEmpty() -> propertiesToDelete.first()
+                nameField == null -> null
+                else -> selectScope { block.properties().ofKey(nameField).one() }
+            }
+
+            // add `is_triggered_only = yes` into declaration (after first existing `is_triggered_only` property, first `id` property, or at start)
             block.addAfter(ParadoxScriptElementFactory.createPropertyFromText(project, textToInsert), insertAfterElement)
             block.addAfter(ParadoxScriptElementFactory.createWhiteSpaceFromText(project, "\n"), insertAfterElement)
+
+            // delete all `is_triggered_only` properties if exist
+            propertiesToDelete.forEach { it.delete() }
         }
     }
 }

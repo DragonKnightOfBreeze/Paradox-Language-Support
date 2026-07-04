@@ -21,11 +21,11 @@ class IntroduceLocalScriptedVariableFix(
     private val variableName: String,
     element: ParadoxScriptedVariableReference
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    override fun getPriority() = PriorityAction.Priority.TOP
-
     override fun getText() = ChronicleBundle.message("fix.introduceLocalScriptedVariable.name", variableName)
 
     override fun getFamilyName() = ChronicleBundle.message("fix.introduceLocalScriptedVariable.familyName")
+
+    override fun getPriority() = PriorityAction.Priority.TOP // 最高优先级，如果可用
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = startElement

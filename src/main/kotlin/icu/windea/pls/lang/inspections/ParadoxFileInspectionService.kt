@@ -158,11 +158,11 @@ object ParadoxFileInspectionService {
         element: ParadoxLocalisationLocale,
         private val expectedLocaleId: String
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getPriority() = PriorityAction.Priority.TOP // 高优先级，如果可用
-
         override fun getText() = ChronicleBundle.message("incorrectFileName.fix.2.name", expectedLocaleId)
 
         override fun getFamilyName() = ChronicleBundle.message("incorrectFileName.fix.2.familyName")
+
+        override fun getPriority() = PriorityAction.Priority.TOP // 最高优先级，如果可用
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return

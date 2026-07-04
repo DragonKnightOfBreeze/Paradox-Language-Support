@@ -12,7 +12,7 @@ class NavigateToRecursionsFix(
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getText() = ChronicleBundle.message("fix.navigateTo.recursions.name")
+    override fun getFamilyName() = ChronicleBundle.message("fix.navigateTo.recursions.name")
 
     override fun getPopupTitle(editor: Editor) = ChronicleBundle.message("fix.navigateTo.recursions.popup.title", key)
 

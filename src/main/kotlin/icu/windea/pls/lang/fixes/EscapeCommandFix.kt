@@ -14,9 +14,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 class EscapeCommandFix(
     element: PsiElement
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-    override fun getText() = ChronicleBundle.message("fix.escapeCommand.name")
+    override fun getText() = familyName
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = ChronicleBundle.message("fix.escapeCommand.name")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val commandElement = startElement.parent?.castOrNull<ParadoxLocalisationCommand>() ?: return

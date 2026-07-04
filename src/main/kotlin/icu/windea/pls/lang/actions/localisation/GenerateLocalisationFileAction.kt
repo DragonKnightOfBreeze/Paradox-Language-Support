@@ -150,11 +150,9 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                ChronicleNotificationGroups.global().createNotification(
-                    ChronicleBundle.message("notification.generateLocalisationFile.success.title"),
-                    ChronicleBundle.message("notification.generateLocalisationFile.success.content", generated, total),
-                    NotificationType.INFORMATION
-                ).notify(project)
+                val notificationTitle = ChronicleBundle.message("notification.generateLocalisationFile.success.title")
+                val notificationContent = ChronicleBundle.message("notification.generateLocalisationFile.success.content", generated, total)
+                ChronicleNotificationGroups.global().createNotification(notificationTitle, notificationContent, NotificationType.INFORMATION).notify(project)
             }
         }
         val commandName = ChronicleBundle.message("command.generateLocalisationFiles")

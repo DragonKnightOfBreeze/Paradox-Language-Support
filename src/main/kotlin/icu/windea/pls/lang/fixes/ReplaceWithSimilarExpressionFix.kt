@@ -19,11 +19,11 @@ class ReplaceWithSimilarExpressionFix(
     element: ParadoxExpressionElement,
     private val replacement: SimilarityMatchResult,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction, DumbAware {
-    override fun getPriority() = PriorityAction.Priority.TOP
-
     override fun getText() = ChronicleBundle.message("fix.replaceWithSimilarExpression.name", replacement.value)
 
     override fun getFamilyName() = ChronicleBundle.message("fix.replaceWithSimilarExpression.familyName")
+
+    override fun getPriority() = PriorityAction.Priority.HIGH
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (startElement !is ParadoxExpressionElement) return
@@ -40,6 +40,7 @@ class ReplaceWithSimilarExpressionFix(
         }
     }
 
+    // true here to enable batch replacement
     override fun availableInBatchMode() = true
 
     override fun startInWriteAction() = false

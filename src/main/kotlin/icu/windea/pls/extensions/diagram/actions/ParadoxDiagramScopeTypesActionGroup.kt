@@ -8,7 +8,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Toggleable
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
@@ -32,7 +31,8 @@ class ParadoxDiagramScopeTypesActionGroup(
         val context = (builder.dataModel as ParadoxDiagramDataModel).originalFile
         val scopeTypes = provider.getScopeTypes(project, context)
         if (scopeTypes.isNullOrEmpty()) return getDefaultChildren()
-        return scopeTypes.mapToArray { ParadoxDiagramChangeScopeTypeAction(it, builder) }
+        val children = scopeTypes.map { ParadoxDiagramChangeScopeTypeAction(it, builder) }
+        return children.toTypedArray()
     }
 
     private fun getDefaultChildren(): Array<AnAction> {

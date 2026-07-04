@@ -14,9 +14,9 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 class GotoInlineScriptUsagesFix(
     element: PsiFile
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-    override fun getText() = ChronicleBundle.message("fix.gotoInlineScriptUsages.fix")
+    override fun getText() = familyName
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = ChronicleBundle.message("fix.gotoInlineScriptUsages.fix")
 
     override fun isAvailable(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement): Boolean {
         return ParadoxInlineScriptManager.isInlineScriptFile(file)

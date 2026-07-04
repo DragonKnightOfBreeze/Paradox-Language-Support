@@ -12,7 +12,7 @@ class NavigateToOverridingScriptedVariablesFix(
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getText() = ChronicleBundle.message("fix.navigateTo.overridingScriptedVariables.name")
+    override fun getFamilyName() = ChronicleBundle.message("fix.navigateTo.overridingScriptedVariables.name")
 
     override fun getPopupTitle(editor: Editor) = ChronicleBundle.message("fix.navigateTo.overridingScriptedVariables.popup.title", key)
 

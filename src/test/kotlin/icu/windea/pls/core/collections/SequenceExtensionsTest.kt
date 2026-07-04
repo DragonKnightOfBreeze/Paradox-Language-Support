@@ -20,10 +20,7 @@ class SequenceExtensionsTest {
     }
 
     @Test
-    fun mapToArray_and_process() {
-        val arr = sequenceOf(1, 2, 3).mapToArray { it * 2 }
-        assertArrayEquals(arrayOf(2, 4, 6), arr)
-
+    fun process_test() {
         val seq = sequenceOf(1, 2, 3)
         var sum = 0
         val cont = seq.process {

@@ -12,7 +12,7 @@ class NavigateToOverridingFilesFix(
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getText() = ChronicleBundle.message("fix.navigateTo.overridingFiles.name")
+    override fun getFamilyName() = ChronicleBundle.message("fix.navigateTo.overridingFiles.name")
 
     override fun getPopupTitle(editor: Editor) = ChronicleBundle.message("fix.navigateTo.overridingFiles.popup.title", key)
 

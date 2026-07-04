@@ -9,7 +9,7 @@ class NavigateToDuplicatesFix(
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements, true) {
-    override fun getText() = ChronicleBundle.message("fix.navigateTo.duplicateScriptedVariables.name")
+    override fun getFamilyName() = ChronicleBundle.message("fix.navigateTo.duplicateScriptedVariables.name")
 
     override fun getPopupTitle(editor: Editor) = ChronicleBundle.message("fix.navigateTo.duplicateScriptedVariables.popup.title", key)
 

@@ -12,7 +12,7 @@ class NavigateToOverridingDefinitionsFix(
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getText() = ChronicleBundle.message("fix.navigateTo.overridingDefinitions.name")
+    override fun getFamilyName() = ChronicleBundle.message("fix.navigateTo.overridingDefinitions.name")
 
     override fun getPopupTitle(editor: Editor) = ChronicleBundle.message("fix.navigateTo.overridingDefinitions.popup.title", key)
 

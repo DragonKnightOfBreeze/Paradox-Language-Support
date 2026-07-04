@@ -110,7 +110,7 @@ abstract class ConvertImageFormatAction(
                     else -> ChronicleBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
                 val notification = ChronicleNotificationGroups.global().createNotification(content, NotificationType.WARNING)
-                notification.notify(targetDirectory.project)
+                notification.notify(project)
             }
         } catch (e: Exception) {
             Messages.showErrorDialog(project, e.message, ChronicleBundle.message("error.title"))

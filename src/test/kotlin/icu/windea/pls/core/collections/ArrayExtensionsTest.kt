@@ -13,7 +13,31 @@ class ArrayExtensionsTest {
 
     @Test
     fun mapToArray_on_array() {
-        val arr = arrayOf(1, 2, 3).mapToArray { it * 2 }
-        assertArrayEquals(arrayOf(2, 4, 6), arr)
+        val empty = emptyArray<String>()
+
+        assertTrue(arrayOf<String>().mapToArray(empty) { it.repeat(1) } === arrayOf<String>().mapToArray<String, String>(empty) { it.repeat(1) })
+
+        val arr = arrayOf("a", "b", "c").mapToArray(empty) { it.repeat(1) }
+        assertArrayEquals(arrayOf("a", "b", "c"), arr)
+    }
+
+    @Test
+    fun mapToArray_on_list() {
+        val empty = emptyArray<String>()
+
+        assertTrue(listOf<String>().mapToArray(empty) { it.repeat(1) } === listOf<String>().mapToArray<String, String>(empty) { it.repeat(1) })
+
+        val arr = listOf("a", "b", "c").mapToArray(empty) { it.repeat(1) }
+        assertArrayEquals(arrayOf("a", "b", "c"), arr)
+    }
+
+    @Test
+    fun mapToArray_on_set() {
+        val empty = emptyArray<String>()
+
+        assertTrue(setOf<String>().mapToArray(empty) { it.repeat(1) } === setOf<String>().mapToArray<String, String>(empty) { it.repeat(1) })
+
+        val arr = setOf("a", "b", "c").mapToArray(empty) { it.repeat(1) }
+        assertArrayEquals(arrayOf("a", "b", "c"), arr)
     }
 }

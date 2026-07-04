@@ -64,8 +64,8 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                             if (expect.isNotEmpty()) {
                                 val expectColumnNamePreferred = rowConfig.columns[columnIndex].key
                                 val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expect)
-                                if(expectColumnNamePreferred in expectColumnNames) {
-                                    val fix = ReplaceWithExpressionFix(columnElement, expectColumnNamePreferred)
+                                if (expectColumnNamePreferred in expectColumnNames) {
+                                    val fix = ReplaceWithExpressionFix(expectColumnNamePreferred)
                                     holder.registerProblem(columnElement, description, fix)
                                 } else {
                                     holder.registerProblem(columnElement, description)
@@ -87,7 +87,7 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                             val expectColumnName = rowConfig.columns[columnIndex].key
                             if (expectColumnName == columnElement.name) continue // continue (matched)
                             val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
-                            val fix = ReplaceWithExpressionFix(columnElement, expectColumnName)
+                            val fix = ReplaceWithExpressionFix(expectColumnName)
                             holder.registerProblem(columnElement, description, fix)
                         }
                     }

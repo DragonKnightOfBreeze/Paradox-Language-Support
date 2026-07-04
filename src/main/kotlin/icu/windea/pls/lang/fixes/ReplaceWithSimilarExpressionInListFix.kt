@@ -21,11 +21,11 @@ class ReplaceWithSimilarExpressionInListFix(
     element: PsiElement,
     private val replacements: Collection<SimilarityMatchResult>,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction, DumbAware {
-    override fun getPriority() = PriorityAction.Priority.HIGH
-
     override fun getText() = ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.name")
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.familyName")
+
+    override fun getPriority() = PriorityAction.Priority.HIGH
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (startElement !is ParadoxExpressionElement) return
@@ -62,6 +62,7 @@ class ReplaceWithSimilarExpressionInListFix(
 
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 
+    // false here
     override fun availableInBatchMode() = false
 
     override fun startInWriteAction() = false

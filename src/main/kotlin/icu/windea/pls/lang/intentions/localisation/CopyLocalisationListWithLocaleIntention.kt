@@ -22,7 +22,7 @@ class CopyLocalisationListWithLocaleIntention : ManipulateLocalisationListIntent
 
     override fun doInvoke(project: Project, editor: Editor, file: PsiFile, element: ParadoxLocalisationPropertyList) {
         ParadoxLocalisationListManager.copyWithLocale(element)
-        createNotification(element)
+        createNotification(element).notify(project)
     }
 
     private fun createNotification(element: ParadoxLocalisationPropertyList): Notification {

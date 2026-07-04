@@ -4,21 +4,23 @@ import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GenerateLocalisationsInFileFix(
     element: PsiElement,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    override fun getPriority() = PriorityAction.Priority.HIGH
-
     override fun getText(): String {
         val fileName = startElement.containingFile?.name.or.anonymous()
         return ChronicleBundle.message("fix.generateLocalisationsInFile.name", fileName)
@@ -26,11 +28,16 @@ class GenerateLocalisationsInFileFix(
 
     override fun getFamilyName() = ChronicleBundle.message("fix.generateLocalisationsInFile.familyName")
 
+    override fun getPriority() = PriorityAction.Priority.HIGH
+
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return
-        runInEdt {
-            val handler = GenerateLocalisationsInFileHandler(fromInspection = true)
-            handler.invoke(project, editor, file)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            withContext(Dispatchers.EDT) {
+                val handler = GenerateLocalisationsInFileHandler(fromInspection = true)
+                handler.invoke(project, editor, file)
+            }
         }
     }
 
