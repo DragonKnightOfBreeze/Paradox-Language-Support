@@ -2,7 +2,6 @@ package icu.windea.pls.lang.inspections.script.definitionInjection
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -17,8 +16,8 @@ abstract class DefinitionInjectionInspectionBase : LocalInspectionTool() {
         val gameType = selectGameType(file)
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return false
         // 要求规则分组数据已加载完毕
-        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的脚本文件
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件（可接受定义注入）
         return ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)
     }
 }

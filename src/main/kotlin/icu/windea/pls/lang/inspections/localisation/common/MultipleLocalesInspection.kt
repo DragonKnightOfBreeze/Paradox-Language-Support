@@ -29,10 +29,12 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
         if (isIgnoredFile(file)) return false
-        // 跳过内存文件
-        if (VirtualFileService.isLightFile(file.virtualFile)) return false
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatchService.isLocalisationFile(file, injectable = true)
+        // 跳过内存文件和注入的文件
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求是语义上有效的本地化文件
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     private fun isIgnoredFile(file: PsiFile): Boolean {

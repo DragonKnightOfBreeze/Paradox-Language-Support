@@ -27,10 +27,10 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
-        val virtualFile = file.virtualFile
-        if (VirtualFileService.isLightFile(virtualFile)) return false
-        if (VirtualFileService.isInjectedFile(virtualFile)) return false
-        // 要求是可接受的 CSV 文件
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求是语义上有效的 CSV 文件
         return ParadoxPsiFileMatchService.isCsvFile(file)
     }
 

@@ -37,6 +37,16 @@ enum class ParadoxPathConstraint {
     ForScriptedVariable {
         override fun test(path: ParadoxPath) = path.matchesParent("common/scripted_variables") && path.matchesExtension("txt")
     },
+    ForEvent {
+        override fun test(path: ParadoxPath) = path.matchesParent("events") && path.matchesExtension("txt")
+    },
+
+    ForNormalLocalisation {
+        override fun test(path: ParadoxPath) = InNormalLocalisationPath.test(path) && path.matchesExtensions(ChronicleConstants.localisationFileExtensions)
+    },
+    ForSyncedLocalisation {
+        override fun test(path: ParadoxPath) = InSyncedLocalisationPath.test(path) && path.matchesExtensions(ChronicleConstants.localisationFileExtensions)
+    },
 
     AcceptInlineScriptUsage {
         override fun test(path: ParadoxPath) = ScriptFile.test(path) && !path.matchesParent("common/defines") && !path.matchesParent("common/scripted_variables")

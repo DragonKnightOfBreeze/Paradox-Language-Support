@@ -20,9 +20,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
-        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatchService.isLocalisationFile(file, injectable = true)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的本地化文件
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

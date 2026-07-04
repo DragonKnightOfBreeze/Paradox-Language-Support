@@ -64,7 +64,7 @@ object ChronicleFacade {
      * 检查指定项目与上下文的规则分组是否已加载完毕。
      *
      * @param project 指定的项目。
-     * @param context 用于获取游戏类型的上下文对象。
+     * @param context 用于获取游戏类型的上下文对象（参见 [selectGameType]）。
      */
     fun checkConfigGroupInitialized(project: Project, context: Any?): Boolean {
         return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(context)

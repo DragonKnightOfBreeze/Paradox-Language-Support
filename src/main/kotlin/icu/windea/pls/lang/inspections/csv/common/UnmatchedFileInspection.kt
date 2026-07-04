@@ -5,7 +5,6 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
@@ -34,14 +33,14 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
-        val virtualFile = file.virtualFile
-        if (VirtualFileService.isLightFile(virtualFile)) return false
-        if (VirtualFileService.isInjectedFile(virtualFile)) return false
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
         // 忽略直接位于游戏或入口目录下的文件
-        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return false
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!ChronicleFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的 CSV 文件
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的 CSV 文件
         return ParadoxPsiFileMatchService.isCsvFile(file)
     }
 

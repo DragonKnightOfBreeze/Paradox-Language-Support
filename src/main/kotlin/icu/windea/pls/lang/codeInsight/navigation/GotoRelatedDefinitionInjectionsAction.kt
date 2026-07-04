@@ -11,7 +11,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -29,13 +28,11 @@ class GotoRelatedDefinitionInjectionsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)) return
-        val gameType = selectGameType(file)
-        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file)) return // 仅限有效的脚本文件
+        if (!ParadoxPsiFileMatchService.isDefinitionInjectionSupported(file)) return // 忽略游戏类型不支持的情况
         presentation.isVisible = true
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
+        val element = findElement(file, editor.caretModel.offset) ?: return
         if (!element.isDefinitionTypeKeyOrName()) return
         val definition = selectScope { element.parentDefinition() } ?: return
         val definitionInfo = definition.definitionInfo ?: return

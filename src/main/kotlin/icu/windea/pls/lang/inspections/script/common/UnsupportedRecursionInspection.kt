@@ -30,8 +30,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 在封装变量声明/定义声明级别进行此项检查
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

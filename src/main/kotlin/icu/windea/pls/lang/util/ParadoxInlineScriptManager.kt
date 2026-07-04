@@ -23,7 +23,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -39,14 +38,15 @@ object ParadoxInlineScriptManager {
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
 
     /**
-     * 检测指定的游戏类型是否支持内联脚本。
+     * 检查游戏类型是否支持内联脚本。
+     *
+     * @param context 用于获取游戏类型的上下文对象（参见 [selectGameType]）。
      */
-    fun isSupported(gameType: ParadoxGameType?): Boolean {
-        if (gameType == null) return false
+    fun isSupported(context: Any?): Boolean {
+        if (context == null) return false
+        val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        val configs = configGroup.macrosModel.forInlineScripts
-        if (configs.isEmpty()) return false
-        return true
+        return configGroup.macrosModel.forInlineScripts.isNotEmpty()
     }
 
     /**
@@ -58,22 +58,24 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 检查输入的字符串是否匹配内联脚本用法的键（会从 [context] 选取游戏类型并检查）。
+     * 检查输入的字符串是否匹配内联脚本用法的键（会检查游戏类型）。
+     *
+     * @param context 用于获取游戏类型的上下文对象（参见 [selectGameType]）。
      */
     fun isMatched(expression: String, context: Any?): Boolean {
         if (context == null) return false
         if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
-        return isSupported(selectGameType(context))
+        return isSupported(context)
     }
 
     /**
-     * 检查内联脚本用法在 [element] 对应的位置是否可用（不一定实际受游戏支持，格式也不一定正确）。这意味着至少会提供代码高亮。
+     * 检查内联脚本用法在 [element] 对应的位置是否可用（游戏类型不一定支持，格式也不一定正确）。这意味着至少会提供代码高亮。
      */
     fun isAvailable(element: ParadoxScriptProperty): Boolean {
         val propertyValue = element.propertyValue
         if (propertyValue !is ParadoxScriptString && propertyValue !is ParadoxScriptScriptedVariableReference && propertyValue !is ParadoxScriptBlock) return false
         val file = element.containingFile ?: return false
-        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return false // 额外检查
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage)) return false // 额外检查
         return true
     }
 

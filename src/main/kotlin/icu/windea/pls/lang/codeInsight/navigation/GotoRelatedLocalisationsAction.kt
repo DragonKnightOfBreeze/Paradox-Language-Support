@@ -34,15 +34,14 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)) return
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file)) return // 仅限有效的脚本文件
         presentation.isVisible = true
         if (file.definitionInfo != null) {
             presentation.isEnabled = true
             return
         }
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
+        val element = findElement(file, editor.caretModel.offset) ?: return
         val isEnabled = when {
             ParadoxPsiMatchService.isScriptedVariable(element) -> true
             element !is ParadoxScriptStringExpressionElement -> false

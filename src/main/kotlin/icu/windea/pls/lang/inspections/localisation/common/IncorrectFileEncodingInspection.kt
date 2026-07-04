@@ -30,7 +30,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val virtualFile = file.virtualFile
         if (VirtualFileService.isLightFile(virtualFile)) return false
         if (VirtualFileService.isInjectedFile(virtualFile)) return false
-        // 要求是可接受的本地化文件
+        // 要求是语义上有效的本地化文件
         return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 

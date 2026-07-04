@@ -87,6 +87,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
         if (DumbService.isDumb(context.holder.project)) return
+        if (!ChronicleFacade.checkConfigGroupInitialized(context.holder.project, context.gameType)) return
 
         val configGroup = ChronicleFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)
@@ -120,6 +121,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return
         if (DumbService.isDumb(context.holder.project)) return
+        if (!ChronicleFacade.checkConfigGroupInitialized(context.holder.project, context.gameType)) return
 
         val configGroup = ChronicleFacade.getConfigGroup(context.gameType)
         val valid = ParadoxSyntaxService.isSafeAssignOperatorValid(propertyElement, configGroup)

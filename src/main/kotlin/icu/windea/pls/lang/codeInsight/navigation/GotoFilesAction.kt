@@ -23,7 +23,7 @@ class GotoFilesAction : BaseCodeInsightAction() {
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file.fileInfo == null) return // 忽略不存在文件信息的文件（如注入的文件）
-        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
         presentation.isEnabledAndVisible = true
     }
 }

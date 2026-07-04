@@ -22,8 +22,8 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  */
 class UnsupportedInlineMathInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatchService.isScriptFile(file, injectable = true)
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

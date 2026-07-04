@@ -49,7 +49,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
         if (isIgnoredFile(file)) return false
-        // 要求是可接受的本地化文件
+        // 要求是语义上有效的本地化文件
         return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 

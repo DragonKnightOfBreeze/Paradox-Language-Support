@@ -36,6 +36,8 @@ import kotlin.contracts.contract
  */
 @Suppress("unused")
 object ParadoxPsiMatchService {
+    // region Grammar Level
+
     /**
      * 是否是非匿名的封装变量。
      */
@@ -97,6 +99,10 @@ object ParadoxPsiMatchService {
         }
         return element is ParadoxModifierLightElement && element.name.orNull() != null
     }
+
+    // endregion
+
+    // region Semantic Level
 
     @OptIn(ExperimentalContracts::class)
     fun isLocalScriptedVariable(element: PsiElement?): Boolean {
@@ -227,4 +233,6 @@ object ParadoxPsiMatchService {
         if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return false
         return true
     }
+
+    // endregion
 }

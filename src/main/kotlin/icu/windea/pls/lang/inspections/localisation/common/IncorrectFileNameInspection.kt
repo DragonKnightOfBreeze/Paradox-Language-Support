@@ -13,7 +13,7 @@ import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import javax.swing.JComponent
 
 /**
@@ -34,13 +34,11 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
-        val virtualFile = file.virtualFile
-        if (VirtualFileService.isLightFile(virtualFile)) return false
-        if (VirtualFileService.isInjectedFile(virtualFile)) return false
-        // 要求是普通的本地化文件
-        if (ParadoxLocalisationType.resolve(file) != ParadoxLocalisationType.Normal) return false
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatchService.isLocalisationFile(file)
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求是语义上有效的本地化文件（仅限普通的本地化文件）
+        return ParadoxPsiFileMatchService.isLocalisationFile(file, ParadoxPathConstraint.ForNormalLocalisation)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

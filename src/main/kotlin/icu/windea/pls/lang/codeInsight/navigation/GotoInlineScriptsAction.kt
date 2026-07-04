@@ -9,7 +9,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -27,12 +26,11 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
-        val gameType = selectGameType(file)
-        if (!ParadoxInlineScriptManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return // 只要向上能找到符合条件的属性就行
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage)) return // 仅限有效的脚本文件
+        if (!ParadoxPsiFileMatchService.isInlineScriptSupported(file)) return // 忽略游戏类型不支持的情况
+        val gameType = selectGameType(file) ?: return
+        val element = findElement(file, editor.caretModel.offset) ?: return // 只要向上能找到符合条件的属性就行
         if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return
         presentation.isEnabledAndVisible = true
     }

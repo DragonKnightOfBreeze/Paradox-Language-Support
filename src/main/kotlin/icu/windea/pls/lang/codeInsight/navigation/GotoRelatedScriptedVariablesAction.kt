@@ -24,11 +24,10 @@ class GotoRelatedScriptedVariablesAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatchService.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatchService.isLocalisationFile(file, injectable = true)) return
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isLocalisationFile(file)) return // 仅限有效的本地化文件
         presentation.isVisible = true
-        val offset = editor.caretModel.offset
-        val localisation = findElement(file, offset)
+        val localisation = findElement(file, editor.caretModel.offset)
         if (!ParadoxPsiMatchService.isNormalLocalisation(localisation)) return
         presentation.isEnabled = true
     }
