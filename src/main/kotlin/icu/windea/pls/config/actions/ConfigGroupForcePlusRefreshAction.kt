@@ -36,7 +36,7 @@ class ConfigGroupForcePlusRefreshAction : DumbAwareAction(), TooltipDescriptionP
         val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             // do first
-            configGroupService.refreshBuiltInConfigFiles(project)
+            configGroupService.refreshBuiltInConfigFiles()
             // do second
             val configGroups = configGroupService.getConfigGroups().values
             configGroups.forEach { configGroup -> configGroup.changed = false }

@@ -44,8 +44,8 @@ fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
     val configGroups = configGroupService.getConfigGroups().values
         .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
     runBlocking {
-        configGroupService.refreshBuiltInConfigFiles(project)
-        configGroupService.init(configGroups, project)
+        configGroupService.refreshBuiltInConfigFiles()
+        configGroupService.initConfigGroups(configGroups)
     }
 }
 
