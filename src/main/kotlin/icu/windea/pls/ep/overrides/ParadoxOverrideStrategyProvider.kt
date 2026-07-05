@@ -25,6 +25,6 @@ interface ParadoxOverrideStrategyProvider {
     fun get(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxOverrideStrategyProvider>("icu.windea.pls.overrideStrategyProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxOverrideStrategyProvider>("icu.windea.pls.overrideStrategyProvider")
     }
 }

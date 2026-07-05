@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
@@ -81,8 +81,8 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), Highlighti
 
     @Test
     fun invalidHyphen() {
-        val desc = PlsBundle.message("inspection.script.incorrectEventNamespace.desc", "my-namespace")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventNamespace.desc", "my-namespace").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = ${tag.start}my-namespace${tag.end}
@@ -95,8 +95,8 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), Highlighti
 
     @Test
     fun invalidDot() {
-        val desc = PlsBundle.message("inspection.script.incorrectEventNamespace.desc", "namespace.1")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventNamespace.desc", "namespace.1").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = ${tag.start}namespace.1${tag.end}
@@ -109,8 +109,8 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), Highlighti
 
     @Test
     fun invalidSpace() {
-        val desc = PlsBundle.message("inspection.script.incorrectEventNamespace.desc", "my namespace")
-        val tag = desc.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.incorrectEventNamespace.desc", "my namespace").toWarningTag()
+
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
             namespace = ${tag.start}"my namespace"${tag.end}

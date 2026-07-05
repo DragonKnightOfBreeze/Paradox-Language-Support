@@ -6,10 +6,10 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDeclarativeHintsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "ParadoxDeclarativeHintsSettings", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<ParadoxDeclarativeHintsSettings.State>(State()) {
     var showDefinitionName: Boolean // region
         get() = state.showDefinitionName

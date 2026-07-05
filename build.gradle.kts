@@ -16,8 +16,9 @@ buildscript {
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.16.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform") version "2.17.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.3"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
+    id("org.jetbrains.kotlinx.kover") version "0.9.8"  // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
@@ -35,11 +36,9 @@ val excludesInZip = buildList {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
-// Configure IntelliJ Platform Plugin
-// read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
+// Configure IntelliJ Platform Gradle Plugin - read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
 intellijPlatform {
     pluginConfiguration {
-        id = providers.gradleProperty("pluginId")
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
 
@@ -62,9 +61,9 @@ intellijPlatform {
 
     // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
     signing {
-        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN_PLS")
-        privateKey = providers.environmentVariable("PRIVATE_KEY_PLS")
-        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD_PLS")
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN_CHRONICLE")
+        privateKey = providers.environmentVariable("PRIVATE_KEY_CHRONICLE")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD_CHRONICLE")
     }
 
     publishing {
@@ -78,10 +77,6 @@ intellijPlatform {
     }
 }
 
-grammarKit {
-    jflexRelease = "1.7.0-2"
-}
-
 repositories {
     mavenCentral()
     intellijPlatform {
@@ -90,9 +85,10 @@ repositories {
 }
 
 dependencies {
-    // Configure Gradle IntelliJ Plugin
-    // Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
+    // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
+        pluginVerifier()
+
         val type = providers.gradleProperty("platformType")
         val version = providers.gradleProperty("platformVersion")
         create(type, version) // https://github.com/JetBrains/intellij-platform-plugin
@@ -174,6 +170,8 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
     }
 
+    // Compile only
+
     compileOnly("com.google.errorprone:error_prone_annotations:2.49.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
@@ -192,6 +190,17 @@ dependencies {
     // pebble - https://github.com/PebbleTemplates/pebble
     testImplementation("io.pebbletemplates:pebble:4.1.1") {
         exclude(group = "org.slf4j", module = "slf4j-api")
+    }
+}
+
+// Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
+kover {
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
     }
 }
 

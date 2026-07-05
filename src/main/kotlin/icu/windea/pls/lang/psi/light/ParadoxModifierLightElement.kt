@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.model.ParadoxGameType
@@ -22,7 +22,7 @@ class ParadoxModifierLightElement(
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {
     var canRename = false
 
-    override fun getIcon(flags: Int) = PlsIcons.Nodes.Modifier
+    override fun getIcon(flags: Int) = ChronicleIcons.Nodes.Modifier
 
     override fun getName() = name
 

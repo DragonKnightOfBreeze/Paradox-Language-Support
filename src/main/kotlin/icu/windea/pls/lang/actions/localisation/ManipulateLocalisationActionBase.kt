@@ -10,8 +10,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.editor
@@ -81,15 +81,15 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         // 弹出对话框，以确认是否真的要处理本地化
         val actionName = e.presentation.text
         val toProcess = files.size
-        val title = PlsBundle.message("manipulation.confirm.title")
-        val message = PlsBundle.message("manipulation.confirm.message", actionName, toProcess)
+        val title = ChronicleBundle.message("manipulation.confirm.title")
+        val message = ChronicleBundle.message("manipulation.confirm.message", actionName, toProcess)
         return MessageDialogBuilder.okCancel(title, message).ask(project)
     }
 
     protected abstract fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>)
 
     protected fun doHandleAllAsync(e: AnActionEvent, project: Project, context: C) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             doHandleAll(e, project, context)
         }
@@ -109,7 +109,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     abstract class WithLocalePopup : ManipulateLocalisationActionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
-            val configGroup = PlsFacade.getConfigGroup(e)
+            val configGroup = ChronicleFacade.getConfigGroup(e)
             val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
             return ParadoxLocaleListPopup(supportedLocales)
         }
@@ -148,7 +148,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationActionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
-            val configGroup = PlsFacade.getConfigGroup(e)
+            val configGroup = ChronicleFacade.getConfigGroup(e)
             val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
             return ParadoxLocaleListPopup(supportedLocales)
         }
@@ -178,8 +178,8 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     }
 
     object Messages {
-        fun success(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.0", processed)
-        fun failed(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.1", processed)
-        fun partialSuccess(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.2", processed)
+        fun success(processed: Int) = ChronicleBundle.message("action.manipulateLocalisation.status.0", processed)
+        fun failed(processed: Int) = ChronicleBundle.message("action.manipulateLocalisation.status.1", processed)
+        fun partialSuccess(processed: Int) = ChronicleBundle.message("action.manipulateLocalisation.status.2", processed)
     }
 }

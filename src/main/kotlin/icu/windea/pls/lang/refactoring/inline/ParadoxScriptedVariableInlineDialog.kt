@@ -5,10 +5,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.refactoring.inline.InlineOptionsDialog
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -23,7 +23,7 @@ class ParadoxScriptedVariableInlineDialog(
     private val editor: Editor?
 ) : InlineOptionsDialog(project, true, element) {
     private val optimizedScope = when {
-        ParadoxPsiMatcher.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
+        ParadoxPsiMatchService.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
             ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
             ?.intersectWith(GlobalSearchScope.projectScope(project))
             ?: GlobalSearchScope.projectScope(project)
@@ -31,7 +31,7 @@ class ParadoxScriptedVariableInlineDialog(
     }
 
     init {
-        title = PlsBundle.message("title.inline.scriptedVariable")
+        title = ChronicleBundle.message("title.inline.scriptedVariable")
         myInvokedOnReference = reference != null
         init()
         helpAction.isEnabled = false
@@ -39,20 +39,20 @@ class ParadoxScriptedVariableInlineDialog(
 
     override fun getNameLabelText(): String {
         val name = element.name.or.anonymous()
-        return PlsBundle.message("inline.scriptedVariable.label", name)
+        return ChronicleBundle.message("inline.scriptedVariable.label", name)
     }
 
     override fun getInlineThisText(): String {
-        return PlsBundle.message("inline.scriptedVariable.inline.this")
+        return ChronicleBundle.message("inline.scriptedVariable.inline.this")
     }
 
     override fun getInlineAllText(): String {
-        return if (element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.remove")
-        else PlsBundle.message("inline.scriptedVariable.inline.all")
+        return if (element.isWritable) ChronicleBundle.message("inline.scriptedVariable.inline.all.remove")
+        else ChronicleBundle.message("inline.scriptedVariable.inline.all")
     }
 
     override fun getKeepTheDeclarationText(): String {
-        return if (element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.keep")
+        return if (element.isWritable) ChronicleBundle.message("inline.scriptedVariable.inline.all.keep")
         else super.getKeepTheDeclarationText()
     }
 

@@ -7,7 +7,7 @@ import com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import kotlinx.coroutines.coroutineScope
@@ -46,6 +46,6 @@ class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return PlsSettings.getInstance().state.others.showLocalisationFloatingToolbar
+        return ChronicleSettings.getInstance().state.others.showLocalisationFloatingToolbar
     }
 }

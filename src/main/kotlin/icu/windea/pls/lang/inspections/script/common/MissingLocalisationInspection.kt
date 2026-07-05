@@ -10,17 +10,18 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
 import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
@@ -29,13 +30,13 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
  * 缺失的本地化的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForPreferredLocale = true
@@ -56,14 +57,17 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
         val supportedLocaleMap = supportedLocales.associateBy { it.id }
         val locales = mutableSetOf<CwtLocaleConfig>()
@@ -87,8 +91,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, forReference = false, locales = supportedLocales, fromInspection = true)
+                if (!element.isDataExpression()) return
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, locales = locales, forReference = false, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }
@@ -131,9 +135,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         val localeId = codeInsightInfo.locale.id
         val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
         locationExpression?.takeUnless { it.isPlaceholder }?.location
-            ?.let { return PlsBundle.message("inspection.script.missingLocalisation.desc.2", localeId, it) }
+            ?.let { return ChronicleBundle.message("inspection.script.missingLocalisation.desc.2", localeId, it) }
         codeInsightInfo.name
-            ?.let { return PlsBundle.message("inspection.script.missingLocalisation.desc.1", localeId, it) }
+            ?.let { return ChronicleBundle.message("inspection.script.missingLocalisation.desc.1", localeId, it) }
         return null
     }
 
@@ -151,9 +155,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             // checkForPreferredLocale
             row {
-                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale"))
+                checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale.toAtomicProperty())
-                cell(ActionLink(PlsBundle.message("link.configure")) {
+                cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
                     dialog.showAndGet()
@@ -161,11 +165,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForSpecificLocales
             row {
-                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales"))
+                checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
-                cell(ActionLink(PlsBundle.message("link.configure")) {
-                    val configGroup = PlsFacade.getConfigGroup()
+                cell(ActionLink(ChronicleBundle.message("link.configure")) {
+                    val configGroup = ChronicleFacade.getConfigGroup()
                     val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
                     val globalLocaleMap = globalLocales.associateBy { it.id }
                     val selectedLocales = localeSet.mapNotNull { globalLocaleMap.get(it) }
@@ -179,33 +183,33 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForDefinitions
             row {
-                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForDefinitions"))
+                checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions.toAtomicProperty())
                     .also { checkForDefinitionsCb = it }
             }
             indent {
                 // checkRequiredForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkRequiredForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
                 // checkPrimaryForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkPrimaryForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkOptionalForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkOptionalForDefinitions")).apply {
+                    checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkOptionalForDefinitions")).apply {
                         bindSelected(::checkOptionalForDefinitions.toAtomicProperty())
                             .enabledIf(checkForDefinitionsCb.selected)
                     }
                 }
                 // checkGeneratedModifiersForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifiersForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifiersForDefinitions"))
                         .bindSelected(::checkGeneratedModifiersForDefinitions.toAtomicProperty())
                         .also { checkGeneratedModifiersForDefinitionsCb = it }
                         .enabledIf(checkForDefinitionsCb.selected)
@@ -213,14 +217,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 indent {
                     // checkGeneratedModifierNamesForDefinitions
                     row {
-                        checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
+                        checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
                             bindSelected(::checkGeneratedModifierNamesForDefinitions.toAtomicProperty())
                                 .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
                         }
                     }
                     // checkGeneratedModifierDescriptionsForDefinitions
                     row {
-                        checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
+                        checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
                             bindSelected(::checkGeneratedModifierDescriptionsForDefinitions.toAtomicProperty())
                                 .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
                         }
@@ -229,27 +233,27 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForModifiers
             row {
-                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForModifiers"))
+                checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers.toAtomicProperty())
                     .also { checkForModifiersCb = it }
             }
             indent {
                 // checkModifierNames
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkModifierNames"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkModifierNames"))
                         .bindSelected(::checkModifierNames.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
                 // checkModifierDescriptions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkModifierDescriptions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingLocalisation.option.checkModifierDescriptions"))
                         .bindSelected(::checkModifierDescriptions.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

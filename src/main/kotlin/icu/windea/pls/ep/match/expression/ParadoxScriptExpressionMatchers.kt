@@ -5,9 +5,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.ignoreCase
+import icu.windea.pls.config.processUnionCandidates
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -18,7 +19,7 @@ import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
@@ -79,7 +80,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxExtendedBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)
@@ -91,20 +92,20 @@ class ParadoxExtendedBaseScriptExpressionMatcher : ParadoxScriptExpressionMatche
 
     private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesFloatPercentageField(context.expression.value)
+        val r = ParadoxMatchProvider.matchesFloatPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchIntPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = TextMatcher.matchesIntPercentageField(context.expression.value)
+        val r = ParadoxMatchProvider.matchesIntPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.value
-        val r = TextMatcher.matchesDateField(context.expression.value, datePattern)
+        val r = ParadoxMatchProvider.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
     }
 }
@@ -118,6 +119,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.InlineLocalisation -> matchInlineLocalisation(context)
             in CwtDataTypeSets.PathReference -> matchPathReference(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
+            CwtDataTypes.UnionValue -> matchUnionValue(context)
             in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
             in CwtDataTypeSets.ScopeField -> matchScopeFieldExpression(context)
             in CwtDataTypeSets.ValueField -> matchValueFieldExpression(context)
@@ -195,6 +197,18 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val complexEnumConfig = context.configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
             return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, name, enumName, complexEnumConfig)
+        }
+        return ParadoxMatchResult.NotMatch
+    }
+
+    private fun matchUnionValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
+        unionConfig.processUnionCandidates { valueConfig ->
+            val nextContext = context.copy(configExpression = valueConfig.configExpression)
+            val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
+            if (r.get(context.options)) return r
+            true
         }
         return ParadoxMatchResult.NotMatch
     }
@@ -367,26 +381,19 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxAntScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        if (context.dataType != CwtDataTypes.Ant) return null
-        val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
+        val value = context.expression.value
+        val pattern = context.configExpression.value ?: return null
         val ignoreCase = context.configExpression.ignoreCase
-        val r = context.expression.value.matchesAntPattern(pattern, ignoreCase)
-        return ParadoxMatchResult.exactOrNot(r)
-    }
-}
-
-class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
-
-    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        if (context.dataType != CwtDataTypes.Regex) return null
-        val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val ignoreCase = context.configExpression.ignoreCase
-        val r = context.expression.value.matchesRegex(pattern, ignoreCase)
+        val r = when (context.dataType) {
+            CwtDataTypes.Glob -> value.matchesPattern(pattern, ignoreCase)
+            CwtDataTypes.Ant -> value.matchesAntPattern(pattern, ignoreCase)
+            CwtDataTypes.Regex -> value.matchesRegex(pattern, ignoreCase)
+            else -> return null
+        }
         return ParadoxMatchResult.exactOrNot(r)
     }
 }

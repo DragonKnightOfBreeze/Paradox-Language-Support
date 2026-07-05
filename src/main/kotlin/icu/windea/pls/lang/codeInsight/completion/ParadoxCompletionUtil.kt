@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -22,7 +22,7 @@ object ParadoxCompletionUtil {
         val name = definitionInfo.name
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
+            .withIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableTailText(context.patchableTailText)
             .withDefinitionLocalizedNamesIfNecessary(element)

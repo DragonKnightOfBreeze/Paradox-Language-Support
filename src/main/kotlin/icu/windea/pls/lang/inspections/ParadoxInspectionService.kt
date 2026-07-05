@@ -1,84 +1,90 @@
 package icu.windea.pls.lang.inspections
 
+import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
-import icu.windea.pls.core.match.similarity.SimilarityMatchService
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
-import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
-import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
-import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
-import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
+import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
+import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionDecorator
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxInspectionService {
+    @Optimized
     fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
-        ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEach { ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@forEach
+        ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             result += ep.getSuppressedToolIds(definition, definitionInfo)
         }
         return result
     }
 
-    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+    @Optimized
+    fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, checkers: List<ParadoxIncorrectSyntaxChecker>) {
+        val gameType = context.gameType
+        checkers.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            ep.check(element, context)
+        }
+    }
+
+    @Optimized
+    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder, checkers: List<ParadoxIncorrectExpressionChecker>) {
         val gameType = config.configGroup.gameType
-        ParadoxIncorrectExpressionChecker.EP_NAME.extensionList.forEach f@{ ep ->
+        checkers.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
             ep.check(element, config, holder)
         }
     }
 
-    fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-        val literals = CwtConfigManager.findLiterals(expectedConfigs)
-        if (literals.isEmpty()) return emptyList()
-
-        val input = element.value
-        if (input.isEmpty()) return emptyList()
-        val ignoreCase = when (element) {
-            is ParadoxScriptStringExpressionElement -> true
-            is ParadoxCsvColumn -> true
-            else -> false
+    context(_: LocalInspectionTool)
+    @Optimized
+    fun getDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
+        if (expectedConfigs.isEmpty()) return null
+        val gameType = expectedConfigs.first().configGroup.gameType
+        val decorators = ParadoxUnresolvedExpressionDecorator.EP_NAME.extensionList
+        decorators.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            ep.getDescription(element, expectedConfigs)?.let { return it }
         }
-        val options = if (ignoreCase) SimilarityMatchOptions.IGNORE_CASE else SimilarityMatchOptions.DEFAULT
-
-        // 查询输入项的最佳匹配，但排除完全匹配的相似项
-        val matches = SimilarityMatchService.findBestMatches(input, literals, options).filter { it.score < 1.0 }
-        if (matches.isEmpty()) return emptyList()
-
-        // 为最匹配的项提供单独的快速修复（直接替换）
-        // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
-        val fixes = mutableListOf<LocalQuickFix>()
-        val first = matches.first()
-        fixes += ReplaceWithSimilarExpressionFix(element, first)
-        val remain = matches.drop(1)
-        if (remain.isNotEmpty()) {
-            fixes += ReplaceWithSimilarExpressionInListFix(element, matches)
-        }
-
-        return fixes
+        return null
     }
 
-    fun getLocalisationReferenceFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-        if (expectedConfigs.isEmpty()) return emptyList()
-        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val context = expectedConfigs.firstNotNullOfOrNull {
-            ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, fromInspection = true)
+    context(_: LocalInspectionTool)
+    @Optimized
+    fun getHighlightTypeForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
+        if (expectedConfigs.isEmpty()) return null
+        val gameType = expectedConfigs.first().configGroup.gameType
+        val decorators = ParadoxUnresolvedExpressionDecorator.EP_NAME.extensionList
+        decorators.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            ep.getHighlightType(element, expectedConfigs)?.let { return it }
         }
-        if (context == null) return emptyList()
-        return listOf(
-            GenerateLocalisationsFix(element, context),
-            GenerateLocalisationsInFileFix(element),
-        )
+        return null
+    }
+
+    context(_: LocalInspectionTool)
+    @Optimized
+    fun getFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
+        if (expectedConfigs.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
+        val result = mutableListOf<LocalQuickFix>()
+        val gameType = expectedConfigs.first().configGroup.gameType
+        val decorators = ParadoxUnresolvedExpressionDecorator.EP_NAME.extensionList
+        decorators.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            ep.collectFixes(element, expectedConfigs, result)
+        }
+        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 }

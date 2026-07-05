@@ -9,11 +9,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
-import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModSetInfo
@@ -27,7 +27,7 @@ class ParadoxModDependenciesExportPopup(
     private val table: ParadoxModDependenciesTable,
 ) : BaseListPopupStep<ParadoxModExporter>() {
     init {
-        val title = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
+        val title = ChronicleBundle.message("mod.dependencies.toolbar.action.export.popup.title")
         val gameType = table.model.settings.finalGameType
         val exporters = ParadoxModExporter.EP_NAME.extensionList.filter { it.isAvailable(gameType) }
         init(title, exporters, null)
@@ -46,7 +46,7 @@ class ParadoxModDependenciesExportPopup(
         val gameType = settings.finalGameType
         val gameTypeProperty = AtomicProperty(gameType)
         val descriptor = modExporter.createFileSaverDescriptor(gameType)
-            .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+            .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
         val baseDir = modExporter.getSavedBaseDir(gameType)
         val fileName = modExporter.getSavedFileName(gameType)
         val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, table).save(baseDir, fileName)
@@ -60,30 +60,30 @@ class ParadoxModDependenciesExportPopup(
         val qualifiedName = settings.qualifiedName
         val modSetInfo = table.model.modDependencies.toModSetInfo(gameType) // 需要从 tableModel 中获取，而非直接从 settings 中获取
         val result = try {
-            runWithModalProgressBlocking(project, PlsBundle.message("mod.dependencies.export.progress.title")) {
+            runWithModalProgressBlocking(project, ChronicleBundle.message("mod.dependencies.export.progress.title")) {
                 modExporter.execute(file.toNioPath(), modSetInfo)
             }
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsBundle.message("mod.dependencies.export.error") + e.message.errorDetails
-            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+            val content = ChronicleBundle.message("mod.dependencies.export.error") + e.message.errorDetails
+            ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
         val from = modSetInfo.name
         if (result.actualTotal == 0) {
-            val content = PlsBundle.message("mod.dependencies.export.empty", from)
-            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+            val content = ChronicleBundle.message("mod.dependencies.export.empty", from)
+            ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
 
         if (result.warning != null) {
-            val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal) + result.warning.errorDetails
-            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+            val content = ChronicleBundle.message("mod.dependencies.export.info", from, result.actualTotal) + result.warning.errorDetails
+            ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
-        val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal)
-        PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
+        val content = ChronicleBundle.message("mod.dependencies.export.info", from, result.actualTotal)
+        ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
     }
 
     companion object {

@@ -17,6 +17,6 @@ interface ParadoxIgnoredFileProvider {
     fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxIgnoredFileProvider>("icu.windea.pls.ignoredFileProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxIgnoredFileProvider>("icu.windea.pls.ignoredFileProvider")
     }
 }

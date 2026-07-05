@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesPath
@@ -10,7 +9,7 @@ import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * @see CwtDataTypes.Icon
@@ -46,7 +45,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         val fileNameWithoutExtension = pathReference.substringAfterLast('/')
-        val resolved = PlsConstants.imageFileExtensions.mapTo(mutableSetOf()) { "$fileNameWithoutExtension.$it" }
+        val resolved = ChronicleConstants.imageFileExtensions.mapTo(mutableSetOf()) { "$fileNameWithoutExtension.$it" }
         return resolved
     }
 
@@ -54,12 +53,8 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         val i = filePath.lastIndexOf('.')
         if (i == -1) return null
         val extension = filePath.substring(i + 1).lowercase()
-        if (extension !in PlsConstants.imageFileExtensions) return null
+        if (extension !in ChronicleConstants.imageFileExtensions) return null
         return filePath.substring(0, i)
-    }
-
-    override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
     }
 }
 
@@ -153,10 +148,6 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
         return resolved.to.singletonSet()
     }
-
-    override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
-    }
 }
 
 /**
@@ -190,9 +181,5 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         return pathReference.substringAfterLast('/').to.singletonSet()
-    }
-
-    override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)
     }
 }

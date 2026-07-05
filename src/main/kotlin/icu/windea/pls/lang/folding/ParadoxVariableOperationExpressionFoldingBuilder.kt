@@ -5,7 +5,7 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
     object Constants {
@@ -26,11 +26,11 @@ class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldin
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return PlsSettings.getInstance().state.folding.variableOperationExpressionsByDefault
+        return ChronicleSettings.getInstance().state.folding.variableOperationExpressionsByDefault
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!PlsSettings.getInstance().state.folding.variableOperationExpressions) return FoldingDescriptor.EMPTY_ARRAY
+        if (!ChronicleSettings.getInstance().state.folding.variableOperationExpressions) return FoldingDescriptor.EMPTY_ARRAY
 
         return super.buildFoldRegions(root, document, quick)
     }

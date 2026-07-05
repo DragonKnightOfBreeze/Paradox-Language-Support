@@ -1,10 +1,9 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.NavigatablePsiElement
-import com.intellij.psi.PsiElement
-
 /**
+ * 成员。包括属性和值。
+ *
  * @see CwtProperty
  * @see CwtValue
  */
-interface CwtMember : PsiElement, NavigatablePsiElement
+interface CwtMember : CwtStatement, CwtMemberContext

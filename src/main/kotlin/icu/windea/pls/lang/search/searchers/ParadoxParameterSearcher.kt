@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
@@ -30,7 +30,7 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
     private fun processQuery(context: Context, consumer: Processor<in ParadoxParameterIndexInfo>): Boolean {
         if (!context.isValid()) return true
         val indexInfoType = ParadoxIndexInfoTypes.Parameter
-        return PlsIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
             infos.process { info -> processInfo(context, file, info, consumer) }
         }
     }

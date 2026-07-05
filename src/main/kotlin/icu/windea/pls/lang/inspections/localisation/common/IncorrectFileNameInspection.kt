@@ -6,13 +6,14 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import javax.swing.JComponent
 
 /**
@@ -20,6 +21,7 @@ import javax.swing.JComponent
  *
  * 说明：
  * - 忽略注入的文件和临时文件。
+ * - 仅检查普通的本地化文件（位于 `localisation` 或 `localization` 目录下）。
  *
  * 提供快速修复：
  * - 改为正确的文件名
@@ -32,11 +34,11 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
-        val virtualFile = file.virtualFile
-        if (VirtualFileService.isLightFile(virtualFile)) return false
-        if (VirtualFileService.isInjectedFile(virtualFile)) return false
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file)
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求是语义上有效的本地化文件（仅限普通的本地化文件）
+        return ParadoxPsiFileMatchService.isLocalisationFile(file, ParadoxPathConstraint.ForNormalLocalisation)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
@@ -47,10 +49,10 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         return panel {
             // ignoredFilePaths
             row {
-                label(PlsBundle.message("incorrectFileName.option.ignoredFilePaths"))
+                label(ChronicleBundle.message("incorrectFileName.option.ignoredFilePaths"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.antPatterns"))
+                    .comment(ChronicleBundle.message("comment.antPatterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

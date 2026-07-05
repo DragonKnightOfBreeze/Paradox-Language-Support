@@ -5,26 +5,31 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.model.ParadoxTextColorInfo
+import icu.windea.pls.model.constants.ChronicleStrings
 
 // org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
 // org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction
 // org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
+private const val marker = ChronicleStrings.colorMarker
+private const val startMarker = ChronicleStrings.colorStartMarker
+private const val endMarker = ChronicleStrings.colorEndMarker
+
 class SetColorAction(
     val colorConfig: ParadoxTextColorInfo
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
-    private val setColorActionBaseName = PlsBundle.message("action.Pls.Localisation.Styling.SetColor.text")
+    private val actionBaseName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.SetColor.text")
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(event: AnActionEvent) {
-        val editor = event.editor ?: return
-        event.presentation.isEnabled = editor.document.isWritable
-        super.update(event)
+    override fun update(e: AnActionEvent) {
+        val editor = e.editor ?: return
+        e.presentation.isEnabled = editor.document.isWritable
+        super.update(e)
     }
 
     override fun isSelected(event: AnActionEvent): Boolean {
@@ -34,7 +39,7 @@ class SetColorAction(
         val selectionStart = caret.selectionStart
         if (selectionStart <= 2) return false
         val startString = editor.document.getText(TextRange.create(selectionStart - 2, (selectionStart + 2).coerceAtMost(editor.document.textLength)))
-        return startString.lastIndexOf('§').let { it != -1 && it != 3 && startString[it + 1] == colorConfig.name.singleOrNull() }
+        return startString.lastIndexOf(marker).let { it != -1 && it != 3 && startString[it + 1] == colorConfig.name.singleOrNull() }
     }
 
     override fun setSelected(event: AnActionEvent, state: Boolean) {
@@ -45,18 +50,19 @@ class SetColorAction(
         val selectionStart = caret.selectionStart
         if (selectionStart <= 2) return
         val selectionEnd = caret.selectionEnd
+
         val startString = editor.document.getText(TextRange.create(selectionStart - 2, (selectionStart + 2).coerceAtMost(editor.document.textLength)))
-        val startIndex = startString.lastIndexOf('§')
+        val startIndex = startString.lastIndexOf(marker)
         val start = if (startIndex != -1) selectionStart + startIndex - 2 else selectionStart
         val toReplaceStart = if (startIndex != -1) selectionStart + startIndex else selectionStart
         val endString = editor.document.getText(TextRange.create(selectionEnd - 2, (selectionEnd + 2).coerceAtMost(editor.document.textLength)))
-        val endIndex = endString.indexOf("§!")
+        val endIndex = endString.indexOf(endMarker)
         val end = if (endIndex != -1) selectionEnd + endIndex else selectionEnd
         val toReplaceEnd = if (endIndex != -1) selectionEnd + endIndex - 2 else selectionEnd
         val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return
-        executeWriteCommand(project, setColorActionBaseName, makeWritable = file) {
+        executeWriteCommand(project, actionBaseName, makeWritable = file) {
             val toReplace = editor.document.getText(TextRange.create(toReplaceStart, toReplaceEnd))
-            val replaced = "§${colorConfig.name}$toReplace§!"
+            val replaced = "${startMarker}${colorConfig.name}${toReplace}${endMarker}"
             editor.document.replaceString(start, end, replaced)
             val caretStart = start + 2
             val caretEnd = start + 2 + toReplace.length

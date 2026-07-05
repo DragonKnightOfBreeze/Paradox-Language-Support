@@ -19,7 +19,7 @@ class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsages
     //
     // override fun generateUsagesString(): String {
     //    if (isCrossLocales) {
-    //        return PlsBundle.message("find.usages.panel.title.usages.crossLocales")
+    //        return ChronicleBundle.message("find.usages.panel.title.usages.crossLocales")
     //    } else {
     //        return super.generateUsagesString()
     //    }

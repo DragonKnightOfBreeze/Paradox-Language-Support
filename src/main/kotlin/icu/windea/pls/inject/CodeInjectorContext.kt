@@ -3,7 +3,7 @@ package icu.windea.pls.inject
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
@@ -29,8 +29,9 @@ object CodeInjectorContext {
     @PublishedApi @JvmField internal val runSafelyFlags = CacheBuilder().build<String, AtomicBoolean> { AtomicBoolean() }
     @PublishedApi @JvmField internal val continueInvocationException: ContinueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
 
+    @JvmStatic
     fun init() {
-        if (!PlsFacade.isUnitTestMode()) {
+        if (!ChronicleFacade.isUnitTestMode()) {
             application.putUserData(applyInjectionMethodKey, CodeInjectorContext.javaClass.methods.first { it.name == "applyInjection" })
         }
 
@@ -44,6 +45,7 @@ object CodeInjectorContext {
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
     }
 
+    @JvmStatic
     fun initClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
         classPool.appendClassPath(ClassClassPath(javaClass))
@@ -59,6 +61,7 @@ object CodeInjectorContext {
         return classPool
     }
 
+    @JvmStatic
     fun applyCodeInjectors() {
         val logger = thisLogger()
         val codeInjectors = codeInjectors
@@ -77,8 +80,9 @@ object CodeInjectorContext {
         }
     }
 
+    @JvmStatic
     fun cleanUp() {
-        if (!PlsFacade.isUnitTestMode()) {
+        if (!ChronicleFacade.isUnitTestMode()) {
             application.putUserData(applyInjectionMethodKey, null)
         }
 
@@ -89,9 +93,9 @@ object CodeInjectorContext {
     }
 
     @Suppress("unused")
-    @Throws(InvocationTargetException::class)
     @PublishedApi
     @JvmStatic
+    @Throws(InvocationTargetException::class)
     internal fun applyInjection(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
         // 如果注入方法是一个扩展方法，则传递 `target` 到接收者（目标方法是一个静态方法时，`target` 的值为 `null`）
         // 如果注入方法的某个参数标记了 `@InjectReturnValue`，则传递 `returnValue` 到该参数（目标方法没有返回值时，`returnValue` 的值为 `null`）
@@ -129,7 +133,7 @@ object CodeInjectorContext {
         try {
             return method.invoke(codeInjector, *finalArgs)
         } catch (e: InvocationTargetException) {
-            if (!PlsFacade.isUnitTestMode()) {
+            if (!ChronicleFacade.isUnitTestMode()) {
                 throw e.targetException ?: e
             }
             throw e

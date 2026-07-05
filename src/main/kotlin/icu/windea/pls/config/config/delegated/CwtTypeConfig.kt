@@ -8,7 +8,6 @@ import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -20,6 +19,7 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.resolveElementWithConfig
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -69,7 +69,6 @@ import icu.windea.pls.model.ParadoxTagType
  * @property subtypes 对应的子类型规则的集合。
  * @property localisation 对应的本地化展示规则。
  * @property images 对应的图片展示规则。
- * @property maxRootKeyDepth 顶级键的最大深度。用于规则匹配。
  * @property attributes 综合属性。
  * @property typeKeyPrefixConfig 当以值条目形式声明前缀时，对应的原始值规则。
  *
@@ -110,7 +109,6 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     @FromMember("images: ImagesInfo")
     val images: CwtTypeImagesConfig?
 
-    val maxRootKeyDepth: Int
     val attributes: CwtTypeConfigAttributes
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
@@ -202,17 +200,8 @@ private class CwtTypeConfigImpl(
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
 ) : UserDataHolderBase(), CwtTypeConfig {
-    override val maxRootKeyDepth: Int = computeMaxRootKeyDepth()
     override val attributes: CwtTypeConfigAttributes by lazy { CwtTypeConfigAttributesEvaluator().evaluate(this) }
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy { computeTypeKeyPrefixConfig() }
-
-    private fun computeMaxRootKeyDepth(): Int {
-        return when {
-            typePerFile -> 0
-            skipRootKey.isEmpty() -> 0
-            else -> skipRootKey.maxOf { it.size }
-        }
-    }
 
     private fun computeTypeKeyPrefixConfig(): CwtValueConfig? {
         return config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also {

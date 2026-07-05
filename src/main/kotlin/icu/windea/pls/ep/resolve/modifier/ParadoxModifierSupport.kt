@@ -53,6 +53,6 @@ interface ParadoxModifierSupport {
     object Keys : KeyRegistryWithSync()
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
     }
 }

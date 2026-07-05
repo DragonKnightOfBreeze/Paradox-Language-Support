@@ -31,9 +31,9 @@ import java.io.DataOutput
  */
 @Optimized
 class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>, CwtConfigSymbolIndexInfo>() {
-    override fun getName() = PlsIndexKeys.ConfigSymbol
+    override fun getName() = ChronicleIndexKeys.ConfigSymbol
 
-    override fun getVersion() = PlsIndexVersions.ConfigSymbol
+    override fun getVersion() = ChronicleIndexVersions.ConfigSymbol
 
     override fun filterFile(file: VirtualFile): Boolean {
         // 仅判断文件类型，不判断是否从属于某个规则分组
@@ -51,7 +51,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is CwtStringExpressionElement) visitStringExpressionElement(element)
-                if (!CwtPsiService.isMemberContextElement(element)) return // optimize
+                if (!CwtPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -64,7 +64,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
     }
 
     private fun addToFileData(info: CwtConfigSymbolIndexInfo, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
-        PlsIndexStatisticService.recordConfigSymbol(info.gameType)
+        ChronicleIndexStatisticService.recordConfigSymbol(info.gameType)
 
         fileData.getOrPut(info.type) { mutableListOf() }.asMutable() += info
     }

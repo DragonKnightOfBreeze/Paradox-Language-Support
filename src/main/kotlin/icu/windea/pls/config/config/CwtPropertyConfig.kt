@@ -13,6 +13,7 @@ import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProcessor
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
@@ -29,7 +30,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.forCwtSeparatorType
 import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
@@ -131,15 +132,15 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         }
 
         if (keyElement == null) {
-            logger.warn("Missing property key, skipped.".withLocationPrefix(element))
+            logger.warn("Missing property key, skipped.".withLocationPrefix(element, configGroup))
             return null
         }
         if (valueElement == null) {
-            logger.warn("Missing property value, skipped.".withLocationPrefix(element))
+            logger.warn("Missing property value, skipped.".withLocationPrefix(element, configGroup))
             return null
         }
         if (separatorType == null) {
-            logger.warn("Missing property separator, skipped.".withLocationPrefix(element))
+            logger.warn("Missing property separator, skipped.".withLocationPrefix(element, configGroup))
             return null
         }
 
@@ -149,12 +150,12 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(valueElement.value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
         when {
-            configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
-            configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element) }
-            else -> logger.trace { "Resolved property config (key: ${config.key}, ${configs.size} member configs).".withLocationPrefix(element) }
+            configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element, configGroup) }
+            configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element, configGroup) }
+            else -> logger.trace { "Resolved property config (key: ${config.key}, ${configs.size} member configs).".withLocationPrefix(element, configGroup) }
         }
         return config
     }
@@ -192,7 +193,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
     }
 }
 
-private const val blockValue = PlsStrings.blockFolder
+private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 3 * 4 = 24 -> 24

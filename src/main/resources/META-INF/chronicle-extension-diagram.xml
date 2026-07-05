@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable id="pls.diagram" parentId="pls" groupWeight="9" bundle="messages.PlsDiagramBundle" key="settings.diagram"
-                         instance="icu.windea.pls.extensions.diagram.settings.PlsDiagramSettingsConfigurable"/>
+    <projectConfigurable id="pls.diagram" parentId="pls" groupWeight="9" bundle="messages.ChronicleDiagramBundle" key="settings.diagram"
+                         instance="icu.windea.pls.extensions.diagram.settings.ChronicleDiagramSettingsConfigurable"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.diagram">
@@ -17,7 +17,7 @@
     <Provider implementation="icu.windea.pls.extensions.diagram.provider.Vic3EventTreeDiagramProvider"/>
   </extensions>
 
-  <actions resource-bundle="messages.PlsDiagramBundle">
+  <actions resource-bundle="messages.ChronicleDiagramBundle">
     <reference ref="Pls.GotoGroup">
       <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>

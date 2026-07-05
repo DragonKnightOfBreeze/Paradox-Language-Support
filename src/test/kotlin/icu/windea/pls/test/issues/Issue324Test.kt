@@ -2,7 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -38,7 +38,7 @@ class Issue324Test : BasePlatformTestCase() {
 
     @Test
     fun testWeapons() {
-        val configGroup = PlsFacade.getConfigGroup(myFixture.project)
+        val configGroup = ChronicleFacade.getConfigGroup(myFixture.project)
 
         val typeConfig = configGroup.types["weapon"]
         assertNotNull(typeConfig)

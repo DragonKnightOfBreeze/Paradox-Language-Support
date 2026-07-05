@@ -9,24 +9,24 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextBuilder
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
  * 缺失的图片的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
@@ -38,10 +38,13 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -62,7 +65,7 @@ class MissingImageInspection : LocalInspectionTool() {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
                 val context = ParadoxImageCodeInsightContextBuilder.fromExpression(element, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
@@ -105,11 +108,11 @@ class MissingImageInspection : LocalInspectionTool() {
     private fun getDescription(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
         val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
         locationExpression?.takeUnless { it.isPlaceholder }?.location
-            ?.let { return PlsBundle.message("inspection.script.missingImage.desc.3", it) }
+            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.3", it) }
         codeInsightInfo.gfxName
-            ?.let { return PlsBundle.message("inspection.script.missingImage.desc.2", it) }
+            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.2", it) }
         codeInsightInfo.filePath
-            ?.let { return PlsBundle.message("inspection.script.missingImage.desc.1", it) }
+            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.1", it) }
         return null
     }
 
@@ -125,53 +128,53 @@ class MissingImageInspection : LocalInspectionTool() {
         return panel {
             // checkForDefinitions
             row {
-                checkBox(PlsBundle.message("inspection.script.missingImage.option.checkForDefinitions"))
+                checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions.toAtomicProperty())
                     .also { checkForDefinitionsCb = it }
             }
             indent {
                 // checkRequiredForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingImage.option.checkRequiredForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
                 // checkPrimaryForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingImage.option.checkPrimaryForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkOptionalForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingImage.option.checkOptionalForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkOptionalForDefinitions"))
                         .bindSelected(::checkOptionalForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkGeneratedModifierIconsForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
                         .bindSelected(::checkGeneratedModifierIconsForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
             }
             // checkForModifiers
             row {
-                checkBox(PlsBundle.message("inspection.script.missingImage.option.checkForModifiers"))
+                checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers.toAtomicProperty())
                     .also { checkForModifiersCb = it }
             }
             indent {
                 // checkModifierIcons
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingImage.option.checkModifierIcons"))
+                    checkBox(ChronicleBundle.message("inspection.script.missingImage.option.checkModifierIcons"))
                         .bindSelected(::checkModifierIcons.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

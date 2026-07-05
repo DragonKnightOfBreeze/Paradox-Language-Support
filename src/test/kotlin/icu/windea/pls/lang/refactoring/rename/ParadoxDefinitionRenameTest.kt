@@ -124,7 +124,7 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
     @Test
     fun testRename_Definition_Combined() {
         val mainPath = "common/vtubers/vtuber_1.test.txt"
-        val otherPath =  "common/vtubers/vtuber_2.test.txt"
+        val otherPath = "common/vtubers/vtuber_2.test.txt"
         val localisationEnglishPath = "localisation/definitions_l_english.test.yml"
         val localisationChinesePath = "localisation/definitions_l_simp_chinese.test.yml"
         val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"

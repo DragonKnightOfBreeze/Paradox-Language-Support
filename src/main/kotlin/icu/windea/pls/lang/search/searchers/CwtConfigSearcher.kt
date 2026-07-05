@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search.searchers
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.Processor
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.lang.search.CwtConfigSearch
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.search.CwtConfigSearch
 class CwtConfigSearcher : QueryExecutorBase<CwtConfig<*>, CwtConfigSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSearch.Parameters, consumer: Processor<in CwtConfig<*>>) {
         ProgressManager.checkCanceled()
-        val configGroup = PlsFacade.getConfigGroup(queryParameters.project, queryParameters.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(queryParameters.project, queryParameters.gameType)
         when (queryParameters) {
             is CwtConfigSearch.Parameters.ById<*> -> {
                 CwtConfigMatchService.processMatchedConfigsById(queryParameters.id, configGroup, queryParameters.type) {

@@ -14,6 +14,6 @@ interface InjectedFileProcessor {
     fun process(file: PsiFile): Boolean
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<InjectedFileProcessor>("icu.windea.pls.inject.injectedFileProcessor")
+        @JvmField val EP_NAME = ExtensionPointName<InjectedFileProcessor>("icu.windea.pls.inject.injectedFileProcessor")
     }
 }

@@ -7,7 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.csv.ParadoxCsvFileType
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -23,7 +24,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDynamicValueSearch.Parameters, consumer: Processor<in ParadoxDynamicValueIndexInfo>) {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType, ParadoxCsvFileType)
         val context = queryParameters.createContext(scope)
         processQuery(context, consumer)
     }
@@ -31,7 +32,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
     private fun processQuery(context: Context, consumer: Processor<in ParadoxDynamicValueIndexInfo>): Boolean {
         if (!context.isValid()) return true
         val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
-        return PlsIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
             infos.process { info -> processInfo(context, file, info, consumer) }
         }
     }

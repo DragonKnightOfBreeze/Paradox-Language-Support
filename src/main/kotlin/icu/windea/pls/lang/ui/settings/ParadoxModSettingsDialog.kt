@@ -11,19 +11,19 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -38,7 +38,7 @@ class ParadoxModSettingsDialog(
     private val inferredGameTypeInfo = rootInfo.gameTypeInfo
 
     private val finalGameType = settings.finalGameType
-    private val defaultGameDirectory = PlsSettings.getInstance().state.defaultGameDirectories[finalGameType.id]
+    private val defaultGameDirectory = ChronicleSettings.getInstance().state.defaultGameDirectories[finalGameType.id]
     private val defaultGameVersion = ParadoxGameManager.getGameVersionFromGameDirectory(defaultGameDirectory)
 
     private val graph = PropertyGraph()
@@ -50,7 +50,7 @@ class ParadoxModSettingsDialog(
 
     init {
         handleModSettings()
-        title = PlsBundle.message("mod.settings")
+        title = ChronicleBundle.message("mod.settings")
         init()
     }
 
@@ -70,7 +70,7 @@ class ParadoxModSettingsDialog(
         return panel {
             row {
                 // name
-                label(PlsBundle.message("mod.settings.name")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
                     .columns(COLUMNS_LARGE)
@@ -79,13 +79,13 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // version
-                label(PlsBundle.message("mod.settings.version")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
                 // supportedVersion
-                label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("right")
+                label(ChronicleBundle.message("mod.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
                     .columns(COLUMNS_SHORT)
@@ -94,10 +94,10 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // modDirectory
-                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.modDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
-                    .withTitle(PlsBundle.message("modDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                    .withTitle(ChronicleBundle.message("modDirectory.title"))
+                    .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
                     .columns(COLUMNS_LARGE)
@@ -106,13 +106,13 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // gameType
-                label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .enabled(inferredGameTypeInfo == null) // disabled if game type can be inferred
                 // gameVersion
-                label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
+                label(ChronicleBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
                     .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.text = it } }
                     .bindText(gameVersionProperty)
@@ -121,10 +121,10 @@ class ParadoxModSettingsDialog(
             }
             row {
                 // gameDirectory
-                label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
+                label(ChronicleBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
-                    .withTitle(PlsBundle.message("gameDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                    .withTitle(ChronicleBundle.message("gameDirectory.title"))
+                    .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.text = it } }
                     .bindText(gameDirectoryProperty)
@@ -133,34 +133,34 @@ class ParadoxModSettingsDialog(
                     .validationOnApply { validateGameDirectory(this) }
             }
             row {
-                link(PlsBundle.message("gameDirectory.quickSelect")) { quickSelectGameDirectory() }
+                link(ChronicleBundle.message("gameDirectory.quickSelect")) { quickSelectGameDirectory() }
             }
             if (inferredGameTypeInfo != null) {
                 row {
-                    comment(PlsBundle.message("mod.settings.comment.1", inferredGameTypeInfo.gameType.title, inferredGameTypeInfo.lazyMessage.get()))
+                    comment(ChronicleBundle.message("mod.settings.comment.1", inferredGameTypeInfo.gameType.title, inferredGameTypeInfo.lazyMessage.get()))
                 }
             }
 
             // options
-            collapsibleGroup(PlsBundle.message("mod.options"), false) {
+            collapsibleGroup(ChronicleBundle.message("mod.options"), false) {
                 // disableTiger
                 row {
-                    checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
-                        .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
+                    checkBox(ChronicleBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
+                        .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                    browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
                 row {
-                    comment(PlsBundle.message("mod.options.comment.1"))
+                    comment(ChronicleBundle.message("mod.options.comment.1"))
                 }
             }
 
             // modDependencies
-            collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
+            collapsibleGroup(ChronicleBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)
                 }.resizableRow() // 占据额外的垂直空间
                 row {
-                    comment(PlsBundle.message("mod.dependencies.comment.1"))
+                    comment(ChronicleBundle.message("mod.dependencies.comment.1"))
                 }
             }.resizableRow() // 占据额外的垂直空间
         }
@@ -181,7 +181,7 @@ class ParadoxModSettingsDialog(
         settings.gameType = gameTypeProperty.get()
         settings.gameDirectory = gameDirectoryProperty.get()
         settings.modDependencies = modDependencies
-        PlsProfilesSettings.getInstance().state.updateSettings()
+        ChronicleProfilesSettings.getInstance().state.updateSettings()
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
         if (finalGameType != settings.gameType) {
@@ -189,5 +189,5 @@ class ParadoxModSettingsDialog(
         }
     }
 
-    override fun getDimensionServiceKey() = "Pls.ParadoxModSettingsDialog"
+    override fun getDimensionServiceKey() = "Chronicle.ParadoxModSettingsDialog" // 持久化对话框的位置
 }

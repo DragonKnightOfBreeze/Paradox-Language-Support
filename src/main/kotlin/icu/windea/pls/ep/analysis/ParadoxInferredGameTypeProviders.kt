@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.analysis
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxGameTypeInfo
@@ -20,7 +20,7 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
         val gameName = gameDataPath.name
         val gameType = gameTypeMap[gameName] ?: return null
         if (gameDataPath != SpecialPathService.getInstance().getGameDataPath(gameType)) return null
-        return ParadoxGameTypeInfo(gameType, PlsBundle.lazyMessage("gameType.message.gameDataMod"))
+        return ParadoxGameTypeInfo(gameType, ChronicleBundle.lazyMessage("gameType.message.gameDataMod"))
     }
 }
 
@@ -36,6 +36,6 @@ class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameType
         val steamId = steamWorkshopPath.name
         val gameType = gameTypeMap[steamId] ?: return null
         if (steamWorkshopPath != SpecialPathService.getInstance().getSteamGameWorkshopPath(steamId)) return null
-        return ParadoxGameTypeInfo(gameType, PlsBundle.lazyMessage("gameType.message.workshop"))
+        return ParadoxGameTypeInfo(gameType, ChronicleBundle.lazyMessage("gameType.message.workshop"))
     }
 }

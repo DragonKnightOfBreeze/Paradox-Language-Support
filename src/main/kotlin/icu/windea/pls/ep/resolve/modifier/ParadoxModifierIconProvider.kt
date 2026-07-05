@@ -16,6 +16,6 @@ interface ParadoxModifierIconProvider {
     fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxModifierIconProvider>("icu.windea.pls.modifierIconProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxModifierIconProvider>("icu.windea.pls.modifierIconProvider")
     }
 }

@@ -20,13 +20,13 @@ sealed class ParadoxSearchScopeType(
         return true
     }
 
-    class FromFiles(id: String, text: String, private val block: (project: Project, context: Any?) -> GlobalSearchScope?): ParadoxSearchScopeType(id, text) {
+    class FromFiles(id: String, text: String, private val block: (project: Project, context: Any?) -> GlobalSearchScope?) : ParadoxSearchScopeType(id, text) {
         override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope? {
             return block(project, context)
         }
     }
 
-    class InFile(id: String, text: String, private val block: (project: Project, context: Any?) -> PsiElement?): ParadoxSearchScopeType(id, text) {
+    class InFile(id: String, text: String, private val block: (project: Project, context: Any?) -> PsiElement?) : ParadoxSearchScopeType(id, text) {
         override fun findRoot(project: Project, context: Any?): PsiElement? {
             return block(project, context)
         }

@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.editor.ParadoxCsvHighlighterColors
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
 
@@ -29,7 +29,7 @@ class ParadoxCsvHighlightingAnnotator : Annotator, DumbAware {
 
     private fun getAttributesKey(element: ParadoxCsvColumn): TextAttributesKey? {
         if (element.firstChild == null) return null
-        if (element.isHeaderColumn()) return ParadoxCsvHighlighterColors.HEADER
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return ParadoxCsvHighlighterColors.HEADER
 
         val resolvedType = ParadoxTypeResolver.resolveExpressionType(element.value)
         val attributesKeys = when (resolvedType) {

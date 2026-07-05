@@ -8,11 +8,12 @@ import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.psi.isValidExpression
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxColorManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -23,9 +24,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.script.psi.isValidExpression
 import java.awt.Color
 
 /**
@@ -81,7 +81,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
         }
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
-        CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 }
@@ -158,14 +158,14 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
             // element.replace(newBlock) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newBlock.node)
         }
-        CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 
     private fun getColorType(element: ParadoxScriptBlock): String? {
         val elementToGetOption: ParadoxScriptMember? = when {
             element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
-            element.isBlockMember() -> element
+            element.isDirectValue() -> element
             else -> null
         }
         if (elementToGetOption == null) return null
@@ -241,7 +241,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         }
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
-        CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 }

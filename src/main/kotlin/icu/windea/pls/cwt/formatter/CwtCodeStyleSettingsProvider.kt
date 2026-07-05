@@ -11,7 +11,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.pass
 import icu.windea.pls.cwt.CwtConstants
 import icu.windea.pls.cwt.CwtLanguage
@@ -30,7 +30,7 @@ class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
         }
     }
 
-    override fun getConfigurableDisplayName() = PlsBundle.message("cwt.settings.name")
+    override fun getConfigurableDisplayName() = ChronicleBundle.message("cwt.settings.name")
 
     override fun getCodeSample(settingsType: SettingsType) = CwtConstants.codeStyleSettingsText
 
@@ -69,12 +69,12 @@ class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
         val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_AROUND_OPTION_SEPARATOR, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
-        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_AROUND_PROPERTY_SEPARATOR, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_AROUND_OPTION_SEPARATOR, ChronicleBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_AROUND_PROPERTY_SEPARATOR, ChronicleBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
 
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_WITHIN_BRACES, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
-        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_WITHIN_BRACES, ChronicleBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, ChronicleBundle.message("cwt.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
     }
 
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {

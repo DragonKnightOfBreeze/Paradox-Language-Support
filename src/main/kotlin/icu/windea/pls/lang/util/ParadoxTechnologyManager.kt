@@ -7,7 +7,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.CwtValueConfig
@@ -71,11 +71,11 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllResearchAreas(): Set<String> {
-            return PlsFacade.getConfigGroup(gameType).enums.get("research_area")?.values.orEmpty()
+            return ChronicleFacade.getConfigGroup(gameType).enums.get("research_area")?.values.orEmpty()
         }
 
         fun getAllResearchAreaConfigs(project: Project): Collection<CwtValueConfig> {
-            return PlsFacade.getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
+            return ChronicleFacade.getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
         }
 
         fun getAllCategories(project: Project, context: Any?): List<ParadoxScriptProperty> {
@@ -84,14 +84,14 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
-            val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
+            val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
                 eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.TechnologyAttribute }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
-            val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
+            val eventConfig = ChronicleFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
             return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.TechnologyAttribute }
         }
 
@@ -154,7 +154,7 @@ object ParadoxTechnologyManager {
                     this += rDefinition
                     true
                 }
-            }
+            }.distinct()
         }
 
         /**
@@ -171,13 +171,14 @@ object ParadoxTechnologyManager {
                 ParadoxDefinitionSearch.searchProperty(name, type, selector).process p0@{ definition0 ->
                     ProgressManager.checkCanceled()
                     ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
+                        ProgressManager.checkCanceled()
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                        val rDefinition = selectScope { refElement.parentOfPath("prerequisites/-", definitionType = type).asProperty() } ?: return@p true
-                        val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
-                        if (rDefinitionInfo.name.isEmpty()) return@p true
-                        if (rDefinitionInfo.type != type) return@p true
-                        this += rDefinition
+                        val refDefinition = selectScope { refElement.queryParentBy("*/prerequisites/-").asProperty() } ?: return@p true
+                        val refDefinitionInfo = refDefinition.definitionInfo ?: return@p true
+                        if (refDefinitionInfo.name.isEmpty()) return@p true
+                        if (refDefinitionInfo.type != type) return@p true
+                        this += refDefinition
                         true
                     }
                     true

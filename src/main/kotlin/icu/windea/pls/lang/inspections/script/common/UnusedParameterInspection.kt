@@ -9,10 +9,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -28,8 +28,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class UnusedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -91,7 +91,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-                val description = PlsBundle.message("inspection.script.unusedParameter.desc", name)
+                val description = ChronicleBundle.message("inspection.script.unusedParameter.desc", name)
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }

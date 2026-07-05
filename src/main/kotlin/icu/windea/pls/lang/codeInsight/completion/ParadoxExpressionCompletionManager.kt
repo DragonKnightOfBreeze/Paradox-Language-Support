@@ -5,11 +5,12 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.StandardPatterns
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.processUnionCandidates
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
@@ -38,7 +39,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withFileExtensions
 import icu.windea.pls.lang.search.util.withSearchScopeType
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -57,7 +58,7 @@ object ParadoxExpressionCompletionManager {
         if (configExpression.expressionString.isEmpty()) return
         // 要求匹配作用域
         val nextScopeMatched = ParadoxCompletionUtil.isNextScopeMatched(context)
-        if (!nextScopeMatched && !PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
+        if (!nextScopeMatched && !ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
         val context = context.copy(scopeMatched = nextScopeMatched)
         ParadoxExpressionService.completeScriptExpression(context, result)
     }
@@ -97,7 +98,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = localisation.containingFile
             val lookupElement = LookupElementBuilder.create(localisation, name)
                 .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Localisation)
+                .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -130,7 +131,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = syncedLocalisation.containingFile
             val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
                 .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Localisation)
+                .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -160,13 +161,13 @@ object ParadoxExpressionCompletionManager {
             // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
 
             val name = definitionInfo.name
             val typeFile = definition.containingFile
             val lookupElement = LookupElementBuilder.create(definition, name)
                 .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
+                .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withDefinitionLocalizedNamesIfNecessary(definition)
@@ -198,7 +199,7 @@ object ParadoxExpressionCompletionManager {
                 val name = pathReferenceExpressionSupport.extract(configExpression, context.file, filePath) ?: return@p true
                 val lookupElement = LookupElementBuilder.create(file, name)
                     .withTypeText(file.name, file.icon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.PathReference(config.configExpression))
+                    .withPatchableIcon(ChronicleIcons.Nodes.PathReference(config.configExpression))
                     .withPatchableTailText(tailText)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
@@ -239,7 +240,7 @@ object ParadoxExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ChronicleCompletionPriorities.enumValue)
-                .withPatchableIcon(PlsIcons.Nodes.EnumValue)
+                .withPatchableIcon(ChronicleIcons.Nodes.EnumValue)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -266,10 +267,36 @@ object ParadoxExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
                 .withPriority(ChronicleCompletionPriorities.complexEnumValue)
-                .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
+                .withPatchableIcon(ChronicleIcons.Nodes.ComplexEnumValue(enumName))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
+            true
+        }
+    }
+
+    fun completeCsvUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup
+        val config = context.config ?: return
+        val unionName = config.configExpression?.value ?: return
+        val unionConfig = configGroup.unions[unionName] ?: return
+        unionConfig.processUnionCandidates { valueConfig ->
+            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
+            completeCsvExpression(context, result)
+            true
+        }
+    }
+
+    fun completeScriptUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup
+        val config = context.config ?: return
+        val unionName = config.configExpression?.value ?: return
+        val unionConfig = configGroup.unions[unionName] ?: return
+        unionConfig.processUnionCandidates { valueConfig ->
+            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
+            completeScriptExpression(context, result)
             true
         }
     }
@@ -301,7 +328,7 @@ object ParadoxExpressionCompletionManager {
             val typeFile = valueConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
+                .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -322,7 +349,7 @@ object ParadoxExpressionCompletionManager {
             val readWriteAccess = info.readWriteAccess
             val element = ParadoxDynamicValueLightElement(context.contextElement, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
+                .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -347,8 +374,8 @@ object ParadoxExpressionCompletionManager {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val icon = when {
-            configExpression.isKey -> PlsIcons.Nodes.Property
-            else -> PlsIcons.Nodes.Value
+            configExpression.isKey -> ChronicleIcons.Nodes.Property
+            else -> ChronicleIcons.Nodes.Value
         }
         val name = configExpression.value ?: return
         if (!configExpression.isKey) {
@@ -401,7 +428,7 @@ object ParadoxExpressionCompletionManager {
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxShaderEffectLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withPatchableIcon(PlsIcons.Nodes.ShaderEffect)
+                .withPatchableIcon(ChronicleIcons.Nodes.ShaderEffect)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)
@@ -426,7 +453,7 @@ object ParadoxExpressionCompletionManager {
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxMeshLocatorLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withPatchableIcon(PlsIcons.Nodes.MeshLocator)
+                .withPatchableIcon(ChronicleIcons.Nodes.MeshLocator)
                 .withPatchableTailText(tailText)
                 .forExpression(context)
             result.addElement(lookupElement, context)

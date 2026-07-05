@@ -5,8 +5,8 @@ import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -194,7 +194,7 @@ object ParadoxParameterService {
     }
 
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement, fast: Boolean): List<CwtMemberConfig<*>> {
-        val configGroup = PlsFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
         val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup)
         if (configs.isNullOrEmpty()) return emptyList()
         val config = when {
@@ -251,7 +251,7 @@ object ParadoxParameterService {
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return PlsBundle.message("complex")
+        if (configs.any { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return ChronicleBundle.message("complex")
         return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
     }
 

@@ -17,6 +17,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxInlineScriptUsageIndex
+ * @see ParadoxInlineScriptArgumentIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
@@ -41,7 +45,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val elements = StubIndex.getElements(PlsIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
+        val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, elements.size)
         val p = elements.single()
         Assert.assertEquals("inline_script", p.name)
@@ -53,7 +57,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val elements = StubIndex.getElements(PlsIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
+        val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, elements.size)
         val p = elements.single()
         Assert.assertEquals("inline_script", p.name)
@@ -69,7 +73,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val elements = StubIndex.getElements(PlsIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
+        val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         val names = elements.map { it.name }.sorted()
         Assert.assertEquals(listOf("EVENT_ID", "SOME_FLAG"), names)
     }
@@ -84,9 +88,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/usage_parameterized_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val elements = StubIndex.getElements(PlsIndexKeys.InlineScriptUsage, "test_\$PARAM$", project, scope, ParadoxScriptProperty::class.java)
+        val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_\$PARAM$", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, elements.size)
-        val arguments = StubIndex.getElements(PlsIndexKeys.InlineScriptArgument, "test_\$PARAM$", project, scope, ParadoxScriptProperty::class.java)
+        val arguments = StubIndex.getElements(ChronicleIndexKeys.InlineScriptArgument, "test_\$PARAM$", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, arguments.size)
     }
 
@@ -96,9 +100,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/usage_variable_ref_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val elements = StubIndex.getElements(PlsIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
+        val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, elements.size)
-        val arguments = StubIndex.getElements(PlsIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
+        val arguments = StubIndex.getElements(ChronicleIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, arguments.size)
     }
 

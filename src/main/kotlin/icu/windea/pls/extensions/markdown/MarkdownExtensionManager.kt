@@ -25,7 +25,7 @@ import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.injection.ParadoxPathInjectionInfo
 import icu.windea.pls.model.paths.ParadoxPath
 import org.intellij.plugins.markdown.lang.MarkdownElementTypes
@@ -113,8 +113,8 @@ object MarkdownExtensionManager {
 
     private fun canInject(path: ParadoxPath): Boolean {
         val fileExtension = path.fileExtension ?: return false
-        return fileExtension in PlsConstants.scriptFileExtensions
-            || fileExtension in PlsConstants.localisationFileExtensions
-            || fileExtension in PlsConstants.csvFileExtensions
+        return fileExtension in ChronicleConstants.scriptFileExtensions
+            || fileExtension in ChronicleConstants.localisationFileExtensions
+            || fileExtension in ChronicleConstants.csvFileExtensions
     }
 }

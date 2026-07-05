@@ -10,7 +10,7 @@ import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.ChronicleAssume
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -24,7 +24,7 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun doSetUp() = AssumePredicates.includeAi()
+    fun doSetUp() = ChronicleAssume.includeAi()
 
     @After
     fun doTearDown() {

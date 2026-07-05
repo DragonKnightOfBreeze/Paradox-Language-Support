@@ -1,30 +1,31 @@
 package icu.windea.pls.lang.util
 
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
 import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isDirectValue
 
 object ParadoxTagManager {
     fun getTagType(element: ParadoxScriptValue): ParadoxTagType? {
         if (element !is ParadoxScriptString) return null
-        if (!element.isBlockMember()) return null
+        if (!element.isDirectValue()) return null
         val references = element.references
-        element.run {
-            val tagReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxScriptTagAwarePsiReference>() }
-            if (tagReference == null) return@run
-            return tagReference.config.tagType
-        }
-        element.run {
-            val expressionReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxScriptExpressionPsiReference>() }
-            if (expressionReference == null) return@run
-            return expressionReference.config.castOrNull<CwtValueConfig>()?.tagType
+        for (reference in references) {
+            if (reference is ParadoxScriptTagAwarePsiReference) return reference.tagConfig?.tagType
         }
         return null
+    }
+
+    fun processConfigs(configs: List<CwtMemberConfig<*>>) {
+        for (config in configs) {
+            if (config is CwtValueConfig && config.tagType != null) {
+                config.resolveElementWithConfig()
+            }
+        }
     }
 }

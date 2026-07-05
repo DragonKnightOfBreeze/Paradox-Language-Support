@@ -3,15 +3,13 @@ package icu.windea.pls.extensions.markdown.psi
 import com.intellij.model.Symbol
 import com.intellij.model.psi.ImplicitReferenceProvider
 import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.model.psi.PsiSymbolService.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.asSymbol
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.core.util.values.singletonSet
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
-import icu.windea.pls.extensions.settings.PlsExtensionsSettings
+import icu.windea.pls.extensions.settings.ChronicleExtensionsSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -26,7 +24,7 @@ import icu.windea.pls.lang.util.ParadoxNameValidators
 @Suppress("UnstableApiUsage")
 class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
     override fun getImplicitReference(element: PsiElement, offsetInElement: Int): PsiSymbolReference? {
-        if (!PlsExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
+        if (!ChronicleExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
 
         val identifier = MarkdownExtensionManager.getIdentifierFromInlineCode(element) ?: return null
         run {
@@ -59,34 +57,32 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
         }
 
         override fun resolveReference(): Collection<Symbol> {
-            // 如果带有前缀 `@` ，则尝试解析为封装变量
-            // 否则，尝试解析为定义或者本地化
+            // - 仅解析为单个符号
+            // - 如果带有前缀 `@` ，则尝试解析为封装变量，否则尝试解析为定义或者本地化
 
             when {
                 prefix == "@" -> {
-                    if (!ParadoxNameValidators.checkScriptedVariableName(name)) return emptySet()
+                    if (!ParadoxNameValidators.checkScriptedVariableName(name)) return emptyList()
                     val selector = ParadoxScriptedVariableSearch.selector(element.project, element).contextSensitive()
-                    val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptySet()
-                    return result.asSymbol().to.singletonSet()
+                    val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptyList()
+                    return listOf(getInstance().asSymbol(result))
                 }
                 prefix.isEmpty() -> {
                     run {
                         val selector = ParadoxDefinitionSearch.selector(element.project, element).contextSensitive()
                         val result = ParadoxDefinitionSearch.searchElement(name, null, selector).find() ?: return@run
-                        return result.asSymbol().to.singletonSet()
+                        return listOf(getInstance().asSymbol(result))
                     }
                     run {
                         if (!ParadoxNameValidators.checkLocalisationName(name)) return@run
                         val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run
-                        return result.asSymbol().to.singletonSet()
+                        return listOf(getInstance().asSymbol(result))
                     }
-                    return emptySet()
                 }
-                else -> return emptySet()
             }
+            return emptyList()
         }
     }
 }
-

@@ -8,9 +8,9 @@ import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
  * 本地化声明的名字的索引。
  */
 class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-    override fun getKey() = PlsIndexKeys.LocalisationName
+    override fun getKey() = ChronicleIndexKeys.LocalisationName
 
-    override fun getVersion() = PlsIndexVersions.LocalisationStub
+    override fun getVersion() = ChronicleIndexVersions.LocalisationStub
 
     override fun getCacheSize() = 32 * 1024 // CACHE SIZE - 98000+ in stellaris@3.6
 
@@ -18,7 +18,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      * @see ParadoxLocalisationIndexConstraint
      */
     sealed class BaseIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-        override fun getVersion() = PlsIndexVersions.LocalisationStub
+        override fun getVersion() = ChronicleIndexVersions.LocalisationStub
     }
 
     /**
@@ -27,7 +27,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      * @see ParadoxLocalisationIndexConstraint.Modifier
      */
     class ModifierIndex : BaseIndex() {
-        override fun getKey() = PlsIndexKeys.LocalisationNameForModifier
+        override fun getKey() = ChronicleIndexKeys.LocalisationNameForModifier
     }
 
     /**
@@ -36,15 +36,6 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      * @see ParadoxLocalisationIndexConstraint.Event
      */
     class EventIndex : BaseIndex() {
-        override fun getKey() = PlsIndexKeys.LocalisationNameForEvent
-    }
-
-    /**
-     * 用于快速索引与科技相关的本地化。
-     *
-     * @see ParadoxLocalisationIndexConstraint.Tech
-     */
-    class TechIndex : BaseIndex() {
-        override fun getKey() = PlsIndexKeys.LocalisationNameForTech
+        override fun getKey() = ChronicleIndexKeys.LocalisationNameForEvent
     }
 }

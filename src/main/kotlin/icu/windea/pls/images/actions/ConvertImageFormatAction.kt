@@ -19,7 +19,7 @@ import com.intellij.refactoring.util.CommonRefactoringUtil
 import com.intellij.util.IncorrectOperationException
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.containers.MultiMap
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.executeWriteCommand
@@ -28,7 +28,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.images.ImageService
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
@@ -83,7 +83,7 @@ abstract class ConvertImageFormatAction(
             return
         }
         if (targetDirectory != null) {
-            val title = PlsBundle.message("convertImageFormat.command.name", targetFormatName)
+            val title = ChronicleBundle.message("convertImageFormat.command.name", targetFormatName)
             executeCommand(project, title) {
                 doConvert(files, newFileName, targetDirectory)
             }
@@ -97,7 +97,7 @@ abstract class ConvertImageFormatAction(
         }
 
         try {
-            val title = PlsBundle.message("convertImageFormat.command.name", targetFormatName)
+            val title = ChronicleBundle.message("convertImageFormat.command.name", targetFormatName)
             val choice = if (files.size > 1 || files[0].isDirectory) intArrayOf(-1) else null
             val added = mutableListOf<PsiFile>()
             val failed = mutableListOf<PsiFile>()
@@ -105,15 +105,15 @@ abstract class ConvertImageFormatAction(
 
             if (failed.isNotEmpty()) {
                 val content = when (failed.size) {
-                    1 -> PlsBundle.message("convertImageFormat.error.0", files.first().virtualFile.presentableUrl, targetFormatName)
-                    files.size -> PlsBundle.message("convertImageFormat.error.1", targetFormatName)
-                    else -> PlsBundle.message("convertImageFormat.error.2", targetFormatName)
+                    1 -> ChronicleBundle.message("convertImageFormat.error.0", files.first().virtualFile.presentableUrl, targetFormatName)
+                    files.size -> ChronicleBundle.message("convertImageFormat.error.1", targetFormatName)
+                    else -> ChronicleBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
-                val notification = PlsNotificationGroups.global().createNotification(content, NotificationType.WARNING)
-                notification.notify(targetDirectory.project)
+                val notification = ChronicleNotificationGroups.global().createNotification(content, NotificationType.WARNING)
+                notification.notify(project)
             }
         } catch (e: Exception) {
-            Messages.showErrorDialog(project, e.message, PlsBundle.message("error.title"))
+            Messages.showErrorDialog(project, e.message, ChronicleBundle.message("error.title"))
         }
 
     }

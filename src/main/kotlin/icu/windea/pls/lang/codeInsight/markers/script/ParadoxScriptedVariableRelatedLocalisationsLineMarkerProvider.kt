@@ -5,28 +5,28 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 提供封装变量（scriptedVariable）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
  */
 class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations")
+    override fun getName() = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations")
 
-    override fun getIcon() = PlsIcons.Gutter.RelatedLocalisations
+    override fun getIcon() = ChronicleIcons.Gutter.RelatedLocalisations
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.group")
+    override fun getGroup() = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 scriptedVariable，且存在同名本地化
@@ -35,25 +35,24 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         val name = element.name?.orNull() ?: return
         // 目标：同名本地化
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        val targets0 = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale)
-        if (targets0.isEmpty()) return
-        val targets = targets0.optimized()
+        val targets = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale).optimized()
+        if (targets.isEmpty()) return
 
         ProgressManager.checkCanceled()
-        val icon = PlsIcons.Gutter.RelatedLocalisations
-        val prefix = PlsStrings.relatedLocalisationPrefix
+        val icon = ChronicleIcons.Gutter.RelatedLocalisations
+        val prefix = ChronicleStrings.relatedLocalisationPrefix
         val tooltip = "$prefix $name"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.title"))
+            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations") }
+            .setNamer { ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.action")
-        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedLocalisations)
+        val actionText = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoRelatedLocalisations)
     }
 }

@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.lang.psi.stringValue
@@ -42,13 +42,13 @@ class MismatchedEventIdInspection : EventInspectionBase() {
         val nameElement = selectScope { element.nameElement(nameField) } ?: return
         val eventId = nameElement.stringValue() ?: return
         if (namespace.isEmpty()) {
-            val description = PlsBundle.message("inspection.script.mismatchedEventId.desc.1", eventId)
+            val description = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.1", eventId)
             holder.registerProblem(nameElement, description)
             // 不存在绑定的命名空间
         } else {
             // 存在绑定的命名空间但不匹配
             if (ParadoxEventManager.isMatchedEventId(eventId, namespace)) return
-            val description = PlsBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace)
+            val description = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace)
             holder.registerProblem(nameElement, description)
         }
     }

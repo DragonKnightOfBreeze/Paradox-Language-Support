@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
@@ -21,11 +22,13 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
 
-val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
+inline val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 
-val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
+inline val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
 
-val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
+inline val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
+
+inline fun CwtUnionConfig.processUnionCandidates(processor: (CwtValueConfig) -> Boolean): Boolean = CwtConfigManager.processUnionCandidates(this, processor)
 
 @Optimized
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {

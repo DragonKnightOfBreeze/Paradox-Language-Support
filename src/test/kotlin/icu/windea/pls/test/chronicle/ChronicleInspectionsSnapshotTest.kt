@@ -8,7 +8,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toClass
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -59,6 +59,7 @@ class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
         val dataFilePaths = computeDataFilePaths()
         assertNotEmpty(dataFilePaths)
         println("Number of data files: ${dataFilePaths.size}")
+        dataFilePaths.forEach { println("- ${it.toString().normalizePath()}") }
         return dataFilePaths
     }
 
@@ -82,12 +83,13 @@ class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
     private fun getEnabledInspections(): List<Class<out LocalInspectionTool>> {
         val types = mutableListOf<Class<out LocalInspectionTool>>()
         for (ep in LocalInspectionEP.LOCAL_INSPECTION.extensionList) {
-            if (ep.pluginDescriptor.pluginId != PlsConstants.pluginId) continue
+            if (ep.pluginDescriptor.pluginId != ChronicleConstants.pluginId) continue
             if (!ep.enabledByDefault) continue
             val type = ep.implementationClass.toClass() as Class<out LocalInspectionTool>
             types += type
         }
         println("Number of enabled inspections: ${types.size}")
+        types.forEach { println("- ${it.name}") }
         return types
     }
 }

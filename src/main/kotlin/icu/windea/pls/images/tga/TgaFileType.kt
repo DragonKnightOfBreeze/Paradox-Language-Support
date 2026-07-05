@@ -2,7 +2,7 @@ package icu.windea.pls.images.tga
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.fileTypes.UserBinaryFileType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 
 // org.intellij.images.fileTypes.impl.ImageFileType
 
@@ -11,9 +11,9 @@ object TgaFileType : UserBinaryFileType() {
 
     override fun getDefaultExtension(): String = "tga"
 
-    override fun getDisplayName() = PlsBundle.message("filetype.tga.display.name")
+    override fun getDisplayName() = ChronicleBundle.message("filetype.tga.display.name")
 
-    override fun getDescription() = PlsBundle.message("filetype.tga.description")
+    override fun getDescription() = ChronicleBundle.message("filetype.tga.description")
 
     override fun getIcon() = AllIcons.FileTypes.Image
 

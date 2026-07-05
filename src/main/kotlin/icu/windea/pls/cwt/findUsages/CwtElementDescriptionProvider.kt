@@ -9,7 +9,7 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
@@ -38,9 +38,9 @@ class CwtElementDescriptionProvider : ElementDescriptionProvider {
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is CwtOption -> PlsBundle.message("cwt.type.option")
-            is CwtProperty -> PlsBundle.message("cwt.type.property")
-            is CwtString -> PlsBundle.message("cwt.type.value")
+            is CwtOption -> ChronicleBundle.message("cwt.type.option")
+            is CwtProperty -> ChronicleBundle.message("cwt.type.property")
+            is CwtString -> ChronicleBundle.message("cwt.type.value")
             else -> null
         }
     }

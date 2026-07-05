@@ -6,7 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.icon
@@ -21,7 +21,7 @@ import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -37,7 +37,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeDefineNames) return
+        if (!ChronicleSettings.getInstance().state.completion.completeDefineNames) return
 
         val file = parameters.originalFile
         if (!ParadoxDefineManager.isDefineFile(file)) return
@@ -54,8 +54,8 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
     private fun completeDefineName(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val element = context.contextElement
         val memberElement = element as? ParadoxScriptValue ?: element.parent as? ParadoxScriptProperty ?: return
-        val blockElement = element.parent
-        when (blockElement) {
+        val parentElement = element.parent
+        when (parentElement) {
             // possible define namespace input
             is ParadoxScriptRootBlock -> {
                 // property value must be null or a block
@@ -70,7 +70,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
             // possible define variable input
             is ParadoxScriptBlock -> {
                 // parent property must be a top level property
-                val parentPropertyElement = blockElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+                val parentPropertyElement = parentElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return
                 if (parentPropertyElement.parent !is ParadoxScriptRootBlock) return
 
                 val namespace = parentPropertyElement.name
@@ -90,7 +90,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
         val name = element.name.orNull() ?: return true
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.DefineNamespace)
+            .withIcon(ChronicleIcons.Nodes.DefineNamespace)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .forExpression(context)
         result.addElement(lookupElement, context)
@@ -104,7 +104,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
         val name = element.name.orNull() ?: return true
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.DefineVariable)
+            .withIcon(ChronicleIcons.Nodes.DefineVariable)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .forExpression(context)
         result.addElement(lookupElement, context)

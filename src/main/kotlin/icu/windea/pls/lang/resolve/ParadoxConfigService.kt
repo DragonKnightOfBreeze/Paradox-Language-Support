@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
@@ -67,8 +67,8 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.property
+import icu.windea.pls.script.psi.isDirectMember
+import icu.windea.pls.script.psi.parentProperty
 import java.util.*
 import kotlin.concurrent.getOrSet
 
@@ -138,7 +138,7 @@ object ParadoxConfigService {
         val gameType = selectGameType(file) ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
         val memberRole = ParadoxTypeResolver.resolveMemberRole(element)
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
@@ -238,12 +238,9 @@ object ParadoxConfigService {
         val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
         val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
-        val configGroup = context.configGroup
         val element = context.element
-        val property = element.property
-        val member = property ?: element
-        val parentMember = member.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isBlockMember() } ?: return emptyList()
-        val parentProperty = parentMember.castOrNull<ParadoxScriptProperty>()
+        val containingMember = element.castOrNull<ParadoxScriptValue>()?.parentProperty ?: element
+        val parentMember = containingMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
@@ -256,7 +253,7 @@ object ParadoxConfigService {
         var result = buildList {
             // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
             val matchedParentConfigs = when {
-                parentProperty != null && parentExpression != null -> matchConfigsForConfigContext(parentProperty, parentExpression, parentConfigs, configGroup, options)
+                parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, context.configGroup, options)
                 else -> parentConfigs
             }
 
@@ -270,7 +267,7 @@ object ParadoxConfigService {
                     }
                 }
             } else {
-                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(property, expression) }
+                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingMember, expression) }
 
                 matchedParentConfigs.forEachFast f1@{ parentConfig ->
                     val configs = parentConfig.properties
@@ -314,7 +311,7 @@ object ParadoxConfigService {
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
-            result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
+            result = matchConfigsForConfigContext(element, expression, result, context.configGroup, options)
             result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
@@ -332,10 +329,10 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxExpression): List<CwtValueConfig>? {
+    private fun getParameterizedKeyConfigs(element: ParadoxScriptMember, expression: ParadoxExpression): List<CwtValueConfig>? {
         // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
 
-        if (element == null) return null
+        if (element !is ParadoxScriptProperty) return null
         if (!expression.isParameterized()) return null
         if (!expression.isFullParameterized()) return emptyList()
         return ParadoxParameterManager.getParameterizedKeyConfigs(element)

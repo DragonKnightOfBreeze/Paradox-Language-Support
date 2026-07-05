@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
@@ -42,8 +42,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Highligh
     @Test
     fun simple_fios() {
         val key = "Namespace.Variable"
-        val description = PlsBundle.message("inspection.overrideForDefineVariable.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")
         myFixture.configureByText("99_defines.txt", """
@@ -66,8 +65,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Highligh
     @Test
     fun simple_lios() {
         val key = "Namespace.Variable"
-        val description = PlsBundle.message("inspection.overrideForDefineVariable.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/01_defines.txt")
         myFixture.configureByText("01_defines.txt", """
@@ -90,8 +88,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Highligh
     @Test
     fun simple_samePath() {
         val key = "Namespace.Variable"
-        val description = PlsBundle.message("inspection.overrideForDefineVariable.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/01_defines.txt")
         myFixture.configureByText("01_defines.txt", """

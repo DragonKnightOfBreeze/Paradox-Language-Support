@@ -38,13 +38,3 @@ data class ParadoxParameterInfo(
     }
 }
 
-@Suppress("unused")
-fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccess): ParadoxParameterLightElement {
-    return ParadoxParameterLightElement(parent, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
-        .also { ParadoxParameterSupport.Keys.sync(this, it) }
-}
-
-fun ParadoxParameterLightElement.toInfo(): ParadoxParameterInfo {
-    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project)
-        .also { ParadoxParameterSupport.Keys.sync(this, it) }
-}

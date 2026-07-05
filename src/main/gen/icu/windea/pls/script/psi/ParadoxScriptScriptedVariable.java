@@ -13,7 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
+public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, ParadoxScriptStatement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
 
   @NotNull
   ParadoxScriptScriptedVariableName getScriptedVariableName();

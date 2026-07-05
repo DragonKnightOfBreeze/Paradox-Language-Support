@@ -12,9 +12,8 @@ import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.lang.LighterASTTokenNode
 import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase
 import com.intellij.lang.tree.util.siblings
-import com.intellij.model.Symbol
-import com.intellij.model.psi.PsiSymbolService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -38,7 +37,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.wm.IdeFrame
 import com.intellij.openapi.wm.ex.WindowManagerEx
-import com.intellij.platform.backend.presentation.TargetPresentationBuilder
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -67,6 +65,7 @@ import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.util.Tuple2
@@ -81,11 +80,6 @@ import java.util.concurrent.Executor
 import kotlin.reflect.KProperty
 
 // region Common Extensions
-
-/** 忽略大小写的字符串比较。 */
-fun String.compareToIgnoreCase(other: String): Int {
-    return String.CASE_INSENSITIVE_ORDER.compare(this, other)
-}
 
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
     val oldValue = this.get()
@@ -259,7 +253,14 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
 
 // region Event Extensions
 
+/** @see CommonDataKeys.EDITOR */
 val AnActionEvent.editor: Editor? get() = getData(CommonDataKeys.EDITOR)
+/** @see CommonDataKeys.PSI_FILE */
+val AnActionEvent.psiFile: PsiFile? get() = getData(CommonDataKeys.PSI_FILE)
+/** @see CommonDataKeys.VIRTUAL_FILE */
+val AnActionEvent.file: VirtualFile? get() = getData(CommonDataKeys.VIRTUAL_FILE)
+/** @see CommonDataKeys.VIRTUAL_FILE_ARRAY */
+val AnActionEvent.files: Array<VirtualFile> get() = getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
@@ -406,53 +407,6 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
 }
 
 /**
- * 解析得到第一个结果。
- *
- * 如果当前引用是 [PsiPolyVariantReference]，则调用 `multiResolve` 并返回解析得到的第一个不为空的 [PsiElement]。
- * 否则直接调用 `resolve` 并返回解析得到的 [PsiElement]。
- */
-fun PsiReference.resolveFirst(): PsiElement? {
-    return when (this) {
-        is PsiPolyVariantReference -> {
-            this.multiResolve(false).firstNotNullOfOrNull { it.element }
-        }
-        else -> this.resolve()
-    }
-}
-
-/**
- * 收集引用。
- *
- * 如果当前引用是 [PsiCompositeReference]，则递归收集其中的引用。
- * 否则直接返回当前引用的单例数组。
- */
-fun PsiReference.collectReferences(): Array<out PsiReference> {
-    return when (this) {
-        is PsiCompositeReference -> {
-            val result = mutableListOf<PsiReference>()
-            doCollectReferences(this, result)
-            if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
-            result.toTypedArray()
-        }
-        else -> arrayOf(this)
-    }
-}
-
-private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
-    if (sourceReference is PsiCompositeReference) {
-        val references = sourceReference.getReferences()
-        if (references.isNotEmpty()) {
-            references.forEachFast { reference ->
-                ProgressManager.checkCanceled()
-                doCollectReferences(reference, result)
-            }
-            return
-        }
-    }
-    result.add(sourceReference)
-}
-
-/**
  * 判断两个 [PsiElement] 是否在同一 [VirtualFile] 的同一位置。
  */
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
@@ -508,20 +462,6 @@ inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiEleme
     }
     return true
 }
-
-// /** 获取指定子元素在同类元素中的索引。如果不存在则返回-1。 */
-// inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
-//     var child = if (forward) firstChild else lastChild
-//     var index = 0
-//     while (child != null) {
-//         when (child) {
-//             element -> return index
-//             is T -> index++
-//             else -> child = if (forward) child.nextSibling else child.prevSibling
-//         }
-//     }
-//     return -1
-// }
 
 /** 遍历当前 PSI 的所有父元素，直到 PSI 文件为止。 */
 inline fun PsiElement.forEachParent(withSelf: Boolean = false, action: (PsiElement) -> Unit) {
@@ -608,6 +548,52 @@ fun PsiElement.isIncomplete(): Boolean {
     return false
 }
 
+/**
+ * 解析得到第一个结果。
+ *
+ * 如果当前引用是 [PsiPolyVariantReference]，则调用 `multiResolve` 并返回解析得到的第一个不为空的 [PsiElement]。
+ * 否则直接调用 `resolve` 并返回解析得到的 [PsiElement]。
+ */
+fun PsiReference.resolveFirst(): PsiElement? {
+    return when (this) {
+        is PsiPolyVariantReference -> {
+            this.multiResolve(false).firstNotNullOfOrNull { it.element }
+        }
+        else -> this.resolve()
+    }
+}
+
+/**
+ * 收集引用。
+ *
+ * 如果当前引用是 [PsiCompositeReference]，则递归收集其中的引用。
+ * 否则直接返回当前引用的单例数组。
+ */
+fun PsiReference.collectReferences(): Array<out PsiReference> {
+    return when (this) {
+        is PsiCompositeReference -> {
+            val result = mutableListOf<PsiReference>()
+            doCollectReferences(this, result)
+            result.toArray(PsiReference.EMPTY_ARRAY)
+        }
+        else -> arrayOf(this)
+    }
+}
+
+private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
+    if (sourceReference is PsiCompositeReference) {
+        val references = sourceReference.getReferences()
+        if (references.isNotEmpty()) {
+            references.forEachFast { reference ->
+                ProgressManager.checkCanceled()
+                doCollectReferences(reference, result)
+            }
+            return
+        }
+    }
+    result.add(sourceReference)
+}
+
 context(reference: PsiReference)
 fun PsiElement?.createResults(): Array<out ResolveResult> {
     if (this == null) return ResolveResult.EMPTY_ARRAY
@@ -619,6 +605,7 @@ fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
     return PsiElementResolveResult.createResults(this)
 }
 
+context(_: GeneratedParserUtilBase)
 fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
     var offset = steps
     var token = rawLookup(offset)
@@ -633,52 +620,12 @@ fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, for
 
 // endregion
 
-// region Symbol Extensions
-
-/** 将 PSI 元素包装为 [Symbol]。 */
-fun PsiElement.asSymbol(): Symbol = PsiSymbolService.getInstance().asSymbol(this)
-
-// /** 将 PSI 引用包装为 [PsiSymbolReference]。 */
-// fun PsiReference.asSymbolReference(): PsiSymbolReference = PsiSymbolService.getInstance().asSymbolReference(this)
-//
-// /** 从 [Symbol] 中提取底层 PSI 元素。 */
-// fun Symbol.extractElement(): PsiElement? = PsiSymbolService.getInstance().extractElementFromSymbol(this)
-
-// endregion
-
-// region Presentation Extensions
-
-/** 在展示信息中附带文件名与图标。 */
-fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationBuilder {
-    val virtualFile = file.containingFile.virtualFile ?: return this
-    val fileType = virtualFile.fileType
-    return locationText(virtualFile.name, fileType.icon)
-}
-
-// endregion
-
 // region Code Insight Extensions
 
 typealias ReadWriteAccess = ReadWriteAccessDetector.Access
 
-/**
- * 获取包含当前位置（[offsetInParent]）之前的文本的关键字。用于代码补全。
- */
-fun PsiElement.getKeyword(offsetInParent: Int): String {
-    return text.substring(0, offsetInParent).unquote()
-}
-
-/**
- * 获取包含当前位置（[offsetInParent]）之前与之后的文本的完整关键字。用于代码补全。
- */
-fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): String {
-    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + dummyIdentifier.length)).unquote()
-}
-
-/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。 */
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
-/** 构建行内模板。 */
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
 // endregion

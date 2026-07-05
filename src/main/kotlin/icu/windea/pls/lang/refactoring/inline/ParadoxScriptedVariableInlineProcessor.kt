@@ -17,13 +17,14 @@ import com.intellij.refactoring.listeners.RefactoringEventData
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptedVariableInlineProcessor(
@@ -37,7 +38,7 @@ class ParadoxScriptedVariableInlineProcessor(
 ) : BaseRefactoringProcessor(project, scope, null) {
     private val descriptiveName = DescriptiveNameUtil.getDescriptiveName(element)
 
-    override fun getCommandName() = PlsBundle.message("inline.scriptedVariable.command", descriptiveName)
+    override fun getCommandName() = ChronicleBundle.message("inline.scriptedVariable.command", descriptiveName)
 
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = ParadoxInlineViewDescriptor(element)
 
@@ -54,7 +55,7 @@ class ParadoxScriptedVariableInlineProcessor(
             ProgressManager.checkCanceled()
             usages.add(UsageInfo(reference.element))
         }
-        return usages.toTypedArray()
+        return usages.toArray(UsageInfo.EMPTY_ARRAY)
     }
 
     override fun refreshElements(elements: Array<out PsiElement>) {
@@ -108,7 +109,7 @@ class ParadoxScriptedVariableInlineProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineScriptedVariable(usageElement, rangeInUsageElement, element, myProject)
+                ParadoxPsiService.inlineScriptedVariable(usageElement, rangeInUsageElement, element, myProject)
             } catch (e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

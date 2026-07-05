@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.EDT
 import com.intellij.psi.util.PsiUtilBase
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
@@ -21,17 +21,16 @@ class EvaluateInlineMathAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
         val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file !is ParadoxScriptFile) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
-        presentation.isEnabled = true
+        e.presentation.isEnabled = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -42,7 +41,7 @@ class EvaluateInlineMathAction : AnAction() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
                 val dialog = ParadoxInlineMathEvaluatorDialog(project, element)

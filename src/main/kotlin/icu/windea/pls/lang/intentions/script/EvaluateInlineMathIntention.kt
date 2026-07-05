@@ -10,11 +10,11 @@ import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiBasedModCommandAction
 import com.intellij.openapi.application.EDT
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.ui.script.ParadoxInlineMathEvaluatorDialog
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
-import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
+import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,10 +23,10 @@ import kotlinx.coroutines.withContext
 /**
  * 求值内联数学表达式。
  *
- * @see ParadoxInlineMathEvaluator
+ * @see ParadoxInlineMathExpressionEvaluator
  */
 class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java) {
-    override fun getFamilyName() = PlsBundle.message("intention.evaluateInlineMath")
+    override fun getFamilyName() = ChronicleBundle.message("intention.evaluateInlineMath")
 
     override fun getPresentation(context: ActionContext, element: ParadoxScriptInlineMath): Presentation {
         return Presentation.of(familyName).withPriority(PriorityAction.Priority.HIGH)
@@ -35,7 +35,7 @@ class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInline
     override fun perform(context: ActionContext, element: ParadoxScriptInlineMath): ModCommand {
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return ModCommand.nop()
         val project = context.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
                 val dialog = ParadoxInlineMathEvaluatorDialog(project, element)
@@ -46,7 +46,7 @@ class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInline
     }
 
     override fun generatePreview(context: ActionContext?, element: ParadoxScriptInlineMath?): IntentionPreviewInfo {
-        return IntentionPreviewInfo.Html(PlsBundle.message("intention.evaluateInlineMath.preview"))
+        return IntentionPreviewInfo.Html(ChronicleBundle.message("intention.evaluateInlineMath.preview"))
     }
 
     override fun isElementApplicable(element: ParadoxScriptInlineMath, context: ActionContext): Boolean {

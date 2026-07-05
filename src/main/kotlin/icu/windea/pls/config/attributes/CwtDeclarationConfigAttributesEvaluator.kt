@@ -24,11 +24,11 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 @Optimized
 class CwtDeclarationConfigAttributesEvaluator {
     private val involvedSubtypes = sortedSetOf<String>()
-    private var involvesDynamicValue = false
-    private var involvesParameter = false
-    private var involvesLocalisationParameter = false
-    private var involvesInferredScopeContextAwareDefinitionReference = false
-    private var involvesExternalReference = false
+    private var involveDynamicValue = false
+    private var involveParameter = false
+    private var involveLocalisationParameter = false
+    private var involveInferredScopeContextAwareDefinitionReference = false
+    private var involveExternalReference = false
 
     fun evaluate(config: CwtDeclarationConfig): CwtDeclarationConfigAttributes {
         val visitor = buildVisitor(config.configGroup)
@@ -73,45 +73,45 @@ class CwtDeclarationConfigAttributesEvaluator {
     }
 
     private fun processDataExpression(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
-        if (!involvesDynamicValue) {
+        if (!involveDynamicValue) {
             val r = CwtConfigExpressionMatchService.matchesDynamicValue(dataExpression)
-            if (r) involvesDynamicValue = true
+            if (r) involveDynamicValue = true
         }
-        if (!involvesParameter) {
+        if (!involveParameter) {
             val r = CwtConfigExpressionMatchService.matchesParameter(dataExpression)
-            if (r) involvesParameter = true
+            if (r) involveParameter = true
         }
-        if (!involvesLocalisationParameter) {
+        if (!involveLocalisationParameter) {
             val r = CwtConfigExpressionMatchService.matchesLocalisationParameter(dataExpression)
-            if (r) involvesLocalisationParameter = true
+            if (r) involveLocalisationParameter = true
         }
-        if (!involvesInferredScopeContextAwareDefinitionReference) {
+        if (!involveInferredScopeContextAwareDefinitionReference) {
             val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
-            if (r) involvesInferredScopeContextAwareDefinitionReference = true
+            if (r) involveInferredScopeContextAwareDefinitionReference = true
         }
-        if (!involvesExternalReference) {
+        if (!involveExternalReference) {
             val r = CwtConfigExpressionMatchService.matchesExternalReference(dataExpression)
-            if (r) involvesExternalReference = true
+            if (r) involveExternalReference = true
         }
     }
 
     private fun handleContext(attributes: CwtInlinedConfigAttributes): Boolean {
-        if (attributes.involvesDynamicValue) involvesDynamicValue = true
-        if (attributes.involvesParameter) involvesParameter = true
-        if (attributes.involvesLocalisationParameter) involvesLocalisationParameter = true
-        if (attributes.involvesInferredScopeContextAwareDefinitionReference) involvesInferredScopeContextAwareDefinitionReference = true
-        if (attributes.involvesExternalReference) involvesExternalReference = true
+        if (attributes.involveDynamicValue) involveDynamicValue = true
+        if (attributes.involveParameter) involveParameter = true
+        if (attributes.involveLocalisationParameter) involveLocalisationParameter = true
+        if (attributes.involveInferredScopeContextAwareDefinitionReference) involveInferredScopeContextAwareDefinitionReference = true
+        if (attributes.involveExternalReference) involveExternalReference = true
         return true
     }
 
     private fun buildAttributes(): CwtDeclarationConfigAttributes {
         val result = CwtDeclarationConfigAttributes(
             involvedSubtypes.optimized(),
-            involvesDynamicValue,
-            involvesParameter,
-            involvesLocalisationParameter,
-            involvesInferredScopeContextAwareDefinitionReference,
-            involvesExternalReference,
+            involveDynamicValue,
+            involveParameter,
+            involveLocalisationParameter,
+            involveInferredScopeContextAwareDefinitionReference,
+            involveExternalReference,
         )
         if (result == CwtDeclarationConfigAttributes.EMPTY) return CwtDeclarationConfigAttributes.EMPTY
         return result

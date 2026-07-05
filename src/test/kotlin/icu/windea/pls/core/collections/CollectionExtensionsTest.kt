@@ -69,20 +69,8 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun mapToArray_for_list_and_collection() {
-        val arr1 = listOf(1, 2, 3).mapToArray { it * 2 }
-        assertArrayEquals(arrayOf(2, 4, 6), arr1)
-
-        val s = linkedSetOf(1, 2, 3)
-        val arr2 = (s as Collection<Int>).mapToArray { it + 1 }
-        assertArrayEquals(arrayOf(2, 3, 4), arr2)
-    }
-
-    @Test
-    fun map_mapToArray_and_process() {
+    fun process_test() {
         val m = linkedMapOf("a" to 1, "b" to 2)
-        val arr = m.mapToArray { (k, v) -> "$k=$v" }
-        assertArrayEquals(arrayOf("a=1", "b=2"), arr)
 
         var seen = mutableListOf<String>()
         val all = m.process { e ->

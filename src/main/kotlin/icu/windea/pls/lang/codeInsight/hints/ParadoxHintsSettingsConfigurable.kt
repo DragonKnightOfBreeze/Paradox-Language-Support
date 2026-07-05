@@ -3,8 +3,7 @@ package icu.windea.pls.lang.codeInsight.hints
 import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.smaller
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
 import javax.swing.JComponent
 
@@ -22,28 +21,28 @@ class ParadoxHintsSettingsConfigurable(
 
     private fun Panel.createScopeContextInfoRow() {
         row {
-            checkBox(PlsBundle.message("hints.settings.showScopeContextOnlyIfIsChanged"))
+            checkBox(ChronicleBundle.message("hints.settings.showScopeContextOnlyIfIsChanged"))
                 .bindSelected(settings::showScopeContextOnlyIfIsChanged.toAtomicProperty())
         }
     }
 
     private fun Panel.createLocalisationTextLengthLimitRow() {
         row {
-            label(PlsBundle.message("hints.settings.localisationTextLengthLimit")).widthGroup("left")
+            label(ChronicleBundle.message("hints.settings.localisationTextLengthLimit")).widthGroup("left")
             textField()
                 .bindIntText(settings::localisationTextLengthLimit.toAtomicProperty())
-                .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-            contextHelp(PlsBundle.message("hints.settings.localisationTextLengthLimit.tip"))
+                .errorOnApply(ChronicleBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
+            contextHelp(ChronicleBundle.message("hints.settings.localisationTextLengthLimit.tip"))
         }
     }
 
     private fun Panel.createIconHeightLimitRow() {
         row {
-            label(PlsBundle.message("hints.settings.iconHeightLimit")).widthGroup("left")
+            label(ChronicleBundle.message("hints.settings.iconHeightLimit")).widthGroup("left")
             textField()
                 .bindIntText(settings::iconHeightLimit.toAtomicProperty())
-                .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-            contextHelp(PlsBundle.message("hints.settings.iconHeightLimit.tip"))
+                .errorOnApply(ChronicleBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
+            contextHelp(ChronicleBundle.message("hints.settings.iconHeightLimit.tip"))
         }
     }
 }

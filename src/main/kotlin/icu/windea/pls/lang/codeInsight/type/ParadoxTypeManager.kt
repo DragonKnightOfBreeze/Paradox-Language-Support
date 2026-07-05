@@ -2,15 +2,13 @@ package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
@@ -20,6 +18,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.isDefinitionName
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -39,9 +38,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isDefinitionName
 
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
@@ -100,16 +97,17 @@ object ParadoxTypeManager {
                     if (definition is ParadoxScriptProperty) return findTypeDeclarations(definition)
                 }
 
-                if (element is ParadoxScriptStringExpressionElement) {
-                    val complexEnumValueInfo = element.complexEnumValueInfo
-                    if (complexEnumValueInfo != null) {
-                        val gameType = complexEnumValueInfo.gameType
-                        val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
-                        val enumName = complexEnumValueInfo.enumName
-                        val config = configGroup.complexEnums[enumName] ?: return emptyList() // unexpected
-                        val resolved = config.pointer.element ?: return emptyList()
-                        return resolved.to.singletonList()
-                    }
+                val complexEnumValueInfo = element.complexEnumValueInfo
+                if (complexEnumValueInfo != null) {
+                    val resolved = complexEnumValueInfo.config.pointer.element
+                    return resolved.to.singletonListOrEmpty()
+                }
+            }
+            element is ParadoxCsvExpressionElement -> {
+                val complexEnumValueInfo = element.complexEnumValueInfo
+                if (complexEnumValueInfo != null) {
+                    val resolved = complexEnumValueInfo.config.pointer.element
+                    return resolved.to.singletonListOrEmpty()
                 }
             }
         }
@@ -209,7 +207,7 @@ object ParadoxTypeManager {
                 if (element !is ParadoxCsvColumn) return null
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
                 when {
-                    element.isHeaderColumn() -> columnConfig.key
+                    ParadoxCsvPsiService.isHeaderColumn(element) -> columnConfig.key
                     else -> {
                         if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // require matched
                         columnConfig.value

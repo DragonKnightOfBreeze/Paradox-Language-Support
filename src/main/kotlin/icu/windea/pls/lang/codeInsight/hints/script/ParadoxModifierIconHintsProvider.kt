@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runCatchingCancelable
@@ -22,7 +22,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.imageio.ImageIO
 
 /**
@@ -32,8 +32,8 @@ import javax.imageio.ImageIO
 class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.modifierIcon")
 
-    override val name get() = PlsBundle.message("script.hints.modifierIcon")
-    override val description get() = PlsBundle.message("script.hints.modifierIcon.description")
+    override val name get() = ChronicleBundle.message("script.hints.modifierIcon")
+    override val description get() = ChronicleBundle.message("script.hints.modifierIcon.description")
     override val key get() = settingsKey
 
     override val renderIcon get() = true
@@ -43,7 +43,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val name = element.name
         if (name.isEmpty()) return
         if (name.isParameterized()) return

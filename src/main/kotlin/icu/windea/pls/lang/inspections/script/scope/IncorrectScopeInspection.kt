@@ -4,7 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.definitionInfo
@@ -39,13 +39,13 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                 if (!ParadoxScopeManager.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
                     if (element is ParadoxScriptProperty) {
                         val propertyKey = element.propertyKey
-                        val description = PlsBundle.message(
+                        val description = ChronicleBundle.message(
                             "inspection.script.incorrectScope.desc.1",
                             propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
                         )
                         holder.registerProblem(propertyKey, description)
                     } else if (element is ParadoxScriptString && config.configExpression.type == CwtDataTypes.AliasKeysField) {
-                        val description = PlsBundle.message(
+                        val description = ChronicleBundle.message(
                             "inspection.script.incorrectScope.desc.2",
                             element.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
                         )

@@ -7,37 +7,40 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
  * 不正确的路径引用的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class IncorrectPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        // 按需忽略内联脚本文件
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 判断是否需要忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -48,7 +51,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
 
             private fun visitExpressionElement(element: ParadoxScriptString) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
 
                 // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return
@@ -63,7 +66,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val value = element.value
                 val fileExtension = value.substringAfterLast('.', "")
                 if (expectFileExtensions.any { fileExtension.equals(it, true) }) return
-                val description = PlsBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
+                val description = ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
                 holder.registerProblem(element, description)
             }
         }
@@ -73,12 +76,12 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

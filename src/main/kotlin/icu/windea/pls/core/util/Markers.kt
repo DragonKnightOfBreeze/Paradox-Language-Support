@@ -1,33 +1,39 @@
 package icu.windea.pls.core.util
 
-class ToggleMarker(value: Boolean = false) {
-    @Volatile
-    private var value: Boolean = value
+interface Marker {
+    fun get(): Boolean
 
-    fun get(): Boolean {
+    fun mark(): Boolean
+
+    fun reset()
+}
+
+class ToggleMarker(value: Boolean = false) : Marker {
+    @Volatile private var value: Boolean = value
+
+    override fun get(): Boolean {
         return value
     }
 
-    fun mark(): Boolean {
+    override fun mark(): Boolean {
         val r = value
         value = !value
         return r
     }
 
-    fun reset() {
+    override fun reset() {
         value = false
     }
 }
 
-class OnceMarker(value: Boolean = false) {
-    @Volatile
-    private var value: Boolean = value
+class OnceMarker(value: Boolean = false) : Marker {
+    @Volatile private var value: Boolean = value
 
-    fun get(): Boolean {
+    override fun get(): Boolean {
         return value
     }
 
-    fun mark(): Boolean {
+    override fun mark(): Boolean {
         if (value) {
             return true
         } else {
@@ -36,7 +42,7 @@ class OnceMarker(value: Boolean = false) {
         }
     }
 
-    fun reset() {
+    override fun reset() {
         value = false
     }
 }

@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -65,11 +65,11 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
 
     class PropertyListFactory : LightStubElementFactory<ParadoxLocalisationPropertyListStub, ParadoxLocalisationPropertyList> {
         override fun createStub(psi: ParadoxLocalisationPropertyList, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationPropertyListStub {
-            return ParadoxLocalisationStubManager.createPropertyListStub(psi, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyListStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyListStub {
-            return ParadoxLocalisationStubManager.createPropertyListStub(node, tree, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyListStub(node, tree, parentStub)
         }
 
         override fun createPsi(stub: ParadoxLocalisationPropertyListStub): ParadoxLocalisationPropertyList {
@@ -98,11 +98,11 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
 
     class PropertyFactory : LightStubElementFactory<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty> {
         override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationPropertyStub {
-            return ParadoxLocalisationStubManager.createPropertyStub(psi, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-            return ParadoxLocalisationStubManager.createPropertyStub(tree, node, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxLocalisationPropertyStub): ParadoxLocalisationProperty {
@@ -129,7 +129,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
             if (stub.name.isEmpty()) return
             when (stub.type) {
                 ParadoxLocalisationType.Normal -> {
-                    sink.occurrence(PlsIndexKeys.LocalisationName, stub.name)
+                    sink.occurrence(ChronicleIndexKeys.LocalisationName, stub.name)
                     ParadoxLocalisationIndexConstraint.entries.forEach { constraint ->
                         if (constraint.test(stub.name)) {
                             val name = stub.name.letIf(constraint.ignoreCase) { it.lowercase() }
@@ -138,7 +138,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
                     }
                 }
                 ParadoxLocalisationType.Synced -> {
-                    sink.occurrence(PlsIndexKeys.SyncedLocalisationName, stub.name)
+                    sink.occurrence(ChronicleIndexKeys.SyncedLocalisationName, stub.name)
                 }
             }
         }

@@ -25,9 +25,9 @@ interface ParadoxScriptExpressionMatchOptimizer {
      *
      * @return 优化后的候选规则列表。如果为 `null`，则表示此扩展点不适用。
      */
-    fun <T: CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>?
+    fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
     }
 }

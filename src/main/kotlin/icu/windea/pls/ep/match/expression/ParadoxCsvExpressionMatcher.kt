@@ -26,6 +26,6 @@ interface ParadoxCsvExpressionMatcher {
     fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
     }
 }

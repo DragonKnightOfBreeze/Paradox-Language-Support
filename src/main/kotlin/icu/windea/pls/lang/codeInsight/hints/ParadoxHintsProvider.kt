@@ -69,5 +69,6 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
     protected abstract fun collectFromElement(element: PsiElement, sink: InlayHintsSink)
 
     context(context: ParadoxHintsContext)
-    protected open fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {}
+    protected open fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+    }
 }

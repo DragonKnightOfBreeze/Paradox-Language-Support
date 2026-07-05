@@ -1,9 +1,0 @@
-# for EU5
-
-owner ?= {}
-
-owner<warning descr="Safe call assign operators (`? =`) are not supported in Europa Universalis V">? =</warning> {}
-
-1 <warning descr="Unexpected safe assign operator (`?=`) (key of containing property should be a string literal)">?=</warning> {}
-
-1<warning descr="Safe call assign operators (`? =`) are not supported in Europa Universalis V">? =</warning> {}

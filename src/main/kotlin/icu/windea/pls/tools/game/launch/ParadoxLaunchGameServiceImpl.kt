@@ -4,11 +4,11 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.tools.PlsToolsBundle
+import icu.windea.pls.tools.ChronicleToolsBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,16 +26,16 @@ class ParadoxLaunchGameServiceImpl : ParadoxLaunchGameService {
         val gameType = rootInfo.gameType
         val gameVersion = if (rootInfo is ParadoxRootInfo.MetadataBased) rootInfo.version else null
         val content = when {
-            gameVersion == null -> PlsToolsBundle.message("game.launcher.notification.content.1", gameType.title)
-            else -> PlsToolsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
+            gameVersion == null -> ChronicleToolsBundle.message("game.launcher.notification.content.1", gameType.title)
+            else -> ChronicleToolsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
         }
-        val notification = PlsNotificationGroups.global().createNotification(content, NotificationType.INFORMATION)
+        val notification = ChronicleNotificationGroups.global().createNotification(content, NotificationType.INFORMATION)
         notification.notify(project)
     }
 
     override fun exitIde() {
         // NOTE 2.0.7 后续可能需要添加一些额外的处理逻辑
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
                 application.exit()

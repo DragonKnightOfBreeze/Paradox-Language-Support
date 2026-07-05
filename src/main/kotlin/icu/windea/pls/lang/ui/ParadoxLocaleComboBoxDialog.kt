@@ -2,7 +2,7 @@ package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 
 @Suppress("unused")
@@ -13,7 +13,7 @@ class ParadoxLocaleComboBoxDialog(
     var locale: CwtLocaleConfig? = selectedLocale
 
     init {
-        title = PlsBundle.message("ui.selectLocale.title")
+        title = ChronicleBundle.message("ui.selectLocale.title")
         init()
     }
 

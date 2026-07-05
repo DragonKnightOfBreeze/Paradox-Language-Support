@@ -12,6 +12,7 @@ import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
@@ -22,7 +23,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -109,12 +110,12 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(element.value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(element)
         val config = create(pointer, configGroup, valueExpression, valueType, configs, propertyConfig = null, injectable = true)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
         when {
-            configs == null -> logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
-            configs.isEmpty() -> logger.trace { "Resolved value config (empty member configs).".withLocationPrefix(element) }
-            else -> logger.trace { "Resolved value config (${configs.size} member configs).".withLocationPrefix(element) }
+            configs == null -> logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element, configGroup) }
+            configs.isEmpty() -> logger.trace { "Resolved value config (empty member configs).".withLocationPrefix(element, configGroup) }
+            else -> logger.trace { "Resolved value config (${configs.size} member configs).".withLocationPrefix(element, configGroup) }
         }
         return config
     }
@@ -163,7 +164,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
     }
 }
 
-private const val blockValue = PlsStrings.blockFolder
+private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24

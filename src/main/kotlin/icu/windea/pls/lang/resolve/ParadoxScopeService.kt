@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -117,7 +116,7 @@ object ParadoxScopeService {
             if (message == null) {
                 message = ep.getMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("scopeContext.inference", definitionInfo.name)
+                return ParadoxDefinitionInferredScopeContextProvider.getDefaultMessage(definition, definitionInfo, info)
             }
         }
         return message
@@ -137,7 +136,7 @@ object ParadoxScopeService {
             if (errorMessage == null) {
                 errorMessage = ep.getErrorMessage(definition, definitionInfo, info)
             } else {
-                return PlsBundle.message("scopeContext.inference.conflict", definitionInfo.name)
+                return ParadoxDefinitionInferredScopeContextProvider.getDefaultErrorMessage(definition, definitionInfo, info)
             }
         }
         return errorMessage
@@ -424,12 +423,12 @@ object ParadoxScopeService {
             val configGroup = node.configGroup
             val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
             val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
-            val containerConfig = config.getContainerConfig(parameterElement)
+            val contextContainerConfig = config.getContextContainerConfig(parameterElement)
 
             // ex_param = scope[country]
             // result: country (don't validate & inline allowed)
             run r2@{
-                val inferredScope = containerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
+                val inferredScope = contextContainerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
                     ?.takeIf { it.type == CwtDataTypes.Scope }
                     ?.value?.orNull() ?: return@r2
                 return inputScopeContext.resolveNext(inferredScope)
@@ -439,7 +438,7 @@ object ParadoxScopeService {
             // ex_param = ...
             // result: country (don't validate & inline allowed)
             run r2@{
-                val inferredScopeContext = ParadoxScopeManager.getScopeContext(containerConfig, inputScopeContext) ?: return@r2
+                val inferredScopeContext = ParadoxScopeManager.getScopeContext(contextContainerConfig, inputScopeContext) ?: return@r2
                 return inferredScopeContext
             }
         }

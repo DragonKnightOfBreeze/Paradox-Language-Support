@@ -7,7 +7,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
@@ -24,7 +24,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
 
     abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
 
-    class Base : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType")) {
+    class Base : ParadoxScriptTemplateContextType(ChronicleBundle.message("script.templateContextType")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             return true
         }
@@ -34,7 +34,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
         }
     }
 
-    class Members : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.members")) {
+    class Members : ParadoxScriptTemplateContextType(ChronicleBundle.message("script.templateContextType.members")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             val file = templateActionContext.file
             val startOffset = templateActionContext.startOffset
@@ -53,7 +53,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
         }
     }
 
-    class InlineMathExpressions : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.inlineMathExpressions")) {
+    class InlineMathExpressions : ParadoxScriptTemplateContextType(ChronicleBundle.message("script.templateContextType.inlineMathExpressions")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             val file = templateActionContext.file.originalFile
             val startOffset = templateActionContext.startOffset

@@ -9,18 +9,20 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
+import icu.windea.pls.lang.inspections.ChronicleSuppressionUtil
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isDirectValue
 
 /**
  * 基于特定条件，禁用适用于脚本文件的代码检查。
@@ -28,17 +30,17 @@ import icu.windea.pls.script.psi.isBlockMember
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         var current = element
-        if (PlsInspectionSuppressManager.isSuppressedInComment(current, toolId)) return true
-        if (PlsInspectionSuppressManager.isSuppressedForDefinition(element, toolId)) return true
+        if (ChronicleSuppressionUtil.isSuppressedInComment(current, toolId)) return true
+        if (ChronicleSuppressionUtil.isSuppressedForDefinition(element, toolId)) return true
         while (current !is PsiFile) {
             current = current.parent ?: return false
             ProgressManager.checkCanceled()
-            if (current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockMember())) {
-                if (PlsInspectionSuppressManager.isSuppressedInComment(current, toolId)) return true
-                if (PlsInspectionSuppressManager.isSuppressedForDefinition(current, toolId)) return true
+            if (current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isDirectValue())) {
+                if (ChronicleSuppressionUtil.isSuppressedInComment(current, toolId)) return true
+                if (ChronicleSuppressionUtil.isSuppressedForDefinition(current, toolId)) return true
             }
         }
-        if (PlsInspectionSuppressManager.isSuppressedInComment(current, toolId)) return true
+        if (ChronicleSuppressionUtil.isSuppressedInComment(current, toolId)) return true
         return false
     }
 
@@ -48,15 +50,15 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         return buildList {
             run {
                 val fileName = file.name
-                add(SuppressForFileFix(SuppressionUtil.ALL, fileName))
-                add(SuppressForFileFix(toolId, fileName))
+                this += SuppressForFileFix(SuppressionUtil.ALL, fileName)
+                this += SuppressForFileFix(toolId, fileName)
             }
             run {
                 val definition = selectScope { element.parentDefinition().asProperty() } ?: return@run
                 val definitionInfo = definition.definitionInfo ?: return@run
                 val name = definitionInfo.name
                 val containerPointer = definition.createPointer<PsiElement>(file)
-                add(SuppressForDefinitionFix(toolId, name, containerPointer))
+                this += SuppressForDefinitionFix(toolId, name, containerPointer)
             }
             run {
                 // 2.1.0 兼容定义注入
@@ -64,10 +66,10 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return@run
                 val expression = definitionInjectionInfo.expression
                 val containerPointer = definitionInjection.createPointer<PsiElement>(file)
-                add(SuppressForDefinitionInjectionFix(toolId, expression, containerPointer))
+                this += SuppressForDefinitionInjectionFix(toolId, expression, containerPointer)
             }
-            add(SuppressForMemberFix(toolId))
-        }.toTypedArray()
+            this += SuppressForMemberFix(toolId)
+        }.toArray(SuppressQuickFix.EMPTY_ARRAY)
     }
 
     private class SuppressForFileFix(
@@ -76,14 +78,14 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptFile::class.java) {
         override fun getText(): String {
             return when (toolId) {
-                SuppressionUtil.ALL -> PlsBundle.message("suppress.for.file.all", fileName)
-                else -> PlsBundle.message("suppress.for.file", fileName)
+                SuppressionUtil.ALL -> ChronicleBundle.message("suppress.for.file.all", fileName)
+                else -> ChronicleBundle.message("suppress.for.file", fileName)
             }
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container !is PsiFile) return
-            val text = PlsConstants.suppressInspectionsTagName + " " + myID
+            val text = ChronicleConstants.suppressInspectionsTagName + " " + myID
             val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
             container.addAfter(comment, null)
         }
@@ -97,7 +99,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         // definition here should be a property, not a file
 
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.definition", name)
+            return ChronicleBundle.message("suppress.for.definition", name)
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -113,7 +115,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         // definition here should be a property, not a file
 
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.definitionInjection", name)
+            return ChronicleBundle.message("suppress.for.definitionInjection", name)
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -125,12 +127,12 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         toolId: String
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.member")
+            return ChronicleBundle.message("suppress.for.member")
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
             if (context == null) return null
-            return context.parents(true).find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember()) }
+            return context.parents(true).find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isDirectValue()) }
         }
     }
 }

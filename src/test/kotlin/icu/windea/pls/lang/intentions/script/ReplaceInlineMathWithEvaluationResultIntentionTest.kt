@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.script
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -28,7 +28,7 @@ class ReplaceInlineMathWithEvaluationResultIntentionTest : BasePlatformTestCase(
 
     @Test
     fun test_constant() {
-        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
+        val intentionName = ChronicleBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + 1 ]")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -37,7 +37,7 @@ class ReplaceInlineMathWithEvaluationResultIntentionTest : BasePlatformTestCase(
 
     @Test
     fun test_parameterWithDefaultValue() {
-        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
+        val intentionName = ChronicleBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + ${p("NUM", "1")} ]")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -46,7 +46,7 @@ class ReplaceInlineMathWithEvaluationResultIntentionTest : BasePlatformTestCase(
 
     @Test
     fun test_dynamic_notAvailable() {
-        val intentionName = PlsBundle.message("intention.replaceInlineMathWithEvaluationResult")
+        val intentionName = ChronicleBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + ${p("NUM")} ]")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
     }

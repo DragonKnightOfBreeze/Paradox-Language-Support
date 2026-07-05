@@ -6,7 +6,7 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.FallbackStrings
 
 /**
@@ -28,7 +28,7 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     }
 
     override fun getErrorHint(): @NlsContexts.HintText String {
-        return PlsBundle.message("no.expression.found")
+        return ChronicleBundle.message("no.expression.found")
     }
 
     override fun hasAdvancedInformation(): Boolean {
@@ -38,13 +38,13 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getAdvancedInformationHint(element: PsiElement): @NlsContexts.HintText String {
         val map = buildMap {
             val type = CwtTypeManager.getType(element)
-            type?.let { this[PlsBundle.message("title.type")] = it.id }
+            type?.let { this[ChronicleBundle.message("title.type")] = it.id }
 
             val configType = CwtTypeManager.getConfigType(element)
-            configType?.let { this[PlsBundle.message("title.configType")] = it.id }
+            configType?.let { this[ChronicleBundle.message("title.configType")] = it.id }
 
             val expression = CwtTypeManager.getExpression(element)
-            expression?.let { this[PlsBundle.message("title.expression")] = it }
+            expression?.let { this[ChronicleBundle.message("title.expression")] = it }
         }
         return buildHtml(map)
     }

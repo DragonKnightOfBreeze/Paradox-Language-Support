@@ -16,8 +16,8 @@ import com.intellij.platform.util.progress.reportSequentialProgress
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -25,8 +25,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxEventTreeDiagramSettings
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
@@ -49,15 +49,15 @@ import javax.swing.JComponent
  */
 abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
     object Categories {
-        val Type = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.type"), PlsIcons.Nodes.Type, true, false)
-        val Properties = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val LocalizedName = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.localizedName"), PlsIcons.Nodes.Localisation, false, false)
+        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
+        val LocalizedName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.localizedName"), ChronicleIcons.Nodes.Localisation, false, false)
 
         val All = arrayOf(Type, Properties, LocalizedName)
     }
 
     object Relations {
-        val Invoke = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, PlsDiagramBundle.message("eventTree.rel.invoke")) {
+        val Invoke = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, ChronicleDiagramBundle.message("eventTree.rel.invoke")) {
             override fun getTargetArrow() = DELTA
         }
     }
@@ -157,8 +157,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Type -> PlsIcons.Nodes.Type
-                is Items.Property -> PlsIcons.Nodes.Property
+                is Items.Type -> ChronicleIcons.Nodes.Type
+                is Items.Property -> ChronicleIcons.Nodes.Property
                 else -> null
             }
         }
@@ -176,17 +176,17 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun updateDataModel() {
             // 群星原版事件有5000+
 
-            val title = PlsDiagramBundle.message("eventTree.update.title")
+            val title = ChronicleDiagramBundle.message("eventTree.update.title")
             runWithModalProgressBlocking(project, title) action@{
                 reportSequentialProgress { sReporter ->
-                    val step1 = PlsDiagramBundle.message("eventTree.update.step.1")
+                    val step1 = ChronicleDiagramBundle.message("eventTree.update.step.1")
                     val events = sReporter.indeterminateStep(step1) {
                         readAction { searchEvents() }
                     }
                     if (events.isEmpty()) return@action
                     val size = events.size
 
-                    val step2 = PlsDiagramBundle.message("eventTree.update.step.2", size)
+                    val step2 = ChronicleDiagramBundle.message("eventTree.update.step.2", size)
                     sReporter.nextStep(25, step2) {
                         reportProgressScope(size) { reporter ->
                             events.forEach { event ->
@@ -197,7 +197,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         }
                     }
 
-                    val step3 = PlsDiagramBundle.message("eventTree.update.step.3", size)
+                    val step3 = ChronicleDiagramBundle.message("eventTree.update.step.3", size)
                     sReporter.nextStep(50, step3) {
                         reportProgressScope(size) { reporter ->
                             events.forEach { event ->
@@ -208,7 +208,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         }
                     }
 
-                    val step4 = PlsDiagramBundle.message("eventTree.update.step.4", size)
+                    val step4 = ChronicleDiagramBundle.message("eventTree.update.step.4", size)
                     sReporter.nextStep(100, step4) {
                         reportProgressScope(size) { reporter ->
                             events.forEach { event ->
@@ -267,7 +267,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
 
         override fun getModificationTracker(): ModificationTracker {
-            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(project, provider.gameType)
             return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }

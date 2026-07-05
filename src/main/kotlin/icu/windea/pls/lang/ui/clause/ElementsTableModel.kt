@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.ComboBoxTableRenderer
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.EditableModel
 import com.intellij.util.ui.ListTableModel
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.pass
 import icu.windea.pls.model.type.ParadoxSeparatorType
 import javax.swing.table.TableCellEditor
@@ -22,7 +22,7 @@ class ElementsTableModel(
         addRow(ElementDescriptors.Property())
     }
 
-    class NameColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.name")) {
+    class NameColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(ChronicleBundle.message("ui.table.element.column.name.name")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return true
         }
@@ -53,7 +53,7 @@ class ElementsTableModel(
         }
     }
 
-    class SeparatorColumn : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(PlsBundle.message("ui.table.element.column.name.separator")) {
+    class SeparatorColumn : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(ChronicleBundle.message("ui.table.element.column.name.separator")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is ElementDescriptors.Property
         }
@@ -87,7 +87,7 @@ class ElementsTableModel(
         }
     }
 
-    class ValueColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
+    class ValueColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(ChronicleBundle.message("ui.table.element.column.name.value")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is ElementDescriptors.Property && item.constantValues.isNotEmpty()
         }

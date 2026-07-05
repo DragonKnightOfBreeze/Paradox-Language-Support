@@ -64,17 +64,16 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     /**
      * 用于安全地执行注入的代码逻辑，并在发生异常时仅打印一次警告日志。
      */
-    protected inline fun <T> runSafely(id: String = "", action: () -> T): T? {
+    protected inline fun <T> runSafely(key: String = "", action: () -> T): T? {
         try {
             return action()
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            val codeInjectorId = this.id
-            val flagId = "$codeInjectorId.$id"
-            val flag = CodeInjectorContext.runSafelyFlags.get(flagId)
+            val flagKey = "$id.$key"
+            val flag = CodeInjectorContext.runSafelyFlags.get(flagKey)
             runOnce(flag) {
                 val logger = thisLogger()
-                logger.warn("ERROR when executing injected code from code injector: $codeInjectorId (suppressed now)")
+                logger.warn("ERROR when executing injected code from code injector: $id (suppressed now)")
             }
             return null
         }

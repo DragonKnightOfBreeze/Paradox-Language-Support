@@ -91,12 +91,13 @@ rows = {
     row[chapter_page] = {
         path = "game/common/chapters"
         path_extension = .csv
+        skip_last_column = yes
         columns = {
             name = <chapter>
             page = int
             category = enum[chapter_category]
+            tag = value[chapter_tag]
         }
-        end_column = end
     }
 }
 
@@ -123,3 +124,20 @@ enums = {
     }
 }
 
+scopes = {
+    Character = {
+        aliases = { character }
+    }
+    Scene = {
+        aliases = { scene }
+    }
+    Area = {
+        aliases = { area }
+    }
+}
+
+scope_groups = {
+    geography = {
+        scene area
+    }
+}

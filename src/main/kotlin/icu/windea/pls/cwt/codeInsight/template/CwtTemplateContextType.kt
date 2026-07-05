@@ -4,7 +4,7 @@ import com.intellij.codeInsight.template.TemplateActionContext
 import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.editor.CwtSyntaxHighlighter
 import icu.windea.pls.cwt.psi.CwtMember
@@ -18,7 +18,7 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
 
     abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
 
-    class Base : CwtTemplateContextType(PlsBundle.message("cwt.templateContextType")) {
+    class Base : CwtTemplateContextType(ChronicleBundle.message("cwt.templateContextType")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             return true
         }
@@ -28,7 +28,7 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
         }
     }
 
-    class Members : CwtTemplateContextType(PlsBundle.message("cwt.templateContextType.members")) {
+    class Members : CwtTemplateContextType(ChronicleBundle.message("cwt.templateContextType.members")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             val file = templateActionContext.file
             val startOffset = templateActionContext.startOffset

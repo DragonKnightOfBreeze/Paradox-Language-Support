@@ -6,16 +6,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
-import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -45,9 +45,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         if (!context.isValid()) return true
         val keys = setOf(
             createActualKey(context),
-            PlsIndexUtil.createLazyKey(),
+            ChronicleIndexUtil.createLazyKey(),
         )
-        val r = PlsIndexService.processAllFileData(ParadoxDefinitionIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        val r = ChronicleIndexService.processAllFileData(ParadoxDefinitionIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
             infos.process { info -> processInfo(context, file, info, consumer) }
@@ -68,10 +68,10 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         val name = context.name?.letIf(ignoreCase) { it.lowercase() }
         val type = context.type
         return when {
-            !name.isNullOrEmpty() && !type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(name, type)
-            !name.isNullOrEmpty() -> PlsIndexUtil.createNameKey(name)
-            !type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(type)
-            else -> PlsIndexUtil.createAllKey()
+            !name.isNullOrEmpty() && !type.isNullOrEmpty() -> ChronicleIndexUtil.createNameTypeKey(name, type)
+            !name.isNullOrEmpty() -> ChronicleIndexUtil.createNameKey(name)
+            !type.isNullOrEmpty() -> ChronicleIndexUtil.createTypeKey(type)
+            else -> ChronicleIndexUtil.createAllKey()
         }
     }
 
@@ -125,7 +125,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         override val project: Project,
         override val scope: GlobalSearchScope,
     ) : ParadoxSearchContext {
-        val configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val typeConfig: CwtTypeConfig? = type?.orNull()?.let { configGroup.types[it] }
         val swappedType: String? = type?.orNull()?.let { configGroup.typesModel.base2Swapped[it] }?.takeIf { it != type }
     }

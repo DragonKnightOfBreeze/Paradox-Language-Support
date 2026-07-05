@@ -128,12 +128,16 @@ rows = {
         path_strict = $bool
         #### Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
         path_pattern = $scalar
+        ### Row type (`key`/`index`, default is `key`). Decide how to match each of these columns. Match by column name (column names cannot be repeated), or by column index in containing row (column names can be repeated).
+        type = $enum:row_type$
+        ### Whether to ignore the last row when resolving and matching. Default is `no`.
+        skip_last_row = $bool
+        ### Whether to ignore the last column when resolving and matching, if column index out of range. Default is `no`.
+        skip_last_column = $bool
         #### The mapping from column names to corresponding column configs.
         columns = {
             $scalar = $data_expression
         }
-        #### If this column name is matched, it is considered the optional last column.
-        end_column = $scalar
     }
 }
 
@@ -163,6 +167,15 @@ enums = {
         start_from_root = $bool
         #### Describes how to locate value anchors in matching files. The plugin collects all property keys, property values, or block member values named `enum_name` as anchors.
         name = $any
+    }
+}
+
+#### Container property to introduce [Union Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-union).
+unions = {
+    #### Introduce a [Union Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-union)
+    #### to apply union match with several data expression candidates.
+    union[$union$] = {
+        $data_expression
     }
 }
 
@@ -306,7 +319,7 @@ single_alias[$single_alias$] = $declaration
 alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 #### Introduce a [Macro Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-macro)
-#### to describe special expressions and structures that alter the game's runtime script parser behavior.
+#### to describe special language constructs (expressions, statements, etc.) that alter the game's runtime script parser behavior.
 macro[$macro$] = $any
 
 # endregion
@@ -413,6 +426,8 @@ dynamic_values = {
 $enum:override_strategy$ = { fios lios dupl ordered }
 #### Possible values for the `severity` enum.
 $enum:severity$ = { error warning info hint }
+#### Possible values for the `row_type` enum.
+$enum:row_type$ = { key index }
 #### Possible values for the `link_type` enum.
 $enum:link_type$ = { scope value both }
 #### Possible values for the `link_argument_separator` enum.
@@ -625,6 +640,11 @@ $$options = {
     ####
     #### Example: `## graph_related_types = { special_project anomaly_category }`
     graph_related_types
+
+    #### Indicates that the current column declares a complex enum value of the specified type (rather than a reference).
+    ####
+    #### Example: `## declare_complex_enum = weapon_tag`
+    declare_complex_enum
 
     #### Specifies the severity (for config-based code inspections).
     ####

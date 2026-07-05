@@ -1,12 +1,12 @@
 package icu.windea.pls.integrations.lints
 
-import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.model.ParadoxGameType
 import org.cef.OS
 
 object LintToolConstants {
     object Tiger {
-        val name get() = PlsIntegrationsBundle.message("tool.tiger.name")
+        val name get() = ChronicleIntegrationsBundle.message("tool.tiger.name")
         const val url = "https://github.com/amtep/tiger"
 
         fun pathTip(gameType: ParadoxGameType): String {

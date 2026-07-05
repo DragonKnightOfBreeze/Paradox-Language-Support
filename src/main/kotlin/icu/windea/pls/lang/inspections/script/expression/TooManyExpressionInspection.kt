@@ -8,8 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.overriddenProvider
@@ -18,11 +17,12 @@ import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -30,17 +30,17 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 import javax.swing.JComponent
 
 /**
  * 过多的表达式的代码检查。
  *
- * @property firstOnly 是否仅标出第一个错误。
- * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property firstOnly （配置项）是否仅标出第一个错误。
+ * @property firstOnlyOnFile （配置项）在文件级别上，是否仅标出第一个错误。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class TooManyExpressionInspection : LocalInspectionTool() {
     @JvmField var firstOnly = false
@@ -49,12 +49,15 @@ class TooManyExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        // 按需忽略内联脚本文件
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 判断是否需要忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -73,7 +76,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
 
             private fun visitBlock(element: ParadoxScriptBlock) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return // skip check if element is not an expression
+                if (!element.isDataExpression()) return // skip check if element is not an expression
 
                 // skip checking property if its property key may contain parameters
                 // position: (in property) property key / (standalone) left curly brace
@@ -129,19 +132,19 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if (isKey) {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.desc.1.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.tooManyExpression.desc.1.2", configExpression)
+                            isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1.1", configExpression)
+                            else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1.2", configExpression)
                         }
                     } else {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.desc.2.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.tooManyExpression.desc.2.2", configExpression)
+                            isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2.1", configExpression)
+                            else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2.2", configExpression)
                         }
                     }
                     val maxDefine = occurrence.maxDefine
                     val detail = when {
-                        maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
-                        else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
+                        maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
+                        else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
                     val highlightType = InspectionService.getWeakerHighlightType(lenientMax)
                     val fileLevel = element is PsiFile
@@ -158,22 +161,22 @@ class TooManyExpressionInspection : LocalInspectionTool() {
         return panel {
             // firstOnly
             row {
-                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnly"))
+                checkBox(ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnly"))
                     .bindSelected(::firstOnly.toAtomicProperty())
             }
             // firstOnlyOnFile
             row {
-                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile"))
+                checkBox(ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile"))
                     .bindSelected(::firstOnlyOnFile.toAtomicProperty())
             }
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

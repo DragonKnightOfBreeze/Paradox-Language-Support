@@ -12,6 +12,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.model.constants.ChronicleStrings
 
 /**
  * 快速修复一些语法错误。
@@ -22,27 +23,33 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
         when {
             errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
                 // LEFT_QUOTE
-                builder.registerFix(InsertMissingTokenFix("\"", errorElement.endOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix("\"", errorElement.endOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
                 // RIGHT_QUOTE
-                builder.registerFix(InsertMissingTokenFix("\"", errorElement.startOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix("\"", errorElement.startOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationParameter -> {
                 // PARAMETER_END
-                builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix(ChronicleStrings.parameterEndMarker, errorElement.startOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
                 // ICON_END
-                builder.registerFix(InsertMissingTokenFix("£", errorElement.startOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix(ChronicleStrings.iconEndMarker, errorElement.startOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextIcon -> {
                 // TEXT_ICON_END
-                builder.registerFix(InsertMissingTokenFix("!", errorElement.startOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix(ChronicleStrings.textIconEndMarker, errorElement.startOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextFormat -> {
                 // TEXT_FORMAT_END
-                builder.registerFix(InsertMissingTokenFix("#!", errorElement.startOffset), null, null, null, null)
+                val fix = InsertMissingTokenFix(ChronicleStrings.textFormatEndMarker, errorElement.startOffset)
+                builder.registerFix(fix, null, null, null, null)
             }
         }
     }

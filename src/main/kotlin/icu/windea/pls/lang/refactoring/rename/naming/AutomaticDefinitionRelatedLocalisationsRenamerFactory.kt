@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -20,7 +20,7 @@ class AutomaticDefinitionRelatedLocalisationsRenamerFactory : AutomaticRenamerFa
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.definition.relatedLocalisations")
+        return ChronicleBundle.message("rename.definition.relatedLocalisations")
     }
 
     override fun isEnabled(): Boolean {

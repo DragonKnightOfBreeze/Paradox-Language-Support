@@ -2,7 +2,7 @@ package icu.windea.pls.cwt.annotator
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.test.HighlightingTestScope
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,17 +18,15 @@ class CwtSyntaxAnnotatorTest : BasePlatformTestCase(), HighlightingTestScope {
 
     @Test
     fun testMissingQuotes_errors() {
-        val openingMsg = PlsBundle.message("message.missing.opening.quote")
-        val closingMsg = PlsBundle.message("message.missing.closing.quote")
-        val openingMsgTag = openingMsg.toErrorTag()
-        val closingMsgTag = closingMsg.toErrorTag()
+        val openingTag = ChronicleBundle.message("message.missing.opening.quote").toErrorTag()
+        val closingTag = ChronicleBundle.message("message.missing.closing.quote").toErrorTag()
 
         // 两个标注：value" 缺失开引号；"value 缺失闭引号
         myFixture.configureByText(
             "annotator_missing_quotes.test.cwt",
             """
-            ${openingMsgTag.start}value"${openingMsgTag.end}
-            ${closingMsgTag.start}"value${closingMsgTag.end}
+            ${openingTag.start}value"${openingTag.end}
+            ${closingTag.start}"value${closingTag.end}
             """.trimIndent()
         )
         myFixture.checkHighlighting(true, true, true)

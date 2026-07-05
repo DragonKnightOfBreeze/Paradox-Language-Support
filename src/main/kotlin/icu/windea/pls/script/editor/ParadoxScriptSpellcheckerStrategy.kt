@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 // com.intellij.spellchecker.JavaSpellcheckingStrategy
 // org.jetbrains.kotlin.idea.spellchecker.KotlinSpellcheckingStrategy
 
-class ParadoxScriptSpellcheckerStrategy : SpellcheckingStrategy(),DumbAware {
+class ParadoxScriptSpellcheckerStrategy : SpellcheckingStrategy(), DumbAware {
     private val emptyTokenizer = EMPTY_TOKENIZER
     private val scriptedVariableNameTokenizer = TokenAwareTokenizer(SCRIPTED_VARIABLE_NAME_TOKEN)
     private val scriptedVariableReferenceTokenizer = TokenAwareTokenizer(SCRIPTED_VARIABLE_REFERENCE_TOKEN)

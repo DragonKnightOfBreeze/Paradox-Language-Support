@@ -1,0 +1,45 @@
+## @type string = block
+## @definition_type guide_example
+## @config_expression guide_example = {...}
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = hello_world
+}
+## @type string = block
+## @definition_type guide_example
+## @config_expression guide_example = {...}
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = next_step
+}
+## @type string = block
+## @definition_type guide_example
+## @config_expression guide_example = {...}
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = on_the_way
+}
+## @type string = block
+## @definition_type guide_example
+## @config_expression guide_example = {...}
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = hello_the_awakened
+}
+## @type string = block
+## @definition_type guide_example
+## @config_expression guide_example = {...}
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = hi_the_forever_seeker
+}

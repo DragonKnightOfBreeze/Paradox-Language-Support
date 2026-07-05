@@ -7,9 +7,9 @@ import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
@@ -23,7 +23,7 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
 
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxDefinitionElement? {
         val offset = editor.caretModel.offset
-        val definition = ParadoxPsiFileManager.findDefinition(file, offset) { BY_TYPE_KEY or BY_NAME or BY_REFERENCE } ?: return null
+        val definition = ParadoxPsiFileService.findDefinition(file, offset) { BY_TYPE_KEY or BY_NAME or BY_REFERENCE } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val superDefinition = ParadoxDefinitionService.getSuperDefinition(definitionInfo) ?: return null
         return superDefinition
@@ -45,11 +45,11 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
         // TODO [compatibility] `ActionPlaces.isPopupPlace(String)` is deprecated - But else how can I get `AnActionEvent` here?
         val useShortName = actionPlace != null && (ActionPlaces.MAIN_MENU == actionPlace || ActionPlaces.isPopupPlace(actionPlace))
         if (useShortName) {
-            presentation.text = PlsBundle.message("action.GotoSuperDefinition.MainMenu.text")
+            presentation.text = ChronicleBundle.message("action.GotoSuperDefinition.MainMenu.text")
         } else {
-            presentation.text = PlsBundle.message("action.GotoSuperDefinition.text")
+            presentation.text = ChronicleBundle.message("action.GotoSuperDefinition.text")
         }
-        presentation.description = PlsBundle.message("action.GotoSuperDefinition.description")
+        presentation.description = ChronicleBundle.message("action.GotoSuperDefinition.description")
     }
 
     override fun startInWriteAction() = false

@@ -6,12 +6,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.SearchScopeProvider
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.injection.PlsInjectionManager
+import icu.windea.pls.lang.injection.ChronicleInjectionManager
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
@@ -19,18 +19,18 @@ import icu.windea.pls.model.ParadoxRootInfo
  */
 class ParadoxSearchScopeProvider : SearchScopeProvider {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.provider.name")
+        return ChronicleBundle.message("search.scope.provider.name")
     }
 
     override fun getSearchScopes(project: Project, dataContext: DataContext): List<SearchScope> {
         val file = dataContext.getData(CommonDataKeys.VIRTUAL_FILE) ?: return emptyList()
-        val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
+        val contextFile = ChronicleInjectionManager.findTopHostFileOrThis(file)
         val rootFile = selectRootFile(contextFile) ?: return emptyList()
         val rootInfo = rootFile.rootInfo ?: return emptyList()
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(contextFile)
         when {
             rootInfo is ParadoxRootInfo.Game -> {
-                val settings = PlsProfilesSettings.getInstance().state.gameSettings.get(rootFile.path)
+                val settings = ChronicleProfilesSettings.getInstance().state.gameSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val gameDirectory = rootFile
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
@@ -42,7 +42,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 return result
             }
             rootInfo is ParadoxRootInfo.Mod -> {
-                val settings = PlsProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
+                val settings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val modDirectory = rootFile
                 val gameDirectory = settings.finalGameDirectory?.toVirtualFile()

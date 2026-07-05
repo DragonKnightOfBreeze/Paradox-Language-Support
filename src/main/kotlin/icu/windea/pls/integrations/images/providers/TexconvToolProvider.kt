@@ -8,7 +8,7 @@ import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettings
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -22,7 +22,7 @@ import kotlin.io.path.notExists
  */
 class TexconvToolProvider : CommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
-        return PlsIntegrationsSettings.getInstance().state.image.enableTexconv
+        return ChronicleIntegrationsSettings.getInstance().state.image.enableTexconv
     }
 
     override fun isSupported(): Boolean {

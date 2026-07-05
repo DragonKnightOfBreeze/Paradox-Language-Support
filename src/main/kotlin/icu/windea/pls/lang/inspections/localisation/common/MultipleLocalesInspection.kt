@@ -8,13 +8,13 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 
@@ -29,10 +29,12 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
         if (isIgnoredFile(file)) return false
-        // 跳过内存文件
-        if (VirtualFileService.isLightFile(file.virtualFile)) return false
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
+        // 跳过内存文件和注入的文件
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求是语义上有效的本地化文件
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     private fun isIgnoredFile(file: PsiFile): Boolean {
@@ -43,7 +45,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
         if (file !is ParadoxLocalisationFile) return null
         if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("inspection.localisation.multipleLocales.desc")
+        val description = ChronicleBundle.message("inspection.localisation.multipleLocales.desc")
         holder.registerProblem(file, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         return holder.resultsArray
     }
@@ -52,10 +54,10 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
         return panel {
             // ignoredFileNames
             row {
-                label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
+                label(ChronicleBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.patterns"))
+                    .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

@@ -23,6 +23,6 @@ interface ParadoxInlineSupport {
     fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
     }
 }

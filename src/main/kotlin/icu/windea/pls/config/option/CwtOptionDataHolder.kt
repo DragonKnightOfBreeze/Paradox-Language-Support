@@ -79,7 +79,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 如果未显式指定，且此成员规则的数据类型是常量或枚举值，则推断为 `1..~1`，否则默认使用 `0..inf`。
      *
      * 适用对象：
-    * - 定义成员对应的规则。
+     * - 定义成员对应的规则。
      *
      * 示例：
      *
@@ -98,7 +98,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 最小基数，通过指定表达式的定值变量动态指定。
      *
      * 适用对象：
-    * - 定义成员对应的规则。
+     * - 定义成员对应的规则。
      *
      * 示例：
      *
@@ -114,7 +114,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 最大基数，通过指定表达式的定值变量动态指定。
      *
      * 适用对象：
-    * - 定义成员对应的规则。
+     * - 定义成员对应的规则。
      *
      * 示例：
      *
@@ -133,7 +133,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 值存储为 `ReversibleValue`，其中分隔符 `=` 表示正向、`!=` 表示反向。
      *
      * 适用对象：
-    * - 定义成员对应的规则，作为补充过滤条件。
+     * - 定义成员对应的规则，作为补充过滤条件。
      *
      * 示例：
      *
@@ -152,7 +152,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 返回值为归一化后的作用域 ID。
      *
      * 适用对象：
-    * - 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
+     * - 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
      *
      * 示例：
      *
@@ -175,7 +175,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 值中的作用域会被归一化（大小写和别名）。
      *
      * 适用对象：
-    * - 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
+     * - 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
      *
      * 示例：
      *
@@ -196,7 +196,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 来自 [replaceScopes] 和 [pushScope]，经过计算得到。用于后续表达式匹配、补全和校验。
      *
      * 适用对象：
-    * - 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
+     * - 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
      *
      * > CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
      *
@@ -209,7 +209,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 允许的作用域（类型）的集合。默认支持任意作用域。
      *
      * 适用对象：
-    * - 触发器（trigger）和效果（effect）对应的别名规则（[CwtAliasConfig]）。
+     * - 触发器（trigger）和效果（effect）对应的别名规则（[CwtAliasConfig]）。
      *
      * 示例：
      *
@@ -231,7 +231,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 用于在定义的扩展规则中声明定义的类型。
      *
      * 适用对象：
-    * - 定义的扩展规则（[CwtExtendedDefinitionConfig]）。
+     * - 定义的扩展规则（[CwtExtendedDefinitionConfig]）。
      *
      * 示例：
      *
@@ -249,7 +249,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 用于在部分扩展规则中使用，以提供额外的内嵌提示。
      *
      * 适用对象：
-    * - 部分扩展规则（如 [CwtExtendedScriptedVariableConfig]）。
+     * - 部分扩展规则（如 [CwtExtendedScriptedVariableConfig]）。
      *
      * 示例：
      *
@@ -267,7 +267,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 用于在动作触发（on action）的扩展规则中指示事件类型（如 `country`、`system`）。
      *
      * 适用对象：
-    * - 动作触发（on action）的扩展规则（[CwtExtendedOnActionConfig]）。
+     * - 动作触发（on action）的扩展规则（[CwtExtendedOnActionConfig]）。
      *
      * 示例：
      *
@@ -286,7 +286,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 插件也支持模板/正则等灵活匹配（详见 [config.md](https://windea.icu/Paradox-Language-Support/config.md)）。
      *
      * 适用对象：
-    * - 参数的扩展规则（[CwtExtendedParameterConfig]）。
+     * - 参数的扩展规则（[CwtExtendedParameterConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
@@ -299,7 +299,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 默认为 `single`。
      *
      * 适用对象：
-    * - 可指定规则上下文的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
+     * - 可指定规则上下文的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
      *
      * 示例：
      *
@@ -317,7 +317,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 用于对子类型进行分组。
      *
      * 适用对象：
-    * - 子类型规则（[CwtSubtypeConfig]）。
+     * - 子类型规则（[CwtSubtypeConfig]）。
      *
      * 示例：
      *
@@ -335,7 +335,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 要求类型键必须匹配可选值，可以取反，可以指定多个可选值。
      *
      * 适用对象：
-    * - 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
+     * - 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
      * 示例：
      *
@@ -352,7 +352,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 类型键的正则过滤器（忽略大小写）。
      *
      * 适用对象：
-    * - 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
+     * - 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
      * 示例：
      *
@@ -370,7 +370,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 要求类型键必须以指定前缀开始。
      *
      * 适用对象：
-    * - 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
+     * - 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
      * 示例：
      *
@@ -388,7 +388,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 指定一个集合，只要“名称不在集合内”即可匹配。
      *
      * 适用对象：
-    * - 子类型规则（[CwtSubtypeConfig]）。
+     * - 子类型规则（[CwtSubtypeConfig]）。
      *
      * 示例：
      *
@@ -411,6 +411,19 @@ interface CwtOptionDataHolder : UserDataHolder {
      * > CWTools 兼容性：不兼容。插件未使用此类选项。
      */
     val graphRelatedTypes: Set<String>?
+
+    /**
+     * 表示当前列声明了一个指定类型的复杂枚举值（而非引用）。
+     *
+     * 示例：
+     *
+     * ```cwt
+     * ## declare_complex_enum = weapon_tag
+     * ```cwt
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val declareComplexEnum: String?
 
     /**
      * 基于规则的代码检查的严重度（severity）。
@@ -446,7 +459,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 指定颜色字段的解析/渲染模式。
      *
      * 适用对象：
-    * - 携带了颜色信息的定义成员对应的规则。
+     * - 携带了颜色信息的定义成员对应的规则。
      *
      * 示例：
      *
@@ -474,7 +487,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 因此也不应使用此选项。
      *
      * 适用对象：
-    * - 值为路径引用的成员规则（[CwtMemberConfig]）。
+     * - 值为路径引用的成员规则（[CwtMemberConfig]）。
      *
      * 示例：
      *
@@ -492,7 +505,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。
      *
      * 适用对象：
-    * - 任意值为子句的成员规则。
+     * - 任意值为子句的成员规则。
      *
      * 示例：
      *
@@ -514,7 +527,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 将对应位置的本地化和图片标记为必需项。
      *
      * 适用对象：
-    * - 位置规则（[CwtLocationConfig]）。
+     * - 位置规则（[CwtLocationConfig]）。
      *
      * > CWTools 兼容性：兼容。
      */
@@ -525,7 +538,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 这意味着它们会作为最相关的本地化和图片，优先显示在快速文档和内嵌提示中。
      *
      * 适用对象：
-    * - 位置规则（[CwtLocationConfig]）。
+     * - 位置规则（[CwtLocationConfig]）。
      *
      * > CWTools 兼容性：兼容。
      *
@@ -538,7 +551,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 即，继承自对应的使用处，与其保持一致。
      *
      * 适用对象：
-    * - 部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
+     * - 部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
@@ -549,7 +562,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 脚本文件中的对应的值会启用特殊的语义高亮和文档注释。
      *
      * 适用对象：
-    * - 作为单独的值的成员规则（[CwtValueConfig]）。
+     * - 作为单独的值的成员规则（[CwtValueConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      *
@@ -561,7 +574,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 将复杂枚举的枚举值标记为忽略大小写。
      *
      * 适用对象：
-    * - 复杂枚举规则（[CwtComplexEnumConfig]）。
+     * - 复杂枚举规则（[CwtComplexEnumConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
@@ -571,7 +584,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
      *
      * 适用对象：
-    * - 复杂枚举规则（[CwtComplexEnumConfig]）。
+     * - 复杂枚举规则（[CwtComplexEnumConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */

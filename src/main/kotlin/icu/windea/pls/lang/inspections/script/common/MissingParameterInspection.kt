@@ -9,11 +9,11 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -25,16 +25,19 @@ import javax.swing.JComponent
 /**
  * 缺失的参数的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingParameterInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -61,8 +64,8 @@ class MissingParameterInspection : LocalInspectionTool() {
             private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null) {
                 val description = when {
                     names.isEmpty() -> return
-                    names.size == 1 -> PlsBundle.message("inspection.script.missingParameter.desc.1", names.single())
-                    else -> PlsBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
+                    names.size == 1 -> ChronicleBundle.message("inspection.script.missingParameter.desc.1", names.single())
+                    else -> ChronicleBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
                 }
                 holder.registerProblem(element, rangeInElement, description)
             }
@@ -73,7 +76,7 @@ class MissingParameterInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }

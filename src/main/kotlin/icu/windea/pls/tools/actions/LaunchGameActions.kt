@@ -2,8 +2,8 @@ package icu.windea.pls.tools.actions
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.tools.PlsToolsBundle
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.game.launch.ParadoxLaunchGameService
 
 interface LaunchGameActions {
@@ -15,7 +15,7 @@ interface LaunchGameActions {
         override fun update(e: AnActionEvent) {
             // 判断是否需要显示在编辑器工具栏中
             if (e.place == ActionPlaces.EDITOR_TOOLBAR) {
-                val show = PlsSettings.getInstance().state.others.showLaunchGameActionInEditorContextToolbar
+                val show = ChronicleSettings.getInstance().state.others.showLaunchGameActionInEditorContextToolbar
                 e.presentation.isEnabledAndVisible = show
                 if (!show) return
             }
@@ -25,7 +25,7 @@ interface LaunchGameActions {
             e.presentation.isEnabledAndVisible = isAvailable
             if (!isAvailable) return
             val gameType = rootInfo.gameType
-            e.presentation.description = PlsToolsBundle.message("game.launcher.inSteam.detail", gameType.title)
+            e.presentation.description = ChronicleToolsBundle.message("game.launcher.inSteam.detail", gameType.title)
         }
 
         override fun actionPerformed(e: AnActionEvent) {
@@ -49,7 +49,7 @@ interface LaunchGameActions {
             e.presentation.isEnabledAndVisible = isAvailable
             if (!isAvailable) return
             val gameType = rootInfo.gameType
-            e.presentation.description = PlsToolsBundle.message("game.launcher.inSteam.withExit.detail", gameType.title)
+            e.presentation.description = ChronicleToolsBundle.message("game.launcher.inSteam.withExit.detail", gameType.title)
         }
 
         override fun actionPerformed(e: AnActionEvent) {

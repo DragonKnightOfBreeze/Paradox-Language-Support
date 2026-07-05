@@ -1,0 +1,450 @@
+package icu.windea.pls.lang.psi
+
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.TokenType
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.siblings
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.children
+import icu.windea.pls.core.containsLineBreak
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.pass
+import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.lang.ParadoxLanguage
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
+import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxNameValidators
+import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptBoolean
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.booleanValue
+import icu.windea.pls.script.psi.parentProperty
+import icu.windea.pls.script.psi.propertyValue
+
+object ParadoxPsiService {
+    object Keys : KeyRegistry() {
+        val cachedArgumentTupleList by registerKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
+    }
+
+    // region Common Methods
+
+    fun getOwnedComments(element: PsiElement): List<PsiComment> {
+        return PsiService.getOwnedComments(element) { true }
+    }
+
+    fun getLineCommentText(comments: List<PsiComment>): String? {
+        return PsiService.getLineCommentText(comments)
+    }
+
+    fun getArgumentTupleList(element: ParadoxScriptBlock, vararg excludeNames: String): List<Tuple2<String, String>> {
+        val r = getArgumentTupleListFromCache(element)
+        return if (excludeNames.isEmpty()) r else r.filter { (k) -> k !in excludeNames }
+    }
+
+    private fun getArgumentTupleListFromCache(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedArgumentTupleList) {
+            ProgressManager.checkCanceled()
+            val value = resolveArgumentTupleList(element).optimized()
+            value.withDependencyItems(element)
+        }
+    }
+
+    private fun resolveArgumentTupleList(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
+        return buildList {
+            for (p in element.properties()) {
+                val k = p.propertyKey.name.orNull() ?: continue
+                if (!ParadoxNameValidators.checkParameterName(k)) continue
+                val v = p.propertyValue?.text ?: continue
+                this += tupleOf(k, v)
+            }
+        }
+    }
+
+    fun findMemberElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
+        return when (element) {
+            is ParadoxScriptRootBlock -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            is ParadoxScriptBlock -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.LEFT_BRACE }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACE }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            is ParadoxScriptConditionalBlock -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACKET }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            else -> null to null
+        }
+    }
+
+    fun findRichTextElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
+        return when {
+            element is ParadoxLocalisationPropertyValue -> {
+                val element0 = element.findChild { it.elementType == ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN }
+                val e1 = element0?.firstChild
+                val e2 = element0?.lastChild
+                e1 to e2
+            }
+            else -> null to null
+        }
+    }
+
+    // endregion
+
+    // region Inline Methods
+
+    fun inlineScriptedVariable(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptScriptedVariable, project: Project) {
+        if (element !is ParadoxScriptedVariableReference) return
+
+        val toInline = declaration.scriptedVariableValue ?: return
+        var newText = rangeInElement.replace(element.text, toInline.text)
+        // 某些情况下 newText 会以 `@` 开始，需要去掉
+        if (element !is ParadoxScriptInlineMathScriptedVariableReference && newText.startsWith('@')) {
+            newText = newText.drop(1)
+        }
+        val language = element.language
+        when (language) {
+            is ParadoxScriptLanguage -> {
+                // 这里会把 newText 识别为一个值，但是实际上 newText 可以是任何文本，目前不进行额外的处理
+                val newRef = ParadoxScriptElementFactory.createValueFromText(project, newText)
+                element.replace(newRef)
+            }
+            is ParadoxLocalisationLanguage -> {
+                // 这里会把 newText 识别为一个字符串，但是实际上 newText 可以是任何文本，目前不进行额外的处理
+                newText = newText.unquote() // 内联到本地化文本中时，需要先尝试去除周围的双引号
+                val newRef = ParadoxLocalisationElementFactory.createText(project, newText)
+                // element.parent should be something like `$@var$`
+                element.parent.replace(newRef)
+            }
+        }
+    }
+
+    fun inlineScriptedTrigger(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
+        // 必须是一个调用而非任何引用
+        if (element !is ParadoxScriptPropertyKey) return
+        if (element.text.unquote().length != rangeInElement.length) return
+
+        val property = element.parentProperty ?: return
+        val toInline = declaration.propertyValue<ParadoxScriptBlock>() ?: return
+        var newText = toInline.text.trim()
+        var reverse = false
+        val valueElement = element.propertyValue?.resolved() ?: return
+        when (valueElement) {
+            is ParadoxScriptBoolean -> {
+                if (!valueElement.booleanValue) {
+                    reverse = true
+                    newText = newText.removeSurroundingOrNull("{", "}")?.trim() ?: return
+                    val multiline = newText.containsLineBreak()
+                    if (multiline) {
+                        newText = "NOT = {\n${newText}\n}"
+                    } else {
+                        newText = "NOT = { ${newText} }"
+                    }
+                }
+            }
+            is ParadoxScriptBlock -> {
+                val args = getArgumentTupleList(valueElement)
+                if (args.isNotEmpty()) {
+                    val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
+                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
+                }
+            }
+            else -> return
+        }
+        if (reverse) {
+            val newRef = ParadoxScriptElementFactory.createPropertyFromText(project, newText)
+            newRef.block?.let { handleInlinedScriptedTrigger(it) }
+            property.parent.addAfter(newRef, property)
+        } else {
+            val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
+            handleInlinedScriptedTrigger(newRef)
+            val (start, end) = findMemberElementsToInline(newRef)
+            if (start != null && end != null) {
+                property.parent.addRangeAfter(start, end, property)
+            }
+        }
+        property.delete()
+    }
+
+    fun inlineScriptedEffect(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
+        // 必须是一个调用而非任何引用
+        if (element !is ParadoxScriptPropertyKey) return
+        if (element.text.unquote().length != rangeInElement.length) return
+
+        val property = element.parentProperty ?: return
+        val toInline = declaration.propertyValue<ParadoxScriptBlock>() ?: return
+        var newText = toInline.text.trim()
+        val valueElement = element.propertyValue?.resolved() ?: return
+        when (valueElement) {
+            is ParadoxScriptBoolean -> {
+                if (!valueElement.booleanValue) {
+                    property.delete()
+                    return
+                }
+            }
+            is ParadoxScriptBlock -> {
+                val args = getArgumentTupleList(valueElement)
+                if (args.isNotEmpty()) {
+                    val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
+                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
+                }
+            }
+            else -> return
+        }
+        val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
+        handleInlinedScriptedEffect(newRef)
+        val (start, end) = findMemberElementsToInline(newRef)
+        if (start != null && end != null) {
+            property.parent.addRangeAfter(start, end, property)
+        }
+        property.delete()
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun inlineInlineScript(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptFile, project: Project) {
+        if (element !is ParadoxScriptValue) return
+
+        var newText = declaration.text.trim()
+        val usageElement = ParadoxInlineScriptService.getUsageElement(element) ?: return
+        val valueElement = usageElement.propertyValue?.resolved() ?: return
+        when (valueElement) {
+            is ParadoxScriptString -> pass()
+            is ParadoxScriptBlock -> {
+                val args = getArgumentTupleList(valueElement, "script")
+                if (args.isNotEmpty()) {
+                    val newRef = ParadoxScriptElementFactory.createRootBlockFromText(project, newText)
+                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = true)
+                }
+            }
+            else -> return
+        }
+        val newRef = ParadoxScriptElementFactory.createRootBlockFromText(project, newText)
+        val (start, end) = findMemberElementsToInline(newRef)
+        if (start != null && end != null) {
+            usageElement.parent.addRangeAfter(start, end, usageElement)
+        }
+        usageElement.delete()
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
+        if (element !is ParadoxLocalisationParameter) return
+
+        val toInline = declaration.propertyValue ?: return
+        val newText = toInline.text.unquote()
+        val newRef = ParadoxLocalisationElementFactory.createPropertyValue(project, newText)
+        val (start, end) = findRichTextElementsToInline(newRef)
+        if (start != null && end != null) {
+            element.parent.addRangeAfter(start, end, element)
+        }
+        element.delete()
+    }
+
+    fun handleInlinedScriptedTrigger(element: PsiElement) {
+        deleteOptimizeMemoryTag(element)
+    }
+
+    fun handleInlinedScriptedEffect(element: PsiElement) {
+        deleteOptimizeMemoryTag(element)
+    }
+
+    private fun deleteOptimizeMemoryTag(element: PsiElement) {
+        for (it in element.children(forward = false)) {
+            if (it !is ParadoxScriptString) continue
+            if (!it.value.equals("optimize_memory", true)) continue
+            it.delete()
+        }
+    }
+
+    // endregion
+
+    // region Introduce Methods
+
+    /**
+     * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
+     */
+    fun introduceLocalScriptedVariable(name: String, value: String, containerElement: ParadoxDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
+        val (parent, anchor) = containerElement.findParentAndAnchorToIntroduceLocalScriptedVariable()
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariableFromText(project, "@$name = ${value.quoteIfNeeded()}")
+        val newLine = ParadoxScriptElementFactory.createWhiteSpaceFromText(project, "\n")
+        newVariable = parent.addAfter(newVariable, anchor).cast()
+        if (anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
+        return newVariable
+    }
+
+    private fun ParadoxDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
+        if (this is ParadoxScriptFile) {
+            val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
+            if (anchor == null) return this to this.lastChild
+            return this to anchor
+        } else {
+            val parent = parent
+            val anchor: PsiElement? = this.siblings(forward = false, withSelf = false).find {
+                it !is PsiWhiteSpace && it !is PsiComment
+            }
+            if (anchor == null && parent is ParadoxScriptRootBlock) {
+                return parent.parent to null // (file, null)
+            }
+            return parent to anchor
+        }
+    }
+
+    /**
+     * 在指定文件的最后一个封装变量声明后或者最后一个 PSI 元素后另起一行，声明指定名字和值的封装变量。
+     */
+    fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptScriptedVariable {
+        val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariableFromText(project, "@$name = ${value.quoteIfNeeded()}")
+        val newLine = ParadoxScriptElementFactory.createWhiteSpaceFromText(project, "\n")
+        newVariable = parent.addAfter(newVariable, anchor).cast()
+        parent.addBefore(newLine, newVariable)
+        return newVariable
+    }
+
+    private fun ParadoxScriptFile.findParentAndAnchorToIntroduceGlobalScriptedVariable(): Pair<PsiElement, PsiElement> {
+        val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
+        if (anchor == null) return this to this.lastChild
+        return this to anchor
+    }
+
+    // endregion
+
+    // region Rename Methods
+
+    @Suppress("UNUSED_PARAMETER")
+    fun isInplaceRenameAvailableForDefinition(element: ParadoxScriptProperty, context: PsiElement?, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return when (definitionInfo.source) {
+            ParadoxDefinitionSource.Property -> {
+                // 不能是并非定义名的类型键（即使 context 来自引用而非声明 - 否则会将类型键作为默认名称）
+                definitionInfo.typeConfig.nameField == null
+            }
+            ParadoxDefinitionSource.Injection -> {
+                // 总是可用
+                true
+            }
+            else -> false
+        }
+    }
+
+    fun renameDefinition(element: ParadoxScriptProperty, name: String, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptProperty {
+        if (!ParadoxNameValidators.checkDefinitionName(name)) throw IncorrectOperationException()
+        when (definitionInfo.source) {
+            ParadoxDefinitionSource.Property -> {
+                // 如果定义的名字来自某个定义属性，则修改那个属性的值
+                run {
+                    val nameField = definitionInfo.typeConfig.nameField ?: return@run
+                    val nameFieldElement = selectScope { element.nameFieldElement(nameField) }
+                    if (nameFieldElement != null) {
+                        nameFieldElement.setValue(name)
+                        return element
+                    } else {
+                        throw IncorrectOperationException()
+                    }
+                }
+
+                // 否则直接修改类型键
+                val typeKeyElement = element.propertyKey
+                val newTypeKeyElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, name)
+                typeKeyElement.replace(newTypeKeyElement)
+                return element
+            }
+            ParadoxDefinitionSource.Injection -> {
+                // 修改定义注入表达式，保留前缀
+                val expressionElement = element.propertyKey
+                val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expressionElement.name)
+                val newExpression = "$mode.$name"
+                val newExpressionElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newExpression)
+                expressionElement.replace(newExpressionElement)
+                return element
+            }
+            else -> throw IncorrectOperationException()
+        }
+    }
+
+    fun handleExpressionElementRename(
+        element: ParadoxExpressionElement,
+        rangeInElement: TextRange,
+        newElementName: String,
+        resolved: PsiElement?,
+        configExpression: CwtDataExpression? = null,
+    ): PsiElement {
+        return when {
+            resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolved is PsiFileSystemItem -> {
+                // #33
+                if (configExpression == null) throw IncorrectOperationException()
+                val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
+                val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
+                val newPath = fileInfo.path.parent + "/" + newElementName
+                val newPathReference = ep.extract(configExpression, element, newPath) ?: throw IncorrectOperationException()
+                element.setValue(newPathReference)
+            }
+            resolved.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
+            resolved.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            else -> throw IncorrectOperationException()
+        }
+    }
+
+    // endregion
+}

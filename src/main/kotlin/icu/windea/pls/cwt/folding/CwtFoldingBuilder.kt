@@ -15,20 +15,20 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtPsiService
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.model.constants.ChronicleStrings
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            COMMENT -> PlsStrings.commentFolder
-            BLOCK -> PlsStrings.blockFolder
+            COMMENT -> ChronicleStrings.commentFolder
+            BLOCK -> ChronicleStrings.blockFolder
             else -> null
         }
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
             else -> false
@@ -36,18 +36,18 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
         collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
         collectCommentDescriptors(element, descriptors, settings)
         val r = collectOtherDescriptors(element, descriptors)
         if (!r) return
         element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
         if (!settings.comments) return
         val allSiblingLineComments = PsiService.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
@@ -63,7 +63,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         if (element.elementType == BLOCK) {
             descriptors.add(FoldingDescriptor(element, element.textRange))
         }
-        return CwtPsiService.isMemberContextElement(element)
+        return CwtPsiService.isStrictMemberContext(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

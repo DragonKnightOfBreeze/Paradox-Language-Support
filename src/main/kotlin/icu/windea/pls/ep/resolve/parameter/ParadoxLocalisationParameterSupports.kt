@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.parameter
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -20,7 +20,7 @@ import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ReferenceLinkType
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
@@ -64,12 +64,12 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
 
         // 加上名字
         val name = element.name
-        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
 
         // 加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()
-        append(PlsBundle.message("ofLocalisation")).append(" ")
+        append(ChronicleBundle.message("ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
         val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)

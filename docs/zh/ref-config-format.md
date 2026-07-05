@@ -517,8 +517,14 @@ some_definition = {
 - `path_extension`：限定文件扩展名（解析时会自动规范化，如补齐 `.`）。仅在未指定 `path_file` 时单独生效。
 - `path_pattern`：使用 ANT 路径模式匹配文件路径。可声明多个，与 `path` 独立——任一 `path_pattern` 匹配即可通过路径检查。
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
-- `columns` 每一列的名字和需要匹配的数据表达式。
-- `end_column` 声明终止列名（匹配到后视为可省略的尾列）。
+- `type`：行类型（`key`/`index`，默认为 `key`）。决定如何匹配其中的每一列。按列名匹配（列名不可重复），还是按列在所在行中的索引匹配（列名可重复）。
+- `skip_last_row`：解析与匹配时，是否忽略最后一行。默认为 `no`。
+- `skip_last_column`：解析与匹配时，如果列索引越界，是否忽略最后一列。默认为 `no`。
+- `columns`：列规则的列表（一组属性规则，键为列名，值为需要匹配的数据表达式）。
+
+列规则的字段说明：
+
+- `## declare_complex_enum`：表示这一列声明了一个指定类型的复杂枚举值（而非引用）。
 
 行规则的路径匹配逻辑与[类型规则](#config-type)相同。
 
@@ -526,12 +532,15 @@ some_definition = {
 
 ```cwt
 rows = {
-    row[component_template] = {
-        path = "game/common/component_templates"
+    row[weapon_template] = {
+        path = "game/common/weapon_templates"
         path_extension = .csv
+        skip_last_column = yes
         columns = {
-            key = <component_template>
-            # ... other columns
+            key = <weapon_template>
+            damage = float
+            ## declare_complex_enum = weapon_tag
+            tag = scalar
         }
     }
 }
@@ -644,6 +653,26 @@ enums = {
 ```
 
 > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+
+#### 并集规则 {#config-union}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtUnionConfig -->
+
+并集规则用于提供一组数据表达式的候选项，以进行并集匹配，匹配时会递归展开并依次尝试其中的候选项。
+不同于枚举规则，这里的可选项可以是各种数据类型的数据表达式。
+
+路径定位：
+- `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
+
+示例：
+
+```cwt
+unions = {
+    union[loc_or_text] = { localisation scalar }
+}
+```
+
+> CWTools 兼容性：不兼容，插件作为扩展提供。
 
 #### 动态值类型规则 {#config-dynamic-value-type}
 
@@ -922,10 +951,11 @@ database_object_types = {
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-宏规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的宏可以拥有不同的规则结构。
+宏规则用于描述脚本文件中区别于一般抽象的特殊的语言构造（表达式、语句等），并提供额外的用于提示和验证的元数据。
+这些语言构造会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
+不同的宏可以拥有不同的规则结构。
 
 目前涉及的宏包括：
-
 - **内联脚本（inline_script）**：（Stellaris）在解析阶段被替换为目标文件的内容，且可以指定参数。
 - **定义注入（definition_injection）**：（VIC3 / EU5）在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
 
@@ -1563,7 +1593,7 @@ icon|p1,p2
 - 本地化文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.localisationExpressionSupport` 驱动（特殊支持）。
 - CSV 文件中的表达式的各种语言功能的实现逻辑由扩展点 `icu.windea.pls.csvExpressionSupport` 驱动（有限支持）。
 
-### 基本数据类型 {#data-types-base}
+### 基本数据类型 {#data-types-basic}
 
 以下数据类型表示基本的取值形态。
 
@@ -1657,7 +1687,7 @@ icon|p1,p2
 
 > CWTools 兼容性：兼容。
 
-### 扩展基本数据类型 {#data-types-extended-base}
+### 额外基本数据类型 {#data-types-extra-basic}
 
 #### PercentageField {#data-type-percentage-field}
 
@@ -1781,11 +1811,25 @@ icon|p1,p2
 
 > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
+#### UnionValue {#data-type-union-value}
+
+并集值类型。
+
+匹配对应的并集规则中的其中一个候选项。
+
+对应的数据表达式的格式：
+- `union[{name}]` – 其中 `{name}` 匹配并集的名字。
+
+对应的数据表达式的示例：
+- `union[loc_or_text]`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### Value {#data-type-value}
 
 动态值读取类型。
 
-匹配动态值表达式（如 `target` `target@root` `target@root.owner`），表示对已声明动态值的读取引用。
+匹配动态值表达式（如 `target` `target@root` `target@root.owner`），表示对动态值的读取引用。
 动态值的名字须为合法标识符（允许 `.`）。
 
 对应的数据表达式的格式：
@@ -2266,11 +2310,31 @@ icon|p1,p2
 
 > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
+#### Glob {#data-type-glob}
+
+<!-- @see icu.windea.pls.core.match.GlobMatcher -->
+
+GLOB 模式类型。模式感知的数据类型之一。
+
+匹配符合 GLOB 模式的表达式。支持通配符 `?`（单个字符） 和 `*`（任意个字符）。
+
+对应的数据表达式的格式：
+- `glob:{pattern}` - 其中 `{pattern}` 匹配模式。
+- `glob.i:{pattern}` - 忽略大小写的变体。
+
+对应的数据表达式的示例：
+- `glob:name?`
+- `glob.i:*desc`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
 #### Ant {#data-type-ant}
 
-ANT 路径模式类型（模式感知）。
+<!-- @see icu.windea.pls.core.match.AntMatcher -->
 
-匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单字符）、`*`（单段）和 `**`（多段，不常用）。
+ANT 路径模式类型。模式感知的数据类型之一。
+
+匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单个字符）、`*`（子路径中的任意个字符）和 `**`（任意个子路径）。
 
 对应的数据表达式的格式：
 - `ant:{pattern}` - 其中 `{pattern}` 匹配模式。
@@ -2284,7 +2348,9 @@ ANT 路径模式类型（模式感知）。
 
 #### Regex {#data-type-regex}
 
-正则表达式模式类型（模式感知）。
+<!-- @see icu.windea.pls.core.match.RegexMatcher -->
+
+正则表达式模式类型。模式感知的数据类型之一。
 
 匹配符合正则表达式的表达式。
 

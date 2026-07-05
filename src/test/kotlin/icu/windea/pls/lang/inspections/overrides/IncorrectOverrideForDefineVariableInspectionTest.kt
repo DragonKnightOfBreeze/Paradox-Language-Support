@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class IncorrectOverrideForDefineVariableInspectionTest  : BasePlatformTestCase(), HighlightingTestScope {
+class IncorrectOverrideForDefineVariableInspectionTest : BasePlatformTestCase(), HighlightingTestScope {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
@@ -44,8 +44,7 @@ class IncorrectOverrideForDefineVariableInspectionTest  : BasePlatformTestCase()
     fun simple_fios() {
         val key = "Namespace.Variable"
         val overrideStrategy = ParadoxOverrideStrategy.LIOS
-        val description = PlsBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
-        val tag = description.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")
         myFixture.configureByText("99_defines.txt", """

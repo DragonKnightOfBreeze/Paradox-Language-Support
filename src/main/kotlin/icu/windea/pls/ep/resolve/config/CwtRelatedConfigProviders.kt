@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.config
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.resolve.modifier.modifierConfig
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
@@ -25,7 +25,8 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -41,7 +42,6 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
@@ -49,7 +49,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
@@ -59,8 +59,8 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         // 包括内联规则以及内联后的规则
         // 包括其他一些相关的规则
 
-        val element = ParadoxPsiFileManager.findScriptExpression(file, offset) ?: return emptySet()
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return emptySet()
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
 
         val result = mutableSetOf<CwtConfig<*>>()
 
@@ -88,10 +88,9 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         // 尝试解析为复杂枚举值声明
         run {
-            if (element !is ParadoxScriptStringExpressionElement) return@run
             val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
-            val complexEnumConfig = configGroup.complexEnums[complexEnumValueInfo.enumName] ?: return@run
-            result += complexEnumConfig
+            val config = complexEnumValueInfo.config
+            result += config
         }
 
         // 基于所有匹配的规则
@@ -115,17 +114,29 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                 val name = element.value
                 val configExpression = config.configExpression
                 when {
-                    configExpression.type in CwtDataTypeSets.DynamicValue -> {
-                        val type = configExpression.value
-                        if (type != null) {
-                            configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result += it }
-                        }
-                    }
                     configExpression.type == CwtDataTypes.EnumValue -> {
                         val enumName = configExpression.value
                         if (enumName != null) {
-                            configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result += it }
-                            configGroup.complexEnums[enumName]?.also { result += it }
+                            val enumConfig = configGroup.enums[enumName]
+                            enumConfig?.also { result += it }
+                            enumConfig?.valueConfigMap?.get(name)?.also { result += it }
+                            val complexEnumConfig = configGroup.complexEnums[enumName]
+                            complexEnumConfig?.also { result += it }
+                        }
+                    }
+                    configExpression.type == CwtDataTypes.UnionValue -> {
+                        val unionName = configExpression.value
+                        if (unionName != null) {
+                            val unionConfig = configGroup.unions[unionName]
+                            unionConfig?.also { result += it }
+                        }
+                    }
+                    configExpression.type in CwtDataTypeSets.DynamicValue -> {
+                        val type = configExpression.value
+                        if (type != null) {
+                            val dynamicValueConfig = configGroup.dynamicValueTypes[type]
+                            dynamicValueConfig?.also { result += it }
+                            dynamicValueConfig?.valueConfigMap?.get(name)?.also { result += it }
                         }
                     }
                     configExpression.type == CwtDataTypes.Modifier -> {
@@ -148,7 +159,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
             is ParadoxScriptFile -> {
                 file.findElementAt(offset) {
                     it.parentOfType<ParadoxScriptExpressionElement>(false)
-                }?.takeIf { it.isExpression() }
+                }?.takeIf { it.isDataExpression() }
             }
             is ParadoxLocalisationFile -> {
                 file.findElementAt(offset) {
@@ -159,7 +170,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
         }
         if (element == null) return emptySet()
 
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
         val textRange = element.textRange
         val offsetInExpression = offset - textRange.startOffset - ParadoxExpressionManager.getExpressionOffset(element)
         if (offsetInExpression < 0) return emptySet()
@@ -185,10 +196,10 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         // 包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
 
         val result = mutableSetOf<CwtConfig<*>>()
-        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
 
         run {
-            val element = ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@run
+            val element = ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@run
             val name = element.name
             if (name.isNullOrEmpty()) return@run
             if (name.isParameterized()) return@run
@@ -197,7 +208,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         }
 
         run {
-            val element = ParadoxPsiFileManager.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@run
+            val element = ParadoxPsiFileService.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@run
             val definition = element
             val definitionInfo = definition.definitionInfo ?: return@run
             val definitionName = definitionInfo.name
@@ -230,7 +241,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         }
 
         run {
-            val element = ParadoxPsiFileManager.findScriptExpression(file, offset) ?: return@run
+            val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return@run
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val name = element.name
 
@@ -278,17 +289,27 @@ class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         // 适用于 CSV 文件中的某一列对应的表达式
 
-        val element = ParadoxPsiFileManager.findCsvExpression(file, offset) ?: return emptySet()
-        if (element !is ParadoxCsvColumn) return emptySet()
+        val element = ParadoxPsiFileService.findCsvExpression(file, offset) ?: return emptySet()
 
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
-        if (element.isHeaderColumn()) {
+
+        // 尝试解析为复杂枚举值声明
+        run {
+            val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+            val config = complexEnumValueInfo.config
+            result += config
+        }
+
+        // 基于匹配的规则
+        if (element !is ParadoxCsvColumn) return emptySet()
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) {
             result += columnConfig
         } else {
             val config = columnConfig.valueConfig
             if (config != null) result += config
         }
+
         return result
     }
 }

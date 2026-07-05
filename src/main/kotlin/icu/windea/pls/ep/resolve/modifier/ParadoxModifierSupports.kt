@@ -5,9 +5,9 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -40,7 +40,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.text.appendPsiLink
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
@@ -51,8 +51,8 @@ import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -105,7 +105,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 
             // 排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val tailText = ParadoxCompletionUtil.getPatchableTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
@@ -115,7 +115,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withModifierLocalizedNamesIfNecessary(name, element)
@@ -179,7 +179,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
             // 排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val tailText = ParadoxCompletionUtil.getPatchableTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
@@ -193,7 +193,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
                     .withModifierLocalizedNamesIfNecessary(name, element)
@@ -206,7 +206,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         // TODO 可以进一步缩小范围
-        return ParadoxModificationTrackers.scriptFileFromPatterns("**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromFilePathPatterns("**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
@@ -220,7 +220,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         // 加上名字
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
-        append(PlsStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上模板信息
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
@@ -228,7 +228,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val templateString = templateConfigExpression.expressionString
 
             appendBr().appendIndent()
-            append(PlsBundle.message("fromTemplate")).append(" ")
+            append(ChronicleBundle.message("fromTemplate")).append(" ")
             val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
@@ -243,7 +243,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val definitionName = snippetNode.text
                             val definitionType = configExpression.value!!
                             val definitionTypes = definitionType.split('.')
-                            append(PlsBundle.message("generatedFromDefinition"))
+                            append(ChronicleBundle.message("generatedFromDefinition"))
                             append(" ")
                             val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, gameType)
                             appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = modifierElement)
@@ -262,7 +262,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataTypes.EnumValue -> {
                             val enumValueName = snippetNode.text
                             val enumName = configExpression.value!!
-                            append(PlsBundle.message("generatedFromEnumValue"))
+                            append(ChronicleBundle.message("generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, "$enumName/$enumValueName", gameType)
@@ -285,7 +285,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataTypes.Value -> {
                             val dynamicValueType = snippetNode.text
                             val valueName = configExpression.value!!
-                            append(PlsBundle.message("generatedFromDynamicValue"))
+                            append(ChronicleBundle.message("generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, "$dynamicValueType/$valueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), valueName.escapeXml(), context = modifierElement)
@@ -313,13 +313,13 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val gameType = definitionInfo.gameType
         for (modifier in modifiers) {
             appendBr()
-            append(PlsStrings.generatedModifierPrefix).append(" ")
+            append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
             // 2.1.8 文本可能过长，因此这里目前改为不显示
             // append(" ")
             // grayed {
-            //     append(PlsBundle.message("fromTemplate"))
+            //     append(ChronicleBundle.message("fromTemplate"))
             //     append(" ")
             //     val key = modifier.config.name
             //     val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, key, gameType)
@@ -388,11 +388,11 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
 
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
-            val typeIcon = PlsIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
+            val typeIcon = ChronicleIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
             for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
                 // 排除重复的
@@ -401,7 +401,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeText, typeIcon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withModifierLocalizedNamesIfNecessary(name, element)
                     .forExpression(context)
@@ -412,13 +412,13 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        return ParadoxModificationTrackers.scriptFileFromPatterns("common/economic_categories/**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromFilePathPatterns("common/economic_categories/**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory // may be null
-        val configGroup = PlsFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
         return ParadoxModifierManager.resolveModifierCategory(modifierCategory, configGroup)
     }
 
@@ -429,22 +429,22 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
         // 加上名字
         val name = modifierElement.name.orNull()
-        append(PlsStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济分类信息
         appendBr().appendIndent()
-        append(PlsBundle.message("generatedFromEconomicCategory"))
+        append(ChronicleBundle.message("generatedFromEconomicCategory"))
         append(" ")
         val ecLink = ReferenceLinkType.Definition.createLink(economicCategoryInfo.name, ParadoxDefinitionTypes.economicCategory, gameType)
         appendPsiLinkOrUnresolved(ecLink.escapeXml(), economicCategoryInfo.name.escapeXml(), context = modifierElement)
         if (modifierInfo.resource != null) {
             appendBr().appendIndent()
-            append(PlsBundle.message("generatedFromResource"))
+            append(ChronicleBundle.message("generatedFromResource"))
             append(" ")
             val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
             appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = modifierElement)
         } else {
             appendBr().appendIndent()
-            append(PlsBundle.message("forAiBudget"))
+            append(ChronicleBundle.message("forAiBudget"))
         }
 
         return true
@@ -459,13 +459,13 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
-            append(PlsStrings.generatedModifierPrefix).append(" ")
+            append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
             appendPsiLink(modifierLink.escapeXml(), modifierInfo.name.escapeXml())
             if (modifierInfo.resource != null) {
                 append(" ")
                 grayed {
-                    append(PlsBundle.message("fromResource"))
+                    append(ChronicleBundle.message("fromResource"))
                     append(" ")
                     val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)
@@ -473,7 +473,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             } else {
                 append(" ")
                 grayed {
-                    append(PlsBundle.message("forAiBudget"))
+                    append(ChronicleBundle.message("forAiBudget"))
                 }
             }
         }

@@ -11,10 +11,10 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastSet
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized
 class ParadoxFileChangeCollector {
@@ -131,7 +131,7 @@ class ParadoxFileChangeCollector {
     }
 
     private fun shouldRestartAnalysis(fileName: String): Boolean {
-        return PlsConstants.metadataFileNames.any { fileName.equals(it, true) }
+        return ChronicleConstants.metadataFileNames.any { fileName.equals(it, true) }
     }
 
     private fun shouldRefreshForFilePaths(file: VirtualFile?): Boolean {
@@ -202,12 +202,12 @@ class ParadoxFileChangeCollector {
         }
         if (reparseAllOpenFiles) {
             // 重新解析所有项目的所有已打开的文件
-            val files = PlsAnalysisManager.findAllOpenFiles()
-            PlsAnalysisManager.reparseFiles(files)
+            val files = ChronicleAnalysisManager.findAllOpenFiles()
+            ChronicleAnalysisManager.reparseFiles(files)
         } else if (refreshInlineScripts) {
             // 重新解析所有项目的所有已打开的内联脚本文件
-            val files = PlsAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
-            PlsAnalysisManager.reparseFiles(files)
+            val files = ChronicleAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
+            ChronicleAnalysisManager.reparseFiles(files)
         }
     }
 }

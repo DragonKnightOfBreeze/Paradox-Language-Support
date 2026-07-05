@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.analysis
 
 import icu.windea.pls.core.matchesRegex
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.paths.ParadoxPath
 
 class ParadoxSettingsBasedIgnoredFileProvider : ParadoxIgnoredFileProvider {
@@ -9,7 +9,7 @@ class ParadoxSettingsBasedIgnoredFileProvider : ParadoxIgnoredFileProvider {
     // - ignoredFileNameSet
 
     override fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
-        return path.fileName in PlsSettings.getInstance().state.ignoredFileNameSet
+        return path.fileName in ChronicleSettings.getInstance().state.ignoredFileNameSet
     }
 
 }

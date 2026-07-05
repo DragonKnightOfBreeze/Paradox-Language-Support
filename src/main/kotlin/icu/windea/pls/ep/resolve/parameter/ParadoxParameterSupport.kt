@@ -75,6 +75,6 @@ interface ParadoxParameterSupport {
     object Keys : KeyRegistryWithSync()
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
     }
 }

@@ -3,9 +3,9 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.tagType
-import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import javax.swing.Icon
@@ -13,17 +13,17 @@ import javax.swing.Icon
 abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxScriptNavigationManager.getPresentableText(element)
+        return ParadoxScriptPsiPresentationService.getTreePresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxScriptNavigationManager.getLocalLocationString(element)
+        return ParadoxScriptPsiPresentationService.getTreeLocationString(element)
     }
 
     override fun getIcon(open: Boolean): Icon? {
         val element = element ?: return null
-        return ParadoxScriptNavigationManager.getIcon(element)
+        return ParadoxScriptPsiPresentationService.getIcon(element)
     }
 
     protected fun PsiElement.toTreeElement(): ParadoxScriptTreeElement<out PsiElement>? {

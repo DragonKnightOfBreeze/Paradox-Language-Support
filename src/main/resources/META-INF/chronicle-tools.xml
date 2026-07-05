@@ -3,7 +3,7 @@
     <applicationService serviceInterface="icu.windea.pls.tools.game.launch.ParadoxLaunchGameService" serviceImplementation="icu.windea.pls.tools.game.launch.ParadoxLaunchGameServiceImpl"/>
   </extensions>
 
-  <actions resource-bundle="messages.PlsToolsBundle">
+  <actions resource-bundle="messages.ChronicleToolsBundle">
     <group id="Pls.LaunchGame">
       <action id="Pls.LaunchGame.InSteam" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteam" icon="AllIcons.Actions.Execute">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt F10"/>

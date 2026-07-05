@@ -169,6 +169,15 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testResolveConfigType_union() {
+        assertResolveConfigType("""
+            unions = {
+                <caret>union[loc_or_text] = { localisation scalar }
+            }
+        """.trimIndent(), CwtConfigTypes.Union)
+    }
+
+    @Test
     fun testResolveConfigType_dynamicValueType() {
         assertResolveConfigType("""
             values = {
@@ -451,6 +460,11 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     @Test
     fun testResolveNameByConfigType_complexEnum() {
         assertEquals("my_ce", CwtConfigService.resolveNameByConfigType("complex_enum[my_ce]", CwtConfigTypes.ComplexEnum))
+    }
+
+    @Test
+    fun testResolveNameByConfigType_union() {
+        assertEquals("loc_or_text", CwtConfigService.resolveNameByConfigType("union[loc_or_text]", CwtConfigTypes.Union))
     }
 
     @Test

@@ -1,7 +1,7 @@
 package icu.windea.pls.cwt.codeInsight.unwrap
 
 import com.intellij.codeInsight.unwrap.UnwrapTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -100,7 +100,7 @@ class CwtUnwrappersTest : UnwrapTestCase() {
             key = <caret>value
             baz = qux
             """.trimIndent()
-        val option1 = PlsBundle.message("cwt.remove.property", "key")
+        val option1 = ChronicleBundle.message("cwt.remove.property", "key")
         assertOptions(before, option1)
     }
 
@@ -134,8 +134,8 @@ class CwtUnwrappersTest : UnwrapTestCase() {
             bar = baz
             qux = quux
             """.trimIndent()
-        val option1 = PlsBundle.message("cwt.remove.property", "foo")
-        val option2 = PlsBundle.message("cwt.unwrap.property", "foo")
+        val option1 = ChronicleBundle.message("cwt.remove.property", "foo")
+        val option2 = ChronicleBundle.message("cwt.unwrap.property", "foo")
         assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }
@@ -167,8 +167,8 @@ class CwtUnwrappersTest : UnwrapTestCase() {
         val after = """
             bar = baz
             """.trimIndent()
-        val option1 = PlsBundle.message("cwt.remove.property", "foo")
-        val option2 = PlsBundle.message("cwt.unwrap.property", "foo")
+        val option1 = ChronicleBundle.message("cwt.remove.property", "foo")
+        val option2 = ChronicleBundle.message("cwt.unwrap.property", "foo")
         assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }
@@ -204,8 +204,8 @@ class CwtUnwrappersTest : UnwrapTestCase() {
         val after = """
             bar = baz
             """.trimIndent()
-        val option1 = PlsBundle.message("cwt.remove.block")
-        val option2 = PlsBundle.message("cwt.unwrap.block")
+        val option1 = ChronicleBundle.message("cwt.remove.block")
+        val option2 = ChronicleBundle.message("cwt.unwrap.block")
         assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }

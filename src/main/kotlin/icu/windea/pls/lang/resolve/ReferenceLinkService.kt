@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.resolve.ReferenceLinkProvider
 
 object ReferenceLinkService {
@@ -22,7 +21,7 @@ object ReferenceLinkService {
         return ReferenceLinkProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!link.startsWith(ep.linkPrefix)) return@f null
             ep.getUnresolvedMessage(link)
-        } ?: PlsBundle.message("path.reference.unresolved", link)
+        } ?: ReferenceLinkProvider.getDefaultUnresolvedMessage(link)
     }
 
     fun createPsiLink(element: PsiElement, plainLink: Boolean = true): String? {

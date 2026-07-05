@@ -20,6 +20,6 @@ interface ParadoxLocalisationIconSupport {
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")
     }
 }

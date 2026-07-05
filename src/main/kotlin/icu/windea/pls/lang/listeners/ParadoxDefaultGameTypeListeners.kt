@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
 class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeListener {
     override fun onChange(oldGameType: ParadoxGameType, newGameType: ParadoxGameType) {
         val modDirectories = mutableSetOf<String>()
-        PlsProfilesSettings.getInstance().state.modDescriptorSettings.values.forEach { settings ->
+        ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.values.forEach { settings ->
             if (settings.gameType == null) {
                 // 这里可能包含不在项目中（以及库中）的根目录
                 settings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
@@ -18,11 +18,11 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
         }
 
         // 刷新分析数据
-        val rootFiles = PlsAnalysisManager.findRootFilesByRootFilePaths(modDirectories)
-        PlsAnalysisManager.refreshAnalysisData(rootFiles)
+        val rootFiles = ChronicleAnalysisManager.findRootFilesByRootFilePaths(modDirectories)
+        ChronicleAnalysisManager.refreshAnalysisData(rootFiles)
 
         // 重新解析文件
-        val files = PlsAnalysisManager.findAllFilesByRootFilePaths(modDirectories)
-        PlsAnalysisManager.reparseFiles(files)
+        val files = ChronicleAnalysisManager.findAllFilesByRootFilePaths(modDirectories)
+        ChronicleAnalysisManager.reparseFiles(files)
     }
 }

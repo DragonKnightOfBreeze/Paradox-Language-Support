@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.cwt.navigation.CwtNavigationManager
 import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtPsiPresentationService
 
 class CwtStructureViewModel(
     editor: Editor?,
@@ -26,7 +26,7 @@ class CwtStructureViewModel(
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {
-        return CwtNavigationManager.accept(element)
+        return CwtPsiPresentationService.accept(element)
     }
 
     override fun getSorters() = _sorters

@@ -9,7 +9,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptInt extends ParadoxScriptValue, ParadoxScriptNumberExpressionElement, ParadoxScriptLiteralValue {
+public interface ParadoxScriptInt extends ParadoxScriptValue, ParadoxScriptLiteralValue, ParadoxScriptNumberExpressionElement {
 
   @Nullable PsiReference getReference();
 

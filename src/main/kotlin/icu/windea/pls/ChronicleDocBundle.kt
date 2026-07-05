@@ -1,0 +1,110 @@
+package icu.windea.pls
+
+import com.intellij.DynamicBundle
+import com.intellij.openapi.project.Project
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.NonNls
+import org.jetbrains.annotations.PropertyKey
+import java.util.function.Supplier
+
+object ChronicleDocBundle {
+    @NonNls
+    private const val BUNDLE = "messages.ChronicleDocBundle"
+    private val INSTANCE = DynamicBundle(ChronicleDocBundle::class.java, BUNDLE)
+
+    @JvmStatic
+    @Nls
+    fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
+        return INSTANCE.getMessage(key, *params)
+    }
+
+    @JvmStatic
+    @Nls
+    fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {
+        return INSTANCE.getLazyMessage(key, *params)
+    }
+
+    // methods to get specific messages
+
+    @JvmStatic
+    @Nls
+    fun locale(name: String): String {
+        return INSTANCE.messageOrNull("locale.$name")
+            ?: name
+    }
+
+    @JvmStatic
+    @Nls
+    fun eventType(name: String, gameType: ParadoxGameType?): String {
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.event.type.$name") }
+            ?: INSTANCE.messageOrNull("general.event.type.$name")
+            ?: INSTANCE.getMessage("default.event.type", name)
+    }
+
+    @JvmStatic
+    @Nls
+    fun eventAttribute(name: String, gameType: ParadoxGameType?): String {
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.event.attribute.$name") }
+            ?: INSTANCE.messageOrNull("general.event.attribute.$name")
+            ?: INSTANCE.getMessage("general.event.attribute.default", name)
+    }
+
+    @JvmStatic
+    @Nls
+    fun technologyTier(name: String, gameType: ParadoxGameType?): String {
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.tier.$name") }
+            ?: INSTANCE.messageOrNull("general.technology.tier.$name")
+            ?: INSTANCE.getMessage("default.technology.tier", name)
+    }
+
+    @JvmStatic
+    @Nls
+    fun technologyArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
+        run {
+            val selector = ParadoxLocalisationSearch.selector(project, context).contextSensitive()
+                .withGameType(gameType)
+                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+            val localisation = ParadoxLocalisationSearch.searchNormal(name.uppercase(), selector).find() ?: return@run
+            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            return text
+        }
+
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.area.$name") }
+            ?: INSTANCE.messageOrNull("general.technology.area.$name")
+            ?: INSTANCE.getMessage("default.technology.area", name)
+    }
+
+    @JvmStatic
+    @Nls
+    fun technologyCategory(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
+        run {
+            val selector = ParadoxDefinitionSearch.selector(project, context).contextSensitive().withGameType(gameType)
+            val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
+            val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
+            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            return text
+        }
+
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.category.$name") }
+            ?: INSTANCE.messageOrNull("general.technology.category.$name")
+            ?: INSTANCE.getMessage("default.technology.category", name)
+    }
+
+    @JvmStatic
+    @Nls
+    fun technologyAttribute(name: String, gameType: ParadoxGameType?): String {
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.attribute.$name") }
+            ?: INSTANCE.messageOrNull("general.technology.attribute.$name")
+            ?: INSTANCE.getMessage("default.technology.attribute", name)
+    }
+}

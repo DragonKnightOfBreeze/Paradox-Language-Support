@@ -6,8 +6,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -22,7 +22,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
@@ -44,7 +44,7 @@ import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.text.appendFileInfoHeader
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.text.getModifierCategoriesText
@@ -75,8 +75,8 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -304,8 +304,8 @@ object ParadoxDocumentationManager {
             val name = element.name
             val enumName = element.enumName
             val gameType = element.gameType
-            val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
-            append(PlsStrings.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
+            append(ChronicleStrings.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if (complexEnumConfig != null) {
                 val category = ReferenceLinkType.CwtConfig.Categories.complexEnums
@@ -324,7 +324,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
-        val render = PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues
+        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(element.name, element, usedLocale)
@@ -332,7 +332,7 @@ object ParadoxDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
@@ -351,9 +351,9 @@ object ParadoxDocumentationManager {
         val name = element.name
         val dynamicValueTypes = element.types
         val gameType = element.gameType
-        val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
         definition {
-            append(PlsStrings.dynamicValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.dynamicValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             append(": ")
             val m = OnceMarker()
             for (dynamicValueType in dynamicValueTypes) {
@@ -377,7 +377,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueLightElement) {
-        val render = PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues
+        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxDynamicValueManager.getNameLocalisation(element.name, element, usedLocale)
@@ -385,7 +385,7 @@ object ParadoxDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
@@ -406,7 +406,7 @@ object ParadoxDocumentationManager {
             val r = ParadoxParameterService.getDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
-                append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+                append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
     }
@@ -417,7 +417,7 @@ object ParadoxDocumentationManager {
             val r = ParadoxLocalisationParameterService.getDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
-                append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+                append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
     }
@@ -428,10 +428,10 @@ object ParadoxDocumentationManager {
             val r = ParadoxModifierService.getDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
-                append(PlsStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+                append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
 
-            val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+            val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
             addModifierRelatedLocalisations(element, name, configGroup)
 
             addModifierIcon(element, name, configGroup)
@@ -441,7 +441,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsSettings.getInstance().state.documentation.renderNameDescForModifiers
+        val render = ChronicleSettings.getInstance().state.documentation.renderNameDescForModifiers
         val gameType = configGroup.gameType
         val project = configGroup.project
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -467,14 +467,14 @@ object ParadoxDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run {
             if (descLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = element)
         }
@@ -495,7 +495,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsSettings.getInstance().state.documentation.renderIconForModifiers
+        val render = ChronicleSettings.getInstance().state.documentation.renderIconForModifiers
         val gameType = configGroup.gameType
         val project = configGroup.project
         val iconFile = run {
@@ -510,7 +510,7 @@ object ParadoxDocumentationManager {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
             appendBr()
-            append(PlsStrings.relatedImagePrefix).append(" ")
+            append(ChronicleStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = element)
         }
@@ -527,7 +527,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
         // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
-        if (!PlsSettings.getInstance().state.documentation.showScopes) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = configGroup.gameType
@@ -535,22 +535,22 @@ object ParadoxDocumentationManager {
         val contextElement = element
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
-            sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
+            sections[ChronicleBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
         }
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-        sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+        sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
     }
 
     private fun DocumentationBuilder.buildShaderEffectDefinition(element: ParadoxShaderEffectLightElement) {
         definition {
-            append(PlsStrings.shaderEffectPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.shaderEffectPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildMeshLocatorDefinition(element: ParadoxMeshLocatorLightElement) {
         definition {
-            append(PlsStrings.meshLocatorPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.meshLocatorPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
         }
     }
 
@@ -559,7 +559,7 @@ object ParadoxDocumentationManager {
         // @Suppress("DEPRECATION")
         // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-        if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = configGroup.gameType
@@ -569,7 +569,7 @@ object ParadoxDocumentationManager {
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
-        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
@@ -577,7 +577,7 @@ object ParadoxDocumentationManager {
             // 加上文件信息
             appendFileInfoHeader(element)
             // 加上基本信息
-            append(PlsStrings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
             when (valueElement) {
                 is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -590,7 +590,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(element: ParadoxScriptScriptedVariable, name: String) {
-        val render = PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForScriptedVariables
+        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForScriptedVariables
         val gameType = selectGameType(element) ?: return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, usedLocale)
@@ -598,7 +598,7 @@ object ParadoxDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
@@ -618,7 +618,7 @@ object ParadoxDocumentationManager {
             // 加上文件信息
             appendFileInfoHeader(element)
             // 加上基本信息
-            append(PlsStrings.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
             when (valueElement) {
                 is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -666,7 +666,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, usePrefix: String? = null) {
         val gameType = definitionInfo.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
-        val prefix = usePrefix ?: PlsStrings.definitionPrefix
+        val prefix = usePrefix ?: ChronicleStrings.definitionPrefix
         append(prefix).append(" ")
         val name = definitionInfo.name
         if (usePrefix == null) {
@@ -691,7 +691,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val gameType = definitionInfo.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
-        appendIndent().append(PlsBundle.message("inherits")).append(" ")
+        appendIndent().append(ChronicleBundle.message("inherits")).append(" ")
         val name = definitionInfo.name
         val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
@@ -728,7 +728,7 @@ object ParadoxDocumentationManager {
                             appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
                         }
                         sectionKeys.add(key)
-                        if (sections != null && PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
+                        if (sections != null && ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
                             // 加上渲染后的相关本地化文本
                             val richText = ParadoxLocalisationTextQuickDocRenderer().render(resolvedElement)
                             sections[key] = richText
@@ -744,12 +744,12 @@ object ParadoxDocumentationManager {
         }
         for ((key, value) in map) {
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(value)
+            append(ChronicleStrings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(value)
         }
     }
 
     private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-        val render = PlsSettings.getInstance().state.documentation.renderRelatedImagesForDefinitions
+        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedImagesForDefinitions
         val imagesInfos = definitionInfo.images
         if (imagesInfos.isEmpty()) return
         val map = mutableMapOf<String, String>()
@@ -802,30 +802,30 @@ object ParadoxDocumentationManager {
         }
         for ((key, value) in map) {
             appendBr()
-            append(PlsStrings.relatedImagePrefix).append(" ").append(key).append(" = ").append(value)
+            append(ChronicleStrings.relatedImagePrefix).append(" ").append(key).append(" = ").append(value)
         }
     }
 
     private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-        if (!PlsSettings.getInstance().state.documentation.showGeneratedModifiers) return
+        if (!ChronicleSettings.getInstance().state.documentation.showGeneratedModifiers) return
 
         ParadoxModifierService.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
-        if (!PlsSettings.getInstance().state.documentation.showScopes) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = definitionInfo.gameType
         val modifierCategories = ParadoxDefinitionService.getModifierCategories(definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
-            sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)
+            sections[ChronicleBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)
         }
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-        sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, element)
     }
 
     private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
@@ -835,14 +835,14 @@ object ParadoxDocumentationManager {
         // @Suppress("DEPRECATION")
         // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-        if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = definitionInfo.gameType
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getScopeContext(element)
         if (scopeContext == null) return
-        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
+        sections[ChronicleBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
@@ -857,7 +857,7 @@ object ParadoxDocumentationManager {
         appendBr()
         val categories = ReferenceLinkType.CwtConfig.Categories
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "event/$eventType", gameType)
-        append(PlsStrings.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
+        append(ChronicleStrings.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
     }
 
     private fun DocumentationBuilder.buildDefineDefinition(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo) {
@@ -867,11 +867,11 @@ object ParadoxDocumentationManager {
             // 加上基本信息
             when (defineInfo) {
                 is ParadoxDefineNamespaceInfo -> {
-                    append(PlsStrings.defineNamespacePrefix)
+                    append(ChronicleStrings.defineNamespacePrefix)
                     append(" <b>").append(defineInfo.namespace.escapeXml()).append("</b>")
                 }
                 is ParadoxDefineVariableInfo -> {
-                    append(PlsStrings.defineVariablePrefix)
+                    append(ChronicleStrings.defineVariablePrefix)
                     append(" <b>").append(defineInfo.namespace.escapeXml()).append(".").append(defineInfo.variable.escapeXml()).append("</b>")
                 }
             }
@@ -883,7 +883,7 @@ object ParadoxDocumentationManager {
             // 加上文件信息
             appendFileInfoHeader(element)
             // 加上基本信息
-            append(PlsStrings.inlineScriptPrefix).append(" <b>").append(expression.escapeXml()).append("</b>")
+            append(ChronicleStrings.inlineScriptPrefix).append(" <b>").append(expression.escapeXml()).append("</b>")
 
             // 加上参数信息（如果存在）
             addParameters(element)
@@ -893,7 +893,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {
         definition {
             // 加上元素定义信息
-            append(PlsStrings.localePrefix).append(" <b>").append(name).append("</b>")
+            append(ChronicleStrings.localePrefix).append(" <b>").append(name).append("</b>")
         }
     }
 
@@ -902,7 +902,7 @@ object ParadoxDocumentationManager {
             // 加上文件信息
             appendFileInfoHeader(element)
             // 加上元素定义信息
-            append(PlsStrings.localisationPropertyPrefix).append(" <b>").append(element.name).append("</b>")
+            append(ChronicleStrings.localisationPropertyPrefix).append(" <b>").append(element.name).append("</b>")
         }
     }
 
@@ -920,8 +920,8 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addLocalisationInfo(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {
         val prefix = when (localisationType) {
-            ParadoxLocalisationType.Normal -> PlsStrings.localisationPrefix
-            ParadoxLocalisationType.Synced -> PlsStrings.localisationSyncedPrefix
+            ParadoxLocalisationType.Normal -> ChronicleStrings.localisationPrefix
+            ParadoxLocalisationType.Synced -> ChronicleStrings.localisationSyncedPrefix
         }
         append(prefix).append(" ")
         append("<b>").append(element.name.escapeXml()).append("</b>")
@@ -933,13 +933,13 @@ object ParadoxDocumentationManager {
         for (relatedDefinition in relatedDefinitions) {
             val relatedDefinitionInfo = relatedDefinition.definitionInfo ?: continue
             appendBr()
-            addDefinitionInfo(relatedDefinition, relatedDefinitionInfo, usePrefix = PlsStrings.relatedDefinitionPrefix)
+            addDefinitionInfo(relatedDefinition, relatedDefinitionInfo, usePrefix = ChronicleStrings.relatedDefinitionPrefix)
         }
     }
 
     private fun DocumentationBuilder.addTextForLocalisation(element: ParadoxLocalisationProperty) {
         // 加上渲染后的本地化文本
-        if (!PlsSettings.getInstance().state.documentation.renderLocalisationForLocalisations) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderLocalisationForLocalisations) return
 
         val sections = getSections(SECTIONS_LOC) ?: return
         val locale = selectLocale(element)
@@ -955,32 +955,32 @@ object ParadoxDocumentationManager {
         }
         val richText = ParadoxLocalisationTextQuickDocRenderer().render(usedElement)
         if (richText.isEmpty()) return
-        sections[PlsBundle.message("sectionTitle.text")] = richText
+        sections[ChronicleBundle.message("sectionTitle.text")] = richText
     }
 
     private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
         definition {
             // 加上元素定义信息
-            append(PlsStrings.localisationIconPrefix).append(" <b>").append(name).append("</b>")
+            append(ChronicleStrings.localisationIconPrefix).append(" <b>").append(name).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildLocalisationColorDefinition(name: String) {
         definition {
             // 加上元素定义信息
-            append(PlsStrings.localisationColorPrefix).append(" <b>").append(name).append("</b>")
+            append(ChronicleStrings.localisationColorPrefix).append(" <b>").append(name).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildLocalisationArgumentInfo(element: ParadoxLocalisationArgument) {
         val sections = getSections(SECTIONS_INFO) ?: return
         ParadoxLocalisationArgumentManager.getInfo(element).let {
-            sections.put(PlsBundle.message("sectionTitle.formattingTags"), it)
+            sections.put(ChronicleBundle.message("sectionTitle.formattingTags"), it)
         }
     }
 
     private fun DocumentationBuilder.addParameters(element: ParadoxDefinitionElement) {
-        if (!PlsSettings.getInstance().state.documentation.showParameters) return
+        if (!ChronicleSettings.getInstance().state.documentation.showParameters) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val parameterContextInfo = ParadoxParameterService.getContextInfo(element) ?: return
@@ -1000,15 +1000,15 @@ object ParadoxDocumentationManager {
             }
             append("</pre>")
         }
-        sections[PlsBundle.message("sectionTitle.parameters")] = parametersText
+        sections[ChronicleBundle.message("sectionTitle.parameters")] = parametersText
     }
 
     private fun DocumentationBuilder.addOverrideStrategy(element: PsiElement) {
-        if (!PlsSettings.getInstance().state.documentation.showOverrideStrategy) return
+        if (!ChronicleSettings.getInstance().state.documentation.showOverrideStrategy) return
 
         val sections = getSections(SECTIONS_EXTRA) ?: return
         val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return
-        sections[PlsBundle.message("sectionTitle.overrideStrategy")] = overrideStrategy.id
+        sections[ChronicleBundle.message("sectionTitle.overrideStrategy")] = overrideStrategy.id
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
@@ -1019,9 +1019,9 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildLineCommentContent(element: PsiElement) {
         // 加上单行注释文本
-        if (!PlsSettings.getInstance().state.documentation.renderLineComment) return
-        val ownedComments = ParadoxPsiManager.getOwnedComments(element)
-        val commentText = ParadoxPsiManager.getLineCommentText(ownedComments)
+        if (!ChronicleSettings.getInstance().state.documentation.renderLineComment) return
+        val ownedComments = ParadoxPsiService.getOwnedComments(element)
+        val commentText = ParadoxPsiService.getLineCommentText(ownedComments)
         if (commentText.isNullOrEmpty()) return
         content { append(commentText) }
     }

@@ -2,7 +2,7 @@ package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.ParadoxLibrary
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
@@ -37,7 +37,7 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
         }
 
         // 重新解析已打开的文件
-        val files = PlsAnalysisManager.findAllOpenFiles()
-        PlsAnalysisManager.reparseFiles(files)
+        val files = ChronicleAnalysisManager.findAllOpenFiles()
+        ChronicleAnalysisManager.reparseFiles(files)
     }
 }

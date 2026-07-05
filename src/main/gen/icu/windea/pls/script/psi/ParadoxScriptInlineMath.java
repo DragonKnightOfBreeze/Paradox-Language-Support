@@ -15,9 +15,9 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue, PsiBoundEle
 
   @NotNull String getExpression();
 
-  @NotNull String getInlineMathExpression();
-
   @Nullable PsiElement getTokenElement();
+
+  @Nullable ParadoxScriptInlineMathExpression getInlineMathExpression();
 
   @Nullable PsiElement getLeftBound();
 

@@ -7,8 +7,8 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -17,9 +17,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private val indexKey = PlsIndexKeys.ScriptedVariableName
+    private val indexKey = ChronicleIndexKeys.ScriptedVariableName
 
-    private fun isEnabled() = PlsSettings.getInstance().state.navigation.seForScriptedVariables
+    private fun isEnabled() = ChronicleSettings.getInstance().state.navigation.seForScriptedVariables
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return

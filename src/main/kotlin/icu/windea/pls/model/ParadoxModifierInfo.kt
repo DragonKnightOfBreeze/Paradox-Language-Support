@@ -25,12 +25,3 @@ data class ParadoxModifierInfo(
     }
 }
 
-fun ParadoxModifierInfo.toPsiElement(parent: PsiElement): ParadoxModifierLightElement {
-    return ParadoxModifierLightElement(parent, name, gameType, project)
-        .also { ParadoxModifierSupport.Keys.sync(this, it) }
-}
-
-fun ParadoxModifierLightElement.toInfo(): ParadoxModifierInfo {
-    return ParadoxModifierInfo(name, gameType, project)
-        .also { ParadoxModifierSupport.Keys.sync(this, it) }
-}

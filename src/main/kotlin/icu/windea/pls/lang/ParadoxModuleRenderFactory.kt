@@ -2,7 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.ide.util.ModuleRendererFactory
 import com.intellij.util.TextWithIcon
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
@@ -23,8 +23,8 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
         val rootInfo = rootFile.rootInfo ?: return null
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val icon = when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
-            is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+            is ParadoxRootInfo.Game -> ChronicleIcons.General.GameDirectory
+            is ParadoxRootInfo.Mod -> ChronicleIcons.General.ModDirectory
         }
         return TextWithIcon(rootInfo.qualifiedName, icon)
     }

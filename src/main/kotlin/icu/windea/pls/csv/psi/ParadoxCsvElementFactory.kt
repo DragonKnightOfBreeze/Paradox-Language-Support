@@ -42,7 +42,7 @@ object ParadoxCsvElementFactory {
     fun createSeparator(project: Project): PsiElement {
         val fileText = ParadoxCsvPsiService.getSeparator().toString()
         return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvRowElement>()
+            .findChild<ParadoxCsvColumnContainer>()
             ?.findChild { it.elementType == SEPARATOR } ?: throw IncorrectOperationException()
     }
 
@@ -50,7 +50,7 @@ object ParadoxCsvElementFactory {
     fun createColumnFromText(project: Project, text: String): ParadoxCsvColumn {
         val fileText = text
         return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvRowElement>()
+            .findChild<ParadoxCsvColumnContainer>()
             ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
     }
 }

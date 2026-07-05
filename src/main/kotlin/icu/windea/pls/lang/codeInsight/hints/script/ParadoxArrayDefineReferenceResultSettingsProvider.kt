@@ -6,7 +6,7 @@ import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.smaller
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxArrayDefineReferenceResultSettingsProvider.*
@@ -15,7 +15,7 @@ import javax.swing.JComponent
 /**
  * @see ParadoxArrayDefineReferenceResultHintsProvider
  */
-class ParadoxArrayDefineReferenceResultSettingsProvider: InlayHintsCustomSettingsProvider<Settings> {
+class ParadoxArrayDefineReferenceResultSettingsProvider : InlayHintsCustomSettingsProvider<Settings> {
     data class Settings(
         val showArrayValue: Boolean,
         val truncateArrayValue: Int,
@@ -29,9 +29,9 @@ class ParadoxArrayDefineReferenceResultSettingsProvider: InlayHintsCustomSetting
     private val component by lazy {
         panel {
             row {
-                checkBox(PlsBundle.message("hints.settings.showArrayValueForDefines")).bindSelected(showArrayValueProperty).smaller()
+                checkBox(ChronicleBundle.message("hints.settings.showArrayValueForDefines")).bindSelected(showArrayValueProperty).smaller()
             }
-            row(PlsBundle.message("hints.settings.truncateArrayValueForDefines")) {
+            row(ChronicleBundle.message("hints.settings.truncateArrayValueForDefines")) {
                 intTextField().bindIntText(truncateArrayValueProperty).smaller()
             }
         }.also { it.border = JBUI.Borders.empty(5) }

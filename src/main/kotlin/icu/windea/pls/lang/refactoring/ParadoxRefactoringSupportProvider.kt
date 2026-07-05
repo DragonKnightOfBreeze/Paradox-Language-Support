@@ -2,9 +2,9 @@ package icu.windea.pls.lang.refactoring
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 class ParadoxRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
         // NOTE 2.1.3 测试时需要禁用 inplaceRename，以便 `myFixture.renameElementAtCaretUsingHandler(newName)` 正常生效
-        if (PlsFacade.isUnitTestMode()) return false
+        if (ChronicleFacade.isUnitTestMode()) return false
 
         return when {
             element is ParadoxScriptScriptedVariable -> true
@@ -30,7 +30,7 @@ class ParadoxRefactoringSupportProvider : RefactoringSupportProvider() {
     }
 
     private fun isMemberInplaceRenameAvailable(element: ParadoxScriptProperty, context: PsiElement?): Boolean {
-        element.definitionInfo?.let { return ParadoxPsiManager.isInplaceRenameAvailableForDefinition(element, context, it) }
+        element.definitionInfo?.let { return ParadoxPsiService.isInplaceRenameAvailableForDefinition(element, context, it) }
         return false
     }
 }

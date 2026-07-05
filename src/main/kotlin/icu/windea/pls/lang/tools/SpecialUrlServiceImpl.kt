@@ -11,7 +11,7 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.util.SystemInfo
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
@@ -114,7 +114,7 @@ class SpecialUrlServiceImpl : SpecialUrlService {
         // see: com.intellij.ide.browsers.BrowserLauncher.browse
         // see: com.intellij.ide.browsers.BrowserLauncherAppless.browse
 
-        val coroutine = PlsFacade.getCoroutineScope()
+        val coroutine = ChronicleFacade.getCoroutineScope()
         coroutine.launch {
             openUrlWithSystemCommand(url)
 

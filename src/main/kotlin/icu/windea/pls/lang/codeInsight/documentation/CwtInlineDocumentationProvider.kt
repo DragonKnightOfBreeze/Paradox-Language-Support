@@ -29,7 +29,7 @@ class CwtInlineDocumentationProvider : InlineDocumentationProvider {
                         result.add(inlineDocumentation)
                     }
                 }
-                if (CwtPsiService.isMemberContextElement(element)) super.visitElement(element)
+                if (CwtPsiService.isStrictMemberContext(element)) super.visitElement(element)
             }
         })
         return result.optimized() // optimized to optimize memory

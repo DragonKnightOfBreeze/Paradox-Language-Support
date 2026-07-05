@@ -12,7 +12,7 @@ sealed interface ChatFlowReply {
     data class PartialThinking(
         val token: String
     ) : ChatFlowReply
-    
+
     data class Retrieved(
         val contents: List<Content>
     ) : ChatFlowReply

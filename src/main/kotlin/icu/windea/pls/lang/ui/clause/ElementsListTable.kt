@@ -9,7 +9,7 @@ import com.intellij.util.ui.table.JBListTable
 import com.intellij.util.ui.table.JBTableRow
 import com.intellij.util.ui.table.JBTableRowEditor
 import com.intellij.util.ui.table.JBTableRowRenderer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.model.type.ParadoxSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -40,7 +40,7 @@ class ElementsListTable(
                         append(item.separator)
                         append(" ")
                         if (item.value.isEmpty()) {
-                            append("\"\"").append(" # ").append(PlsBundle.message("ui.table.element.column.tooltip.editInTemplate"))
+                            append("\"\"").append(" # ").append(ChronicleBundle.message("ui.table.element.column.tooltip.editInTemplate"))
                         } else {
                             append(item.value.quoteIfNeeded())
                         }

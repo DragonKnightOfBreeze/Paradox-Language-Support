@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.text.buildDocumentation
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 // org.intellij.images.fileTypes.ImageDocumentationProvider
 
@@ -25,7 +25,7 @@ class TgaDocumentationProvider : AbstractDocumentationProvider() {
             // 加入用于渲染的图片的标签
             run {
                 val maxSize = maxOf(metadata.width, metadata.height)
-                val maxImageSize = PlsInternalSettings.getInstance().maxImageSizeForDocumentation
+                val maxImageSize = ChronicleInternalSettings.getInstance().maxImageSizeForDocumentation
                 val scaleFactor = if (maxSize > maxImageSize) maxImageSize.toDouble() / maxSize.toDouble() else 1.0
                 val imageWidth = (metadata.width * scaleFactor).toInt()
                 val imageHeight = (metadata.height * scaleFactor).toInt()

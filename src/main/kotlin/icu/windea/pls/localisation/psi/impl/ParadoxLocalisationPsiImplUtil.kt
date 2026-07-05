@@ -20,7 +20,6 @@ import icu.windea.pls.lang.psi.light.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.*
@@ -33,7 +32,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyList, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationLocale
+        return ChronicleIcons.Nodes.LocalisationLocale
     }
 
     @JvmStatic
@@ -58,7 +57,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationLocale, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationLocale
+        return ChronicleIcons.Nodes.LocalisationLocale
     }
 
     @JvmStatic
@@ -80,7 +79,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationProperty, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationProperty
+        return ChronicleIcons.Nodes.LocalisationProperty
     }
 
     @JvmStatic
@@ -159,7 +158,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationProperty
+        return ChronicleIcons.Nodes.LocalisationProperty
     }
 
     // endregion
@@ -259,7 +258,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -282,7 +281,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
         val idElement = element.findChild { it.elementType == ICON_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -293,7 +292,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationIcon, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationIcon
+        return ChronicleIcons.Nodes.LocalisationIcon
     }
 
     @JvmStatic
@@ -323,7 +322,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
         val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -338,7 +337,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationCommand, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationCommand
+        return ChronicleIcons.Nodes.LocalisationCommand
     }
 
     // endregion
@@ -348,7 +347,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
         val idElement = element.findChild { it.elementType == COMMAND_TEXT_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -365,7 +364,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
         val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -375,7 +374,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationConceptCommand, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationConceptCommand
+        return ChronicleIcons.Nodes.LocalisationConceptCommand
     }
 
     @JvmStatic
@@ -398,7 +397,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationConceptName): PsiElement? {
         val idElement = element.findChild { it.elementType == CONCEPT_NAME_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -415,13 +414,13 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
         val idElement = element.findChild { it.elementType == TEXT_FORMAT_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationTextFormat, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationTextFormat
+        return ChronicleIcons.Nodes.LocalisationTextFormat
     }
 
     @JvmStatic
@@ -445,13 +444,13 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
         val idElement = element.findChild { it.elementType == TEXT_ICON_TOKEN }
-        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
+        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
         return idElement
     }
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationTextIcon, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationTextFormat
+        return ChronicleIcons.Nodes.LocalisationTextFormat
     }
 
     @JvmStatic
@@ -519,7 +518,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxLocalisationItemPresentation(element)
+        return ParadoxLocalisationPsiPresentation(element)
     }
 
     @JvmStatic

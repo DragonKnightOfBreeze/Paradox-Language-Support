@@ -57,35 +57,6 @@ inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { 
     return findLast { it is R && predicate(it) } as R?
 }
 
-/** 将当前列表映射为数组。 */
-inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
-    return Array(size) { transform(this[it]) }
-}
-
-/** 将当前集合映射为数组。如果为列表则走下标路径，否则顺序遍历。 */
-inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
-    if (this is List) return this.mapToArray(transform)
-    val result = arrayOfNulls<R>(this.size)
-    for ((i, e) in this.withIndex()) {
-        result[i] = transform(e)
-    }
-    return result.cast()
-}
-
-/** 将条目映射为数组；在可迭代器场景下避免中间 [List] 分配。 */
-inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
-    // 这里不先将Set转为List
-    val size = this.size
-    val entries = this.entries
-    try {
-        val iterator = entries.iterator()
-        return Array(size) { transform(iterator.next()) }
-    } catch (e: Exception) {
-        val list = entries.toList()
-        return Array(size) { transform(list[it]) }
-    }
-}
-
 /** 逐个处理元素。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     if (this is Collection && this.isEmpty()) return true

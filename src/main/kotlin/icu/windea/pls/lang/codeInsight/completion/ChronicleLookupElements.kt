@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 
 object ChronicleLookupElements {
     val yesLookupElement = LookupElementBuilder.create("yes").bold()
@@ -11,9 +11,9 @@ object ChronicleLookupElements {
         .withPriority(ChronicleCompletionPriorities.keyword)
         .withCompletionId()
     val blockLookupElement = LookupElementBuilder.create("")
-        .withPresentableText(PlsStrings.blockFolder)
+        .withPresentableText(ChronicleStrings.blockFolder)
         .withPriority(ChronicleCompletionPriorities.keyword)
-        .withCompletionId(PlsStrings.blockFolder)
+        .withCompletionId(ChronicleStrings.blockFolder)
         .withInsertHandler(ChronicleInsertHandlers.block())
 
     val keywordLookupElements = listOf(yesLookupElement, noLookupElement, blockLookupElement)

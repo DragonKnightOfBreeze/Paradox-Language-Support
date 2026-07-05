@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.cwt.psi.CwtOptionKey
@@ -26,9 +26,9 @@ class CwtSyntaxAnnotator : Annotator, DumbAware {
         val isLeftQuoted = text.isLeftQuoted()
         val isRightQuoted = text.isRightQuoted()
         if (!isLeftQuoted && isRightQuoted) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.missing.opening.quote")).create()
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.missing.opening.quote")).create()
         } else if (isLeftQuoted && !isRightQuoted) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("message.missing.closing.quote")).create()
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.missing.closing.quote")).create()
         }
     }
 }

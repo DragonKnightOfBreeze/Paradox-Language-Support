@@ -12,7 +12,9 @@ import org.junit.runners.JUnit4
 class CwtTemplateExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {
         CwtDataExpressionSupport.EP_NAME.extensionList.isNotEmpty()
-    } catch (_: Throwable) { false }
+    } catch (_: Throwable) {
+        false
+    }
 
     @Test
     fun testResolveEmpty() {

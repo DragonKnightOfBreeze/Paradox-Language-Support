@@ -7,10 +7,11 @@ import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.WithInternalConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -33,7 +34,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         if (root.language !is ParadoxScriptLanguage) return FoldingDescriptor.EMPTY_ARRAY
         val project = root.project
         val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val foldingSettings = configGroup.foldingSettings
         if (foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
         val settingsMap = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
@@ -42,7 +43,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) visitProperty(element)
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -122,6 +123,6 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 return
             }
         })
-        return allDescriptors.toTypedArray()
+        return allDescriptors.toArray(FoldingDescriptor.EMPTY_ARRAY)
     }
 }

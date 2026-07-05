@@ -15,12 +15,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.navigation.NavigationElement
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 提供来自本地化文本片段的随处搜索（Search Everywhere）。
@@ -47,7 +47,7 @@ class ParadoxTargetByTextSearchContributor(val event: AnActionEvent) : WeightedS
 
     override fun getSearchProviderId(): String = PROVIDER_ID
 
-    override fun getGroupName(): String = PlsBundle.message("se.group.targetByText.groupName")
+    override fun getGroupName(): String = ChronicleBundle.message("se.group.targetByText.groupName")
 
     override fun getSortWeight(): Int = 2000 // symbol=300 action=400 text=1500
 
@@ -55,7 +55,7 @@ class ParadoxTargetByTextSearchContributor(val event: AnActionEvent) : WeightedS
 
     override fun isShownInSeparateTab() = true
 
-    override fun getAdvertisement() = PlsBundle.message("se.group.targetByText.ad")
+    override fun getAdvertisement() = ChronicleBundle.message("se.group.targetByText.ad")
 
     override fun fetchWeightedElements(pattern: String, progressIndicator: ProgressIndicator, consumer: Processor<in FoundItemDescriptor<PsiElement>>) {
         val project = event.project ?: return
@@ -86,11 +86,11 @@ class ParadoxTargetByTextSearchContributor(val event: AnActionEvent) : WeightedS
     override fun createExtendedInfo() = createPsiExtendedInfo(null, null) { it.castOrNull<PsiElement>() }
 
     companion object {
-        const val PROVIDER_ID: String = "Pls.TargetByTextSearch"
+        const val PROVIDER_ID: String = "Chronicle.TargetByTextSearch"
     }
 
     class Factory : SearchEverywhereContributorFactory<PsiElement> {
-        override fun isAvailable(project: Project?) = PlsSettings.getInstance().state.navigation.seForTargetsByText
+        override fun isAvailable(project: Project?) = ChronicleSettings.getInstance().state.navigation.seForTargetsByText
 
         override fun createContributor(initEvent: AnActionEvent): ParadoxTargetByTextSearchContributor {
             return ParadoxTargetByTextSearchContributor(initEvent)

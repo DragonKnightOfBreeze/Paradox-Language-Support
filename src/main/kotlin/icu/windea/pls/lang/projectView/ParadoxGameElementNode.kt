@@ -8,10 +8,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.withGameType
 
@@ -72,12 +72,12 @@ class ParadoxGameElementNode(
     }
 
     private fun isIncluded(file: VirtualFile): Boolean {
-        return FileBasedIndex.getInstance().getFileData(PlsIndexKeys.IncludedDirectory, file, project).isNotEmpty()
+        return FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.IncludedDirectory, file, project).isNotEmpty()
     }
 
     override fun update(presentation: PresentationData) {
         if (value == null) return
-        presentation.setIcon(PlsIcons.General.GameDirectory)
+        presentation.setIcon(ChronicleIcons.General.GameDirectory)
         presentation.presentableText = value.gameType.title
     }
 

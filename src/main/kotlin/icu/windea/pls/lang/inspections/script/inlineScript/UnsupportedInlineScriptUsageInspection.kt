@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.script.inlineScript
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -30,7 +30,7 @@ class UnsupportedInlineScriptUsageInspection : InlineScriptInspectionBase()/*, D
 
     private fun checkInAssetFile(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         if (!ParadoxInlineScriptManager.isMatched(element.name)) return
-        val description = PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1")
+        val description = ChronicleBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1")
         holder.registerProblem(element.propertyKey, description)
     }
 }

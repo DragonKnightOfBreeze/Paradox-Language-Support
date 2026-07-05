@@ -7,7 +7,7 @@ object ChronicleThreadContext {
     /**
      * 用于标记是否要跳过对选项数据的处理，直接保留所有选项规则列表。
      *
-     * @see icu.windea.pls.config.util.CwtConfigResolverManager.skipProcessingOptionData
+     * @see icu.windea.pls.config.option.CwtOptionDataProcessor.process
      */
     val skipProcessingOptionData = ThreadLocal<Boolean>()
 
@@ -17,13 +17,6 @@ object ChronicleThreadContext {
      * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
      */
     val incompleteComplexExpression = ThreadLocal<Boolean>()
-
-    /**
-     * 用于得到正在解析的规则表达式的堆栈。
-     *
-     * @see icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
-     */
-    val resolvingConfigContextStack = ThreadLocal<ArrayDeque<CwtConfigContext>>()
 
     /**
      * 用于标记是否正在构建合并索引。
@@ -38,4 +31,11 @@ object ChronicleThreadContext {
      * @see icu.windea.pls.lang.index.ParadoxMergedIndex
      */
     val resolveForMergedIndex = ThreadLocal<Boolean>()
+
+    /**
+     * 用于得到正在解析的规则表达式的堆栈。
+     *
+     * @see icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
+     */
+    val resolvingConfigContextStack = ThreadLocal<ArrayDeque<CwtConfigContext>>()
 }

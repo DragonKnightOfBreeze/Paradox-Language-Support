@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.DynamicBundle
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.pinned
@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 object ParadoxLocaleManager {
     object Keys : KeyRegistry() {
@@ -24,11 +24,11 @@ object ParadoxLocaleManager {
     const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocaleConfig {
-        return getResolvedLocaleConfig(PlsSettings.getInstance().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
+        return getResolvedLocaleConfig(ChronicleSettings.getInstance().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {
-        val configGroup = PlsFacade.getConfigGroup()
+        val configGroup = ChronicleFacade.getConfigGroup()
 
         val locales = configGroup.locales
         val locale = locales[id]
@@ -54,7 +54,7 @@ object ParadoxLocaleManager {
             if (id == ID_AUTO) return CwtLocaleConfig.resolveAuto()
             if (id == ID_AUTO_OS) return CwtLocaleConfig.resolveAutoOs()
         }
-        val configGroup = PlsFacade.getConfigGroup()
+        val configGroup = ChronicleFacade.getConfigGroup()
         val locale = configGroup.locales[id] ?: return null
         if (!includeDefault) {
             if (locale.id == ID_DEFAULT) return null
@@ -74,11 +74,11 @@ object ParadoxLocaleManager {
         return locale
     }
 
-    fun getGlobalLocales(configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
+    fun getGlobalLocales(configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
         return collectLocaleConfigs(configGroup.globalLocales, includeAuto, includeDefault, pinPreferred)
     }
 
-    fun getSupportedLocales(configGroup: CwtConfigGroup = PlsFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
+    fun getSupportedLocales(configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(), includeAuto: Boolean = false, includeDefault: Boolean = false, pinPreferred: Boolean = true): List<CwtLocaleConfig> {
         return collectLocaleConfigs(configGroup.supportedLocales, includeAuto, includeDefault, pinPreferred)
     }
 

@@ -124,6 +124,10 @@ object CwtOptionDataProcessor {
                 val v = config.getOptionValueOrValues()?.optimized() ?: return
                 optionData.graphRelatedTypes = v
             }
+            "declare_complex_enum" -> {
+                val v = config.getOptionValue() ?: return
+                optionData.declareComplexEnum = v
+            }
             "severity" -> {
                 val v = config.getOptionValue() ?: return
                 optionData.severity = v

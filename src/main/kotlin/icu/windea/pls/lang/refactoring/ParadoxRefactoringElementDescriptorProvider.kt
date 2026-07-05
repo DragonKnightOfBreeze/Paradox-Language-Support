@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import com.intellij.refactoring.util.RefactoringDescriptionLocation
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -19,20 +19,20 @@ class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
         return when {
             element is ParadoxScriptScriptedVariable -> {
                 val name = element.name?.orNull() ?: return null
-                PlsBundle.message("refactoring.scriptedVariable.desc", CommonRefactoringUtil.htmlEmphasize(name))
+                ChronicleBundle.message("refactoring.scriptedVariable.desc", CommonRefactoringUtil.htmlEmphasize(name))
             }
             element is ParadoxDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return null
                 val name = definitionInfo.name.orNull() ?: return null // skip anonymous definitions
-                PlsBundle.message("refactoring.definition.desc", CommonRefactoringUtil.htmlEmphasize(name))
+                ChronicleBundle.message("refactoring.definition.desc", CommonRefactoringUtil.htmlEmphasize(name))
             }
             element is ParadoxLocalisationProperty -> {
                 val name = element.name.orNull() ?: return null
-                PlsBundle.message("refactoring.localisation.desc", CommonRefactoringUtil.htmlEmphasize(name))
+                ChronicleBundle.message("refactoring.localisation.desc", CommonRefactoringUtil.htmlEmphasize(name))
             }
             element is PsiFile -> {
                 val text = element.name
-                PlsBundle.message("refactoring.file.desc", CommonRefactoringUtil.htmlEmphasize(text))
+                ChronicleBundle.message("refactoring.file.desc", CommonRefactoringUtil.htmlEmphasize(text))
             }
             else -> null
         }

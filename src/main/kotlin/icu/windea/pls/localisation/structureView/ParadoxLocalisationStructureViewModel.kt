@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiPresentationService
 
 class ParadoxLocalisationStructureViewModel(
     editor: Editor?,
@@ -26,7 +26,7 @@ class ParadoxLocalisationStructureViewModel(
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {
-        return ParadoxLocalisationNavigationManager.accept(element)
+        return ParadoxLocalisationPsiPresentationService.accept(element)
     }
 
     override fun getSorters() = _sorters

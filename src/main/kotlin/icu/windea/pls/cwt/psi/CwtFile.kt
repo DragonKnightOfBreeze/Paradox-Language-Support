@@ -8,22 +8,21 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.navigation.CwtItemPresentation
 
 class CwtFile(
     viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, CwtLanguage), CwtMemberContainer {
+) : PsiFileBase(viewProvider, CwtLanguage), CwtMemberContext {
     companion object {
         @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("CWT_FILE", CwtLanguage)
     }
 
     val block: CwtRootBlock? get() = findChild<_>()
-    override val membersRoot: CwtRootBlock? get() = findChild<_>()
-    override val members: List<CwtMember> get() = membersRoot?.findChildren<CwtMember>().orEmpty()
+    override val memberContainer: CwtRootBlock? get() = findChild<_>()
+    override val members: List<CwtMember> get() = memberContainer?.findChildren<CwtMember>().orEmpty()
 
     override fun getFileType() = CwtFileType
 
-    override fun getPresentation() = CwtItemPresentation(this)
+    override fun getPresentation() = CwtPsiPresentation(this)
 
     override fun toString() = PsiService.toPresentableString(this)
 }

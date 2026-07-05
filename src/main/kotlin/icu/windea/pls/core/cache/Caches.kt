@@ -47,6 +47,6 @@ inline fun <RK : Any, K : Any, V : Any> createNestedCache(noinline cacheProvider
 }
 
 /** 创建嵌套载入缓存（[NestedLoadingCache]），用于为每个"外层键"懒创建一个内部缓存。 */
-inline fun <RK : Any, K : Any, V : Any> createNestedLoadingCache( noinline  cacheProvider: () -> LoadingCache<K, V>): NestedLoadingCache<RK, K, V> {
+inline fun <RK : Any, K : Any, V : Any> createNestedLoadingCache(noinline cacheProvider: () -> LoadingCache<K, V>): NestedLoadingCache<RK, K, V> {
     return NestedLoadingCache(cacheProvider)
 }

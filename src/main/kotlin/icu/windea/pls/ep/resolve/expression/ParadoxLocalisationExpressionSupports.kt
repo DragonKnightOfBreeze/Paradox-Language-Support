@@ -4,11 +4,11 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.isCommandExpression
+import icu.windea.pls.lang.psi.isDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.localisation.psi.isCommandExpression
-import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 
 /**
  * @see ParadoxCommandExpression

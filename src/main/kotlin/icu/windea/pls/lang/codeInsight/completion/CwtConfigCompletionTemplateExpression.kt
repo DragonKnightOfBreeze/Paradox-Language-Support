@@ -6,6 +6,7 @@ import com.intellij.codeInsight.template.ExpressionContext
 import com.intellij.codeInsight.template.Result
 import com.intellij.codeInsight.template.TextResult
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.removeSurroundingOrNull
 
 sealed class CwtConfigCompletionTemplateExpression(
@@ -23,7 +24,7 @@ sealed class CwtConfigCompletionTemplateExpression(
             lookupElements.add(it)
             true
         }
-        return lookupElements.toTypedArray()
+        return lookupElements.toArray(LookupElement.EMPTY_ARRAY)
     }
 
     override fun requiresCommittedPSI(): Boolean {
@@ -34,7 +35,7 @@ sealed class CwtConfigCompletionTemplateExpression(
 
     class Parameter(context: CwtConfigCompletionContext, range: TextRange, text: String, val name: String) : CwtConfigCompletionTemplateExpression(context, range, text)
 
-    companion object  {
+    companion object {
         @JvmStatic
         fun resolve(context: CwtConfigCompletionContext, range: TextRange, text: String): CwtConfigCompletionTemplateExpression? {
             run {

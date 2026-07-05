@@ -8,11 +8,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
@@ -20,7 +20,7 @@ class ParadoxLibraryService(private val project: Project) {
     val library = ParadoxLibrary(project)
 
     fun refreshRootsAsync(force: Boolean = false) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val oldRoots = if (force) emptySet() else library.roots
             val newRoots = readAction { computeRoots() }
@@ -34,7 +34,7 @@ class ParadoxLibraryService(private val project: Project) {
         // 这里仅需要收集不在项目中的游戏目录和模组目录
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val profilesSettings = PlsProfilesSettings.getInstance().state
+        val profilesSettings = ChronicleProfilesSettings.getInstance().state
         profilesSettings.modSettings.values.forEach f@{ modSettings ->
             val modDirectory = modSettings.modDirectory ?: return@f
             val modFile = modDirectory.toVirtualFile() ?: return@f
@@ -69,13 +69,13 @@ class ParadoxLibraryService(private val project: Project) {
                 newRoots += modDependencyFile
             }
         }
-        newRoots.removeIf { PlsAnalysisManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { ChronicleAnalysisManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 
     @Suppress("UnstableApiUsage")
     private fun refreshRoots(oldRoots: Set<VirtualFile>, newRoots: Set<VirtualFile>) {
-        val libraryName = PlsBundle.message("library.name")
+        val libraryName = ChronicleBundle.message("library.name")
         AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
     }
 

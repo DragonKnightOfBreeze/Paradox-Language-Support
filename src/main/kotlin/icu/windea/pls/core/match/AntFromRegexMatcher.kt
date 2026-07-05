@@ -20,7 +20,7 @@ object AntFromRegexMatcher {
      * 判断输入的字符串（[input]）是否匹配指定的 ANT 路径模式([pattern])。
      *
      * @param ignoreCase 是否忽略大小写。
-     * @param trimSeparator 是否去除首尾的分隔符。
+     * @param trimSeparator 是否去除首尾的路径分隔符。
      */
     fun matches(input: String, pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
         return fullMatch(input, pattern, ignoreCase, trimSeparator)

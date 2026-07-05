@@ -7,8 +7,8 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -17,9 +17,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private val indexKey = PlsIndexKeys.LocalisationName
+    private val indexKey = ChronicleIndexKeys.LocalisationName
 
-    private fun isEnabled() = PlsSettings.getInstance().state.navigation.seForLocalisations
+    private fun isEnabled() = ChronicleSettings.getInstance().state.navigation.seForLocalisations
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return
@@ -28,7 +28,7 @@ class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
-        val name = PlsChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
+        val name = ChronicleChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = parameters.searchScope
         val idFilter = parameters.idFilter

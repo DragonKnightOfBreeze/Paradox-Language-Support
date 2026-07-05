@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -16,23 +16,23 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) } }
 
         // 更新游戏类型信息缓存
-        PlsProfilesSettings.getInstance().state.updateSettings()
+        ChronicleProfilesSettings.getInstance().state.updateSettings()
 
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
 
         // 刷新分析数据
-        val rootFiles = PlsAnalysisManager.findRootFilesByRootFilePaths(modDirectories)
-        PlsAnalysisManager.refreshAnalysisData(rootFiles)
+        val rootFiles = ChronicleAnalysisManager.findRootFilesByRootFilePaths(modDirectories)
+        ChronicleAnalysisManager.refreshAnalysisData(rootFiles)
 
         // 重新解析文件
-        val files = PlsAnalysisManager.findAllFilesByRootFilePaths(modDirectories)
-        PlsAnalysisManager.reparseFiles(files)
+        val files = ChronicleAnalysisManager.findAllFilesByRootFilePaths(modDirectories)
+        ChronicleAnalysisManager.reparseFiles(files)
     }
 
     private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {
-        val settings = PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(modDirectory) ?: return
+        val settings = ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.get(modDirectory) ?: return
         settings.gameType = gameType
     }
 }

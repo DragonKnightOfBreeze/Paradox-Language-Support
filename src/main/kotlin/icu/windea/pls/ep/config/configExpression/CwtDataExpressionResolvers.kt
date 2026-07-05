@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.config.configExpression
 
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -17,7 +18,7 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
-class CwtBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
         fromLiteral(CwtDataTypes.Any, "\$any")
 
@@ -39,7 +40,7 @@ class CwtBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
     }
 }
 
-class CwtExtendedBaseDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtExtraBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
         fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
         fromLiteral(CwtDataTypes.IntPercentageField, "int_percentage_field")
@@ -71,6 +72,8 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromParameterized(CwtDataTypes.DynamicValue, "dynamic_value[", "]") { value = it.orNull() }
 
         fromParameterized(CwtDataTypes.EnumValue, "enum[", "]") { value = it.orNull() }
+
+        fromParameterized(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
 
         fromLiteral(CwtDataTypes.ScopeField, "scope_field")
         fromParameterized(CwtDataTypes.Scope, "scope[", "]") { value = it.orNull().takeIf { v -> v != "any" } }
@@ -104,13 +107,13 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromLiteral(CwtDataTypes.DatabaseObject, "\$database_object")
         fromParameterized(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
 
-        fromLiteral(CwtDataTypes.Parameter, "\$parameter")
-        fromLiteral(CwtDataTypes.ParameterValue, "\$parameter_value")
-        fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
-
         fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
         fromLiteral(CwtDataTypes.MeshLocator, "\$mesh_locator")
         fromLiteral(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
+
+        fromLiteral(CwtDataTypes.Parameter, "\$parameter")
+        fromLiteral(CwtDataTypes.ParameterValue, "\$parameter_value")
+        fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
     }
 }
 
@@ -139,43 +142,22 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 }
 
-class CwtAntDataExpressionSupport : CwtDataExpressionSupport {
-    private val prefix = "ant:"
-    private val prefixIgnoreCase = "ant.i:"
-    private val dataType = CwtDataTypes.Ant
-
+class CwtPatternDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        run {
-            val v = expressionString.removePrefixOrNull(prefix) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }
-        }
-        run {
-            val v = expressionString.removePrefixOrNull(prefixIgnoreCase) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }.apply { ignoreCase = true }
-        }
+        doResolve(expressionString, isKey, CwtDataTypes.Glob, "glob:", false)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Glob, "glob.i:", true)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Ant, "ant:", false)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Ant, "ant.i:", true)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "re:", false)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "re.i:", true)?.let { return it }
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "regex:", false)?.let { return it } // for compatibility
+        doResolve(expressionString, isKey, CwtDataTypes.Regex, "regex.i:", true)?.let { return it } // for compatibility
         return null
     }
 
-    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        return null
-    }
-}
-
-class CwtRegexDataExpressionSupport : CwtDataExpressionSupport {
-    private val prefix = "re:"
-    private val prefixIgnoreCase = "re.i:"
-    private val dataType = CwtDataTypes.Regex
-
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        run {
-            val v = expressionString.removePrefixOrNull(prefix) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }
-        }
-        run {
-            val v = expressionString.removePrefixOrNull(prefixIgnoreCase) ?: return@run
-            return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }.apply { ignoreCase = true }
-        }
-        return null
+    private fun doResolve(expressionString: String, isKey: Boolean, dataType: CwtDataType, prefix: String, ignoreCase: Boolean): CwtDataExpression? {
+        val v = expressionString.removePrefixOrNull(prefix) ?: return null
+        return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v }.apply { this.ignoreCase = ignoreCase }
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {

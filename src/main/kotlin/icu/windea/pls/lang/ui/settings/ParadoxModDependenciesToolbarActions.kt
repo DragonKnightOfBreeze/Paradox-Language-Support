@@ -15,10 +15,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.errorDetails
-import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.actions.PlsDataKeys
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
+import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.qualifiedName
@@ -36,8 +36,8 @@ interface ParadoxModDependenciesToolbarActions {
             val gameType = settings.finalGameType
             val gameTypeProperty = AtomicProperty(gameType)
             val descriptor = FileChooserDescriptorFactory.multiDirs()
-                .withTitle(PlsBundle.message("mod.dependencies.add.title"))
-                .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                .withTitle(ChronicleBundle.message("mod.dependencies.add.title"))
+                .apply { putUserData(ChronicleDataKeys.gameTypeProperty, gameTypeProperty) }
             FileChooser.chooseFiles(descriptor, project, table, null) { files ->
                 try {
                     var count = 0
@@ -56,13 +56,13 @@ interface ParadoxModDependenciesToolbarActions {
 
                     table.addModDependencies(newSettingsList)
 
-                    val content = PlsBundle.message("mod.dependencies.add.info", count)
-                    PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
+                    val content = ChronicleBundle.message("mod.dependencies.add.info", count)
+                    ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
-                    val content = PlsBundle.message("mod.dependencies.add.error") + e.message.errorDetails
-                    PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
+                    val content = ChronicleBundle.message("mod.dependencies.add.error") + e.message.errorDetails
+                    ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
                 }
             }
         }
@@ -74,7 +74,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val table: ParadoxModDependenciesTable
     ) : AnAction(AllIcons.Actions.Edit) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.edit")
+            templatePresentation.text = ChronicleBundle.message("mod.dependencies.toolbar.action.edit")
             registerCustomShortcutSet(CustomShortcutSet.fromString("ENTER"), null)
         }
 
@@ -96,7 +96,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val table: ParadoxModDependenciesTable
     ) : AnAction(AllIcons.Actions.Selectall) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.enableAll")
+            templatePresentation.text = ChronicleBundle.message("mod.dependencies.toolbar.action.enableAll")
         }
 
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -121,7 +121,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val table: ParadoxModDependenciesTable
     ) : AnAction(AllIcons.Actions.Unselectall) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.disableAll")
+            templatePresentation.text = ChronicleBundle.message("mod.dependencies.toolbar.action.disableAll")
         }
 
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -146,7 +146,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val table: ParadoxModDependenciesTable
     ) : AnAction(AllIcons.ToolbarDecorator.Import) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.import")
+            templatePresentation.text = ChronicleBundle.message("mod.dependencies.toolbar.action.import")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt I"), null)
         }
 
@@ -163,7 +163,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val table: ParadoxModDependenciesTable
     ) : AnAction(AllIcons.ToolbarDecorator.Export) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.export")
+            templatePresentation.text = ChronicleBundle.message("mod.dependencies.toolbar.action.export")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt E"), null)
         }
 

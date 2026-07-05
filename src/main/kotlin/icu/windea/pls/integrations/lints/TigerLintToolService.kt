@@ -15,16 +15,16 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
+import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.concurrent.ConcurrentHashMap
@@ -39,7 +39,7 @@ class TigerLintToolService : Disposable {
     private val lintResultLocks = ConcurrentHashMap<VirtualFile, Any>()
 
     fun isEnabled(): Boolean {
-        return PlsIntegrationsSettings.getInstance().state.lint.enableTiger
+        return ChronicleIntegrationsSettings.getInstance().state.lint.enableTiger
     }
 
     /** @see icu.windea.pls.integrations.lints.providers.TigerLintToolProvider */
@@ -62,7 +62,7 @@ class TigerLintToolService : Disposable {
         val fileInfo = selectFile(file)?.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.Mod) return false // 目前的实现：仅适用于模组目录（中的文件）
-        val settings = PlsProfilesSettings.getInstance().getGameOrModSettings(rootInfo)
+        val settings = ChronicleProfilesSettings.getInstance().getGameOrModSettings(rootInfo)
         if (settings?.options?.disableTiger == true) return false // 检查是否在游戏或模组设置中禁用
         val gameType = rootInfo.gameType
         return findTool(gameType) != null
@@ -146,10 +146,10 @@ class TigerLintToolService : Disposable {
 
     private fun notifyWarningNotification(rootDirectory: PsiDirectory, tool: TigerLintToolProvider, e: Throwable) {
         val fileUrl = rootDirectory.virtualFile.presentableUrl
-        val title = PlsIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
-        val content = e.message?.let { message -> PlsIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
-            ?: PlsIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        PlsNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
+        val title = ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
+        val content = e.message?.let { message -> ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
+            ?: ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
+        ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
     }
 
     override fun dispose() {

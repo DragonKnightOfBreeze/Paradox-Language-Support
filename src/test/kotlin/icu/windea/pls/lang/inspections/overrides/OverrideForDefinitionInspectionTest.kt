@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
@@ -42,8 +42,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), Highlighting
     @Test
     fun simple_fios_armies() {
         val key = "defense_army"
-        val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefinition.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/armies/99_defense_armies.txt")
         myFixture.configureByText("99_defense_armies.txt", """
@@ -68,8 +67,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), Highlighting
     @Test
     fun simple_lios_armies() {
         val key = "defense_army"
-        val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefinition.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/armies/01_defense_armies.txt")
         myFixture.configureByText("01_defense_armies.txt", """
@@ -94,8 +92,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), Highlighting
     @Test
     fun simple_samePath_armies() {
         val key = "defense_army"
-        val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefinition.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/armies/01_defense_armies.txt")
         myFixture.configureByText("01_defense_armies.txt", """
@@ -120,8 +117,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), Highlighting
     @Test
     fun simple_fios_events() {
         val key = "test.1"
-        val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefinition.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "events/99_test_events.txt")
         myFixture.configureByText("99_test_events.txt", """
@@ -148,8 +144,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), Highlighting
     @Test
     fun simple_lios_events() {
         val key = "test.1"
-        val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefinition.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "events/01_test_events.txt")
         myFixture.configureByText("01_test_events.txt", """
@@ -176,8 +171,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), Highlighting
     @Test
     fun simple_samePath_events() {
         val key = "test.1"
-        val description = PlsBundle.message("inspection.overrideForDefinition.desc", key)
-        val tag = description.toWeakWarningTag()
+        val tag = ChronicleBundle.message("inspection.overrideForDefinition.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "events/01_test_events.txt")
         myFixture.configureByText("01_test_events.txt", """

@@ -8,7 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface CwtRootBlock extends CwtBlockElement, CwtMemberContainer {
+public interface CwtRootBlock extends CwtMemberContainer {
 
   @NotNull
   List<CwtDocComment> getDocCommentList();
@@ -24,11 +24,11 @@ public interface CwtRootBlock extends CwtBlockElement, CwtMemberContainer {
 
   @NotNull String getValue();
 
-  @NotNull CwtRootBlock getMembersRoot();
+  @NotNull CwtRootBlock getMemberContainer();
 
   @NotNull List<@NotNull CwtMember> getMembers();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull List<@NotNull CwtStatement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -18,7 +18,7 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.process
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.withGameType
 
@@ -65,7 +65,7 @@ class ParadoxDirectoryElementNode(
             if (file.isDirectory) {
                 // 直接位于入口目录中，且未被排除
                 if (!directoryNames.add(file.name)) return@p true
-                val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.IncludedDirectory, file, project)
+                val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.IncludedDirectory, file, project)
                 if (fileData.isEmpty()) return@p true
                 files.add(file)
             } else {

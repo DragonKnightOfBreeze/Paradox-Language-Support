@@ -23,6 +23,6 @@ interface ParadoxModifierNameDescProvider {
     fun addModifierDescKey(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxModifierNameDescProvider>("icu.windea.pls.modifierNameDescProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxModifierNameDescProvider>("icu.windea.pls.modifierNameDescProvider")
     }
 }

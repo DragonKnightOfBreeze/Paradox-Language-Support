@@ -3,7 +3,7 @@ package icu.windea.pls.lang.overrides
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
@@ -92,7 +92,7 @@ object ParadoxOverrideService {
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
         val selector = ParadoxScriptedVariableSearch.selector(project, file)
-        val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().toList()
+        val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
     }
@@ -128,7 +128,7 @@ object ParadoxOverrideService {
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
         val selector = ParadoxDefineVariableSearch.selector(project, file)
-        val results = ParadoxDefineVariableSearch.search(namespace, variable, selector).findAll().toList()
+        val results = ParadoxDefineVariableSearch.search(namespace, variable, selector).findAll()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(defineVariableInfo.expression, element, results, overrideStrategy)
     }
@@ -170,7 +170,7 @@ object ParadoxOverrideService {
     }
 
     private fun isValid(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo is ParadoxRootInfo.MetadataBased || PlsFacade.isUnitTestMode()
+        return fileInfo.rootInfo is ParadoxRootInfo.MetadataBased || ChronicleFacade.isUnitTestMode()
     }
 
     private fun isVanilla(fileInfo: ParadoxFileInfo): Boolean {

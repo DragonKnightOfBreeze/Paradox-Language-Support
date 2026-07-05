@@ -16,15 +16,14 @@ abstract class HandleUrlActionBase(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         if (!isVisible(e)) return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         if (!isEnabled(e)) return
         val targetUrl = getTargetUrl(e)
         if (targetUrl == null) return
-        presentation.isEnabled = true
-        presentation.description = templatePresentation.description + " (" + targetUrl + ")"
+        e.presentation.isEnabled = true
+        e.presentation.description = templatePresentation.description + " (" + targetUrl + ")"
     }
 
     protected open fun isVisible(e: AnActionEvent): Boolean = true

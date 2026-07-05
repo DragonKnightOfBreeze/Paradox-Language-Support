@@ -7,16 +7,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 
 class EscapeCommandFix(
     element: PsiElement
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-    override fun getText() = PlsBundle.message("fix.escapeCommand.name")
+    override fun getText() = familyName
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = ChronicleBundle.message("fix.escapeCommand.name")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val commandElement = startElement.parent?.castOrNull<ParadoxLocalisationCommand>() ?: return

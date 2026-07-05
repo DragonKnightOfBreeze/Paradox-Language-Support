@@ -1,6 +1,6 @@
 package icu.windea.pls.model.analysis
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisService
 import icu.windea.pls.model.ParadoxGameType
@@ -46,7 +46,7 @@ data class ParadoxMetadataJsonBasedModMetadata(
     override val source: ParadoxModSource get() = ParadoxModSource.Local
 
     private fun computeGameTypeInfo(): ParadoxGameTypeInfo? {
-        val lazyMessage = PlsBundle.lazyMessage("gameType.message.metadataJson")
+        val lazyMessage = ChronicleBundle.lazyMessage("gameType.message.metadataJson")
         when (info.gameId) {
             ParadoxGameType.Vic3.gameId -> return ParadoxGameTypeInfo(ParadoxGameType.Vic3, lazyMessage)
             ParadoxGameType.Eu5.gameId -> return ParadoxGameTypeInfo(ParadoxGameType.Eu5, lazyMessage)

@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.io.fileSizeSafe
 import com.intellij.util.system.OS
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitByBlank
@@ -35,13 +35,13 @@ object ParadoxGameManager {
         val gameDirectory = gameDirectory?.normalizePath()?.orNull()
         if (gameDirectory == null) return null
         val path = gameDirectory.toPathOrNull()
-        if (path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
-        if (path.notExists()) return builder.error(PlsBundle.message("gameDirectory.error.2"))
+        if (path == null) return builder.error(ChronicleBundle.message("gameDirectory.error.1"))
+        if (path.notExists()) return builder.error(ChronicleBundle.message("gameDirectory.error.2"))
         val rootFile = path.toVirtualFile(refreshIfNeed = true)?.takeIf { it.exists() }
-        if (rootFile == null) return builder.error(PlsBundle.message("gameDirectory.error.2"))
+        if (rootFile == null) return builder.error(ChronicleBundle.message("gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3"))
-        if (rootInfo.gameType != gameType) return builder.error(PlsBundle.message("gameDirectory.error.4", gameType.title))
+        if (rootInfo !is ParadoxRootInfo.Game) return builder.error(ChronicleBundle.message("gameDirectory.error.3"))
+        if (rootInfo.gameType != gameType) return builder.error(ChronicleBundle.message("gameDirectory.error.4", gameType.title))
         return null
     }
 

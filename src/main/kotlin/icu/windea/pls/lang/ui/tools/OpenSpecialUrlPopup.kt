@@ -2,7 +2,7 @@ package icu.windea.pls.lang.ui.tools
 
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ep.tools.SpecialUrlProvider
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxGameType
@@ -15,7 +15,7 @@ class OpenSpecialUrlPopup(
     private val gameType: ParadoxGameType? = null,
 ) : BaseListPopupStep<SpecialUrlProvider>() {
     init {
-        val title = PlsBundle.message("popup.title.openSpecialUrl")
+        val title = ChronicleBundle.message("popup.title.openSpecialUrl")
         val providers = SpecialUrlProvider.EP_NAME.extensionList.filter { it.getUrl(file, gameType) != null }
         init(title, providers, null)
     }

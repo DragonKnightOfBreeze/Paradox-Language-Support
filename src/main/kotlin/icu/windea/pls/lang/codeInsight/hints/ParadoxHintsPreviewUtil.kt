@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.testFramework.LightVirtualFile
-import icu.windea.pls.core.getCurrentStackTrace
+import icu.windea.pls.core.util.recursion.RecursionService
 import icu.windea.pls.lang.psi.ParadoxFile
 
 @Suppress("UnstableApiUsage")
@@ -13,7 +13,7 @@ object ParadoxHintsPreviewUtil {
         // 首先判断是否是内存文件，然后再根据堆栈来判断
         val vFile = file.viewProvider.virtualFile
         if (vFile !is LightVirtualFile) return false
-        val currentStackTrace = getCurrentStackTrace()
+        val currentStackTrace = RecursionService.getCurrentStackTrace()
         val toDetect = currentStackTrace.getOrNull(index) ?: return false
         if (toDetect.className != "com.intellij.codeInsight.hints.settings.language.NewInlayProviderSettingsModel") return false
         if (toDetect.methodName != "collectData") return false

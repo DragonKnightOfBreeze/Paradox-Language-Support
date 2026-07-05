@@ -31,33 +31,9 @@ public class ParadoxScriptInlineMathRootImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  @Nullable
-  public ParadoxScriptInlineMathAbsExpression getInlineMathAbsExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathAbsExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMathBiExpression getInlineMathBiExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathBiExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMathFactor getInlineMathFactor() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathFactor.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMathParExpression getInlineMathParExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathParExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMathUnaryExpression getInlineMathUnaryExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathUnaryExpression.class);
+  @NotNull
+  public ParadoxScriptInlineMathExpression getInlineMathExpression() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathExpression.class));
   }
 
   @Override

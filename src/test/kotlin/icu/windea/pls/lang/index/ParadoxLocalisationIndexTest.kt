@@ -16,6 +16,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxLocalisationNameIndex
+ * @see ParadoxSyncedLocalisationNameIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
@@ -38,7 +42,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.LocalisationName,
+            ChronicleIndexKeys.LocalisationName,
             "UI_OK",
             project,
             scope,
@@ -59,7 +63,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.SyncedLocalisationName,
+            ChronicleIndexKeys.SyncedLocalisationName,
             "SYNC_TITLE",
             project,
             scope,

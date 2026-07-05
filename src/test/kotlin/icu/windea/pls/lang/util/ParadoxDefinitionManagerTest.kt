@@ -54,7 +54,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // 获取 titan_mk3 定义
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)
         Assert.assertNotNull(titanInfo)
         titanInfo!!
@@ -82,7 +82,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testGetInfo_WithRootKeys() {
         val file = configureScriptFile("common/modules/00_jump_modules.txt", "features/resolve/common/modules/00_jump_modules.txt")
 
-        val definitions = selectScope { file.ofPath("modules/*").asProperty().all() }
+        val definitions = selectScope { file.queryBy("modules/*").asProperty().all() }
         Assert.assertEquals(2, definitions.size)
 
         val infos = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop) }
@@ -120,7 +120,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // titan_mk3 有 weight_class = heavy，应匹配子类型 "heavy"
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
         Assert.assertEquals("mech", titanInfo.type)
         Assert.assertEquals(listOf("heavy"), titanInfo.subtypes)
@@ -133,7 +133,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // phantom 有 cloaking = yes，应匹配子类型 "stealth"
-        val phantom = selectScope { file.ofPath("phantom").asProperty().one() }!!
+        val phantom = selectScope { file.queryBy("phantom").asProperty().one() }!!
         val phantomInfo = ParadoxDefinitionManager.getInfo(phantom)!!
         Assert.assertEquals("mech", phantomInfo.type)
         Assert.assertEquals(listOf("stealth"), phantomInfo.subtypes)
@@ -146,7 +146,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // vanguard 没有匹配任何子类型条件
-        val vanguard = selectScope { file.ofPath("vanguard").asProperty().one() }!!
+        val vanguard = selectScope { file.queryBy("vanguard").asProperty().one() }!!
         val vanguardInfo = ParadoxDefinitionManager.getInfo(vanguard)!!
         Assert.assertEquals("mech", vanguardInfo.type)
         Assert.assertTrue(vanguardInfo.subtypes.isEmpty())
@@ -158,14 +158,14 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testSubtypes_MultipleSubtypeConfigs() {
         val file = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
 
-        val plasma = selectScope { file.ofPath("plasma_cannon").asProperty().one() }!!
+        val plasma = selectScope { file.queryBy("plasma_cannon").asProperty().one() }!!
         val plasmaInfo = ParadoxDefinitionManager.getInfo(plasma)!!
         Assert.assertEquals("weapon", plasmaInfo.type)
         Assert.assertEquals(listOf("energy"), plasmaInfo.subtypes)
         Assert.assertEquals(listOf("weapon", "energy"), plasmaInfo.types)
         Assert.assertEquals("weapon, energy", plasmaInfo.typeText)
 
-        val railgun = selectScope { file.ofPath("railgun").asProperty().one() }!!
+        val railgun = selectScope { file.queryBy("railgun").asProperty().one() }!!
         val railgunInfo = ParadoxDefinitionManager.getInfo(railgun)!!
         Assert.assertEquals("weapon", railgunInfo.type)
         Assert.assertEquals(listOf("kinetic"), railgunInfo.subtypes)
@@ -173,7 +173,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         Assert.assertEquals("weapon, kinetic", railgunInfo.typeText)
 
         // pulse_blade 没有 damage_type 字段，不匹配任何子类型
-        val pulseBlade = selectScope { file.ofPath("pulse_blade").asProperty().one() }!!
+        val pulseBlade = selectScope { file.queryBy("pulse_blade").asProperty().one() }!!
         val pulseBladeInfo = ParadoxDefinitionManager.getInfo(pulseBlade)!!
         Assert.assertEquals("weapon", pulseBladeInfo.type)
         Assert.assertTrue(pulseBladeInfo.subtypes.isEmpty())
@@ -189,7 +189,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testLocalisations() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
 
         // mech 类型定义了 localisation: name = "$", desc = "$_desc"
@@ -201,7 +201,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testImages() {
         val file = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
 
-        val plasma = selectScope { file.ofPath("plasma_cannon").asProperty().one() }!!
+        val plasma = selectScope { file.queryBy("plasma_cannon").asProperty().one() }!!
         val plasmaInfo = ParadoxDefinitionManager.getInfo(plasma)!!
 
         // weapon 类型定义了 images: icon (primary) 和 portrait (optional)
@@ -215,7 +215,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testPrimaryLocalisations() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
 
         // "name" 应被推断为 primary（通过 primaryByInference）
@@ -228,7 +228,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testPrimaryImages() {
         val file = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
 
-        val plasma = selectScope { file.ofPath("plasma_cannon").asProperty().one() }!!
+        val plasma = selectScope { file.queryBy("plasma_cannon").asProperty().one() }!!
         val plasmaInfo = ParadoxDefinitionManager.getInfo(plasma)!!
 
         // "icon" 被标记为 primary 或通过推断为 primary
@@ -241,7 +241,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testNoLocalisationsOrImages() {
         val file = configureScriptFile("common/signals/00_signals.txt", "features/resolve/common/signals/00_signals.txt")
 
-        val distress = selectScope { file.ofPath("distress_beacon").asProperty().one() }!!
+        val distress = selectScope { file.queryBy("distress_beacon").asProperty().one() }!!
         val distressInfo = ParadoxDefinitionManager.getInfo(distress)!!
 
         // signal 类型没有定义 localisation 和 images
@@ -260,12 +260,12 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/pilots/00_pilots.txt", "features/resolve/common/pilots/00_pilots.txt")
 
         // pilot 类型使用 name_field = "callsign"，名字来自 callsign 字段
-        val ace = selectScope { file.ofPath("ace").asProperty().one() }!!
+        val ace = selectScope { file.queryBy("ace").asProperty().one() }!!
         val aceInfo = ParadoxDefinitionManager.getInfo(ace)!!
         Assert.assertEquals("maverick", aceInfo.name)
         Assert.assertEquals("ace", aceInfo.typeKey) // typeKey 仍然是属性键
 
-        val rookie = selectScope { file.ofPath("rookie").asProperty().one() }!!
+        val rookie = selectScope { file.queryBy("rookie").asProperty().one() }!!
         val rookieInfo = ParadoxDefinitionManager.getInfo(rookie)!!
         Assert.assertEquals("spark", rookieInfo.name)
         Assert.assertEquals("rookie", rookieInfo.typeKey)
@@ -300,7 +300,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testMemberPath_BasicProperty() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
         Assert.assertEquals("titan_mk3", titanInfo.memberPath.path)
     }
@@ -325,7 +325,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     fun testDeclaration_BasicStructure() {
         val file = configureScriptFile("common/signals/00_signals.txt", "features/resolve/common/signals/00_signals.txt")
 
-        val distress = selectScope { file.ofPath("distress_beacon").asProperty().one() }!!
+        val distress = selectScope { file.queryBy("distress_beacon").asProperty().one() }!!
         val distressInfo = ParadoxDefinitionManager.getInfo(distress)!!
 
         val declaration = distressInfo.declaration
@@ -344,7 +344,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // titan_mk3 有子类型 "heavy"
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
 
         val declaration = titanInfo.declaration
@@ -367,7 +367,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // phantom 有子类型 "stealth"
-        val phantom = selectScope { file.ofPath("phantom").asProperty().one() }!!
+        val phantom = selectScope { file.queryBy("phantom").asProperty().one() }!!
         val phantomInfo = ParadoxDefinitionManager.getInfo(phantom)!!
 
         val declaration = phantomInfo.declaration
@@ -390,7 +390,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
         // vanguard 没有子类型
-        val vanguard = selectScope { file.ofPath("vanguard").asProperty().one() }!!
+        val vanguard = selectScope { file.queryBy("vanguard").asProperty().one() }!!
         val vanguardInfo = ParadoxDefinitionManager.getInfo(vanguard)!!
 
         val declaration = vanguardInfo.declaration
@@ -412,11 +412,11 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         val mechFile = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
         val weaponFile = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
 
-        val titan = selectScope { mechFile.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { mechFile.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
         val titanKey = CwtConfigKeyManager.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
 
-        val plasma = selectScope { weaponFile.ofPath("plasma_cannon").asProperty().one() }!!
+        val plasma = selectScope { weaponFile.queryBy("plasma_cannon").asProperty().one() }!!
         val plasmaInfo = ParadoxDefinitionManager.getInfo(plasma)!!
         val plasmaKey = CwtConfigKeyManager.getIdentifierKey(plasmaInfo.declaration!!, "\u0000", -1)
 

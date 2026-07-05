@@ -7,7 +7,7 @@ import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.addElement
 
-// Base
+// Basic
 
 /**
  * @see CwtDataTypes.Bool

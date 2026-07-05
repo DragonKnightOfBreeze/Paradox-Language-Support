@@ -8,8 +8,8 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
@@ -43,11 +43,11 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val message = PlsBundle.message("editor.notification.2.text")
+            val message = ChronicleBundle.message("editor.notification.2.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
             val gameTypes = ParadoxGameTypeConstraint.MetadataJsonUsed.list()
             for (gameType in gameTypes) {
-                panel.createActionLabel(PlsBundle.message("editor.notification.2.action", gameType.gameId, gameType.title)) action@{
+                panel.createActionLabel(ChronicleBundle.message("editor.notification.2.action", gameType.gameId, gameType.title)) action@{
                     declareGameType(project, gameType, metadata)
                 }
             }
@@ -56,9 +56,9 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
     }
 
     private fun declareGameType(project: Project, gameType: ParadoxGameType, metadata: ParadoxMetadataJsonBasedModMetadata) {
-        val coroutineScope = PlsFacade.getCoroutineScope()
+        val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch {
-            writeCommandAction(project, PlsBundle.message("editor.notification.2.action.command")) {
+            writeCommandAction(project, ChronicleBundle.message("editor.notification.2.action.command")) {
                 updateGameType(metadata, gameType)
             }
         }

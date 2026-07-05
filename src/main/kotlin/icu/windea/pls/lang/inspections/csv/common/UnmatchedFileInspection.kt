@@ -4,8 +4,7 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
@@ -14,7 +13,7 @@ import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import javax.swing.JComponent
 
 /**
@@ -34,15 +33,15 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
-        val virtualFile = file.virtualFile
-        if (VirtualFileService.isLightFile(virtualFile)) return false
-        if (VirtualFileService.isInjectedFile(virtualFile)) return false
+        val vFile = file.virtualFile
+        if (VirtualFileService.isLightFile(vFile)) return false
+        if (VirtualFileService.isInjectedFile(vFile)) return false
         // 忽略直接位于游戏或入口目录下的文件
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return false
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的 CSV 文件
-        return ParadoxPsiFileMatcher.isCsvFile(file)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的 CSV 文件
+        return ParadoxPsiFileMatchService.isCsvFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
@@ -53,10 +52,10 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
         return panel {
             // ignoredFilePaths
             row {
-                label(PlsBundle.message("unmatchedFile.option.ignoredFilePaths"))
+                label(ChronicleBundle.message("unmatchedFile.option.ignoredFilePaths"))
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
-                    .comment(PlsBundle.message("comment.antPatterns"))
+                    .comment(ChronicleBundle.message("comment.antPatterns"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

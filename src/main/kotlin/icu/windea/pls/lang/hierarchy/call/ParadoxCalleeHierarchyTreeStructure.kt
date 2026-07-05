@@ -9,16 +9,17 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.tree.LeafState
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -27,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 // com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 
@@ -48,12 +49,11 @@ class ParadoxCalleeHierarchyTreeStructure(
                 searchElement(element, descriptor, descriptors)
             }
         }
-        if (descriptors.values.isEmpty()) return HierarchyNodeDescriptor.EMPTY_ARRAY
-        return descriptors.values.toTypedArray()
+        return descriptors.values.toArray(HierarchyNodeDescriptor.EMPTY_ARRAY)
     }
 
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val hierarchySettings = PlsSettings.getInstance().state.hierarchy
+        val hierarchySettings = ChronicleSettings.getInstance().state.hierarchy
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)
@@ -73,7 +73,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                     element is ParadoxScriptedVariableReference -> {
                         addDescriptor(element) // scripted variable
                     }
-                    element is ParadoxScriptExpressionElement && element.isExpression() -> {
+                    element is ParadoxScriptExpressionElement && element.isDataExpression() -> {
                         addDescriptor(element) // definition | localisation
                     }
                     element is ParadoxLocalisationExpressionElement && element.isComplexExpression() -> {
@@ -86,7 +86,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!inInlineMath && !ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -118,7 +118,7 @@ class ParadoxCalleeHierarchyTreeStructure(
         scope: GlobalSearchScope,
         descriptor: HierarchyNodeDescriptor,
         descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>,
-        settings: PlsSettings.HierarchyState
+        settings: ChronicleSettings.HierarchyState
     ) {
         val resolved = reference.resolve()
         when (resolved) {

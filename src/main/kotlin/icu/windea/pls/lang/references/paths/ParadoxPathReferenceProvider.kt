@@ -5,7 +5,7 @@ import com.intellij.openapi.paths.PathReferenceProviderBase
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.extensions.settings.PlsExtensionsSettings
+import icu.windea.pls.extensions.settings.ChronicleExtensionsSettings
 import icu.windea.pls.lang.resolve.ReferenceLinkService
 
 // org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
@@ -20,7 +20,7 @@ class ParadoxPathReferenceProvider : PathReferenceProviderBase() {
         // 如果 Markdown 相关扩展功能未启用，仅忽略 Markdown 或 HTML 文件
         val languageId = element.language.id
         if (languageId.equals("markdown", true) || languageId.equals("html", true)) {
-            if (!PlsExtensionsSettings.getInstance().state.markdown.resolveLinks) return false
+            if (!ChronicleExtensionsSettings.getInstance().state.markdown.resolveLinks) return false
         }
 
         val link = text ?: return true

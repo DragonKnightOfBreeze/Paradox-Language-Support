@@ -1,0 +1,21 @@
+package icu.windea.pls.lang.actions
+
+object ChronicleActions {
+    const val DefinitionHierarchyPopupMenu = "Pls.DefinitionHierarchyPopupMenu"
+    const val CallHierarchyPopupMenu = "Pls.CallHierarchyPopupMenu"
+
+    const val GotoScriptedVariables = "Pls.GoToScriptedVariables"
+    const val GotoDefinitions = "Pls.GoToDefinitions"
+    const val GotoLocalisations = "Pls.GoToLocalisations"
+    const val GotoRelatedScriptedVariables = "Pls.GoToRelatedScriptedVariables"
+    const val GotoRelatedDefinitions = "Pls.GoToRelatedDefinitions"
+    const val GotoRelatedLocalisations = "Pls.GoToRelatedLocalisations"
+    const val GotoRelatedImages = "Pls.GoToRelatedImages"
+    const val GotoRelatedDefinitionInjections = "Pls.GoToRelatedDefinitionInjections"
+    const val GotoDefineVariables = "Pls.GoToDefineVariables"
+    const val GotoInlineScripts = "Pls.GoToInlineScripts"
+    const val GotoDefinitionInjections = "Pls.GoToDefinitionInjections"
+    const val GotoDefinitionInjectionTargets = "Pls.GoToDefinitionInjectionTargets"
+
+    // and more...
+}

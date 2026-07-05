@@ -10,25 +10,25 @@ package icu.windea.pls.config
  */
 @Suppress("unused")
 object CwtDataTypeSets {
-    /** 整数相关类型。 */
+    /** 整数相关的数据类型。 */
     val Int = arrayOf(
         CwtDataTypes.Int,
         CwtDataTypes.IntValueField,
         CwtDataTypes.IntVariableField,
     )
-    /** 浮点数相关类型。 */
+    /** 浮点数相关的数据类型。 */
     val Float = arrayOf(
         CwtDataTypes.Float,
         CwtDataTypes.ValueField,
         CwtDataTypes.VariableField,
     )
-    /** 本地化引用类型。 */
+    /** 本地化引用的数据类型。 */
     val LocalisationReference = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
     )
-    /** 路径引用类型]。 */
+    /** 路径引用的数据类型。 */
     val PathReference = arrayOf(
         CwtDataTypes.FileName,
         CwtDataTypes.FilePath,
@@ -36,94 +36,103 @@ object CwtDataTypeSets {
         CwtDataTypes.AbsoluteFilePath,
     )
 
-    /** 动态值相关类型。 */
+    /** 动态值相关的数据类型。 */
     val DynamicValue = arrayOf(
         CwtDataTypes.Value,
         CwtDataTypes.ValueSet,
         CwtDataTypes.DynamicValue,
     )
-    /** 作用域字段相关类型。 */
+    /** 作用域字段相关的数据类型。 */
     val ScopeField = arrayOf(
         CwtDataTypes.ScopeField,
         CwtDataTypes.Scope,
         CwtDataTypes.ScopeGroup,
     )
-    /** 值字段表达式类型。 */
+    /** 值字段表达式的数据类型。 */
     val ValueField = arrayOf(
         CwtDataTypes.IntValueField,
         CwtDataTypes.ValueField,
     )
-    /** 变量字段表达式类型。 */
+    /** 变量字段表达式的数据类型。 */
     val VariableField = arrayOf(
         CwtDataTypes.IntVariableField,
         CwtDataTypes.VariableField,
     )
 
-    /** 可包含常量文本的类型。 */
+    /** 可包含常量文本的数据类型。 */
     val ConstantAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
     )
-    /** 可解析为定义引用的类型。 */
+    /** 可解析为定义引用的数据类型。 */
     val DefinitionAware = arrayOf(
         CwtDataTypes.Definition,
         CwtDataTypes.TechnologyWithLevel,
     )
-    /** 可解析为本地化引用的类型。 */
+    /** 可解析为本地化引用的数据类型。 */
     val LocalisationAware = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation,
     )
-    /** 可定位图像资源的类型。 */
+    /** 可定位图像资源的数据类型。 */
     val ImageLocationAware = arrayOf(
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
         CwtDataTypes.Definition,
     )
-    /** 可定位本地化资源的类型。 */
+    /** 可定位本地化资源的数据类型。 */
     val LocalisationLocationAware = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
     )
-    /** 别名名称相关类型。 */
+    /** 别名名称相关的数据类型。 */
     val AliasNameAware = arrayOf(
         CwtDataTypes.AliasKeysField,
         CwtDataTypes.AliasName,
     )
-    /** 所有模式感知类型。 */
+    /** 所有模式感知的数据类型。 */
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
+        CwtDataTypes.Glob,
         CwtDataTypes.Ant,
         CwtDataTypes.Regex,
     )
-    /** 所有后缀感知类型。 */
+    /** 所有后缀感知的数据类型。 */
     val SuffixAware = arrayOf(
         CwtDataTypes.SuffixAwareDefinition,
         CwtDataTypes.SuffixAwareLocalisation,
         CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
 
-    /** 所有可评估脚本值引用的类型。 */
+    /** 所有可评估脚本值引用的数据类型。 */
     val ScriptValueReferenceEvaluatable = arrayOf(
         CwtDataTypes.ScriptValueReference,
         *ValueField,
     )
-    /** 所有可评估定值引用的类型。 */
+    /** 所有可评估定值引用的数据类型。 */
     val DefineReferenceEvaluatable = arrayOf(
         CwtDataTypes.DefineReference,
         *ValueField,
         CwtDataTypes.Command,
     )
-    /** 所有可评估数组定值引用的类型。 */
+    /** 所有可评估数组定值引用的数据类型。 */
     val ArrayDefineReferenceEvaluatable = arrayOf(
         CwtDataTypes.ArrayDefineReference,
         *ValueField,
         CwtDataTypes.Command,
     )
+    /** 所有可评估的复杂表达式的数据类型。 */
+    val Evaluatable = arrayOf(
+        CwtDataTypes.ScriptValueReference,
+        CwtDataTypes.DefineReference,
+        CwtDataTypes.ArrayDefineReference,
+        *ValueField,
+        CwtDataTypes.Command,
+    )
 
-    /** 所有涉及动态值的类型。 */
+    /** 所有涉及动态值的数据类型。 */
     val DynamicValueInvolved = arrayOf(
         *DynamicValue,
         *ScopeField,
@@ -132,15 +141,15 @@ object CwtDataTypeSets {
         CwtDataTypes.Command,
         CwtDataTypes.Tags
     )
-    /** 所有涉及参数的类型。 */
+    /** 所有涉及参数的数据类型。 */
     val ParameterInvolved = arrayOf(
         CwtDataTypes.Parameter
     )
-    /** 所有涉及本地化参数的类型。 */
+    /** 所有涉及本地化参数的数据类型。 */
     val LocalisationParameterInvolved = arrayOf(
         CwtDataTypes.LocalisationParameter
     )
-    /** 所有涉及（目前作为动态引用处理的）外部引用的类型。 */
+    /** 所有涉及（目前作为动态引用处理的）外部引用的数据类型。 */
     val ExternalReferenceInvolved = arrayOf(
         CwtDataTypes.ShaderEffect,
         CwtDataTypes.MeshLocator,

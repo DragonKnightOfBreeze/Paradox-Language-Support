@@ -7,22 +7,20 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.siblings
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.core.editor
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.csv.psi.getColumnSize
 import icu.windea.pls.lang.manipulation.ParadoxCsvManipulationService
 import kotlinx.coroutines.launch
-import java.util.function.Supplier
 
 sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
     override fun findElements(e: AnActionEvent, file: PsiFile): WalkingSequence<ParadoxCsvRow> {
@@ -34,11 +32,11 @@ sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActi
         val container = anchorRow.parent ?: return
         val project = file.project
         val header = file.castOrNull<ParadoxCsvFile>()?.header ?: return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                val newRow = ParadoxCsvElementFactory.createEmptyRow(project, header.getColumnSize())
+                val newRow = ParadoxCsvElementFactory.createEmptyRow(project, ParadoxCsvPsiService.getColumnSize(header))
                 if (above) {
                     container.addRangeBefore(newRow, newRow.nextSibling, anchorRow)
                 } else {
@@ -66,7 +64,7 @@ sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowAction
         // 实际上是交换而非移动
 
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch
@@ -88,41 +86,38 @@ sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowAction
 }
 
 class MoveRowUpAction : MoveRowActionBase(above = true) {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
-        return Supplier {
-            when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.textBatch")
-            }
+    override fun doUpdate(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
+        val text = when {
+            elements.singleOrNull() != null -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowUp.text")
+            else -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowUp.textBatch")
         }
+        e.presentation.text = text
     }
 }
 
 class MoveRowDownAction : MoveRowActionBase(above = false) {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
-        return Supplier {
-            when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.textBatch")
-            }
+    override fun doUpdate(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
+        val text = when {
+            elements.singleOrNull() != null -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowDown.text")
+            else -> ChronicleBundle.message("action.Pls.Manipulation.MoveRowDown.textBatch")
         }
+        e.presentation.text = text
     }
 }
 
 class SelectRowAction : ManipulateRowActionBase() {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
-        return Supplier {
-            when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.SelectRow.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.SelectRow.textBatch")
-            }
+    override fun doUpdate(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
+        val text = when {
+            elements.singleOrNull() != null -> ChronicleBundle.message("action.Pls.Manipulation.SelectRow.text")
+            else -> ChronicleBundle.message("action.Pls.Manipulation.SelectRow.textBatch")
         }
+        e.presentation.text = text
     }
 
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
         val project = file.project
         val editor = e.editor ?: return
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch
@@ -135,18 +130,17 @@ class SelectRowAction : ManipulateRowActionBase() {
 }
 
 class RemoveRowAction : ManipulateRowActionBase() {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
-        return Supplier {
-            when {
-                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.text")
-                else -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.textBatch")
-            }
+    override fun doUpdate(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
+        val text = when {
+            elements.singleOrNull() != null -> ChronicleBundle.message("action.Pls.Manipulation.RemoveRow.text")
+            else -> ChronicleBundle.message("action.Pls.Manipulation.RemoveRow.textBatch")
         }
+        e.presentation.text = text
     }
 
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
         val project = file.project
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch

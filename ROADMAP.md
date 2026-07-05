@@ -9,8 +9,8 @@
 本文档是基于原始的[开发路线笔记](documents/notes/笔记：开发路线.md)进一步整理后的路线图文档。
 原始笔记按日期组织，本文件将其重新归纳为按版本号组织后的结构，并且进一步规范化，补充了额外的细节。
 
-- 截止版本：v2.1.10
-- 截止日期：2026.06.15
+- 截止版本：v2.2.0
+- 截止日期：2026-07-04
 
 ## v2.1.10 {#v2-1-10}
 
@@ -88,30 +88,20 @@
 
 ### 计划
 
-- [ ] P2/MS 完善对 CSV 文件与 rowConfig 的支持 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
-  - [ ] 允许在 CSV 文件中声明复杂枚举值（提案：列规则上的 `## declare_complex_enum = x`）。
-  - [ ] ~~允许在 CSV 文件中声明定义（提案：列规则上的 `## declare_type = x`）。~~
-    - 将一整行视为定义声明，将某个列视为指定了定义名的列。
-    - 需要架构上的大幅重构，并且涉及一些领域设计上的问题，因此暂不考虑。
-  - [ ] 为 rowConfig 添加字段 type，可选值包括 key/index，默认 key。表示是按键还是按索引来匹配列中的每一行。
-    - 表头列的列名（columnKey/columnName）可以重复，因此在解析规则数据和语义解析时，可能需要基于列索引，而非列名。
-  - [ ] 为 rowConfig 添加字段 skip_last_row 和 skip_last_column，值为布尔值。表示匹配与解析时是否忽略最后一列/最后一行。
-    - 表头列的最后一列，以及文件中的最后一行，可能需要在语义解析时忽略，因此需要提供对应的规则字段。
-  - [ ] 考虑将从（脚本/CSV）表达式解析为复杂枚举值的表达式引用（即PSI引用）的逻辑，提取为需要置顶的 expressionSupport 的EP实现。
-    - 后续也可以考虑以类似方式处理各种特殊标签。
-  - [ ] 调整相关的代码检查的代码。
-  - [ ] 调整复杂枚举值索引和合并索引的逻辑，以兼容在CSV文件中的复杂枚举值声明和动态值声明。
-- [ ] P2/MS 调整复杂枚举值索引和合并索引的逻辑，以兼容在CSV文件中的复杂枚举值声明和动态值声明
-- [ ] P2/MS 将从脚本文件/CSV文件中的表达式解析为复杂枚举值的逻辑，提取为需要置顶的 expressionSupport 的EP实现
-- [ ] P2/MS 支持为列规则指定多个要匹配的数据表达式（通过使用 `column = { x y }`）
-- [ ] P2/MS 支持在CSV文件中声明复杂枚举值（通过在列规则上使用 `## declare_complex_enum = x`）
+- [x] P2/MS 支持在 CSV 文件中声明复杂枚举值（通过在列规则上使用 `## declare_complex_enum = x`） ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] P2/MS 为行规则添加字段 type，可选值包括 key/index，默认 key。表示是按键还是按索引来匹配行中的每一列 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] P2/MS 为行规则添加字段 skip_last_row 和 skip_last_column，值为布尔值。表示匹配与解析时是否忽略最后一列/最后一行 ([#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314))
+- [x] P2/MS 调整复杂枚举值索引的逻辑，以兼容在 CSV 文件中的复杂枚举值声明
+- [x] P2/MS 调整合并索引的逻辑，以兼容在 CSV 文件中的动态值引用
+- [x] P2/MS 调整 CSV 文件的相关代码检查的代码
+- [x] P2/MS 让 `CwtComplexEnumConfig` 不仅可以来自显式的规则（`complex_enum[x] = {...}`），也可以来自注有 `## declare_complex_enum = x` 的列规则
 
 ### 附加
 
-- [ ] P2 提取 EP `incorerctSyntaxChecker` - 对齐已有的 `incorrectExpressionChecker`
-- [ ] P3 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外补充缺失的 *GLOB模式*
-- [ ] P3 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） (#340)
-- [ ] P3 支持 *并集规则（unionConfig）*，类似枚举规则（enumConfig），但是其中预定义的是任意数据表达式
+- [x] 重构：PSI 接口、select API、PSI predicates、以及更多
+- [x] P2 提取 EP `incorrectSyntaxChecker` - 对齐已有的 `incorrectExpressionChecker`
+- [x] P3 对于 *模式感知的数据类型*，除了 *常量/模板/ANT路径模式/正则* 之外，额外支持 *GLOB模式*
+- [x] P3 支持 *并集规则（unionConfig）*，类似枚举规则（enumConfig），但是其中预定义的是任意数据表达式
 
 ## v3.0.0-the-great-renaming {#v3-0-0}
 
@@ -124,6 +114,15 @@
 - [ ] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
 - [ ] P2/MS 新增与补充 `CONTRIBUTING.md`（概述，说明如何贡献代码/文档/规则，包括步骤/建议/复杂性警告）
 - [ ] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
+
+### 附加
+
+- [ ] P2/MS 重构 select API，更好的链式调用方式，更好的向上或向下查询的方式
+- [ ] P2/MS 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
+- [ ] P2/QoL 支持扩展的规则选项 `## doc = some.md`，通过引用指定的文档路径，从而包含额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P2/QoL 支持扩展的规则选项 `## inject_doc`（使用当前规则路径）或 `## inject_doc = some/config.cwt@some/path`，通过引用指定的规则文件路径上的指定规则路径，从而注入额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P2/QoL 提供对规则文件中的文件路径引用和规则路径引用的引用解析
+- [ ] P3 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340))
 
 ## v3.1.0-complex-expression {#v3-1-0}
 

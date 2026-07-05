@@ -77,8 +77,8 @@ object CwtTypeResolver {
             is CwtValue -> when (val parent = element.parent) {
                 is CwtOptionComment -> CwtMemberRole.OptionValue
                 is CwtProperty -> CwtMemberRole.PropertyValue
-                is CwtRootBlock -> CwtMemberRole.BlockValue
-                is CwtBlock -> if (parent.parent is CwtOption) CwtMemberRole.OptionBlockValue else CwtMemberRole.BlockValue
+                is CwtRootBlock -> CwtMemberRole.DirectValue
+                is CwtBlock -> if (parent.parent is CwtOption) CwtMemberRole.OptionDirectValue else CwtMemberRole.DirectValue
                 else -> CwtMemberRole.Other
             }
             else -> CwtMemberRole.Other

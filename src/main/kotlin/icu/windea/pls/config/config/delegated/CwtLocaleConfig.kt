@@ -3,15 +3,15 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -123,7 +123,7 @@ private class CwtLocaleConfigImpl(
     override val codes: List<String>,
     override val supports: Boolean,
 ) : UserDataHolderBase(), CwtLocaleConfig {
-    override val text: String get() = PlsDocBundle.locale(id)
+    override val text: String get() = ChronicleDocBundle.locale(id)
 
     override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && id == other.id
     override fun hashCode() = id.hashCode()
@@ -136,7 +136,7 @@ private class AutoCwtLocaleConfig(
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException() // as placeholder
     override val codes: List<String> get() = emptyList() // as placeholder
     override val supports: Boolean get() = false // as placeholder
-    override val text: String get() = PlsDocBundle.locale(id)
+    override val text: String get() = ChronicleDocBundle.locale(id)
 
     override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && id == other.id
     override fun hashCode() = id.hashCode()
@@ -149,7 +149,7 @@ private class FallbackCwtLocaleConfig(
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException() // as placeholder
     override val codes: List<String> get() = emptyList() // as placeholder
     override val supports: Boolean get() = false // as placeholder
-    override val text: String get() = PlsDocBundle.locale(id)
+    override val text: String get() = ChronicleDocBundle.locale(id)
 
     override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && id == other.id
     override fun hashCode() = id.hashCode()

@@ -7,8 +7,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
@@ -55,7 +55,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     protected abstract fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: WalkingSequence<ParadoxLocalisationProperty>)
 
     protected fun doHandleAsync(project: Project, file: PsiFile, context: C) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             doHandle(project, file, context)
         }
@@ -75,7 +75,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
     abstract class WithLocalePopup : ManipulateLocalisationIntentionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(project: Project, editor: Editor, file: PsiFile): ParadoxLocaleListPopup {
-            val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+            val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(file))
             val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
             return ParadoxLocaleListPopup(supportedLocales)
         }
@@ -114,7 +114,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
     abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationIntentionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(project: Project, editor: Editor, file: PsiFile): ParadoxLocaleListPopup {
-            val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+            val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(file))
             val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
             return ParadoxLocaleListPopup(supportedLocales)
         }
@@ -144,8 +144,8 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     }
 
     object Messages {
-        fun success() = PlsBundle.message("intention.manipulateLocalisation.status.0")
-        fun failed() = PlsBundle.message("intention.manipulateLocalisation.status.1")
-        fun partialSuccess() = PlsBundle.message("intention.manipulateLocalisation.status.2")
+        fun success() = ChronicleBundle.message("intention.manipulateLocalisation.status.0")
+        fun failed() = ChronicleBundle.message("intention.manipulateLocalisation.status.1")
+        fun partialSuccess() = ChronicleBundle.message("intention.manipulateLocalisation.status.2")
     }
 }

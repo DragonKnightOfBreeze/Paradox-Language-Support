@@ -2,7 +2,7 @@ package icu.windea.pls.config.attributes
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -36,7 +36,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun loadDeclarations(): Map<String, CwtDeclarationConfig> {
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return configGroup.declarations
     }
 
@@ -51,9 +51,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
 
         // 应该没有任何涉及类型
         Assert.assertTrue(attributes.involvedSubtypes.isEmpty())
-        Assert.assertFalse(attributes.involvesDynamicValue)
-        Assert.assertFalse(attributes.involvesParameter)
-        Assert.assertFalse(attributes.involvesLocalisationParameter)
+        Assert.assertFalse(attributes.involveDynamicValue)
+        Assert.assertFalse(attributes.involveParameter)
+        Assert.assertFalse(attributes.involveLocalisationParameter)
         Assert.assertEquals(CwtDeclarationConfigAttributes.EMPTY, attributes)
     }
 
@@ -68,9 +68,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
 
         // 应该包含两个子类型
         Assert.assertEquals(setOf("variant_a", "variant_b"), attributes.involvedSubtypes)
-        Assert.assertFalse(attributes.involvesDynamicValue)
-        Assert.assertFalse(attributes.involvesParameter)
-        Assert.assertFalse(attributes.involvesLocalisationParameter)
+        Assert.assertFalse(attributes.involveDynamicValue)
+        Assert.assertFalse(attributes.involveParameter)
+        Assert.assertFalse(attributes.involveLocalisationParameter)
     }
 
     @Test
@@ -83,9 +83,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // 应该检测到动态值涉及（value[x], variable_field, scope_field, value_set[]）
-        Assert.assertTrue(attributes.involvesDynamicValue)
-        Assert.assertFalse(attributes.involvesParameter)
-        Assert.assertFalse(attributes.involvesLocalisationParameter)
+        Assert.assertTrue(attributes.involveDynamicValue)
+        Assert.assertFalse(attributes.involveParameter)
+        Assert.assertFalse(attributes.involveLocalisationParameter)
     }
 
     @Test
@@ -98,9 +98,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // 应该检测到参数涉及
-        Assert.assertFalse(attributes.involvesDynamicValue)
-        Assert.assertTrue(attributes.involvesParameter)
-        Assert.assertFalse(attributes.involvesLocalisationParameter)
+        Assert.assertFalse(attributes.involveDynamicValue)
+        Assert.assertTrue(attributes.involveParameter)
+        Assert.assertFalse(attributes.involveLocalisationParameter)
     }
 
     @Test
@@ -113,9 +113,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // 应该检测到本地化参数涉及
-        Assert.assertFalse(attributes.involvesDynamicValue)
-        Assert.assertFalse(attributes.involvesParameter)
-        Assert.assertTrue(attributes.involvesLocalisationParameter)
+        Assert.assertFalse(attributes.involveDynamicValue)
+        Assert.assertFalse(attributes.involveParameter)
+        Assert.assertTrue(attributes.involveLocalisationParameter)
     }
 
     @Test
@@ -128,7 +128,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // single_alias 内联后，应该检测到其中的动态值（alias 中有 value[test_check]）
-        Assert.assertTrue(attributes.involvesDynamicValue)
+        Assert.assertTrue(attributes.involveDynamicValue)
     }
 
     @Test
@@ -141,7 +141,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // alias_keys_field 内联后，应该检测到其中的动态值和scope（alias 中有 value[x] 和 scope_field）
-        Assert.assertTrue(attributes.involvesDynamicValue)
+        Assert.assertTrue(attributes.involveDynamicValue)
     }
 
     @Test
@@ -155,9 +155,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
 
         // 应该检测到所有类型
         Assert.assertEquals(setOf("type_a", "type_b"), attributes.involvedSubtypes)
-        Assert.assertTrue(attributes.involvesDynamicValue)
-        Assert.assertTrue(attributes.involvesParameter)
-        Assert.assertTrue(attributes.involvesLocalisationParameter)
+        Assert.assertTrue(attributes.involveDynamicValue)
+        Assert.assertTrue(attributes.involveParameter)
+        Assert.assertTrue(attributes.involveLocalisationParameter)
     }
 
     @Test
@@ -170,8 +170,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // 虽然直接属性没有动态值，但内联的 single_alias 包含动态值和参数
-        Assert.assertTrue(attributes.involvesDynamicValue)
-        Assert.assertTrue(attributes.involvesParameter)
+        Assert.assertTrue(attributes.involveDynamicValue)
+        Assert.assertTrue(attributes.involveParameter)
     }
 
     @Test
@@ -184,7 +184,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // 深度嵌套：sa_level1 -> sa_level2 -> value[deep_value]
-        Assert.assertTrue(attributes.involvesDynamicValue)
+        Assert.assertTrue(attributes.involveDynamicValue)
     }
 
     @Test
@@ -228,8 +228,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
 
         // 多次评估应该得到一致的结果
         Assert.assertEquals(attributes1.involvedSubtypes, attributes2.involvedSubtypes)
-        Assert.assertEquals(attributes1.involvesDynamicValue, attributes2.involvesDynamicValue)
-        Assert.assertEquals(attributes1.involvesParameter, attributes2.involvesParameter)
-        Assert.assertEquals(attributes1.involvesLocalisationParameter, attributes2.involvesLocalisationParameter)
+        Assert.assertEquals(attributes1.involveDynamicValue, attributes2.involveDynamicValue)
+        Assert.assertEquals(attributes1.involveParameter, attributes2.involveParameter)
+        Assert.assertEquals(attributes1.involveLocalisationParameter, attributes2.involveLocalisationParameter)
     }
 }

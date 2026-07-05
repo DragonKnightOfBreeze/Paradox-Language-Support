@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.psi.impl
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
@@ -11,7 +12,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
@@ -20,7 +21,6 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.cwt.navigation.CwtItemPresentation
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtElementFactory
@@ -32,11 +32,13 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtPsiPresentation
 import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtRootBlock
+import icu.windea.pls.cwt.psi.CwtStatement
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -45,17 +47,17 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
-    fun getMembersRoot(element: CwtRootBlock): CwtRootBlock {
+    fun getMemberContainer(element: CwtRootBlock): CwtRootBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: CwtRootBlock): List<CwtMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     // endregion
@@ -64,7 +66,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Option
+        return ChronicleIcons.Nodes.Option
     }
 
     @JvmStatic
@@ -92,7 +94,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Option
+        return ChronicleIcons.Nodes.Option
     }
 
     @JvmStatic
@@ -111,7 +113,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -142,13 +144,13 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: CwtProperty): CwtBlock? {
+    fun getMemberContainer(element: CwtProperty): CwtBlock? {
         return element.propertyValue?.castOrNull<CwtBlock>()
     }
 
     @JvmStatic
     fun getMembers(element: CwtProperty): List<CwtMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
+        return getMemberContainer(element)?.findChildren<_>()
     }
 
     // endregion
@@ -157,7 +159,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -178,7 +180,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
+        return ChronicleIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -225,27 +227,27 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Block
+        return ChronicleIcons.Nodes.Block
     }
 
     @JvmStatic
     fun getValue(element: CwtBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
     fun getExpression(element: CwtBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
-    fun getMembersRoot(element: CwtBlock): CwtBlock {
+    fun getMemberContainer(element: CwtBlock): CwtBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: CwtBlock): List<CwtMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic
@@ -286,6 +288,11 @@ object CwtPsiImplUtil {
     // endregion
 
     @JvmStatic
+    fun getComponents(element: PsiListLikeElement): List<CwtStatement> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
     fun getName(element: CwtExpressionElement): String {
         return element.value
     }
@@ -303,11 +310,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getExpression(element: CwtExpressionElement): String {
         return element.text
-    }
-
-    @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is CwtMember }
     }
 
     @JvmStatic
@@ -332,7 +334,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return CwtItemPresentation(element)
+        return CwtPsiPresentation(element)
     }
 
     @JvmStatic

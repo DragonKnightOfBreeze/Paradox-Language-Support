@@ -11,14 +11,14 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-// Context Builders
+// region Context Builders
 
 /** 如果包含参数化快，是否需要处理其中的子节点。默认为 `false`。 */
- var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
+var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
 
 /** @see WalkingContext.conditional */
 inline infix fun WalkingContext.Builder.conditional(value: Boolean? = true) = apply { value?.let { context.conditional = it } }
@@ -29,19 +29,23 @@ var WalkingContext.inline: Boolean by registerKey(WalkingContext.Keys) { false }
 /** @see WalkingContext.inline */
 inline infix fun WalkingContext.Builder.inline(value: Boolean? = true) = apply { value?.let { context.inline = it } }
 
-// Builders
+// endregion
+
+// region Builders
 
 /** @see ParadoxPsiSequenceBuilder.members */
- fun ParadoxScriptMemberContainer.members(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptMember> {
+fun ParadoxScriptMemberContext.members(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptMember> {
     return ParadoxPsiSequenceBuilder.members(this).context { conditional(conditional) + inline(inline) }
 }
 
 /** @see ParadoxPsiSequenceBuilder.members */
- fun ParadoxScriptMemberContainer.properties(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptProperty> {
+fun ParadoxScriptMemberContext.properties(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptProperty> {
     return members(conditional, inline).transform { filterIsInstance<ParadoxScriptProperty>() }
 }
 
 /** @see ParadoxPsiSequenceBuilder.members */
-inline fun ParadoxScriptMemberContainer.values(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptValue> {
+inline fun ParadoxScriptMemberContext.values(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptValue> {
     return members(conditional, inline).transform { filterIsInstance<ParadoxScriptValue>() }
 }
+
+// endregion

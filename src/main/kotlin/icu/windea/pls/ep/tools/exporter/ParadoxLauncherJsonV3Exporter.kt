@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
@@ -24,7 +24,7 @@ import kotlin.io.path.exists
  * 参见：[ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
 class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
-    override val text get() = PlsBundle.message("mod.exporter.launcherJson.v3")
+    override val text get() = ChronicleEpBundle.message("mod.exporter.launcherJson.v3")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         // 仅导出启用的模组
@@ -56,8 +56,7 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
             game = gameType.gameId,
             name = playlistName,
             mods = valid.mapIndexed { index, (displayName, steamId, pdxId) ->
-                LauncherJsonV3.
-                Mod(
+                LauncherJsonV3.Mod(
                     displayName = displayName,
                     enabled = true,
                     position = index,
@@ -72,7 +71,7 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
     }
 
     override fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor {
-        return FileSaverDescriptor(PlsBundle.message("mod.exporter.launcherJson.v3.title"), "", "json")
+        return FileSaverDescriptor(ChronicleEpBundle.message("mod.exporter.launcherJson.v3.title"), "", "json")
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {

@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
 
@@ -15,22 +15,21 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
     init {
         templatePresentation.icon = AllIcons.Actions.Close
         templatePresentation.hoveredIcon = AllIcons.Actions.CloseHovered
-        templatePresentation.text = PlsBundle.message("configGroup.action.refresh.hide.text")
-        templatePresentation.description = PlsBundle.message("configGroup.action.refresh.hide.desc")
+        templatePresentation.text = ChronicleBundle.message("configGroup.action.refresh.hide.text")
+        templatePresentation.description = ChronicleBundle.message("configGroup.action.refresh.hide.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
-        presentation.isVisible = true
+        e.presentation.isVisible = true
         val project = e.project ?: return
         val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
-        presentation.isEnabled = configGroups.isNotEmpty()
+        e.presentation.isEnabled = configGroups.isNotEmpty()
     }
 
     override fun actionPerformed(e: AnActionEvent) {

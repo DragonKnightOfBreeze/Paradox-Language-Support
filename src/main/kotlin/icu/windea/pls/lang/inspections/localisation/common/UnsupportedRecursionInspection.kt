@@ -7,9 +7,9 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -24,8 +24,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 目前仅做检查即可，不需要显示递归的装订线图标
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
+        // 要求是语义上有效的本地化文件
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -38,7 +38,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 ParadoxRecursionManager.checkLocalisation(element, recursions)
                 if (recursions.isEmpty()) return
                 val location = element.propertyKey
-                val description = PlsBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
+                val description = ChronicleBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
                 holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
             }
         }

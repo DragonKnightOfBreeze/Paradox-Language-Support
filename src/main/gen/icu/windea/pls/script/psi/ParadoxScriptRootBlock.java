@@ -8,7 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement, ParadoxScriptMemberContainer {
+public interface ParadoxScriptRootBlock extends ParadoxScriptMemberContainer {
 
   @NotNull
   List<ParadoxScriptConditionalBlock> getConditionalBlockList();
@@ -22,11 +22,11 @@ public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement, Parad
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull ParadoxScriptRootBlock getMembersRoot();
+  @NotNull ParadoxScriptRootBlock getMemberContainer();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -56,7 +56,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInfo_CacheReuse() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
 
         // 多次调用应返回相同的缓存实例
         val info1 = ParadoxDefinitionManager.getInfo(titan)
@@ -69,8 +69,8 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInfo_DifferentElements_DifferentCache() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
-        val phantom = selectScope { file.ofPath("phantom").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
+        val phantom = selectScope { file.queryBy("phantom").asProperty().one() }!!
 
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)
         val phantomInfo = ParadoxDefinitionManager.getInfo(phantom)
@@ -89,7 +89,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testSubtypeConfigs_CacheReuse() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(titan)!!
 
         // 多次调用应返回相同的缓存实例
@@ -102,8 +102,8 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testSubtypeConfigs_DifferentDefinitions_DifferentCache() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
-        val phantom = selectScope { file.ofPath("phantom").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
+        val phantom = selectScope { file.queryBy("phantom").asProperty().one() }!!
 
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
         val phantomInfo = ParadoxDefinitionManager.getInfo(phantom)!!
@@ -124,7 +124,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testDeclaration_CacheReuse() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(titan)!!
 
         // 多次调用应返回相同的缓存实例
@@ -138,8 +138,8 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testDeclaration_DifferentSubtypes_DifferentStructure() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!  // heavy 子类型
-        val phantom = selectScope { file.ofPath("phantom").asProperty().one() }!!  // stealth 子类型
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!  // heavy 子类型
+        val phantom = selectScope { file.queryBy("phantom").asProperty().one() }!!  // stealth 子类型
 
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
         val phantomInfo = ParadoxDefinitionManager.getInfo(phantom)!!
@@ -163,9 +163,9 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testGetDependencies_DefinitionInfo() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
 
-        val deps = ParadoxDefinitionService.getDependencies(titan, file)
+        val deps = ParadoxDefinitionService.getInfoDependencies(titan, file)
 
         // 应依赖 file
         Assert.assertEquals(1, deps.size)
@@ -175,7 +175,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testGetSubtypeAwareDependencies_NoSubtypes() {
         val file = configureScriptFile("common/signals/00_signals.txt", "features/resolve/common/signals/00_signals.txt")
-        val distress = selectScope { file.ofPath("distress_beacon").asProperty().one() }!!
+        val distress = selectScope { file.queryBy("distress_beacon").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(distress)!!
 
         val deps = ParadoxDefinitionService.getSubtypeAwareDependencies(distress, info)
@@ -193,7 +193,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         // 实际上，在我们的测试配置中，所有有子类型的类型都依赖声明结构
         // 这个测试主要验证方法调用正确
         val file = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
-        val plasma = selectScope { file.ofPath("plasma_cannon").asProperty().one() }!!
+        val plasma = selectScope { file.queryBy("plasma_cannon").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(plasma)!!
 
         val deps = ParadoxDefinitionService.getSubtypeAwareDependencies(plasma, info)
@@ -259,7 +259,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInfo_CacheInvalidation_OnFileModification() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
 
         // 获取初始缓存
         val info = ParadoxDefinitionManager.getInfo(titan)
@@ -273,7 +273,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         }
 
         // 重新获取元素（文件已修改，PSI 树可能已重建）
-        val titanAfter = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titanAfter = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
 
         // 修改后应获取新的缓存实例（或相同内容但不同实例）
         val infoAfter = ParadoxDefinitionManager.getInfo(titanAfter)
@@ -289,7 +289,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testSubtypeConfigs_CacheInvalidation_OnFileModification() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(titan)!!
 
         // 获取初始子类型
@@ -304,7 +304,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         }
 
         // 重新获取元素和信息
-        val titanAfter = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titanAfter = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val infoAfter = ParadoxDefinitionManager.getInfo(titanAfter)
         Assert.assertNotNull(infoAfter)
         Assert.assertNotSame(info, infoAfter)
@@ -318,7 +318,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
     @Test
     fun testDeclaration_CacheInvalidation_OnFileModification() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(titan)!!
 
         // 获取初始声明
@@ -333,7 +333,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         }
 
         // 重新获取元素和信息
-        val titanAfter = selectScope { file.ofPath("titan_mk3").asProperty().one() }!!
+        val titanAfter = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
         val infoAfter = ParadoxDefinitionManager.getInfo(titanAfter)!!
         Assert.assertNotSame(info, infoAfter)
 
@@ -352,7 +352,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val mechFile = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
         val weaponFile = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
 
-        val titan = selectScope { mechFile.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { mechFile.queryBy("titan_mk3").asProperty().one() }!!
 
         // 获取 mech 的缓存
         val info = ParadoxDefinitionManager.getInfo(titan)
@@ -377,7 +377,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val signalFile = configureScriptFile("common/signals/00_signals.txt", "features/resolve/common/signals/00_signals.txt")
         val weaponFile = configureScriptFile("common/weapons/00_weapons.txt", "features/resolve/common/weapons/00_weapons.txt")
 
-        val distress = selectScope { signalFile.ofPath("distress_beacon").asProperty().one() }!!
+        val distress = selectScope { signalFile.queryBy("distress_beacon").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(distress)!!
 
         // 获取初始子类型（空列表）

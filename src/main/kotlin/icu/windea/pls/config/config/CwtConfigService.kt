@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
@@ -32,12 +32,12 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.cwt.psi.isDirectValue
 import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.psi.CwtPsiManager
+import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 
@@ -96,7 +96,7 @@ object CwtConfigService {
     fun getContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
         val gameType = getGameTypeFromRepoFile(file, project)
         if (gameType == null) return null
-        return PlsFacade.getConfigGroup(project, gameType)
+        return ChronicleFacade.getConfigGroup(project, gameType)
     }
 
     fun getGameTypeFromRepoFile(file: VirtualFile, project: Project): ParadoxGameType? {
@@ -153,7 +153,7 @@ object CwtConfigService {
                     subPaths.addFirst(current.name)
                     depth++
                 }
-                current is CwtValue && current.isBlockValue() -> {
+                current is CwtValue && current.isDirectValue() -> {
                     subPaths.addFirst("-")
                     depth++
                 }
@@ -238,6 +238,15 @@ object CwtConfigService {
                     else -> null
                 }
             }
+            "unions" -> {
+                val s1 = configPath.get(1)
+                if (!s1.surroundsWith("union[", "]")) return null
+                when {
+                    isProperty && length == 2 -> CwtConfigTypes.Union
+                    !isProperty && length == 3 -> CwtConfigTypes.UnionValue
+                    else -> null
+                }
+            }
             "values" -> {
                 val s1 = configPath.get(1)
                 if (!s1.surroundsWith("value[", "]")) return null
@@ -280,6 +289,7 @@ object CwtConfigService {
             CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
             CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
             CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
+            CwtConfigTypes.Union -> text.removeSurroundingOrNull("union[", "]")
             CwtConfigTypes.DynamicValueType -> text.removeSurroundingOrNull("value[", "]")
             CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
             CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
@@ -292,8 +302,8 @@ object CwtConfigService {
     }
 
     fun getDocumentation(element: CwtMember): String? {
-        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
+        val ownedComments = CwtPsiService.getOwnedDocComments(element)
+        val documentation = CwtPsiService.getDocCommentText(ownedComments)
         return documentation
     }
 

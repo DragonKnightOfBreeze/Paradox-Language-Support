@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
@@ -59,16 +59,16 @@ object ParadoxConfigExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.LocalisationLocationAware) {
-            return createLocalisationResolveResult(PlsBundle.message("dynamic"))
+            return createLocalisationResolveResult(ChronicleBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createLocalisationResolveResult(PlsBundle.message("parameterized"))
+            return createLocalisationResolveResult(ChronicleBundle.message("parameterized"))
         }
         if (config.configExpression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-            return createLocalisationResolveResult(PlsBundle.message("inlined"))
+            return createLocalisationResolveResult(ChronicleBundle.message("inlined"))
         }
         val name = valueElement.stringValue
         if (name.isEmpty()) return null
@@ -89,7 +89,9 @@ object ParadoxConfigExpressionService {
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).find()
         }, {
+            val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
             val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
+                .withConstraint(constraint)
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         })
@@ -102,7 +104,6 @@ object ParadoxConfigExpressionService {
     private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationIndexConstraint? {
         return when (definitionInfo.type) {
             ParadoxDefinitionTypes.event -> ParadoxLocalisationIndexConstraint.Event
-            ParadoxDefinitionTypes.technology -> ParadoxLocalisationIndexConstraint.Tech
             else -> null
         }
     }
@@ -112,7 +113,7 @@ object ParadoxConfigExpressionService {
         definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: ImageFrameInfo? = null,
-        toFile: Boolean = false
+        toFile: Boolean = false,
     ): CwtImageLocationResolveResult? {
         val (location, isPlaceholder, namePaths, framePaths) = locationExpression
         val project = definitionInfo.project
@@ -158,13 +159,13 @@ object ParadoxConfigExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ImageLocationAware) {
-            return createImageResolveResult(PlsBundle.message("dynamic"))
+            return createImageResolveResult(ChronicleBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createImageResolveResult(PlsBundle.message("parameterized"))
+            return createImageResolveResult(ChronicleBundle.message("parameterized"))
         }
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, ParadoxExpressionRole.Value)
         when {
@@ -235,13 +236,13 @@ object ParadoxConfigExpressionService {
 
     private fun findValueElementByPath(definition: ParadoxDefinitionElement, path: String): ParadoxScriptValue? {
         if (path.isEmpty()) return null
-        val properties = selectScope { definition.ofPath(path, conditional = true, inline = true).asProperty() }
+        val properties = selectScope { definition.queryBy(path, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue }
     }
 
     private fun findValueByPaths(definition: ParadoxDefinitionElement, paths: Set<String>?): String? {
         if (paths.isNullOrEmpty()) return null
-        val properties = selectScope { definition.ofPaths(paths, conditional = true, inline = true).asProperty() }
+        val properties = selectScope { definition.queryBy(paths, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue?.stringValue() }
     }
 }

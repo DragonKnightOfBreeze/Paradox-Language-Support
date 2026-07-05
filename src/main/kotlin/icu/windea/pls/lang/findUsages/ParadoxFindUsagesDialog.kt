@@ -5,7 +5,7 @@ import com.intellij.find.findUsages.FindUsagesOptions
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.StateRestoringCheckBox
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 
@@ -35,7 +35,7 @@ open class ParadoxFindUsagesDialog(
     override fun createFindWhatPanel(): JPanel {
         val panel = JPanel()
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        cbUsages = addCheckboxToPanel(PlsBundle.message("find.what.usages.checkbox"), findOptions.isUsages, panel, true)
+        cbUsages = addCheckboxToPanel(ChronicleBundle.message("find.what.usages.checkbox"), findOptions.isUsages, panel, true)
         return panel
     }
 

@@ -13,7 +13,7 @@ import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找规则符号。
@@ -24,7 +24,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.CwtConfigSymbolChooseByNameContributor
 
     private fun getTypes(): Set<String> = buildSet {
-        val settings = PlsSettings.getInstance().state.navigation
+        val settings = ChronicleSettings.getInstance().state.navigation
         if (settings.seForTypeConfigs) add(CwtConfigTypes.Type.id)
         if (settings.seForComplexEnumConfigs) add(CwtConfigTypes.ComplexEnum.id)
         if (settings.seForTriggerConfigs) add(CwtConfigTypes.Trigger.id)

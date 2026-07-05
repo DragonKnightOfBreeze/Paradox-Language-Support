@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.model.ParadoxGameType
@@ -34,7 +34,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun pickModifierWithTemplate(gameType: ParadoxGameType, predicate: (CwtModifierConfig) -> Boolean): CwtModifierConfig? {
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return configGroup.modifiers.values.toList().firstOrNull(predicate)
     }
 
@@ -51,7 +51,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
             val refMap = tpl.referenceExpressions.associateWith { "foo" }
             CwtConfigExpressionManager.extract(tpl, refMap)
         }
-        val g = PlsFacade.getConfigGroup(project, gameType)
+        val g = ChronicleFacade.getConfigGroup(project, gameType)
         val exp = ParadoxTemplateExpression.resolve(text, null, g, config)!!
         val out = exp.render()
         println(out)
@@ -67,7 +67,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
         // 仅在单占位时生成用例，否则跳过
         Assume.assumeTrue(tpl.referenceExpressions.size == 1)
         val text = CwtConfigExpressionManager.extract(tpl, "foo")
-        val g = PlsFacade.getConfigGroup(project, gameType)
+        val g = ChronicleFacade.getConfigGroup(project, gameType)
         val exp = ParadoxTemplateExpression.resolve(text, null, g, config)!!
         val out = exp.render()
         println(out)

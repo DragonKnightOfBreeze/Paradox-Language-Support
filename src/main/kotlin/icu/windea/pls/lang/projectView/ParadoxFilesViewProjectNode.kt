@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 
 class ParadoxFilesViewProjectNode(
     project: Project,
@@ -30,7 +30,7 @@ class ParadoxFilesViewProjectNode(
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         // 如果项目中存在游戏或模组目录，则仅使用这个游戏或模组目录对应的游戏类型作为子节点
         val rootPaths = mutableSetOf<String>()
-        val profilesSettings = PlsProfilesSettings.getInstance().state
+        val profilesSettings = ChronicleProfilesSettings.getInstance().state
         rootPaths += profilesSettings.gameDescriptorSettings.keys
         rootPaths += profilesSettings.modDescriptorSettings.keys
         val projectFileIndex = ProjectFileIndex.getInstance(project)

@@ -19,7 +19,7 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
@@ -27,7 +27,6 @@ import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
@@ -38,13 +37,13 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptRootBlock
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
+    fun getMemberContainer(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptRootBlock): List<ParadoxScriptMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     // endregion
@@ -53,7 +52,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -121,7 +120,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -132,7 +131,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
-        element.definitionInfo?.let { return ParadoxPsiManager.renameDefinition(element, name, it) }
+        element.definitionInfo?.let { return ParadoxPsiService.renameDefinition(element, name, it) }
         throw IncorrectOperationException()
     }
 
@@ -174,13 +173,13 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptProperty): ParadoxScriptBlock? {
+    fun getMemberContainer(element: ParadoxScriptProperty): ParadoxScriptBlock? {
         return element.propertyValue.castOrNull()
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
+        return getMemberContainer(element)?.findChildren<_>()
     }
 
     // endregion
@@ -194,7 +193,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Property
+        return ChronicleIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -215,7 +214,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
+        return ChronicleIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -236,7 +235,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
+        return ChronicleIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -282,27 +281,27 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Block
+        return ChronicleIcons.Nodes.Block
     }
 
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
     fun getExpression(element: ParadoxScriptBlock): String {
-        return PlsStrings.blockFolder
+        return ChronicleStrings.blockFolder
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptBlock): ParadoxScriptBlock {
+    fun getMemberContainer(element: ParadoxScriptBlock): ParadoxScriptBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptBlock): List<ParadoxScriptMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic
@@ -321,7 +320,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ConditionalBlock
+        return ChronicleIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
@@ -346,17 +345,17 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptConditionalBlock): String? {
-        return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
+        return element.conditionExpression?.let { ChronicleStrings.conditionalBlockFolder(it) }
     }
 
     @JvmStatic
-    fun getMembersRoot(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
+    fun getMemberContainer(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
         return element
     }
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptConditionalBlock): List<ParadoxScriptMember> {
-        return getMembersRoot(element).findChildren<_>()
+        return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic
@@ -376,7 +375,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ConditionalBlock
+        return ChronicleIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
@@ -401,7 +400,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptInlineConditionalBlock): String? {
-        return element.conditionExpression?.let { PlsStrings.conditionalBlockFolder(it) }
+        return element.conditionExpression?.let { ChronicleStrings.conditionalBlockFolder(it) }
     }
 
     @JvmStatic
@@ -426,7 +425,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptConditionalBlockParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Parameter
+        return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
@@ -459,22 +458,22 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return PlsStrings.inlineMathFolder
+        return ChronicleStrings.inlineMathFolder
     }
 
     @JvmStatic
     fun getExpression(element: ParadoxScriptInlineMath): String {
-        return PlsStrings.inlineMathFolder
-    }
-
-    @JvmStatic
-    fun getInlineMathExpression(element: ParadoxScriptInlineMath): String {
-        return element.tokenElement?.text?.trim().orEmpty()
+        return ChronicleStrings.inlineMathFolder
     }
 
     @JvmStatic
     fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
         return element.findChild { it.elementType == INLINE_MATH_TOKEN }
+    }
+
+    @JvmStatic
+    fun getInlineMathExpression(element: ParadoxScriptInlineMath): ParadoxScriptInlineMathExpression? {
+        return element.findChild { it.elementType == INLINE_MATH_TOKEN }?.findChild<_>()
     }
 
     @JvmStatic
@@ -507,7 +506,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -540,7 +539,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.ScriptedVariable
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
@@ -572,7 +571,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Parameter
+        return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
@@ -621,7 +620,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Parameter
+        return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
@@ -668,6 +667,11 @@ object ParadoxScriptPsiImplUtil {
     // region Common Methods
 
     @JvmStatic
+    fun getComponents(element: PsiListLikeElement): List<ParadoxScriptStatement> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
     fun getName(element: ParadoxScriptExpressionElement): String {
         return element.value
     }
@@ -685,11 +689,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getExpression(element: ParadoxScriptExpressionElement): String {
         return element.text
-    }
-
-    @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is ParadoxScriptScriptedVariable || it is ParadoxScriptMember || it is ParadoxScriptConditionalBlock }
     }
 
     @JvmStatic
@@ -719,7 +718,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxScriptItemPresentation(element)
+        return ParadoxScriptPsiPresentation(element)
     }
 
     @JvmStatic

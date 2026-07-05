@@ -7,11 +7,11 @@ import com.intellij.util.io.HttpRequests
 import dev.langchain4j.model.chat.Capability
 import dev.langchain4j.model.openai.OpenAiChatModel
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ai.AiConstants
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope
@@ -58,12 +58,12 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
             checkHelloWorld(options, baseUrl, ref)
         }
         when {
-            PlsFacade.isUnitTestMode() -> runBlocking { action() }
-            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsAiBundle.message("ai.test.progress.title")) { action() }
+            ChronicleFacade.isUnitTestMode() -> runBlocking { action() }
+            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleAiBundle.message("ai.test.progress.title")) { action() }
         }
 
         ref.get()?.let { return it }
-        return StatusResult(true, PlsAiBundle.message("ai.test.success.title"), PlsAiBundle.message("ai.test.success.service", baseUrl))
+        return StatusResult(true, ChronicleAiBundle.message("ai.test.success.title"), ChronicleAiBundle.message("ai.test.success.service", baseUrl))
     }
 
     private suspend fun checkApiTag(options: Options, baseUrl: String, ref: AtomicReference<StatusResult>) {
@@ -75,7 +75,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
                     .tuner { it.setRequestProperty("Authorization", "Bearer ${options.apiKey}") } // 传入 API KEY
                     .tryConnect()
             } catch (e: Exception) {
-                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
+                val r = StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
                 ref.set(r)
             }
         }
@@ -87,7 +87,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
                 val chatModel = doGetChatModel(options)
                 chatModel.chat("Say 'hello world'")
             } catch (e: Exception) {
-                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", url, e.message.orEmpty()))
+                val r = StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.service", url, e.message.orEmpty()))
                 ref.set(r)
             }
         }
@@ -105,7 +105,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
         companion object {
             fun get(): Options? {
                 return when {
-                    PlsFacade.isUnitTestMode() -> forUnitTest()
+                    ChronicleFacade.isUnitTestMode() -> forUnitTest()
                     else -> fromSettings()
                 }
             }
@@ -150,7 +150,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
         )
 
         class AtomicProperties {
-            private val settings = PlsAiSettings.getInstance().state.openAI
+            private val settings = ChronicleAiSettings.getInstance().state.openAI
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

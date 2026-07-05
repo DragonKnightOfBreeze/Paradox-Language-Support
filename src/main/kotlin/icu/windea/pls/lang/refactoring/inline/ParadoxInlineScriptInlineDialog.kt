@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.refactoring.inline.InlineOptionsDialog
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
@@ -27,7 +27,7 @@ class ParadoxInlineScriptInlineDialog(
         ?: GlobalSearchScope.projectScope(project)
 
     init {
-        title = PlsBundle.message("title.inline.inlineScript")
+        title = ChronicleBundle.message("title.inline.inlineScript")
         myInvokedOnReference = reference != null
         init()
         helpAction.isEnabled = false
@@ -35,20 +35,20 @@ class ParadoxInlineScriptInlineDialog(
 
     override fun getNameLabelText(): String {
         val name = ParadoxInlineScriptManager.getInlineScriptExpression(element).or.anonymous()
-        return PlsBundle.message("inline.inlineScript.label", name)
+        return ChronicleBundle.message("inline.inlineScript.label", name)
     }
 
     override fun getInlineThisText(): String {
-        return PlsBundle.message("inline.inlineScript.inline.this")
+        return ChronicleBundle.message("inline.inlineScript.inline.this")
     }
 
     override fun getInlineAllText(): String {
-        return if (element.isWritable) PlsBundle.message("inline.inlineScript.inline.all.remove")
-        else PlsBundle.message("inline.inlineScript.inline.all")
+        return if (element.isWritable) ChronicleBundle.message("inline.inlineScript.inline.all.remove")
+        else ChronicleBundle.message("inline.inlineScript.inline.all")
     }
 
     override fun getKeepTheDeclarationText(): String {
-        return if (element.isWritable) PlsBundle.message("inline.inlineScript.inline.all.keep")
+        return if (element.isWritable) ChronicleBundle.message("inline.inlineScript.inline.all.keep")
         else super.getKeepTheDeclarationText()
     }
 

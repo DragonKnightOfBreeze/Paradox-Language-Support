@@ -9,5 +9,5 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 class ParadoxScriptTypeKeyPrefixPsiReference(
     element: ParadoxScriptString,
     rangeInElement: TextRange,
-    override val config: CwtValueConfig
-) : CwtConfigBasedPsiReference<CwtValue>(element, rangeInElement, config), ParadoxScriptTagAwarePsiReference
+    override val tagConfig: CwtValueConfig
+) : CwtConfigBasedPsiReference<CwtValue>(element, rangeInElement, tagConfig), ParadoxScriptTagAwarePsiReference

@@ -19,7 +19,7 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -50,7 +50,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
-        val hierarchySettings = PlsSettings.getInstance().state.hierarchy
+        val hierarchySettings = ChronicleSettings.getInstance().state.hierarchy
         when (element) {
             is ParadoxScriptScriptedVariable -> {
                 val name = element.name.or.anonymous()

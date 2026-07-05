@@ -13,7 +13,7 @@ import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
  * @see ParadoxScriptProperty
  * @see ParadoxDefinitionInfo
  */
-interface ParadoxDefinitionElement : PsiNameIdentifierOwner, NavigatablePsiElement, ParadoxScriptMemberContainer {
+interface ParadoxDefinitionElement : PsiNameIdentifierOwner, NavigatablePsiElement, ParadoxScriptMemberContext {
     /**
      * 注意：这里得到的不一定是定义的名字（[ParadoxDefinitionInfo.name]）。
      * 也可能只是属性定义的类型键（[ParadoxDefinitionInfo.typeKey]），或者注入定义的表达式（[ParadoxDefinitionInjectionInfo.expression]）。
@@ -22,5 +22,5 @@ interface ParadoxDefinitionElement : PsiNameIdentifierOwner, NavigatablePsiEleme
 
     override fun getNameIdentifier(): PsiElement? = null
 
-    val block: ParadoxScriptBlockElement?
+    val block: ParadoxScriptMemberContainer?
 }

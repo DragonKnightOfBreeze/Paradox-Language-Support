@@ -5,10 +5,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.isCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -16,12 +17,11 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
@@ -54,7 +54,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val startOffset = offset + node.rangeInExpression.startOffset
                     val endOffset = offset + node.rangeInExpression.endOffset
                     val range = TextRange.create(startOffset, endOffset)
-                    val description = PlsBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
+                    val description = ChronicleBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
                     holder.registerProblem(element, range, description)
                     break // only reports first problem per complex expression
                 }

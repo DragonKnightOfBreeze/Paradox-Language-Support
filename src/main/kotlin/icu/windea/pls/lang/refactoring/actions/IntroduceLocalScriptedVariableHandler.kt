@@ -15,16 +15,16 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -44,7 +44,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        val name = PlsInternalSettings.getInstance().defaultScriptedVariableName
+        val name = ChronicleInternalSettings.getInstance().defaultScriptedVariableName
 
         // 将光标移到 element 的结束位置并选中
         editor.caretModel.moveToOffset(element.endOffset)
@@ -54,7 +54,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         // 2.1.0 兼容定义注入
         val containerElement = selectScope { element.parentDefinitionCandidate().asProperty() } ?: return false
 
-        val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
+        val commandName = ChronicleBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) {
             // 用封装变量引用替换当前位置的字面量
             var newVariableReference = ParadoxScriptElementFactory.createScriptedVariableReference(project, name)
@@ -62,7 +62,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 
             // 声明对应名字的封装变量，以内联模板的方式编辑名字
             val variableValue = element.text
-            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, containerElement, project)
+            val newVariable = ParadoxPsiService.introduceLocalScriptedVariable(name, variableValue, containerElement, project)
             PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 
             val startAction = StartMarkAction.start(editor, project, commandName)

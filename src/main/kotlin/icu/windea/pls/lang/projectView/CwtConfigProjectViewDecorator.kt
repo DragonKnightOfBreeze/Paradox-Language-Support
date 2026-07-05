@@ -5,7 +5,7 @@ import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.projectView.impl.nodes.SyntheticLibraryElementNode
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 
 /**
@@ -24,7 +24,7 @@ class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
         val fileProvider = fileProviders.find { it.getRootDirectory(node.project) == file } ?: return false
 
         // 特殊图标
-        data.setIcon(PlsIcons.General.ConfigGroupDirectory)
+        data.setIcon(ChronicleIcons.General.ConfigGroupDirectory)
 
         // 来自 EP 实现的提示文本
         run {

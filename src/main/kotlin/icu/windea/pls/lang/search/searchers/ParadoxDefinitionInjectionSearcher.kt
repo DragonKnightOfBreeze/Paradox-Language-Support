@@ -8,9 +8,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex
-import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -36,9 +36,9 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         if (!context.isValid()) return true
         val keys = setOf(
             createActualKey(context),
-            PlsIndexUtil.createLazyKey(),
+            ChronicleIndexUtil.createLazyKey(),
         )
-        return PlsIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, context.project, context.scope, context.gameType) p@{ file, fileData ->
+        return ChronicleIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, context.project, context.scope, context.gameType) p@{ file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
             infos.process { info -> processInfo(context, file, info, consumer) }
@@ -49,10 +49,10 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         val name = context.target
         val type = context.type
         return when {
-            !name.isNullOrEmpty() && !type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(name, type)
-            !name.isNullOrEmpty() -> PlsIndexUtil.createNameKey(name)
-            !type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(type)
-            else -> PlsIndexUtil.createAllKey()
+            !name.isNullOrEmpty() && !type.isNullOrEmpty() -> ChronicleIndexUtil.createNameTypeKey(name, type)
+            !name.isNullOrEmpty() -> ChronicleIndexUtil.createNameKey(name)
+            !type.isNullOrEmpty() -> ChronicleIndexUtil.createTypeKey(type)
+            else -> ChronicleIndexUtil.createAllKey()
         }
     }
 

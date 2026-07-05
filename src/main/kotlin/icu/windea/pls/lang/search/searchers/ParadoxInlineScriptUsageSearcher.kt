@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -34,12 +34,12 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         if (!context.isValid()) return true
         val expression = context.expression
         if (expression == null) {
-            return PlsIndexService.processElementsByKeys(PlsIndexKeys.InlineScriptUsage, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.InlineScriptUsage, context.project, context.scope) { _, element ->
                 processor.process(element)
             }
         } else {
             if (expression.isEmpty() || expression.isParameterized()) return true // 排除为空或者带参数的情况
-            return PlsIndexService.processElements(PlsIndexKeys.InlineScriptUsage, expression, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(ChronicleIndexKeys.InlineScriptUsage, expression, context.project, context.scope) { element ->
                 processor.process(element)
             }
         }

@@ -24,7 +24,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -33,14 +33,14 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
@@ -74,12 +74,12 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val editor = e.editor ?: return null
         val offset = editor.caretModel.offset
         val psiFile = file.toPsiFile(project) ?: return null
-        return ParadoxPsiFileManager.findDefinition(psiFile, offset)
+        return ParadoxPsiFileService.findDefinition(psiFile, offset)
     }
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsSettings.getInstance().state.others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !ChronicleSettings.getInstance().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -99,7 +99,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val file = element.containingFile?.virtualFile ?: return null
         val definitionInfo = element.definitionInfo ?: return null
         val definitions = mutableListOf<ParadoxDefinitionElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("diff.compare.definitions.collect.title")) {
             readAction {
                 val selector = ParadoxDefinitionSearch.selector(project, file)
                 // pass main type only
@@ -109,8 +109,8 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
         if (definitions.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.definitions.content.notification.empty")
-            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
+            val content = ChronicleBundle.message("diff.compare.definitions.content.notification.empty")
+            ChronicleNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 
@@ -200,7 +200,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
         val name = definitionInfo.name.or.anonymous()
         val type = definitionInfo.type
-        return PlsBundle.message("diff.compare.definitions.dialog.title", name, type, path, qualifiedName)
+        return ChronicleBundle.message("diff.compare.definitions.dialog.title", name, type, path, qualifiedName)
     }
 
     private fun getContentTitle(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
@@ -214,8 +214,8 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val name = definitionInfo.name.or.anonymous()
         val type = definitionInfo.type
         return when {
-            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", name, type, path, qualifiedName)
-            else -> PlsBundle.message("diff.compare.definitions.content.title", name, type, path, qualifiedName)
+            original -> ChronicleBundle.message("diff.compare.definitions.originalContent.title", name, type, path, qualifiedName)
+            else -> ChronicleBundle.message("diff.compare.definitions.content.title", name, type, path, qualifiedName)
         }
     }
 
@@ -248,7 +248,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
             val name = otherDefinitionInfo.name.or.anonymous()
             val type = otherDefinitionInfo.type
-            return PlsBundle.message("diff.compare.definitions.popup.name", name, type, path, qualifiedName)
+            return ChronicleBundle.message("diff.compare.definitions.popup.name", name, type, path, qualifiedName)
         }
     }
 
@@ -266,7 +266,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
 
         private inner class Popup : BaseListPopupStep<ParadoxDiffRequestProducer>(
-            PlsBundle.message("diff.compare.definitions.popup.title"),
+            ChronicleBundle.message("diff.compare.definitions.popup.title"),
             chain.requests
         ) {
             init {

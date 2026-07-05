@@ -1,7 +1,7 @@
 package icu.windea.pls.core.util
 
 /**
- * 用于避免重复的回调。
+ * 回调锁。用于避免重复的回调。
  */
 class CallbackLock {
     private val keys = mutableSetOf<String>()
@@ -11,11 +11,7 @@ class CallbackLock {
         keys.clear()
     }
 
-    /**
-     * 检查并记录 [key]。
-     *
-     * 第一次遇到返回 `true`，后续相同键返回 `false`。
-     */
+    /** 检查并记录 [key]。第一次遇到返回 `true`，后续相同键返回 `false`。 */
     fun check(key: String): Boolean {
         return keys.add(key)
     }

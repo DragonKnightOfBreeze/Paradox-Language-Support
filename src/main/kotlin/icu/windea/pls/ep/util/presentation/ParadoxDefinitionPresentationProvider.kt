@@ -12,6 +12,6 @@ interface ParadoxDefinitionPresentationProvider {
     fun <T : ParadoxDefinitionPresentation> get(element: ParadoxDefinitionElement, type: Class<T>): T?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxDefinitionPresentationProvider>("icu.windea.pls.definitionPresentationProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxDefinitionPresentationProvider>("icu.windea.pls.definitionPresentationProvider")
     }
 }

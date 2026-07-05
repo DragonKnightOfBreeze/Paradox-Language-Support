@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.progress.ProgressManager
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -28,7 +28,7 @@ object ParadoxLocalisationService {
         val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
         ProgressManager.checkCanceled()
         // search for all scripted variable with same name
-        val result = ParadoxScriptedVariableSearch.search(name, null, selector).findAll().toList()
+        val result = ParadoxScriptedVariableSearch.search(name, null, selector).findAll()
         return result
     }
 
@@ -36,7 +36,7 @@ object ParadoxLocalisationService {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
         val gameType = selectGameType(element) ?: return emptyList()
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val patterns = configGroup.relatedLocalisationPatterns
         val namesToSearch = mutableSetOf<String>()
         patterns.forEach { (prefix, suffix) ->

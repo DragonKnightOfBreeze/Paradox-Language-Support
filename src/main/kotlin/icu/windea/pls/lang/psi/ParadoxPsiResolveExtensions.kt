@@ -5,9 +5,16 @@ package icu.windea.pls.lang.psi
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.normalized
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
-import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -16,6 +23,8 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -24,10 +33,66 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
-import icu.windea.pls.script.psi.isValidExpression
+import icu.windea.pls.script.psi.parentBlock
+import icu.windea.pls.script.psi.parentProperty
 import java.awt.Color
 
-// PSI Resolve Extensions
+// region PSI Predicates
+
+fun ParadoxScriptExpressionElement.isResolvableLiteralExpression(): Boolean {
+    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumberExpressionElement
+}
+
+/**
+ * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的规则。
+ */
+fun ParadoxScriptExpressionElement.isValidExpression(options: ParadoxMatchOptions? = null): Boolean {
+    return ParadoxConfigManager.getConfigs(this, options.normalized().copy(fallback = false)).size == 1
+}
+
+fun ParadoxScriptExpressionElement.isDefinitionTypeKeyOrName(): Boolean {
+    return when {
+        this is ParadoxScriptPropertyKey -> isDefinitionTypeKey()
+        this is ParadoxScriptValue -> isDefinitionName()
+        else -> false
+    }
+}
+
+fun ParadoxScriptPropertyKey.isDefinitionTypeKey(): Boolean {
+    val definition = parentProperty ?: return false
+    if (definition.definitionInfo != null) return true
+    return false
+}
+
+fun ParadoxScriptValue.isDefinitionName(): Boolean {
+    // #131
+    if (!isResolvableLiteralExpression()) return false
+
+    val nameProperty = parentProperty ?: return false
+    // def = def_name
+    if (nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
+    val block = nameProperty.parentBlock ?: return false
+    val definition = block.parentProperty ?: return false
+    // def = { name_prop = def_name }
+    if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
+    return false
+}
+
+fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
+    return isCommandExpression() || isDatabaseObjectExpression()
+}
+
+fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
+    return this is ParadoxLocalisationCommandText // 简单判断
+}
+
+fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Boolean = false): Boolean {
+    return this is ParadoxLocalisationConceptName && (!strict || this.textContains(':')) // 简单判断
+}
+
+// endregion
+
+// region PSI Resolve Extensions
 
 fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? {
     return reference?.castOrNull<ParadoxLocalisationParameterPsiReference>()?.resolveLocalisation()
@@ -59,7 +124,9 @@ fun <T : ParadoxScriptExpressionElement> T.resolved(): ParadoxScriptExpressionEl
     }
 }
 
-// Value Resolve Extensions
+// endregion
+
+// region Value Resolve Extensions
 
 fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
     val resolved = resolved() ?: return null
@@ -131,7 +198,7 @@ fun ParadoxScriptValue.colorValue(valid: Boolean = false): Color? {
 
 fun ParadoxScriptValue.inlineMathValue(valid: Boolean = false): MathResult? {
     if (this !is ParadoxScriptInlineMath) return null
-    val r = runCatching { ParadoxInlineMathEvaluator().evaluate(this) }.getOrNull() ?: return null
+    val r = runCatching { ParadoxInlineMathExpressionEvaluator().evaluate(this) }.getOrNull() ?: return null
     if (valid && !isValidExpression()) return null
     return r
 }
@@ -157,3 +224,5 @@ fun ParadoxScriptValue.formattedValue(): String {
     }
     return r
 }
+
+// endregion

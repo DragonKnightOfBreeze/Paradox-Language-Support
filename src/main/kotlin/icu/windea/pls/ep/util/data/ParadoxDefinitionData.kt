@@ -1,10 +1,15 @@
 package icu.windea.pls.ep.util.data
 
+import icu.windea.pls.lang.util.data.ParadoxDataService
+
 /**
  * 定义的数据。
  *
  * - 获取的应当是未加工过的必要的数据。
  * - 需要尝试解析封装变量。
  * - 尝试兼容需要内联的情况。
+ *
+ * @see ParadoxDefinitionDataProvider
+ * @see ParadoxDataService
  */
 interface ParadoxDefinitionData

@@ -36,7 +36,7 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseType: String): ParadoxDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseType) a@{
-                val superDefinition = selectScope { definitionInfo.element?.parentOfKey() }
+                val superDefinition = selectScope { definitionInfo.element?.queryParent(withSelf = false) }
                 if (superDefinition !is ParadoxDefinitionElement) return@a null
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
                 if (!ParadoxDefinitionTypeExpression.resolve(baseType).matches(superDefinitionInfo)) return@a null

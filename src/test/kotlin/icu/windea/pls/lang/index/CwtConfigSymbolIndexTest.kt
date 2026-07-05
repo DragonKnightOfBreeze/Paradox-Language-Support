@@ -19,6 +19,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see CwtConfigSymbolIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
@@ -47,6 +50,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Type.id, "test_type", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Subtype.id, "test_subtype", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Enum.id, "test_enum", ReadWriteAccess.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Union.id, "test_union", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.DynamicValueType.id, "test_value", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.SingleAlias.id, "test_single_alias", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Alias.id, "test_modifier", ReadWriteAccess.Write, ParadoxGameType.Core)
@@ -122,7 +126,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
 
     @Suppress("SameParameterValue")
     private fun assertSymbol(scope: GlobalSearchScope, type: String, name: String, access: ReadWriteAccess, gameType: ParadoxGameType) {
-        val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()
+        val infos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ConfigSymbol, type, scope).flatten()
         val info = infos.find { it.name == name }
         Assert.assertNotNull("Expected symbol '$name' of type '$type'", info)
         Assert.assertEquals(access, info!!.readWriteAccess)
@@ -130,7 +134,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
     }
 
     private fun assertNoSymbol(scope: GlobalSearchScope, type: String, name: String) {
-        val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()
+        val infos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ConfigSymbol, type, scope).flatten()
         Assert.assertNull("Did not expect symbol '$name' of type '$type'", infos.find { it.name == name })
     }
 
@@ -144,7 +148,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
             CwtConfigTypes.Subtype.id
         )
         types.forEach { type ->
-            val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()
+            val infos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ConfigSymbol, type, scope).flatten()
             Assert.assertTrue("Should not index empty name for type '$type'", infos.none { it.name.isEmpty() })
         }
     }

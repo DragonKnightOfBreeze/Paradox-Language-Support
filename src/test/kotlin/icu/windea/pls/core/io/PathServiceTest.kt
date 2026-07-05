@@ -54,7 +54,7 @@ class PathServiceTest {
     @Test
     fun testEnsureFileCreatedFromClasspath_NotExists() {
         val file = root.resolve("new_file.txt")
-        PathService.ensureFileCreatedFromClasspath(file, "/messages/PlsBundle.properties")
+        PathService.ensureFileCreatedFromClasspath(file, "/messages/ChronicleBundle.properties")
         assertTrue(file.isRegularFile())
         assertTrue(file.fileSize() > 0)
     }
@@ -65,7 +65,7 @@ class PathServiceTest {
         file.createDirectories()
         assertTrue(file.isDirectory())
 
-        PathService.ensureFileCreatedFromClasspath(file, "/messages/PlsBundle.properties")
+        PathService.ensureFileCreatedFromClasspath(file, "/messages/ChronicleBundle.properties")
         assertTrue(file.isRegularFile())
         assertTrue(file.fileSize() > 0)
     }
@@ -77,7 +77,7 @@ class PathServiceTest {
         assertTrue(file.isRegularFile())
         assertEquals(0L, file.fileSize())
 
-        PathService.ensureFileCreatedFromClasspath(file, "/messages/PlsBundle.properties")
+        PathService.ensureFileCreatedFromClasspath(file, "/messages/ChronicleBundle.properties")
         assertTrue(file.isRegularFile())
         assertTrue(file.fileSize() > 0)
     }
@@ -89,7 +89,7 @@ class PathServiceTest {
         assertTrue(file.isRegularFile())
         assertEquals(5L, file.fileSize())
 
-        PathService.ensureFileCreatedFromClasspath(file, "/messages/PlsBundle.properties")
+        PathService.ensureFileCreatedFromClasspath(file, "/messages/ChronicleBundle.properties")
         assertTrue(file.isRegularFile())
         assertEquals(5L, file.fileSize()) // Should not be overwritten
     }

@@ -10,7 +10,7 @@ import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -143,7 +143,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             val values = targetFileConfig.values
             assertEquals(1, values.size)
             val v = values.single()
-            assertEquals(PlsStrings.blockFolder, v.value)
+            assertEquals(ChronicleStrings.blockFolder, v.value)
             assertNotNull(v.configs)
             assertTrue(v.configs!!.isNotEmpty())
 

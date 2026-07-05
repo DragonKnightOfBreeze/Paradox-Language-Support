@@ -17,7 +17,8 @@ import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.tagType
@@ -36,7 +37,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isResolvableExpression
 
 /**
  * @see ParadoxScriptSyntaxAnnotator
@@ -72,7 +72,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
 
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
         // #131
-        if (!element.isResolvableExpression()) return
+        if (!element.isResolvableLiteralExpression()) return
 
         // 高亮特殊标签
         if (annotateTag(element, holder)) return
@@ -127,7 +127,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     }
 
     private fun annotateInlineScriptUsage(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return false
+        if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return false
         val name = element.name
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val r1 = TextRange.from(offset, name.length)
@@ -136,7 +136,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     }
 
     private fun annotateDefinitionInjectionExpression(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, gameType)) return false
+        if (!ParadoxPsiMatchService.isDefinitionInjectionUsage(element, gameType)) return false
         val name = element.name
         if (name.isParameterized()) return false // 忽略带参数的情况
 
@@ -166,11 +166,8 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     }
 
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return false
         if (element.complexEnumValueInfo == null) return false
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
-            .textAttributes(ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE)
-            .create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE).create()
         return true
     }
 

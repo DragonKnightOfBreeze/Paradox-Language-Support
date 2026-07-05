@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtProperty extends CwtNamedElement, CwtMemberContainer, CwtMember {
+public interface CwtProperty extends CwtNamedElement, CwtMember {
 
   @NotNull
   CwtPropertyKey getPropertyKey();
@@ -30,7 +30,7 @@ public interface CwtProperty extends CwtNamedElement, CwtMemberContainer, CwtMem
 
   @NotNull String getExpression();
 
-  @Nullable CwtBlock getMembersRoot();
+  @Nullable CwtBlock getMemberContainer();
 
   @Nullable List<@NotNull CwtMember> getMembers();
 

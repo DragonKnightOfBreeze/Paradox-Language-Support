@@ -2,19 +2,17 @@
 
 package icu.windea.pls.core
 
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.stubs.StubIndexExtension
-import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil
 import java.io.DataInput
 import java.io.DataOutput
 
-fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
-    return FileBasedIndex.InputFilter(predicate)
-}
-
+// fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
+//     return FileBasedIndex.InputFilter(predicate)
+// }
+//
 // fun IndexInputFilter(vararg fileTypes: FileType): FileBasedIndex.InputFilter {
 //     if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter { true }
 //     return DefaultFileTypeSpecificInputFilter(*fileTypes)
@@ -28,6 +26,19 @@ fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputF
 //         }
 //     }
 // }
+
+/** 写入单字节（避免显式 toInt 调用）。 */
+inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())
+
+/** 使用 IDEA 提供的紧凑编码读写 `Int`。 */
+inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
+
+inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
+
+/** 使用 IDEA 提供的 UTF 编解码读写 `String`。 */
+inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
+
+inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 /**
  * 从 [from] 复用已有值或从输入流读取。
@@ -51,19 +62,6 @@ inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) 
     writeBoolean(false)
     writeAction(selector(value))
 }
-
-/** 写入单字节（避免显式 toInt 调用）。 */
-inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())
-
-/** 使用 IDEA 提供的紧凑编码读写 `Int`。 */
-inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
-
-inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
-
-/** 使用 IDEA 提供的 UTF 编解码读写 `String`。 */
-inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
-
-inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 /** 查找注册的 StubIndex 扩展。 */
 fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {

@@ -12,8 +12,8 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -42,11 +42,11 @@ import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
@@ -60,7 +60,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import java.util.*
 
 object ParadoxParameterManager {
@@ -108,7 +108,7 @@ object ParadoxParameterManager {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
                 configs.filterIsInstance<CwtPropertyConfig>()
             }
-            expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+            expressionElement is ParadoxScriptString && expressionElement.isDataExpression() -> {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
                 configs.filterIsInstance<CwtValueConfig>()
             }
@@ -199,7 +199,7 @@ object ParadoxParameterManager {
             } ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
                 .forExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -237,7 +237,7 @@ object ParadoxParameterManager {
                 } ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                    .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
             }
@@ -269,7 +269,7 @@ object ParadoxParameterManager {
     fun getParameterInfo(parameterElement: ParadoxParameterLightElement): ParadoxParameterInfo? {
         val rootFile = selectRootFile(parameterElement) ?: return null
         val project = parameterElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, parameterElement.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, parameterElement.gameType)
         val cache = configGroup.parameterInfoCache.get(rootFile)
         val cacheKey = "${parameterElement.name}@${parameterElement.contextKey}"
         val parameterInfo = cache.get(cacheKey) {
@@ -282,7 +282,7 @@ object ParadoxParameterManager {
      * 尝试推断得到参数的上下文规则。基于用法和扩展规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
-        val inferenceSettings = PlsSettings.getInstance().state.inference
+        val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForParameters) return emptyList()
         val fast = inferenceSettings.configContextForParametersFast
 
@@ -307,7 +307,7 @@ object ParadoxParameterManager {
      * 尝试推断得到参数的上下文规则。基于扩展规则。
      */
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
-        val inferenceSettings = PlsSettings.getInstance().state.inference
+        val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForParameters) return emptyList()
         val fast = inferenceSettings.configContextForParametersFast
 
@@ -368,7 +368,7 @@ object ParadoxParameterManager {
                         val revert = v.equals("no", true)
                         val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
                         if ((!revert && operator) || (revert && !operator)) {
-                            val (start, end) = ParadoxPsiManager.findMemberElementsToInline(element)
+                            val (start, end) = ParadoxPsiService.findMemberElementsToInline(element)
                             if (start != null && end != null) {
                                 element.parent.addRangeAfter(start, end, element)
                             }

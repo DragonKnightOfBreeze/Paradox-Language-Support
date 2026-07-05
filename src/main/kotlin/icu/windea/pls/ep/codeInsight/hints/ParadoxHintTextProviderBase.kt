@@ -6,7 +6,7 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
@@ -25,7 +25,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
 
     abstract class ScriptedVariable : ParadoxHintTextProviderBase() {
         override fun getHintText(element: PsiElement, locale: CwtLocaleConfig?): String? {
-            if (!ParadoxPsiMatcher.isScriptedVariable(element)) return null
+            if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
             val name = element.name
             if (name.isNullOrEmpty()) return null
             if (name.isParameterized()) return null
@@ -33,7 +33,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
         }
 
         override fun getHintLocalisation(element: PsiElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
-            if (!ParadoxPsiMatcher.isScriptedVariable(element)) return null
+            if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
             val name = element.name
             if (name.isNullOrEmpty()) return null
             if (name.isParameterized()) return null
@@ -47,7 +47,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
 
     abstract class Definition : ParadoxHintTextProviderBase() {
         override fun getHintText(element: PsiElement, locale: CwtLocaleConfig?): String? {
-            if (!ParadoxPsiMatcher.isDefinition(element)) return null
+            if (!ParadoxPsiMatchService.isDefinition(element)) return null
             val definitionInfo = element.definitionInfo ?: return null
             val name = definitionInfo.name
             if (name.isEmpty()) return null
@@ -56,7 +56,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
         }
 
         override fun getHintLocalisation(element: PsiElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
-            if (!ParadoxPsiMatcher.isDefinition(element)) return null
+            if (!ParadoxPsiMatchService.isDefinition(element)) return null
             val definitionInfo = element.definitionInfo ?: return null
             val name = definitionInfo.name
             if (name.isEmpty()) return null
@@ -72,7 +72,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
 
     abstract class ComplexEnumValue : ParadoxHintTextProviderBase() {
         override fun getHintText(element: PsiElement, locale: CwtLocaleConfig?): String? {
-            if (!ParadoxPsiMatcher.isComplexEnumValueElement(element)) return null
+            if (!ParadoxPsiMatchService.isComplexEnumValueElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             if (name.isParameterized()) return null
@@ -80,7 +80,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
         }
 
         override fun getHintLocalisation(element: PsiElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
-            if (!ParadoxPsiMatcher.isComplexEnumValueElement(element)) return null
+            if (!ParadoxPsiMatchService.isComplexEnumValueElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             if (name.isParameterized()) return null
@@ -89,12 +89,12 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
 
         abstract fun doGetHintText(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): String?
 
-        abstract  fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
+        abstract fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
     }
 
     abstract class DynamicValue : ParadoxHintTextProviderBase() {
         override fun getHintText(element: PsiElement, locale: CwtLocaleConfig?): String? {
-            if (!ParadoxPsiMatcher.isDynamicValueElement(element)) return null
+            if (!ParadoxPsiMatchService.isDynamicValueElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             if (name.isParameterized()) return null
@@ -103,7 +103,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
 
 
         override fun getHintLocalisation(element: PsiElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
-            if (!ParadoxPsiMatcher.isDynamicValueElement(element)) return null
+            if (!ParadoxPsiMatchService.isDynamicValueElement(element)) return null
             val name = element.name
             if (name.isEmpty()) return null
             if (name.isParameterized()) return null

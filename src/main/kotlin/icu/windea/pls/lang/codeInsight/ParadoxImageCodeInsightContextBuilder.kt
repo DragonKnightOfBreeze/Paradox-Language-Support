@@ -9,10 +9,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.inspections.enabledTool
-import icu.windea.pls.core.inspections.getInspectionToolState
+import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.inspections.ChronicleInspections
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
@@ -36,7 +36,7 @@ object ParadoxImageCodeInsightContextBuilder {
                     is ParadoxDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
         })
@@ -54,11 +54,11 @@ object ParadoxImageCodeInsightContextBuilder {
         definition: ParadoxDefinitionElement,
         fromInspection: Boolean = false,
     ): ParadoxImageCodeInsightContext? {
-        val inspection = if (fromInspection) getMissingImageInspection(definition) else null
+        val project = definition.project
+        val inspection = if (fromInspection) getMissingImageInspection(project, definition) else null
 
         if (!(inspection == null || inspection.checkForDefinitions)) return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val project = definitionInfo.project
         val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
 
         for (info in definitionInfo.images) {
@@ -117,12 +117,12 @@ object ParadoxImageCodeInsightContextBuilder {
         config: CwtMemberConfig<*>,
         fromInspection: Boolean = false,
     ): ParadoxImageCodeInsightContext? {
-        val inspection = if (fromInspection) getMissingImageInspection(element) else null
+        val project = config.configGroup.project
+        val inspection = if (fromInspection) getMissingImageInspection(project, element) else null
 
         if (!(inspection == null || inspection.checkForModifiers)) return null
         if (config.configExpression.type != CwtDataTypes.Modifier) return null
         val modifierName = element.value
-        val project = config.configGroup.project
         val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
 
         run {
@@ -138,13 +138,13 @@ object ParadoxImageCodeInsightContextBuilder {
         return ParadoxImageCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, fromInspection = fromInspection)
     }
 
-    private fun isMissing(iconPath: String, project: Project, context: PsiElement): Boolean {
-        val iconSelector = ParadoxFilePathSearch.selector(project, context)
+    private fun isMissing(iconPath: String, project: Project, element: PsiElement): Boolean {
+        val iconSelector = ParadoxFilePathSearch.selector(project, element)
         val missing = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findFirst() == null
         return missing
     }
 
-    private fun getMissingImageInspection(context: PsiElement): MissingImageInspection? {
-        return getInspectionToolState("ParadoxScriptMissingImage", context, context.project)?.enabledTool?.castOrNull()
+    private fun getMissingImageInspection(project: Project, element: PsiElement): MissingImageInspection? {
+        return InspectionService.getEnabledTool(ChronicleInspections.Script.MissingImage, project, element).castOrNull()
     }
 }

@@ -7,10 +7,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -27,20 +28,20 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
-        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return null
+        if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return null
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.inlineScripts.search", expression)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.inlineScripts.search", expression)) {
             // need read actions here if necessary
             readAction {
                 ParadoxInlineScriptManager.getInlineScriptFiles(expression, project, element).let { targets.addAll(it) }
             }
         }
-        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
+        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileManager.findScriptProperty(file, offset)
+        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -51,17 +52,17 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         if (sourceElement !is ParadoxScriptProperty) return ""
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
         if (expression.isNullOrEmpty()) return ""
-        return PlsBundle.message("script.goto.inlineScripts.chooseTitle", expression.escapeXml())
+        return ChronicleBundle.message("script.goto.inlineScripts.chooseTitle", expression.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         if (sourceElement !is ParadoxScriptProperty) return ""
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
         if (expression.isNullOrEmpty()) return ""
-        return PlsBundle.message("script.goto.inlineScripts.findUsagesTitle", expression.escapeXml())
+        return ChronicleBundle.message("script.goto.inlineScripts.findUsagesTitle", expression.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.inlineScripts.notFoundMessage")
+        return ChronicleBundle.message("script.goto.inlineScripts.notFoundMessage")
     }
 }

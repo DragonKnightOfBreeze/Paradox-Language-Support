@@ -39,7 +39,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }
         assertNotNull(k1)
         val definition = k1!!
 
@@ -77,17 +77,17 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_1.txt")
         myFixture.configureByText("test_1.txt", "inline_script = test/inline_script")
         val file1 = myFixture.file as ParadoxScriptFile
-        val usage1 = selectScope { file1.ofPath("inline_script").asProperty().one() }
+        val usage1 = selectScope { file1.queryBy("inline_script").asProperty().one() }
         assertNotNull(usage1)
-        val inlined1 = selectScope { file1.ofPath("k0", inline = true).asProperty().one() }
+        val inlined1 = selectScope { file1.queryBy("k0", inline = true).asProperty().one() }
         assertNotNull(inlined1)
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_2.txt")
         myFixture.configureByText("test_2.txt", "inline_script = { script = test/inline_script PARAM = var }")
         val file2 = myFixture.file as ParadoxScriptFile
-        val usage2 = selectScope { file2.ofPath("inline_script").asProperty().one() }
+        val usage2 = selectScope { file2.queryBy("inline_script").asProperty().one() }
         assertNotNull(usage2)
-        val inlined2 = selectScope { file2.ofPath("k0", inline = true).asProperty().one() }
+        val inlined2 = selectScope { file2.queryBy("k0", inline = true).asProperty().one() }
         assertNotNull(inlined2)
     }
 
@@ -103,10 +103,10 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val notInlined = selectScope { file.ofPath("a/b/k0", inline = false).asProperty().one() }
+        val notInlined = selectScope { file.queryBy("a/b/k0", inline = false).asProperty().one() }
         assertNull(notInlined)
 
-        val inlined = selectScope { file.ofPath("a/b/k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("a/b/k0", inline = true).asProperty().one() }
         assertNotNull(inlined)
         assertEquals("k0", inlined!!.name)
     }
@@ -126,7 +126,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         myFixture.configureByText("test_inline_nested.txt", "inline_script = test/inline_script_nested_1")
 
         val file = myFixture.file as ParadoxScriptFile
-        val k2 = selectScope { file.ofPath("k2", inline = true).asProperty().one() }
+        val k2 = selectScope { file.queryBy("k2", inline = true).asProperty().one() }
         assertNotNull(k2)
         assertEquals("v2", k2!!.value)
     }
@@ -143,7 +143,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         myFixture.configureByText("test_inline_recursive.txt", "inline_script = test/inline_script_recursive")
 
         val file = myFixture.file as ParadoxScriptFile
-        val k0List = selectScope { file.ofPath("k0", inline = true).asProperty().all() }
+        val k0List = selectScope { file.queryBy("k0", inline = true).asProperty().all() }
         assertEquals(1, k0List.size)
         assertEquals("v0", k0List.single().value)
     }
@@ -157,7 +157,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         myFixture.configureByText("test_inline_ext.txt", "inline_script = test/inline_script_ext.txt")
 
         val file = myFixture.file as ParadoxScriptFile
-        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("k0", inline = true).asProperty().one() }
         assertNull(inlined)
     }
 
@@ -170,10 +170,10 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }
         assertNotNull(k1)
 
-        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("k0", inline = true).asProperty().one() }
         assertNull(inlined)
     }
 
@@ -191,11 +191,11 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val ka = selectScope { file.ofPath("ka", inline = true).asProperty().one() }
+        val ka = selectScope { file.queryBy("ka", inline = true).asProperty().one() }
         assertNotNull(ka)
         assertEquals("va", ka!!.value)
 
-        val kb = selectScope { file.ofPath("kb", inline = true).asProperty().one() }
+        val kb = selectScope { file.queryBy("kb", inline = true).asProperty().one() }
         assertNotNull(kb)
         assertEquals("vb", kb!!.value)
     }
@@ -212,7 +212,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("k0", inline = true).asProperty().one() }
         assertNull(inlined)
     }
 
@@ -228,7 +228,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("k0", inline = true).asProperty().one() }
         assertNotNull(inlined)
         assertEquals("v0", inlined!!.value)
     }
@@ -245,7 +245,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("k0", inline = true).asProperty().one() }
         assertNull(inlined)
     }
 
@@ -261,10 +261,10 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         )
 
         val file = myFixture.file as ParadoxScriptFile
-        val k1 = selectScope { file.ofPath("k1").asProperty().one() }
+        val k1 = selectScope { file.queryBy("k1").asProperty().one() }
         assertNotNull(k1)
 
-        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        val inlined = selectScope { file.queryBy("k0", inline = true).asProperty().one() }
         assertNull(inlined)
     }
 
@@ -279,8 +279,8 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         myFixture.configureByText("test_inline_mutual_rec.txt", "inline_script = test/inline_script_a_rec")
 
         val file = myFixture.file as ParadoxScriptFile
-        val ka = selectScope { file.ofPath("ka", inline = true).asProperty().all() }
-        val kb = selectScope { file.ofPath("kb", inline = true).asProperty().all() }
+        val ka = selectScope { file.queryBy("ka", inline = true).asProperty().all() }
+        val kb = selectScope { file.queryBy("kb", inline = true).asProperty().all() }
         assertEquals(1, ka.size)
         assertEquals(1, kb.size)
     }

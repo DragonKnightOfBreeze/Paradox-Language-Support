@@ -5,7 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
@@ -80,7 +80,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
+        val icon = ChronicleIcons.Nodes.LocalisationIcon // 使用特定图标
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
@@ -118,7 +118,7 @@ class ParadoxImageFileBasedLocalisationIconSupport(
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
+        val icon = ChronicleIcons.Nodes.LocalisationIcon // 使用特定图标
         val tailText = " from image file"
         val fileSelector = ParadoxFilePathSearch.selector(context.project, context.file).contextSensitive().distinct()
         ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->

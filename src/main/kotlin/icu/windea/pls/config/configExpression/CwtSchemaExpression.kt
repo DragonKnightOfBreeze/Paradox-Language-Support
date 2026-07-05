@@ -20,7 +20,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  *
  * 支持的形态：
  * - 常量（[Constant]）：不包含 `$` 的原样字符串。
- * - 模板（[Template]）：包含一个或多个参数（`$...$`），如：`$type$`、`type[$type$]`。
+ * - 模板（[Template]）：包含一个或多个参数（`$...$`），如：`$type$`、`type_$type$`。
  * - 类型（[Type]）：以单个 `$` 起始，如：`$any`、`$int`。
  * - 约束（[Constraint]）：以 `$$` 起始，如：`$$declaration`。
  * - 枚举（[Enum]）：以 `$enum:` 起始并以 `$` 结尾，如：`$enum:ship_size$`。

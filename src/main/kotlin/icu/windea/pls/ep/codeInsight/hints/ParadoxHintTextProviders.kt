@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.codeInsight.hints
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
@@ -83,7 +83,7 @@ class ParadoxExtendedScriptedVariableHintTextProvider : ParadoxHintTextProviderB
     override fun doGetHintText(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): String? {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup) ?: return null
         val hint = config.hint?.orNull()
         return hint
@@ -154,7 +154,7 @@ class ParadoxExtendedComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
 
     override fun doGetHintText(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): String? {
         val name = element.name
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
         val config = configs.findByPattern(name, element, configGroup) ?: return null
         val hint = config.hint?.orNull()
@@ -172,7 +172,7 @@ class ParadoxExtendedDynamicValueHintTextProvider : ParadoxHintTextProviderBase.
 
     override fun doGetHintText(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): String? {
         val name = element.name
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
         for (type in element.types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findByPattern(name, element, configGroup) ?: continue

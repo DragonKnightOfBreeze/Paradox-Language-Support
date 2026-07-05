@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstance
@@ -27,7 +27,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 
@@ -77,14 +76,14 @@ object ParadoxEventManipulationService {
     fun getEventDeclarationFromEventId(element: ParadoxScriptStringExpressionElement, gameType: ParadoxGameType? = selectGameType(element)): ParadoxScriptProperty? {
         // if (element.text.isParameterized()) return null // can be parameterized
         if (gameType == null || gameType == ParadoxGameType.Core) return null
-        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
+        val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
         return getEventDeclarationFromEventIdInternal(eventConfig, element)
     }
 
     fun getEventDeclarationCandidateFromEventId(element: ParadoxScriptStringExpressionElement, gameType: ParadoxGameType? = selectGameType(element)): ParadoxScriptMember? {
         // if (element.text.isParameterized()) return null // can be parameterized
         if (gameType == null || gameType == ParadoxGameType.Core) return null
-        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
+        val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return null
         if (eventConfig.nameField == null) {
             // for code completion
             if (element is ParadoxScriptString && element.parent is ParadoxScriptRootBlock) return element
@@ -94,24 +93,28 @@ object ParadoxEventManipulationService {
 
     private fun getEventDeclarationFromEventIdInternal(eventConfig: CwtTypeConfig, element: ParadoxScriptStringExpressionElement): ParadoxScriptProperty? {
         // NOTE 2.1.10 simple check
+        // NOTE 2.2.0 no inline atm
+        val type = ParadoxDefinitionTypes.event
+        val nameField = eventConfig.nameField
         return when {
             // from key
-            eventConfig.nameField == null -> {
+            nameField == null -> {
+                // 不处理内联的情况
                 if (element !is ParadoxScriptPropertyKey) return null
-                val event = element.parentProperty ?: return null
-                if (event.parent !is ParadoxScriptRootBlock) return null// NOTE 2.1.10 simple check
-                if (event.definitionInfo?.type != ParadoxDefinitionTypes.event) return null
+                val event = selectScope { element.queryParentBy("*").asDefinition(type) } ?: return null
+                if (event !is ParadoxScriptProperty) return null
+                if (event.parent !is ParadoxScriptRootBlock) return null
                 event
             }
             // from id field
-            else -> {
+            nameField.isNotEmpty() -> {
                 if (element !is ParadoxScriptString) return null
-                val event = selectScope { element.parentOfPath("id") } // 不处理内联的情况
+                val event = selectScope { element.queryParentBy("*/$nameField").asDefinition(type) } ?: return null
                 if (event !is ParadoxScriptProperty) return null
-                if (event.parent !is ParadoxScriptRootBlock) return null// NOTE 2.1.10 simple check
-                if (event.definitionInfo?.type != ParadoxDefinitionTypes.event) return null
+                if (event.parent !is ParadoxScriptRootBlock) return null
                 event
             }
+            else -> null
         }
     }
 

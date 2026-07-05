@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.util.indexing.DataIndexer
+import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.ScalarIndexExtension
 import com.intellij.util.io.EnumeratorStringDescriptor
-import icu.windea.pls.core.IndexInputFilter
 import icu.windea.pls.lang.fileInfo
 import java.util.*
 
@@ -15,16 +15,16 @@ import java.util.*
  *
  * 仅索引通过包含检查的目录（排除隐藏目录和某些特定目录）。
  *
- * @see PlsIndexUtil.isIncludedDirectory
+ * @see ChronicleIndexUtil.isIncludedDirectory
  */
 class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
-    private val inputFilter = IndexInputFilter { it.fileInfo != null }
+    private val inputFilter = FileBasedIndex.InputFilter { it.fileInfo != null }
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getName() = PlsIndexKeys.IncludedDirectory
+    override fun getName() = ChronicleIndexKeys.IncludedDirectory
 
-    override fun getVersion() = PlsIndexVersions.IncludedDirectory
+    override fun getVersion() = ChronicleIndexVersions.IncludedDirectory
 
     override fun getInputFilter() = inputFilter
 
@@ -39,7 +39,7 @@ class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
     private fun indexData(fileContent: FileContent): Map<String, Void?> {
         val file = fileContent.file
         if (!file.isDirectory) return emptyMap()
-        if (!PlsIndexUtil.isIncludedDirectory(file)) return emptyMap()
+        if (!ChronicleIndexUtil.isIncludedDirectory(file)) return emptyMap()
         val fileInfo = file.fileInfo ?: return emptyMap()
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path.path

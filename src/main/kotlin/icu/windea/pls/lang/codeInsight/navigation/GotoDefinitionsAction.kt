@@ -6,10 +6,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.editor
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
  * 导航到当前定义的包括自身在内的拥有相同名称和主要类型的定义。
@@ -21,22 +21,20 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
 
     override fun getHandler() = handler
 
-    override fun update(event: AnActionEvent) {
-        val presentation = event.presentation
-        presentation.isEnabledAndVisible = false
-        val project = event.project ?: return
-        val editor = event.editor ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
-        presentation.isVisible = true
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
+        if (!ParadoxPsiFileMatchService.isScriptFile(file)) return // 仅限有效的脚本文件
+        e.presentation.isVisible = true
+        val element = findElement(file, editor.caretModel.offset) ?: return
         if (!element.isDefinitionTypeKeyOrName()) return
-        presentation.isEnabled = true
+        e.presentation.isEnabled = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 }

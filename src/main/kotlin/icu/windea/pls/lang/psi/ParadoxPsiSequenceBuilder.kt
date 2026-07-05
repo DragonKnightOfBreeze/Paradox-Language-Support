@@ -17,8 +17,8 @@ import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.withContextRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -27,29 +27,29 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 
-@Suppress("unused")
 object ParadoxPsiSequenceBuilder {
     // region Paradox Script
 
-    fun members(element: ParadoxScriptMemberContainer): WalkingSequence<ParadoxScriptMember> {
+    fun members(element: ParadoxScriptMemberContext): WalkingSequence<ParadoxScriptMember> {
         val context = WalkingContext()
         val delegate = with(context) { builderMembers(element) }
         return WalkingSequence(delegate, context)
     }
 
     context(context: WalkingContext)
-    private fun builderMembers(element: ParadoxScriptMemberContainer): Sequence<ParadoxScriptMember> {
-        val rootElement = element.membersRoot ?: return emptySequence()
+    private fun builderMembers(element: ParadoxScriptMemberContext): Sequence<ParadoxScriptMember> {
+        val containerElement = element.memberContainer ?: return emptySequence()
         return sequence {
-            yieldMembers(rootElement)
+            yieldMembers(containerElement)
         }
     }
 
     context(context: WalkingContext)
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContainer) {
-        element.children(context.forward).forEach { child ->
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContext) {
+        val containerElement = element.memberContainer ?: return
+        containerElement.children(context.forward).forEach { child ->
             when (child) {
                 is ParadoxScriptMember -> yieldMember(child)
                 is ParadoxScriptConditionalBlock -> if (context.conditional) yieldConditionalMembers(child)
@@ -74,15 +74,14 @@ object ParadoxPsiSequenceBuilder {
     private suspend fun SequenceScope<ParadoxScriptMember>.yieldInlineMember(element: ParadoxScriptMember) {
         ProgressManager.checkCanceled()
         // NOTE context recursion guard is required here (again)
-        val inlined = ParadoxInlineService.getInlinedElement(element) ?: return
+        val inlinedElement = ParadoxInlineService.getInlinedElement(element) ?: return
         withContextRecursionGuard(context, "ParadoxPsiSequenceBuilder.yieldInlineMember") {
-            withRecursionCheck(inlined) {
-                if (inlined is ParadoxScriptFile) {
-                    val rootElement = inlined.membersRoot ?: return
-                    yieldMembers(rootElement)
+            withRecursionCheck(inlinedElement) {
+                if (inlinedElement is ParadoxScriptFile) {
+                    yieldMembers(inlinedElement)
                     return
                 }
-                yieldMember(inlined)
+                yieldMember(inlinedElement)
             }
         }
     }
@@ -281,14 +280,14 @@ object ParadoxPsiSequenceBuilder {
                 }
             } else {
                 val rows = firstRow.siblings(forward = forward, withSelf = false).filterIsInstance<ParadoxCsvRow>().takeWhile { it != lastRow }
-                val startIndex = previous.getColumnIndex()
-                val endIndex = column.getColumnIndex()
+                val startIndex = ParadoxCsvPsiService.getColumnIndex(previous)
+                val endIndex = ParadoxCsvPsiService.getColumnIndex(column)
                 val columnsBetween = rows.flatMap { row0 ->
                     when (row0) {
                         firstRow -> previous.siblings(forward = forward, withSelf = false)
-                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() <= endIndex }
+                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { ParadoxCsvPsiService.getColumnIndex(it) <= endIndex }
                         lastRow -> column.siblings(forward = !forward, withSelf = false)
-                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() >= startIndex }.toList().reversed().asSequence()
+                            .filterIsInstance<ParadoxCsvColumn>().takeWhile { ParadoxCsvPsiService.getColumnIndex(it) >= startIndex }.toList().reversed().asSequence()
                         else -> row0.children(forward = forward)
                             .filterIsInstance<ParadoxCsvColumn>().toList().subList(startIndex, endIndex).asSequence()
                     }

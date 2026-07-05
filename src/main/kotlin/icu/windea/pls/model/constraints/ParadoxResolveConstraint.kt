@@ -5,8 +5,13 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.isCommandExpression
+import icu.windea.pls.lang.psi.isComplexExpression
+import icu.windea.pls.lang.psi.isDatabaseObjectExpression
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationConceptPsiReference
@@ -15,7 +20,6 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterP
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
-import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionTargetPsiReference
 import icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReference
@@ -29,15 +33,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.localisation.psi.isCommandExpression
-import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.isResolvableExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 enum class ParadoxResolveConstraint {
     ScriptedVariable {
@@ -63,14 +63,14 @@ enum class ParadoxResolveConstraint {
     Definition {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxScriptExpressionElement -> element.isResolvableExpression() && element.isExpression()
+                is ParadoxScriptExpressionElement -> element.isResolvableLiteralExpression() && element.isDataExpression()
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxLocalisationIcon -> true // <sprite>, etc.
                 is ParadoxLocalisationConceptCommand -> true // <game_concept>
                 is ParadoxLocalisationTextColorAwareElement -> true // <text_color>
                 is ParadoxLocalisationTextIcon -> true // <text_icon>
                 is ParadoxLocalisationTextFormat -> true // <text_format>
-                is ParadoxCsvColumn -> !element.isHeaderColumn()
+                is ParadoxCsvColumn -> !ParadoxCsvPsiService.isHeaderColumn(element)
                 else -> false
             }
         }
@@ -109,7 +109,7 @@ enum class ParadoxResolveConstraint {
     Localisation {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                is ParadoxScriptStringExpressionElement -> element.isDataExpression()
                 is ParadoxLocalisationExpressionElement -> element.isDatabaseObjectExpression(strict = true)
                 is ParadoxLocalisationParameter -> true
                 else -> false
@@ -138,8 +138,8 @@ enum class ParadoxResolveConstraint {
     ComplexEnumValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
-                is ParadoxCsvColumn -> !element.isHeaderColumn()
+                is ParadoxScriptStringExpressionElement -> element.isDataExpression()
+                is ParadoxCsvColumn -> !ParadoxCsvPsiService.isHeaderColumn(element)
                 else -> false
             }
         }
@@ -147,6 +147,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
                 is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                is ParadoxComplexEnumValuePsiReference -> true
                 is ParadoxScriptExpressionPsiReference -> {
                     reference.configs.any { config ->
                         val configExpression = config.configExpression
@@ -154,7 +155,6 @@ enum class ParadoxResolveConstraint {
                         dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
                     }
                 }
-                is ParadoxComplexEnumValuePsiReference -> true
                 is ParadoxCsvExpressionPsiReference -> {
                     val config = reference.columnConfig.valueConfig ?: return false
                     val configExpression = config.configExpression
@@ -172,8 +172,9 @@ enum class ParadoxResolveConstraint {
     DynamicValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                is ParadoxScriptStringExpressionElement -> element.isDataExpression()
                 is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
+                is ParadoxCsvColumn -> !ParadoxCsvPsiService.isHeaderColumn(element)
                 else -> false
             }
         }
@@ -188,6 +189,12 @@ enum class ParadoxResolveConstraint {
                         dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                     }
                 }
+                is ParadoxCsvExpressionPsiReference -> {
+                    val config = reference.columnConfig.valueConfig ?: return false
+                    val configExpression = config.configExpression
+                    val dataType = configExpression.type
+                    dataType in CwtDataTypeSets.DynamicValue
+                }
                 else -> false
             }
         }
@@ -200,7 +207,7 @@ enum class ParadoxResolveConstraint {
             return when (element) {
                 is ParadoxParameter -> true
                 is ParadoxConditionParameter -> true
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                is ParadoxScriptStringExpressionElement -> element.isDataExpression()
                 else -> false
             }
         }
@@ -228,7 +235,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
                 is ParadoxLocalisationParameter -> true
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                is ParadoxScriptStringExpressionElement -> element.isDataExpression()
                 else -> false
             }
         }

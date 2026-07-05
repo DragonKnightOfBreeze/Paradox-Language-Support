@@ -3,7 +3,7 @@ package icu.windea.pls.lang.intentions.script
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -46,7 +46,7 @@ class ReplaceDefineReferenceWithEvaluationResultIntentionTest : BasePlatformTest
 
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
 
-        val intentionName = PlsBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
+        val intentionName = ChronicleBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
         myFixture.configureByText("define_references.test.txt", "description = <caret>define:NEntrance|INTRODUCE")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -62,7 +62,7 @@ class ReplaceDefineReferenceWithEvaluationResultIntentionTest : BasePlatformTest
 
         markFileInfo(ParadoxGameType.Stellaris, "common/entrance.txt")
 
-        val intentionName = PlsBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
+        val intentionName = ChronicleBundle.message("intention.replaceDefineReferenceWithEvaluationResult")
         myFixture.configureByText("define_references.test.txt", "description = <caret>define:NEntrance|INTRODUCE_UNDEFINED")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
     }

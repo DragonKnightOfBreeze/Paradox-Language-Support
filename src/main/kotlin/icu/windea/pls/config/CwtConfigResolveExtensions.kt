@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.inlineConfig
 
-// Config Resolve Extensions
+// region Config Resolve Extensions
 
 /** 解析为被内联的规则，或者返回自身。 */
 @Suppress("UNCHECKED_CAST")
@@ -26,3 +26,5 @@ fun <T : CwtConfig<*>> T.resolvedOrNull(): T? {
         else -> this
     } as? T
 }
+
+// endregion

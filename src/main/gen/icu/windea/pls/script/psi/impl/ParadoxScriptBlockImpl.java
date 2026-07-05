@@ -83,8 +83,8 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull ParadoxScriptBlock getMembersRoot() {
-    return ParadoxScriptPsiImplUtil.getMembersRoot(this);
+  public @NotNull ParadoxScriptBlock getMemberContainer() {
+    return ParadoxScriptPsiImplUtil.getMemberContainer(this);
   }
 
   @Override
@@ -103,7 +103,7 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 

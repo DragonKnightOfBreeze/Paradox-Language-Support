@@ -13,19 +13,19 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.model.constants.ChronicleStrings
 
 class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            COMMENT -> PlsStrings.commentFolder
+            COMMENT -> ChronicleStrings.commentFolder
             else -> null
         }
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
             else -> false
@@ -33,15 +33,15 @@ class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = PlsSettings.getInstance().state.folding
+        val settings = ChronicleSettings.getInstance().state.folding
         collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
         collectCommentDescriptors(element, descriptors, settings)
     }
 
-    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
         if (!settings.comments) return
         val allSiblingLineComments = PsiService.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return

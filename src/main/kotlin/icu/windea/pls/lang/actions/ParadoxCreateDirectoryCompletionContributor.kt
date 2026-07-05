@@ -6,11 +6,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiDirectory
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxFileInfo
 
 /**
@@ -31,7 +31,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         "localisation",
     )
 
-    override fun getDescription() = PlsBundle.message("create.directory.completion.description")
+    override fun getDescription() = ChronicleBundle.message("create.directory.completion.description")
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()
@@ -60,7 +60,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         val gameType = fileInfo.rootInfo.gameType
         val project = directory.project
         val gameTypePrefix = "${gameType.id}:"
-        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.IncludedDirectory, project)
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.IncludedDirectory, project)
         for (key in allKeys) {
             ProgressManager.checkCanceled()
             if (!key.startsWith(gameTypePrefix)) continue

@@ -5,6 +5,7 @@ import org.junit.Test
 
 class PathMatcherTest {
     // matches(String, String)
+
     @Test
     fun matches_string_exact_and_ignoreCase() {
         Assert.assertTrue(PathMatcher.matches("foo", "foo"))
@@ -13,11 +14,7 @@ class PathMatcherTest {
     }
 
     @Test
-    fun matches_string_any_and_pattern() {
-        // useAny
-        Assert.assertFalse(PathMatcher.matches("bar", "any"))
-        Assert.assertTrue(PathMatcher.matches("bar", "any", useAny = true))
-        // usePattern
+    fun matches_string_pattern() {
         Assert.assertTrue(PathMatcher.matches("foo_bar", "foo_*", usePattern = true))
         Assert.assertFalse(PathMatcher.matches("foo_bar", "FOO_*", usePattern = true))
         Assert.assertTrue(PathMatcher.matches("foo_bar", "FOO_*", ignoreCase = true, usePattern = true))
@@ -25,7 +22,14 @@ class PathMatcherTest {
         Assert.assertFalse(PathMatcher.matches("xy", "?", usePattern = true))
     }
 
+    @Test
+    fun matches_string_any() {
+        Assert.assertFalse(PathMatcher.matches("bar", "any"))
+        Assert.assertTrue(PathMatcher.matches("bar", "any", useAny = true))
+    }
+
     // matches(List<String>, List<String>)
+
     @Test
     fun matches_list_basic_and_mixed_flags() {
         val a = listOf("foo", "bar")
@@ -50,6 +54,7 @@ class PathMatcherTest {
     }
 
     // relative(List<String>, List<String>)
+
     @Test
     fun relative_basic_and_equal_and_mismatch() {
         val base = listOf("foo")

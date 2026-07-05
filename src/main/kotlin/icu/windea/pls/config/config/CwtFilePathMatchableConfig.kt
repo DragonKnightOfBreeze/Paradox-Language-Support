@@ -17,14 +17,14 @@ import icu.windea.pls.config.match.CwtConfigMatchService
  */
 interface CwtFilePathMatchableConfig<T : PsiElement> : CwtConfig<T> {
     @FromMember("path: string", multiple = true)
-    val paths: Set<String>
+    val paths: Set<String> get() = emptySet()
     @FromMember("path_file: string?")
-    val pathFile: String?
+    val pathFile: String? get() = null
     @FromMember("path_extension: string?")
-    val pathExtension: String?
+    val pathExtension: String? get() = null
     @FromMember("path_strict: boolean", defaultValue = "no")
-    val pathStrict: Boolean
+    val pathStrict: Boolean get() = false
     @FromMember("path_pattern: string", multiple = true)
-    val pathPatterns: Set<String>
+    val pathPatterns: Set<String> get() = emptySet()
 }
 

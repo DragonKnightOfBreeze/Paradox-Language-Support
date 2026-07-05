@@ -5,15 +5,15 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 复制本地化文本到剪贴板（复制的是原始文本）。
  */
 abstract class CopyLocalisationTextIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationText")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisationText")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null
@@ -31,6 +31,6 @@ abstract class CopyLocalisationTextIntentionBase : ModCommandAction, DumbAware {
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileManager.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE }
+        return ParadoxPsiFileService.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }

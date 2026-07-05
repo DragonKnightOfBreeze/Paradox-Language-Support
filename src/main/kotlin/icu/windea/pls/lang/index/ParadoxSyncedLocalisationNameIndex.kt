@@ -7,7 +7,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * 同步本地化声明的名字的索引。
  */
 class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-    override fun getKey() = PlsIndexKeys.SyncedLocalisationName
+    override fun getKey() = ChronicleIndexKeys.SyncedLocalisationName
 
-    override fun getVersion() = PlsIndexVersions.LocalisationStub
+    override fun getVersion() = ChronicleIndexVersions.LocalisationStub
 }

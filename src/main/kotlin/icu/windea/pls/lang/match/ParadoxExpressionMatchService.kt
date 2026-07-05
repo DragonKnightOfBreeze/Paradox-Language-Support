@@ -3,8 +3,10 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.processUnionCandidates
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
@@ -45,8 +47,25 @@ object ParadoxExpressionMatchService {
 
         return when (configExpression.type) {
             CwtDataTypes.Constant -> true
-            CwtDataTypes.EnumValue -> configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.value) } == true
-            CwtDataTypes.Value -> configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.value) } == true
+            CwtDataTypes.EnumValue -> {
+                val enumName = configExpression.value ?: return false
+                val enumConfig = configGroup.enums[enumName] ?: return false
+                enumConfig.values.contains(expression.value)
+            }
+            CwtDataTypes.UnionValue -> {
+                val unionName = configExpression.value ?: return false
+                val unionConfig = configGroup.unions[unionName] ?: return false
+                unionConfig.processUnionCandidates { valueConfig ->
+                    if (matchesConstant(expression, valueConfig.configExpression, configGroup)) return true
+                    true
+                }
+                false
+            }
+            CwtDataTypes.Value, CwtDataTypes.DynamicValue -> {
+                val type = configExpression.value ?: return false
+                val dynamicValueConfig = configGroup.dynamicValueTypes[type] ?: return false
+                dynamicValueConfig.values.contains(expression.value)
+            }
             else -> false
         }
     }
@@ -57,6 +76,28 @@ object ParadoxExpressionMatchService {
             ParadoxExpressionRole.Value -> !configExpression.isKey
             else -> true
         }
+    }
+
+    fun getMatchedScriptUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): CwtValueConfig? {
+        val unionConfig = configGroup.unions[unionName] ?: return null
+        unionConfig.processUnionCandidates { valueConfig ->
+            val configExpression = valueConfig.configExpression
+            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, valueConfig, configGroup, options)
+            if (matchScriptExpression(context).get(options)) return valueConfig
+            true
+        }
+        return null
+    }
+
+    fun getMatchedCsvUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup): CwtValueConfig? {
+        val unionConfig = configGroup.unions[unionName] ?: return null
+        unionConfig.processUnionCandidates { valueConfig ->
+            val configExpression = valueConfig.configExpression
+            val context = ParadoxCsvExpressionMatchContext(element, expression, configExpression, configGroup)
+            if (matchCsvExpression(context).get()) return valueConfig
+            true
+        }
+        return null
     }
 
     fun getMatchedAliasKey(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {

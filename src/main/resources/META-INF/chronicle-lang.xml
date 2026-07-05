@@ -41,8 +41,8 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings"
-                             instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
+    <applicationConfigurable id="pls" groupId="language" bundle="messages.ChronicleBundle" key="settings"
+                             instance="icu.windea.pls.lang.settings.ChronicleSettingsConfigurable"/>
 
     <!-- make first to optimize performance (before JSLibraryOverrider) -->
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
@@ -86,6 +86,7 @@
 
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>
     <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtKeywordCompletionProvider -->
+    <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtConfigCompletionProvider -->
     <completion.contributor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvCompletionContributor"/>
     <!-- icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvExpressionCompletionProvider -->
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptCompletionContributor"/>
@@ -95,7 +96,7 @@
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableReferenceCompletionProvidernProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider -->
-    <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventIdCompletionProvider -->
+    <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventNamespaceCompletionProviderrovider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxInlineScriptUsageCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionInjectionExpressionCompletionProvider -->
@@ -122,7 +123,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.definitionInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.definitionInfo"
         descriptionKey="script.hints.definitionInfo.description"/>
     <codeInsight.declarativeInlayProvider
@@ -131,7 +132,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.definitionReferenceInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.definitionReferenceInfo"
         descriptionKey="script.hints.definitionReferenceInfo.description"/>
     <codeInsight.declarativeInlayProvider
@@ -140,7 +141,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.complexEnumValueInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.complexEnumValueInfo"
         descriptionKey="script.hints.complexEnumValueInfo.description"/>
     <codeInsight.declarativeInlayProvider
@@ -149,7 +150,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.dynamicValueInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.dynamicValueInfo"
         descriptionKey="script.hints.dynamicValueInfo.description"/>
     <codeInsight.declarativeInlayProvider
@@ -158,7 +159,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.definitionInjectionInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.definitionInjectionInfo"
         descriptionKey="script.hints.definitionInjectionInfo.description"/>
     <codeInsight.declarativeInlayProvider
@@ -167,7 +168,7 @@
         isEnabledByDefault="false"
         group="OTHER_GROUP"
         providerId="paradox.script.scriptedVariableReferenceValue"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.scriptedVariableReferenceValue"
         descriptionKey="script.hints.scriptedVariableReferenceValue.description"/>
     <codeInsight.declarativeInlayProvider
@@ -176,7 +177,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.inlineMathResult"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.inlineMathResult"
         descriptionKey="script.hints.inlineMathResult.description"/>
 
@@ -186,7 +187,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.defineReferenceResult"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.defineReferenceResult"
         descriptionKey="script.hints.defineReferenceResult.description"/>
     <codeInsight.declarativeInlayProvider
@@ -195,7 +196,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.arrayDefineReferenceResult"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="script.hints.arrayDefineReferenceResult"
         descriptionKey="script.hints.arrayDefineReferenceResult.description"/>
 
@@ -205,7 +206,7 @@
         isEnabledByDefault="false"
         group="OTHER_GROUP"
         providerId="paradox.localisation.scriptedVariableReferenceValue"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="localisation.hints.scriptedVariableReferenceValue"
         descriptionKey="localisation.hints.scriptedVariableReferenceValue.description"/>
     <codeInsight.declarativeInlayProvider
@@ -214,7 +215,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.csv.definitionReferenceInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="csv.hints.definitionReferenceInfo"
         descriptionKey="csv.hints.definitionReferenceInfo.description"/>
     <codeInsight.declarativeInlayProvider
@@ -223,9 +224,18 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.csv.complexEnumValueInfo"
-        bundle="messages.PlsBundle"
+        bundle="messages.ChronicleBundle"
         nameKey="csv.hints.complexEnumValueInfo"
         descriptionKey="csv.hints.complexEnumValueInfo.description"/>
+    <codeInsight.declarativeInlayProvider
+        language="PARADOX_CSV"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDynamicValueInfoHintsProvider"
+        isEnabledByDefault="true"
+        group="OTHER_GROUP"
+        providerId="paradox.csv.dynamicValueInfo"
+        bundle="messages.ChronicleBundle"
+        nameKey="csv.hints.dynamicValueInfo"
+        descriptionKey="csv.hints.dynamicValueInfo.description"/>
 
     <codeInsight.declarativeInlayProviderCustomSettingsProvider
         language="PARADOX_SCRIPT"
@@ -266,6 +276,7 @@
                                settingsKeyId="paradox.localisation.localisationReference" isEnabledByDefault="false"/>
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxComplexEnumValueHintTextHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDynamicValueHintTextHintsProvider"/>
 
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider"/>
@@ -359,7 +370,6 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$EventIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$TechIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineNamespaceIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineVariableIndex"/>
@@ -455,7 +465,7 @@
               topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
   </projectListeners>
 
-  <actions resource-bundle="messages.PlsBundle">
+  <actions resource-bundle="messages.ChronicleBundle">
     <group id="Pls.Documentation.PrimaryGroup">
       <separator/>
       <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.codeInsight.documentation.actions.ChangeQuickDocLocalisationLocaleAction"/>
@@ -463,12 +473,12 @@
       <add-to-group group-id="Documentation.PrimaryGroup"/>
     </group>
 
-    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="icu.windea.pls.ChronicleIcons.General.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="icu.windea.pls.ChronicleIcons.General.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
@@ -479,7 +489,7 @@
     <action id="Pls.CopyPathFromEntry" class="icu.windea.pls.lang.actions.CopyPathFromEntryProvider">
       <add-to-group group-id="CopyFileReference"/>
     </action>
-    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageUrlProvider" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageUrlProvider" icon="icu.windea.pls.ChronicleIcons.General.Steam">
       <add-to-group group-id="CopyFileReference"/>
     </action>
 
@@ -642,14 +652,14 @@
 
     <group id="Pls.TableManipulation">
       <action id="Pls.Manipulation.SelectColumnCell" class="icu.windea.pls.lang.actions.csv.SelectColumnCellAction" icon="AllIcons.Actions.InSelection"/>
-      <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddColumnLeft"/>
-      <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddColumnRight"/>
+      <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddColumnLeft"/>
+      <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddColumnRight"/>
       <action id="Pls.Manipulation.MoveColumnLeft" class="icu.windea.pls.lang.actions.csv.MoveColumnLeftAction" icon="AllIcons.Actions.Back"/>
       <action id="Pls.Manipulation.MoveColumnRight" class="icu.windea.pls.lang.actions.csv.MoveColumnRightAction" icon="AllIcons.Actions.Forward"/>
       <action id="Pls.Manipulation.SelectColumn" class="icu.windea.pls.lang.actions.csv.SelectColumnAction" icon="AllIcons.Actions.InSelection"/>
       <action id="Pls.Manipulation.RemoveColumn" class="icu.windea.pls.lang.actions.csv.RemoveColumnAction" icon="AllIcons.Actions.GC"/>
-      <action id="Pls.Manipulation.InsertRowAbove" class="icu.windea.pls.lang.actions.csv.InsertRowAboveAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddRowAbove"/>
-      <action id="Pls.Manipulation.InsertRowBelow" class="icu.windea.pls.lang.actions.csv.InsertRowBelowAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddRowBelow"/>
+      <action id="Pls.Manipulation.InsertRowAbove" class="icu.windea.pls.lang.actions.csv.InsertRowAboveAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddRowAbove"/>
+      <action id="Pls.Manipulation.InsertRowBelow" class="icu.windea.pls.lang.actions.csv.InsertRowBelowAction" icon="icu.windea.pls.ChronicleIcons.EditorActions.AddRowBelow"/>
       <action id="Pls.Manipulation.MoveRowUp" class="icu.windea.pls.lang.actions.csv.MoveRowUpAction" icon="AllIcons.Actions.PreviousOccurence"/>
       <action id="Pls.Manipulation.MoveRowDown" class="icu.windea.pls.lang.actions.csv.MoveRowDownAction" icon="AllIcons.Actions.NextOccurence"/>
       <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction" icon="AllIcons.Actions.InSelection"/>
@@ -663,13 +673,16 @@
     </group>
 
     <group id="Pls.Localisation.Toolbar.Floating">
-      <action id="Pls.Localisation.Styling.CreateReference" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationProperty">
+      <action id="Pls.Localisation.Styling.CreateParameter" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateParameterAction" icon="icu.windea.pls.ChronicleIcons.Nodes.Parameter">
         <keyboard-shortcut first-keystroke="control alt r" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationIcon">
+      <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationIcon">
         <keyboard-shortcut first-keystroke="control alt i" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.PlsIcons.Nodes.LocalisationCommand">
+      <action id="Pls.Localisation.Styling.CreateTextIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateTextIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationTextIcon">
+        <keyboard-shortcut first-keystroke="control alt shift i" keymap="$default"/>
+      </action>
+      <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationCommand">
         <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
       </action>
       <separator/>
@@ -679,16 +692,16 @@
     <group id="Pls.Localisation.InsertGroup">
       <!-- Also add all insert actions into default generate popup -->
       <add-to-group group-id="GenerateGroup" anchor="last"/>
-      <reference ref="Pls.Localisation.Styling.CreateReference"/>
+      <reference ref="Pls.Localisation.Styling.CreateParameter"/>
       <reference ref="Pls.Localisation.Styling.CreateIcon"/>
       <reference ref="Pls.Localisation.Styling.CreateCommand"/>
     </group>
 
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenGameSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenGameSettingsAction" icon="icu.windea.pls.ChronicleIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.settings.OpenModSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.settings.OpenModSettingsAction" icon="icu.windea.pls.ChronicleIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
     </action>

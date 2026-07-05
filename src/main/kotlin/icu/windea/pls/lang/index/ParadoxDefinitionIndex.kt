@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
@@ -29,7 +29,7 @@ import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
@@ -53,9 +53,9 @@ import java.io.DataOutput
 class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxDefinitionIndexInfo>({ it.type }, { it.name })
 
-    override fun getName() = PlsIndexKeys.Definition
+    override fun getName() = ChronicleIndexKeys.Definition
 
-    override fun getVersion() = PlsIndexVersions.Definition
+    override fun getVersion() = ChronicleIndexVersions.Definition
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
@@ -83,7 +83,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         ProgressManager.checkCanceled()
 
         // 2.1.3 要求存在候选项
-        val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
         val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
@@ -96,8 +96,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         ParadoxMemberService.injectRootKeys(psiFile, rootKeyStack)
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
-        val maxDefinitionDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-        val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.maxRootKeyDepth }
+        val maxDefinitionDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
+        val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
         val effectiveMaxDepth = (minOf(maxRootKeyDepth, maxDefinitionDepth) - rootKeyStack.size).coerceAtLeast(0)
 
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
@@ -110,7 +110,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                     if (depth > effectiveMaxDepth) return // optimize
                 }
 
-                if (!ParadoxScriptPsiService.isMemberContextElement(element)) return // optimize
+                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -207,16 +207,16 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     }
 
     private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
-        PlsIndexStatisticService.recordDefinition(info.gameType)
+        ChronicleIndexStatisticService.recordDefinition(info.gameType)
 
         val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type) }
         val name = info.name.letIf(ignoreCase) { it.lowercase() }
         val type = info.type
-        fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
-        fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
         if (name.isEmpty()) return
-        fileData.getOrPut(PlsIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
-        fileData.getOrPut(PlsIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
@@ -229,7 +229,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionIndexInfo>> {
-        return mapOf(PlsIndexUtil.createLazyKey() to emptyList())
+        return mapOf(ChronicleIndexUtil.createLazyKey() to emptyList())
     }
 
     override fun saveValue(storage: DataOutput, value: List<ParadoxDefinitionIndexInfo>) {

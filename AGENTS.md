@@ -133,7 +133,7 @@ Notes:
 Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties.
 
 - Gatekeeping is done via `Assume` predicates (e.g. AI tests, local-environment-only tests, benchmarks).
-- Enable categories using specific system properties (see `AssumePredicates` for details).
+- Enable categories using specific system properties (see `ChronicleAssumes` for details).
 
 ### Best practices
 
@@ -204,11 +204,13 @@ Service vs Manager vs Util:
 
 Here are some common code patterns:
 
-- Get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
-- Get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
+- Get the coroutine scope: Use `ChronicleFacade.getCoroutineScope(project)` (or `ChronicleFacade.getCoroutineScope()` for application level).
+- Get the config group: Use `ChronicleFacade.getConfigGroup(project, gameType)` (or `ChronicleFacade.getConfigGroup(gameType)` for application level).
 - Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
 - Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
-- How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
+- How to filter and query members in script files (e.g., query down, query up, by path): Use `ParadoxPsiSelectScope` API.
+- How to get script data and definition data via property delegates and model classes: Use `ParadoxScriptData` and `ParadoxDefinitionData` API.
+- How to search definitions (e.g., an event with specific event id): Use `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
 - How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Util`, `...Service`, `...Manager` and so on.
 - How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
 - Assume and search existing extensions, components, utils, services, managers, etc., **before** reinventing the wheel.
@@ -284,8 +286,6 @@ For the documents and examples, see:
 
 ## Tooling preferences
 
-Prefer **tool-assisted** workflows over ad-hoc shell usage.
-
 ### General operations
 
 - Prefer built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
@@ -297,9 +297,10 @@ Prefer **tool-assisted** workflows over ad-hoc shell usage.
 
 When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
 
-- Run configurations: list via `get_run_configurations`, run via `execute_run_configuration`
-- IDE inspections / file problems: `get_file_problems`
-- Reformatting: `reformat_file`
+- **Run configurations**: list via `get_run_configurations`, run via `execute_run_configuration`
+- **IDE inspections**: `get_file_problems`
+- **Reformatting**: `reformat_file`
+- Etc.
 
 ### IDE Index MCP server
 
@@ -312,9 +313,3 @@ When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP 
 - **Type hierarchy**: use `ide_type_hierarchy`
 - **Diagnostics**: use `ide_diagnostics`
 - Etc.
-
-Notes:
-
-- Prefer IDE tools because they understand PSI/AST and indices, which is far more accurate than plain text search.
-- If the IDE is still indexing, check readiness first via `ide_index_status` (wait/retry when in dumb mode).
-- If multiple projects are open in one IDE window, always pass the `project_path` parameter to avoid ambiguity.

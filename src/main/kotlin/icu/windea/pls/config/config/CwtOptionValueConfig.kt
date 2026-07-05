@@ -2,8 +2,10 @@
 
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
@@ -11,7 +13,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -32,7 +34,7 @@ import java.util.*
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     companion object {
         @JvmStatic
-        fun resolve(element: CwtValue): CwtOptionValueConfig = CwtOptionValueConfigResolver.resolve(element)
+        fun resolve(element: CwtValue, configGroup: CwtConfigGroup): CwtOptionValueConfig = CwtOptionValueConfigResolver.resolve(element, configGroup)
 
         @JvmStatic
         fun create(
@@ -48,10 +50,10 @@ interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
 private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
-    fun resolve(element: CwtValue): CwtOptionValueConfig {
+    fun resolve(element: CwtValue, configGroup: CwtConfigGroup): CwtOptionValueConfig {
         val value = element.value
         val valueType = CwtTypeResolver.resolveExpressionType(element)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element)
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element, configGroup)
         return create(value, valueType, optionConfigs)
     }
 
@@ -68,7 +70,7 @@ private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
     }
 }
 
-private const val blockValue = PlsStrings.blockFolder
+private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {

@@ -11,7 +11,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
-    // visitBlockElement(o);
+    // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
   }
 
@@ -27,11 +27,13 @@ public class CwtVisitor extends PsiElementVisitor {
   public void visitFloat(@NotNull CwtFloat o) {
     visitValue(o);
     // visitLiteralValue(o);
+    // visitNumberExpressionElement(o);
   }
 
   public void visitInt(@NotNull CwtInt o) {
     visitValue(o);
     // visitLiteralValue(o);
+    // visitNumberExpressionElement(o);
   }
 
   public void visitOption(@NotNull CwtOption o) {
@@ -49,30 +51,27 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull CwtProperty o) {
     visitNamedElement(o);
-    // visitMemberContainer(o);
     // visitMember(o);
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
-    visitStringExpressionElement(o);
-    // visitLiteralValue(o);
+    visitLiteralValue(o);
+    // visitStringExpressionElement(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
-    visitBlockElement(o);
-    // visitMemberContainer(o);
+    visitMemberContainer(o);
   }
 
   public void visitString(@NotNull CwtString o) {
     visitValue(o);
     // visitNamedElement(o);
-    // visitStringExpressionElement(o);
     // visitLiteralValue(o);
+    // visitStringExpressionElement(o);
   }
 
   public void visitValue(@NotNull CwtValue o) {
     visitExpressionElement(o);
-    // visitMemberContainer(o);
     // visitMember(o);
     // visitOptionMember(o);
   }
@@ -85,19 +84,19 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitBlockElement(@NotNull CwtBlockElement o) {
-    visitPsiElement(o);
-  }
-
   public void visitExpressionElement(@NotNull CwtExpressionElement o) {
     visitPsiElement(o);
   }
 
-  public void visitNamedElement(@NotNull CwtNamedElement o) {
+  public void visitLiteralValue(@NotNull CwtLiteralValue o) {
     visitPsiElement(o);
   }
 
-  public void visitStringExpressionElement(@NotNull CwtStringExpressionElement o) {
+  public void visitMemberContainer(@NotNull CwtMemberContainer o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNamedElement(@NotNull CwtNamedElement o) {
     visitPsiElement(o);
   }
 

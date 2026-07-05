@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
@@ -18,7 +18,7 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 通过内嵌提示显示动态值的提示文本。
@@ -31,8 +31,8 @@ import icu.windea.pls.script.psi.isExpression
 class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.dynamicValueHintText")
 
-    override val name get() = PlsBundle.message("script.hints.dynamicValueHintText")
-    override val description get() = PlsBundle.message("script.hints.dynamicValueHintText.description")
+    override val name get() = ChronicleBundle.message("script.hints.dynamicValueHintText")
+    override val description get() = ChronicleBundle.message("script.hints.dynamicValueHintText.description")
     override val key get() = settingsKey
 
     override val renderLocalisation get() = true
@@ -40,10 +40,8 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
-        // ignored for `value_field` or `variable_field` or other variants
-
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val expression = element.name
         if (expression.isEmpty()) return
         if (expression.isParameterized()) return

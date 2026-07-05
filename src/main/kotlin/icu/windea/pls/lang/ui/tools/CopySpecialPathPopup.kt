@@ -2,7 +2,7 @@ package icu.windea.pls.lang.ui.tools
 
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ep.tools.SpecialPathProvider
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
@@ -15,7 +15,7 @@ class CopySpecialPathPopup(
     private val gameType: ParadoxGameType? = null,
 ) : BaseListPopupStep<SpecialPathProvider>() {
     init {
-        val title = PlsBundle.message("popup.title.copySpecialPath")
+        val title = ChronicleBundle.message("popup.title.copySpecialPath")
         val providers = SpecialPathProvider.EP_NAME.extensionList.filter { it.getPath(file, gameType) != null }
         init(title, providers, null)
     }

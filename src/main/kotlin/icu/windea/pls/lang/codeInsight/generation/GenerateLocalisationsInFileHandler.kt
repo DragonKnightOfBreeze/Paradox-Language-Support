@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.selectGameType
@@ -17,7 +17,7 @@ class GenerateLocalisationsInFileHandler(
     val fromInspection: Boolean = false,
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(file))
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
         val localePopup = ParadoxLocaleListPopup(supportedLocales)
         localePopup.onSelected { selectedValue ->
@@ -29,7 +29,7 @@ class GenerateLocalisationsInFileHandler(
 
     fun updateContext(file: PsiFile) {
         val project = file.project
-        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
+        val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(file))
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
         context = ParadoxLocalisationCodeInsightContextBuilder.fromFile(file, supportedLocales, fromInspection)
     }

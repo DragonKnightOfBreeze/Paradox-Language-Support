@@ -10,7 +10,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.cast
@@ -105,7 +105,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
 
         if (!configExpression.isKey) return false
         configs.forEach { c1 ->
-            val pc = c1.memberConfig.parentConfig?.memberConfig?.castOrNull<CwtPropertyConfig>()
+            val pc = c1.containingDirectConfig.parentConfig?.containingDirectConfig?.castOrNull<CwtPropertyConfig>()
             if (pc?.key != Constants.contextName1) return true
             c1.configs?.forEach { c2 ->
                 if (c2 is CwtPropertyConfig && c2.configExpression == configExpression) {

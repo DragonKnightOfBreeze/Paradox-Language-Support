@@ -7,13 +7,13 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.isCommandExpression
+import icu.windea.pls.lang.psi.isComplexExpression
+import icu.windea.pls.lang.psi.isDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.localisation.psi.isCommandExpression
-import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**

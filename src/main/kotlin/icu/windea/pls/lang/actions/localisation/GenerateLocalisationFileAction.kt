@@ -14,8 +14,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -25,14 +25,14 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsStrategies
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -65,13 +65,13 @@ class GenerateLocalisationFileAction : AnAction() {
         val fileMap = buildFileMap(files.toList(), allLocales, project)
         if (fileMap.isEmpty()) return
 
-        val taskTitle = PlsBundle.message("progress.generateLocalisationFiles")
+        val taskTitle = ChronicleBundle.message("progress.generateLocalisationFiles")
         val task = object : Task.Modal(project, taskTitle, true) {
             override fun run(indicator: ProgressIndicator) {
                 val fileDocumentManager = FileDocumentManager.getInstance()
                 val documentManager = PsiDocumentManager.getInstance(project)
 
-                val generationSettings = PlsSettings.getInstance().state.generation
+                val generationSettings = ChronicleSettings.getInstance().state.generation
                 val strategy = generationSettings.localisationStrategy
 
                 val specificText = generationSettings.localisationStrategyText.orEmpty()
@@ -106,7 +106,7 @@ class GenerateLocalisationFileAction : AnAction() {
                         val newParentPath = newPath.parent
                         val newFileName = newPath.fileName
                         indicator.isIndeterminate = false
-                        indicator.text = PlsBundle.message("progress.text.generateLocalisationFile", newFileName)
+                        indicator.text = ChronicleBundle.message("progress.text.generateLocalisationFile", newFileName)
                         indicator.fraction = index / missingLocales.size.toDouble()
 
                         try {
@@ -125,13 +125,13 @@ class GenerateLocalisationFileAction : AnAction() {
                                     e.setName(missingLocaleConfig.id)
                                 } else if (e is ParadoxLocalisationProperty) {
                                     when (strategy) {
-                                        PlsSettingsStrategies.LocalisationGeneration.EmptyText -> {
+                                        ChronicleSettingsStrategies.LocalisationGeneration.EmptyText -> {
                                             e.setValue("")
                                         }
-                                        PlsSettingsStrategies.LocalisationGeneration.SpecificText -> {
+                                        ChronicleSettingsStrategies.LocalisationGeneration.SpecificText -> {
                                             e.setValue(specificText)
                                         }
-                                        PlsSettingsStrategies.LocalisationGeneration.FromLocale -> {
+                                        ChronicleSettingsStrategies.LocalisationGeneration.FromLocale -> {
                                             // 使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
                                             val selector = ParadoxLocalisationSearch.selector(project, baseFile).contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.searchNormal(e.name, selector).find()
@@ -150,14 +150,12 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                PlsNotificationGroups.global().createNotification(
-                    PlsBundle.message("notification.generateLocalisationFile.success.title"),
-                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total),
-                    NotificationType.INFORMATION
-                ).notify(project)
+                val notificationTitle = ChronicleBundle.message("notification.generateLocalisationFile.success.title")
+                val notificationContent = ChronicleBundle.message("notification.generateLocalisationFile.success.content", generated, total)
+                ChronicleNotificationGroups.global().createNotification(notificationTitle, notificationContent, NotificationType.INFORMATION).notify(project)
             }
         }
-        val commandName = PlsBundle.message("command.generateLocalisationFiles")
+        val commandName = ChronicleBundle.message("command.generateLocalisationFiles")
         executeWriteCommand(project, commandName) {
             ProgressManager.getInstance().run(task)
         }
@@ -175,7 +173,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     private fun findLocales(e: AnActionEvent): Map<String, CwtLocaleConfig> {
-        val configGroup = PlsFacade.getConfigGroup(e)
+        val configGroup = ChronicleFacade.getConfigGroup(e)
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
         return supportedLocales.associateBy { it.shortId }
     }

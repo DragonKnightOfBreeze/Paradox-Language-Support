@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction
@@ -17,6 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
  *
  * 说明：
  * - 忽略注入的文件和临时文件。
+ * - 忽略空文件。
  *
  * 提供快速修复：
  * - 改为正确的文件编码
@@ -29,8 +30,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val virtualFile = file.virtualFile
         if (VirtualFileService.isLightFile(virtualFile)) return false
         if (VirtualFileService.isInjectedFile(virtualFile)) return false
-        // 要求是可接受的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file)
+        // 要求是语义上有效的本地化文件
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

@@ -9,11 +9,11 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -30,8 +30,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class UnsetDynamicValueInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -91,7 +91,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
-                val description = PlsBundle.message("inspection.script.unsetDynamicValue.desc", name, dynamicValueType)
+                val description = ChronicleBundle.message("inspection.script.unsetDynamicValue.desc", name, dynamicValueType)
                 holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range)
             }
         }

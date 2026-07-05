@@ -24,7 +24,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
@@ -33,17 +33,17 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
@@ -73,7 +73,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
         val project = e.project ?: return null
         val psiFile = file.toPsiFile(project) ?: return null
-        if (!ParadoxPsiFileMatcher.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
+        if (!ParadoxPsiFileMatchService.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
         if (!ParadoxDefinitionInjectionManager.isSupported(fileInfo.rootInfo.gameType)) return null // 忽略游戏类型不支持的情况
         return file
     }
@@ -87,14 +87,14 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val editor = e.editor ?: return null
         val offset = editor.caretModel.offset
         val psiFile = file.toPsiFile(project) ?: return null
-        ParadoxPsiFileManager.findDefinition(psiFile, offset)?.let { if (it is ParadoxScriptProperty) return it }
-        ParadoxPsiFileManager.findDefinitionInjection(psiFile, offset)?.let { return it }
+        ParadoxPsiFileService.findDefinition(psiFile, offset)?.let { if (it is ParadoxScriptProperty) return it }
+        ParadoxPsiFileService.findDefinitionInjection(psiFile, offset)?.let { return it }
         return null
     }
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsSettings.getInstance().state.others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !ChronicleSettings.getInstance().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -116,7 +116,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val definitionInjectionInfo = element.definitionInjectionInfo
         val definitionInfo = if (definitionInjectionInfo != null) null else element.definitionInfo
         val definitionCandidateInfo = definitionInjectionInfo ?: definitionInfo ?: return null
-        runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitionsOrInjections.collect.title")) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("diff.compare.definitionsOrInjections.collect.title")) {
             val definitionName = definitionInjectionInfo?.target?.orNull() ?: definitionInfo?.name?.orNull()
             val definitionType = definitionInjectionInfo?.type?.orNull() ?: definitionInfo?.type?.orNull()
             if (definitionName != null && definitionType != null) {
@@ -135,8 +135,8 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         }
         if (definitionCandidates.size <= 1) {
             // unexpected
-            val content = PlsBundle.message("diff.compare.definitionsOrInjections.content.notification.empty")
-            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
+            val content = ChronicleBundle.message("diff.compare.definitionsOrInjections.content.notification.empty")
+            ChronicleNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 
@@ -226,13 +226,13 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
                 // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
                 val name = definitionCandidateInfo.name.or.anonymous()
                 val type = definitionCandidateInfo.type
-                return PlsBundle.message("diff.compare.definitionsOrInjections.dialog.title", name, type, path, qualifiedName)
+                return ChronicleBundle.message("diff.compare.definitionsOrInjections.dialog.title", name, type, path, qualifiedName)
             }
             is ParadoxDefinitionInjectionInfo -> {
                 // NOTE 2.1.2 目前的方案：仅显示定义注入的表达式、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
                 val expression = definitionCandidateInfo.expression
                 val type = definitionCandidateInfo.type.orEmpty()
-                return PlsBundle.message("diff.compare.definitionsOrInjections.dialog.title", expression, type, path, qualifiedName)
+                return ChronicleBundle.message("diff.compare.definitionsOrInjections.dialog.title", expression, type, path, qualifiedName)
             }
         }
     }
@@ -250,8 +250,8 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
                 val type = definitionCandidateInfo.type
                 // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
                 return when {
-                    original -> PlsBundle.message("diff.compare.definitionsOrInjections.originalContent.title", name, type, path, qualifiedName)
-                    else -> PlsBundle.message("diff.compare.definitionsOrInjections.content.title", name, type, path, qualifiedName)
+                    original -> ChronicleBundle.message("diff.compare.definitionsOrInjections.originalContent.title", name, type, path, qualifiedName)
+                    else -> ChronicleBundle.message("diff.compare.definitionsOrInjections.content.title", name, type, path, qualifiedName)
                 }
             }
             is ParadoxDefinitionInjectionInfo -> {
@@ -259,8 +259,8 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
                 val expression = definitionCandidateInfo.expression
                 val type = definitionCandidateInfo.type.orEmpty()
                 return when {
-                    original -> PlsBundle.message("diff.compare.definitionsOrInjections.originalContent.title", expression, type, path, qualifiedName)
-                    else -> PlsBundle.message("diff.compare.definitionsOrInjections.content.title", expression, type, path, qualifiedName)
+                    original -> ChronicleBundle.message("diff.compare.definitionsOrInjections.originalContent.title", expression, type, path, qualifiedName)
+                    else -> ChronicleBundle.message("diff.compare.definitionsOrInjections.content.title", expression, type, path, qualifiedName)
                 }
             }
         }
@@ -297,13 +297,13 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
                     // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
                     val name = otherDefinitionCandidateInfo.name.or.anonymous()
                     val type = otherDefinitionCandidateInfo.type
-                    return PlsBundle.message("diff.compare.definitionsOrInjections.popup.name", name, type, path, qualifiedName)
+                    return ChronicleBundle.message("diff.compare.definitionsOrInjections.popup.name", name, type, path, qualifiedName)
                 }
                 is ParadoxDefinitionInjectionInfo -> {
                     // NOTE 2.1.2 目前的方案：仅显示定义注入的表达式、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
                     val expression = otherDefinitionCandidateInfo.expression
                     val type = otherDefinitionCandidateInfo.type.orEmpty()
-                    return PlsBundle.message("diff.compare.definitionsOrInjections.popup.name", expression, type, path, qualifiedName)
+                    return ChronicleBundle.message("diff.compare.definitionsOrInjections.popup.name", expression, type, path, qualifiedName)
                 }
             }
         }
@@ -323,7 +323,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         }
 
         private inner class Popup : BaseListPopupStep<ParadoxDiffRequestProducer>(
-            PlsBundle.message("diff.compare.definitionsOrInjections.popup.title"),
+            ChronicleBundle.message("diff.compare.definitionsOrInjections.popup.title"),
             chain.requests
         ) {
             init {

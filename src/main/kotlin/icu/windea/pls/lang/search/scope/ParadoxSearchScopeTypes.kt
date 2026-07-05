@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search.scope
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.select.selectScope
@@ -56,7 +56,7 @@ object ParadoxSearchScopeTypes {
 
     // scope types
 
-    val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { _, context ->
+    val Definition = ParadoxSearchScopeType.InFile("definition", ChronicleBundle.message("search.scope.type.name.definition")) { _, context ->
         // 2.1.3 兼容定义注入
         when {
             context is PsiElement -> selectScope { context.parentDefinitionCandidate() }
@@ -65,35 +65,35 @@ object ParadoxSearchScopeTypes {
         }
     }.also { map.put(it.id, it) }
 
-    val File = ParadoxSearchScopeType.FromFiles("file", PlsBundle.message("search.scope.type.name.file")) { project, context ->
+    val File = ParadoxSearchScopeType.FromFiles("file", ChronicleBundle.message("search.scope.type.name.file")) { project, context ->
         ParadoxSearchScope.fileScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val RootFile = ParadoxSearchScopeType.FromFiles("rootFile", PlsBundle.message("search.scope.type.name.rootFile")) { project, context ->
+    val RootFile = ParadoxSearchScopeType.FromFiles("rootFile", ChronicleBundle.message("search.scope.type.name.rootFile")) { project, context ->
         ParadoxSearchScope.rootFileScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val Mod = ParadoxSearchScopeType.FromFiles("mod", PlsBundle.message("search.scope.type.name.mod")) { project, context ->
+    val Mod = ParadoxSearchScopeType.FromFiles("mod", ChronicleBundle.message("search.scope.type.name.mod")) { project, context ->
         ParadoxSearchScope.modScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val Game = ParadoxSearchScopeType.FromFiles("game", PlsBundle.message("search.scope.type.name.game")) { project, context ->
+    val Game = ParadoxSearchScopeType.FromFiles("game", ChronicleBundle.message("search.scope.type.name.game")) { project, context ->
         ParadoxSearchScope.gameScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val ModAndGame = ParadoxSearchScopeType.FromFiles("mod_and_game", PlsBundle.message("search.scope.type.name.modAndGame")) { project, context ->
+    val ModAndGame = ParadoxSearchScopeType.FromFiles("mod_and_game", ChronicleBundle.message("search.scope.type.name.modAndGame")) { project, context ->
         ParadoxSearchScope.modAndGameScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val ModWithDependencies = ParadoxSearchScopeType.FromFiles("mod_with_dependencies", PlsBundle.message("search.scope.type.name.mod.withDependencies")) { project, context ->
+    val ModWithDependencies = ParadoxSearchScopeType.FromFiles("mod_with_dependencies", ChronicleBundle.message("search.scope.type.name.mod.withDependencies")) { project, context ->
         ParadoxSearchScope.modWithDependenciesScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val GameWithDependencies = ParadoxSearchScopeType.FromFiles("game_with_dependencies", PlsBundle.message("search.scope.type.name.game.withDependencies")) { project, context ->
+    val GameWithDependencies = ParadoxSearchScopeType.FromFiles("game_with_dependencies", ChronicleBundle.message("search.scope.type.name.game.withDependencies")) { project, context ->
         ParadoxSearchScope.gameWithDependenciesScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val All = ParadoxSearchScopeType.FromFiles("all", PlsBundle.message("search.scope.type.name.all")) { project, context ->
+    val All = ParadoxSearchScopeType.FromFiles("all", ChronicleBundle.message("search.scope.type.name.all")) { project, context ->
         ParadoxSearchScope.allScope(project, context)
     }.also { map.put(it.id, it) }
 }

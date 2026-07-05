@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.analysis
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.data.ChronicleJsonService
+import icu.windea.pls.base.data.ParadoxGameTypeMetadataJson
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
@@ -19,14 +20,9 @@ object ParadoxGameTypeManager {
         val jsonData = ChronicleJsonService.gameTypeMetadataList
         val map = jsonData.associateBy { it.gameType }
         val gameTypes = ParadoxGameType.getAll()
-        return buildMap {
-            for (gameType in gameTypes) {
-                val json = map[gameType]
-                val metadata = json?.run {
-                    ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executablePaths)
-                } ?: ParadoxGameTypeMetadata(gameType)
-                put(gameType, metadata)
-            }
+        return gameTypes.associateWith { gameType ->
+            val json = map.getOrElse(gameType) { ParadoxGameTypeMetadataJson(gameType) }
+            with(json) { ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executablePaths) }
         }.optimized()
     }
 
@@ -38,7 +34,7 @@ object ParadoxGameTypeManager {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> rootInfo.metadata.gameType
             is ParadoxRootInfo.Mod -> rootInfo.metadata.gameTypeInfo?.gameType
-                ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
+                ?: ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
                 ?: ParadoxGameType.getDefault()
             else -> rootInfo.gameType
         }
@@ -47,7 +43,7 @@ object ParadoxGameTypeManager {
     fun getGameVersion(rootInfo: ParadoxRootInfo): String? {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> rootInfo.metadata.version
-            is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)?.gameVersion
+            is ParadoxRootInfo.Mod -> ChronicleProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)?.gameVersion
             else -> rootInfo.gameVersion
         }
     }
@@ -64,7 +60,7 @@ object ParadoxGameTypeManager {
     fun getModQualifiedName(gameType: ParadoxGameType, name: String?, version: String?): String {
         return buildString {
             append(gameType.title).append(" Mod: ")
-            append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
+            append(name?.orNull() ?: ChronicleBundle.message("root.name.unnamed"))
             version?.orNull()?.let { version -> append("@").append(version) }
         }
     }

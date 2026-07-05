@@ -10,12 +10,12 @@ import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerationService {
     val fileLocaleKey = createKey<CwtLocaleConfig>("pls.localiation.generation.file.locale")
@@ -81,7 +81,7 @@ object ParadoxLocalisationGenerationService {
     private fun getLocalisationText(context: ParadoxLocalisationGenerationContext, info: ParadoxLocalisationGenerationInfo): String {
         info.text?.let { return it }
 
-        val generationSettings = PlsSettings.getInstance().state.generation
+        val generationSettings = ChronicleSettings.getInstance().state.generation
         val strategy = generationSettings.localisationStrategy
         val text = when (strategy) {
             LocalisationGenerationStrategy.EmptyText -> ""
@@ -98,7 +98,7 @@ object ParadoxLocalisationGenerationService {
     }
 
     private fun StringBuilder.appendNewLine() {
-        val generationSettings = PlsSettings.getInstance().state.generation
+        val generationSettings = ChronicleSettings.getInstance().state.generation
         val add = generationSettings.blankLineBetweenLocalisationGroups
         if (add) appendLine()
     }

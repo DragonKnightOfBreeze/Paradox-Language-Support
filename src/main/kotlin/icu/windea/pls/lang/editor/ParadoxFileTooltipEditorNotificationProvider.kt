@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.children
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -36,8 +36,8 @@ class ParadoxFileTooltipEditorNotificationProvider : EditorNotificationProvider 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(fileTooltip)
-            panel.createActionLabel(PlsBundle.message("editor.notification.fileTooltip.action.1")) { copyWithLocale(file, project) }
-            panel.createActionLabel(PlsBundle.message("editor.notification.fileTooltip.action.2")) { copyWithoutLocale(file, project) }
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.fileTooltip.action.1")) { copyWithLocale(file, project) }
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.fileTooltip.action.2")) { copyWithoutLocale(file, project) }
             panel
         }
     }

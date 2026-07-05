@@ -16,6 +16,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxScriptedVariableNameIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
@@ -38,7 +41,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.ScriptedVariableName,
+            ChronicleIndexKeys.ScriptedVariableName,
             "var",
             project,
             scope,
@@ -59,7 +62,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            PlsIndexKeys.ScriptedVariableName,
+            ChronicleIndexKeys.ScriptedVariableName,
             "var",
             project,
             scope,

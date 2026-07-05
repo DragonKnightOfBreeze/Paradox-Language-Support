@@ -43,13 +43,13 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         if (filtered.isEmpty()) return null
         val filteredGroup = filtered.groupBy { it.key }.values.filter { it.count() > 1 }
         if (filteredGroup.isEmpty()) return null
-        val blockElement = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
+        val block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
         val blockExpression = ParadoxExpression.resolveBlock()
         val configsToRemove = FastSet<CwtPropertyConfig>()
         filteredGroup.forEachFast f1@{ filteredConfigs ->
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
-                val matchContext = ParadoxScriptExpressionMatchContext(blockElement, blockExpression, valueConfig.configExpression, valueConfig, context.configGroup, context.options)
+                val matchContext = ParadoxScriptExpressionMatchContext(block, blockExpression, valueConfig.configExpression, valueConfig, context.configGroup, context.options)
                 val matchResult = ParadoxExpressionMatchService.matchScriptExpression(matchContext)
                 if (!matchResult.get(matchContext.options)) {
                     configsToRemove += filteredConfig

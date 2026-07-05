@@ -11,7 +11,7 @@ import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.psi.PsiDocumentManager
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -24,7 +24,7 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.quoteIfNeeded
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
 import icu.windea.pls.lang.ui.clause.ElementDescriptors
 import icu.windea.pls.lang.ui.clause.ElementsContext
@@ -42,7 +42,7 @@ object ParadoxClauseTemplateCompletionManager {
     private const val blockFolderId = "{$...$}"
 
     fun buildLookupElement(context: ParadoxCompletionContext, config: CwtConfig<*>, lookupElement: LookupElementBuilder): LookupElementBuilder? {
-        if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
+        if (!ChronicleSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
         val entryConfigs = CwtConfigManager.getEntryConfigs(config)
         val insertHandler = getExpandInsertHandler(context, entryConfigs)
@@ -60,7 +60,7 @@ object ParadoxClauseTemplateCompletionManager {
     }
 
     fun buildBlockLookupElement(context: ParadoxCompletionContext, config: CwtConfig<*>): LookupElementBuilder? {
-        if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
+        if (!ChronicleSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
         val entryConfigs = CwtConfigManager.getEntryConfigs(config)
         val insertHandler = getExpandInsertHandler(context, entryConfigs) ?: return null
@@ -126,10 +126,10 @@ object ParadoxClauseTemplateCompletionManager {
                 val descriptors = descriptorsContext.descriptorsInfo.resultDescriptors
                 val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
 
-                val multiline = descriptors.size > PlsSettings.getInstance().state.completion.clauseTemplate.maxMemberCountInOneLine
+                val multiline = descriptors.size > ChronicleSettings.getInstance().state.completion.clauseTemplate.maxMemberCountInOneLine
                 val around = ParadoxScriptCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
 
-                val commandName = PlsBundle.message("script.command.expandClauseTemplate.name")
+                val commandName = ChronicleBundle.message("script.command.expandClauseTemplate.name")
                 executeWriteCommand(project, commandName, makeWritable = file) {
                     val documentManager = PsiDocumentManager.getInstance(project)
                     documentManager.commitDocument(editor.document)

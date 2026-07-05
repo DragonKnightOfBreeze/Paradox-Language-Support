@@ -13,16 +13,16 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
 
 /**
@@ -33,7 +33,7 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
@@ -43,32 +43,32 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
         // 兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
 
         val parameterValueQuoted = ParadoxConfigManager.getConfigContext(context.file)?.parameterValueQuoted
-        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
-        val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
+        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isDirectValue()))
+        val mayBeDirectValue = element is ParadoxScriptString && element.isDirectValue()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())
 
         val resultToUse = result.withPrefixMatcher(context.keyword)
         if (mayBeKey) {
             // 向上得到 block 或者 file
-            val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
-            val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
-            if (memberElement != null) {
-                ParadoxCompletionManager.addKeyCompletions(context, resultToUse, memberElement)
+            val memberContainer = element.parentOfType<ParadoxScriptMemberContainer>()
+            val member = memberContainer?.parentOfType<ParadoxScriptMember>(withSelf = true)
+            if (member != null) {
+                ParadoxCompletionManager.addKeyCompletions(context, resultToUse, member)
             }
         }
-        if (mayBeValue) {
+        if (mayBeDirectValue) {
             // 向上得到 block 或者 file
-            val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
-            val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
-            if (memberElement != null) {
-                ParadoxCompletionManager.addValueCompletions(context, resultToUse, memberElement)
+            val memberContainer = element.parentOfType<ParadoxScriptMemberContainer>()
+            val member = memberContainer?.parentOfType<ParadoxScriptMember>(withSelf = true)
+            if (member != null) {
+                ParadoxCompletionManager.addValueCompletions(context, resultToUse, member)
             }
         }
         if (mayBePropertyValue) {
             // 向上得到property
-            val propertyElement = element.parentOfType<ParadoxScriptProperty>()
-            if (propertyElement != null) {
-                ParadoxCompletionManager.addPropertyValueCompletions(context, resultToUse, element, propertyElement)
+            val property = element.parentOfType<ParadoxScriptProperty>()
+            if (property != null) {
+                ParadoxCompletionManager.addPropertyValueCompletions(context, resultToUse, element, property)
             }
         }
     }

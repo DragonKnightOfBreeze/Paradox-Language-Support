@@ -9,11 +9,11 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 
@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
  * 更改本地化语言环境。
  */
 class ChangeLocalisationLocaleIntention : ModCommandAction {
-    override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale")
+    override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         findElement(context) ?: return null
@@ -32,25 +32,25 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         val element = findElement(context) ?: return ModCommand.nop()
         val project = context.project
         val gameType = selectGameType(context.file)
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val localeConfigs = configGroup.supportedLocales
         if (localeConfigs.isEmpty()) return ModCommand.nop()
         val items = localeConfigs.map { ItemIntention(element, it) }
-        return ModCommand.chooseAction(PlsBundle.message("intention.changeLocalisationLocale.title"), items)
+        return ModCommand.chooseAction(ChronicleBundle.message("intention.changeLocalisationLocale.title"), items)
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationLocale? {
-        return ParadoxPsiFileManager.findLocalisationLocale(context.file, context.offset, true)
+        return ParadoxPsiFileService.findLocalisationLocale(context.file, context.offset, true)
     }
 
     private class ItemIntention(
         element: ParadoxLocalisationLocale,
         private val localeConfig: CwtLocaleConfig,
     ) : PsiUpdateModCommandAction<ParadoxLocalisationLocale>(element) {
-        override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
+        override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
 
         override fun getPresentation(context: ActionContext, element: ParadoxLocalisationLocale): Presentation {
-            return Presentation.of(localeConfig.idWithText).withIcon(PlsIcons.Nodes.LocalisationLocale)
+            return Presentation.of(localeConfig.idWithText).withIcon(ChronicleIcons.Nodes.LocalisationLocale)
         }
 
         override fun invoke(context: ActionContext, element: ParadoxLocalisationLocale, updater: ModPsiUpdater) {

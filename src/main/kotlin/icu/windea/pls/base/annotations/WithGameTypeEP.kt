@@ -1,7 +1,7 @@
 package icu.windea.pls.base.annotations
 
 /**
- * 注明此扩展点仅适用于特定的游戏类型。
+ * 注明此扩展点可能仅适用于特定的游戏类型。
  *
  * 使用 [WithGameType] 指定实现类适用的游戏类型。
  */

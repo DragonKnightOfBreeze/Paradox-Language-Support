@@ -6,12 +6,12 @@ import com.intellij.codeInspection.ex.ExternalAnnotatorBatchInspection
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
+import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.integrations.settings.TigerHighlightDialog
 import javax.swing.JComponent
 
@@ -23,10 +23,6 @@ import javax.swing.JComponent
  * @see ChronicleTigerLintAnnotator
  */
 class ChronicleTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection, DumbAware {
-    companion object {
-        const val SHORT_NAME = "PlsTigerLint"
-    }
-
     private val callbackLock = CallbackLock()
 
     override fun getBatchSuppressActions(element: PsiElement?): Array<out SuppressQuickFix?> {
@@ -37,13 +33,13 @@ class ChronicleTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBat
         callbackLock.reset()
         return panel {
             row {
-                label(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight"))
-                contextHelp(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+                label(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight"))
+                contextHelp(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
 
-                link(PlsBundle.message("link.configure")) {
+                link(ChronicleBundle.message("link.configure")) {
                     // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                     val dialog = TigerHighlightDialog()
-                    if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
+                    if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                 }
             }
         }

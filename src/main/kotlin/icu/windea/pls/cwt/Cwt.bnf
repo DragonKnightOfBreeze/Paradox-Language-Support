@@ -27,10 +27,9 @@ root ::= root_block ?
 root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
   implements=[
-    "icu.windea.pls.cwt.psi.CwtBlockElement"
     "icu.windea.pls.cwt.psi.CwtMemberContainer"
   ]
-  methods=[getValue getMembersRoot getMembers getComponents]
+  methods=[getValue getMemberContainer getMembers getComponents]
 }
 private root_block_item ::= general_comment | property | value
 
@@ -50,19 +49,18 @@ property ::= property_key property_separator property_value {
   recoverWhile=auto_recover // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtMember"
   ]
   methods=[
     propertyKey="property_key" propertyValue="value"
     getIcon getName setName getNameIdentifier getValue getExpression
-    getMembersRoot getMembers
+    getMemberContainer getMembers
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
   implements=[
-    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
     getIcon getName getValue setValue getExpression
@@ -75,7 +73,6 @@ private property_value ::= value
 value ::= boolean | int | float | string | block {
   implements=[
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
-    "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
@@ -91,20 +88,22 @@ int ::= INT_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
   ]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
   ]
 }
 string ::= STRING_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
     getIcon getName setName getNameIdentifier getValue setValue
@@ -115,12 +114,12 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
   implements=[
-    "icu.windea.pls.cwt.psi.CwtBlockElement"
+    "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
   ]
   methods=[
     getIcon getValue getExpression
-    getMembersRoot getMembers getLeftBound getRightBound getComponents
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
   ]
 }
 private block_item ::= general_comment | property | option | value {

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.findUsages
 import com.intellij.find.findUsages.PersistentFindUsagesOptions
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.project.Project
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 
 // com.intellij.find.findUsages.JavaFindUsagesOptions
 
@@ -36,6 +36,6 @@ open class ParadoxFindUsagesOptions(project: Project) : PersistentFindUsagesOpti
     }
 
     override fun generateUsagesString(): String {
-        return PlsBundle.message("find.usages.panel.title.usages")
+        return ChronicleBundle.message("find.usages.panel.title.usages")
     }
 }

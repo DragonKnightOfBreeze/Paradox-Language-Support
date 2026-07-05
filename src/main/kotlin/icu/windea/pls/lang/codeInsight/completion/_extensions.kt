@@ -8,7 +8,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.ui.JBColor
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -20,7 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.codeInsight.completion.CompletionContext
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -88,7 +88,7 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
 }
 
 fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
-    if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
+    if (ChronicleSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxScriptedVariableManager.getLocalizedNames(element)
     }
@@ -96,7 +96,7 @@ fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: 
 }
 
 fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxDefinitionElement): LookupElementBuilder {
-    if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
+    if (ChronicleSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxDefinitionManager.getLocalizedNames(element)
     }
@@ -104,7 +104,7 @@ fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: Parado
 }
 
 fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: ParadoxScriptStringExpressionElement): LookupElementBuilder {
-    if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
+    if (ChronicleSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxModifierManager.getModifierLocalizedNames(modifierName, element, element.project)
     }
@@ -113,10 +113,10 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
 
 fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): LookupElementBuilder? {
     // check whether scope is matched again here
-    if ((!scopeMatched || !context.scopeMatched) && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
+    if ((!scopeMatched || !context.scopeMatched) && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
 
     val config = context.config
-    val completeWithValue = PlsSettings.getInstance().state.completion.completeWithValue
+    val completeWithValue = ChronicleSettings.getInstance().state.completion.completeWithValue
     val targetConfig = when {
         config is CwtPropertyConfig -> config
         config is CwtAliasConfig -> config.config
@@ -200,7 +200,7 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
     if (icon == null) return null
     when (config) {
         is CwtValueConfig -> {
-            if (config.tagType != null) return PlsIcons.Nodes.Tag
+            if (config.tagType != null) return ChronicleIcons.Nodes.Tag
         }
         is CwtAliasConfig -> {
             val aliasConfig = config
@@ -208,9 +208,9 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
             if (type !in CwtDataTypeSets.ConstantAware) return icon
             val aliasName = aliasConfig.name
             return when {
-                aliasName == "modifier" -> PlsIcons.Nodes.Modifier
-                aliasName == "trigger" -> PlsIcons.Nodes.Trigger
-                aliasName == "effect" -> PlsIcons.Nodes.Effect
+                aliasName == "modifier" -> ChronicleIcons.Nodes.Modifier
+                aliasName == "trigger" -> ChronicleIcons.Nodes.Trigger
+                aliasName == "effect" -> ChronicleIcons.Nodes.Effect
                 else -> icon
             }
         }

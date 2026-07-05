@@ -5,12 +5,12 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -31,7 +31,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val directoryName = relativePath.substringBefore('/')
         val gameTypeId = getGameTypeIdFromDirectoryName(project, directoryName) ?: return null
         val gameType = ParadoxGameType.get(gameTypeId) ?: ParadoxGameType.Core
-        return PlsFacade.getConfigGroup(project, gameType)
+        return ChronicleFacade.getConfigGroup(project, gameType)
     }
 
     override fun processFiles(configGroup: CwtConfigGroup, rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean): Boolean {
@@ -73,7 +73,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun getHintMessage(): String? {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
-        return PlsBundle.message("configGroup.hint", messageIndex)
+        return ChronicleBundle.message("configGroup.hint", messageIndex)
     }
 
     override fun getNotificationMessage(configGroup: CwtConfigGroup): String? {
@@ -83,12 +83,12 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val isBuiltIn = source == CwtConfigGroupFileSource.BuiltIn
         val isGeneral = gameType == ParadoxGameType.Core
         val notification = when {
-            isGeneral -> PlsBundle.message("configGroup.notification.general", messageIndex)
-            else -> PlsBundle.message("configGroup.notification", messageIndex, gameType.title)
+            isGeneral -> ChronicleBundle.message("configGroup.notification.general", messageIndex)
+            else -> ChronicleBundle.message("configGroup.notification", messageIndex, gameType.title)
         }
         val message = when {
-            isEnabled || (isBuiltIn && isGeneral) -> PlsBundle.message("configGroup.notification.enabled", notification)
-            else -> PlsBundle.message("configGroup.notification.disabled", notification)
+            isEnabled || (isBuiltIn && isGeneral) -> ChronicleBundle.message("configGroup.notification.enabled", notification)
+            else -> ChronicleBundle.message("configGroup.notification.disabled", notification)
         }
         return message
     }
@@ -111,7 +111,7 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     override val source get() = CwtConfigGroupFileSource.BuiltIn
 
-    override val isEnabled get() = PlsConfigSettings.getInstance().state.enableBuiltInConfigGroups
+    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableBuiltInConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return rootDirectory
@@ -143,14 +143,14 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Remote
 
-    override val isEnabled get() = PlsConfigSettings.getInstance().state.enableRemoteConfigGroups
+    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableRemoteConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val directory = PlsConfigSettings.getInstance().state.remoteConfigDirectory
+        val directory = ChronicleConfigSettings.getInstance().state.remoteConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
@@ -160,7 +160,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getDirectoryName(project: Project, gameType: ParadoxGameType): String? {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == ParadoxGameType.Core) return "core"
-        val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls[gameType.id]?.orNull()
+        val fromConfig = ChronicleConfigSettings.getInstance().state.configRepositoryUrls[gameType.id]?.orNull()
             ?.let { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it) }
         return fromConfig
     }
@@ -169,7 +169,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         if (directoryName == "core") return directoryName
         val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
-        val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls.entries
+        val fromConfig = ChronicleConfigSettings.getInstance().state.configRepositoryUrls.entries
             .find { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }
             ?.key
         return fromConfig
@@ -189,14 +189,14 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Local
 
-    override val isEnabled get() = PlsConfigSettings.getInstance().state.enableLocalConfigGroups
+    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val directory = PlsConfigSettings.getInstance().state.localConfigDirectory
+        val directory = ChronicleConfigSettings.getInstance().state.localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
@@ -217,7 +217,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Local
 
-    override val isEnabled get() = PlsConfigSettings.getInstance().state.enableProjectLocalConfigGroups
+    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableProjectLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory(project)
@@ -225,7 +225,7 @@ class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() 
 
     private fun doGetRootDirectory(project: Project): VirtualFile? {
         val projectRootDirectory = project.guessProjectDir() ?: return null
-        val rootPath = PlsConfigSettings.getInstance().state.projectLocalConfigDirectoryName?.orNull() ?: ".config"
+        val rootPath = ChronicleConfigSettings.getInstance().state.projectLocalConfigDirectoryName?.orNull() ?: ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
         return file?.takeIf { it.isDirectory }
     }

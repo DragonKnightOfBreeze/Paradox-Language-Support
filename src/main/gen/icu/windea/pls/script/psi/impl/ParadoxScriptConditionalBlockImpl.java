@@ -72,8 +72,8 @@ public class ParadoxScriptConditionalBlockImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
-  public @NotNull ParadoxScriptConditionalBlock getMembersRoot() {
-    return ParadoxScriptPsiImplUtil.getMembersRoot(this);
+  public @NotNull ParadoxScriptConditionalBlock getMemberContainer() {
+    return ParadoxScriptPsiImplUtil.getMemberContainer(this);
   }
 
   @Override
@@ -92,7 +92,7 @@ public class ParadoxScriptConditionalBlockImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 

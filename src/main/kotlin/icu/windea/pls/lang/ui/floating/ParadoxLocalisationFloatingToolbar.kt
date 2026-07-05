@@ -9,7 +9,12 @@ import com.intellij.psi.util.nextLeaf
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.core.ui.FloatingToolbar
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
+import icu.windea.pls.lang.ui.floating.actions.styling.CreateParameterAction
+import icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
+import icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
@@ -26,11 +31,11 @@ import kotlinx.coroutines.CoroutineScope
  * - 快速插入命令 - 不会检查插入后语法是否合法
  * - 更改文本颜色（将会列出所有可选的颜色代码）
  *
- * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateReferenceAction
- * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction
- * @see icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction
- * @see icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup
- * @see icu.windea.pls.lang.ui.floating.actions.styling.SetColorAction
+ * @see CreateParameterAction
+ * @see CreateIconAction
+ * @see CreateCommandAction
+ * @see SetColorGroup
+ * @see SetColorAction
  */
 class ParadoxLocalisationFloatingToolbar(
     editor: Editor,
@@ -53,7 +58,7 @@ class ParadoxLocalisationFloatingToolbar(
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
         // 要求开始位置和结束位置的左边或右边是STRING_TOKEN/LEFT_QUOTE/RIGHT_QUOTE，向上能查找到同一个ParadoxLocalisationPropertyValue
         if (elementAtStart == null || elementAtEnd == null) return false
-        val stringTokenOrQuote = ParadoxLocalisationTokenSets.STRING_TOKEN_OR_QUOTE
+        val stringTokenOrQuote = ParadoxLocalisationTokenSets.STRING_OR_QUOTE_TOKENS
         if (elementAtStart.elementType !in stringTokenOrQuote && elementAtStart.prevLeaf(false).elementType !in stringTokenOrQuote) return false
         if (elementAtEnd.elementType !in stringTokenOrQuote && elementAtEnd.nextLeaf(false).elementType !in stringTokenOrQuote) return false
         val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
@@ -72,10 +77,10 @@ class ParadoxLocalisationFloatingToolbar(
     }
 
     override fun createActionGroup(): ActionGroup? {
-        return CustomActionsSchema.getInstance().getCorrectedAction("Pls.ParadoxLocalisation.Toolbar.Floating") as? ActionGroup
+        return CustomActionsSchema.getInstance().getCorrectedAction("Pls.Localisation.Toolbar.Floating") as? ActionGroup
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return PlsSettings.getInstance().state.others.showLocalisationFloatingToolbar
+        return ChronicleSettings.getInstance().state.others.showLocalisationFloatingToolbar
     }
 }

@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -56,7 +56,7 @@ class ParadoxNameFormatLocalisationNode(
         private val project get() = node.configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
+            return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
         }
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {

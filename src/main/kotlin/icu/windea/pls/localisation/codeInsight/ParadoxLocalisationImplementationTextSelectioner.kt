@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.codeInsight
 import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 
 /**
  * 用于为本地化语言指定快速定义显示的文本范围。
@@ -13,7 +13,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
  */
 class ParadoxLocalisationImplementationTextSelectioner : ImplementationTextSelectioner {
     override fun getTextStartOffset(element: PsiElement): Int {
-        val canAttachComment = ParadoxLocalisationPsiUtil.canAttachComment(element)
+        val canAttachComment = ParadoxLocalisationPsiService.canAttachComment(element)
         return PsiService.findTextStartOffsetInView(element, canAttachComment)
     }
 

@@ -8,6 +8,6 @@ abstract class ParadoxRelatedItemLineMarkerProvider : RelatedItemLineMarkerProvi
     abstract fun getGroup(): @Separator String
 
     protected fun createGotoRelatedItem(elements: Collection<PsiElement>): List<ParadoxGotoRelatedItem> {
-        return elements.mapTo(mutableListOf()) { ParadoxGotoRelatedItem(it, getGroup()) }
+        return elements.map { ParadoxGotoRelatedItem(it, getGroup()) }
     }
 }

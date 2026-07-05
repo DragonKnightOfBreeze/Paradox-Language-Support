@@ -10,6 +10,6 @@ interface ParadoxDefinitionModifierProvider {
     fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxDefinitionModifierProvider>("icu.windea.pls.definitionModifierProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxDefinitionModifierProvider>("icu.windea.pls.definitionModifierProvider")
     }
 }

@@ -8,9 +8,10 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.ui.JBColor
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -18,9 +19,7 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
@@ -28,10 +27,12 @@ import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -50,7 +51,7 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -75,7 +76,7 @@ object ParadoxCompletionManager {
         // 仅提示不在定义声明中的 key（顶级键和类型键）
         if (!configContext.inRoot()) {
             // 忽略 rootKeys 深度超出限制，或者带参数的情况
-            val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+            val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
             val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(context.contextElement) }
             val context = context.copy(isKey = true)
@@ -203,7 +204,7 @@ object ParadoxCompletionManager {
     fun addColumnCompletions(context: ParadoxCompletionContext, result: CompletionResultSet, columnElement: ParadoxCsvColumn) {
         if (context.file !is ParadoxCsvFile) return
 
-        if (columnElement.isHeaderColumn()) {
+        if (ParadoxCsvPsiService.isHeaderColumn(columnElement)) {
             ProgressManager.checkCanceled()
             completeHeaderColumn(context, result)
             return
@@ -279,7 +280,7 @@ object ParadoxCompletionManager {
             val typeConfigToUse = typeConfigsToUse.firstOrNull() ?: continue
             val config = typeConfigToUse.typeKeyPrefixConfig ?: continue
             val element = config.pointer.element
-            val icon = PlsIcons.Nodes.Tag
+            val icon = ChronicleIcons.Nodes.Tag
             val tailText = typeConfigsToUse.joinToString(", ", " for ") { typeConfig ->
                 typeConfig.name
             }
@@ -309,7 +310,7 @@ object ParadoxCompletionManager {
                 else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement, typeToUse, subtypesToUse, context.configGroup)
             }
             val element = config?.pointer?.element
-            val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
+            val icon = if (config == null) ChronicleIcons.Nodes.Property else ChronicleIcons.Nodes.Definition(typeToUse)
             val tailText = if (tuples.isEmpty()) null else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
                 if (subTypeConfig == null) typeConfig.name else "${typeConfig.name}.${subTypeConfig.name}"
             }
@@ -338,7 +339,7 @@ object ParadoxCompletionManager {
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Macro)
+                .withIcon(ChronicleIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ChronicleCompletionPriorities.constant)
@@ -390,7 +391,7 @@ object ParadoxCompletionManager {
             val typeFile = modeConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
-                .withIcon(PlsIcons.Nodes.Macro)
+                .withIcon(ChronicleIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withInsertHandler(ChronicleInsertHandlers.addColon())
@@ -413,7 +414,7 @@ object ParadoxCompletionManager {
             val typeFile = locale.pointer.containingFile
             val matched = localeIdFromFileName?.let { it == locale.id }
             val lookupElement = LookupElementBuilder.create(element, locale.id)
-                .withIcon(PlsIcons.Nodes.LocalisationLocale)
+                .withIcon(ChronicleIcons.Nodes.LocalisationLocale)
                 .withTailText(" " + locale.text) // 前面需要加一个空格
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(localisationLocaleInsertHandler)
@@ -467,7 +468,7 @@ object ParadoxCompletionManager {
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
-            val icon = PlsIcons.Nodes.LocalisationConceptCommand
+            val icon = ChronicleIcons.Nodes.LocalisationConceptCommand
             run action@{
                 val key = concept.name
                 if (key.isEmpty()) return@action
@@ -496,7 +497,7 @@ object ParadoxCompletionManager {
 
     fun completeTextFormat(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val definitionType = ParadoxDefinitionTypes.textFormat
-        val icon = PlsIcons.Nodes.LocalisationTextFormat // 使用特定图标
+        val icon = ChronicleIcons.Nodes.LocalisationTextFormat // 使用特定图标
         val tailText = " from <$definitionType>"
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync p@{ definition ->
@@ -518,7 +519,7 @@ object ParadoxCompletionManager {
 
     fun completeTextIcon(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val definitionType = ParadoxDefinitionTypes.textIcon
-        val icon = PlsIcons.Nodes.LocalisationTextIcon // 使用特定图标
+        val icon = ChronicleIcons.Nodes.LocalisationTextIcon // 使用特定图标
         val tailText = " from <$definitionType>"
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync p@{ definition ->
@@ -540,26 +541,29 @@ object ParadoxCompletionManager {
 
     fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val column = context.contextElement.castOrNull<ParadoxCsvColumn>() ?: return
-        if (!column.isHeaderColumn()) return
-        val file = context.file
-        if (file !is ParadoxCsvFile) return
-        val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
         val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
-        val existingHeaderNames = header.children()
-            .mapNotNull { it as? ParadoxCsvColumn }
-            .filterIsInstance<ParadoxCsvColumn> { it != column }
-            .map { it.value }
-            .toSet()
-        val columnConfigs = rowConfig.columns.filterNot { it.key in existingHeaderNames }.values
+        val rowConfig = ParadoxCsvManager.getRowConfig(header) ?: return
+        val columnConfigs = rowConfig.columns
         if (columnConfigs.isEmpty()) return
-        for (columnConfig in columnConfigs) {
+        // #134 updated logic to get expected column configs
+        val expectedColumnConfigs = when (rowConfig.type) {
+            CwtRowType.Key -> {
+                val columnNames = ParadoxCsvPsiService.getColumnNames(header)
+                columnConfigs.filter { it.key !in columnNames }
+            }
+            CwtRowType.Index -> {
+                val columnIndex = ParadoxCsvPsiService.getColumnIndex(column)
+                columnConfigs.getOrNull(columnIndex).to.singletonListOrEmpty()
+            }
+        }
+        for (columnConfig in expectedColumnConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = columnConfig)
             val name = columnConfig.key
             val element = columnConfig.pointer.element ?: continue
             val typeFile = columnConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Column)
+                .withIcon(ChronicleIcons.Nodes.Column)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ChronicleCompletionPriorities.constant)
             result.addElement(lookupElement, context)

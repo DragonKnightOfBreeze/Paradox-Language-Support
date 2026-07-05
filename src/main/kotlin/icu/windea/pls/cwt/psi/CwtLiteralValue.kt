@@ -2,4 +2,9 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.PsiLiteralValue
 
-interface CwtLiteralValue: PsiLiteralValue
+/**
+ * @see CwtBoolean
+ * @see CwtNumberExpressionElement
+ * @see CwtStringExpressionElement
+ */
+interface CwtLiteralValue : PsiLiteralValue

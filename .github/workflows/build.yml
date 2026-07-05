@@ -52,32 +52,17 @@ jobs:
       changelog: ${{ steps.properties.outputs.changelog }}
       pluginVerifierHomeDir: ${{ steps.properties.outputs.pluginVerifierHomeDir }}
     steps:
-      # Check out the current repository
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      # Free disk space
-      - name: Free Disk Space (Ubuntu)
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: false
 
-      # Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v7
 
-      # Validate wrapper
-      - name: Gradle Wrapper Validation
-        uses: gradle/actions/wrapper-validation@v6
-
-      # Set up Java environment for the next steps
+      # Set up the Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
@@ -87,10 +72,18 @@ jobs:
       # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
+          build-scan-terms-of-use-agree: 'yes'
 
       # Set gradlew executable permission
       - name: Set gradlew executable permission
         run: chmod +x gradlew
+
+      # Validate wrapper
+      - name: Gradle Wrapper Validation
+        uses: gradle/actions/wrapper-validation@v6
 
       # Set environment variables
       - name: Export Properties
@@ -132,74 +125,11 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      # Check out the current repository
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      # Free disk space
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-
-      # Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
-
-      # Set up Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version: 21
-
-      # Setup Gradle
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      # Set gradlew executable permission
-      - name: Set gradlew executable permission
-        run: chmod +x gradlew
-
-      # Run tests
-      - name: Run Tests
-        run: ./gradlew test
-
-      # Collect Tests Result of failed tests
-      - name: Collect Tests Result
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: tests-report
-          path: ${{ github.workspace }}/build/reports/tests
-
-      ## Upload the Kover report to CodeCov
-      #- name: Upload Code Coverage Report
-      #  uses: codecov/codecov-action@v4
-      #  with:
-      #    files: ${{ github.workspace }}/build/reports/kover/report.xml
-
-      # Collect Code Coverage Report
-      - name: Collect Code Coverage Report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: code-coverage-report
-          path: ${{ github.workspace }}/build/reports/kover/html
-
       # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: false
-          large-packages: false
 
       # Check out the current repository
       - name: Fetch Sources
@@ -215,10 +145,62 @@ jobs:
       # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+          build-scan-publish: true
+          build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
+          build-scan-terms-of-use-agree: 'yes'
 
-      # Set gradlew executable permission
-      - name: Set gradlew executable permission
-        run: chmod +x gradlew
+      # Run tests
+      - name: Run Tests
+        run: ./gradlew check
+
+      # Collect Tests Result of failed tests
+      - name: Collect Tests Result
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: tests-result
+          path: ${{ github.workspace }}/build/reports/tests
+
+      # Upload the Kover report to CodeCov
+      - name: Upload Code Coverage Report
+        uses: codecov/codecov-action@v5
+        with:
+          files: ${{ github.workspace }}/build/reports/kover/report.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Run plugin structure verification along with IntelliJ Plugin Verifier
+  verify:
+    name: Verify plugin
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v7
+
+      # Set up Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 21
+
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+          build-scan-publish: true
+          build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
+          build-scan-terms-of-use-agree: 'yes'
 
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache

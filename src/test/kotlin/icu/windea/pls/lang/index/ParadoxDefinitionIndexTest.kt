@@ -19,6 +19,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxDefinitionIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
@@ -47,17 +50,17 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: __all__ 包含 3 个定义
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(3, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "starship" })
         Assert.assertTrue(allInfos.all { it.source == ParadoxDefinitionSource.Property })
         Assert.assertTrue(allInfos.all { it.gameType == gameType })
 
         // Assert: type key
-        val typeInfos = fileData[PlsIndexUtil.createTypeKey("starship")].orEmpty()
+        val typeInfos = fileData[ChronicleIndexUtil.createTypeKey("starship")].orEmpty()
         Assert.assertEquals(3, typeInfos.size)
 
         // Assert: name keys
@@ -67,8 +70,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
             // typeKey 与 name 一致（基础场景）
             Assert.assertEquals(info.name, info.typeKey)
             // name key 存在
-            Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey(info.name)])
-            Assert.assertNotNull(fileData[PlsIndexUtil.createNameTypeKey(info.name, "starship")])
+            Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey(info.name)])
+            Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameTypeKey(info.name, "starship")])
         }
     }
 
@@ -80,10 +83,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 每个定义的 elementOffset 互不相同
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         val offsets = allInfos.map { it.elementOffset }.toSet()
         Assert.assertEquals(3, offsets.size)
         Assert.assertTrue(offsets.all { it >= 0 })
@@ -100,10 +103,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         val oceanFile = myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
 
         val project = project
-        val oceanData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, oceanFile.virtualFile, project)
+        val oceanData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, oceanFile.virtualFile, project)
 
         // Assert: 文件级定义
-        val oceanAll = oceanData[PlsIndexUtil.createAllKey()].orEmpty()
+        val oceanAll = oceanData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(1, oceanAll.size)
         val oceanInfo = oceanAll.single()
         Assert.assertEquals("ocean_world", oceanInfo.name)
@@ -113,9 +116,9 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(gameType, oceanInfo.gameType)
 
         // Assert: name key 和 type key
-        Assert.assertNotNull(oceanData[PlsIndexUtil.createNameKey("ocean_world")])
-        Assert.assertNotNull(oceanData[PlsIndexUtil.createTypeKey("planet_class")])
-        Assert.assertNotNull(oceanData[PlsIndexUtil.createNameTypeKey("ocean_world", "planet_class")])
+        Assert.assertNotNull(oceanData[ChronicleIndexUtil.createNameKey("ocean_world")])
+        Assert.assertNotNull(oceanData[ChronicleIndexUtil.createTypeKey("planet_class")])
+        Assert.assertNotNull(oceanData[ChronicleIndexUtil.createNameTypeKey("ocean_world", "planet_class")])
     }
 
     @Test
@@ -129,8 +132,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val typeKey = PlsIndexUtil.createTypeKey("planet_class")
-        val allPlanetInfos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.Definition, typeKey, scope).flatten()
+        val typeKey = ChronicleIndexUtil.createTypeKey("planet_class")
+        val allPlanetInfos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.Definition, typeKey, scope).flatten()
 
         // Assert
         Assert.assertEquals(2, allPlanetInfos.size)
@@ -150,10 +153,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 2 个定义，name 来自 species_name 字段
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(2, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "alien_species" })
 
@@ -167,10 +170,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("crystalborn", crystalInfo.typeKey)
 
         // name key 应基于 species_name 的值
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("zephyr_folk")])
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("crystal_entity")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("zephyr_folk")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("crystal_entity")])
         // 属性键不应作为 name key
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("zephyrian")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("zephyrian")])
     }
 
     // endregion
@@ -185,20 +188,20 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 匿名定义仍出现在 __all__ 和 type key 下
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(2, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "star_system" })
         Assert.assertTrue(allInfos.all { it.name.isEmpty() })
 
-        val typeInfos = fileData[PlsIndexUtil.createTypeKey("star_system")].orEmpty()
+        val typeInfos = fileData[ChronicleIndexUtil.createTypeKey("star_system")].orEmpty()
         Assert.assertEquals(2, typeInfos.size)
 
         // 匿名定义不生成 name key
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("sol")])
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("alpha_centauri")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("sol")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("alpha_centauri")])
     }
 
     // endregion
@@ -213,10 +216,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 跳过 "stations" 键，索引其下的子属性
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(2, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "space_station" })
 
@@ -224,10 +227,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(expectedNames, allInfos.map { it.name }.toSet())
 
         // "stations" 本身不应被索引为定义
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("stations")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("stations")])
         // 子属性应被索引
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("orbital_hub")])
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("defense_platform")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("orbital_hub")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("defense_platform")])
     }
 
     // endregion
@@ -242,10 +245,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: warp_drive 和 hyperdrive 匹配 ftl_drive（包含过滤）
-        val ftlInfos = fileData[PlsIndexUtil.createTypeKey("ftl_drive")].orEmpty()
+        val ftlInfos = fileData[ChronicleIndexUtil.createTypeKey("ftl_drive")].orEmpty()
         Assert.assertEquals(2, ftlInfos.size)
         Assert.assertEquals(setOf("warp_drive", "hyperdrive"), ftlInfos.map { it.name }.toSet())
     }
@@ -258,10 +261,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: ion_thruster 匹配 sublight_drive（排除过滤）
-        val sublightInfos = fileData[PlsIndexUtil.createTypeKey("sublight_drive")].orEmpty()
+        val sublightInfos = fileData[ChronicleIndexUtil.createTypeKey("sublight_drive")].orEmpty()
         Assert.assertEquals(1, sublightInfos.size)
         Assert.assertEquals("ion_thruster", sublightInfos.single().name)
     }
@@ -274,10 +277,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 共 3 个定义（2 ftl_drive + 1 sublight_drive）
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(3, allInfos.size)
         Assert.assertEquals(setOf("ftl_drive", "sublight_drive"), allInfos.map { it.type }.toSet())
     }
@@ -294,10 +297,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 3 个 district 定义
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(3, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "district" })
 
@@ -310,10 +313,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(expectedTypeKeys, allInfos.map { it.typeKey }.toSet())
 
         // name key 基于去除前缀后的名称
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("city")])
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameTypeKey("city", "district")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("city")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameTypeKey("city", "district")])
         // 完整 typeKey 不应作为 name key
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("d_city")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("d_city")])
     }
 
     @Test
@@ -325,10 +328,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 所有 typeKey 都以 "d_" 开头
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertTrue(allInfos.all { it.typeKey.startsWith("d_") })
     }
 
@@ -344,16 +347,16 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 仅匹配 ^fleet_.* 正则的属性被索引为 fleet_template
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(2, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "fleet_template" })
         Assert.assertEquals(setOf("fleet_assault", "fleet_patrol"), allInfos.map { it.name }.toSet())
 
         // solo_corvette 不匹配正则，不应被索引
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("solo_corvette")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("solo_corvette")])
     }
 
     // endregion
@@ -368,10 +371,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 跳过 ground_forces 和 naval_forces 两个根键，索引其下所有子定义
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(3, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "garrison" })
 
@@ -379,8 +382,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(expectedNames, allInfos.map { it.name }.toSet())
 
         // 根键本身不应被索引
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("ground_forces")])
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("naval_forces")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("ground_forces")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("naval_forces")])
     }
 
     // endregion
@@ -395,10 +398,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 名称取自属性值（而非属性键）
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         Assert.assertEquals(3, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "anomaly" })
 
@@ -410,10 +413,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(expectedTypeKeys, allInfos.map { it.typeKey }.toSet())
 
         // name key 基于属性值
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("alien_signal")])
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameTypeKey("debris_field", "anomaly")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("alien_signal")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameTypeKey("debris_field", "anomaly")])
         // 属性键不应作为 name key
-        Assert.assertNull(fileData[PlsIndexUtil.createNameKey("anomaly_1")])
+        Assert.assertNull(fileData[ChronicleIndexUtil.createNameKey("anomaly_1")])
     }
 
     // endregion
@@ -431,8 +434,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val allKey = PlsIndexUtil.createAllKey()
-        val allInfos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.Definition, allKey, scope).flatten()
+        val allKey = ChronicleIndexUtil.createAllKey()
+        val allInfos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.Definition, allKey, scope).flatten()
 
         // Assert: 跨文件聚合
         val planetInfos = allInfos.filter { it.type == "planet_class" }
@@ -451,8 +454,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val nameKey = PlsIndexUtil.createNameKey("explorer")
-        val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.Definition, nameKey, scope).flatten()
+        val nameKey = ChronicleIndexUtil.createNameKey("explorer")
+        val infos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.Definition, nameKey, scope).flatten()
 
         // Assert: 仅有 starship 类型的 explorer
         Assert.assertEquals(1, infos.size)
@@ -473,8 +476,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val allKey = PlsIndexUtil.createAllKey()
-        val allInfos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.Definition, allKey, scope).flatten()
+        val allKey = ChronicleIndexUtil.createAllKey()
+        val allInfos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.Definition, allKey, scope).flatten()
 
         // Assert: 3 starship + 3 district + 3 anomaly = 9
         Assert.assertEquals(9, allInfos.size)
@@ -493,7 +496,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 无索引数据
         Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
@@ -507,7 +510,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 无索引数据
         Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
@@ -521,10 +524,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert
-        val info = fileData[PlsIndexUtil.createAllKey()].orEmpty().single()
+        val info = fileData[ChronicleIndexUtil.createAllKey()].orEmpty().single()
         Assert.assertEquals(ParadoxDefinitionSource.File, info.source)
         Assert.assertEquals(0, info.elementOffset)
     }
@@ -543,17 +546,17 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Assert: nameTypeKey 正确隔离不同类型
         val explorerStarship = FileBasedIndex.getInstance()
-            .getValues(PlsIndexKeys.Definition, PlsIndexUtil.createNameTypeKey("explorer", "starship"), scope).flatten()
+            .getValues(ChronicleIndexKeys.Definition, ChronicleIndexUtil.createNameTypeKey("explorer", "starship"), scope).flatten()
         Assert.assertEquals(1, explorerStarship.size)
 
         // explorer 不属于 ftl_drive 类型
         val explorerFtl = FileBasedIndex.getInstance()
-            .getValues(PlsIndexKeys.Definition, PlsIndexUtil.createNameTypeKey("explorer", "ftl_drive"), scope).flatten()
+            .getValues(ChronicleIndexKeys.Definition, ChronicleIndexUtil.createNameTypeKey("explorer", "ftl_drive"), scope).flatten()
         Assert.assertTrue(explorerFtl.isEmpty())
 
         // warp_drive 属于 ftl_drive 但不属于 starship
         val warpStarship = FileBasedIndex.getInstance()
-            .getValues(PlsIndexKeys.Definition, PlsIndexUtil.createNameTypeKey("warp_drive", "starship"), scope).flatten()
+            .getValues(ChronicleIndexKeys.Definition, ChronicleIndexUtil.createNameTypeKey("warp_drive", "starship"), scope).flatten()
         Assert.assertTrue(warpStarship.isEmpty())
     }
 
@@ -569,10 +572,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: 应有 1 个来自 REPLACE_OR_CREATE 的定义
-        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val allInfos = fileData[ChronicleIndexUtil.createAllKey()].orEmpty()
         val injectionInfos = allInfos.filter { it.source == ParadoxDefinitionSource.Injection }
         Assert.assertEquals(1, injectionInfos.size)
 
@@ -584,8 +587,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(gameType, injectionInfo.gameType)
 
         // Assert: name key 和 type key 存在
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("tome_of_new")])
-        Assert.assertNotNull(fileData[PlsIndexUtil.createNameTypeKey("tome_of_new", "arcane_tome")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameKey("tome_of_new")])
+        Assert.assertNotNull(fileData[ChronicleIndexUtil.createNameTypeKey("tome_of_new", "arcane_tome")])
     }
 
     @Test
@@ -596,18 +599,18 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Act
         val project = project
-        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+        val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
 
         // Assert: INJECT:tome_of_flames 不应被索引
-        val tomeOfFlamesInfos = fileData[PlsIndexUtil.createNameKey("tome_of_flames")].orEmpty()
+        val tomeOfFlamesInfos = fileData[ChronicleIndexUtil.createNameKey("tome_of_flames")].orEmpty()
         Assert.assertTrue("INJECT mode should not be indexed as definition", tomeOfFlamesInfos.isEmpty())
 
         // Assert: REPLACE:tome_of_ice 不应被索引
-        val tomeOfIceInfos = fileData[PlsIndexUtil.createNameKey("tome_of_ice")].orEmpty()
+        val tomeOfIceInfos = fileData[ChronicleIndexUtil.createNameKey("tome_of_ice")].orEmpty()
         Assert.assertTrue("REPLACE mode should not be indexed as definition", tomeOfIceInfos.isEmpty())
 
         // Assert: TRY_INJECT:shared_name 不应被索引
-        val sharedNameInfos = fileData[PlsIndexUtil.createNameKey("shared_name")].orEmpty()
+        val sharedNameInfos = fileData[ChronicleIndexUtil.createNameKey("shared_name")].orEmpty()
         Assert.assertTrue("TRY_INJECT mode should not be indexed as definition", sharedNameInfos.isEmpty())
     }
 

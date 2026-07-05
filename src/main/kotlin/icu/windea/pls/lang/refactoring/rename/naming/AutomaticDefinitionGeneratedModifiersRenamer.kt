@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
@@ -29,11 +29,11 @@ class AutomaticDefinitionGeneratedModifiersRenamer(element: PsiElement, newName:
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.definition.generatedModifiers.title")
+    override fun getDialogTitle() = ChronicleBundle.message("rename.definition.generatedModifiers.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.definition.generatedModifiers.desc")
+    override fun getDialogDescription() = ChronicleBundle.message("rename.definition.generatedModifiers.desc")
 
-    override fun entityName() = PlsBundle.message("rename.definition.generatedModifiers.entityName")
+    override fun entityName() = ChronicleBundle.message("rename.definition.generatedModifiers.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
         if (element !is ParadoxDefinitionElement) return

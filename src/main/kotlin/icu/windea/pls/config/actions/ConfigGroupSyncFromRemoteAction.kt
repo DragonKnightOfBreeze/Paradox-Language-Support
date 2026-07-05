@@ -4,16 +4,16 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.lang.fileInfo
 
 class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
     init {
-        templatePresentation.icon = PlsIcons.Actions.SyncConfigGroupsFromRemote
-        templatePresentation.text = PlsBundle.message("configGroup.action.syncFromRemote.text")
-        templatePresentation.description = PlsBundle.message("configGroup.action.syncFromRemote.desc")
+        templatePresentation.icon = ChronicleIcons.Actions.SyncConfigGroupsFromRemote
+        templatePresentation.text = ChronicleBundle.message("configGroup.action.syncFromRemote.text")
+        templatePresentation.description = ChronicleBundle.message("configGroup.action.syncFromRemote.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -22,12 +22,11 @@ class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
         // 如果当前文件是游戏或模组文件，相关配置启用且合法，则可见
         // 如果可见，则总是可用，即使本地规则仓库的状态是最新的
 
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
         val valid = CwtConfigRepositoryManager.isValidToSync()
-        presentation.isEnabledAndVisible = valid
+        e.presentation.isEnabledAndVisible = valid
     }
 
     override fun actionPerformed(e: AnActionEvent) {

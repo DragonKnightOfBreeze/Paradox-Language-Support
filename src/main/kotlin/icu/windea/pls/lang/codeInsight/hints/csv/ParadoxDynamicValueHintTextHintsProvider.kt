@@ -1,0 +1,63 @@
+package icu.windea.pls.lang.codeInsight.hints.csv
+
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.endOffset
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
+import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
+import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+
+/**
+ * 通过内嵌提示显示动态值的提示文本。
+ * 来自显示名称（即同名的本地化文本），或者对应的扩展规则。优先级从低到高。
+ *
+ * @see ParadoxHintTextProvider
+ * @see ParadoxHintTextProviderBase.DynamicValue
+ */
+@Suppress("UnstableApiUsage")
+class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.csv.dynamicValueHintText")
+
+    override val name get() = ChronicleBundle.message("csv.hints.dynamicValueHintText")
+    override val description get() = ChronicleBundle.message("csv.hints.dynamicValueHintText.description")
+    override val key get() = settingsKey
+
+    override val renderLocalisation get() = true
+    override val renderIcon get() = true
+
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxCsvColumn) return
+        val expression = element.name
+        if (expression.isEmpty()) return
+
+        val resolveConstraint = ParadoxResolveConstraint.DynamicValueReference
+        if (!resolveConstraint.canResolveReference(element)) return
+        val reference = element.reference ?: return
+        if (!resolveConstraint.canResolve(reference)) return
+        val resolved = reference.resolve() ?: return
+        if (resolved !is ParadoxDynamicValueLightElement) return
+
+        val hintLocalisation = ParadoxCodeInsightService.getHintLocalisation(resolved) ?: return
+        val renderer = ParadoxLocalisationTextInlayRenderer(context)
+        val presentation = renderer.render(hintLocalisation) ?: return
+        sink.addInlinePresentation(element.endOffset) { add(presentation) }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxCsvColumn) return
+        ParadoxHintsPreviewUtil.fillData(element, sink)
+    }
+}

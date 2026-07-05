@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
@@ -29,8 +29,8 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 class ParadoxDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.csv.definitionReferenceHintText")
 
-    override val name get() = PlsBundle.message("csv.hints.definitionReferenceHintText")
-    override val description get() = PlsBundle.message("csv.hints.definitionReferenceHintText.description")
+    override val name get() = ChronicleBundle.message("csv.hints.definitionReferenceHintText")
+    override val description get() = ChronicleBundle.message("csv.hints.definitionReferenceHintText.description")
     override val key get() = settingsKey
 
     override val renderLocalisation get() = true

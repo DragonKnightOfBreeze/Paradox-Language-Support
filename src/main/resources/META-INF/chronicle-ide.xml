@@ -1,17 +1,17 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup"/>
-    <notificationGroup id="pls.settings" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.settings"/>
-    <notificationGroup id="pls.diff" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.diff"/>
-    <notificationGroup id="pls.manipulation" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.manipulation"/>
+    <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup"/>
+    <notificationGroup id="pls.settings" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.settings"/>
+    <notificationGroup id="pls.diff" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.diff"/>
+    <notificationGroup id="pls.manipulation" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.manipulation"/>
 
-    <webHelpProvider implementation="icu.windea.pls.ide.help.PlsHelpProvider"/>
-    <postStartupActivity implementation="icu.windea.pls.ide.PlsLifecycleListener"/>
-    <iconMapper mappingFile="PlsIconMappings.json"/>
+    <webHelpProvider implementation="icu.windea.pls.ide.help.ChronicleHelpProvider"/>
+    <postStartupActivity implementation="icu.windea.pls.ide.ChronicleLifecycleListener"/>
+    <iconMapper mappingFile="ChronicleIconMappings.json"/>
   </extensions>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.ide.PlsLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
-    <listener class="icu.windea.pls.ide.settings.PlsSettingsMigrator" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.ide.ChronicleLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.ide.settings.ChronicleSettingsMigrator" topic="com.intellij.ide.AppLifecycleListener"/>
   </applicationListeners>
 </idea-plugin>

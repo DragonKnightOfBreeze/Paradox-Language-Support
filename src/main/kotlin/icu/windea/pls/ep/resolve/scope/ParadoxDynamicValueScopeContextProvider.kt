@@ -17,6 +17,6 @@ interface ParadoxDynamicValueScopeContextProvider {
     // 注意：同名的动态值在不同的上下文中完全可能拥有不同的作用域上下文
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxDynamicValueScopeContextProvider>("icu.windea.pls.dynamicValueScopeContextProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxDynamicValueScopeContextProvider>("icu.windea.pls.dynamicValueScopeContextProvider")
     }
 }

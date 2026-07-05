@@ -8,13 +8,13 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
@@ -78,8 +78,8 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     @FromOptionMember("inherit", defaultValue = "no")
     val inherit: Boolean
 
-    /** 得到处理后的“上下文规则容器”。 */
-    fun getContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*>
+    /** 得到处理后的上下文容器规则。 */
+    fun getContextContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*>
 
     /** 得到由其声明的上下文规则列表。 */
     fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>>
@@ -119,11 +119,11 @@ private class CwtExtendedParameterConfigImpl(
     override val contextConfigsType: String,
     override val inherit: Boolean,
 ) : UserDataHolderBase(), CwtExtendedParameterConfig {
-    private val _containerConfig by lazy { computeContainerConfig() }
+    private val _contextContainerConfig by lazy { computeContextContainerConfig() }
     private val _contextConfigs by lazy { computeContextConfigs() }
 
-    override fun getContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*> {
-        return _containerConfig
+    override fun getContextContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*> {
+        return _contextContainerConfig
     }
 
     override fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
@@ -140,19 +140,18 @@ private class CwtExtendedParameterConfigImpl(
         return _contextConfigs
     }
 
-    private fun computeContainerConfig(): CwtMemberConfig<*> {
+    private fun computeContextContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
         return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
-        val containerConfig = _containerConfig
-        if (containerConfig !is CwtPropertyConfig) return emptyList()
+        val contextContainerConfig = _contextContainerConfig
+        if (contextContainerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {
-            "multiple" -> containerConfig.configs.orEmpty()
-            // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
-            else -> containerConfig.valueConfig.to.singletonListOrEmpty()
+            "multiple" -> contextContainerConfig.configs.orEmpty()
+            else -> contextContainerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulationService.inlineWithConfigs(config, r, config.configGroup)

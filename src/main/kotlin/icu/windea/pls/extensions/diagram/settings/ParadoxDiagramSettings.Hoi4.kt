@@ -6,16 +6,16 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
-import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.base.annotations.WithGameType
-import icu.windea.pls.extensions.diagram.PlsDiagramBundle
+import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 @WithGameType(ParadoxGameType.Hoi4)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Hoi4.EventTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "ParadoxDiagramSettings.Hoi4.EventTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class Hoi4EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Hoi4EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Hoi4) {
@@ -34,7 +34,7 @@ class Hoi4EventTreeDiagramSettings(
         var attribute by linkedMap<String, Boolean>()
     }
 
-    override val groupName: String = PlsDiagramBundle.message("eventTree.name.hoi4")
+    override val groupName: String = ChronicleDiagramBundle.message("eventTree.name.hoi4")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -45,13 +45,13 @@ class Hoi4EventTreeDiagramSettings(
         settings.updateSettings()
 
         row {
-            label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
+            label(ChronicleDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
-            PlsDocBundle.eventType(key, gameType)
+        checkBoxGroup(settings.type, ChronicleDiagramBundle.message("eventTree.settings.type"), { key ->
+            ChronicleDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
-            PlsDocBundle.eventAttribute(key, gameType)
+        checkBoxGroup(settings.attribute, ChronicleDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            ChronicleDocBundle.eventAttribute(key, gameType)
         })
     }
 }

@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -36,14 +36,14 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if (!context.isValid()) return true
         val constraint = context.constraint
         val indexKey = constraint?.indexKey ?: when (context.type) {
-            ParadoxLocalisationType.Normal -> PlsIndexKeys.LocalisationName
-            ParadoxLocalisationType.Synced -> PlsIndexKeys.SyncedLocalisationName
+            ParadoxLocalisationType.Normal -> ChronicleIndexKeys.LocalisationName
+            ParadoxLocalisationType.Synced -> ChronicleIndexKeys.SyncedLocalisationName
         }
         val name = if (constraint?.ignoreCase == true) context.name?.lowercase() else context.name
         val r = if (name == null) {
-            PlsIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
+            ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
         } else {
-            PlsIndexService.processElements(indexKey, name, context.project, context.scope) { element -> processor.process(element) }
+            ChronicleIndexService.processElements(indexKey, name, context.project, context.scope) { element -> processor.process(element) }
         }
         if (!r) return false
 

@@ -9,12 +9,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import javax.swing.JComponent
@@ -27,18 +28,21 @@ import javax.swing.JComponent
  * - 声明全局封装变量（在 `common/scripted_variables` 目录下的某一个文件中）
  * - 导入游戏目录或模组目录
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 判断是否需要忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        // 按需忽略内联脚本文件
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -53,7 +57,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
                 if (name.isParameterized()) return // skip if name is parameterized
                 val reference = element.reference ?: return
                 if (reference.resolve() != null) return
-                val description = PlsBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
+                val description = ChronicleBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
                 val fixes = getFixes(element, name)
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
             }
@@ -71,12 +75,12 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

@@ -10,20 +10,8 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxScriptInlineMathRoot extends PsiElement {
 
-  @Nullable
-  ParadoxScriptInlineMathAbsExpression getInlineMathAbsExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathBiExpression getInlineMathBiExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathFactor getInlineMathFactor();
-
-  @Nullable
-  ParadoxScriptInlineMathParExpression getInlineMathParExpression();
-
-  @Nullable
-  ParadoxScriptInlineMathUnaryExpression getInlineMathUnaryExpression();
+  @NotNull
+  ParadoxScriptInlineMathExpression getInlineMathExpression();
 
   @NotNull GlobalSearchScope getResolveScope();
 

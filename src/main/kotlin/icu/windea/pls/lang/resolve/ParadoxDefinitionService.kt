@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -30,7 +30,7 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
@@ -88,10 +88,10 @@ object ParadoxDefinitionService {
         val source = resolveSource(element) ?: return null
         val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
         // 忽略 rootKeys 深度超出限制，或者带参数的情况
-        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
         val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return null
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
@@ -108,7 +108,7 @@ object ParadoxDefinitionService {
         if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return null
         if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return null
         if (expression.isParameterized()) return null // 忽略带参数的情况
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isCreateMode(mode, configGroup)) return null
@@ -292,7 +292,7 @@ object ParadoxDefinitionService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
+    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
         // 由于可能有 rootKey 或 typeKeyPrefix，这里需要依赖 file
         return listOf(file)
     }

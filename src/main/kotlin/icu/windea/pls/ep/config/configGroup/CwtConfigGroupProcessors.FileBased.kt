@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.config.configGroup
 
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -27,6 +27,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -43,16 +44,14 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.optimizedPath
-import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.core.withState
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.currentCoroutineContext
@@ -62,8 +61,6 @@ import kotlinx.coroutines.ensureActive
  * 用于初始化规则分组中基于文件内容的那些数据。
  */
 class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
-    private val logger = thisLogger()
-
     override suspend fun process(configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
 
@@ -100,30 +97,24 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
 
         val overrideBuiltIn = configGroup.gameType != ParadoxGameType.Core
-            && PlsConfigSettings.getInstance().state.overrideBuiltIn
+            && ChronicleConfigSettings.getInstance().state.overrideBuiltIn
             && fileInfos.any { it.source == CwtConfigGroupFileSource.Remote }
         if (overrideBuiltIn) fileInfos.removeIf { it.source == CwtConfigGroupFileSource.BuiltIn }
 
         checkCanceled()
         val internalFileConfigs = mutableMapOf<String, CwtFileConfig>()
         val fileConfigs = mutableMapOf<String, CwtFileConfig>()
-        try {
-            // 允许覆盖先加入的同路径的规则文件
-            for ((filePath, file, source) in internalFileInfos) {
-                checkCanceled()
-                if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
-                CwtConfigResolverManager.setLocation(filePath, configGroup)
-                val fileConfig = readAction { resolveInternalFileConfig(configGroup, file, filePath) } ?: continue
-                internalFileConfigs[filePath] = fileConfig
-            }
-            for ((filePath, file) in fileInfos) {
-                checkCanceled()
-                CwtConfigResolverManager.setLocation(filePath, configGroup)
-                val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
-                fileConfigs[filePath] = fileConfig
-            }
-        } finally {
-            CwtConfigResolverManager.resetLocation()
+        // 允许覆盖先加入的同路径的规则文件
+        for ((filePath, file, source) in internalFileInfos) {
+            checkCanceled()
+            if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
+            val fileConfig = readAction { resolveInternalFileConfig(configGroup, file, filePath) } ?: continue
+            internalFileConfigs[filePath] = fileConfig
+        }
+        for ((filePath, file) in fileInfos) {
+            checkCanceled()
+            val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
+            fileConfigs[filePath] = fileConfig
         }
 
         CwtConfigResolverManager.getFileConfigs(configGroup).putAll(fileConfigs)
@@ -131,7 +122,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         for (fileConfig in internalFileConfigs.values) {
             checkCanceled()
-            readAction { processQueryFile(fileConfig) }
+            readAction { processInternalFile(fileConfig) }
         }
         for (fileConfig in fileConfigs.values) {
             checkCanceled()
@@ -140,19 +131,16 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
     }
 
     private fun resolveInternalFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {
-        return CwtConfigResolverManager.skipProcessingOptionData { resolveFileConfig(configGroup, file, filePath) }
+        return withState(ChronicleThreadContext.skipProcessingOptionData) {
+            CwtFileConfig.resolve(file, configGroup, filePath)
+        }
     }
 
     private fun resolveFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {
-        val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }
-            .onFailure { logger.warn(it) }
-            .getOrNull()
-        if (psiFile !is CwtFile) return null
-        val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
-        return fileConfig
+        return CwtFileConfig.resolve(file, configGroup, filePath)
     }
 
-    private fun processQueryFile(fileConfig: CwtFileConfig) {
+    private fun processInternalFile(fileConfig: CwtFileConfig) {
         when (fileConfig.path) {
             "internal/schema.cwt" -> CwtSchemaConfig.resolveInFile(fileConfig)
             "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig)
@@ -203,6 +191,14 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         val rowConfig = CwtRowConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(rowConfig)) continue
                         initializer.rows[rowConfig.name] = rowConfig
+
+                        // collect complex enum configs from column configs
+                        for (columnConfig in rowConfig.columns) {
+                            val complexEnumConfig = CwtComplexEnumConfig.resolveFromColumnConfig(columnConfig) ?: continue
+                            if (CwtConfigService.filter(complexEnumConfig)) continue
+                            initializer.complexEnums.putIfAbsent(complexEnumConfig.name, complexEnumConfig) // put only if absent
+                            initializer.complexEnumsFromColumns.put(complexEnumConfig.name, complexEnumConfig) // just put
+                        }
                     }
                 }
                 key == "defines" -> {
@@ -225,6 +221,16 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                             val complexEnumConfig = CwtComplexEnumConfig.resolve(config) ?: return@run
                             if (CwtConfigService.filter(complexEnumConfig)) return@run
                             initializer.complexEnums[complexEnumConfig.name] = complexEnumConfig
+                        }
+                    }
+                }
+                key == "unions" -> {
+                    val configs = property.properties ?: continue
+                    for (config in configs) {
+                        run {
+                            val unionConfig = CwtUnionConfig.resolve(config) ?: return@run
+                            if (CwtConfigService.filter(unionConfig)) return@run
+                            initializer.unions[unionConfig.name] = unionConfig
                         }
                     }
                 }

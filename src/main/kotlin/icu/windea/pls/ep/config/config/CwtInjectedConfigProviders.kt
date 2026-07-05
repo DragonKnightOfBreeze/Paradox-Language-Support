@@ -52,9 +52,7 @@ class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInj
     private val expressions = listOf("<technology>", "<technology.repeatable>")
     private val injectedExpressions = listOf("\$technology_with_level")
 
-    override fun supports(gameType: ParadoxGameType): Boolean {
-        return gameType == ParadoxGameType.Stellaris
-    }
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
     override fun doInject(parentConfig: CwtMemberConfig<*>, config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         if (expressionString !in expressions) return null

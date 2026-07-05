@@ -14,7 +14,7 @@ import com.intellij.util.application
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 sealed class OpenSettingsActionBase : DumbAwareAction() {
@@ -22,13 +22,12 @@ sealed class OpenSettingsActionBase : DumbAwareAction() {
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsSettings.getInstance().state.others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !ChronicleSettings.getInstance().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
 
-        val presentation = e.presentation
-        presentation.isEnabledAndVisible = false
+        e.presentation.isEnabledAndVisible = false
         // 这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e) ?: return
         val rootInfo = file.fileInfo?.rootInfo ?: return
@@ -37,7 +36,7 @@ sealed class OpenSettingsActionBase : DumbAwareAction() {
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return
-        presentation.isEnabledAndVisible = true
+        e.presentation.isEnabledAndVisible = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {

@@ -43,6 +43,6 @@ interface CwtConfigGroupFileProvider {
     fun getNotificationMessage(configGroup: CwtConfigGroup): String? = null
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
+        @JvmField val EP_NAME = ExtensionPointName<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
     }
 }

@@ -14,6 +14,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxFilePathIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFilePathIndexTest : BasePlatformTestCase() {
@@ -35,7 +38,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, relPath)
         myFixture.configureByFile("script/syntax/example.test.txt")
 
-        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.FilePath, project)
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.FilePath, project)
         Assert.assertTrue(relPath in allKeys)
     }
 
@@ -46,7 +49,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, relPath)
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
-        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.FilePath, project)
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.FilePath, project)
         Assert.assertTrue(relPath in allKeys)
     }
 

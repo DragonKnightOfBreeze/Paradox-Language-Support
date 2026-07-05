@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarComponent
 import com.intellij.openapi.editor.toolbar.floating.isInsideMainEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTIO
     }
 
     private fun updateToolbarComponent(project: Project, component: FloatingToolbarComponent) {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
                 val configGroupService = CwtConfigGroupService.getInstance(project)

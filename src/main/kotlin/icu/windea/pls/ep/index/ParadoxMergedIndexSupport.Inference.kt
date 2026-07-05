@@ -5,8 +5,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
@@ -15,7 +16,6 @@ import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
@@ -143,17 +143,21 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     }
 
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
-        // xxx_event = { id = <id> scopes = { ... } }
-        val effectConfig = config.takeIf { it is CwtValueConfig }
-            ?.memberConfig
-            ?.takeIf { it is CwtPropertyConfig && it.key == "id" }
-            ?.parentConfig
-            ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
-        if (effectConfig == null) return null
+        // `__` - caret position
+        // `<event_type> = { id = __<id> scopes = { ... } }`
+        // -> `<event_type> = { id = <id> __scopes = { ... } }`
+
         if (element !is ParadoxScriptString) return -1
-        val scopesConfig = effectConfig.configs?.find { it is CwtPropertyConfig && it.key == "scopes" }
+        // TODO 3.0.0 [major-refactor]
+        val containerConfig = config.takeIf { it is CwtValueConfig }
+            ?.containingDirectConfig?.takeIf { it is CwtPropertyConfig && it.key == "id" }
+            ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
+        if (containerConfig == null) return null
+        val scopesConfig = selectConfigScope { containerConfig.queryBy("scopes").asProperty().one() }
         if (scopesConfig == null) return -1
-        val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
+        val containerElement = selectScope { element.queryParentBy("*/id").asProperty() }
+        if (containerElement == null) return -1
+        val scopesElement = selectScope { containerElement.queryBy("scopes").asProperty().one() }
         if (scopesElement == null) return -1
         if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset
@@ -206,17 +210,21 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
-        // fire_on_action = { on_action = <id> scopes = { ... } }
-        val effectConfig = config.takeIf { it is CwtValueConfig }
-            ?.memberConfig
-            ?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
-            ?.parentConfig
-            ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
-        if (effectConfig == null) return null
+        // `__` - caret position
+        // `fire_on_action = { on_action = __<id> scopes = { ... } }`
+        // -> `fire_on_action = { on_action = <id> __scopes = { ... } }`
+
         if (element !is ParadoxScriptString) return -1
-        val scopesConfig = effectConfig.configs?.find { it is CwtPropertyConfig && it.key == "scopes" }
+        // TODO 3.0.0 [major-refactor]
+        val containerConfig = config.takeIf { it is CwtValueConfig }
+            ?.containingDirectConfig?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
+            ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
+        if (containerConfig == null) return null
+        val scopesConfig = selectConfigScope { containerConfig.queryBy("scopes").asProperty().one() }
         if (scopesConfig == null) return -1
-        val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
+        val containerElement = selectScope { element.queryParentBy("*/id").asProperty() }
+        if (containerElement == null) return -1
+        val scopesElement = selectScope { containerElement.queryBy("scopes").asProperty().one() }
         if (scopesElement == null) return -1
         if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset

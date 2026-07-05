@@ -14,6 +14,6 @@ interface TranslationToolProvider {
     suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslationCallback)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<TranslationToolProvider>("icu.windea.pls.integrations.translationToolProvider")
+        @JvmField val EP_NAME = ExtensionPointName<TranslationToolProvider>("icu.windea.pls.integrations.translationToolProvider")
     }
 }

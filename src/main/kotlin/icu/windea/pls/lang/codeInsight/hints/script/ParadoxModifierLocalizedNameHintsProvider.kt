@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 通过内嵌提示显示修正的显示名称。
@@ -31,8 +31,8 @@ import icu.windea.pls.script.psi.isExpression
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.modifierHintText")
 
-    override val name get() = PlsBundle.message("script.hints.modifierHintText")
-    override val description get() = PlsBundle.message("script.hints.modifierHintText.description")
+    override val name get() = ChronicleBundle.message("script.hints.modifierHintText")
+    override val description get() = ChronicleBundle.message("script.hints.modifierHintText.description")
     override val key get() = settingsKey
 
     override val renderLocalisation get() = true
@@ -41,7 +41,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
+        if (!element.isDataExpression()) return
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         val type = config.configExpression.type
         if (type != CwtDataTypes.Modifier) return

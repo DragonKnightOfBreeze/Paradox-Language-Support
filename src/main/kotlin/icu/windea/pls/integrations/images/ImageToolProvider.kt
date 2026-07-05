@@ -22,6 +22,6 @@ interface ImageToolProvider {
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ImageToolProvider>("icu.windea.pls.integrations.imageToolProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ImageToolProvider>("icu.windea.pls.integrations.imageToolProvider")
     }
 }

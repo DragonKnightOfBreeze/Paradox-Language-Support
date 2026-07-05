@@ -9,5 +9,5 @@ import icu.windea.pls.core.*
  * 注意：目前不支持组合使用参数与字面量的情况，相关支持尚不完善。
  */
 interface ParadoxLocalisationParameterAwareElement : PsiElement {
-    val parameterList: List<ParadoxLocalisationParameter> get() = this.findChildren<_>()
+    val parameters: List<ParadoxLocalisationParameter> get() = this.findChildren<_>()
 }

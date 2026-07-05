@@ -3,23 +3,24 @@ package icu.windea.pls.csv.psi.impl
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
-import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -33,7 +34,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvHeader, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Row
+        return ChronicleIcons.Nodes.Row
     }
 
     // endregion
@@ -42,7 +43,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Row
+        return ChronicleIcons.Nodes.Row
     }
 
     // endregion
@@ -51,7 +52,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvColumn, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Column
+        return ChronicleIcons.Nodes.Column
     }
 
     @JvmStatic
@@ -72,6 +73,11 @@ object ParadoxCsvPsiImplUtil {
     // region Common Methods
 
     @JvmStatic
+    fun getComponents(element: PsiListLikeElement): List<ParadoxCsvColumn> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
     fun getName(element: ParadoxCsvExpressionElement): String {
         return element.value
     }
@@ -89,11 +95,6 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun getExpression(element: ParadoxCsvExpressionElement): String {
         return element.text
-    }
-
-    @JvmStatic
-    fun getComponents(element: PsiElement): List<PsiElement> {
-        return element.findChildren { it is ParadoxCsvColumn }
     }
 
     @JvmStatic
@@ -123,7 +124,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxCsvItemPresentation(element)
+        return ParadoxCsvPsiPresentation(element)
     }
 
     @JvmStatic

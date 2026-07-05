@@ -31,9 +31,9 @@ class ParadoxDefineVariableIndex : AbstractStubIndex<ParadoxDefineVariableKey, P
         }
     }
 
-    override fun getKey() = PlsIndexKeys.DefineVariable
+    override fun getKey() = ChronicleIndexKeys.DefineVariable
 
-    override fun getVersion() = PlsIndexVersions.ScriptStub
+    override fun getVersion() = ChronicleIndexVersions.ScriptStub
 
     override fun getKeyDescriptor() = keyDescriptor
 }

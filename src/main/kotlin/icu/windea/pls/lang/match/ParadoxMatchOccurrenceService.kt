@@ -13,8 +13,8 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
@@ -42,7 +42,7 @@ object ParadoxMatchOccurrenceService {
         return occurrence
     }
 
-    fun getChildOccurrences(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
+    fun getChildOccurrences(memberElement: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
         // 兼容需要考虑内联的情况（如内联脚本）
         // 兼容匹配键的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
         // 得到的子规则需要先按优先级排序
@@ -53,20 +53,20 @@ object ParadoxMatchOccurrenceService {
         val configGroup = configs.first().configGroup
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
-        val blockElement = when (element) {
-            is ParadoxDefinitionElement -> element.block
-            is ParadoxScriptBlockElement -> element
+        val memberContainerElement = when (memberElement) {
+            is ParadoxDefinitionElement -> memberElement.block
+            is ParadoxScriptMemberContainer -> memberElement
             else -> null
         }
-        if (blockElement == null) return emptyMap()
+        if (memberContainerElement == null) return emptyMap()
         val occurrences = mutableMapOf<CwtDataExpression, ParadoxMatchOccurrence>()
         for (childConfig in childConfigs) {
-            occurrences[childConfig.configExpression] = evaluate(element, childConfig)
+            occurrences[childConfig.configExpression] = evaluate(memberElement, childConfig)
         }
 
         // 注意这里需要考虑内联和可选的情况
         ProgressManager.checkCanceled()
-        blockElement.members(conditional = true, inline = true).forEach f@{ data ->
+        memberContainerElement.members(conditional = true, inline = true).forEach f@{ data ->
             val expression = when (data) {
                 is ParadoxScriptProperty -> ParadoxExpression.resolve(data.propertyKey)
                 is ParadoxScriptValue -> ParadoxExpression.resolve(data)

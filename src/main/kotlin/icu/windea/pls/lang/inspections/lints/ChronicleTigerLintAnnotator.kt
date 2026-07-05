@@ -15,6 +15,7 @@ import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
+import icu.windea.pls.lang.inspections.ChronicleInspections
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
@@ -26,7 +27,7 @@ import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
     data class Info(val file: PsiFile)
 
-    override fun getPairedBatchInspectionShortName() = ChronicleTigerLintInspection.SHORT_NAME
+    override fun getPairedBatchInspectionShortName() = ChronicleInspections.Lints.Tiger
 
     override fun collectInformation(file: PsiFile): Info? {
         if (!TigerLintToolService.getInstance().checkAvailableFor(file)) return null

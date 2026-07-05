@@ -11,7 +11,7 @@ import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.psi.PsiDirectory
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import javax.swing.tree.DefaultTreeModel
 
 // com.intellij.ide.projectView.impl.PackageViewPane
@@ -21,7 +21,7 @@ class CwtConfigFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyn
         const val ID = "CwtConfigFilesPane"
     }
 
-    override fun getTitle() = PlsBundle.message("title.cwt.config.files")
+    override fun getTitle() = ChronicleBundle.message("title.cwt.config.files")
 
     override fun getIcon() = AllIcons.Nodes.CopyOfFolder
 

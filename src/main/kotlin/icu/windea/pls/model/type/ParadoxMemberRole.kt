@@ -2,8 +2,8 @@ package icu.windea.pls.model.type
 
 enum class ParadoxMemberRole {
     Property,
+    LonelyValue,
     PropertyValue,
-    BlockValue,
     ScriptedVariableValue,
     Other,
     ;

@@ -8,45 +8,48 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 import javax.swing.JComponent
 
 /**
  * 对应的规则有多个且存在冲突的表达式的代码检查。
  *
- * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
+ * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        // 按需忽略内联脚本文件
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 判断是否需要忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -57,7 +60,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
 
             private fun visitBlock(element: ParadoxScriptBlock) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return // skip check if element is not an expression
+                if (!element.isDataExpression()) return // skip check if element is not an expression
 
                 // skip checking property if its property key may contain parameters
                 // position: (in property) property key / (standalone) left curly brace
@@ -75,8 +78,8 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 if (skipCheck(element, configs)) return
                 val isKey = position is ParadoxScriptPropertyKey
                 val description = when {
-                    isKey -> PlsBundle.message("inspection.script.conflictingResolvedExpression.desc.1", expression)
-                    else -> PlsBundle.message("inspection.script.conflictingResolvedExpression.desc.2", expression)
+                    isKey -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.1", expression)
+                    else -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.2", expression)
                 }
                 holder.registerProblem(position, description)
             }
@@ -95,7 +98,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isOverriddenConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
-                return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
+                return configs.any { it.containingDirectConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
             }
 
             @Suppress("UNUSED_PARAMETER")
@@ -116,12 +119,12 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
         return panel {
             // ignoredInInjectedFile
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
-                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }

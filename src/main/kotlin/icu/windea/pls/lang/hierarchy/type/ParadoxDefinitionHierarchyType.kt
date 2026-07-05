@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.hierarchy.type
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -12,12 +12,12 @@ enum class ParadoxDefinitionHierarchyType(
     val nested: Boolean = false,
     val predicate: ((ParadoxDefinitionInfo) -> Boolean) = { true }
 ) {
-    Type(PlsBundle.message("title.hierarchy.definition")),
-    TypeAndSubtypes(PlsBundle.message("title.hierarchy.definition.with.subtypes")),
+    Type(ChronicleBundle.message("title.hierarchy.definition")),
+    TypeAndSubtypes(ChronicleBundle.message("title.hierarchy.definition.with.subtypes")),
 
-    EventTreeInvoker(PlsBundle.message("title.hierarchy.eventTree.invoker"), true, true, { it.type == ParadoxDefinitionTypes.event }),
-    EventTreeInvoked(PlsBundle.message("title.hierarchy.eventTree.invoked"), true, true, { it.type == ParadoxDefinitionTypes.event }),
-    TechTreePre(PlsBundle.message("title.hierarchy.techTree.pre"), true, true, { it.type == ParadoxDefinitionTypes.technology && it.gameType == ParadoxGameType.Stellaris }),
-    TechTreePost(PlsBundle.message("title.hierarchy.techTree.post"), true, true, { it.type == ParadoxDefinitionTypes.technology && it.gameType == ParadoxGameType.Stellaris }),
+    EventTreeInvoker(ChronicleBundle.message("title.hierarchy.eventTree.invoker"), true, true, { it.type == ParadoxDefinitionTypes.event }),
+    EventTreeInvoked(ChronicleBundle.message("title.hierarchy.eventTree.invoked"), true, true, { it.type == ParadoxDefinitionTypes.event }),
+    TechTreePre(ChronicleBundle.message("title.hierarchy.techTree.pre"), true, true, { it.type == ParadoxDefinitionTypes.technology && it.gameType == ParadoxGameType.Stellaris }),
+    TechTreePost(ChronicleBundle.message("title.hierarchy.techTree.post"), true, true, { it.type == ParadoxDefinitionTypes.technology && it.gameType == ParadoxGameType.Stellaris }),
     ;
 }

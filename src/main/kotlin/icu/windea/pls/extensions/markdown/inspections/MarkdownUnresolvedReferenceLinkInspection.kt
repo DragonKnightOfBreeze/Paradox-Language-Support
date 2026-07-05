@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.extensions.settings.PlsExtensionsSettings
+import icu.windea.pls.extensions.settings.ChronicleExtensionsSettings
 import icu.windea.pls.lang.references.paths.ParadoxPathReference
 import org.intellij.plugins.markdown.lang.psi.MarkdownElementVisitor
 import org.intellij.plugins.markdown.lang.psi.impl.MarkdownLinkDestination
@@ -18,7 +18,7 @@ import org.intellij.plugins.markdown.lang.psi.impl.MarkdownLinkDestination
  */
 class MarkdownUnresolvedReferenceLinkInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        return PlsExtensionsSettings.getInstance().state.markdown.resolveLinks
+        return ChronicleExtensionsSettings.getInstance().state.markdown.resolveLinks
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

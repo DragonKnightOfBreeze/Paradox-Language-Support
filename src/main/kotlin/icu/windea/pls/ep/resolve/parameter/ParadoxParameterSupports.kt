@@ -7,9 +7,9 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -32,7 +32,7 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.injection.PlsInjectionManager
+import icu.windea.pls.lang.injection.ChronicleInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.properties
@@ -53,8 +53,8 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -66,8 +66,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-// NOTE 在这些实现代码中，对于传入参数的名字，要求不为空，但不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
-
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxDefinitionElement): Boolean {
         if (element !is ParadoxScriptProperty) return false
@@ -78,7 +76,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
     override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 `injectionHost`）
-        val finalElement = PlsInjectionManager.findTopHostElementOrThis(element, element.project)
+        val finalElement = ChronicleInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = selectScope { finalElement.parentDefinition() }
         return context?.takeIf { isContext(it) }
     }
@@ -105,7 +103,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 // infer context config
                 contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
                 if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
-                contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+                contextReferenceElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return null
             }
             // extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
@@ -139,7 +137,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -190,7 +188,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionName = context.name
         val definitionTypes = definitionInfo.types
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionInfo.type)
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionInfo.type)
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
@@ -211,13 +209,13 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     private fun doResolveArgument(element: ParadoxScriptPropertyKey, config: CwtPropertyConfig): ParadoxParameterLightElement? {
         val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
         if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
-        val contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+        val contextReferenceElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return null
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
         val name = element.name.orNull() ?: return null
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = config.configGroup.gameType
@@ -230,7 +228,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
-        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
         return configGroup.definitionParameterModificationTracker
     }
 
@@ -265,7 +263,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
         // 加上名字
         val name = parameterElement.name
-        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {
@@ -275,7 +273,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = parameterElement.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
         appendBr().appendIndent()
-        append(PlsBundle.message("ofDefinition")).append(" ")
+        append(ChronicleBundle.message("ofDefinition")).append(" ")
         val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType.first(), gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = parameterElement)
         append(": ")
@@ -362,7 +360,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
         val offset = ParadoxExpressionManager.getExpressionOffset(expressionElement)
         val startOffset = element.startOffset + offset
@@ -421,7 +419,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         } as? ParadoxScriptValueArgumentNameNode ?: return null
         val name = argumentNode.text.orNull() ?: return null
         val contextName = definitionName
-        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
         val readWriteAccess = ReadWriteAccess.Write
         val gameType = configGroup.gameType
@@ -433,7 +431,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
         return configGroup.scriptValueModificationTracker
     }
 
@@ -450,7 +448,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
     override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 injectionHost）
-        val finalElement = PlsInjectionManager.findTopHostElementOrThis(element, element.project)
+        val finalElement = ChronicleInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = finalElement.containingFile?.castOrNull<ParadoxScriptFile>()
         return context?.takeIf { isContext(it) }
     }
@@ -480,7 +478,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 // infer inline config
                 val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
                 inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) } ?: return null
-                contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+                contextReferenceElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return null
             }
             // extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
@@ -512,7 +510,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = configGroup.project
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Macro
+        val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -561,7 +559,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
-        val contextIcon = PlsIcons.Nodes.Macro
+        val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$expression"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
@@ -583,12 +581,12 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
         val inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) }
         if (inlineConfig == null) return null
-        val contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
+        val contextReferenceElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return null
         val argumentName = element.name.orNull()?.takeIf { it != "script" } ?: return null
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Macro
+        val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val readWriteAccess = ReadWriteAccess.Write
         val gameType = config.configGroup.gameType
@@ -628,7 +626,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
         // 加上名字
         val name = parameterElement.name
-        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {
@@ -637,7 +635,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         // 加上所属内联脚本信息
         val gameType = parameterElement.gameType
         appendBr().appendIndent()
-        append(PlsBundle.message("ofInlineScript")).append(" ")
+        append(ChronicleBundle.message("ofInlineScript")).append(" ")
         val link = ReferenceLinkType.FilePath.createLink(filePath, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = parameterElement)
         return true

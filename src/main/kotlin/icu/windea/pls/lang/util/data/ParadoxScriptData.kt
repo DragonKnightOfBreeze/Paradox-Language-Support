@@ -8,6 +8,8 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  * 脚本数据。
  *
  * 用于通过路径、属性委托等方式，方便地得到需要的数据。
+ *
+ * @see ParadoxScriptDataResolver
  */
 interface ParadoxScriptData : UserDataHolder {
     val keyElement: ParadoxScriptPropertyKey?

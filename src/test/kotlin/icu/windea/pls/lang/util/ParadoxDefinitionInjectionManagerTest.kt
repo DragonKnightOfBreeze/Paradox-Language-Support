@@ -238,7 +238,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
 
         // 获取目标定义的声明
-        val titan = selectScope { baseFile.ofPath("titan_mk3").asProperty().one() }!!
+        val titan = selectScope { baseFile.queryBy("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
         val titanKey = CwtConfigKeyManager.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
 

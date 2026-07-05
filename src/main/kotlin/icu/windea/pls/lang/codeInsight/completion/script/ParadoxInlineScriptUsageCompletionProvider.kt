@@ -11,14 +11,12 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.resolved
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -26,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS
-import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.propertyValue
 
 /**
@@ -36,13 +34,12 @@ class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeInlineScriptUsages) return
+        if (!ChronicleSettings.getInstance().state.completion.completeInlineScriptUsages) return
 
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return
-        val gameType = selectGameType(file) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
-        if (!ParadoxInlineScriptManager.isSupported(gameType)) return
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage)) return
+        if (!ParadoxPsiFileMatchService.isInlineScriptSupported(file)) return
 
         // see: icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection
         val extension = file.name.substringAfterLast('.').lowercase()
@@ -54,7 +51,7 @@ class ParadoxInlineScriptUsageCompletionProvider : ParadoxCompletionProvider() {
 
         when (element) {
             is ParadoxScriptString -> {
-                if (!element.isBlockMember()) return
+                if (!element.isDirectValue()) return
             }
             is ParadoxScriptPropertyKey -> {
                 // if element is property key, related property value should be a string or clause (after resolving)

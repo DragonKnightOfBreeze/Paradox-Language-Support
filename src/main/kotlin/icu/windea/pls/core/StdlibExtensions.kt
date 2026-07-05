@@ -3,7 +3,7 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.util.text.StringUtil
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import java.io.File
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -603,7 +603,7 @@ fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 fun String.toFileUrl(): URL = File(this).toURI().toURL()
 
 /** 基于类加载器从 classpath 获取资源 URL。 */
-fun String.toClasspathUrl(locationClass: Class<*> = PlsFacade::class.java) = locationClass.getResource(this)!!
+fun String.toClasspathUrl(locationClass: Class<*> = ChronicleFacade::class.java) = locationClass.getResource(this)!!
 
 /** 将 URL 转换为 [File]。 */
 fun URL.toFile() = File(this.toURI())

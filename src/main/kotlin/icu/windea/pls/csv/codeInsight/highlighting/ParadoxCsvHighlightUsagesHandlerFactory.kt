@@ -17,8 +17,8 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.csv.psi.getHeaderColumn
 
 /**
  * 用于在 CSV 文件中提供额外的代码高亮。
@@ -80,7 +80,7 @@ class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, D
     fun addOccurrencesForRelatedColumnInHeader(targets: List<PsiElement>, occurrences: MutableList<TextRange>) {
         for (target in targets) {
             if (target !is ParadoxCsvColumn) continue
-            val headerColumn = target.getHeaderColumn()
+            val headerColumn = ParadoxCsvPsiService.getHeaderColumn(target)
             if (headerColumn == null) continue
             occurrences += headerColumn.textRange.unquote(headerColumn.text)
         }

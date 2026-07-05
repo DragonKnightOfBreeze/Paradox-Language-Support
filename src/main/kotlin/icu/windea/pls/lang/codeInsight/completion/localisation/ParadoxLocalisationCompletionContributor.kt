@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionInitializationContext
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
     init {
@@ -22,7 +22,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {
-        context.dummyIdentifier = PlsConstants.dummyIdentifier
+        context.dummyIdentifier = ChronicleConstants.dummyIdentifier
     }
 
     @Suppress("RedundantOverride")

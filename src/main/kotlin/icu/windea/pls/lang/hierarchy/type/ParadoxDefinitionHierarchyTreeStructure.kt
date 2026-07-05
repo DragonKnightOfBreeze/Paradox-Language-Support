@@ -5,9 +5,10 @@ import com.intellij.ide.hierarchy.HierarchyTreeStructure
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.tree.LeafState
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.optimized
@@ -16,8 +17,8 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -67,8 +68,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                 }
             }
         }
-        if (descriptors.isEmpty()) return HierarchyNodeDescriptor.EMPTY_ARRAY
-        return descriptors.toTypedArray()
+        return descriptors.toArray(HierarchyNodeDescriptor.EMPTY_ARRAY)
     }
 
     private fun buildSubtypeConfigChildren(descriptors: MutableList<HierarchyNodeDescriptor>, descriptor: ParadoxDefinitionHierarchyNodeDescriptor) {
@@ -78,12 +78,12 @@ class ParadoxDefinitionHierarchyTreeStructure(
             descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, subtypeElement, false, subtypeConfig.name, type, NodeType.Subtype)
         }
         val typeElement = descriptor.psiElement ?: return
-        val name = PlsBundle.message("hierarchy.definition.descriptor.noSubtype")
+        val name = ChronicleBundle.message("hierarchy.definition.descriptor.noSubtype")
         descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, typeElement, false, name, type, NodeType.NoSubtype)
     }
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsSettings.getInstance().state.hierarchy.eventTreeGrouping
+        val groupingStrategy = ChronicleSettings.getInstance().state.hierarchy.eventTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
@@ -118,7 +118,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsSettings.getInstance().state.hierarchy.techTreeGrouping
+        val groupingStrategy = ChronicleSettings.getInstance().state.hierarchy.techTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
@@ -222,15 +222,15 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun getGroupingRules(descriptor: ParadoxDefinitionHierarchyNodeDescriptor): List<Pair<NodeType, String>> {
         return buildList {
-                var currentDescriptor = descriptor
-                while (true) {
-                    val currentNodeType = currentDescriptor.nodeType
-                    if (currentNodeType.grouped) {
-                        this += tupleOf(currentNodeType, currentDescriptor.name)
-                    }
-                    currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
+            var currentDescriptor = descriptor
+            while (true) {
+                val currentNodeType = currentDescriptor.nodeType
+                if (currentNodeType.grouped) {
+                    this += tupleOf(currentNodeType, currentDescriptor.name)
                 }
-            }.optimized()
+                currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
+            }
+        }.optimized()
     }
 
     private fun filterDefinitionChild(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, definition: ParadoxDefinitionElement, groupingRules: List<Tuple2<NodeType, String>>): Boolean {

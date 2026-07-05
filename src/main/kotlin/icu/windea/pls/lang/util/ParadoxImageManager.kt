@@ -34,8 +34,8 @@ import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
@@ -62,7 +62,7 @@ object ParadoxImageManager {
         val fileType = file.fileType
         if (fileType !is ImageFileType && fileType !is DdsFileType && fileType !is TgaFileType) return false
         val extension = file.extension?.lowercase() ?: return false
-        if (extension !in PlsConstants.imageFileExtensions) return false
+        if (extension !in ChronicleConstants.imageFileExtensions) return false
         return true
     }
 

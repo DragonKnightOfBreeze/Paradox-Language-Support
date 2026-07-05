@@ -1,13 +1,13 @@
 package icu.windea.pls.localisation.codeInsight.unwrap
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 
 class ParadoxLocalisationTextFormatUnwrapper : ParadoxLocalisationUnwrapper() {
     override fun getDescription(e: PsiElement): String {
         val name = if (e is ParadoxLocalisationTextFormat) e.name.orEmpty() else ""
-        return PlsBundle.message("localisation.unwrap.textFormat", name)
+        return ChronicleBundle.message("localisation.unwrap.textFormat", name)
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {

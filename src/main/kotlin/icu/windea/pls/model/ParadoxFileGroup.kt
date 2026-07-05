@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.orNull
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.paths.ParadoxPath
@@ -35,13 +35,13 @@ enum class ParadoxFileGroup(val id: String) {
 
         @JvmStatic
         fun resolvePossible(fileName: String): ParadoxFileGroup {
-            if (fileName == PlsConstants.descriptorModFileName) return ModDescriptor // NOTE 2.1.8 file-name-sensitive
+            if (fileName == ChronicleConstants.descriptorModFileName) return ModDescriptor // NOTE 2.1.8 file-name-sensitive
 
             val fileExtension = fileName.substringAfterLast('.').orNull()?.lowercase() ?: return Other
             return when {
-                fileExtension in PlsConstants.scriptFileExtensions -> Script
-                fileExtension in PlsConstants.localisationFileExtensions -> Localisation
-                fileExtension in PlsConstants.csvFileExtensions -> Csv
+                fileExtension in ChronicleConstants.scriptFileExtensions -> Script
+                fileExtension in ChronicleConstants.localisationFileExtensions -> Localisation
+                fileExtension in ChronicleConstants.csvFileExtensions -> Csv
                 else -> Other
             }
         }

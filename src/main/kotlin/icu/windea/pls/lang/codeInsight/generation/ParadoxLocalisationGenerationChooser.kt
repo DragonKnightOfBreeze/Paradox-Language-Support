@@ -8,11 +8,11 @@ import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import java.awt.event.ActionEvent
@@ -32,11 +32,11 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     override fun getAllContainersNodeName(): String {
-        return PlsBundle.message("generation.localisation.allContainersNodeName")
+        return ChronicleBundle.message("generation.localisation.allContainersNodeName")
     }
 
     override fun getShowContainersAction(): ShowContainersAction {
-        return ShowContainersAction(PlsBundle.lazyMessage("generation.localisation.showContainers"), AllIcons.Actions.GroupBy)
+        return ShowContainersAction(ChronicleBundle.lazyMessage("generation.localisation.showContainers"), AllIcons.Actions.GroupBy)
     }
 
     override fun createSouthPanel(): JComponent {
@@ -55,18 +55,18 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     private fun Panel.configureOptionsPanel() {
-        collapsibleGroup(PlsBundle.message("generation.localisation.options")) { configureOptionsGroup() }
+        collapsibleGroup(ChronicleBundle.message("generation.localisation.options")) { configureOptionsGroup() }
     }
 
     private fun Panel.configureOptionsGroup() {
-        val settings = PlsSettings.getInstance().state.generation
-        val configGroup = context.locales.firstOrNull()?.configGroup ?: PlsFacade.getConfigGroup()
+        val settings = ChronicleSettings.getInstance().state.generation
+        val configGroup = context.locales.firstOrNull()?.configGroup ?: ChronicleFacade.getConfigGroup()
         val locales = ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
 
         // localisationStrategy
         row {
             val property = AtomicProperty(settings.localisationStrategy)
-            label(PlsBundle.message("settings.generation.localisationStrategy"))
+            label(ChronicleBundle.message("settings.generation.localisationStrategy"))
             comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::localisationStrategy.toAtomicProperty())
                 .bindItem(property)
@@ -77,12 +77,12 @@ class ParadoxLocalisationGenerationChooser(
         }
         // blankLineBetweenLocalisationGroups
         row {
-            checkBox(PlsBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
+            checkBox(ChronicleBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
                 .bindSelected(settings::blankLineBetweenLocalisationGroups.toAtomicProperty())
         }
         // moveIntoLocalisationGroups
         row {
-            checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
+            checkBox(ChronicleBundle.message("settings.generation.moveIntoLocalisationGroups"))
                 .bindSelected(settings::moveIntoLocalisationGroups.toAtomicProperty())
         }
     }
@@ -100,28 +100,28 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     private fun createSelectAllAction(): SelectAction {
-        return SelectAction(PlsBundle.message("generation.localisation.select.all")) {
+        return SelectAction(ChronicleBundle.message("generation.localisation.select.all")) {
             myTree.clearSelection() // clear first to keep in correct order
             selectElements(myElements)
         }
     }
 
     private fun createSelectMissingAction(): SelectAction {
-        return SelectAction(PlsBundle.message("generation.localisation.select.missing")) {
+        return SelectAction(ChronicleBundle.message("generation.localisation.select.missing")) {
             myTree.clearSelection() // clear first to keep in correct order
             selectElements(myElements.filter { it.info.missing }.toTypedArray())
         }
     }
 
     private fun createSelectMissingAndCheckedAction(): SelectAction {
-        return SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) {
+        return SelectAction(ChronicleBundle.message("generation.localisation.select.missingAndChecked")) {
             myTree.clearSelection() // clear first to keep in correct order
             selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray())
         }
     }
 
     private fun createSelectNoneAction(): SelectAction {
-        return SelectAction(PlsBundle.message("generation.localisation.select.none")) {
+        return SelectAction(ChronicleBundle.message("generation.localisation.select.none")) {
             myTree.clearSelection()
             // doOKAction() // do not quit dialog
         }

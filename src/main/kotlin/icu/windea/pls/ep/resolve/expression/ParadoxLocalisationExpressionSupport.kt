@@ -47,6 +47,6 @@ interface ParadoxLocalisationExpressionSupport {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
+        @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
     }
 }

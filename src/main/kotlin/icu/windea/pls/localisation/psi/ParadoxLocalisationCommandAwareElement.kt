@@ -5,7 +5,12 @@ import icu.windea.pls.core.*
 
 /**
  * 名字中可以带有本地化命令（[ParadoxLocalisationCommand]）的 PSI 元素。
+ *
+ * @see ParadoxLocalisationParameter
+ * @see ParadoxLocalisationIcon
+ * @see ParadoxLocalisationTextIcon
+ * @see ParadoxLocalisationTextFormat
  */
-interface ParadoxLocalisationCommandAwareElement: PsiElement {
+interface ParadoxLocalisationCommandAwareElement : PsiElement {
     val command: ParadoxLocalisationCommand? get() = this.findChild<_>()
 }

@@ -3,27 +3,30 @@ package icu.windea.pls.model
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
+import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 
 /**
  * 游戏类型。
  *
- * @property id ID（用作插件代码中的游戏类型 ID）。
- * @property title 标题（用作游戏的名字）。
- * @property gameId 官方启动器使用的游戏 ID。
- * @property steamId Steam 使用的游戏 ID。
+ * @property id ID（代码、文档和显示文本中使用游戏类型 ID）。
+ * @property title 标题（代码、文档和显示文本中使用的游戏名）。
+ * @property gameId 游戏 ID（官方启动器使用的游戏 ID）。
+ * @property steamId Steam ID（Steam 使用的游戏 ID）。
  * @property metadata 额外的元数据。
  *
+ * @see ParadoxGameTypeInfo
  * @see ParadoxGameTypeMetadata
+ * @see ParadoxGameTypeConstraint
+ * @see ParadoxGameTypeManager
  * @see ParadoxInferredGameTypeProvider
  */
-@Suppress("unused")
 enum class ParadoxGameType(
     val id: String,
     val title: String,
     val gameId: String,
-    val steamId: String
+    val steamId: String,
 ) {
     /** 通用游戏类型。用于对应共享的规则分组。 */
     Core("core", "Core", "", ""),
@@ -68,6 +71,6 @@ enum class ParadoxGameType(
         fun getSpecific(id: String): ParadoxGameType? = mapSpecific[id]
 
         @JvmStatic
-        fun getDefault(): ParadoxGameType = PlsSettings.getInstance().state.defaultGameType
+        fun getDefault(): ParadoxGameType = ChronicleSettings.getInstance().state.defaultGameType
     }
 }

@@ -15,8 +15,8 @@ import com.intellij.openapi.editor.RangeMarker
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -36,7 +36,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.type.CwtExpressionType
 
@@ -100,7 +100,7 @@ object CwtConfigCompletionManager {
                 }
             }
             is CwtValueConfig -> {
-                if (context.isBlockValue) {
+                if (context.isDirectValue) {
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
@@ -150,7 +150,7 @@ object CwtConfigCompletionManager {
                 }
             }
             is CwtOptionValueConfig -> {
-                if (context.isOptionBlockValue) {
+                if (context.isOptionDirectValue) {
                     if (config.valueType != CwtExpressionType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
@@ -173,10 +173,10 @@ object CwtConfigCompletionManager {
     private fun completeBySchemaExpression(schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression, processor: Processor<LookupElementBuilder>): Boolean {
         val icon = when {
             schemaExpression is CwtSchemaExpression.Enum -> AllIcons.Nodes.Enum
-            config is CwtOptionConfig -> PlsIcons.Nodes.Option
-            config is CwtOptionValueConfig -> PlsIcons.Nodes.Value
-            config is CwtPropertyConfig -> PlsIcons.Nodes.Property
-            config is CwtValueConfig -> PlsIcons.Nodes.Value
+            config is CwtOptionConfig -> ChronicleIcons.Nodes.Option
+            config is CwtOptionValueConfig -> ChronicleIcons.Nodes.Value
+            config is CwtPropertyConfig -> ChronicleIcons.Nodes.Property
+            config is CwtValueConfig -> ChronicleIcons.Nodes.Value
             else -> null
         }
         val typeFile = schema.file.pointer.element
@@ -431,7 +431,7 @@ object CwtConfigCompletionManager {
             else -> return null
         }
         val valueText = when {
-            insertCurlyBraces -> PlsStrings.blockFolder
+            insertCurlyBraces -> ChronicleStrings.blockFolder
             config is CwtOptionMemberConfig<*> -> config.value
             config is CwtMemberConfig<*> -> config.value
             else -> return null
@@ -477,7 +477,7 @@ object CwtConfigCompletionManager {
         c.laterRunnable = Runnable {
             val project = context.project
             val editor = c.editor
-            val commandName = PlsBundle.message("command.expandTemplate.name")
+            val commandName = ChronicleBundle.message("command.expandTemplate.name")
             executeWriteCommand(project, commandName, makeWritable = context.file) c@{
                 val documentManager = PsiDocumentManager.getInstance(project)
                 documentManager.commitDocument(editor.document)

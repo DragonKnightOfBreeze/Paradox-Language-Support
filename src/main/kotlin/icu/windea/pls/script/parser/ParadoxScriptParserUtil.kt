@@ -18,8 +18,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
             val t = b.rawLookup(s)
             when {
                 t == null -> break
-                t in TokenSets.BREAK_SNIPPET_TYPES -> end = true
-                t in TokenSets.LEFT_SNIPPET_TYPES && b.rawLookup(s - 1) in TokenSets.RIGHT_SNIPPET_TYPES -> break
+                t in TokenSets.BREAK_SNIPPET_TOKENS -> end = true
+                t in TokenSets.LEFT_SNIPPET_TOKENS && b.rawLookup(s - 1) in TokenSets.RIGHT_SNIPPET_TOKENS -> break
                 t in TokenSets.PROPERTY_SEPARATOR_TOKENS -> return false
                 else -> if (end) break
             }
@@ -33,10 +33,10 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         // also for continuous literals
         val t = b.rawLookup(-1)
         when {
-            t in TokenSets.BREAK_SNIPPET_TYPES -> return false
-            t in TokenSets.SNIPPET_TYPES -> {
+            t in TokenSets.BREAK_SNIPPET_TOKENS -> return false
+            t in TokenSets.SNIPPET_TOKENS -> {
                 val nextTokenType = b.rawLookup(0)
-                if (nextTokenType != null && nextTokenType in TokenSets.SNIPPET_TYPES) return false
+                if (nextTokenType != null && nextTokenType in TokenSets.SNIPPET_TOKENS) return false
             }
         }
         return true
@@ -51,15 +51,15 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         while (true) {
             val t = b.rawLookup(i) ?: break
             when {
-                t in TokenSets.BREAK_SNIPPET_TYPES -> return false
+                t in TokenSets.BREAK_SNIPPET_TOKENS -> return false
                 t == LEFT_BRACKET -> n++
                 t == RIGHT_BRACKET -> n--
             }
             if (n == 0) break
             i++
         }
-        if (b.rawLookup(-2) in TokenSets.BREAK_SNIPPET_TYPES) return false
-        if (b.rawLookup(i + 1) in TokenSets.BREAK_SNIPPET_TYPES) return false
+        if (b.rawLookup(-2) in TokenSets.BREAK_SNIPPET_TOKENS) return false
+        if (b.rawLookup(i + 1) in TokenSets.BREAK_SNIPPET_TOKENS) return false
         return true
     }
 
@@ -68,7 +68,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         // remapping token types to ARGUMENT_TOKEN for inline conditional block items
         if (b !is Builder) return true
         b.setTokenTypeRemapper m@{ t, _, _, _ ->
-            if (t in TokenSets.SNIPPET_TYPES) return@m ARGUMENT_TOKEN
+            if (t in TokenSets.SNIPPET_TOKENS) return@m ARGUMENT_TOKEN
             t
         }
         return true

@@ -2,8 +2,8 @@ package icu.windea.pls.lang
 
 import com.intellij.ide.IconProvider
 import com.intellij.psi.PsiElement
-import icu.windea.pls.cwt.navigation.CwtNavigationManager
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtPsiPresentationService
 import javax.swing.Icon
 
 /**
@@ -12,7 +12,7 @@ import javax.swing.Icon
 class CwtConfigIconProvider : IconProvider() {
     override fun getIcon(element: PsiElement, flags: Int): Icon? {
         return when (element) {
-            is CwtMember -> CwtNavigationManager.getPatchedIcon(element)
+            is CwtMember -> CwtPsiPresentationService.getPatchedIcon(element)
             else -> null
         }
     }

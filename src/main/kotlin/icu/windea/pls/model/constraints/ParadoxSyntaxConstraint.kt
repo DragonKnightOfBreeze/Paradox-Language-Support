@@ -5,8 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.resolve.FileContextUtil
 import icu.windea.pls.lang.analysis.ParadoxGameManager
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.lexer._ParadoxLocalisationTextLexer
 import icu.windea.pls.model.ParadoxGameType
@@ -44,17 +42,10 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
             is ParadoxGameType -> test(target)
             is _ParadoxLocalisationTextLexer -> test(target.gameType)
             is PsiBuilder -> test(selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)))
-            is VirtualFile -> testFrom(target)
-            is PsiFile -> testFrom(target)
+            is VirtualFile -> test(selectGameType(target))
+            is PsiFile -> test(selectGameType(target))
             else -> false // unsupported
         }
-    }
-
-    fun testFrom(from: Any): Boolean {
-        val selectedFile = selectFile(from)
-        val rootInfo = selectedFile?.fileInfo?.rootInfo
-        val gameType = rootInfo?.gameType
-        return gameType == null || gameType == Core || gameType in gameTypes
     }
 
     fun test(gameType: ParadoxGameType?): Boolean {

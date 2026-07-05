@@ -3,8 +3,6 @@ package icu.windea.pls.config.util
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import com.jetbrains.rd.util.ThreadLocal
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFileConfig
@@ -33,11 +31,10 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withState
 import icu.windea.pls.cwt.psi.CwtBlock
-import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtMemberContainer
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -49,25 +46,9 @@ object CwtConfigResolverManager {
         val postProcessActions by registerKey<MutableList<Runnable>>(Keys)
     }
 
-    private val currentLocation = ThreadLocal<String>()
-
-    fun setLocation(filePath: String, configGroup: CwtConfigGroup) {
-        val gameTypeId = configGroup.gameType.id
-        val location = "$gameTypeId@$filePath"
-        currentLocation.set(location)
-    }
-
-    fun resetLocation() {
-        currentLocation.remove()
-    }
-
-    fun getLocation(): String? {
-        return currentLocation.get()
-    }
-
     @Optimized
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
-        if (element !is CwtBlockElement) return null
+        if (element !is CwtMemberContainer) return null
         val configs: MutableList<CwtMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
             val resolved = when (e) {
@@ -83,7 +64,7 @@ object CwtConfigResolverManager {
     }
 
     @Optimized
-    fun getOptionConfigs(element: CwtMember): List<CwtOptionMemberConfig<*>> {
+    fun getOptionConfigs(element: CwtMember, configGroup: CwtConfigGroup): List<CwtOptionMemberConfig<*>> {
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
         var current: PsiElement = element
         while (true) {
@@ -92,8 +73,8 @@ object CwtConfigResolverManager {
                 is CwtOptionComment -> {
                     current.forEachChild f@{ e ->
                         val resolved = when (e) {
-                            is CwtOption -> CwtOptionConfig.resolve(e)
-                            is CwtValue -> CwtOptionValueConfig.resolve(e)
+                            is CwtOption -> CwtOptionConfig.resolve(e, configGroup)
+                            is CwtValue -> CwtOptionValueConfig.resolve(e, configGroup)
                             else -> null
                         }
                         if (resolved == null) return@f
@@ -108,13 +89,13 @@ object CwtConfigResolverManager {
     }
 
     @Optimized
-    fun getOptionConfigsInOption(element: CwtValue): List<CwtOptionMemberConfig<*>>? {
+    fun getOptionConfigsInOption(element: CwtValue, configGroup: CwtConfigGroup): List<CwtOptionMemberConfig<*>>? {
         if (element !is CwtBlock) return null
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
             val resolved = when (e) {
-                is CwtOption -> CwtOptionConfig.resolve(e)
-                is CwtValue -> CwtOptionValueConfig.resolve(e)
+                is CwtOption -> CwtOptionConfig.resolve(e, configGroup)
+                is CwtValue -> CwtOptionValueConfig.resolve(e, configGroup)
                 else -> null
             }
             if (resolved == null) return@f
@@ -179,10 +160,6 @@ object CwtConfigResolverManager {
             }
             else -> pass()
         }
-    }
-
-    inline fun <T> skipProcessingOptionData(action: () -> T): T {
-        return withState(ChronicleThreadContext.skipProcessingOptionData, action)
     }
 
     fun getFileConfigs(configGroup: CwtConfigGroup): MutableMap<String, CwtFileConfig> {

@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameTypeInfo
@@ -110,7 +110,7 @@ object ParadoxAnalysisService {
     }
 
     fun resolveLocaleId(file: VirtualFile, project: Project): String? {
-        val indexId = PlsIndexKeys.FileLocale
+        val indexId = ChronicleIndexKeys.FileLocale
         val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
         return localeId.orNull()
     }

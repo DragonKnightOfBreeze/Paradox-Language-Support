@@ -2,8 +2,8 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
@@ -28,16 +28,16 @@ import kotlin.io.path.notExists
  * 参见：[ParadoxLauncherImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporter.cs)
  */
 class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
-    override val text get() = PlsBundle.message("mod.importer.launcherJson")
+    override val text get() = ChronicleEpBundle.message("mod.importer.launcherJson")
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
         val workshopDirPath = SpecialPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         if (workshopDirPath == null) {
-            throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
+            throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.steamWorkshopNotFound"))
         }
         if (workshopDirPath.notExists()) {
-            throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath))
+            throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.steamWorkshopDirNotExist", workshopDirPath))
         }
 
         val newModInfos = mutableListOf<ParadoxModInfo>()
@@ -50,7 +50,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             // 按 V3 解析：position 为 Int，排序按数值
             val data = readData(filePath, LauncherJsonV3::class.java)
             if (data.game != gameType.gameId) {
-                throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
+                throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
             }
             for (mod in data.mods.sortedBy { it.position }) {
                 val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
@@ -64,7 +64,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             // 按 V2 解析：position 为 String，排序时转为数值（去前导 0，失败时置于末尾）
             val data = readData(filePath, LauncherJsonV2::class.java)
             if (data.game != gameType.gameId) {
-                throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
+                throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
             }
             for (mod in data.mods.sortedBy { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }) {
                 val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
@@ -79,7 +79,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             run {
                 val data = runCatching { readData(filePath, LauncherJsonV2::class.java) }.getOrNull() ?: return@run
                 if (data.game != gameType.gameId) {
-                    throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
+                    throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
                 }
                 for (mod in data.mods.sortedBy { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }) {
                     val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
@@ -92,7 +92,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             }
             val data = readData(filePath, LauncherJsonV3::class.java)
             if (data.game != gameType.gameId) {
-                throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
+                throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
             }
             for (mod in data.mods.sortedBy { it.position }) {
                 val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
@@ -107,7 +107,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
 
     override fun createFileChooserDescriptor(gameType: ParadoxGameType): FileChooserDescriptor {
         return FileChooserDescriptorFactory.createSingleFileDescriptor("json")
-            .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
+            .withTitle(ChronicleEpBundle.message("mod.importer.launcherJson.title"))
     }
 
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {

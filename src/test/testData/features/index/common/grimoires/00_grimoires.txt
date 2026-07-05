@@ -1,0 +1,14 @@
+# 百科全书
+grimoire = {
+    name = encyclopedia
+}
+
+# 武装之书
+grimoire = {
+    name = book_of_arms_processed
+}
+
+# 波纹之书
+grimoire = {
+    name = book_of_ripples
+}

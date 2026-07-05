@@ -56,7 +56,7 @@ data class ParadoxDefinitionInjectionInfo(
 
     // /** @see ParadoxDefinitionInjectionManager.isCreateMode */
     // fun isCreateMode(): Boolean = ParadoxDefinitionInjectionManager.isCreateMode(this)
-    
+
     /** @see ParadoxDefinitionInjectionManager.isTargetValid */
     fun isTargetValid(): Boolean = ParadoxDefinitionInjectionManager.isTargetValid(this)
 

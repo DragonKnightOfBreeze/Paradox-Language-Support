@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -20,13 +20,12 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -43,48 +42,53 @@ object ParadoxDefinitionInjectionManager {
     }
 
     /**
-     * 检查指定的游戏类型是否支持定义注入。
+     * 检查游戏类型是否支持定义注入。
+     *
+     * @param context 用于获取游戏类型的上下文对象（参见 [selectGameType]）。
      */
-    fun isSupported(gameType: ParadoxGameType?): Boolean {
-        if (gameType == null) return false
-        val configGroup = PlsFacade.getConfigGroup(gameType)
-        val config = configGroup.macrosModel.forDefinitionInjections
-        if (config == null) return false
-        return true
+    fun isSupported(context: Any?): Boolean {
+        if (context == null) return false
+        val gameType = selectGameType(context) ?: return false
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
+        return configGroup.macrosModel.forDefinitionInjections != null
     }
 
     /**
-     * 检查指定的游戏类型是否支持指定模式的定义注入。
+     * 检查游戏类型是否支持指定 [mode] 的定义注入。
+     *
+     * @param context 用于获取游戏类型的上下文对象（参见 [selectGameType]）。
      */
-    fun isSupported(mode: String, gameType: ParadoxGameType?): Boolean {
-        if (gameType == null) return false
+    fun isSupported(mode: String, context: Any?): Boolean {
+        if (context == null) return false
         if (mode.isEmpty()) return false
-        val configGroup = PlsFacade.getConfigGroup(gameType)
-        val config = configGroup.macrosModel.forDefinitionInjections
-        if (config == null) return false
-        if (config.modeConfigs[mode] == null) return false // 这里忽略 `prefix` 的大小写
-        return true
+        val gameType = selectGameType(context) ?: return false
+        val configGroup = ChronicleFacade.getConfigGroup(gameType)
+        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
+        // ignore case for `mode`
+        return config.modeConfigs[mode] != null
     }
 
     /**
-     * 检查输入的字符串是否匹配定义注入的键（会从 [context] 选取游戏类型并检查）。
+     * 检查输入的字符串是否匹配定义注入的键（会检查游戏类型）。
+     *
+     * @param context 用于获取游戏类型的上下文对象（参见 [selectGameType]）。
      */
     fun isMatched(expression: String, context: Any?): Boolean {
         if (context == null) return false
         val mode = expression.substringBefore(':', "")
         if (mode.isEmpty()) return false
-        return isSupported(mode, selectGameType(context))
+        return isSupported(mode, context)
     }
 
     /**
-     * 检查定义注入在 [element] 对应的位置是否可用（不一定实际受游戏支持，格式也不一定正确）。这意味着至少会提供代码高亮。
+     * 检查定义注入在 [element] 对应的位置是否可用（游戏类型不一定支持，格式也不一定正确）。这意味着至少会提供代码高亮。
      */
     fun isAvailable(element: ParadoxScriptProperty): Boolean {
         if (element.parent !is ParadoxScriptRootBlock) return false // 属性必须位于文件顶级（就目前看来）
         val propertyValue = element.propertyValue ?: return false
         if (propertyValue !is ParadoxScriptBlock) return false // 属性的值必须是子句
         val file = element.containingFile ?: return false
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return false // 额外检查
+        if (!ParadoxPsiFileMatchService.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return false // 额外检查
         // 这里目前不继续检查当前位置是否匹配任意定义类型
         return true
     }
@@ -124,7 +128,7 @@ object ParadoxDefinitionInjectionManager {
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionInjectionService.getDependencies(element, file)
+                val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file)
                 value.withDependencyItems(dependencies)
             }
         }

@@ -4,7 +4,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.core.collections.orNull
@@ -16,16 +15,17 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -50,7 +50,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContext) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContext) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -97,7 +97,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return withRecursionGuard {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
-                PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
+                ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
                         // TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
@@ -132,11 +132,11 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("scopeContext.inference.0", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.0", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("scopeContext.inference.0.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.0.conflict", definitionInfo.name)
     }
 }
 
@@ -154,7 +154,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContextForEvents) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -187,7 +187,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("common/on_actions/**/*.txt")
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromFilePathPatterns("common/on_actions/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
@@ -206,7 +206,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
+            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -238,13 +238,11 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        val eventId = definitionInfo.name
-        return PlsBundle.message("scopeContext.inference.1", eventId)
+        return ChronicleEpBundle.message("scopeContext.inference.1", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        val eventId = definitionInfo.name
-        return PlsBundle.message("scopeContext.inference.1.conflict", eventId)
+        return ChronicleEpBundle.message("scopeContext.inference.1.conflict", definitionInfo.name)
     }
 }
 
@@ -267,7 +265,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContextForEvents) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -301,7 +299,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
@@ -320,7 +318,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoTypes.EventInEvent
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
+            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
                     val eventName = info.eventName
@@ -390,11 +388,11 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("scopeContext.inference.2", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.2", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("scopeContext.inference.2.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.2.conflict", definitionInfo.name)
     }
 }
 
@@ -417,7 +415,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsSettings.getInstance().state.inference.scopeContextForOnActions) return null
+        if (!ChronicleSettings.getInstance().state.inference.scopeContextForOnActions) return null
         return getScopeContextFromCache(definition)
     }
 
@@ -454,7 +452,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
@@ -473,7 +471,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoTypes.OnActionInEvent
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
+            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
                     val onActionName = info.onActionName
@@ -543,10 +541,10 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("scopeContext.inference.3", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.3", definitionInfo.name)
     }
 
     override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("scopeContext.inference.3.conflict", definitionInfo.name)
+        return ChronicleEpBundle.message("scopeContext.inference.3.conflict", definitionInfo.name)
     }
 }

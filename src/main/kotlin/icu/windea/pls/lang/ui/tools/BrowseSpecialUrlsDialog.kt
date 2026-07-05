@@ -20,7 +20,7 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.registerDoubleClickListener
 import icu.windea.pls.ep.tools.SpecialUrlProvider
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -54,10 +54,10 @@ class BrowseSpecialUrlsDialog(
 
     private val tableModel = ListTableModel(
         arrayOf(
-            object : ColumnInfo<SpecialUrlProvider, String>(PlsBundle.message("dialog.table.column.description")) {
+            object : ColumnInfo<SpecialUrlProvider, String>(ChronicleBundle.message("dialog.table.column.description")) {
                 override fun valueOf(item: SpecialUrlProvider) = item.text
             },
-            object : ColumnInfo<SpecialUrlProvider, String>(PlsBundle.message("dialog.table.column.url")) {
+            object : ColumnInfo<SpecialUrlProvider, String>(ChronicleBundle.message("dialog.table.column.url")) {
                 override fun valueOf(item: SpecialUrlProvider) = item.getUrl(file, selectedGameType) ?: ""
             },
         ),
@@ -87,20 +87,20 @@ class BrowseSpecialUrlsDialog(
     }
 
     init {
-        title = PlsBundle.message("dialog.title.browseSpecialUrls")
-        setOKButtonText(PlsBundle.message("action.copyAll"))
-        setCancelButtonText(PlsBundle.message("action.close"))
+        title = ChronicleBundle.message("dialog.title.browseSpecialUrls")
+        setOKButtonText(ChronicleBundle.message("action.copyAll"))
+        setCancelButtonText(ChronicleBundle.message("action.close"))
         init()
         pack()
     }
 
     override fun createCenterPanel(): DialogPanel {
         return panel {
-            row(PlsBundle.message("dialog.field.selectedGameType")) {
+            row(ChronicleBundle.message("dialog.field.selectedGameType")) {
                 comboBox(ParadoxGameType.getAllSpecific(), textListCellRenderer { it?.title })
                     .bindItem(selectedGameTypeProperty)
                     .applyToComponent { addActionListener { tableModel.fireTableDataChanged() } }
-                button(PlsBundle.message("reset")) { selectedGameTypeProperty.set(defaultSelectedGameType) }
+                button(ChronicleBundle.message("reset")) { selectedGameTypeProperty.set(defaultSelectedGameType) }
                     .align(AlignX.RIGHT)
             }
 
@@ -113,12 +113,12 @@ class BrowseSpecialUrlsDialog(
 
     override fun createActions(): Array<out Action?> {
         // copyAll + copy + open + close
-        val copyAction = object : AbstractAction(PlsBundle.message("action.copy")) {
+        val copyAction = object : AbstractAction(ChronicleBundle.message("action.copy")) {
             override fun actionPerformed(e: ActionEvent?) {
                 copy()
             }
         }
-        val openAction = object : AbstractAction(PlsBundle.message("action.open")) {
+        val openAction = object : AbstractAction(ChronicleBundle.message("action.open")) {
             override fun actionPerformed(e: ActionEvent?) {
                 open()
             }
@@ -136,12 +136,12 @@ class BrowseSpecialUrlsDialog(
 
     private fun createPopupActions(): ActionGroup {
         val actionGroup = DefaultActionGroup()
-        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.CopyUrl.text")) {
+        actionGroup.addAction(object : AnAction(ChronicleBundle.message("dialog.table.popup.action.CopyUrl.text")) {
             override fun actionPerformed(e: AnActionEvent) {
                 copy()
             }
         })
-        actionGroup.addAction(object : AnAction(PlsBundle.message("dialog.table.popup.action.OpenUrl.text")) {
+        actionGroup.addAction(object : AnAction(ChronicleBundle.message("dialog.table.popup.action.OpenUrl.text")) {
             override fun actionPerformed(e: AnActionEvent) {
                 open()
             }

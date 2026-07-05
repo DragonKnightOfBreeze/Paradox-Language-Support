@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
-import icu.windea.pls.core.getKeyword
+import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
@@ -50,14 +50,18 @@ data class ParadoxCompletionContext(
 private object ParadoxCompletionContextBuilder {
     fun build(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
         val gameType = selectGameType(globalContext.file)
-        val configGroup = PlsFacade.getConfigGroup(globalContext.project, gameType)
-        val keyword = globalContext.contextElement.getKeyword(globalContext.offsetInParent)
+        val configGroup = ChronicleFacade.getConfigGroup(globalContext.project, gameType)
+        val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)
 
         return ParadoxCompletionContext(
             globalContext = globalContext,
             configGroup = configGroup,
             keyword = keyword,
         )
+    }
+
+    private fun getKeyword(element: PsiElement, offsetInParent: Int): String {
+        return element.text.substring(0, offsetInParent).unquote()
     }
 }
 

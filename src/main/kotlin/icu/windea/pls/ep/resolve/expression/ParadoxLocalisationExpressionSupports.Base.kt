@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.expression
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.selectGameType
@@ -20,14 +20,14 @@ abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisa
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
         if (element !is ParadoxLocalisationExpressionElement) return
-        val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder)
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
         if (element !is ParadoxLocalisationExpressionElement) return emptyList()
-        val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
+        val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return emptyList()
         val references = complexExpression.getAllReferences(element)
         if (references.isEmpty()) return emptyList()

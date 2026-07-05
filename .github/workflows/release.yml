@@ -20,22 +20,17 @@ jobs:
     if: ${{ !contains(github.event.release.prerelease, 'true') }}
 
     steps:
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+
       # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.release.tag_name }}
-
-      # Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
 
       # Set up Java environment for the next steps
       - name: Setup Java
@@ -47,10 +42,6 @@ jobs:
       # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-
-      # Set gradlew executable permission
-      - name: Set gradlew executable permission
-        run: chmod +x gradlew
 
       # Set environment variables
       - name: Export Properties
@@ -70,6 +61,9 @@ jobs:
       - name: Publish Plugin
         env:
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
         run: ./gradlew publishPlugin
 
       # Upload artifact as a release asset

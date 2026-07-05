@@ -3,8 +3,8 @@ package icu.windea.pls.lang.actions
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.psi.PsiDirectory
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
@@ -18,14 +18,14 @@ import icu.windea.pls.model.ParadoxFileInfo
  * NOTE 2.1.5 入口目录的补全与普通目录的补全目前是上下文无关的（尽管游戏的实际行为可能确实是上下文有关的）。
  */
 class ParadoxEntryCreateDirectoryCompletionContributor : CreateDirectoryCompletionContributor {
-    override fun getDescription() = PlsBundle.message("create.directory.completion.entry.description")
+    override fun getDescription() = ChronicleBundle.message("create.directory.completion.entry.description")
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()
         if (fileInfo.inMainOrExtraEntry) return emptySet() // 必须不位于合法的入口目录中（同时又位于根目录中）
         val result = sortedSetOf<String>()
         processFromPredefined(result, fileInfo)
-        return result.map { Variant(it, null, PlsIcons.General.EntryDirectory) }
+        return result.map { Variant(it, null, ChronicleIcons.General.EntryDirectory) }
     }
 
     private fun processFromPredefined(result: MutableSet<String>, fileInfo: ParadoxFileInfo) {

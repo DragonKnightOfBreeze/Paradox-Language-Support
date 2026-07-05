@@ -24,7 +24,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.ParadoxNameValidators
@@ -57,7 +57,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyParameterValueInjectionForArgumentValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxScriptString) return
-        if (!PlsSettings.getInstance().state.inference.injectionForParameterValue) return
+        if (!ChronicleSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val argumentName = host.propertyKey?.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!ParadoxNameValidators.checkParameterName(argumentName)) return  // 参数名必须合法
@@ -97,7 +97,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyParameterValueInjectionForParameterDefaultValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxParameter) return
-        if (!PlsSettings.getInstance().state.inference.injectionForParameterValue) return
+        if (!ChronicleSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val parameterName = host.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!ParadoxNameValidators.checkParameterName(parameterName)) return  // 参数名必须合法
@@ -129,7 +129,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyLocalisationTextInjection(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxLocalisationTextInjectionInfo>) {
         if (host !is ParadoxScriptString) return
-        if (!PlsSettings.getInstance().state.inference.injectionForLocalisationText) return
+        if (!ChronicleSettings.getInstance().state.inference.injectionForLocalisationText) return
 
         val text = host.text
         if (!shouldApplyLocalisationTextInjection(text)) return
@@ -168,7 +168,7 @@ object ParadoxScriptInjectionManager {
         val injectionInfo = when {
             host is ParadoxScriptStringExpressionElement -> {
                 val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile // actual PsiFile of VirtualFileWindow
-                val shreds = PlsInjectionManager.getShreds(file0)
+                val shreds = ChronicleInjectionManager.getShreds(file0)
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
                 // it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)

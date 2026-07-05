@@ -55,8 +55,8 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  public @NotNull ParadoxScriptRootBlock getMembersRoot() {
-    return ParadoxScriptPsiImplUtil.getMembersRoot(this);
+  public @NotNull ParadoxScriptRootBlock getMemberContainer() {
+    return ParadoxScriptPsiImplUtil.getMemberContainer(this);
   }
 
   @Override
@@ -65,7 +65,7 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 

@@ -5,13 +5,13 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -24,8 +24,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
 /**
  * 宏规则。
  *
- * 用于描述脚本文件中区别于一般抽象的特殊的表达式和结果，并提供额外的用于提示和验证的元数据。
- * 这些表达式和结构会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
+ * 用于描述脚本文件中区别于一般抽象的特殊的语言构造（表达式、语句等），并提供额外的用于提示和验证的元数据。
+ * 这些语言构造会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
  * 不同的宏可以拥有不同的规则结构。
  *
  * 目前涉及的宏包括：
@@ -114,7 +114,8 @@ private object CwtMacroConfigResolver : CwtConfigResolverScope {
                 }?.optimized().orEmpty()
                 logger.debug { "Resolved macro config for definition injections (name: $name).".withLocationPrefix(config) }
                 CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, lenientModes, replaceModes, createModes)
-            } else -> {
+            }
+            else -> {
                 logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
                 CwtMacroConfigImpl(config, name)
             }

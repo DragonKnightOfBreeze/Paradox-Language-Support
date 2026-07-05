@@ -14,7 +14,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找定义。
@@ -22,7 +22,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private fun isEnabled() = PlsSettings.getInstance().state.navigation.seForDefinitions
+    private fun isEnabled() = ChronicleSettings.getInstance().state.navigation.seForDefinitions
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return
@@ -37,7 +37,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
-        val name = PlsChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
+        val name = ChronicleChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = GlobalSearchScopeUtil.toGlobalSearchScope(parameters.searchScope, project)
         val gameType = ParadoxAnalysisManager.getSelectedGameType(project)

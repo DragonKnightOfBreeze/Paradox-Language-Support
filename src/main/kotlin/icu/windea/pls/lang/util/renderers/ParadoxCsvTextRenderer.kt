@@ -3,8 +3,8 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 
 /**
  * CSV 文本的渲染器。
@@ -13,7 +13,7 @@ abstract class ParadoxCsvTextRenderer<T, S : ParadoxCsvTextRenderSettings, C : P
     final override fun render(input: PsiElement, context: C): T {
         return when (input) {
             is ParadoxCsvFile -> render(input, context)
-            is ParadoxCsvRowElement -> render(input, context)
+            is ParadoxCsvColumnContainer -> render(input, context)
             is ParadoxCsvColumn -> render(input, context)
             else -> throw UnsupportedOperationException("Unsupported element type: ${input.elementType}")
         }
@@ -24,8 +24,8 @@ abstract class ParadoxCsvTextRenderer<T, S : ParadoxCsvTextRenderSettings, C : P
         return context.build()
     }
 
-    fun render(element: ParadoxCsvRowElement, context: C = createContext()): T {
-        context.renderRowElement(element)
+    fun render(element: ParadoxCsvColumnContainer, context: C = createContext()): T {
+        context.renderColumnContainer(element)
         return context.build()
     }
 
@@ -40,7 +40,7 @@ abstract class ParadoxCsvTextRenderSettings : ParadoxRenderSettings
 abstract class ParadoxCsvTextRenderContext<T> : ParadoxRenderContext<T> {
     abstract fun renderFile(element: ParadoxCsvFile)
 
-    abstract fun renderRowElement(element: ParadoxCsvRowElement)
+    abstract fun renderColumnContainer(element: ParadoxCsvColumnContainer)
 
     abstract fun renderColumn(element: ParadoxCsvColumn)
 }

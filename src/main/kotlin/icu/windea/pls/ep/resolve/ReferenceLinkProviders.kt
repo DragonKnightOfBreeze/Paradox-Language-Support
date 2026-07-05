@@ -3,8 +3,7 @@ package icu.windea.pls.ep.resolve
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
@@ -14,6 +13,7 @@ import icu.windea.pls.core.toPsiFileSystemItem
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -42,7 +42,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
         val project = contextElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val categories = ReferenceLinkType.CwtConfig.Categories
         return when (category) {
             categories.types -> {
@@ -125,7 +125,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.config", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.config", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -174,7 +174,7 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.sv", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.sv", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -207,7 +207,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.def", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.def", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -239,7 +239,7 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.loc", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.loc", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -271,7 +271,7 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.path", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.path", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
@@ -288,12 +288,12 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
         val gameType = gameType0 ?: selectGameType(contextElement) ?: ParadoxGameType.Core
         val name = remain
         val project = contextElement.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return ParadoxModifierManager.resolveModifier(name, contextElement, configGroup)
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.modifier", link)
+        return ChronicleEpBundle.message("reference.link.unresolved.modifier", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {

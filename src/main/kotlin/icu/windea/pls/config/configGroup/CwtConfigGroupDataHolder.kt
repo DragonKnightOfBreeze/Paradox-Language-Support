@@ -22,6 +22,7 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -81,6 +82,10 @@ interface CwtConfigGroupDataHolder {
     val enums: Map<String, CwtEnumConfig>
     // 基于 enum_name 进行定位，对应的可能是 key/value
     val complexEnums: Map<String, CwtComplexEnumConfig>
+    // 来自列规则的复杂枚举规则，在 CSV 文件中声明（也包含在 complexEnums 中）
+    val complexEnumsFromColumns: Map<String, CwtComplexEnumConfig>
+
+    val unions: Map<String, CwtUnionConfig>
 
     val dynamicValueTypes: Map<String, CwtDynamicValueTypeConfig>
 

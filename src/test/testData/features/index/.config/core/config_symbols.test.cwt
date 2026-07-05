@@ -12,6 +12,10 @@ enums = {
     }
 }
 
+unions = {
+    union[test_union] = { int float }
+}
+
 values = {
     value[test_value] = {
         dyn_value

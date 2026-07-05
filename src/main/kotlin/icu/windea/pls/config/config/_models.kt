@@ -1,6 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 
 /**
@@ -36,6 +37,27 @@ enum class CwtSubtypeGroup(val id: String) {
     operator fun contains(config: CwtSubtypeConfig) = config.group == id
 
     override fun toString() = id
+}
+
+/**
+ * 行类型。默认为 [Key]。
+ *
+ * 决定如何匹配其中的每一列。按列名匹配（列名不可重复），还是按列在所在行中的索引匹配（列名可重复）。
+ *
+ * @see CwtRowConfig
+ */
+enum class CwtRowType(val id: String) {
+    Key("key"), Index("index");
+
+    companion object {
+        @JvmStatic
+        fun resolve(id: String?): CwtRowType {
+            return when (id?.lowercase()) {
+                "index" -> Index
+                else -> Key
+            }
+        }
+    }
 }
 
 /**

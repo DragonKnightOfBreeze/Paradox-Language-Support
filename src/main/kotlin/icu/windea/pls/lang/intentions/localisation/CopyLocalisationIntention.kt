@@ -7,8 +7,8 @@ import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import java.awt.datatransfer.StringSelection
 
 /**
@@ -17,7 +17,7 @@ import java.awt.datatransfer.StringSelection
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisation")
 
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements) = context
@@ -27,7 +27,7 @@ class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(),
     }
 
     private fun createNotification(): Notification {
-        val content = PlsBundle.message("intention.copyLocalisation.notification", Messages.success())
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+        val content = ChronicleBundle.message("intention.copyLocalisation.notification", Messages.success())
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
     }
 }

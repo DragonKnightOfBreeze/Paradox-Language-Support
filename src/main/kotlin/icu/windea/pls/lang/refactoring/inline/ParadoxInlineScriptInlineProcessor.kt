@@ -16,15 +16,16 @@ import com.intellij.refactoring.listeners.RefactoringEventData
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -41,7 +42,7 @@ class ParadoxInlineScriptInlineProcessor(
     // do not use DescriptiveNameUtil.getDescriptiveName(element) here
     private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).or.anonymous()
 
-    override fun getCommandName() = PlsBundle.message("inline.inlineScript.command", descriptiveName)
+    override fun getCommandName() = ChronicleBundle.message("inline.inlineScript.command", descriptiveName)
 
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = ParadoxInlineViewDescriptor(element)
 
@@ -59,7 +60,7 @@ class ParadoxInlineScriptInlineProcessor(
             if (ParadoxInlineScriptService.getUsageElement(reference.element) == null) return@p true
             usages.add(UsageInfo(reference.element))
         }
-        return usages.toTypedArray()
+        return usages.toArray(UsageInfo.EMPTY_ARRAY)
     }
 
     override fun refreshElements(elements: Array<out PsiElement>) {
@@ -113,7 +114,7 @@ class ParadoxInlineScriptInlineProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineInlineScript(usageElement, rangeInUsageElement, element, myProject)
+                ParadoxPsiService.inlineInlineScript(usageElement, rangeInUsageElement, element, myProject)
             } catch (e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

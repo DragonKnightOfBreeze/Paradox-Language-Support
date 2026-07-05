@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -18,6 +19,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see ParadoxComplexEnumValueIndex
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
@@ -47,8 +51,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("spell_school")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("spell_school")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         // Assert
         val expectedNames = setOf("evocation", "illusion", "necromancy")
@@ -67,8 +71,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("tome_tag")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("tome_tag")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         // Assert
         val expectedNames = setOf("fire", "ice")
@@ -90,8 +94,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("whispered_word")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("whispered_word")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         // Assert
         Assert.assertEquals(listOf("Hush", "Murmur", "hush"), values.map { it.name })
@@ -108,8 +112,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("ritual_phrase")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("ritual_phrase")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         // Assert
         Assert.assertEquals(listOf("alpha", "alpha"), values.map { it.name })
@@ -129,8 +133,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("list_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("list_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("list_enum_entry"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "list_enum" })
@@ -144,8 +148,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("key_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("key_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("key_enum_entry"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "key_enum" })
@@ -163,8 +167,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("deep_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("deep_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("deep_enum_value"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "deep_enum" })
@@ -178,8 +182,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("prop_value_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("prop_value_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("prop_value_enum_value"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "prop_value_enum" })
@@ -193,8 +197,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("sibling_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("sibling_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("sibling_enum_value"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "sibling_enum" })
@@ -208,8 +212,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("key_block_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("key_block_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("key_block_enum_value"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "key_block_enum" })
@@ -223,8 +227,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("mix_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("mix_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("mix_key", "mix_value", "mix_member")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -239,8 +243,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("type_combo_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("type_combo_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("type_combo_value"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "type_combo_enum" })
@@ -254,8 +258,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("multi_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("multi_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("multi_first", "multi_second")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -270,8 +274,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("value_mix_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("value_mix_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("value_mix_entry"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "value_mix_enum" })
@@ -289,8 +293,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("case_insensitive_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("case_insensitive_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         Assert.assertEquals(listOf("Ci_Entry"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "case_insensitive_enum" })
@@ -304,8 +308,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("multi_level_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("multi_level_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("outer_entry", "inner_entry")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -320,8 +324,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("cross_level_mix_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("cross_level_mix_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("cross_outer", "cross_inner")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -336,8 +340,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("case_insensitive_multi_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("case_insensitive_multi_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("Ci_Multi_Outer", "Ci_Multi_Inner")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -352,8 +356,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("multi_level_multi_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("multi_level_multi_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("level_a_entry", "level_b_entry", "level_c_entry")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -368,8 +372,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("cross_pvb_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("cross_pvb_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("pvb_key", "pvb_label", "pvb_member")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -384,8 +388,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("case_insensitive_deep_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("case_insensitive_deep_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("Ci_Deep_Outer", "Ci_Deep_Middle", "Ci_Deep_Inner")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
@@ -400,13 +404,50 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val key = PlsIndexUtil.createTypeKey("repeat_typed_enum")
-        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ComplexEnumValue, key, scope).flatten()
+        val key = ChronicleIndexUtil.createTypeKey("repeat_typed_enum")
+        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         val expected = setOf("repeat_first", "repeat_second")
         Assert.assertEquals(expected, values.map { it.name }.toSet())
         Assert.assertTrue(values.all { it.enumName == "repeat_typed_enum" })
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
+    }
+
+    // endregion
+
+    // region From Columns
+
+    @Test
+    fun testComplexEnumValueIndex_FromColumn() {
+        markFileInfo(gameType, "common/grimoires/00_grimoires.txt")
+        myFixture.configureByFile("features/index/common/grimoires/00_grimoires.txt")
+
+        markFileInfo(gameType, "common/grimoire_tocs/00_grimoire_tocs.csv")
+        myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        val key = ChronicleIndexUtil.createTypeKey("magic_name")
+        val scope = GlobalSearchScope.projectScope(project)
+        val results = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
+
+        val magicNames = results.map { it.name }.toSet()
+        assertNotEmpty(magicNames)
+        assertEquals(10, magicNames.size)
+
+        val expected = setOf(
+            "wind_blade",
+            "tornado",
+            "protective_wind",
+            "auther_saber",
+            "lunar_blade",
+            "streaming_stream",
+            "attacking_wind",
+            "shining_spear",
+            "inner_fire",
+            "dragon_dance_at_dusk",
+        )
+        Assert.assertEquals(expected.sorted(), magicNames.sorted())
     }
 
     // endregion

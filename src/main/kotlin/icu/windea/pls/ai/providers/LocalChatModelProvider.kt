@@ -6,11 +6,11 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.io.HttpRequests
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ai.AiConstants
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope
@@ -54,12 +54,12 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
             checkHelloWorld(options, baseUrl, ref)
         }
         when {
-            PlsFacade.isUnitTestMode() -> runBlocking { action() }
-            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsAiBundle.message("ai.test.progress.title")) { action() }
+            ChronicleFacade.isUnitTestMode() -> runBlocking { action() }
+            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleAiBundle.message("ai.test.progress.title")) { action() }
         }
 
         ref.get()?.let { return it }
-        return StatusResult(true, PlsAiBundle.message("ai.test.success.title"), PlsAiBundle.message("ai.test.success.service", baseUrl))
+        return StatusResult(true, ChronicleAiBundle.message("ai.test.success.title"), ChronicleAiBundle.message("ai.test.success.service", baseUrl))
     }
 
     private suspend fun checkApiVersion(baseUrl: String, ref: AtomicReference<StatusResult>) {
@@ -69,7 +69,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
             try {
                 HttpRequests.request(versionUrl).useProxy(true).connectTimeout(3000).readTimeout(3000).tryConnect()
             } catch (_: Exception) {
-                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.local.unreachable", versionUrl))
+                val r = StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.local.unreachable", versionUrl))
                 ref.set(r)
             }
         }
@@ -86,7 +86,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
                 val isValid = text.contains(n1) || text.contains(n2)
                 if (!isValid) throw IllegalStateException()
             } catch (_: Exception) {
-                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.local.modelMissing", options.modelName))
+                val r = StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.local.modelMissing", options.modelName))
                 ref.set(r)
             }
         }
@@ -98,7 +98,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
                 val chatModel = doGetChatModel(options)
                 chatModel.chat("Say 'hello world'")
             } catch (e: Exception) {
-                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
+                val r = StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
                 ref.set(r)
             }
         }
@@ -115,7 +115,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
         companion object {
             fun get(): Options? {
                 return when {
-                    PlsFacade.isUnitTestMode() -> forUnitTest()
+                    ChronicleFacade.isUnitTestMode() -> forUnitTest()
                     else -> fromSettings()
                 }
             }
@@ -153,7 +153,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
         )
 
         class AtomicProperties {
-            private val settings = PlsAiSettings.getInstance().state.local
+            private val settings = ChronicleAiSettings.getInstance().state.local
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

@@ -2,6 +2,7 @@ package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ReferenceLinkType
 
 /**
@@ -19,6 +20,11 @@ interface ReferenceLinkProvider {
     fun createPsiLink(element: PsiElement, plainLink: Boolean = true): String? = null
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
+        @JvmField val EP_NAME = ExtensionPointName<ReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
+
+        @JvmStatic
+        fun getDefaultUnresolvedMessage(link: String): String {
+            return ChronicleEpBundle.message("reference.link.unresolved", link)
+        }
     }
 }

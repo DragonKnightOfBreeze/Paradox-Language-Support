@@ -10,9 +10,9 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.isDatabaseObjectExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 
 /**
  * 提供概念的名字和别名的代码补全。

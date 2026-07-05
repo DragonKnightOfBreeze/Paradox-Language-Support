@@ -3,6 +3,9 @@ package icu.windea.pls.config.configExpression
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.processUnionCandidates
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
@@ -12,8 +15,9 @@ object CwtConfigExpressionService {
     /**
      * @see CwtDataExpressionSupport.resolve
      */
+    @Optimized
     fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        CwtDataExpressionSupport.EP_NAME.extensionList.forEach { ep ->
+        CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
             val r = ep.resolve(expressionString, isKey)
             if (r != null) return r
         }
@@ -23,8 +27,9 @@ object CwtConfigExpressionService {
     /**
      * @see CwtDataExpressionSupport.resolveTemplate
      */
+    @Optimized
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        CwtDataExpressionSupport.EP_NAME.extensionList.forEach { ep ->
+        CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
             val r = ep.resolveTemplate(expressionString)
             if (r != null) return r
         }
@@ -57,16 +62,13 @@ object CwtConfigExpressionService {
                 val values = nextConfig.values
                 result += values
             }
-            CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
+            CwtDataTypes.UnionValue -> {
                 val name = configExpression.value ?: return
-                val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
-                withRecursionGuard { // 这里需要防止递归
-                    for (aliasConfigs in aliasConfigGroup.values) {
-                        val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
-                        withRecursionCheck(e) {
-                            collectLiterals(e, configGroup, result)
-                        }
-                    }
+                val unionConfig = configGroup.unions[name] ?: return
+                unionConfig.processUnionCandidates { valueConfig ->
+                    val e = valueConfig.configExpression
+                    collectLiterals(e, configGroup, result)
+                    true
                 }
             }
             CwtDataTypes.SingleAliasRight -> {
@@ -76,6 +78,18 @@ object CwtConfigExpressionService {
                     val e = singleAliasConfig.config.valueExpression
                     withRecursionCheck(e) {
                         collectLiterals(e, configGroup, result)
+                    }
+                }
+            }
+            CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
+                val name = configExpression.value ?: return
+                val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
+                withRecursionGuard { // 这里需要防止递归
+                    for (aliasConfigs in aliasConfigGroup.values) {
+                        val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
+                        withRecursionCheck(e) {
+                            collectLiterals(e, configGroup, result)
+                        }
                     }
                 }
             }

@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
-import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtLinkArgumentSeparator
@@ -14,6 +13,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.orNull
@@ -93,13 +93,13 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val name: String
-    @FromMember("type: string?")
+    @FromMember("type: string?", allowedValues = ["scope", "value", "both"], defaultValue = "scope")
     val type: CwtLinkType
     @FromMember("from_data: boolean", defaultValue = "no")
     val fromData: Boolean
     @FromMember("from_argument: boolean", defaultValue = "no")
     val fromArgument: Boolean
-    @FromMember("argument_separator: string?", defaultValue = "comma")
+    @FromMember("argument_separator: string?", allowedValues = ["comma", "pipe"], defaultValue = "comma")
     val argumentSeparator: CwtLinkArgumentSeparator
     @FromMember("prefix: string?")
     val prefix: String?

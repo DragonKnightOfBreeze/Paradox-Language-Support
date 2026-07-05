@@ -13,16 +13,16 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
-import icu.windea.pls.ai.settings.PlsAiSettings
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
@@ -36,10 +36,10 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale")
+    override fun getFamilyName() = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
-        return super.isAvailable(project, editor, file) && PlsAiSettings.getInstance().isEnabled()
+        return super.isAvailable(project, editor, file) && ChronicleAiSettings.getInstance().isEnabled()
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
@@ -50,7 +50,7 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -63,7 +63,7 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
                 }
                 // reportProgress(contextsToHandle.size) { reporter ->
                 //     contextsToHandle.forEachConcurrent f@{ context ->
-                //         reporter.itemStep(PlsBundle.message("manipulation.localisation.search.progress.itemStep", context.key)) {
+                //         reporter.itemStep(ChronicleBundle.message("manipulation.localisation.search.progress.itemStep", context.key)) {
                 //             withErrorRef(errorRef) { searchText(context, project, selectedLocale) }.getOrNull()
                 //         }
                 //     }
@@ -73,13 +73,13 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
                 val total = contextsToHandle.size
                 var current = 0
                 reportRawProgress { reporter ->
-                    reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.step"))
+                    reporter.text(ChronicleBundle.message("manipulation.localisation.translate.progress.step"))
                     reporter.fraction(0.0)
 
                     val request = TranslateLocalisationAiRequest(project, file, contextsToHandle, locale, description)
                     val callback: suspend (LocalisationAiResult) -> Unit = { data ->
                         current++
-                        reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.itemStep", data.key))
+                        reporter.text(ChronicleBundle.message("manipulation.localisation.translate.progress.itemStep", data.key))
                         reporter.fraction(current / total.toDouble())
                     }
                     withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
@@ -108,17 +108,17 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
-                return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
+                val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
+                return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess())
-            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
+            val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess())
+            return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
-        val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
-        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
+        val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
+        val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
+        return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

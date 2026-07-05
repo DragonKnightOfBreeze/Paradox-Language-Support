@@ -5,7 +5,7 @@ import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxRootInfo
@@ -25,17 +25,17 @@ class ParadoxFileIconProvider : FileIconProvider, DumbAware {
                 if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
                 if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
                 val icon = when (rootInfo) {
-                    is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
-                    is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+                    is ParadoxRootInfo.Game -> ChronicleIcons.General.GameDirectory
+                    is ParadoxRootInfo.Mod -> ChronicleIcons.General.ModDirectory
                 }
                 return icon
             } else {
                 if (fileInfo.path.isNotEmpty()) return null
-                return PlsIcons.General.EntryDirectory
+                return ChronicleIcons.General.EntryDirectory
             }
         } else {
             if (fileInfo.group != ParadoxFileGroup.ModDescriptor) return null
-            val icon = PlsIcons.FileTypes.ModDescriptor
+            val icon = ChronicleIcons.FileTypes.ModDescriptor
             return icon
         }
     }

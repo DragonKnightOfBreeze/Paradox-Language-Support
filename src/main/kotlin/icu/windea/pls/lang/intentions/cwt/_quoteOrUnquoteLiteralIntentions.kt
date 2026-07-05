@@ -8,7 +8,7 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
@@ -19,7 +19,7 @@ import icu.windea.pls.cwt.psi.CwtInt
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.cwt.psi.isDirectValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
 sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
@@ -39,7 +39,7 @@ sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<CwtE
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.quoteIdentifier")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
@@ -47,7 +47,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number value tokens
-        if (element is CwtValue && !(element.isPropertyValue() || element.isBlockValue())) return false
+        if (element is CwtValue && !(element.isPropertyValue() || element.isDirectValue())) return false
         return when (element) {
             is CwtPropertyKey -> canQuote(element)
             is CwtString -> canQuote(element)
@@ -59,14 +59,14 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteIdentifier")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
-        if (element is CwtValue && !(element.isPropertyValue() || element.isBlockValue())) return false
+        if (element is CwtValue && !(element.isPropertyValue() || element.isDirectValue())) return false
         return when (element) {
             is CwtPropertyKey -> canUnquote(element)
             is CwtString -> canUnquote(element)

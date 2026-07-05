@@ -5,12 +5,17 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtFile
 
 /**
@@ -49,6 +54,9 @@ interface CwtFileConfig : CwtMemberContainerConfig<CwtFile> {
 
         @JvmStatic
         fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig = CwtFileConfigResolver.resolve(file, configGroup, filePath)
+
+        @JvmStatic
+        fun resolve(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig? = CwtFileConfigResolver.resolve(file, configGroup, filePath)
     }
 }
 
@@ -89,10 +97,17 @@ private object CwtFileConfigResolver : CwtConfigResolverScope {
         val configs = CwtConfigResolverManager.getConfigs(rootBlock, file, configGroup).orEmpty()
         val config = create(pointer, configGroup, fileName, filePath, configs)
         when {
-            configs.isEmpty() -> logger.debug { "Resolved file config (path: ${config.path}, empty member configs).".withLocationPrefix() }
-            else -> logger.debug { "Resolved file config (path: ${config.path}, ${configs.size} member configs).".withLocationPrefix() }
+            configs.isEmpty() -> logger.debug { "Resolved file config (path: ${config.path}, empty member configs).".withLocationPrefix(file, configGroup) }
+            else -> logger.debug { "Resolved file config (path: ${config.path}, ${configs.size} member configs).".withLocationPrefix(file, configGroup) }
         }
         return config
+    }
+
+    fun resolve(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig? {
+        if (file.fileType != CwtFileType) return null
+        val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }.onFailure { logger.warn(it) }.getOrNull()
+        if (psiFile !is CwtFile) return null
+        return resolve(psiFile, configGroup, filePath)
     }
 }
 

@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement, ParadoxScriptBoundMemberContainer {
+public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptMemberContainer, ParadoxScriptBoundMemberContainer {
 
   @NotNull
   List<ParadoxScriptConditionalBlock> getConditionalBlockList();
@@ -35,7 +35,7 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull ParadoxScriptBlock getMembersRoot();
+  @NotNull ParadoxScriptBlock getMemberContainer();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
@@ -43,7 +43,7 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @Nullable PsiElement getRightBound();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

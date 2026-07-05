@@ -17,6 +17,6 @@ interface CodeInjector : UserDataHolder {
     fun inject()
 
     companion object {
-        val EP_NAME = ExtensionPointName<CodeInjector>("icu.windea.pls.inject.codeInjector")
+        @JvmField val EP_NAME = ExtensionPointName<CodeInjector>("icu.windea.pls.inject.codeInjector")
     }
 }

@@ -7,9 +7,9 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.lang.settings.PlsSettingsStrategies.DiffGroup as DiffGroupStrategy
+import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.DiffGroup as DiffGroupStrategy
 
 // com.intellij.diff.actions.BaseShowDiffAction
 
@@ -33,7 +33,7 @@ abstract class ParadoxShowDiffAction : AnAction() {
     protected abstract fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain?
 
     protected fun getDefaultIndex(producers: List<ParadoxDiffRequestProducer>, currentIndex: Int): Int {
-        val settings = PlsSettings.getInstance().state.diff
+        val settings = ChronicleSettings.getInstance().state.diff
         return when (settings.defaultDiffGroup) {
             DiffGroupStrategy.Current -> currentIndex
             DiffGroupStrategy.Vanilla -> getVanillaIndex(producers)

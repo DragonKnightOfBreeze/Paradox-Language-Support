@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.script
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
@@ -33,7 +33,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToPropertyForm_basic() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_basic.test.txt",
             "k = { [[PARAM] <caret>PARAM = ${p("PARAM")} ] }"
@@ -45,7 +45,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToPropertyForm_multiline() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_multiline.test.txt",
             """
@@ -69,7 +69,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToPropertyForm_notAvailableWhenAlreadyPropertyForm() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_not_available_property_form.test.txt",
             "k = { <caret>PARAM = ${p("PARAM", "no")}}"
@@ -80,7 +80,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToPropertyForm_notAvailableWhenMismatchParameterName() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToPropertyForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToPropertyForm")
         myFixture.configureByText(
             "conditional_statement_to_property_form_not_available_mismatch.test.txt",
             "k = { [[PARAM] <caret>OTHER = ${p("PARAM")} ] }"
@@ -95,7 +95,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToBlockForm_basic() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_basic.test.txt",
             "k = { <caret>PARAM = ${p("PARAM", "no")}}"
@@ -107,7 +107,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToBlockForm_parameterNameWithUnderscore() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_underscore.test.txt",
             "k = { <caret>PARAM_1 = ${p("PARAM_1", "no")} }"
@@ -119,7 +119,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToBlockForm_notAvailableWhenAlreadyBlockForm() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_not_available_block_form.test.txt",
             "k = { [[PARAM] <caret>PARAM = ${p("PARAM")} ] }"
@@ -130,7 +130,7 @@ class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
 
     @Test
     fun testConditionalStatementToBlockForm_notAvailableWhenMismatchParameterName() {
-        val intentionName = PlsBundle.message("intention.conditionalStatementToBlockForm")
+        val intentionName = ChronicleBundle.message("intention.conditionalStatementToBlockForm")
         myFixture.configureByText(
             "conditional_statement_to_block_form_not_available_mismatch.test.txt",
             "k = { <caret>PARAM = ${p("OTHER", "no")} }"

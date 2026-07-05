@@ -1,7 +1,7 @@
 package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorContext
@@ -61,7 +61,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         if (injectMethodInfos.isEmpty()) return
         codeInjector.putUserData(CodeInjectorContext.injectMethodInfosKey, injectMethodInfos)
 
-        if (!PlsFacade.isUnitTestMode()) {
+        if (!ChronicleFacade.isUnitTestMode()) {
             val code = "private static volatile Method __applyInjectionMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName(\"$applyInjectionMethodId\"));"
             targetClass.addField(CtField.make(code, targetClass))
         }
@@ -86,7 +86,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
 
             val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
             val expr = when {
-                PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorContext.applyInjection($exprArgs)"
+                ChronicleFacade.isUnitTestMode() -> "(\$r) CodeInjectorContext.applyInjection($exprArgs)"
                 else -> "(\$r) __applyInjectionMethod__.invoke(null, new Object[] { $exprArgs })"
             }
             val throwExpr = when (injectMethodInfo.pointer) {

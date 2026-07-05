@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -35,7 +35,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxValueFieldExpression? {
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return mark(incomplete) { ParadoxValueFieldExpression.resolve(text, null, configGroup) }
     }
 
@@ -56,7 +56,26 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_scriptValue_basic() {
+    fun test_scriptValue_no_param() {
+        // #348 still use `ParadoxScriptValueReferenceExpression` here, rather than `ParadoxDataSourceNode`
+        val s = "value:some_sv"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("value:some_sv", 0, 13) {
+            node<ParadoxDynamicValueFieldNode>("value:some_sv", 0, 13) {
+                node<ParadoxValueFieldPrefixNode>("value:", 0, 6)
+                node<ParadoxValueFieldValueNode>("some_sv", 6, 13) {
+                    node<ParadoxScriptValueReferenceExpression>("some_sv", 6, 13) {
+                        node<ParadoxScriptValueNode>("some_sv", 6, 13)
+                    }
+                }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_scriptValue_one_param() {
         val s = "value:some_sv|PARAM|VALUE|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -71,6 +90,35 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                         node<ParadoxMarkerNode>("|", 19, 20)
                         node<ParadoxScriptValueArgumentValueNode>("VALUE", 20, 25)
                         node<ParadoxMarkerNode>("|", 25, 26)
+                    }
+                }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_scriptValue_malformed_param() {
+        val s = "value:some_sv|PARAM|VALUE|PPP||VV|"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("value:some_sv|PARAM|VALUE|PPP||VV|", 0, 34) {
+            node<ParadoxDynamicValueFieldNode>("value:some_sv|PARAM|VALUE|PPP||VV|", 0, 34) {
+                node<ParadoxValueFieldPrefixNode>("value:", 0, 6)
+                node<ParadoxValueFieldValueNode>("some_sv|PARAM|VALUE|PPP||VV|", 6, 34) {
+                    node<ParadoxScriptValueReferenceExpression>("some_sv|PARAM|VALUE|PPP||VV|", 6, 34) {
+                        node<ParadoxScriptValueNode>("some_sv", 6, 13)
+                        node<ParadoxMarkerNode>("|", 13, 14)
+                        node<ParadoxScriptValueArgumentNameNode>("PARAM", 14, 19)
+                        node<ParadoxMarkerNode>("|", 19, 20)
+                        node<ParadoxScriptValueArgumentValueNode>("VALUE", 20, 25)
+                        node<ParadoxMarkerNode>("|", 25, 26)
+                        node<ParadoxScriptValueArgumentNameNode>("PPP", 26, 29)
+                        node<ParadoxMarkerNode>("|", 29, 30)
+                        node<ParadoxScriptValueArgumentValueNode>("", 30, 30)
+                        node<ParadoxMarkerNode>("|", 30, 31)
+                        node<ParadoxScriptValueArgumentNameNode>("VV", 31, 33)
+                        node<ParadoxMarkerNode>("|", 33, 34)
                     }
                 }
             }

@@ -6,7 +6,6 @@ import com.intellij.openapi.vcs.FileStatus
 import com.intellij.psi.SmartPointerManager
 import com.intellij.usages.UsageGroup
 import com.intellij.usages.UsageViewSettings
-import icu.windea.pls.core.compareToIgnoreCase
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -64,7 +63,7 @@ class ParadoxLocalisationLocaleGroup(
                 return segment1.startOffset - segment2.startOffset
             }
         }
-        return name.compareToIgnoreCase(other.name)
+        return name.compareTo(other.name, ignoreCase = true)
     }
 
     override fun equals(other: Any?): Boolean {

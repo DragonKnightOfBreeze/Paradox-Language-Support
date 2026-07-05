@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
-import icu.windea.pls.core.runOnce
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
@@ -17,7 +16,6 @@ import icu.windea.pls.model.ParadoxRootInfo
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Path
-import java.util.concurrent.atomic.AtomicBoolean
 
 /** @see com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots */
 context(_: UsefulTestCase)
@@ -40,16 +38,14 @@ private fun doAddAdditionalAllowedRoots(additionalAllowedRoots: List<String>) {
     System.setProperty("vfs.additional-allowed-roots", newValue)
 }
 
-private val refreshBuiltInConfigFilesFlag = AtomicBoolean()
-
 context(_: UsefulTestCase)
 fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
     val configGroupService = CwtConfigGroupService.getInstance(project)
     val configGroups = configGroupService.getConfigGroups().values
         .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
     runBlocking {
-        runOnce(refreshBuiltInConfigFilesFlag) { configGroupService.refreshBuiltInConfigFiles(project) }
-        configGroupService.init(configGroups, project)
+        configGroupService.refreshBuiltInConfigFiles()
+        configGroupService.initConfigGroups(configGroups)
     }
 }
 
@@ -108,18 +104,4 @@ fun VirtualFile.injectFileInfo(gameType: ParadoxGameType, path: String, entry: S
 context(_: UsefulTestCase)
 fun VirtualFile.injectFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
     ParadoxAnalysisInjectionManager.injectFileInfo(this, rootInfo, path, entry, group)
-}
-
-interface HighlightingTestScope {
-    data class Tag(val start: String, val end: String)
-
-    fun String.toTag(level: String) = Tag("<$level descr=\"${this.replace("\"", "\\\\\"")}\">", "</$level>")
-
-    fun String.toErrorTag() = toTag("error")
-
-    fun String.toWarningTag() = toTag("warning")
-
-    fun String.toWeakWarningTag() = toTag("weak_warning")
-
-    fun String.toInfoTag() = toTag("info")
 }

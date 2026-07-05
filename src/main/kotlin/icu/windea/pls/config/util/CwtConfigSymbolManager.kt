@@ -12,6 +12,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.findKeywordsWithTextRanges
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.optimized
@@ -25,7 +26,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
-import icu.windea.pls.cwt.psi.isExpression
+import icu.windea.pls.cwt.psi.isDataExpression
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.CwtConfigTextPatternSets
@@ -42,19 +43,18 @@ object CwtConfigSymbolManager {
 
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         ProgressManager.checkCanceled()
-        if (!element.isExpression()) return emptyList()
+        if (!element.isDataExpression()) return emptyList()
         val infos = getInfoFromCache(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
-        if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
+        if (!element.isDataExpression()) return PsiReference.EMPTY_ARRAY
         val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
-        if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return references.toTypedArray()
+        return references.toArray(PsiReference.EMPTY_ARRAY)
     }
 
     private fun getInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
@@ -181,6 +181,13 @@ object CwtConfigSymbolManager {
             infos += info
         }
         run {
+            val (prefix, suffix) = CwtConfigTextPatterns.union
+            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
+            val nextOffset = offset + prefix.length
+            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Union.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            infos += info
+        }
+        run {
             val patternSet = CwtConfigTextPatternSets.dynamicValueReference
             patternSet.forEach f@{ pattern ->
                 val (prefix, suffix) = pattern
@@ -222,6 +229,7 @@ object CwtConfigSymbolManager {
         return when (configType) {
             CwtConfigTypes.Type, CwtConfigTypes.Subtype -> configType
             CwtConfigTypes.Enum, CwtConfigTypes.ComplexEnum -> CwtConfigTypes.Enum
+            CwtConfigTypes.Union -> configType
             CwtConfigTypes.DynamicValueType -> configType
             CwtConfigTypes.SingleAlias -> configType
             CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> CwtConfigTypes.Alias

@@ -22,7 +22,7 @@ abstract class NavigateToFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(target) {
     private val pointers = elements.map { it.createPointer() }
 
-    override fun getFamilyName() = text
+    override fun getText() = familyName
 
     abstract fun getPopupTitle(editor: Editor): String
 

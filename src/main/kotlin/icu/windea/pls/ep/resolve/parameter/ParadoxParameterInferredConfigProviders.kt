@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.resolve.parameter
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -36,7 +36,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     }
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val configGroup = PlsFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
         val finalConfigs = getConfig(parameterInfo, configGroup)?.to?.singletonList() ?: return null
         val contextConfig = CwtConfigManipulationService.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)

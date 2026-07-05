@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.HighlightingTestScope
 import icu.windea.pls.test.clearIntegrationTest
@@ -59,8 +59,7 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Highlig
     @Test
     fun smokeTest_failed() {
         val key = "message"
-        val description = PlsBundle.message("inspection.script.duplicateScriptedVariables.desc", key)
-        val tag = description.toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", key).toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
         myFixture.configureByText("test.txt", """

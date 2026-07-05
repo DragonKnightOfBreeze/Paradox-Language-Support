@@ -99,8 +99,8 @@ object TextMatcher {
     }
 
     private fun matchesDataFieldInternal(text: String, pattern: String, leadingUnary: Boolean): Boolean {
-        if(text.isEmpty()) return false
-        if(leadingUnary) {
+        if (text.isEmpty()) return false
+        if (leadingUnary) {
             val c = text[0]
             if (c == '+' || c == '-') return matchesDataFieldInternal(text.drop(1), pattern, false)
         }

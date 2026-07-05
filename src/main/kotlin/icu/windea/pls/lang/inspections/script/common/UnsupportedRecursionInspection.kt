@@ -7,11 +7,11 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -30,8 +30,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 在封装变量声明/定义声明级别进行此项检查
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -44,7 +44,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.checkScriptedVariable(element, recursions)
                 if (recursions.isEmpty()) return
-                val description = PlsBundle.message("inspection.script.unsupportedRecursion.desc.1")
+                val description = ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.1")
                 val location = element.scriptedVariableName
                 holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
             }
@@ -56,11 +56,11 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isDefinitionCall(element, re) }
+                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatchService.isDefinitionCall(element, re) }
                 if (recursions.isEmpty()) return
                 val description = when {
-                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2")
-                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.3")
+                    definitionInfo.type == "scripted_trigger" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.2")
+                    definitionInfo.type == "scripted_effect" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.3")
                     else -> return
                 }
                 val location = element.propertyKey

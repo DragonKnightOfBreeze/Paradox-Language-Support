@@ -13,7 +13,7 @@ import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
-// Base
+// Basic
 
 /**
  * @see CwtDataTypes.Bool

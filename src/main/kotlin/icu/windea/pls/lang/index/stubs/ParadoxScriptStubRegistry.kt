@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -63,11 +63,11 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         // since 1.3.24, also index local scripted variables, not only global scripted variables
 
         override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<out PsiElement>?): ParadoxScriptScriptedVariableStub {
-            return ParadoxScriptStubManager.createScriptedVariableStub(psi, parentStub)
+            return ParadoxScriptStubFactory.createScriptedVariableStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-            return ParadoxScriptStubManager.createScriptedVariableStub(tree, node, parentStub)
+            return ParadoxScriptStubFactory.createScriptedVariableStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxScriptScriptedVariableStub): ParadoxScriptScriptedVariable {
@@ -93,17 +93,17 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
         override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
             if (stub.name.isEmpty()) return
-            sink.occurrence(PlsIndexKeys.ScriptedVariableName, stub.name)
+            sink.occurrence(ChronicleIndexKeys.ScriptedVariableName, stub.name)
         }
     }
 
     class PropertyFactory : LightStubElementFactory<ParadoxScriptPropertyStub, ParadoxScriptProperty> {
         override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?): ParadoxScriptPropertyStub {
-            return ParadoxScriptStubManager.createPropertyStub(psi, parentStub)
+            return ParadoxScriptStubFactory.createPropertyStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-            return ParadoxScriptStubManager.createPropertyStub(tree, node, parentStub)
+            return ParadoxScriptStubFactory.createPropertyStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
@@ -176,20 +176,20 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
             when (stub) {
                 is ParadoxScriptPropertyStub.DefineNamespace -> {
                     if (stub.namespace.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.DefineNamespace, stub.namespace)
+                    sink.occurrence(ChronicleIndexKeys.DefineNamespace, stub.namespace)
                 }
                 is ParadoxScriptPropertyStub.DefineVariable -> {
                     if (stub.namespace.isEmpty()) return
                     if (stub.variable.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.DefineVariable, ParadoxDefineVariableKey(stub.namespace, stub.variable))
+                    sink.occurrence(ChronicleIndexKeys.DefineVariable, ParadoxDefineVariableKey(stub.namespace, stub.variable))
                 }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                     if (stub.expression.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.InlineScriptUsage, stub.expression)
+                    sink.occurrence(ChronicleIndexKeys.InlineScriptUsage, stub.expression)
                 }
                 is ParadoxScriptPropertyStub.InlineScriptArgument -> {
                     if (stub.expression.isEmpty()) return
-                    sink.occurrence(PlsIndexKeys.InlineScriptArgument, stub.expression)
+                    sink.occurrence(ChronicleIndexKeys.InlineScriptArgument, stub.expression)
                 }
                 else -> {}
             }

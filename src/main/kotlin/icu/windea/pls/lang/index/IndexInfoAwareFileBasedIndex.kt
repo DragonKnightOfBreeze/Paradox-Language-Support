@@ -12,7 +12,6 @@ import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.ID
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
-import icu.windea.pls.core.IndexInputFilter
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.toPsiFile
@@ -28,7 +27,7 @@ import java.util.Collections.*
  * 各种索引信息的文件索引的基类。
  */
 sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
-    private val inputFilter = IndexInputFilter { filterFile(it) }
+    private val inputFilter = FileBasedIndex.InputFilter { filterFile(it) }
     private val indexer = DataIndexer<String, V, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
     private val valueExternalizer = object : DataExternalizer<V> {

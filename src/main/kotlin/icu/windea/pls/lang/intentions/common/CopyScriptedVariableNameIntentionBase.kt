@@ -5,16 +5,16 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 复制封装变量的名字到剪贴板。
  */
 abstract class CopyScriptedVariableNameIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyScriptedVariableName")
+    override fun getFamilyName() = ChronicleBundle.message("intention.copyScriptedVariableName")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null
@@ -32,6 +32,6 @@ abstract class CopyScriptedVariableNameIntentionBase : ModCommandAction, DumbAwa
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptScriptedVariable? {
-        return ParadoxPsiFileManager.findScriptedVariable(context.file, context.offset) { DEFAULT or BY_REFERENCE }
+        return ParadoxPsiFileService.findScriptedVariable(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }

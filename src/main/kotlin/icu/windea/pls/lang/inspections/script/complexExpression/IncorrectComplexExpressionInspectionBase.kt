@@ -7,11 +7,12 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.fixes.QuoteLiteralFix
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -19,7 +20,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isDataExpression
 
 /**
  * 不正确的复杂表达式（[ParadoxComplexExpression]）的代码检查的基类。
@@ -27,13 +28,13 @@ import icu.windea.pls.script.psi.isExpression
 abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
-        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是可接受的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
@@ -41,7 +42,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                if (!element.isDataExpression()) return
                 val complexExpression = resolveComplexExpression(element, configGroup) ?: return
                 val errors = complexExpression.getAllErrors(element)
                 if (errors.isEmpty()) return
@@ -65,7 +66,6 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
         for (error in errors) {
             if (error.code == ParadoxComplexExpressionErrors.EXPRESSION_NOT_QUOTED) result += QuoteLiteralFix()
         }
-        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        return result.toTypedArray()
+        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 }
