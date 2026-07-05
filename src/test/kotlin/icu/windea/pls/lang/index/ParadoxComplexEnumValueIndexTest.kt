@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -418,26 +419,35 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_FromColumn() {
+        markFileInfo(gameType, "common/grimoires/00_grimoires.txt")
+        myFixture.configureByFile("features/index/common/grimoires/00_grimoires.txt")
+
         markFileInfo(gameType, "common/grimoire_tocs/00_grimoire_tocs.csv")
         myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
 
-        val project = project
-        val scope = GlobalSearchScope.projectScope(project)
-        val key = ChronicleIndexUtil.createTypeKey("magic_form")
-        val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val magicForms = values.map { it.name }.toSet()
-        assertNotEmpty(magicForms)
+        val key = ChronicleIndexUtil.createTypeKey("magic_name")
+        val scope = GlobalSearchScope.projectScope(project)
+        val results = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
+
+        val magicNames = results.map { it.name }.toSet()
+        assertNotEmpty(magicNames)
+        assertEquals(10, magicNames.size)
 
         val expected = setOf(
-            "elemental",
-            "elemental_protection",
-            "weapon_processed",
-            "shining",
-            "shining_protection",
-            "shining_special",
+            "wind_blade",
+            "tornado",
+            "protective_wind",
+            "auther_saber",
+            "lunar_blade",
+            "streaming_stream",
+            "attacking_wind",
+            "shining_spear",
+            "inner_fire",
+            "dragon_dance_at_dusk",
         )
-        Assert.assertEquals(expected.sorted(), magicForms.sorted())
+        Assert.assertEquals(expected.sorted(), magicNames.sorted())
     }
 
     // endregion

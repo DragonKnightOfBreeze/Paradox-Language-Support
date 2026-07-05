@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
@@ -27,7 +28,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxCsvFileType)
         val context = queryParameters.createContext(scope)
         processQuery(context, consumer)
     }

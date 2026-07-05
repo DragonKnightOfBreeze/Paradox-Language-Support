@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -23,7 +24,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDynamicValueSearch.Parameters, consumer: Processor<in ParadoxDynamicValueIndexInfo>) {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType, ParadoxCsvFileType)
         val context = queryParameters.createContext(scope)
         processQuery(context, consumer)
     }

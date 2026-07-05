@@ -377,12 +377,11 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
 
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
-
-        val results = ParadoxComplexEnumValueSearch.search("auther_saber", "magic_form", selector).findAll()
+        val results = ParadoxComplexEnumValueSearch.search("auther_saber", "magic_name", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("auther_saber", results.single().name)
-        Assert.assertEquals("magic_form", results.single().enumName)
+        Assert.assertEquals("magic_name", results.single().enumName)
     }
 
     @Test
@@ -391,21 +390,25 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
 
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
+        val results = ParadoxComplexEnumValueSearch.search(null, "magic_name", selector).findAll()
 
-        val results = ParadoxComplexEnumValueSearch.search(null, "magic_form", selector).findAll()
-
-        val magicForms = results.map { it.name }.toSet()
-        assertNotEmpty(magicForms)
+        val magicNames = results.map { it.name }.toSet()
+        assertNotEmpty(magicNames)
+        assertEquals(10, magicNames.size)
 
         val expected = setOf(
-            "elemental",
-            "elemental_protection",
-            "weapon_processed",
-            "shining",
-            "shining_protection",
-            "shining_special",
+            "wind_blade",
+            "tornado",
+            "protective_wind",
+            "auther_saber",
+            "lunar_blade",
+            "streaming_stream",
+            "attacking_wind",
+            "shining_spear",
+            "inner_fire",
+            "dragon_dance_at_dusk",
         )
-        Assert.assertEquals(expected.sorted(), magicForms.sorted())
+        Assert.assertEquals(expected.sorted(), magicNames.sorted())
     }
 
     // endregion

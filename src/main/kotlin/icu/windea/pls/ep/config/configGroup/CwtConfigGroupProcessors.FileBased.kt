@@ -196,8 +196,8 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         for (columnConfig in rowConfig.columns) {
                             val complexEnumConfig = CwtComplexEnumConfig.resolveFromColumnConfig(columnConfig) ?: continue
                             if (CwtConfigService.filter(complexEnumConfig)) continue
-                            initializer.complexEnums[complexEnumConfig.name] = complexEnumConfig
-                            initializer.complexEnumsFromColumns[complexEnumConfig.name] = complexEnumConfig
+                            initializer.complexEnums.putIfAbsent(complexEnumConfig.name, complexEnumConfig) // put only if absent
+                            initializer.complexEnumsFromColumns.put(complexEnumConfig.name, complexEnumConfig) // just put
                         }
                     }
                 }

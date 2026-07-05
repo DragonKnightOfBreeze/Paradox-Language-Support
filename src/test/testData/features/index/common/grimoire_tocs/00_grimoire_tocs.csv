@@ -1,31 +1,30 @@
-name;level;form
+name;level;tag;book
 
 # 百科全书
 
 # 风刃
-wind_blade;1;elemental
+wind_blade;1;elemental;encyclopedia
 # 龙卷
-tornado;4;elemental
+tornado;4;elemental;encyclopedia
 # 守护之风
-protective_wind;3;elemental_protection
+protective_wind;3;elemental_protection;encyclopedia
 
 # 武装之书
 
 # 光铸军刀
-auther_saber;5;weapon_processed
+auther_saber;5;arms_processed;book_of_arms_processed
 # 月之剑
-lunar_blade;5;weapon_processed
+lunar_blade;5;weapon_processed;book_of_arms_processed
 # 川流
-streaming_stream;5;weapon_processed
+streaming_stream;5;weapon_processed;book_of_arms_processed
 # 烈风
-attacking_wind;5;weapon_processed
+attacking_wind;5;weapon_processed;book_of_arms_processed
 
 # 波纹之书
 
 # 光枪
-shining_spear;3;shining
+shining_spear;3;shining;book_of_ripples
 # 心灵之火
-inner_fire;3;shining_protection
+inner_fire;3;shining_protection;book_of_ripples
 # 薄暮龙舞
-dragon_dance_at_dusk;6;shining_special
-
+dragon_dance_at_dusk;6;shining_special;book_of_ripples

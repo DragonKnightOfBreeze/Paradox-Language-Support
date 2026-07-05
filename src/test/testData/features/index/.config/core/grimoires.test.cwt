@@ -1,0 +1,26 @@
+types = {
+    type[grimoire] = {
+        path = "common/grimoires"
+        path_extension = .txt
+        name_field = name
+    }
+}
+
+grimoire = {
+    name = scalar
+}
+
+rows = {
+    row[grimoire_toc] = {
+        path = "common/grimoire_tocs"
+
+        # name;level;tag;book
+        columns = {
+            ## declare_complex_enum = magic_name
+            name = scalar
+            level = int
+            tag = value[magic_tag]
+            book = <grimoire>
+        }
+    }
+}
