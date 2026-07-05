@@ -13,7 +13,7 @@ import icu.windea.pls.lang.index.ParadoxMergedIndex
  */
 data class CwtRowConfigAttributes(
     val declareComplexEnum: Boolean = false,
-    val involvesDynamicValue: Boolean = false,
+    val involveDynamicValue: Boolean = false,
 ) {
     companion object {
         @JvmField val EMPTY = CwtRowConfigAttributes()

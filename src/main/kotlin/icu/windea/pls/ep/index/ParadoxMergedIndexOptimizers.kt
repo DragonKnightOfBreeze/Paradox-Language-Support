@@ -76,16 +76,16 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         if (attributes === CwtDeclarationConfigAttributes.EMPTY) return false
         return when {
             // see: icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport
-            attributes.involvesDynamicValue -> true
+            attributes.involveDynamicValue -> true
             // see: icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport
-            attributes.involvesParameter -> true
+            attributes.involveParameter -> true
             // see: icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport
-            attributes.involvesLocalisationParameter -> true
+            attributes.involveLocalisationParameter -> true
             // see: icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport
-            attributes.involvesInferredScopeContextAwareDefinitionReference -> true
+            attributes.involveInferredScopeContextAwareDefinitionReference -> true
             // see: icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport
             // see: icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport
-            attributes.involvesExternalReference -> true
+            attributes.involveExternalReference -> true
             else -> false
         }
     }
@@ -119,7 +119,7 @@ class ParadoxRowBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         if (attributes === CwtRowConfigAttributes.EMPTY) return false
         return when {
             // see: icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport
-            attributes.involvesDynamicValue -> true
+            attributes.involveDynamicValue -> true
             else -> false
         }
     }

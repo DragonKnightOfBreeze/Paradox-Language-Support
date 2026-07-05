@@ -13,7 +13,7 @@ import icu.windea.pls.core.orNull
  */
 class CwtRowConfigAttributesEvaluator {
     private var declareComplexEnum = false
-    private var involvesDynamicValue = false
+    private var involveDynamicValue = false
 
     fun evaluate(config: CwtRowConfig): CwtRowConfigAttributes {
         for (columnConfig in config.columns) {
@@ -29,16 +29,16 @@ class CwtRowConfigAttributesEvaluator {
         }
         val valueConfig = columnConfig.valueConfig ?: return
         val dataExpression = valueConfig.configExpression
-        if (!involvesDynamicValue) {
+        if (!involveDynamicValue) {
             val r = CwtConfigExpressionMatchService.matchesDynamicValue(dataExpression)
-            if (r) involvesDynamicValue = true
+            if (r) involveDynamicValue = true
         }
     }
 
     private fun buildAttributes(): CwtRowConfigAttributes {
         val result = CwtRowConfigAttributes(
             declareComplexEnum,
-            involvesDynamicValue,
+            involveDynamicValue,
         )
         if (result == CwtTypeConfigAttributes.EMPTY) return CwtRowConfigAttributes.EMPTY
         return result

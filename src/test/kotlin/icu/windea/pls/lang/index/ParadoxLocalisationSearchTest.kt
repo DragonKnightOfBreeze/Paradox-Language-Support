@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
+class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
