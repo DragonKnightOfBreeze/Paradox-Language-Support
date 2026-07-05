@@ -126,7 +126,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
             gameType,
             project,
             scope
-        ).findAll().toList()
+        ).findAll()
 
         val names = results.map { it.name }.toSet()
         Assert.assertTrue(names.contains("test_type"))
@@ -176,7 +176,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
             CwtConfigTypes.Subtype.id
         )
         types.forEach { type ->
-            val result = CwtConfigSymbolSearch.search(null, type, gameType, project, scope).findAll().toList()
+            val result = CwtConfigSymbolSearch.search(null, type, gameType, project, scope).findAll()
             Assert.assertTrue("Should not index empty name for type '$type'", result.none { it.name.isEmpty() })
         }
     }

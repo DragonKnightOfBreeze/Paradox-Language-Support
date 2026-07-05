@@ -57,7 +57,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
-        val results = ParadoxComplexEnumValueSearch.search(null, "spell_school", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search(null, "spell_school", selector).findAll()
 
         // Assert
         Assert.assertEquals(setOf("evocation", "illusion", "necromancy"), results.map { it.name }.toSet())
@@ -70,7 +70,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
-        val results = ParadoxComplexEnumValueSearch.search("hush", "whispered_word", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("hush", "whispered_word", selector).findAll()
 
         // Assert
         Assert.assertEquals(2, results.size)
@@ -110,7 +110,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
             .withSearchScopeType("definition")
 
         // Act
-        val results = ParadoxComplexEnumValueSearch.search("alpha", "ritual_phrase", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("alpha", "ritual_phrase", selector).findAll()
 
         // Assert
         Assert.assertEquals(1, results.size)
@@ -126,7 +126,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
-        val results = ParadoxComplexEnumValueSearch.search("alpha", "ritual_phrase", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("alpha", "ritual_phrase", selector).findAll()
 
         // Assert
         Assert.assertEquals(2, results.size)
@@ -143,7 +143,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("list_enum_entry", "list_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("list_enum_entry", "list_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("list_enum_entry", results.single().name)
@@ -155,7 +155,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("key_enum_entry", "key_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("key_enum_entry", "key_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("key_enum_entry", results.single().name)
@@ -171,7 +171,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("deep_enum_value", "deep_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("deep_enum_value", "deep_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("deep_enum_value", results.single().name)
@@ -183,7 +183,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("prop_value_enum_value", "prop_value_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("prop_value_enum_value", "prop_value_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("prop_value_enum_value", results.single().name)
@@ -195,7 +195,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("sibling_enum_value", "sibling_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("sibling_enum_value", "sibling_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("sibling_enum_value", results.single().name)
@@ -207,7 +207,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("key_block_enum_value", "key_block_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("key_block_enum_value", "key_block_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("key_block_enum_value", results.single().name)
@@ -219,7 +219,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("mix_key", "mix_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("mix_key", "mix_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("mix_key", results.single().name)
@@ -231,7 +231,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("type_combo_value", "type_combo_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("type_combo_value", "type_combo_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("type_combo_value", results.single().name)
@@ -243,7 +243,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("multi_first", "multi_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("multi_first", "multi_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("multi_first", results.single().name)
@@ -255,7 +255,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("value_mix_entry", "value_mix_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("value_mix_entry", "value_mix_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("value_mix_entry", results.single().name)
@@ -272,7 +272,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("ci_entry", "case_insensitive_enum", selector)
-            .findAll().toList()
+            .findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("Ci_Entry", results.single().name)
@@ -284,7 +284,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("outer_entry", "multi_level_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("outer_entry", "multi_level_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("outer_entry", results.single().name)
@@ -296,7 +296,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("cross_outer", "cross_level_mix_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("cross_outer", "cross_level_mix_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("cross_outer", results.single().name)
@@ -309,7 +309,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("ci_multi_outer", "case_insensitive_multi_enum", selector)
-            .findAll().toList()
+            .findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("Ci_Multi_Outer", results.single().name)
@@ -322,7 +322,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("level_a_entry", "multi_level_multi_enum", selector)
-            .findAll().toList()
+            .findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("level_a_entry", results.single().name)
@@ -334,7 +334,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("pvb_key", "cross_pvb_enum", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("pvb_key", "cross_pvb_enum", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("pvb_key", results.single().name)
@@ -347,7 +347,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("ci_deep_outer", "case_insensitive_deep_enum", selector)
-            .findAll().toList()
+            .findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("Ci_Deep_Outer", results.single().name)
@@ -360,7 +360,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
         val results = ParadoxComplexEnumValueSearch.search("repeat_first", "repeat_typed_enum", selector)
-            .findAll().toList()
+            .findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("repeat_first", results.single().name)
@@ -378,7 +378,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
 
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search("auther_saber", "magic_form", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search("auther_saber", "magic_form", selector).findAll()
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("auther_saber", results.single().name)
@@ -392,7 +392,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
 
         val selector = ParadoxComplexEnumValueSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
 
-        val results = ParadoxComplexEnumValueSearch.search(null, "magic_form", selector).findAll().toList()
+        val results = ParadoxComplexEnumValueSearch.search(null, "magic_form", selector).findAll()
 
         val magicForms = results.map { it.name }.toSet()
         assertNotEmpty(magicForms)
