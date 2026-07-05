@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 2.2.0-dev
+## 2.2.0 - 2026-07-05
 
 - [x] Missing localizations false positive ([#347](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/347))
 - [x] [Stellaris] script_value reference broken [#348](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/348)
