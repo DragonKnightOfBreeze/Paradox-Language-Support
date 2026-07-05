@@ -1,7 +1,7 @@
-name;page;category;tag;
+name;page;category;tag
 ## @type string;int;string;string
 ## @config_expression <chapter>;int;enum[chapter_category];value[chapter_tag]
-awakening;1;narrative;hello_world;
+awakening;1;narrative;hello_world
 ## @type string;int;string;string
 ## @config_expression <chapter>;int;enum[chapter_category];value[chapter_tag]
-guidance;2;narrative;on_the_way;
+guidance;2;narrative;on_the_way
