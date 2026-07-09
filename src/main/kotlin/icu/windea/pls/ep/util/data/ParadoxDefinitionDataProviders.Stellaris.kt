@@ -21,6 +21,7 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
     val triggeredProducesModifiers: List<TriggeredModifier> by data.getAll("triggered_produces_modifier")
     val triggeredCostModifiers: List<TriggeredModifier> by data.getAll("triggered_cost_modifier")
     val triggeredUpkeepModifiers: List<TriggeredModifier> by data.getAll("triggered_upkeep_modifier")
+    val triggeredLogisticsModifiers: List<TriggeredModifier> by data.getAll("triggered_logistics_modifier")
 
     class TriggeredModifier(data: ParadoxScriptData) : ParadoxDefinitionData {
         val key: String by data.get("key", "")

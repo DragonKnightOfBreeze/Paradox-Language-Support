@@ -103,7 +103,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             // 排除重复的
             if (!modifierNames.add(modifierConfig.name)) continue
 
-            // 排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
@@ -112,7 +112,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
+            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
@@ -134,7 +134,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对通过模板表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
+ * 提供对从模板表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
@@ -177,7 +177,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         for (modifierConfig in modifiers.values) {
             ProgressManager.checkCanceled()
 
-            // 排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
@@ -185,12 +185,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
-            // 生成的modifier
+            // 生成的 modifier
             ParadoxModifierManager.completeTemplateModifier(element, template, configGroup) p@{ name ->
                 // 排除重复的
                 if (!modifierNames.add(name)) return@p true
 
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
@@ -331,7 +331,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对通过经济分类（`economic_category`）生成的修正的支持。
+ * 提供对从经济分类（`economic_category`）生成的修正的支持。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
@@ -384,7 +384,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
-            // 排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配 modifier 的 supported_scopes 的情况
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
@@ -398,7 +398,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 // 排除重复的
                 if (!modifierNames.add(name)) continue
 
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeText, typeIcon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)

@@ -16,7 +16,6 @@ import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-@WithGameType(ParadoxGameType.Stellaris)
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         // gfx/interface/icons/modifiers/mod_$
@@ -24,6 +23,9 @@ class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
     }
 }
 
+/**
+ * 对于从岗位（`job`）生成的那些修正，需要应用特殊的图标继承逻辑。
+ */
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
     // 对于由job生成的那些修正，需要应用特殊的图标继承逻辑
@@ -51,10 +53,11 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
     }
 }
 
+/**
+ * 对于从经济分类（`economic_category`）生成的那些修正，需要应用特殊的图标继承逻辑。
+ */
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryBasedModifierIconProvider : ParadoxModifierIconProvider {
-    // 对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
-
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierInfo.economicCategoryModifierInfo ?: return

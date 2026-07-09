@@ -69,10 +69,19 @@ object ParadoxEconomicCategoryManager {
             val parents = parentDataMap.keys
             val modifiers = mutableSetOf<ParadoxEconomicCategoryInfo.ModifierInfo>()
 
-            // will generate when use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
-            // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
+            // general rules:
+            // - actual generated modifiers are based on detailed declaration
+            // - actual modifier categories are from property `modifier_category` + `"AI Economy"`, see `enum[scripted_modifier_category]`
+            //
             // will generate:
-            // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
+            // - `<economic_category>_<resource>_enum[economic_modifier_category]_enum[economic_modifier_type] = { "AI Economy" }`
+            //
+            // will generate if `use_for_ai_budget = yes` (inherited from parents for `_mult` modifiers):
+            // - `<economic_category>_enum[economic_modifier_category]_enum[economic_modifier_type] = { "AI Economy" }`
+            //
+            // actual allowed values for `enum[economic_modifier_category]_enum[economic_modifier_type]` are:
+            // - from property `generate_mult_modifiers`, `generate_add_modifiers`
+            // - from property `triggered_produces_modifier`, `triggered_cost_modifier`, `triggered_upkeep_modifier`, `triggered_logistics_modifier`
 
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
                 if (key.isEmpty()) return // skip invalid keys
@@ -104,6 +113,11 @@ object ParadoxEconomicCategoryManager {
             data.triggeredUpkeepModifiers.forEach {
                 it.modifierTypes.forEach { type ->
                     addModifier(it.key, "upkeep", type, true, it.useParentIcon)
+                }
+            }
+            data.triggeredLogisticsModifiers.forEach {
+                it.modifierTypes.forEach { type ->
+                    addModifier(it.key, "logistics", type, true, it.useParentIcon)
                 }
             }
 
