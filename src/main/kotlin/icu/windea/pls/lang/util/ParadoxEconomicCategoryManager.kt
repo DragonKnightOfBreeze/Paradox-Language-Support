@@ -1,154 +1,34 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.annotations.WithGameType
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.process
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.util.data.StellarisEconomicCategoryData
-import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.resolve.ParadoxEconomicCategoryService
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {
     object Keys : KeyRegistry() {
         val cachedEconomicCategoryInfo by registerKey<CachedValue<ParadoxEconomicCategoryInfo>>(Keys)
-        val modifierCategories by registerKey<Set<String>>(Keys)
     }
 
-    private val logger = logger<ParadoxEconomicCategoryManager>()
-
-    /**
-     * 输入的 [definition] 的定义类型应当保证是 `economic_category`。
-     */
     fun getInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
-        if (selectGameType(definition) != ParadoxGameType.Stellaris) return null
-        return getInfoFromCache(definition)
-    }
-
-    private fun getInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
+        // from cache
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
-                val value = resolveInfo(definition)
+                val value = ParadoxEconomicCategoryService.resolveInfo(definition)
                 value.withDependencyItems(definition)
             }
         }
-    }
-
-    private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
-        // 这种写法可能存在一定性能问题，但是问题不大
-        // 兼容继承的 mult 修正
-        try {
-            val name = definition.name.orNull() ?: return null
-            val resources = getResources(definition).orNull() ?: return null // unexpected
-            val data = definition.getDefinitionData<StellarisEconomicCategoryData>() ?: return null
-            val parentDataMap = collectParentData(definition, data)
-
-            val useForAiBudget = data.useForAiBudget
-            val useForAiBudgetForMult = parentDataMap.values.any { it.useForAiBudget }
-
-            val parents = parentDataMap.keys
-            val modifiers = mutableSetOf<ParadoxEconomicCategoryInfo.ModifierInfo>()
-
-            // general rules:
-            // - actual generated modifiers are based on detailed declaration
-            // - actual modifier categories are from property `modifier_category` + `"AI Economy"`, see `enum[scripted_modifier_category]`
-            //
-            // will generate:
-            // - `<economic_category>_<resource>_enum[economic_modifier_category]_enum[economic_modifier_type] = { "AI Economy" }`
-            //
-            // will generate if `use_for_ai_budget = yes` (inherited from parents for `_mult` modifiers):
-            // - `<economic_category>_enum[economic_modifier_category]_enum[economic_modifier_type] = { "AI Economy" }`
-            //
-            // actual allowed values for `enum[economic_modifier_category]_enum[economic_modifier_type]` are:
-            // - from property `generate_mult_modifiers`, `generate_add_modifiers`
-            // - from property `triggered_produces_modifier`, `triggered_cost_modifier`, `triggered_upkeep_modifier`, `triggered_logistics_modifier`
-
-            fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
-                if (key.isEmpty()) return // skip invalid keys
-                if (useForAiBudget || (type == "mult" && useForAiBudgetForMult)) {
-                    modifiers.add(ParadoxEconomicCategoryInfo.ModifierInfo(key, null, category, type, triggered, useParentIcon))
-                }
-                resources.forEach { resource ->
-                    modifiers.add(ParadoxEconomicCategoryInfo.ModifierInfo(key, resource, category, type, triggered, useParentIcon))
-                }
-            }
-
-            data.generateAddModifiers.forEach { category ->
-                addModifier(name, category, "add", false, false)
-            }
-            data.generateMultModifiers.forEach { category ->
-                addModifier(name, category, "mult", false, false)
-            }
-
-            data.triggeredProducesModifiers.forEach {
-                it.modifierTypes.forEach { type ->
-                    addModifier(it.key, "produces", type, true, it.useParentIcon)
-                }
-            }
-            data.triggeredCostModifiers.forEach {
-                it.modifierTypes.forEach { type ->
-                    addModifier(it.key, "cost", type, true, it.useParentIcon)
-                }
-            }
-            data.triggeredUpkeepModifiers.forEach {
-                it.modifierTypes.forEach { type ->
-                    addModifier(it.key, "upkeep", type, true, it.useParentIcon)
-                }
-            }
-            data.triggeredLogisticsModifiers.forEach {
-                it.modifierTypes.forEach { type ->
-                    addModifier(it.key, "logistics", type, true, it.useParentIcon)
-                }
-            }
-
-            return ParadoxEconomicCategoryInfo(name, data.parent, useForAiBudget, data.modifierCategory, parents, modifiers)
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            logger.error(e)
-            return null
-        }
-    }
-
-    private fun getResources(contextElement: PsiElement): Set<String> {
-        val selector = ParadoxDefinitionSearch.selector(contextElement.project, contextElement)
-        return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.resource, selector).findAll()
-            .mapNotNullTo(mutableSetOf()) { it.name.orNull() }  // it.name is ok
-    }
-
-    private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {
-        val parent = data.parent?.orNull() ?: return map
-        withRecursionGuard {
-            withRecursionCheck(parent) {
-                val selector = ParadoxDefinitionSearch.selector(contextElement.project, contextElement).contextSensitive()
-                ParadoxDefinitionSearch.searchProperty(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
-                    ProgressManager.checkCanceled()
-                    val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true
-                    map.put(parent, parentData)
-                    collectParentData(contextElement, parentData, map)
-                    true
-                }
-            }
-        }
-        return map
     }
 }
