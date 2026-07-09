@@ -50,7 +50,7 @@ data class CwtConfigContext(
 
     lateinit var provider: CwtConfigContextProvider
 
-    /** 得到对应的上下文规则（进行代码补全时可用的所有规则）。 */
+    /** 得到对应的上下文规则（基本上等同于进行代码补全时适用的所有规则）。 */
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         return ParadoxConfigService.getConfigsForConfigContext(this, options)
     }

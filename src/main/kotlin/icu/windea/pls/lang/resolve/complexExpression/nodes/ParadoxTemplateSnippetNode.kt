@@ -145,7 +145,7 @@ class ParadoxTemplateSnippetNode(
             val dataType = config.configExpression.type
             return when (constraint) {
                 ParadoxReferenceConstraint.Definition -> dataType in CwtDataTypeSets.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                ParadoxReferenceConstraint.Localisation -> dataType in CwtDataTypeSets.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxReferenceConstraint.Localisation -> dataType in CwtDataTypeSets.NormalLocalisationAware || dataType == CwtDataTypes.AliasKeysField
                 ParadoxReferenceConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
                 ParadoxReferenceConstraint.DynamicValue -> dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 else -> false

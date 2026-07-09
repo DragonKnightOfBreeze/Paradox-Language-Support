@@ -47,7 +47,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
 
         val configExpression = config.configExpression
-        if (configExpression.type !in CwtDataTypeSets.Int) return // for int only
+        if (configExpression.type !in CwtDataTypeSets.IntField) return // for int only
         val intRange = configExpression.intRange ?: return
         val intValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.intValue()
@@ -67,7 +67,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
 
         val configExpression = config.configExpression
-        if (configExpression.type !in CwtDataTypeSets.Float) return // for int and float
+        if (configExpression.type !in CwtDataTypeSets.FloatField) return // for int and float
         val floatRange = configExpression.floatRange ?: return
         val floatValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()

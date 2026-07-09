@@ -368,11 +368,11 @@ object ParadoxConfigService {
 
     @Optimized
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val result = doGetConfigs(element, options)
+        val result = resolveConfigs(element, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
     }
 
-    private fun doGetConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+    private fun resolveConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val configContext = ParadoxConfigManager.getConfigContext(element)
         if (configContext == null) return emptyList()

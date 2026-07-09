@@ -153,7 +153,7 @@ object ParadoxScriptInjectionManager {
         return configs.any { config ->
             if (config !is CwtValueConfig) return@any false
             val dataType = config.configExpression.type
-            dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeSets.LocalisationAware
+            dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeSets.NormalLocalisationAware
         }
     }
 

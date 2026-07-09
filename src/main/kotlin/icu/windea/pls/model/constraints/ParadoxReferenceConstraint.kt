@@ -112,7 +112,7 @@ enum class ParadoxReferenceConstraint {
     },
 
     /**
-     * @see CwtDataTypeSets.LocalisationAware
+     * @see CwtDataTypeSets.NormalLocalisationAware
      * @see CwtDataTypes.AliasKeysField
      */
     Localisation {
@@ -132,7 +132,7 @@ enum class ParadoxReferenceConstraint {
                     reference.configs.any { config ->
                         val configExpression = config.configExpression
                         val dataType = configExpression.type
-                        dataType in CwtDataTypeSets.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
+                        dataType in CwtDataTypeSets.NormalLocalisationAware || dataType == CwtDataTypes.AliasKeysField
                     }
                 }
                 is ParadoxLocalisationParameterPsiReference -> true

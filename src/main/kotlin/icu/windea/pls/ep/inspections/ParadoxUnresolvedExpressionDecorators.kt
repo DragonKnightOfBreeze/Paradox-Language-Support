@@ -33,7 +33,7 @@ class ParadoxIntFieldUnresolvedExpressionDecorator : ParadoxUnresolvedExpression
     context(tool: LocalInspectionTool)
     override fun getHighlightType(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
         // int, int value field, int variable field -> actual is float (after resolution) -> use weaker highlight type
-        if (expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.Int }) {
+        if (expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.IntField }) {
             if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
                 return InspectionService.getWeakerHighlightType()
             }
