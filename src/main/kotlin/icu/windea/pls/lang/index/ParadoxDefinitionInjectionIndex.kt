@@ -17,12 +17,12 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
-import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeIndexedStringList
 import icu.windea.pls.core.writeIntFast
-import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -46,7 +46,7 @@ import java.io.DataOutput
  */
 @Optimized
 class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>, ParadoxDefinitionInjectionIndexInfo>() {
-    private val compressComparator = compareBy<ParadoxDefinitionInjectionIndexInfo>({ it.type }, { it.mode })
+    // NOTE 3.0.0 DO NOT use `sortedWith(compressComparator)` to compress index data - should keep declaration order
 
     override fun getName() = ChronicleIndexKeys.DefinitionInjection
 
@@ -67,7 +67,6 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
         return buildMap {
             buildData(psiFile, this)
-            compressData(this)
         }
     }
 
@@ -144,15 +143,6 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         fileData.getOrPut(ChronicleIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
     }
 
-    private fun compressData(fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
-        if (fileData.isEmpty()) return
-        for ((key, value) in fileData) {
-            if (value.size <= 1) continue
-            val newValue = value.sortedWith(compressComparator)
-            fileData[key] = newValue
-        }
-    }
-
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
         // 用于兼容懒加载的索引，真实数据通过 gist 计算
         return mapOf(ChronicleIndexUtil.createLazyKey() to emptyList())
@@ -164,13 +154,16 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
-        var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
+
+        // 3.0.0 optimize: write existing modes and types first
+        val modes = storage.writeIndexedStringList(value) { it.mode }
+        val types = storage.writeIndexedStringList(value) { it.type }
+
         value.forEachFast { info ->
-            storage.writeOrWriteFrom(info, previousInfo, { it.mode }, { storage.writeUTFFast(it) })
+            storage.writeIntFast(modes.getInt(info.mode))
             storage.writeUTFFast(info.target)
-            storage.writeOrWriteFrom(info, previousInfo, { it.type }, { storage.writeUTFFast(it) })
+            storage.writeIntFast(types.getInt(info.type))
             storage.writeIntFast(info.elementOffset)
-            previousInfo = info
         }
     }
 
@@ -179,13 +172,17 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (size == 0) return emptyList()
 
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
-        var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
+
+        // 3.0.0 optimize: read existing modes and types first
+        val modes = storage.readWithIndexStringList()
+        val types = storage.readWithIndexStringList()
+
         return ImmutableList(size) {
-            val mode = storage.readOrReadFrom(previousInfo, { it.mode }, { storage.readUTFFast() })
+            val mode = storage.readIntFast().let { modes.get(it).orEmpty() }
             val target = storage.readUTFFast()
-            val type = storage.readOrReadFrom(previousInfo, { it.type }, { storage.readUTFFast() })
+            val type = storage.readIntFast().let { types.get(it).orEmpty() }
             val elementOffset = storage.readIntFast()
-            ParadoxDefinitionInjectionIndexInfo(mode, target, type, elementOffset, gameType).also { previousInfo = it }
+            ParadoxDefinitionInjectionIndexInfo(mode, target, type, elementOffset, gameType)
         }
     }
 }

@@ -16,12 +16,12 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
-import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeIndexedStringList
 import icu.windea.pls.core.writeIntFast
-import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -51,7 +51,7 @@ import java.io.DataOutput
  */
 @Optimized
 class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxComplexEnumValueIndexInfo>, ParadoxComplexEnumValueIndexInfo>() {
-    private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
+    // NOTE 3.0.0 DO NOT use `sortedWith(compressComparator)` to compress index data - should keep declaration order
 
     override fun getName() = ChronicleIndexKeys.ComplexEnumValue
 
@@ -73,7 +73,6 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {
         return buildMap {
             buildData(psiFile, this)
-            compressData(this)
         }
     }
 
@@ -197,15 +196,6 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
     }
 
-    private fun compressData(fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
-        if (fileData.isEmpty()) return
-        for ((key, value) in fileData) {
-            if (value.size <= 1) continue
-            val newValue = value.sortedWith(compressComparator)
-            fileData[key] = newValue
-        }
-    }
-
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {
         // 用于兼容懒加载的索引，真实数据通过 gist 计算
         return mapOf(ChronicleIndexUtil.createLazyKey() to emptyList())
@@ -217,12 +207,14 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
-        var previousInfo: ParadoxComplexEnumValueIndexInfo? = null
+
+        // 3.0.0 optimize: write existing enum names first
+        val enumNames = storage.writeIndexedStringList(value) { it.enumName }
+
         value.forEachFast { info ->
-            storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
-            storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
+            storage.writeUTFFast(info.name)
+            storage.writeIntFast(enumNames.getInt(info.enumName))
             storage.writeIntFast(info.definitionElementOffset)
-            previousInfo = info
         }
     }
 
@@ -231,12 +223,15 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         if (size == 0) return emptyList()
 
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
-        var previousInfo: ParadoxComplexEnumValueIndexInfo? = null
+
+        // 3.0.0 optimize: read existing enum names first
+        val enumNames = storage.readWithIndexStringList()
+
         return ImmutableList(size) {
-            val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
-            val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
+            val name = storage.readUTFFast()
+            val enumName = storage.readIntFast().let { enumNames.get(it).orEmpty() }
             val definitionElementOffset = storage.readIntFast()
-            ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType).also { previousInfo = it }
+            ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
         }
     }
 }

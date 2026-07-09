@@ -19,6 +19,8 @@ data class ParadoxDefinitionIndexInfo(
     val elementOffset: Int,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
+    val typeKeyIsName: Boolean = typeKey == name
+
     val element: ParadoxDefinitionElement?
         get() = when (source) {
             ParadoxDefinitionSource.File -> file as? ParadoxScriptFile
