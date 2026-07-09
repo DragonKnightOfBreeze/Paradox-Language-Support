@@ -94,8 +94,7 @@ object ParadoxParameterManager {
     fun getExpressionContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>> {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return emptyList()
         if (!expressionElement.value.isParameterized(full = true)) return emptyList()
-        val expressionContextConfigs = ParadoxConfigManager.getConfigContext(expressionElement)?.getConfigs()
-        return expressionContextConfigs.orEmpty()
+        return ParadoxConfigManager.getContextConfigs(expressionElement)
     }
 
     /**

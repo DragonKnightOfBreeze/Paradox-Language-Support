@@ -30,6 +30,8 @@ import java.util.concurrent.ConcurrentMap
  * 用于后续获取对应的上下文规则以及匹配的规则，从而提供各种高级语言功能。
  *
  * 备注：
+ * - 上下文规则可视为当前位置适用的所有规则，基本上等同于进行代码补全时可用的所有规则（但存在一些细节上的区别）。
+ * - 得到的上下文规则是经过处理后的规则，例如展开别名（不会展开别名键引用和并集值引用）。
  * - 规则上下文不一定存在对应的上下文规则。
  * - 如果一个规则上下文开始存在对应的上下文规则，并且需要在子上下文中展开，则视作根上下文。
  *
@@ -50,7 +52,7 @@ data class CwtConfigContext(
 
     lateinit var provider: CwtConfigContextProvider
 
-    /** 得到对应的上下文规则（基本上等同于进行代码补全时适用的所有规则）。 */
+    /** 得到对应的一组作为上下文的成员规则。 */
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         return ParadoxConfigService.getConfigsForConfigContext(this, options)
     }

@@ -131,7 +131,7 @@ private class CwtExtendedParameterConfigImpl(
             run {
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMember>(false) ?: return@run
-                val contextConfigs = ParadoxConfigManager.getConfigContext(parentElement)?.getConfigs().orEmpty()
+                val contextConfigs = ParadoxConfigManager.getContextConfigs(parentElement)
                 ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
                 return contextConfigs
             }
