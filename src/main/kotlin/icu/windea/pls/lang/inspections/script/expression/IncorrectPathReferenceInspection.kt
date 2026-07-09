@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.common
+package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -17,12 +17,14 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
- * 不正确的路径引用的代码检查。
+ * （脚本文件中的）不正确的路径引用的代码检查。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
@@ -46,17 +48,19 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptString) visitExpressionElement(element)
+                if (element is ParadoxScriptStringExpressionElement) visitExpressionElement(element)
             }
 
-            private fun visitExpressionElement(element: ParadoxScriptString) {
+            private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isDataExpression()) return
+                if (!element.isDataExpression()) return // skip check if element is not an expression
 
                 // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return
+
                 // 得到完全匹配的规则
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
+
                 val configExpression = config.configExpression
                 val dataType = configExpression.type
                 if (dataType !in CwtDataTypeSets.PathReference) return

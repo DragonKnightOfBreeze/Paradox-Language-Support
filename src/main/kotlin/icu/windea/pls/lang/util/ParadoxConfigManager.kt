@@ -136,6 +136,15 @@ object ParadoxConfigManager {
         }
     }
 
+    fun <C: CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
+        val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, config)
+        if (overriddenConfigs.isNotEmpty()) {
+            result.addAll(overriddenConfigs)
+        } else {
+            result.add(config)
+        }
+    }
+
     fun checkExtendedConfig(element: ParadoxExpressionElement, config: CwtMemberConfig<*>): Boolean {
         val value = element.value
         val configGroup = config.configGroup

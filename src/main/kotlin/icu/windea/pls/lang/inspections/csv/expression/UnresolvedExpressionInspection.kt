@@ -13,9 +13,11 @@ import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -27,6 +29,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
@@ -71,25 +74,27 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
 
-                val expectedConfig = columnConfig.valueConfig
-                if (isSkipped(element, expectedConfig)) return
-                val expectedConfigs = expectedConfig.to.singletonListOrEmpty()
-                val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, rowConfig, expectedConfig)
+                val expectedConfigs = getExpectedConfigs(columnConfig)
+                if (isIgnored(element, expectedConfigs)) return
+
+                val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, rowConfig, expectedConfigs)
                 val highlightType = getHighlightType(element, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                 val fixes = getFixes(element, expectedConfigs)
                 holder.registerProblem(location, description, highlightType, *fixes)
             }
 
-            private fun isSkipped(element: ParadoxCsvColumn, expectedConfig: CwtValueConfig?): Boolean {
-                if (expectedConfig == null) return false
-                return when {
-                    isIgnoredByConfigs(element, expectedConfig) -> true
-                    else -> false
-                }
+            private fun getExpectedConfigs(columnConfig: CwtPropertyConfig): List<CwtValueConfig> {
+                val valueConfig = columnConfig.valueConfig ?: return emptyList()
+                return listOf(valueConfig)
             }
 
-            private fun isIgnoredByConfigs(element: ParadoxCsvColumn, expectedConfig: CwtValueConfig): Boolean {
-                return ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfig)
+            private fun isIgnored(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
+                if (expectedConfigs.isEmpty()) return false
+                return isIgnoredByConfigs(element, expectedConfigs)
+            }
+
+            private fun isIgnoredByConfigs(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
+                return ignoredByConfigs && expectedConfigs.any { ParadoxConfigManager.checkExtendedConfig(element, it) }
             }
         }
     }
@@ -105,10 +110,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         }
     }
 
-    private fun getDefaultDescription(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, expectedConfig: CwtValueConfig?): String {
+    private fun getDefaultDescription(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, expectedConfigs: List<CwtValueConfig>): String {
         val expect = when {
-            expectedConfig == null -> ""
-            showExpectInfo -> expectedConfig.configExpression.expressionString
+            expectedConfigs.isEmpty() -> ""
+            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
+                .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }
         val message = when {

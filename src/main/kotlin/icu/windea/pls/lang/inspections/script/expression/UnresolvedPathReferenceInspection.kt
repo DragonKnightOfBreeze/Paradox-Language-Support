@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.common
+package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
@@ -102,7 +102,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 if (!ignoredByConfigs) return false
                 val value = element.value
                 val configExpression = memberConfig.configExpression
-                if (configExpression != ParadoxInlineScriptManager.inlineScriptPathExpression) {
+                if (configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {
                     val config = configGroup.extendedInlineScripts.findByPattern(value, element, configGroup)
                     if (config != null) return true
                 }

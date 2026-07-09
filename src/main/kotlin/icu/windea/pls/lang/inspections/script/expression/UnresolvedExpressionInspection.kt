@@ -13,7 +13,6 @@ import com.intellij.psi.util.isAncestor
 import com.intellij.psi.util.parentOfType
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -26,7 +25,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.resolve.isDeclarationRoot
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
@@ -104,7 +102,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if (configs.isNotEmpty()) return continueCheck(configs)
 
                 val expectedConfigs = getExpectedConfigs(element)
-                if (isSkipped(propertyKey, expectedConfigs)) return true
+                if (isIgnored(propertyKey, expectedConfigs)) return true
+
                 val description = getDescription(propertyKey, expectedConfigs) ?: getDefaultDescription(propertyKey, expectedConfigs)
                 val highlightType = getHighlightType(propertyKey, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                 val fixes = getFixes(propertyKey, expectedConfigs)
@@ -136,11 +135,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
                 val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
                 if (configs.isNotEmpty()) return continueCheck(configs)
+
                 // skip check value if it is a special tag and there are no matched configs
                 if (element.tagType != null) return false
 
                 val expectedConfigs = getExpectedConfigs(element, configContext)
-                if (isSkipped(element, expectedConfigs)) return true
+                if (isIgnored(element, expectedConfigs)) return true
+
                 val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, expectedConfigs)
                 val highlightType = getHighlightType(element, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                 val fixes = getFixes(element, expectedConfigs)
@@ -157,7 +158,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
-                // 这里使用合并后的子规则，即使parentProperty可以精确匹配
+                // 这里使用合并后的子规则，即使 parentProperty 可以精确匹配
                 val parentMemberElement = element.parentOfType<ParadoxScriptMember>() ?: return emptyList()
                 val parentConfigContext = ParadoxConfigManager.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
@@ -166,12 +167,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         contextConfig.configs?.forEach f1@{ c1 ->
                             val c = c1 as? CwtPropertyConfig ?: return@f1
                             // 优先使用重载后的规则
-                            val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, c)
-                            if (overriddenConfigs.isNotEmpty()) {
-                                addAll(overriddenConfigs)
-                            } else {
-                                add(c)
-                            }
+                            ParadoxConfigManager.collectConfigWithOverridden(element, c, this)
                         }
                     }
                 }
@@ -182,27 +178,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val contextConfigs = configContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
                         val c = contextConfig as? CwtValueConfig ?: return@f
-                        val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, c)
-                        if (overriddenConfigs.isNotEmpty()) {
-                            addAll(overriddenConfigs)
-                        } else {
-                            add(c)
-                        }
+                        // 优先使用重载后的规则
+                        ParadoxConfigManager.collectConfigWithOverridden(element, c, this)
                     }
                 }
             }
 
-            private fun isSkipped(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
+            private fun isIgnored(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
                 if (expectedConfigs.isEmpty()) return false
-                return when {
-                    isExcluded(expectedConfigs) -> true
-                    isIgnoredByConfigs(element, expectedConfigs) -> true
-                    else -> false
-                }
-            }
-
-            private fun isExcluded(memberConfigs: List<CwtMemberConfig<*>>): Boolean {
-                return memberConfigs.all { it.configExpression.type in CwtDataTypeSets.PathReference }
+                return isIgnoredByConfigs(element, expectedConfigs)
             }
 
             private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {

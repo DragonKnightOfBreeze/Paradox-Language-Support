@@ -65,10 +65,6 @@
                      key="inspection.script.unresolvedScriptedVariable" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedScriptedVariableInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedPathReference"
-                     key="inspection.script.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
                      key="inspection.script.unusedParameter" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
@@ -85,10 +81,6 @@
                      key="inspection.script.unsetDynamicValue" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnsetDynamicValueInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"
-                     key="inspection.script.incorrectPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectSyntax"
                      key="inspection.script.incorrectSyntax" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
@@ -136,7 +128,7 @@
                      enabledByDefault="true" level="INFORMATION"
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNestedFormInspection"/>
     <!-- endregion -->
-    <!-- region Paradox Script/Exnressions -->
+    <!-- region Paradox Script/Expressions -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
                      key="inspection.script.unresolvedExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
@@ -157,6 +149,14 @@
                      key="inspection.script.incorrectExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedPathReference"
+                     key="inspection.script.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.UnresolvedPathReferenceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"
+                     key="inspection.script.incorrectPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectPathReferenceInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Complex expressions -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
