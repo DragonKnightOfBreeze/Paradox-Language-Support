@@ -18,8 +18,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.values.singletonListOrEmpty
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes

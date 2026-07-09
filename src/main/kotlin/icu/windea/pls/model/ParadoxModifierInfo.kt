@@ -2,11 +2,9 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.psi.PsiElement
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
-import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 
 /**
  * 修正信息。

@@ -10,8 +10,8 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.util.ParadoxMarkerManager
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxMarkerManager
 
 /**
  * 用于在脚本文件和本地化文件中提供基于当前输入与上下文的代码补全。

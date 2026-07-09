@@ -3,7 +3,6 @@ package icu.windea.pls.lang.actions.csv
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.editor
