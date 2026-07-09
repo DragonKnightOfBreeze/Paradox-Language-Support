@@ -111,18 +111,54 @@
 
 - [ ] P2/MS 改进英文 `README.md`，检查并修正用词问题和单复数问题。包括更准确的描述和说明、更符合个人风格和项目叙事风格的文字，适当引入叙事性
 - [ ] P2/MS 改进与补充 `README.md`（叙事 / 问题解决 / FAQ / 已知限制 / ……）
-- [ ] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
 - [ ] P2/MS 新增与补充 `CONTRIBUTING.md`（概述，说明如何贡献代码/文档/规则，包括步骤/建议/复杂性警告）
 - [ ] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
+- [ ] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
 
-### 附加
+## v3.0.1 {v3-0-1}
 
-- [ ] P2/MS 重构 select API，更好的链式调用方式，更好的向上或向下查询的方式
-- [ ] P2/MS 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
-- [ ] P2/QoL 支持扩展的规则选项 `## doc = some.md`，通过引用指定的文档路径，从而包含额外的快速文档文本 - 同时补充相关参考文档
-- [ ] P2/QoL 支持扩展的规则选项 `## inject_doc`（使用当前规则路径）或 `## inject_doc = some/config.cwt@some/path`，通过引用指定的规则文件路径上的指定规则路径，从而注入额外的快速文档文本 - 同时补充相关参考文档
-- [ ] P2/QoL 提供对规则文件中的文件路径引用和规则路径引用的引用解析
-- [ ] P3 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340))
+### 计划
+
+- [ ] P2 重构 select API，更好的链式调用方式，更好的向上或向下查询的方式
+- [ ] P2 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
+- [ ] P2  规范化展示（presentation）的相关 API
+  - 展示：包括相关本地化和相关图片
+  - 考虑提供对应的 search/searcher/provider EP。
+  - 服务类应放到 `icu.windea.pls.lang.resolve`。
+  -  EP 和 EP 实现应放到 `icu.windea.pls.ep.resolve.presentation`。
+  - 可能并不需要提供 search/searcher，因为并非基于索引，且有多种来源和策略。
+  - 最相关的本地化文本即是“展示名字/presentableName”。需要从“显示名字/localizedName”重命名。
+- [ ] P2 规范化数据（data）的相关 API
+  - 数据：接近原始状态的数据，适用于脚本/本地化/定义，可通过属性委托和数据模型类等方式获取。
+  - 考虑重构和提供 dataManager/dataResolver。
+  - 考虑移除已有的 dataProvider  EP。不用显式注册，如果要扩展，直接新增数据模型类即可。
+  - 考虑将相关代码移到 `icu.windea.pls.lang.data`。
+  - 考虑在未来另外提供 `ParadoxJsonDataManager`。
+  - 目前仅按需提供特定游戏类型和定义类型的定义数据模型类。
+- [ ] P2 规范化可视化（visualization）的相关API
+  - 可视化：需要基于HTML/Swing/WebView的图形展示。
+  - 考虑重构和提供 visualizationManager/visiualizationResolver/相关工具类。
+  - 考虑移除已有的 visualizationProvider EP。不用显式注册。如果要扩展，直接新增组件类即可。
+  - 目前仅提供（基于Swing UI的）科技卡的可视化组件类。
+  - 插件自身不应也不计划直接提供更加进阶的可视化组件类。
+  - 然而，仍然有可能在未来额外提供一些基于 Swing UI 的可视化组件类。
+  - 考虑将相关代码移到 `icu.windea.pls.lang.visualization`。
+  - 或者，作为区别于基本的本地化/图片展示的图形展示（graphPresentation）。
+- [ ] P2 确定、验证和规范化重命名定义的逻辑
+  - 解析得到文本范围完全匹配的脚本表达式元素（nameField / nameIdentifier），然后调用 elementManipulator 或者  seValue。
+  - 考虑新增 `ParadoxDefinitonNameService`，或者完善 `ParadoxDefinitonService`
+  - 提取 `ParadoxDefinitionManipulationService`，主要用于重命名
+  - 考虑优化：可以从 typeKey 或者 nameField 出发来重命名对应的定义
+
+## v3.0.2 {v3-0-2}
+
+### 计划
+
+- [ ] P3/QoL 支持扩展的规则选项 `## doc = some.md`，通过引用指定的文档路径，从而包含额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P3/QoL 支持扩展的规则选项 `## inject_doc`（使用当前规则路径）或 `## inject_doc = some/config.cwt@some/path`，通过引用指定的规则文件路径上的指定规则路径，从而注入额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P3/QoL 提供对规则文件中的文件路径引用和规则路径引用的引用解析
+- [ ] P2 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340))
+- [ ] P4 推断作用域时，可以采用 *快速推断* 策略，而非默认的 *合并所有* 策略
 
 ## v3.1.0-complex-expression {#v3-1-0}
 
@@ -185,18 +221,18 @@
 
 ### 语言构造支持
 
-- [ ] P2/MS 支持匹配带表达式前缀的脚本表达式（"表达式前缀"指目标脚本表达式之前紧邻的作为前缀的字符串，例如 `k = list v` 中的 `list`，通过规则选项 `## key_prefix` / `## value_prefix` 指定要匹配的通配符模式）
-
-### 图片支持
-
-- [ ] P2 图片支持：考虑内置解析代码，移除对外部库的依赖，移除相关的代码注入器
-- [ ] P4 图片支持：提供更加规范化的API，用于实现切分图片、按层级堆叠图片等功能
+- [ ] P2/MS 支持匹配带表达式前缀的脚本表达式（"表达式前缀"指目标脚本表达式之前紧邻的作为前缀的字符串，例如 `k = list v` 中的 `list`，通过规则选项 `## key_prefix` / `## value_prefix` 指定要匹配的通配符模式） ([#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263))
 
 ### 规则系统
 
 - [ ] P3 开放内部规则：允许自定义除了 schema 之外的所有现有内部规则类型，考虑新增规则类型 liveTemplateSettings
   - 这些特殊规则的变化基本上不会导致刷新与重新解析，以后可以考虑优化相关代码。
   - 考虑借助 AI 补充更多默认提供的设置规则。
+
+### 图片处理
+
+- [ ] P2 图片支持：考虑内置解析代码，移除对外部库的依赖，移除相关的代码注入器
+- [ ] P4 图片支持：提供更加规范化的API，用于实现切分图片、按层级堆叠图片等功能
 
 ### 工具与集成
 
