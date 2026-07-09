@@ -38,7 +38,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = ChronicleFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
         val finalConfigs = getConfig(parameterInfo, configGroup)?.to?.singletonList() ?: return null
-        val contextConfig = CwtConfigManipulationService.inlineWithConfigs(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 
@@ -109,7 +109,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             delegatedConfig
         }
         if (finalConfigs.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulationService.inlineWithConfigs(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 }
@@ -156,7 +156,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
         })
         if (result.isNullOrEmpty()) return null
-        return CwtConfigManipulationService.inlineWithConfigs(null, result, configGroup)
+        return CwtConfigManipulationService.inlineForContextConfig(null, result, configGroup)
     }
 
     private fun getConfigsFromNode(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): List<CwtValueConfig> {

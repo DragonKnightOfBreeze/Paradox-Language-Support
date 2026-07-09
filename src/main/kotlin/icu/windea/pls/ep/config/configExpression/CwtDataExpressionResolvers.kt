@@ -93,10 +93,10 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() 
         fromLiteral(CwtDataTypes.IntVariableField, "int_variable_field_32")
         fromRanged(CwtDataTypes.IntVariableField, "int_variable_field_32") { intRange = IntRangeInfo.from(it) }
 
-        fromParameterized(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
         fromParameterized(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() }
         fromParameterized(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() }
-        fromParameterized(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() }
 
         fromLiteral(CwtDataTypes.Command, "\$command")
         fromLiteral(CwtDataTypes.ScriptValueReference, "\$script_value_reference")

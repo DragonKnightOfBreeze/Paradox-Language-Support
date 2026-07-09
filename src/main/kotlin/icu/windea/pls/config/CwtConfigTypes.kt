@@ -206,19 +206,6 @@ object CwtConfigTypes {
         description(ChronicleBundle.message("config.description.dynamicValue"))
     }
     /**
-     * 单别名规则。
-     *
-     * 路径定位：
-     * - `single_alias[{name}]`。其中 `{name}` 匹配规则名称。
-     *
-     * @see CwtSingleAliasConfig
-     */
-    val SingleAlias = CwtConfigType.builder("SingleAlias").build {
-        icon(ChronicleIcons.Configs.Alias)
-        prefix("(single alias)")
-        description(ChronicleBundle.message("config.description.singleAlias"))
-    }
-    /**
      * 别名规则。
      *
      * 路径定位：
@@ -232,6 +219,19 @@ object CwtConfigTypes {
         icon(ChronicleIcons.Configs.Alias)
         prefix("(alias)")
         description(ChronicleBundle.message("config.description.alias"))
+    }
+    /**
+     * 单别名规则。
+     *
+     * 路径定位：
+     * - `single_alias[{name}]`。其中 `{name}` 匹配规则名称。
+     *
+     * @see CwtSingleAliasConfig
+     */
+    val SingleAlias = CwtConfigType.builder("SingleAlias").build {
+        icon(ChronicleIcons.Configs.Alias)
+        prefix("(single alias)")
+        description(ChronicleBundle.message("config.description.singleAlias"))
     }
     /**
      * 宏规则。

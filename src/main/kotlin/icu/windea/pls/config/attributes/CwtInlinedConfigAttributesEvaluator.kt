@@ -12,10 +12,10 @@ import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
 import icu.windea.pls.core.annotations.Optimized
 
 /**
- * 要内联的规则（单别名规则、别名规则）的综合属性的评估器。
+ * 要内联的规则（别名规则、单别名规则）的综合属性的评估器。
  *
- * @see CwtSingleAliasConfig
  * @see CwtAliasConfig
+ * @see CwtSingleAliasConfig
  * @see CwtInlinedConfigAttributes
  */
 @Optimized
@@ -26,15 +26,15 @@ class CwtInlinedConfigAttributesEvaluator {
     private var involveInferredScopeContextAwareDefinitionReference = false
     private var involveExternalReference = false
 
-    fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
-        val visitor = buildVisitor(configGroup)
-        CwtConfigVisitorManager.visitSingleAlias(name, singleAliasConfig, visitor)
-        return buildAttributes()
-    }
-
     fun evaluate(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
         val visitor = buildVisitor(configGroup)
         CwtConfigVisitorManager.visitAliasGroup(name, aliasConfigGroup, visitor)
+        return buildAttributes()
+    }
+
+    fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
+        val visitor = buildVisitor(configGroup)
+        CwtConfigVisitorManager.visitSingleAlias(name, singleAliasConfig, visitor)
         return buildAttributes()
     }
 
@@ -51,13 +51,13 @@ class CwtInlinedConfigAttributesEvaluator {
                 return super.visitValue(config)
             }
 
-            override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
+            override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
+                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) { evaluate(name, aliasConfigGroup, configGroup) }
                 return handleContext(inlinedAttributes)
             }
 
-            override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) { evaluate(name, aliasConfigGroup, configGroup) }
+            override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
+                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
                 return handleContext(inlinedAttributes)
             }
         }

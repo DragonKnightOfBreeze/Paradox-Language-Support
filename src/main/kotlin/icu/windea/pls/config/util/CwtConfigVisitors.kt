@@ -42,10 +42,10 @@ abstract class CwtMemberConfigRecursiveVisitor : CwtMemberConfigVisitor() {
 }
 
 /**
- * 可以按需展开要内联的规则（单别名规则、别名规则）的，递归向下遍历的成员规则的访问者。
+ * 可以按需展开要内联的规则（别名规则、单别名规则）的，递归向下遍历的成员规则的访问者。
  *
- * @see CwtSingleAliasConfig
  * @see CwtAliasConfig
+ * @see CwtSingleAliasConfig
  */
 abstract class CwtMemberConfigInlinedRecursiveVisitor(
     val forSingleAlias: Boolean = true,

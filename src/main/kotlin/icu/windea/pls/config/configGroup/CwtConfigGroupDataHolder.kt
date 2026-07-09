@@ -98,9 +98,6 @@ interface CwtConfigGroupDataHolder {
     val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
     val scopeGroups: Map<@CaseInsensitive String, CwtScopeGroupConfig>
 
-    val singleAliases: Map<String, CwtSingleAliasConfig>
-    val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
-
     // name - config
     val modifierCategories: Map<String, CwtModifierCategoryConfig>
     // template_expression - config
@@ -108,6 +105,9 @@ interface CwtConfigGroupDataHolder {
 
     // name - config
     val databaseObjectTypes: Map<String, CwtDatabaseObjectTypeConfig>
+
+    val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
+    val singleAliases: Map<String, CwtSingleAliasConfig>
 
     val macros: List<CwtMacroConfig>
 
@@ -176,10 +176,10 @@ interface CwtConfigGroupDataHolder {
 
     // region Attributes
 
-    /** 单别名规则的综合属性的映射（键为规则的名字）。 */
-    val singleAliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
     /** 别名规则的综合属性的映射（键为规则的名字）。 */
     val aliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
+    /** 单别名规则的综合属性的映射（键为规则的名字）。 */
+    val singleAliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
 
     // endregion
 

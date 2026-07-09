@@ -329,7 +329,7 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
  */
 class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.AliasName || dataType == CwtDataTypes.AliasKeysField
+        return dataType == CwtDataTypes.AliasKeysField || dataType == CwtDataTypes.AliasName
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {

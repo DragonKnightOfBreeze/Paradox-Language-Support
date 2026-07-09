@@ -37,16 +37,16 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         // 手动注册 single_alias 和 alias 到初始化器，然后加入规则分组数据
         val initializer = configGroup.initializer
         fileConfig.properties.forEach { prop ->
-            val singleAliasConfig = CwtSingleAliasConfig.resolve(prop)
-            if (singleAliasConfig != null) {
-                initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
-            }
             val aliasConfig = CwtAliasConfig.resolve(prop)
             if (aliasConfig != null) {
                 val subtype = aliasConfig.subName
                 val aliasGroup = initializer.aliasGroups.getOrPut(aliasConfig.name) { FastMap() }
                 val configs = aliasGroup.getOrPut(subtype) { FastList() }
                 configs.add(aliasConfig)
+            }
+            val singleAliasConfig = CwtSingleAliasConfig.resolve(prop)
+            if (singleAliasConfig != null) {
+                initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
             }
         }
         initializer.copyUserDataTo(configGroup)

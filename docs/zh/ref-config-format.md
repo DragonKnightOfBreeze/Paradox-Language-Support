@@ -2152,17 +2152,6 @@ icon|p1,p2
 
 以下数据类型与别名解析机制相关，通常不直接参与脚本匹配，而是由别名系统内部处理。
 
-#### SingleAliasRight {#data-type-single-alias-right}
-
-单别名右侧类型。
-
-不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
-
-对应的数据表达式的格式：
-- `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
-
-> CWTools 兼容性：兼容。
-
 #### AliasKeysField {#data-type-alias-keys-field}
 
 别名键字段类型。
@@ -2193,6 +2182,17 @@ icon|p1,p2
 
 对应的数据表达式的格式：
 - `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+> CWTools 兼容性：兼容。
+
+#### SingleAliasRight {#data-type-single-alias-right}
+
+单别名右侧类型。
+
+不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+
+对应的数据表达式的格式：
+- `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
 
 > CWTools 兼容性：兼容。
 

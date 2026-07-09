@@ -154,7 +154,7 @@ private class CwtExtendedParameterConfigImpl(
             else -> contextContainerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulationService.inlineWithConfigs(config, r, config.configGroup)
+        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(config, r, config.configGroup)
         return listOf(contextConfig)
     }
 

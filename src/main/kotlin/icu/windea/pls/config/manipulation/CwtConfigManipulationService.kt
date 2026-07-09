@@ -176,7 +176,7 @@ object CwtConfigManipulationService {
             if (c1 is CwtValueConfig && c2 is CwtValueConfig) {
                 if (c1.valueType == CwtExpressionType.Block && c2.valueType == CwtExpressionType.Block) {
                     val mergedConfigs = mergeConfigs(c1.configs.orEmpty(), c2.configs.orEmpty())
-                    return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
+                    return listOf(inlineForContextConfig(null, mergedConfigs, c1.configGroup))
                 }
                 val mergedConfig = mergeValueConfig(c1, c2)
                 if (mergedConfig != null) return mergedConfig.to.singletonList()
@@ -257,35 +257,6 @@ object CwtConfigManipulationService {
     // region Inline Methods
 
     @Optimized
-    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
-        val valueExpression = config.valueExpression
-        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
-        val singleAliasName = valueExpression.value ?: return null
-        val configGroup = config.configGroup
-        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
-        return inlineSingleAlias(config, singleAliasConfig)
-    }
-
-    @Optimized
-    fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
-        // inline all value and configs
-        val other = singleAliasConfig.config
-        val inlined = CwtPropertyConfig.copy(
-            sourceConfig = config,
-            valueExpression = other.valueExpression,
-            valueType = other.valueType,
-            configs = deepCopyConfigs(other),
-        )
-        inlined.postOptimize() // do post optimization
-        mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
-        inlined.parentConfig = config.parentConfig
-        inlined.singleAliasConfig = singleAliasConfig
-        inlined.aliasConfig = config.aliasConfig
-        inlined.inlineConfig = config.inlineConfig
-        return inlined
-    }
-
-    @Optimized
     fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
@@ -331,6 +302,35 @@ object CwtConfigManipulationService {
     }
 
     @Optimized
+    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
+        val valueExpression = config.valueExpression
+        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
+        val singleAliasName = valueExpression.value ?: return null
+        val configGroup = config.configGroup
+        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
+        return inlineSingleAlias(config, singleAliasConfig)
+    }
+
+    @Optimized
+    fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
+        // inline all value and configs
+        val other = singleAliasConfig.config
+        val inlined = CwtPropertyConfig.copy(
+            sourceConfig = config,
+            valueExpression = other.valueExpression,
+            valueType = other.valueType,
+            configs = deepCopyConfigs(other),
+        )
+        inlined.postOptimize() // do post optimization
+        mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
+        inlined.parentConfig = config.parentConfig
+        inlined.singleAliasConfig = singleAliasConfig
+        inlined.aliasConfig = config.aliasConfig
+        inlined.inlineConfig = config.inlineConfig
+        return inlined
+    }
+
+    @Optimized
     fun inlineMacro(macroConfig: CwtMacroConfig.InlineScript): CwtPropertyConfig {
         val other = macroConfig.configForDeclaration
         val inlined = CwtPropertyConfig.copy(
@@ -341,6 +341,35 @@ object CwtConfigManipulationService {
         inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, other.optionData) // merge option data
         inlined.inlineConfig = macroConfig
+        return inlined
+    }
+
+    @Optimized
+    fun inlineForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
+        val valueExpression = config.valueExpression
+        return when (valueExpression.type) {
+            CwtDataTypes.AliasMatchLeft -> inlineAlias(config, key)
+            CwtDataTypes.SingleAliasRight -> inlineSingleAlias(config)?.let { listOf(it) }
+            else -> null
+        }
+    }
+
+    @Optimized
+    fun inlineForContextContainerConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
+        if (config is CwtPropertyConfig) return inlineSingleAlias(config) ?: config
+        return config
+    }
+
+    @Optimized
+    fun inlineForContextConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
+        val inlined = CwtValueConfig.create(
+            pointer = emptyPointer(),
+            configGroup = configGroup,
+            valueExpression = CwtDataExpression.resolveBlock(),
+            valueType = CwtExpressionType.Block,
+            configs = configs,
+        )
+        mergeOptionData(inlined.optionData, config?.optionData) // merge option data
         return inlined
     }
 
@@ -375,19 +404,6 @@ object CwtConfigManipulationService {
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
         inlined.inlineConfig = config.inlineConfig
-        return inlined
-    }
-
-    @Optimized
-    fun inlineWithConfigs(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
-        val inlined = CwtValueConfig.create(
-            pointer = emptyPointer(),
-            configGroup = configGroup,
-            valueExpression = CwtDataExpression.resolveBlock(),
-            valueType = CwtExpressionType.Block,
-            configs = configs,
-        )
-        mergeOptionData(inlined.optionData, config?.optionData) // merge option data
         return inlined
     }
 

@@ -55,7 +55,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 部分规则（尤其是可从日志文件生成的规则）需要特殊处理，例如跳过解析，用这个来标记。
      *
      * 适用对象：
-     * - 需要特殊处理的规则（目前支持 [CwtSingleAliasConfig] 和 [CwtAliasConfig]）。
+     * - 需要特殊处理的规则（目前仅限 [CwtAliasConfig] 和 [CwtSingleAliasConfig]）。
      *
      * 示例：
      *

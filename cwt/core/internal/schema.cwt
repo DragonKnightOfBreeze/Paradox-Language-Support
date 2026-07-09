@@ -454,7 +454,7 @@ $$options = {
     ####
     #### Used to mark configs that require special handling (e.g., skip parsing).
     ####
-    #### Applicable to: Configs that need special handling (currently supports `single_alias` and `alias`).
+    #### Applicable to: Configs that need special handling (currently only for alias configs and single alias configs).
     ####
     #### Example: `## api_status = obsolete`
     api_status

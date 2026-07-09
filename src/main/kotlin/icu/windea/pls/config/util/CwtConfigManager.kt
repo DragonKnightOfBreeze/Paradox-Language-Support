@@ -217,11 +217,11 @@ object CwtConfigManager {
                 config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
                 config.to.singletonList()
             }
-            is CwtSingleAliasConfig -> {
-                config.config.to.singletonListOrEmpty()
-            }
             is CwtAliasConfig -> {
                 configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
+            }
+            is CwtSingleAliasConfig -> {
+                config.config.to.singletonListOrEmpty()
             }
             is CwtMacroConfig -> {
                 config.config.to.singletonListOrEmpty()

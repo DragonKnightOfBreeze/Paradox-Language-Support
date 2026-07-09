@@ -9,7 +9,6 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -39,8 +38,6 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.values.singletonList
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
@@ -278,7 +275,8 @@ object ParadoxConfigService {
 
                     configs.forEachFast { config ->
                         // 打平后需要首先进行必要的内联
-                        val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
+                        // 如果别名规则内联后涉及单别名规则，会继续内联
+                        val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, subPath)
                         val matchedConfigs = when {
                             inlinedConfigs == null -> listOf(config)
                             else -> inlinedConfigs
@@ -346,24 +344,6 @@ object ParadoxConfigService {
         if (configs == null) return null // 不是作为参数的键，不作特殊处理
         if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
         return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
-    }
-
-    private fun inlineConfigForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
-        // 内联单别名规则和别名规则（如果别名规则内联后涉及单别名规则，会继续内联）
-
-        val valueExpression = config.valueExpression
-        val result = when (valueExpression.type) {
-            CwtDataTypes.SingleAliasRight -> {
-                val inlined = CwtConfigManipulationService.inlineSingleAlias(config)
-                inlined?.to?.singletonList()
-            }
-            CwtDataTypes.AliasMatchLeft -> {
-                val inlined = CwtConfigManipulationService.inlineAlias(config, key)
-                inlined
-            }
-            else -> null
-        }
-        return result
     }
 
     @Optimized

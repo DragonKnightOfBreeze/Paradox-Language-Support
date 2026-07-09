@@ -50,16 +50,16 @@ class CwtDeclarationConfigAttributesEvaluator {
                 return super.visitValue(config)
             }
 
-            override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) {
-                    CwtInlinedConfigAttributesEvaluator().evaluate(name, config, configGroup)
+            override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
+                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) {
+                    CwtInlinedConfigAttributesEvaluator().evaluate(name, aliasConfigGroup, configGroup)
                 }
                 return handleContext(inlinedAttributes)
             }
 
-            override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) {
-                    CwtInlinedConfigAttributesEvaluator().evaluate(name, aliasConfigGroup, configGroup)
+            override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
+                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) {
+                    CwtInlinedConfigAttributesEvaluator().evaluate(name, config, configGroup)
                 }
                 return handleContext(inlinedAttributes)
             }

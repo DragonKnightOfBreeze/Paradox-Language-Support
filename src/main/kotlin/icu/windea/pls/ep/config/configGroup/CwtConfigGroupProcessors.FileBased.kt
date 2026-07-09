@@ -394,15 +394,15 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 }
                 else -> {
                     run {
-                        val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
-                        if (CwtConfigService.filter(singleAliasConfig)) return@run
-                        initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
-                    }
-                    run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
                         if (CwtConfigService.filter(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
+                    }
+                    run {
+                        val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
+                        if (CwtConfigService.filter(singleAliasConfig)) return@run
+                        initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
                     }
                     run {
                         val macroConfig = CwtMacroConfig.resolve(property) ?: return@run

@@ -2152,17 +2152,6 @@ Format of corresponding data expressions:
 
 The following data types are related to the alias resolution mechanism. They generally do not directly participate in script matching, but are handled internally by the alias system.
 
-#### SingleAliasRight {#data-type-single-alias-right}
-
-Single alias right type.
-
-Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values.
-
-Format of corresponding data expressions:
-- `single_alias_right[{name}]` – where `{name}` matches a single alias name.
-
-> CWTools Compatibility: Compatible.
-
 #### AliasKeysField {#data-type-alias-keys-field}
 
 Alias keys field type.
@@ -2193,6 +2182,17 @@ Does not directly participate in script matching; handled by the alias resolutio
 
 Format of corresponding data expressions:
 - `alias_match_left[{name}]` – where `{name}` matches an alias name.
+
+> CWTools Compatibility: Compatible.
+
+#### SingleAliasRight {#data-type-single-alias-right}
+
+Single alias right type.
+
+Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values.
+
+Format of corresponding data expressions:
+- `single_alias_right[{name}]` – where `{name}` matches a single alias name.
 
 > CWTools Compatibility: Compatible.
 
