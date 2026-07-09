@@ -46,6 +46,7 @@ import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxEconomicCategoryModifierInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -60,7 +61,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 val ParadoxModifierSupport.Keys.templateExpression by registerKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys).withSync()
 val ParadoxModifierSupport.Keys.economicCategoryInfo by registerKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).withSync()
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).withSync()
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryModifierInfo>(ParadoxModifierSupport.Keys).withSync()
 
 var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templateExpression
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
@@ -100,6 +101,8 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         if (modifiers.isEmpty()) return
 
         for (modifierConfig in modifiers.values) {
+            ProgressManager.checkCanceled()
+
             // 排除重复的
             if (!modifierNames.add(modifierConfig.name)) continue
 
@@ -236,6 +239,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val snippetNodes = templateExpression.nodes.filterIsInstance<ParadoxTemplateSnippetNode>()
             if (snippetNodes.isNotEmpty()) {
                 for (snippetNode in snippetNodes) {
+                    ProgressManager.checkCanceled()
+
                     appendBr().appendIndent()
                     val configExpression = snippetNode.configExpression
                     when (configExpression.type) {
@@ -312,6 +317,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if (modifiers.isEmpty()) return false
         val gameType = definitionInfo.gameType
         for (modifier in modifiers) {
+            ProgressManager.checkCanceled()
+
             appendBr()
             append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
@@ -442,9 +449,6 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             append(" ")
             val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
             appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = modifierElement)
-        } else {
-            appendBr().appendIndent()
-            append(ChronicleBundle.message("forAiBudget"))
         }
 
         return true
@@ -458,6 +462,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {
+            ProgressManager.checkCanceled()
+
             appendBr()
             append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
@@ -469,11 +475,6 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     append(" ")
                     val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)
-                }
-            } else {
-                append(" ")
-                grayed {
-                    append(ChronicleBundle.message("forAiBudget"))
                 }
             }
         }

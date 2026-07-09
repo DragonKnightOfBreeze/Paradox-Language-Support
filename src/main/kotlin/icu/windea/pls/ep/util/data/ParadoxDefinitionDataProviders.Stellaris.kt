@@ -18,8 +18,8 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
     val modifierCategory: String? by data.get("modifier_category")
     val generateAddModifiers: Set<String> by data.get("generate_add_modifiers", emptySet())
     val generateMultModifiers: Set<String> by data.get("generate_mult_modifiers", emptySet())
-    val triggeredProducesModifiers: List<TriggeredModifier> by data.getAll("triggered_produces_modifier")
     val triggeredCostModifiers: List<TriggeredModifier> by data.getAll("triggered_cost_modifier")
+    val triggeredProducesModifiers: List<TriggeredModifier> by data.getAll("triggered_produces_modifier")
     val triggeredUpkeepModifiers: List<TriggeredModifier> by data.getAll("triggered_upkeep_modifier")
     val triggeredLogisticsModifiers: List<TriggeredModifier> by data.getAll("triggered_logistics_modifier")
 
