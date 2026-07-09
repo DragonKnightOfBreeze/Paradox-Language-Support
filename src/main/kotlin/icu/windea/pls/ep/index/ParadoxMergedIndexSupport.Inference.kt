@@ -32,6 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
+import kotlin.collections.distinct
 
 class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
@@ -56,7 +57,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
     }
 
     override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
@@ -164,7 +165,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     }
 
     override fun compressData(value: List<ParadoxEventInEventIndexInfo>): List<ParadoxEventInEventIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxEventInEventIndexInfo, previousInfo: ParadoxEventInEventIndexInfo?, gameType: ParadoxGameType) {
@@ -231,7 +232,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     override fun compressData(value: List<ParadoxOnActionInEventIndexInfo>): List<ParadoxOnActionInEventIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxOnActionInEventIndexInfo, previousInfo: ParadoxOnActionInEventIndexInfo?, gameType: ParadoxGameType) {

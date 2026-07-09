@@ -18,8 +18,6 @@ import java.io.DataInput
 import java.io.DataOutput
 
 class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxShaderEffectIndexInfo> {
-    private val compressComparator = compareBy<ParadoxShaderEffectIndexInfo> { it.name }
-
     override val indexInfoType = ParadoxIndexInfoTypes.ShaderEffect
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
@@ -38,7 +36,7 @@ class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxS
     }
 
     override fun compressData(value: List<ParadoxShaderEffectIndexInfo>): List<ParadoxShaderEffectIndexInfo> {
-        return value.sortedWith(compressComparator).distinct()
+        return value.distinct()
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxShaderEffectIndexInfo, previousInfo: ParadoxShaderEffectIndexInfo?, gameType: ParadoxGameType) {
@@ -52,8 +50,6 @@ class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxS
 }
 
 class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxMeshLocatorIndexInfo> {
-    private val compressComparator = compareBy<ParadoxMeshLocatorIndexInfo> { it.name }
-
     override val indexInfoType = ParadoxIndexInfoTypes.MeshLocator
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
@@ -72,7 +68,7 @@ class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxMe
     }
 
     override fun compressData(value: List<ParadoxMeshLocatorIndexInfo>): List<ParadoxMeshLocatorIndexInfo> {
-        return value.sortedWith(compressComparator).distinct()
+        return value.distinct()
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxMeshLocatorIndexInfo, previousInfo: ParadoxMeshLocatorIndexInfo?, gameType: ParadoxGameType) {

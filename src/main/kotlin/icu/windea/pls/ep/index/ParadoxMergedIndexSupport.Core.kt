@@ -33,8 +33,10 @@ import java.io.DataInput
 import java.io.DataOutput
 
 class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
     private val constraint = ParadoxReferenceConstraint.DynamicValue
-    private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
+    private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo> { it.dynamicValueType }
 
     override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
 
@@ -96,8 +98,10 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 }
 
 class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxParameterIndexInfo> {
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
     private val constraint = ParadoxReferenceConstraint.Parameter
-    private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
+    private val compressComparator = compareBy<ParadoxParameterIndexInfo> { it.contextKey }
 
     override val indexInfoType = ParadoxIndexInfoTypes.Parameter
 
@@ -149,8 +153,10 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
 }
 
 class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxLocalisationParameterIndexInfo> {
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
     private val constraint = ParadoxReferenceConstraint.LocalisationParameter
-    private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
+    private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo> { it.localisationName }
 
     override val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter
 
