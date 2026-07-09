@@ -163,10 +163,10 @@ dependencies {
     // sqlite - https://github.com/xerial/sqlite-jdbc
     runtimeOnly("org.xerial:sqlite-jdbc:3.53.1.0")
     // ktorm - https://www.ktorm.org/
-    implementation("org.ktorm:ktorm-core:4.1.1") {
+    implementation("org.ktorm:ktorm-core:4.2.1") {
         exclude(group = "org.jetbrains.kotlin")
     }
-    implementation("org.ktorm:ktorm-support-sqlite:4.1.1") {
+    implementation("org.ktorm:ktorm-support-sqlite:4.2.1") {
         exclude(group = "org.jetbrains.kotlin")
     }
 
