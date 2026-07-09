@@ -22,7 +22,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
+class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     private fun prepareCases(): Pair<CwtFile, CwtConfigGroup> {
@@ -68,7 +68,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -93,7 +93,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -114,7 +114,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -136,7 +136,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
 
         // forSingleAlias = false 时，不应展开 single_alias
         val visited1 = mutableListOf<String>()
-        val visitor1 = object : CwtMemberConfigInlinedRecursiveVisitor(forSingleAlias = false) {
+        val visitor1 = object : CwtMemberConfigExpandedRecursiveVisitor(forSingleAlias = false) {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited1 += "P:${config.key}"
                 return super.visitProperty(config)
@@ -150,7 +150,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
 
         // forSingleAlias = true（默认）时，应展开
         val visited2 = mutableListOf<String>()
-        val visitor2 = object : CwtMemberConfigInlinedRecursiveVisitor(forSingleAlias = true) {
+        val visitor2 = object : CwtMemberConfigExpandedRecursiveVisitor(forSingleAlias = true) {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited2 += "P:${config.key}"
                 return super.visitProperty(config)
@@ -169,7 +169,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
 
         // forAlias = false 时，不应展开 alias
         val visited1 = mutableListOf<String>()
-        val visitor1 = object : CwtMemberConfigInlinedRecursiveVisitor(forAlias = false) {
+        val visitor1 = object : CwtMemberConfigExpandedRecursiveVisitor(forAlias = false) {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited1 += "P:${config.key}"
                 return super.visitProperty(config)
@@ -183,7 +183,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
 
         // forAlias = true（默认）时，应展开
         val visited2 = mutableListOf<String>()
-        val visitor2 = object : CwtMemberConfigInlinedRecursiveVisitor(forAlias = true) {
+        val visitor2 = object : CwtMemberConfigExpandedRecursiveVisitor(forAlias = true) {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited2 += "P:${config.key}"
                 return super.visitProperty(config)
@@ -201,7 +201,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -231,7 +231,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val visited = mutableListOf<String>()
         val stopKey = "sa_ref"
 
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 if (config.key == stopKey) return false
@@ -260,7 +260,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val started = mutableListOf<String>()
         val finished = mutableListOf<String>()
 
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 started += "P:${config.key}"
                 return super.visitProperty(config)
@@ -291,7 +291,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -313,7 +313,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -339,7 +339,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -362,7 +362,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -384,7 +384,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -413,7 +413,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -437,7 +437,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -463,7 +463,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 visited += "P:${config.key}"
                 return super.visitProperty(config)
@@ -486,7 +486,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor(
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor(
             forSingleAlias = false,
             forAlias = false
         ) {
@@ -511,7 +511,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor(
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor(
             forSingleAlias = true,
             forAlias = false
         ) {
@@ -538,7 +538,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val started = mutableListOf<String>()
         val finished = mutableListOf<String>()
 
-        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+        val visitor = object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 started += "P:${config.key}"
                 return super.visitProperty(config)

@@ -2,7 +2,7 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.attributes.CwtInlinedConfigAttributes
+import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -104,8 +104,9 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val macrosModel by registerKey<CwtMacrosModelBase, UserDataHolder>(this) { CwtMacrosModelBase() }
         val filePathExpressions by registerKey<FastSet<CwtDataExpression>, UserDataHolder>(this) { FastSet() }
         val parameterConfigs by registerKey<FastSet<CwtMemberConfig<*>>, UserDataHolder>(this) { FastSet() }
-        val aliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
-        val singleAliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val unionAttributes by registerKey<FastMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val aliasAttributes by registerKey<FastMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val singleAliasAttributes by registerKey<FastMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { FastMap() }
     }
 
     // region Accessors
@@ -162,6 +163,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val macrosModel by Keys.macrosModel
     final override val filePathExpressions by Keys.filePathExpressions
     final override val parameterConfigs by Keys.parameterConfigs
+    final override val unionAttributes by Keys.unionAttributes
     final override val aliasAttributes by Keys.aliasAttributes
     final override val singleAliasAttributes by Keys.singleAliasAttributes
 

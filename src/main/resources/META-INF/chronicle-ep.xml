@@ -115,7 +115,7 @@
     <configGroupProcessor id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupProcessor"/>
     <configGroupProcessor id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupProcessor" order="last"/>
 
-    <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseDataConfigGroupPostProcessor"/>
+    <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseConfigGroupPostProcessor"/>
 
     <dataExpressionSupport id="basic" implementation="icu.windea.pls.ep.config.configExpression.CwtBasicDataExpressionSupport"/>
     <dataExpressionSupport id="extraBasic" implementation="icu.windea.pls.ep.config.configExpression.CwtExtraBasicDataExpressionSupport"/>

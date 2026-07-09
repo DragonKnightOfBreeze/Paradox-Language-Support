@@ -16,7 +16,7 @@ import icu.windea.pls.inject.annotations.InjectionTarget
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     // 重写 IDE 底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
 
-    // rewrite this method to compatible with:
+    // rewrite this method to be compatible with:
     // localisation colorful texts (e.g., `§Rsome text§!`)
     // localisation icons (e.g., `£unity£`)
 

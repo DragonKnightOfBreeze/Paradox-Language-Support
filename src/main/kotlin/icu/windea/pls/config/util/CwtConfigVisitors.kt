@@ -2,12 +2,13 @@
 
 package icu.windea.pls.config.util
 
+import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 
 /**
  * 成员规则的访问者。
@@ -42,61 +43,60 @@ abstract class CwtMemberConfigRecursiveVisitor : CwtMemberConfigVisitor() {
 }
 
 /**
- * 可以按需展开要内联的规则（别名规则、单别名规则）的，递归向下遍历的成员规则的访问者。
+ * 可以按展开规则（并集规则、别名规则、单别名规则）的，递归向下遍历的成员规则的访问者。
  *
- * @see CwtAliasConfig
- * @see CwtSingleAliasConfig
+ * @see CwtExpandableConfig
  */
-abstract class CwtMemberConfigInlinedRecursiveVisitor(
+abstract class CwtMemberConfigExpandedRecursiveVisitor(
+    val forUnion: Boolean = true,
     val forSingleAlias: Boolean = true,
     val forAlias: Boolean = true,
 ) : CwtMemberConfigRecursiveVisitor() {
-    private var _inlineDepth: Int = 0
+    private var _depth: Int = 0
 
-    val inlineDepth: Int get() = _inlineDepth.coerceAtLeast(0)
-    val inlined: Boolean get() = _inlineDepth > 0
+    val depth: Int get() = _depth.coerceAtLeast(0)
+    val expanded: Boolean get() = _depth > 0
 
     override fun visitProperty(config: CwtPropertyConfig): Boolean {
-        visitInlinedProperty(config).let { if (!it) return false }
+        visitExpanded(config).let { if (!it) return false }
         return super.visitProperty(config)
     }
 
     override fun visitValue(config: CwtValueConfig): Boolean {
-        visitInlinedValue(config).let { if (!it) return false }
+        visitExpanded(config).let { if (!it) return false }
         return super.visitValue(config)
     }
 
-    private fun visitInlinedProperty(config: CwtPropertyConfig): Boolean {
-        return CwtConfigVisitorManager.visitInlined(config, forSingleAlias, forAlias, this)
+    private fun visitExpanded(config: CwtPropertyConfig): Boolean {
+        return CwtConfigVisitorManager.visitExpanded(config, this, forUnion, forSingleAlias, forAlias)
     }
 
-    private fun visitInlinedValue(config: CwtValueConfig): Boolean {
-        return CwtConfigVisitorManager.visitInlined(config, forSingleAlias, forAlias, this)
-    }
-
-    open fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-        return withInlineDepthIncrement { config.config.accept(this) }
+    private fun visitExpanded(config: CwtValueConfig): Boolean {
+        return CwtConfigVisitorManager.visitExpanded(config, this, forUnion, forSingleAlias, forAlias)
     }
 
     open fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-        aliasConfigGroup.forEach { aliasConfigs ->
-            aliasConfigs.forEachFast { aliasConfig ->
-                visitAlias(aliasConfig).let { if (!it) return false }
-            }
-        }
-        return true
+        return CwtConfigVisitorManager.visitAliasGroup(name, aliasConfigGroup, this)
     }
 
-    open fun visitAlias(config: CwtAliasConfig): Boolean {
-        return withInlineDepthIncrement { config.config.accept(this) }
+    open fun visitUnion(name: String, config: CwtUnionConfig): Boolean {
+        return withDepthIncrement { CwtConfigVisitorManager.visitUnion(name, config, this) }
     }
 
-    private inline fun <T> withInlineDepthIncrement(action: () -> T): T {
+    open fun visitAlias(name: String, config: CwtAliasConfig): Boolean {
+        return withDepthIncrement { CwtConfigVisitorManager.visitAlias(name, config, this) }
+    }
+
+    open fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
+        return withDepthIncrement { CwtConfigVisitorManager.visitSingleAlias(name, config, this) }
+    }
+
+    private inline fun <T> withDepthIncrement(action: () -> T): T {
         return try {
-            _inlineDepth++
+            _depth++
             action()
         } finally {
-            _inlineDepth--
+            _depth--
         }
     }
 }

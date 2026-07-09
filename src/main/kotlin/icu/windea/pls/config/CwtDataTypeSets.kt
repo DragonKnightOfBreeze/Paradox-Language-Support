@@ -107,7 +107,7 @@ object CwtDataTypeSets {
         CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
 
-    /** 可以展开为一组候选项的数据类型。 */
+    /** 可展开为一组候选项的数据类型。 */
     val Expandable = arrayOf(
         CwtDataTypes.UnionValue,
         CwtDataTypes.AliasKeysField,

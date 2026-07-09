@@ -1,45 +1,52 @@
 package icu.windea.pls.config.attributes
 
+import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.util.CwtConfigVisitorManager
-import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
+import icu.windea.pls.config.util.CwtMemberConfigExpandedRecursiveVisitor
 import icu.windea.pls.core.annotations.Optimized
 
 /**
- * 要内联的规则（别名规则、单别名规则）的综合属性的评估器。
+ * 可展开的规则（并集规则、别名规则、单别名规则）的综合属性的评估器。
  *
- * @see CwtAliasConfig
- * @see CwtSingleAliasConfig
- * @see CwtInlinedConfigAttributes
+ * @see CwtExpandableConfig
+ * @see CwtExpandableConfigAttributes
  */
 @Optimized
-class CwtInlinedConfigAttributesEvaluator {
+class CwtExpandableConfigAttributesEvaluator {
     private var involveDynamicValue = false
     private var involveParameter = false
     private var involveLocalisationParameter = false
     private var involveInferredScopeContextAwareDefinitionReference = false
     private var involveExternalReference = false
 
-    fun evaluate(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
+    fun evaluate(name: String, unionConfig: CwtUnionConfig, configGroup: CwtConfigGroup): CwtExpandableConfigAttributes {
+        val visitor = buildVisitor(configGroup)
+        CwtConfigVisitorManager.visitUnion(name, unionConfig, visitor)
+        return buildAttributes()
+    }
+
+    fun evaluate(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>, configGroup: CwtConfigGroup): CwtExpandableConfigAttributes {
         val visitor = buildVisitor(configGroup)
         CwtConfigVisitorManager.visitAliasGroup(name, aliasConfigGroup, visitor)
         return buildAttributes()
     }
 
-    fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
+    fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtExpandableConfigAttributes {
         val visitor = buildVisitor(configGroup)
         CwtConfigVisitorManager.visitSingleAlias(name, singleAliasConfig, visitor)
         return buildAttributes()
     }
 
-    private fun buildVisitor(configGroup: CwtConfigGroup): CwtMemberConfigInlinedRecursiveVisitor {
-        return object : CwtMemberConfigInlinedRecursiveVisitor() {
+    private fun buildVisitor(configGroup: CwtConfigGroup): CwtMemberConfigExpandedRecursiveVisitor {
+        return object : CwtMemberConfigExpandedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
                 processDataExpression(config.keyExpression, configGroup)
                 processDataExpression(config.valueExpression, configGroup)
@@ -51,14 +58,19 @@ class CwtInlinedConfigAttributesEvaluator {
                 return super.visitValue(config)
             }
 
+            override fun visitUnion(name: String, config: CwtUnionConfig): Boolean {
+                val attributes = configGroup.unionAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
+                return handleContext(attributes)
+            }
+
             override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) { evaluate(name, aliasConfigGroup, configGroup) }
-                return handleContext(inlinedAttributes)
+                val attributes = configGroup.aliasAttributes.getOrPut(name) { evaluate(name, aliasConfigGroup, configGroup) }
+                return handleContext(attributes)
             }
 
             override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
-                return handleContext(inlinedAttributes)
+                val attributes = configGroup.singleAliasAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
+                return handleContext(attributes)
             }
         }
     }
@@ -86,7 +98,7 @@ class CwtInlinedConfigAttributesEvaluator {
         }
     }
 
-    private fun handleContext(attributes: CwtInlinedConfigAttributes): Boolean {
+    private fun handleContext(attributes: CwtExpandableConfigAttributes): Boolean {
         if (attributes.involveDynamicValue) involveDynamicValue = true
         if (attributes.involveParameter) involveParameter = true
         if (attributes.involveLocalisationParameter) involveLocalisationParameter = true
@@ -95,15 +107,15 @@ class CwtInlinedConfigAttributesEvaluator {
         return true
     }
 
-    private fun buildAttributes(): CwtInlinedConfigAttributes {
-        val result = CwtInlinedConfigAttributes(
+    private fun buildAttributes(): CwtExpandableConfigAttributes {
+        val result = CwtExpandableConfigAttributes(
             involveDynamicValue,
             involveParameter,
             involveLocalisationParameter,
             involveInferredScopeContextAwareDefinitionReference,
             involveExternalReference,
         )
-        if (result == CwtInlinedConfigAttributes.EMPTY) return CwtInlinedConfigAttributes.EMPTY
+        if (result == CwtExpandableConfigAttributes.EMPTY) return CwtExpandableConfigAttributes.EMPTY
         return result
     }
 }
