@@ -119,20 +119,20 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDeclarationWithSingleAlias_inlinedTypesDetected() {
+    fun testDeclarationWithUnion_expandableTypesDetected() {
         val declarations = loadDeclarations()
-        val decl = declarations["test_decl_with_single_alias"]
+        val decl = declarations["test_decl_with_union"]
         Assert.assertNotNull(decl)
         decl!!
 
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
-        // single_alias 内联后，应该检测到其中的动态值（alias 中有 value[test_check]）
+        // union 内联后，应该检测到其中的动态值（候选项中有 value[tag]）
         Assert.assertTrue(attributes.involveDynamicValue)
     }
 
     @Test
-    fun testDeclarationWithAlias_inlinedTypesDetected() {
+    fun testDeclarationWithAlias_expandableTypesDetected() {
         val declarations = loadDeclarations()
         val decl = declarations["test_decl_with_alias"]
         Assert.assertNotNull(decl)
@@ -141,6 +141,19 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
         val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
 
         // alias_keys_field 内联后，应该检测到其中的动态值和scope（alias 中有 value[x] 和 scope_field）
+        Assert.assertTrue(attributes.involveDynamicValue)
+    }
+
+    @Test
+    fun testDeclarationWithSingleAlias_expandableTypesDetected() {
+        val declarations = loadDeclarations()
+        val decl = declarations["test_decl_with_single_alias"]
+        Assert.assertNotNull(decl)
+        decl!!
+
+        val attributes = CwtDeclarationConfigAttributesEvaluator().evaluate(decl)
+
+        // single_alias 内联后，应该检测到其中的动态值（alias 中有 value[test_check]）
         Assert.assertTrue(attributes.involveDynamicValue)
     }
 
@@ -161,9 +174,9 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testInlinedConfigsWithInvolvedTypes_detectedRecursively() {
+    fun testExpandableConfigsWithInvolvedTypes_detectedRecursively() {
         val declarations = loadDeclarations()
-        val decl = declarations["test_decl_inlined_involved"]
+        val decl = declarations["test_decl_expandable_involved"]
         Assert.assertNotNull(decl)
         decl!!
 
@@ -175,7 +188,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDeepNestedInlining_detectedRecursively() {
+    fun testDeepNestedExpanding_detectedRecursively() {
         val declarations = loadDeclarations()
         val decl = declarations["test_decl_deep_nested"]
         Assert.assertNotNull(decl)
@@ -188,7 +201,7 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testSubtypesNotInInlinedConfigs_onlyDirectSubtypes() {
+    fun testSubtypesNotInExpandableConfigs_onlyDirectSubtypes() {
         val declarations = loadDeclarations()
         val decl = declarations["test_decl_complex"]
         Assert.assertNotNull(decl)

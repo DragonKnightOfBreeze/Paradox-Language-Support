@@ -4,41 +4,52 @@ types = {
     type[test_decl_simple] = {
         path = "common/test_simple"
     }
-    
+
     type[test_decl_with_subtypes] = {
         path = "common/test_subtypes"
     }
-    
+
     type[test_decl_with_dynamic_value] = {
         path = "common/test_dynamic"
     }
-    
+
     type[test_decl_with_parameter] = {
         path = "common/test_param"
     }
-    
+
     type[test_decl_with_loc_parameter] = {
         path = "common/test_loc"
     }
-    
-    type[test_decl_with_single_alias] = {
-        path = "common/test_sa"
+
+    type[test_decl_with_union] = {
+        path = "common/test_union"
     }
-    
+
     type[test_decl_with_alias] = {
         path = "common/test_alias"
     }
-    
+
+    type[test_decl_with_single_alias] = {
+        path = "common/test_single_alias"
+    }
+
     type[test_decl_complex] = {
         path = "common/test_complex"
     }
-    
-    type[test_decl_inlined_involved] = {
-        path = "common/test_inlined"
+
+    type[test_decl_expandable_involved] = {
+        path = "common/test_expandable"
     }
-    
+
     type[test_decl_deep_nested] = {
         path = "common/test_deep"
+    }
+}
+
+unions = {
+    union[tag_or_scalar] = {
+        value[tag]
+        scalar
     }
 }
 
@@ -121,10 +132,9 @@ test_decl_with_loc_parameter = {
     text = localisation
 }
 
-# Declaration with nested single_alias
-test_decl_with_single_alias = {
-    name = scalar
-    triggers = single_alias_right[test_trigger_clause]
+# Declaration with union
+test_decl_with_union = {
+    tag = union[tag_or_scalar]
 }
 
 # Declaration with alias (via alias_keys_field)
@@ -133,38 +143,44 @@ test_decl_with_alias = {
     effects = alias_keys_field[test_effect]
 }
 
+# Declaration with nested single_alias
+test_decl_with_single_alias = {
+    name = scalar
+    triggers = single_alias_right[test_trigger_clause]
+}
+
 # Complex declaration: combination of all
 test_decl_complex = {
     name = scalar
-    
+
     subtype[type_a] = {
         mode = a
     }
     subtype[type_b] = {
         mode = b
     }
-    
+
     # Dynamic value
     flag = value[complex_flag]
     variable = variable_field
-    
+
     # Parameter
     param = $parameter
-    
+
     # Localisation parameter
     loc_param = $localisation_parameter
-    
+
     # Nested alias
     triggers = single_alias_right[test_trigger_clause]
     effects = alias_keys_field[test_effect]
 }
 
-# Declaration where inlined configs contain involved types
-test_decl_inlined_involved = {
+# Declaration where expandable configs contain involved types
+test_decl_expandable_involved = {
     name = scalar
     # Direct property: no dynamic value
     simple_prop = int
-    # Inlined single_alias contains dynamic value
+    # Expandable single_alias contains dynamic value
     nested = single_alias_right[sa_with_dynamic]
 }
 

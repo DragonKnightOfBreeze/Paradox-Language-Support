@@ -26,15 +26,15 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     private fun prepareCases(): Pair<CwtFile, CwtConfigGroup> {
-        myFixture.configureByFile("features/config/inlined_visitor_cases.test.cwt")
+        myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
 
         // 解析文件配置并注册别名到配置组
-        val filePath = "common/test/inlined_visitor_cases.cwt"
+        val filePath = "common/test/expandable_visitor_cases.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
 
-        // 手动注册 single_alias 和 alias 到初始化器，然后加入规则分组数据
+        // 手动注册到初始化器，然后加入规则分组数据
         val initializer = configGroup.initializer
         fileConfig.properties.forEach { prop ->
             val aliasConfig = CwtAliasConfig.resolve(prop)
@@ -62,7 +62,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testInlineSingleAlias_expandsToDefinedConfig() {
+    fun testExpandSingleAlias_expandsToDefinedConfig() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -87,7 +87,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testInlineNestedSingleAlias_recursiveExpansion() {
+    fun testExpandNestedSingleAlias_recursiveExpansion() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_nested_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -108,7 +108,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testInlineAlias_expandsAliasGroup() {
+    fun testExpandAlias_expandsAliasGroup() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -129,7 +129,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testForSingleAliasFlag_controlsInlining() {
+    fun testForSingleAliasFlag_controlsExpanding() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -162,7 +162,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testForAliasFlag_controlsInlining() {
+    fun testForAliasFlag_controlsExpanding() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -195,7 +195,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testMixedBlock_inlinesAllReferences() {
+    fun testMixedBlock_expandsAllReferences() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name == "mixed_block" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -480,7 +480,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDisableInlining_bothFlagsOff() {
+    fun testDisableExpanding_bothFlagsOff() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
@@ -505,7 +505,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testPartialInlining_onlySingleAliasEnabled() {
+    fun testPartialExpanding_onlySingleAliasEnabled() {
         val (file, group) = prepareCases()
         val p = file.block!!.findChild<CwtProperty> { it.name == "mixed_block" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
