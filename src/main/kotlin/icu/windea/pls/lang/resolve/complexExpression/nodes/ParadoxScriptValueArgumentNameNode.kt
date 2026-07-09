@@ -53,10 +53,7 @@ class ParadoxScriptValueArgumentNameNode(
         }
 
         override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
-            return when (constraint) {
-                ParadoxReferenceConstraint.Parameter -> true
-                else -> false
-            }
+            return constraint == ParadoxReferenceConstraint.Parameter
         }
     }
 

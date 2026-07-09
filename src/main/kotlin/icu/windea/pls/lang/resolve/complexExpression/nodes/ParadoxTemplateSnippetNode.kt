@@ -43,7 +43,7 @@ class ParadoxTemplateSnippetNode(
     fun isExactMatched(): Boolean {
         val dataType = config.configExpression.type
         return when {
-            dataType == CwtDataTypes.AliasKeysField -> {
+            dataType in CwtDataTypeSets.Expandable -> {
                 false // for simple code
             }
             dataType in CwtDataTypeSets.DefinitionAware -> {
@@ -142,12 +142,19 @@ class ParadoxTemplateSnippetNode(
         }
 
         override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+            // limit constraint
+            if (!isAcceptableConstraint(constraint)) return false
+            // test data type
             val dataType = config.configExpression.type
+            return constraint.test(dataType)
+        }
+
+        private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {
             return when (constraint) {
-                ParadoxReferenceConstraint.Definition -> dataType in CwtDataTypeSets.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                ParadoxReferenceConstraint.Localisation -> dataType in CwtDataTypeSets.NormalLocalisationAware || dataType == CwtDataTypes.AliasKeysField
-                ParadoxReferenceConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                ParadoxReferenceConstraint.DynamicValue -> dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
+                ParadoxReferenceConstraint.Definition -> true
+                ParadoxReferenceConstraint.Localisation -> true
+                ParadoxReferenceConstraint.ComplexEnumValue -> true
+                ParadoxReferenceConstraint.DynamicValue -> true
                 else -> false
             }
         }

@@ -12,10 +12,12 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.lang.psi.ParadoxPsiService
+import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.lang.util.ParadoxTagManager
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -28,7 +30,7 @@ class ParadoxScriptExpressionPsiReference(
     rangeInElement: TextRange,
     val configs: List<CwtMemberConfig<*>>,
     val role: ParadoxExpressionRole,
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiCompositeReference, ParadoxScriptTagAwarePsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiCompositeReference, ParadoxScriptTagAwarePsiReference, ParadoxConstrainedPsiReference {
     val config: CwtMemberConfig<*> get() = configs.first()
 
     private val configGroup get() = configs.first().configGroup
@@ -88,5 +90,12 @@ class ParadoxScriptExpressionPsiReference(
             ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)
         }
         return resolved.createResults()
+    }
+
+    override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+        return configs.any { config ->
+            val configExpression = config.configExpression
+            constraint.test(configExpression.type)
+        }
     }
 }

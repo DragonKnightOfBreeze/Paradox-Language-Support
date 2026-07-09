@@ -90,10 +90,7 @@ class ParadoxNameFormatLocalisationNode(
         }
 
         override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
-            return when (constraint) {
-                ParadoxReferenceConstraint.Localisation -> true
-                else -> false
-            }
+            return constraint == ParadoxReferenceConstraint.Localisation
         }
     }
 

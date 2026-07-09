@@ -1,9 +1,11 @@
 package icu.windea.pls.config
 
 /**
- * 数据类型的预定义分组。
+ * 数据类型的分组。
  *
- * 将语义相关的 [CwtDataType] 实例组织为数组，用于匹配逻辑中的批量判断和功能分派。
+ * 将 [CwtDataType] 按照语义组织为数组，用于匹配逻辑中的批量判断和功能分派。
+ *
+ * 备注：对于需要展开的数据类型的分组，使用 [Expandable]。其他分组一般不检查展开前的状态。
  *
  * @see CwtDataType
  * @see CwtDataTypes
@@ -69,8 +71,8 @@ object CwtDataTypeSets {
         CwtDataTypes.Definition,
         CwtDataTypes.TechnologyWithLevel,
     )
-    /** 可解析为普通本地化的数据类型。 */
-    val NormalLocalisationAware = arrayOf(
+    /** 可解析为（普通）本地化的数据类型。 */
+    val LocalisationAware = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation,
     )

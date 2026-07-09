@@ -299,13 +299,13 @@ TEXT_ICON_TOKEN=\w+
 }
 <IN_COMMAND>{
     . {
-            if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
-                yybegin(IN_CONCEPT_NAME);
-                return LEFT_SINGLE_QUOTE;
-            }
-            yypushback(1);
-            yybegin(IN_COMMAND_TEXT);
+        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
+            yybegin(IN_CONCEPT_NAME);
+            return LEFT_SINGLE_QUOTE;
         }
+        yypushback(1);
+        yybegin(IN_COMMAND_TEXT);
+    }
 }
 <IN_COMMAND_TEXT>{
     "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }

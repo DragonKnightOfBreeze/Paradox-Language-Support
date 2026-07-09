@@ -8,37 +8,61 @@ import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.lexer._ParadoxLocalisationTextLexer
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxGameType.*
 
 /**
  * 语法约束。
  *
  * 用于测试特定的语法是否受指定的游戏类型和游戏版本支持。
  */
-enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
+enum class ParadoxSyntaxConstraint {
     // #86
+    // for ck3, vic3, eu5
     // `?=` in `k ?= v`
-    SafeAssignOperator(Ck3, Vic3, Eu5),
-
-    // #331
-    // `? =` in `k? = v`
-    SafeCallAssignOperator(Stellaris) {
-        override fun testResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult {
-            if (gameType == Stellaris) return sinceGameVersion(gameVersion, "4.4")
-            return super.testResult(gameType, gameVersion)
+    SafeAssignOperator {
+        override fun test(gameType: ParadoxGameType?): Boolean {
+            return super.test(gameType) || gameType matchesBy ParadoxGameTypeConstraint.JominiBased
         }
     },
 
+    // #331
+    // for stellaris 4.4+
+    // `? =` in `k? = v`
+    SafeCallAssignOperator {
+        override fun test(gameType: ParadoxGameType?): Boolean {
+            return super.test(gameType) || gameType == ParadoxGameType.Stellaris
+        }
+
+        override fun getTestResult(gameType: ParadoxGameType?, gameVersion: String?): TestResult {
+            if (gameType == ParadoxGameType.Stellaris) return sinceGameVersion(gameVersion, "4.4")
+            return super.getTestResult(gameType, gameVersion)
+        }
+    },
+
+    // for stellaris
     // `['{concept_name}']` or `['{concept_name}', {concept_text}]`
-    LocalisationConceptCommand(Stellaris),
+    LocalisationConceptCommand {
+        override fun test(gameType: ParadoxGameType?): Boolean {
+            return super.test(gameType) || gameType == ParadoxGameType.Stellaris
+        }
+    },
 
     // #137
+    // for ck3, vic3, eu5
     // `#{tag_name} {text}#!`
-    LocalisationTextFormat(Ck3, Vic3, Eu5),
+    LocalisationTextFormat {
+        override fun test(gameType: ParadoxGameType?): Boolean {
+            return super.test(gameType) || gameType matchesBy ParadoxGameTypeConstraint.JominiBased
+        }
+    },
 
     // #137
+    // for ck3, vic3, eu5
     // `@{text_icon_name}!`
-    LocalisationTextIcon(Ck3, Vic3, Eu5),
+    LocalisationTextIcon {
+        override fun test(gameType: ParadoxGameType?): Boolean {
+            return super.test(gameType) || gameType matchesBy ParadoxGameTypeConstraint.JominiBased
+        }
+    },
 
     ;
 
@@ -53,13 +77,9 @@ enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
         }
     }
 
-    fun test(gameType: ParadoxGameType?): Boolean {
-        return gameType == null || gameType == Core || gameType in gameTypes
-    }
+    open fun test(gameType: ParadoxGameType?): Boolean = gameType == null || gameType == ParadoxGameType.Core
 
-    open fun testResult(gameType: ParadoxGameType?, gameVersion: String? = null): TestResult {
-        return TestResult(test(gameType))
-    }
+    open fun getTestResult(gameType: ParadoxGameType?, gameVersion: String? = null): TestResult = TestResult(test(gameType))
 
     @Suppress("SameParameterValue")
     protected fun sinceGameVersion(gameVersion: String?, since: String): TestResult {

@@ -18,6 +18,7 @@ import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 class ParadoxDatabaseObjectTypeNode(
     override val text: String,

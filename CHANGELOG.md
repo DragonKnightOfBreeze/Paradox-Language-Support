@@ -6,7 +6,7 @@
 
 - [ ] 将插件重命名为 *Paradox Chronicle*（同时拥有 *编年史* 与 *预言书* 的双关） / Rename plugin to *Paradox Chronicle* (With a pun on both *Chronicle* and *Prophecy*)
 - [ ] 同步更新代码、文档、社区等处的插件名、简介文本和描述文本 / Synchronously update the plugin name, introduction text and description text in code, documentation, community, etc.
-- [ ] 完善解析约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用 / Improve resolve constraints, be compatible with union types and alias types when necessary, prevent some language features from being unavailable due to incompatibility
+- [x] 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用 / Improve reference constraints, be compatible with union types and alias types when necessary, prevent some language features from being unavailable due to incompatibility
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.2.0 - 2026-07-05

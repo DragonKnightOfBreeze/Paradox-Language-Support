@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
-import com.intellij.psi.PsiReference
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
+import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
@@ -13,8 +13,8 @@ import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 interface ParadoxIdentifierNode : ParadoxComplexExpressionNode {
     override fun getReference(element: ParadoxExpressionElement): Reference?
 
-    interface Reference : PsiReference {
-        fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+    interface Reference : ParadoxConstrainedPsiReference {
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             return false
         }
     }

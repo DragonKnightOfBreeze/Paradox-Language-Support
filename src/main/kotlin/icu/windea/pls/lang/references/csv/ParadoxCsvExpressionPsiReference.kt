@@ -11,13 +11,15 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.psi.ParadoxPsiService
+import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 class ParadoxCsvExpressionPsiReference(
     element: ParadoxCsvExpressionElement,
     rangeInElement: TextRange,
     val columnConfig: CwtPropertyConfig
-) : PsiPolyVariantReferenceBase<ParadoxCsvExpressionElement>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxCsvExpressionElement>(element, rangeInElement), ParadoxConstrainedPsiReference {
     private val configGroup get() = columnConfig.configGroup
     private val project get() = configGroup.project
 
@@ -64,5 +66,11 @@ class ParadoxCsvExpressionPsiReference(
         val config = columnConfig.valueConfig ?: return ResolveResult.EMPTY_ARRAY
         val resolved = ParadoxExpressionManager.resolveAllCsvExpression(element, rangeInElement, config)
         return resolved.createResults()
+    }
+
+    override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+        val config = columnConfig.valueConfig ?: return false
+        val configExpression = config.configExpression
+        return constraint.test(configExpression.type)
     }
 }

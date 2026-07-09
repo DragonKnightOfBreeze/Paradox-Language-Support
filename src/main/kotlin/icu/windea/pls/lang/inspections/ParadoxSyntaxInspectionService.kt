@@ -26,7 +26,7 @@ object ParadoxSyntaxInspectionService {
 
     fun checkByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, name: String): Boolean {
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return true
-        val testResult = constraint.testResult(context.gameType, context.gameVersion)
+        val testResult = constraint.getTestResult(context.gameType, context.gameVersion)
         if (!testResult.strictValue) {
             val description = when {
                 testResult.sinceGameVersion == null -> ChronicleBundle.message("incorrectSyntax.desc.in.game", name, context.gameType.title)

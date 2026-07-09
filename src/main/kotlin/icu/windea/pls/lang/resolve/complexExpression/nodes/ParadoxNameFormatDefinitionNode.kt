@@ -91,10 +91,7 @@ class ParadoxNameFormatDefinitionNode(
         }
 
         override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
-            return when (constraint) {
-                ParadoxReferenceConstraint.Definition -> true
-                else -> false
-            }
+            return constraint == ParadoxReferenceConstraint.Definition
         }
     }
 
