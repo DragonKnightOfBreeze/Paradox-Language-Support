@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -141,13 +141,13 @@ class ParadoxTemplateSnippetNode(
             return resolved.createResults()
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             val dataType = config.configExpression.type
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> dataType in CwtDataTypeSets.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                ParadoxResolveConstraint.Localisation -> dataType in CwtDataTypeSets.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
-                ParadoxResolveConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                ParadoxResolveConstraint.DynamicValue -> dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
+                ParadoxReferenceConstraint.Definition -> dataType in CwtDataTypeSets.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxReferenceConstraint.Localisation -> dataType in CwtDataTypeSets.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxReferenceConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
+                ParadoxReferenceConstraint.DynamicValue -> dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 else -> false
             }
         }

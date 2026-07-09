@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.psi.PsiReference
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
  * 作为标识符的节点。
@@ -14,7 +14,7 @@ interface ParadoxIdentifierNode : ParadoxComplexExpressionNode {
     override fun getReference(element: ParadoxExpressionElement): Reference?
 
     interface Reference : PsiReference {
-        fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+        fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             return false
         }
     }

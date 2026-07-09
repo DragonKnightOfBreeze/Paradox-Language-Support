@@ -9,7 +9,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -33,10 +33,10 @@ object ParadoxRecursionManager {
         entryElement.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(e: PsiElement) {
                 run {
-                    if (!ParadoxResolveConstraint.ScriptedVariable.canResolveReference(e)) return@run
+                    if (!ParadoxReferenceConstraint.ScriptedVariable.canResolveReference(e)) return@run
                     e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
-                        if (!ParadoxResolveConstraint.ScriptedVariable.canResolve(r)) return@f
+                        if (!ParadoxReferenceConstraint.ScriptedVariable.canResolve(r)) return@f
                         val resolved = r.resolve()?.castOrNull<ParadoxScriptScriptedVariable>() ?: return@f
                         if (resolved.name in stack) {
                             recursions?.add(e)
@@ -74,11 +74,11 @@ object ParadoxRecursionManager {
         entryElement.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(e: PsiElement) {
                 run {
-                    if (!ParadoxResolveConstraint.Definition.canResolveReference(e)) return@run
+                    if (!ParadoxReferenceConstraint.Definition.canResolveReference(e)) return@run
                     if (predicate != null && !predicate(element, e)) return@run
                     e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
-                        if (!ParadoxResolveConstraint.Definition.canResolve(r)) return@f
+                        if (!ParadoxReferenceConstraint.Definition.canResolve(r)) return@f
                         val resolved = r.resolve()?.castOrNull<ParadoxDefinitionElement>() ?: return@f
                         val resolvedDefinition = resolved.definitionInfo ?: return@f
                         if (resolvedDefinition.type != type) return@f
@@ -112,10 +112,10 @@ object ParadoxRecursionManager {
         entryElement.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(e: PsiElement) {
                 run {
-                    if (!ParadoxResolveConstraint.Localisation.canResolveReference(e)) return@run
+                    if (!ParadoxReferenceConstraint.Localisation.canResolveReference(e)) return@run
                     e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
-                        if (!ParadoxResolveConstraint.Localisation.canResolve(r)) return@f
+                        if (!ParadoxReferenceConstraint.Localisation.canResolve(r)) return@f
                         val resolved = r.resolve()?.castOrNull<ParadoxLocalisationProperty>()
                         if (resolved == null) return@f
                         if (resolved.name in stack) {

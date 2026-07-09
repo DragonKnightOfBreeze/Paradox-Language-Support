@@ -9,7 +9,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.wordRequests
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import kotlin.experimental.or
 
 /**
@@ -32,6 +32,6 @@ class ParadoxParameterUsagesSearcher : QueryExecutorBase<PsiReference, Reference
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {
-        return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Parameter)
+        return ParadoxFilteredRequestResultProcessor(target, ParadoxReferenceConstraint.Parameter)
     }
 }

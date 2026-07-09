@@ -86,11 +86,6 @@ object CwtDataTypeSets {
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
     )
-    /** 别名名称相关的数据类型。 */
-    val AliasNameAware = arrayOf(
-        CwtDataTypes.AliasKeysField,
-        CwtDataTypes.AliasName,
-    )
     /** 所有模式感知的数据类型。 */
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,

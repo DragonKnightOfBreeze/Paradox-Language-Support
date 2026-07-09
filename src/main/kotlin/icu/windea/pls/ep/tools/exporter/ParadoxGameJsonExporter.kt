@@ -44,7 +44,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
         val descriptorMapping = ParadoxMetadataUtil.buildDescriptorMapping(gameDataDirPath)
 
         // 依据游戏类型选择不同的 JSON 结构
-        return if (gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed) {
+        return if (gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed) {
             // dlc_load.json: enabled_mods 是字符串列表
             val enabledModPaths = enabledMods.mapNotNull { modInfo ->
                 val modDir = modInfo.modDirectory?.normalizePath()
@@ -91,7 +91,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
 
     private fun getJsonFileName(gameType: ParadoxGameType): String {
         return when {
-            gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> Constants.dlcLoadPath
+            gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed -> Constants.dlcLoadPath
             else -> Constants.contentLoadPath
         }
     }

@@ -12,7 +12,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -33,7 +33,7 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
-        val resolveConstraint = ParadoxResolveConstraint.LocalisationReference
+        val resolveConstraint = ParadoxReferenceConstraint.LocalisationReference
         if (!resolveConstraint.canResolveReference(element)) return
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return

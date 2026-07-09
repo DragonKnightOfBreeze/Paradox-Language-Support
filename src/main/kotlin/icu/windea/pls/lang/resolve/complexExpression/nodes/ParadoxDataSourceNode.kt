@@ -19,7 +19,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
 class ParadoxDataSourceNode(
@@ -146,12 +146,12 @@ class ParadoxDataSourceNode(
             return ResolveResult.EMPTY_ARRAY
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             val dataTypes = node.linkConfigs.mapNotNull { it.configExpression?.type }
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> dataTypes.any { it in CwtDataTypeSets.DefinitionAware || it == CwtDataTypes.AliasKeysField }
-                ParadoxResolveConstraint.ComplexEnumValue -> dataTypes.any { it == CwtDataTypes.EnumValue || it == CwtDataTypes.AliasKeysField }
-                ParadoxResolveConstraint.DynamicValue -> dataTypes.any { it in CwtDataTypeSets.DynamicValue || it == CwtDataTypes.AliasKeysField }
+                ParadoxReferenceConstraint.Definition -> dataTypes.any { it in CwtDataTypeSets.DefinitionAware || it == CwtDataTypes.AliasKeysField }
+                ParadoxReferenceConstraint.ComplexEnumValue -> dataTypes.any { it == CwtDataTypes.EnumValue || it == CwtDataTypes.AliasKeysField }
+                ParadoxReferenceConstraint.DynamicValue -> dataTypes.any { it in CwtDataTypeSets.DynamicValue || it == CwtDataTypes.AliasKeysField }
                 else -> false
             }
         }

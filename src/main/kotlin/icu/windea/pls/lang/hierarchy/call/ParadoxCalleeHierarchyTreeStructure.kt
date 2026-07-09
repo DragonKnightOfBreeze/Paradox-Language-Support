@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -102,9 +102,9 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (references.isEmpty()) return
                 for (reference in references) {
                     var canResolve = false
-                    canResolve = canResolve || (ParadoxResolveConstraint.ScriptedVariable.canResolve(reference) && hierarchySettings.showScriptedVariablesInCallHierarchy)
-                    canResolve = canResolve || (ParadoxResolveConstraint.Definition.canResolve(reference) && hierarchySettings.showDefinitionsInCallHierarchy)
-                    canResolve = canResolve || (ParadoxResolveConstraint.Localisation.canResolve(reference) && hierarchySettings.showLocalisationsInCallHierarchy)
+                    canResolve = canResolve || (ParadoxReferenceConstraint.ScriptedVariable.canResolve(reference) && hierarchySettings.showScriptedVariablesInCallHierarchy)
+                    canResolve = canResolve || (ParadoxReferenceConstraint.Definition.canResolve(reference) && hierarchySettings.showDefinitionsInCallHierarchy)
+                    canResolve = canResolve || (ParadoxReferenceConstraint.Localisation.canResolve(reference) && hierarchySettings.showLocalisationsInCallHierarchy)
                     if (!canResolve) continue
 
                     processReference(reference, scope, descriptor, descriptors, hierarchySettings)

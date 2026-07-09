@@ -14,7 +14,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 class ParadoxDynamicValueNode(
     override val text: String,
@@ -57,12 +57,12 @@ class ParadoxDynamicValueNode(
             return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             return when (constraint) {
                 // always true
-                ParadoxResolveConstraint.DynamicValue -> true
+                ParadoxReferenceConstraint.DynamicValue -> true
                 // skip if related link config can have multiple arguments
-                ParadoxResolveConstraint.DynamicValueReference -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
+                ParadoxReferenceConstraint.DynamicValueReference -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
                 else -> false
             }
         }

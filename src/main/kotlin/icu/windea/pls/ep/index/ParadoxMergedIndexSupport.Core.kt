@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfoTypes
@@ -33,7 +33,7 @@ import java.io.DataInput
 import java.io.DataOutput
 
 class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
-    private val constraint = ParadoxResolveConstraint.DynamicValue
+    private val constraint = ParadoxReferenceConstraint.DynamicValue
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
 
     override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
@@ -96,7 +96,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 }
 
 class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxParameterIndexInfo> {
-    private val constraint = ParadoxResolveConstraint.Parameter
+    private val constraint = ParadoxReferenceConstraint.Parameter
     private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
 
     override val indexInfoType = ParadoxIndexInfoTypes.Parameter
@@ -149,7 +149,7 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
 }
 
 class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxLocalisationParameterIndexInfo> {
-    private val constraint = ParadoxResolveConstraint.LocalisationParameter
+    private val constraint = ParadoxReferenceConstraint.LocalisationParameter
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
 
     override val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter

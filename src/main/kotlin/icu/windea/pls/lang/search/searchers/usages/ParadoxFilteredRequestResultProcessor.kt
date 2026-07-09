@@ -4,11 +4,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.core.psi.FilteredRequestResultProcessor
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 class ParadoxFilteredRequestResultProcessor(
     target: PsiElement,
-    private val constraint: ParadoxResolveConstraint
+    private val constraint: ParadoxReferenceConstraint
 ) : FilteredRequestResultProcessor(target) {
     override fun applyFor(element: PsiElement): Boolean {
         return element.language is ParadoxLanguage

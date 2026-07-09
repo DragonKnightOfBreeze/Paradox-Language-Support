@@ -10,6 +10,11 @@ import icu.windea.pls.localisation.lexer._ParadoxLocalisationTextLexer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxGameType.*
 
+/**
+ * 语法约束。
+ *
+ * 用于测试特定的语法是否受指定的游戏类型和游戏版本支持。
+ */
 enum class ParadoxSyntaxConstraint(vararg val gameTypes: ParadoxGameType) {
     // #86
     // `?=` in `k ?= v`

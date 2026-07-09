@@ -19,7 +19,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import kotlin.experimental.or
@@ -93,6 +93,6 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {
-        return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Definition)
+        return ParadoxFilteredRequestResultProcessor(target, ParadoxReferenceConstraint.Definition)
     }
 }

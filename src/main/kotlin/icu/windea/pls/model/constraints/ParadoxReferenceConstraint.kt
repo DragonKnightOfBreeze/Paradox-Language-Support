@@ -39,7 +39,14 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
-enum class ParadoxResolveConstraint {
+/**
+ * 引用约束。
+ *
+ * 用于测试指定的 [PsiElement] 是否可以解析得到特定的 [PsiReference]，而指定的 [PsiReference] 又是否可以解析为特定的 [PsiElement]。
+ *
+ * 解析约束可以用来优化性能，另一方面，也会影响一些语言功能（如内嵌提示）的可用性。
+ */
+enum class ParadoxReferenceConstraint {
     ScriptedVariable {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
@@ -56,6 +63,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     /**
      * @see CwtDataTypeSets.DefinitionAware
      * @see CwtDataTypes.AliasKeysField
@@ -102,6 +110,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     /**
      * @see CwtDataTypeSets.LocalisationAware
      * @see CwtDataTypes.AliasKeysField
@@ -131,6 +140,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     /**
      * @see CwtDataTypes.EnumValue
      * @see CwtDataTypes.AliasKeysField
@@ -165,6 +175,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     /**
      * @see CwtDataTypeSets.DynamicValue
      * @see CwtDataTypes.AliasKeysField
@@ -199,6 +210,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     /**
      * @see CwtDataTypes.Parameter
      */
@@ -228,6 +240,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     /**
      * @see CwtDataTypes.LocalisationParameter
      */
@@ -280,6 +293,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+
     DynamicValueReference {
         override fun canResolveReference(element: PsiElement): Boolean {
             return DynamicValue.canResolveReference(element)

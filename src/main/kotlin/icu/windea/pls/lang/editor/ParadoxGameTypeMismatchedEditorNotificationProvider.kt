@@ -33,7 +33,7 @@ class ParadoxGameTypeMismatchedEditorNotificationProvider : EditorNotificationPr
         val message = when (metadata) {
             is ParadoxDescriptorModBasedModMetadata -> {
                 when {
-                    gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> null
+                    gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed -> null
                     else -> ChronicleBundle.message("editor.notification.3.text.1", gameType.title)
                 }
             }

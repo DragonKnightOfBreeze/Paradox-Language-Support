@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
  * 命名格式表达式（[ParadoxNameFormatExpression]）中的定义节点。即 `{<x>}` 中的 `x`。
@@ -90,9 +90,9 @@ class ParadoxNameFormatDefinitionNode(
             return resolved.createResults()
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> true
+                ParadoxReferenceConstraint.Definition -> true
                 else -> false
             }
         }

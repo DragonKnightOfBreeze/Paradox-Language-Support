@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
  * 通过内嵌提示显示动态值的提示文本。
@@ -42,7 +42,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
         val expression = element.name
         if (expression.isEmpty()) return
 
-        val resolveConstraint = ParadoxResolveConstraint.DynamicValueReference
+        val resolveConstraint = ParadoxReferenceConstraint.DynamicValueReference
         if (!resolveConstraint.canResolveReference(element)) return
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return

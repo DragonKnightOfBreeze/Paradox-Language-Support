@@ -4,6 +4,12 @@ import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.paths.ParadoxPath
 
 /**
+ * 路径约束。
+ *
+ * 用于测试指定的 [ParadoxPath] 是否符合特定的条件。
+ *
+ * 用法示例：`path matchesBy ParadoxPathConstraint.ModDescriptorFile`
+ *
  * @see ParadoxPath
  */
 @Suppress("unused")
