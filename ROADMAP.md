@@ -115,6 +115,11 @@
 - [ ] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
 - [ ] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
 
+### 附加
+
+- [ ] P3 API 变更：将 EP `unresolvedExpressionDecorator` 改为 `unresolvedExpressionChecker`
+- [ ] P3 在脚本文件和CSV文件中的用引号括起的字符串字面量中，提供括号匹配和补全 [#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351)
+
 ## v3.0.1 {v3-0-1}
 
 ### 计划

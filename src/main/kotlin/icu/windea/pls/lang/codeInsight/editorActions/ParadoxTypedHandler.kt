@@ -10,7 +10,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
+import icu.windea.pls.lang.util.ParadoxMarkerManager
 import icu.windea.pls.lang.selectGameType
 
 /**
@@ -29,7 +29,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
 
     private fun charTypedInComplexExpression(c: Char, project: Project, editor: Editor, file: PsiFile): Result? {
         val leftMarker = c.toString()
-        val closeMarker = ParadoxComplexExpressionUtil.getMatchedMarker(leftMarker) ?: return null
+        val closeMarker = ParadoxMarkerManager.getMatchedMarker(leftMarker) ?: return null
         val closeChar = closeMarker.singleOrNull() ?: return null
         val caretOffset = editor.caretModel.offset
         val element = ParadoxPsiFileService.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
@@ -41,7 +41,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         if (complexExpression == null) return null
 
         // 这里字符尚未输入，当前无法判断要输入的字符是否是开标记，因此直接按复杂表达式类型过滤即可
-        if (!ParadoxComplexExpressionUtil.isLeftMaker(leftMarker, complexExpression)) return null
+        if (!ParadoxMarkerManager.isLeftMaker(leftMarker, complexExpression)) return null
 
         // // 判断刚键入的字符是否被识别为 MarkerNode，且作为开标记
         // val elementOffset = element.startOffset

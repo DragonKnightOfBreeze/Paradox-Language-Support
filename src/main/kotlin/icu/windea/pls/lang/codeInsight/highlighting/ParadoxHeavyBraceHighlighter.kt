@@ -12,7 +12,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
+import icu.windea.pls.lang.util.ParadoxMarkerManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -42,8 +42,8 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         val text = element.text
         val c1 = text.getOrNull(caretOffset - elementOffset - 1)
         val c2 = text.getOrNull(caretOffset - elementOffset)
-        val possible = (c1 != null && (ParadoxComplexExpressionUtil.isLeftOrRightMaker(c1.toString())))
-            || (c2 != null && ParadoxComplexExpressionUtil.isLeftOrRightMaker(c2.toString()))
+        val possible = (c1 != null && (ParadoxMarkerManager.isLeftOrRightMaker(c1.toString())))
+            || (c2 != null && ParadoxMarkerManager.isLeftOrRightMaker(c2.toString()))
         if (!possible) return null
 
         val project = file.project
@@ -56,7 +56,7 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (!inRange(node)) return super.visit(node)
-                val matched = ParadoxComplexExpressionUtil.getMatchedMarkerNode(node) ?: return super.visit(node)
+                val matched = ParadoxMarkerManager.getMatchedMarkerNode(node) ?: return super.visit(node)
                 ref.set(Pair(node.rangeInExpression.shiftRight(startOffset), matched.rangeInExpression.shiftRight(startOffset)))
                 return false
             }
