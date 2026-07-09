@@ -1,4 +1,4 @@
-package icu.windea.pls.images.support
+package icu.windea.pls.images.supports
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException

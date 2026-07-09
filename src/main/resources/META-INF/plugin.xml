@@ -25,14 +25,14 @@
   <xi:include href="/META-INF/chronicle-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-csv.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-images.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-config.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/chronicle-images.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-intentions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-integrations.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-extensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-ai.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/chronicle-intentions.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/chronicle-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-tools.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-ep.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

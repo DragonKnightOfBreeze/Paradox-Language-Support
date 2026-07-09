@@ -4,8 +4,8 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls.images">
-    <support implementation="icu.windea.pls.images.support.DefaultImageSupport" order="last"/>
-    <support implementation="icu.windea.pls.images.support.ToolBasedImageSupport"/>
+    <support implementation="icu.windea.pls.images.supports.DefaultImageSupport" order="last"/>
+    <support implementation="icu.windea.pls.images.supports.ToolBasedImageSupport"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">

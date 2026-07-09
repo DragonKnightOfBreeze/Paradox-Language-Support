@@ -21,7 +21,7 @@ import javax.imageio.spi.IIORegistry
 
 @Service
 class ImageService : AppLifecycleListener, DynamicPluginListener {
-    // TODO 2.1.7+ refactoring: builtin image reader SPIs for DDS and TGA images
+    // TODO 2.1.7+ refactoring: built-in image reader SPIs for DDS and TGA images
     // for DDS and TGA images, use image reader SPIs from TwelveMonkeys
     // see: https://github.com/haraldk/TwelveMonkeys
 
@@ -49,9 +49,7 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
             when (extension) {
                 "dds" -> DdsFileType.contentTypeString
                 "tga" -> TgaFileType.contentTypeString
-                else -> {
-                    originalFileNameMap.getContentTypeFor(it)
-                }
+                else -> originalFileNameMap.getContentTypeFor(it)
             }
         }
     }
