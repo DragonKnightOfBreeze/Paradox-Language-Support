@@ -6,6 +6,8 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -14,34 +16,42 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxMarkerManager
 
 /**
- * 用于在脚本文件和本地化文件中提供基于当前输入与上下文的代码补全。
+ * 用于在脚本文件和本地化文件中提供基于光标位置的代码补全。
  *
- * - 在复杂表达式中，当键入成对标记（marker）的开标记时，自动补全闭标记。
- *   仅当键入位置可被识别为复杂表达式中的 [ParadoxMarkerNode] 且是开标记时才插入闭标记。
+ * - 当光标位置是复杂表达式中成对的标记节点（[ParadoxMarkerNode]）的开标记时，自动补全闭标记。
  */
 class ParadoxTypedHandler : TypedHandlerDelegate() {
     override fun charTyped(c: Char, project: Project, editor: Editor, file: PsiFile): Result {
-        val matched = ParadoxPsiFileMatchService.isScriptFile(file) || ParadoxPsiFileMatchService.isLocalisationFile(file)
-        if (!matched) return Result.CONTINUE
-        charTypedInComplexExpression(c, project, editor, file)?.let { return it }
+        if (!isAvailable(file)) return Result.CONTINUE
+        charTypedInExpression(c, project, editor, file)
         return Result.CONTINUE
     }
 
-    private fun charTypedInComplexExpression(c: Char, project: Project, editor: Editor, file: PsiFile): Result? {
-        val leftMarker = c.toString()
-        val closeMarker = ParadoxMarkerManager.getMatchedMarker(leftMarker) ?: return null
-        val closeChar = closeMarker.singleOrNull() ?: return null
+    private fun isAvailable(file: PsiFile): Boolean {
+        return ParadoxPsiFileMatchService.isScriptFile(file) || ParadoxPsiFileMatchService.isLocalisationFile(file)
+    }
+
+    private fun charTypedInExpression(c: Char, project: Project, editor: Editor, file: PsiFile): Boolean {
+        charTypedInComplexExpression(c, project, editor, file).let { if (!it) return false }
+        charTypedInQuotedStringExpression(c, project, editor, file).let { if (!it) return false }
+        return true
+    }
+
+    private fun charTypedInComplexExpression(c: Char, project: Project, editor: Editor, file: PsiFile): Boolean {
+        val leftMarker = c
+        val rightMarker = ParadoxMarkerManager.getMatchedMarkerFromLeft(leftMarker) ?: return true
+
         val caretOffset = editor.caretModel.offset
         val element = ParadoxPsiFileService.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
-        if (element == null) return null
+        if (element == null) return true
 
-        val gameType = selectGameType(file) ?: return null
+        val gameType = selectGameType(file) ?: return true
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
-        if (complexExpression == null) return null
+        if (complexExpression == null) return true
 
         // 这里字符尚未输入，当前无法判断要输入的字符是否是开标记，因此直接按复杂表达式类型过滤即可
-        if (!ParadoxMarkerManager.isLeftMaker(leftMarker, complexExpression)) return null
+        if (!ParadoxMarkerManager.isLeftMaker(leftMarker, complexExpression)) return false
 
         // // 判断刚键入的字符是否被识别为 MarkerNode，且作为开标记
         // val elementOffset = element.startOffset
@@ -60,11 +70,32 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         // })
         // if (!matched) return null
 
-        // 若下一字符已是目标闭标记，则不重复插入
+        // 如果当前字符已是目标闭标记，且前一个字符不是目标开标记，则不重复插入
         val seq = editor.document.charsSequence
-        if (caretOffset < seq.length && seq[caretOffset] == closeChar) return null
+        if ((caretOffset < seq.length && seq[caretOffset] == rightMarker) && (caretOffset > 0 && seq[caretOffset - 1] != leftMarker)) return false
 
-        EditorModificationUtil.insertStringAtCaret(editor, closeMarker, false, true, 0)
-        return null
+        EditorModificationUtil.insertStringAtCaret(editor, rightMarker.toString(), false, true, 0)
+        return false
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun charTypedInQuotedStringExpression(c: Char, project: Project, editor: Editor, file: PsiFile): Boolean {
+        // #351 make compatible with quoted string expressions in script files, even if it's not a complex expression on semantic level
+
+        val leftMarker = c
+        val rightMarker = ParadoxMarkerManager.getMatchedMarkerFromLeft(leftMarker) ?: return true
+        val caretOffset = editor.caretModel.offset
+        val element = ParadoxPsiFileService.findScriptExpression(file, caretOffset, fromToken = true)
+        if (element == null) return true
+
+        val elementText = element.text
+        if (!elementText.isLeftQuoted() || !elementText.isRightQuoted()) return true // check double side quotes here
+
+        // 如果当前字符已是目标闭标记，且前一个字符不是目标开标记，则不重复插入
+        val seq = editor.document.charsSequence
+        if ((caretOffset < seq.length && seq[caretOffset] == rightMarker) && (caretOffset > 0 && seq[caretOffset - 1] != leftMarker)) return false
+
+        EditorModificationUtil.insertStringAtCaret(editor, rightMarker.toString(), false, true, 0)
+        return false
     }
 }

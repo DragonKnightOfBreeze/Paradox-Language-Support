@@ -9,7 +9,7 @@
 - [x] 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用 / Improve reference constraints, be compatible with union types and alias types when necessary, prevent some language features from being unavailable due to incompatibility
 - [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`) 
 - [x] 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持） / Improve lexer for localisation files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[b]`)
-- [ ] 在脚本文件中的用引号括起的字符串字面量中，提供括号匹配和补全 / Provide brace match and completion for quoted string literals in script files ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
+- [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 / Provide brace match and completion for quoted string expressions in script files ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
 - [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 

@@ -10,10 +10,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 object ParadoxMarkerManager {
     private const val matchedMarkers = "()[]{}<>"
-    private val markerPairsL2R = matchedMarkers.chunked(2).associate { it.take(1) to it.takeLast(1) }
-    private val markerPairs = matchedMarkers.chunked(2).flatMap { listOf(it, it.reversed()) }.associate { it.take(1) to it.takeLast(1) }
+    private val markerPairsL2R = matchedMarkers.chunked(2).associate { it.first() to it.last() }
+    private val markerPairs = matchedMarkers.chunked(2).flatMap { listOf(it, it.reversed()) }.associate { it.first() to it.last() }
 
-    fun isLeftMaker(marker: String, expression: ParadoxComplexExpression? = null): Boolean {
+    fun isLeftMaker(marker: Char, expression: ParadoxComplexExpression? = null): Boolean {
         return when (expression) {
             null -> marker in "([{<"
             is ParadoxScopeFieldExpression, is ParadoxValueFieldExpression, is ParadoxVariableFieldExpression -> marker in "("
@@ -23,7 +23,7 @@ object ParadoxMarkerManager {
         }
     }
 
-    fun isLeftOrRightMaker(marker: String, expression: ParadoxComplexExpression? = null): Boolean {
+    fun isLeftOrRightMaker(marker: Char, expression: ParadoxComplexExpression? = null): Boolean {
         return when (expression) {
             null -> marker in "()[]{}<>"
             is ParadoxScopeFieldExpression, is ParadoxValueFieldExpression, is ParadoxVariableFieldExpression -> marker in "()"
@@ -33,14 +33,19 @@ object ParadoxMarkerManager {
         }
     }
 
-    fun getMatchedMarker(leftMarker: String): String? {
+    fun getMatchedMarkerFromLeft(leftMarker: Char): Char? {
         return markerPairsL2R[leftMarker]
+    }
+
+    fun getMatchedMarker(marker: Char): Char? {
+        return markerPairs[marker]
     }
 
     fun getMatchedMarkerNode(node: ParadoxComplexExpressionNode): ParadoxComplexExpressionNode? {
         if (node !is ParadoxMarkerNode) return null
-        val s = markerPairs[node.text] ?: return null
+        val c = node.text.singleOrNull() ?: return null
+        val s = markerPairs[c] ?: return null
         val nodes = node.parent?.nodes ?: return null
-        return nodes.find { it is ParadoxMarkerNode && it.text == s && it !== node }
+        return nodes.find { it is ParadoxMarkerNode && it.text.singleOrNull() == s && it !== node }
     }
 }
