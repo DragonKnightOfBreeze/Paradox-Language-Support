@@ -3,7 +3,7 @@
 <!-- With the guidebook currently being written, we are fully prepared — welcome to the real world. -->
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Plugin Home](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Plugin Home](https://plugins.jetbrains.com/plugin/16825) |
 [Discord](https://discord.gg/vBpbET2bXT) |
 [By me a coffee ☕](https://afdian.com/a/dk_breeze)
 

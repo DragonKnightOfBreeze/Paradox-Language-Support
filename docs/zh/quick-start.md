@@ -5,7 +5,7 @@
 ### 安装
 
 - 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Chronicle" > `Install`
-- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
+- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825)，点击 `Install to ...` 按钮进行安装。
 - 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### 使用步骤

@@ -55,7 +55,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 ### Installation
 
 - Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Chronicle" > `Install`
-- Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) and install it by clicking the `Install to ...` button.
+- Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825) and install it by clicking the `Install to ...` button.
 - Manual Installation: Download the [latest release](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest) and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### Usage Steps
@@ -238,8 +238,8 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 [url:build]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/workflows/build.yml
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
-[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
-[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825
+[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:afdian]: https://afdian.com/a/dk_breeze
 [url:windea]: https://github.com/DragonKnightOfBreeze
