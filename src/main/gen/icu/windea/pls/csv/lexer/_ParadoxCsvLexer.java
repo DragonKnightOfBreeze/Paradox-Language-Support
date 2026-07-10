@@ -5,8 +5,12 @@ package icu.windea.pls.csv.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import icu.windea.pls.model.ParadoxGameType;
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 // Lexer for Paradox CSV.

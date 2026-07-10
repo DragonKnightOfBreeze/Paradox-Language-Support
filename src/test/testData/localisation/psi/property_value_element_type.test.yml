@@ -11,4 +11,4 @@ l_english:
  rich_icon:0 "£unity£"
  rich_text_format:0 "#bold text#!"
  rich_text_icon:0 "@icon!"
- rich.mixed:0 "Hello §RWorld§! $KEY$"
+ rich_mixed:0 "Hello §RWorld§! $KEY$"
