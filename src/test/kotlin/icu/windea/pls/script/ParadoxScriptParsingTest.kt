@@ -1,8 +1,7 @@
-package icu.windea.pls.csv.syntax
+package icu.windea.pls.script
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.csv.ParadoxCsvParserDefinition
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -13,7 +12,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("/testData")
-class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxCsvParserDefinition()) {
+class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true
@@ -29,23 +28,33 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     @Test
     fun empty() = doTest(true)
     @Test
-    fun empty_columns() = doTest(true)
+    fun escapes() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
     @Test
-    fun error_unclosed_quote() = doTest(true)
+    fun property_separators() = doTest(true)
     @Test
-    fun header_and_rows() = doTest(true)
+    fun mixed_members() = doTest(true)
     @Test
-    fun header_only() = doTest(true)
+    fun error_missing_property_value() = doTest(true)
     @Test
-    fun header_and_rows_crlf() = doTest(true)
+    fun error_unclosed_brace() = doTest(true)
     @Test
-    fun header_trailing_separator() = doTest(true)
+    fun conditional_blocks() = doTest(true)
     @Test
-    fun quoted() = doTest(true)
+    fun inline_conditional_blocks() = doTest(true)
     @Test
-    fun quoted_with_newline() = doTest(true)
+    fun nested() = doTest(true)
     @Test
-    fun unterminated_quote_no_eol() = doTest(true)
+    fun attached_comments() = doTest(true)
+    @Test
+    fun unterminated_quoted_string_value() = doTest(true)
+
+    @Test
+    fun inline_maths() = doTest(true)
+    @Test
+    fun inline_maths_mismatch() = doTest(true)
+
+    @Test
+    fun advanced_interpolation() = doTest(true)
 }

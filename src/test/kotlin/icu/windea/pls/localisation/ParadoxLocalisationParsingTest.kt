@@ -1,8 +1,7 @@
-package icu.windea.pls.script.syntax
+package icu.windea.pls.localisation
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.script.ParadoxScriptParserDefinition
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -13,7 +12,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("/testData")
-class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
+class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "test.yml", ParadoxLocalisationParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true
@@ -33,29 +32,27 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     @Test
     fun only_comments() = doTest(true)
     @Test
-    fun property_separators() = doTest(true)
+    fun only_header() = doTest(true)
     @Test
-    fun mixed_members() = doTest(true)
+    fun only_header_eof() = doTest(true)
     @Test
-    fun error_missing_property_value() = doTest(true)
+    fun error_unclosed_quote() = doTest(true)
     @Test
-    fun error_unclosed_brace() = doTest(true)
+    fun text_formats_ck3() = doTest(true)
     @Test
-    fun conditional_blocks() = doTest(true)
+    fun text_formats_stellaris() = doTest(true)
     @Test
-    fun inline_conditional_blocks() = doTest(true)
+    fun text_icons_vic3() = doTest(true)
     @Test
-    fun nested() = doTest(true)
+    fun combined() = doTest(true)
     @Test
-    fun attached_comments() = doTest(true)
+    fun header_as_key() = doTest(true)
     @Test
-    fun unterminated_quoted_string_value() = doTest(true)
-
+    fun value_trailing_comment() = doTest(true)
     @Test
-    fun inline_maths() = doTest(true)
+    fun value_multi_quotes_trailing_comment() = doTest(true)
     @Test
-    fun inline_maths_mismatch() = doTest(true)
-
+    fun multiple_headers() = doTest(true)
     @Test
-    fun advanced_interpolation() = doTest(true)
+    fun header_with_trailing_spaces() = doTest(true)
 }

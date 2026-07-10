@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test.SyntaxPsiTests" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Test.ParsingTests" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -12,7 +12,7 @@
         <list>
           <option value=":test" />
           <option value="--tests" />
-          <option value="&quot;icu.windea.pls.*.syntax.**&quot;" />
+          <option value="&quot;icu.windea.pls.*.*ParsingTest&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

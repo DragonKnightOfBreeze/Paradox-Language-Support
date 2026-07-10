@@ -1,8 +1,7 @@
-package icu.windea.pls.localisation.syntax
+package icu.windea.pls.csv
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.localisation.ParadoxLocalisationParserDefinition
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -13,7 +12,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("/testData")
-class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", "test.yml", ParadoxLocalisationParserDefinition()) {
+class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxCsvParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true
@@ -29,31 +28,23 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     @Test
     fun empty() = doTest(true)
     @Test
-    fun escapes() = doTest(true)
+    fun empty_columns() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
     @Test
-    fun only_header() = doTest(true)
-    @Test
-    fun only_header_eof() = doTest(true)
-    @Test
     fun error_unclosed_quote() = doTest(true)
     @Test
-    fun text_formats_ck3() = doTest(true)
+    fun header_and_rows() = doTest(true)
     @Test
-    fun text_formats_stellaris() = doTest(true)
+    fun header_only() = doTest(true)
     @Test
-    fun text_icons_vic3() = doTest(true)
+    fun header_and_rows_crlf() = doTest(true)
     @Test
-    fun combined() = doTest(true)
+    fun header_trailing_separator() = doTest(true)
     @Test
-    fun header_as_key() = doTest(true)
+    fun quoted() = doTest(true)
     @Test
-    fun value_trailing_comment() = doTest(true)
+    fun quoted_with_newline() = doTest(true)
     @Test
-    fun value_multi_quotes_trailing_comment() = doTest(true)
-    @Test
-    fun multiple_headers() = doTest(true)
-    @Test
-    fun header_with_trailing_spaces() = doTest(true)
+    fun unterminated_quote_no_eol() = doTest(true)
 }
