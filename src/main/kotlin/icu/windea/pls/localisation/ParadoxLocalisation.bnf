@@ -59,7 +59,10 @@ property ::= property_key COLON property_number? property_value {
 }
 
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIdElement getIcon]
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
+  methods=[getIdElement getIcon getName setName]
 }
 
 // The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking

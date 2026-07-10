@@ -159,6 +159,19 @@ object ParadoxLocalisationPsiImplUtil {
         return ChronicleIcons.Nodes.LocalisationProperty
     }
 
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationPropertyKey): String {
+        return element.idElement.text
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationPropertyKey, name: String): ParadoxLocalisationPropertyKey {
+        val idElement = element.idElement
+        val newIdElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name).idElement
+        idElement.replace(newIdElement)
+        return element
+    }
+
     // endregion
 
     // region ParadoxLocalisationPropertyValue

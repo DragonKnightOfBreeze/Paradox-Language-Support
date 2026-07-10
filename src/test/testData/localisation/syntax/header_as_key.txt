@@ -1,7 +1,7 @@
 ParadoxLocalisationFile: header_as_key.test.yml(0,19)
   ParadoxLocalisationPropertyList(0,19)
     ParadoxLocalisationProperty: l_english(0,19)
-      ParadoxLocalisationPropertyKey(0,9)
+      ParadoxLocalisationPropertyKey: l_english(0,9)
         PsiElement(PROPERTY_KEY_TOKEN)('l_english')(0,9)
       PsiElement(COLON)(':')(9,10)
       PsiElement(PROPERTY_NUMBER)('0')(10,11)

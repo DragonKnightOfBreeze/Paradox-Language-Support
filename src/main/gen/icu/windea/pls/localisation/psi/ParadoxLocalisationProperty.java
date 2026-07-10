@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub;
 import com.intellij.navigation.ItemPresentation;
@@ -14,7 +15,7 @@ import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxLocalisationType;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
+public interface ParadoxLocalisationProperty extends NavigatablePsiElement, ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
 
   @NotNull
   ParadoxLocalisationPropertyKey getPropertyKey();

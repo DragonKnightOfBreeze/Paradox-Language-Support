@@ -79,11 +79,12 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitProperty(@NotNull ParadoxLocalisationProperty o) {
-    visitNamedElement(o);
+    visitNavigatablePsiElement(o);
+    // visitNamedElement(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxLocalisationPropertyKey o) {
-    visitPsiElement(o);
+    visitNavigatablePsiElement(o);
   }
 
   public void visitPropertyList(@NotNull ParadoxLocalisationPropertyList o) {
@@ -138,10 +139,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitArgument(@NotNull ParadoxLocalisationArgument o) {
-    visitPsiElement(o);
-  }
-
-  public void visitNamedElement(@NotNull ParadoxLocalisationNamedElement o) {
     visitPsiElement(o);
   }
 
