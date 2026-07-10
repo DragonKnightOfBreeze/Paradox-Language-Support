@@ -86,7 +86,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     // region Config Flags
 
     @Test
-    fun testComplexEnumValueIndex_CaseInsensitiveFlagAndCompression() {
+    fun testComplexEnumValueIndex_CaseInsensitiveFlags() {
         // Arrange
         markFileInfo(gameType, "common/whispered_words/00_words.txt")
         myFixture.configureByFile("features/index/common/whispered_words/00_words.txt")
@@ -98,7 +98,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
 
         // Assert
-        Assert.assertEquals(listOf("Hush", "Murmur", "hush"), values.map { it.name })
+        Assert.assertEquals(listOf("Hush", "hush", "Murmur"), values.map { it.name })
         Assert.assertTrue(values.all { it.enumName == "whispered_word" })
         Assert.assertTrue(values.all { it.caseInsensitive })
     }
