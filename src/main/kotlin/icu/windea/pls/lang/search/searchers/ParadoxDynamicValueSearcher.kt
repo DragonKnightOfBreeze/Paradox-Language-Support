@@ -45,7 +45,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
     }
 
     private fun matchesType(context: Context, info: ParadoxDynamicValueIndexInfo): Boolean {
-        return context.types.contains(info.dynamicValueType)
+        return context.types.contains(info.type)
     }
 
     private fun matchesName(context: Context, info: ParadoxDynamicValueIndexInfo): Boolean {

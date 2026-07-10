@@ -36,7 +36,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
     private val constraint = ParadoxReferenceConstraint.DynamicValue
-    private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo> { it.dynamicValueType }
+    private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo> { it.type }
 
     override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
 
@@ -85,13 +85,13 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 
     override fun saveData(storage: DataOutput, info: ParadoxDynamicValueIndexInfo, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
-        storage.writeOrWriteFrom(info, previousInfo, { it.dynamicValueType }, { storage.writeUTFFast(it) })
+        storage.writeOrWriteFrom(info, previousInfo, { it.type }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType): ParadoxDynamicValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
-        val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.dynamicValueType }, { storage.readUTFFast() })
+        val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.type }, { storage.readUTFFast() })
         val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
         return ParadoxDynamicValueIndexInfo(name, dynamicValueType, readWriteAccess, gameType)
     }

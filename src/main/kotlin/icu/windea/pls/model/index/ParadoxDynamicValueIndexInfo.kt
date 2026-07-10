@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
  */
 data class ParadoxDynamicValueIndexInfo(
     val name: String,
-    val dynamicValueType: String,
+    val type: String,
     val readWriteAccess: ReadWriteAccess,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo()

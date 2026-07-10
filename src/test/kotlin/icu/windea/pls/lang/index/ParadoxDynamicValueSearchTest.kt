@@ -6,7 +6,6 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.ParadoxGameType
@@ -62,7 +61,7 @@ class ParadoxDynamicValueSearchTest: BasePlatformTestCase() {
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("spirit_art", results.single().name)
-        Assert.assertEquals("grimoire_tag", results.single().dynamicValueType)
+        Assert.assertEquals("grimoire_tag", results.single().type)
     }
 
     @Test
@@ -96,7 +95,7 @@ class ParadoxDynamicValueSearchTest: BasePlatformTestCase() {
 
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("arms_processed", results.single().name)
-        Assert.assertEquals("magic_tag", results.single().dynamicValueType)
+        Assert.assertEquals("magic_tag", results.single().type)
     }
 
     @Test
