@@ -48,5 +48,5 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
   ]
-  methods=[getIcon getName getValue setValue getExpression getReference getReferences]
+  methods=[getIdElement getIcon getName getValue setValue getExpression getReference getReferences]
 }

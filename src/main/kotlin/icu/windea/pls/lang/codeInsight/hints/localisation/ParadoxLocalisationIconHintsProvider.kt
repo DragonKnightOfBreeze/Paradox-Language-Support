@@ -17,6 +17,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import javax.imageio.ImageIO
@@ -46,7 +47,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
         if (name.isParameterized()) return
 
         val resolved = element.reference?.resolve()
-        val iconFrame = element.frame
+        val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
         val frameInfo = ImageFrameInfo.of(iconFrame)
         val iconUrl = when {
             resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)

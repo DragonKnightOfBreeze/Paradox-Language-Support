@@ -11,13 +11,12 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for inline math of Paradox Script.
-// Notes:
-// - Tracks a simple state for the absolute-value operator using a left/right '|' toggle.
 
 %%
 
 %{
-    private boolean leftAbsSign = true;
+    // state for abs operator signs (LABS_SIGN or RABS_SIGN)
+    private boolean absSignState = true;
 
     public _ParadoxScriptInlineMathLexer() {
         this((java.io.Reader)null);
@@ -48,11 +47,11 @@ ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
 
 <YYINITIAL> {
     "|" {
-        if (leftAbsSign) {
-            leftAbsSign = false;
+        if (absSignState) {
+            absSignState = false;
             return LABS_SIGN;
         } else {
-            leftAbsSign = true;
+            absSignState = true;
             return RABS_SIGN;
         }
     }

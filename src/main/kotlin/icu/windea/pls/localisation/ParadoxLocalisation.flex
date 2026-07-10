@@ -10,9 +10,6 @@ import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for Paradox Localisation.
-// Notes:
-// - Locale header vs property key is distinguished by scanning after ':' on the same line.
-// - Right-quote heuristic: if another '"' exists before EOL, current '"' is text; otherwise it closes the value.
 
 %%
 

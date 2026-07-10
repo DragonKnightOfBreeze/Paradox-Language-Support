@@ -51,8 +51,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationLocale): PsiElement {
-        val idElement = element.findChild { it.elementType == LOCALE_TOKEN }!!
-        return idElement
+        return element.firstChild?.takeIf { it.elementType === LOCALE_TOKEN }!!
     }
 
     @JvmStatic
@@ -152,8 +151,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationPropertyKey): PsiElement {
-        val idElement = element.findChild { it.elementType == PROPERTY_KEY_TOKEN }!!
-        return idElement
+        return element.firstChild?.takeIf { it.elementType === PROPERTY_KEY_TOKEN }!!
     }
 
     @JvmStatic
@@ -181,8 +179,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationText): PsiElement {
-        val idElement = element.findChild { it.elementType == TEXT_TOKEN }!!
-        return idElement
+        return element.firstChild?.takeIf { it.elementType === TEXT_TOKEN }!!
     }
 
     // endregion
@@ -191,8 +188,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationColorfulText): PsiElement? {
-        val idElement = element.findChild { it.elementType == COLOR_TOKEN }
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType === COLOR_TOKEN }
     }
 
     @JvmStatic
@@ -214,8 +210,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationParameter): PsiElement? {
-        val idElement = element.findChild { it.elementType == PARAMETER_TOKEN }
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }
     }
 
     @JvmStatic
@@ -242,8 +237,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationParameterArgument): PsiElement? {
-        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        return idElement
+        return element.firstChild?.takeIf { it.elementType === ARGUMENT_TOKEN }
     }
 
     // endregion
@@ -252,8 +246,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationScriptedVariableReference): PsiElement? {
-        val idElement = element.findChild { it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
     }
 
     @JvmStatic
@@ -280,9 +273,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
-        val idElement = element.findChild { it.elementType == ICON_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == ICON_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -309,21 +300,13 @@ object ParadoxLocalisationPsiImplUtil {
         return element
     }
 
-    @JvmStatic
-    fun getFrame(element: ParadoxLocalisationIcon): Int {
-        // 这里的帧数可以用$PARAM$表示，对应某个本地化参数，此时直接返回0
-        return element.argumentElement?.idElement?.text?.toIntOrNull() ?: 0
-    }
-
     // endregion
 
     // region ParadoxLocalisationIconArgument
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
-        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     // endregion
@@ -346,9 +329,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
-        val idElement = element.findChild { it.elementType == COMMAND_TEXT_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.findChild { it.elementType == COMMAND_TEXT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -363,9 +344,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
-        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     // endregion
@@ -396,9 +375,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationConceptName): PsiElement? {
-        val idElement = element.findChild { it.elementType == CONCEPT_NAME_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == CONCEPT_NAME_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -413,9 +390,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
-        val idElement = element.findChild { it.elementType == TEXT_FORMAT_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == TEXT_FORMAT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -443,9 +418,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
-        val idElement = element.findChild { it.elementType == TEXT_ICON_TOKEN }
-        if (!ParadoxLocalisationPsiService.isIdElement(idElement)) return null
-        return idElement
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == TEXT_ICON_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic

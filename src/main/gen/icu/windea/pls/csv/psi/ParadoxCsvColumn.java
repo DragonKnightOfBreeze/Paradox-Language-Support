@@ -14,6 +14,8 @@ import javax.swing.Icon;
 
 public interface ParadoxCsvColumn extends ParadoxCsvExpressionElement, ParadoxCsvLiteralValue {
 
+  @Nullable PsiElement getIdElement();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull String getName();

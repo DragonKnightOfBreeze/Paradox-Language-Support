@@ -153,7 +153,7 @@ icon ::= ICON_START icon_name icon_argument_part ? ICON_END {
   ]
   methods=[
     getIdElement getArgumentElement icon_argument="" rich_text=""
-    getIcon getName setName getFrame getReference getReferences
+    getIcon getName setName getReference getReferences
   ]
 }
 // can be parameterized or command

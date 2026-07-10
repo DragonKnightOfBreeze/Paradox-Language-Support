@@ -56,6 +56,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
+import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -459,7 +460,7 @@ object ParadoxCompletionManager {
     }
 
     fun completeIcon(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxLocalisationIconService.complete(context, result)
+        ParadoxLocalisationIconManager.complete(context, result)
     }
 
     fun completeConcept(context: ParadoxCompletionContext, result: CompletionResultSet) {

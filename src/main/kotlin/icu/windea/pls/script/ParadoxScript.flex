@@ -10,9 +10,6 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for Paradox Script.
-// Notes:
-// - Uses a stack to manage nested braces/brackets.
-// - templateStateRef/parameterStateRef track states to resume after parameters/inline sections.
 
 %%
 

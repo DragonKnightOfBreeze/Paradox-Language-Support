@@ -117,10 +117,12 @@
 
 ### 附加
 
-- [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
-- [ ] 在脚本文件和CSV文件中的用引号括起的字符串字面量中，提供括号匹配和补全 ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
+- [x] P2 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用
+- [x] P2 完善脚本文件的 lexer 和 parser（增强对形如 `a_$p$_[[p]b]` 的高级插值语法的兼容性）
 - [x] P2 优化索引逻辑（对于 `ParadoxComplexEnumValueIndex` `ParadoxDefinitionIndex` `ParadoxDefinitionInjectionIndex`，需要保留声明顺序）
 - [ ] P3 API 变更：将 EP `unresolvedExpressionDecorator` 改为 `unresolvedExpressionChecker`
+- [ ] 在脚本文件中的用引号括起的字符串字面量中，提供括号匹配和补全 ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
+- [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
 
 ## v3.0.1 {v3-0-1}
 

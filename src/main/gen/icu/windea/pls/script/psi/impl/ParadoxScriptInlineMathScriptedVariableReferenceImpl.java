@@ -34,12 +34,6 @@ public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends Parado
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
-  }
-
-  @Override
   public @Nullable PsiElement getIdElement() {
     return ParadoxScriptPsiImplUtil.getIdElement(this);
   }

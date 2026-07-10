@@ -12,6 +12,12 @@ object ParadoxScriptPsiService {
         return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isDirectValue())
     }
 
+    fun isIdElement(element: PsiElement): Boolean {
+        if (element.nextSibling.elementType in ParadoxScriptTokenSets.INTERPOLATION_TOKENS) return false
+        if (element.prevSibling.elementType in ParadoxScriptTokenSets.INTERPOLATION_TOKENS) return false
+        return true
+    }
+
     fun isLenientMemberContext(element: PsiElement): Boolean {
         return element is ParadoxScriptMemberContext
     }

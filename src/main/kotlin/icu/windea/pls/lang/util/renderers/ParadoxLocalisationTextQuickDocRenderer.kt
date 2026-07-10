@@ -28,6 +28,7 @@ import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -162,7 +163,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
         // 尝试渲染图标
         runCatchingCancelable r@{
             val resolved = element.reference?.resolve() ?: return@r
-            val iconFrame = element.frame
+            val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
                 resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)

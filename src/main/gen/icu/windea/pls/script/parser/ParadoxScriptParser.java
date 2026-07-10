@@ -474,14 +474,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_number | inline_math_parameter | inline_math_scripted_variable_reference
+  // inline_math_number | inline_math_scripted_variable_reference | inline_math_parameter
   public static boolean inline_math_factor(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_factor")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_FACTOR, "<inline math factor>");
     r = inline_math_number(b, l + 1);
-    if (!r) r = inline_math_parameter(b, l + 1);
     if (!r) r = inline_math_scripted_variable_reference(b, l + 1);
+    if (!r) r = inline_math_parameter(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -629,13 +629,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_conditional_block
+  // SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter
   static boolean inline_math_scripted_variable_reference_part(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_part")) return false;
+    if (!nextTokenIs(b, "", PARAMETER_START, SCRIPTED_VARIABLE_REFERENCE_TOKEN)) return false;
     boolean r;
     r = consumeToken(b, SCRIPTED_VARIABLE_REFERENCE_TOKEN);
     if (!r) r = inline_math_parameter(b, l + 1);
-    if (!r) r = inline_conditional_block(b, l + 1);
     return r;
   }
 

@@ -11,28 +11,12 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 // Lexer for Paradox CSV.
-// Notes:
-// - Tokens are simple: separator ';', comments '#', EOL, and column tokens.
-// - Do NOT rename %class, token names, or ElementTypes; they are part of the public interface.
-// - QUOTED_COLUMN_TOKEN tolerates an optional closing quote for better error recovery.
 
 %%
 
 %{
-    private ParadoxGameType gameType;
-
     public _ParadoxCsvLexer() {
         this((java.io.Reader)null);
-        this.gameType = null;
-    }
-
-    public _ParadoxCsvLexer(ParadoxGameType gameType) {
-        this((java.io.Reader)null);
-        this.gameType = gameType;
-    }
-
-    public ParadoxGameType getGameType() {
-        return this.gameType;
     }
 %}
 

@@ -9,6 +9,7 @@ import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
+import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
@@ -18,6 +19,7 @@ import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
@@ -49,6 +51,11 @@ object ParadoxCsvPsiImplUtil {
     // endregion
 
     // region ParadoxCsvColumn
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxCsvColumn): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == COLUMN_TOKEN }
+    }
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvColumn, @Iconable.IconFlags flags: Int): Icon {
