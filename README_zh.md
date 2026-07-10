@@ -1,4 +1,4 @@
-# Paradox Language Support - The Paradox Chronicle
+# Paradox Chronicle - The Paradox Chronicle
 
 <!-- Here we inscribe the revelations from the old era, the truths and realities of this land. -->
 <!-- Ascend to the tower’s peak and open the Book of Prophecy, for within it are recorded all our discoveries and foresights. -->
@@ -24,7 +24,7 @@
 
 ## 概述
 
-Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
+Paradox Chronicle 是为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
 
 插件会自动检测游戏目录和模组目录，分析其中的文件以构建缓存与索引。
 完成必要的配置工作（如游戏类型、游戏目录、模组依赖）以及项目分析（扫描文件、构建索引）后，即可启用并体验完整语言功能。
@@ -55,7 +55,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### 安装
 
-- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
+- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Chronicle" > `Install`
 - 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
 - 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
@@ -89,11 +89,11 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
   - 使用 `Code > Inspect Code…` 执行全局代码检查，并在问题面板中查看详细报告。
 - **设置修改**：
   - 可通过以下方式打开插件的全局设置页面：
-    - 点击设置页面中的 `Languages & Frameworks > Paradox Language Support`。
+    - 点击设置页面中的 `Languages & Frameworks > Paradox Chronicle`。
   - 可通过以下方式打开模组设置对话框：
     - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
-    - 点击编辑器右键菜单中的 `Paradox Language Support > Open Mod Settings...`。
-    - 点击主菜单中的 `Tools > Paradox Language Support > Open Mod Settings...`。
+    - 点击编辑器右键菜单中的 `Paradox Chronicle > Open Mod Settings...`。
+    - 点击主菜单中的 `Tools > Paradox Chronicle > Open Mod Settings...`。
   - 可在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
   - 可在模组设置中调整游戏目录、模组依赖等配置。
 

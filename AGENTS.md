@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains **Paradox Language Support**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
+This repository contains **Paradox Chronicle**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
 
 In narrative level, the plugin's name is **Paradox Chronicle**.
 While playing on the double meaning of **Chronicle** and **Prophecy Book**, this book is, indeed, also the guide book, to the paradox universe.

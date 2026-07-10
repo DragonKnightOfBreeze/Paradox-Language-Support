@@ -9,7 +9,7 @@
 
 ## Overview
 
-Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Chronicle is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
 After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.

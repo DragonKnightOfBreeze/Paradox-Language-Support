@@ -5,7 +5,7 @@
 <!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettingsConfigurable -->
 <!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettings -->
 
-In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Extensions` to open the settings page for Extensions.
+In the IDE settings page, go to `Languages & Frameworks > Paradox Chronicle > Extensions` to open the settings page for Extensions.
 
 Here you can configure which extension features to enable.
 
@@ -198,7 +198,7 @@ Currently, only event trees and technology trees are provided.
 <!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings -->
 <!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettingsConfigurable -->
 
-In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the settings page for Diagrams.
+In the IDE settings page, go to `Languages & Frameworks > Paradox Chronicle > Diagrams` to open the settings page for Diagrams.
 
 Here you can configure which nodes to display for various diagram types based on multiple conditions.
 

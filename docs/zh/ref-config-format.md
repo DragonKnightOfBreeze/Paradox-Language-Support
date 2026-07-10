@@ -3,7 +3,7 @@
 <!--
 @doc-meta
 本文档是 CWT 规则格式的参考手册，描述插件所支持的各种规则的用途、格式、字段与注意事项。
-文档内容基于 Paradox Language Support 插件的实现编写，与 CWTools 的规则格式在多数情况下兼容，但在细节和扩展点上存在差异。
+文档内容基于 Paradox Chronicle 插件的实现编写，与 CWTools 的规则格式在多数情况下兼容，但在细节和扩展点上存在差异。
 
 @see docs/zh/config.md
 @see icu.windea.pls.config.config.*

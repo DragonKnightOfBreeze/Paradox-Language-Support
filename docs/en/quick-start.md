@@ -4,7 +4,7 @@
 
 ### Installation
 
-- Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
+- Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Chronicle" > `Install`
 - Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) and install it by clicking the `Install to ...` button.
 - Manual Installation: Download the [latest release](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest) and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
@@ -38,11 +38,11 @@
   - Use `Code > Inspect Code…` to perform a global code inspection and view the detailed report in the Problems panel upon completion.
 - **Modifying Settings**:
   - Access the plugin's global settings page via:
-    - `Settings > Languages & Frameworks > Paradox Language Support`
+    - `Settings > Languages & Frameworks > Paradox Chronicle`
   - Open the mod settings dialog via:
     - Clicking the blue gear icon in the editor's top-right floating toolbar.
-    - Selecting `Paradox Language Support > Open Mod Settings...` from the editor's right-click menu.
-    - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
+    - Selecting `Paradox Chronicle > Open Mod Settings...` from the editor's right-click menu.
+    - Selecting `Tools > Paradox Chronicle > Open Mod Settings...` from the main menu.
   - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
   - Adjust game directory, mod dependencies and other configurations in the mod settings.
 

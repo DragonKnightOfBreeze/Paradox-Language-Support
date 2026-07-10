@@ -11,7 +11,7 @@
 <!-- @see icu.windea.pls.ai.settings.PlsAiSettingsConfigurable -->
 <!-- @see icu.windea.pls.ai.settings.PlsAiSettings -->
 
-在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > AI`，可以打开 AI 的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Chronicle > AI`，可以打开 AI 的设置页面。
 
 可以在这里配置是否启用 AI 集成，相关功能的一些具体的配置项（如本地化条目的分块大小和记忆大小），以及 AI 服务的提供商（支持 OpenAI 兼容接口、Anthropic 兼容接口以及本地模型如 Ollama）。
 
