@@ -1,14 +1,17 @@
 # 百科全书
 grimoire = {
     name = encyclopedia
+    tag = spell
 }
 
 # 武装之书
 grimoire = {
     name = book_of_arms_processed
+    tag = spell_special
 }
 
 # 波纹之书
 grimoire = {
     name = book_of_ripples
+    tag = spirit_art
 }

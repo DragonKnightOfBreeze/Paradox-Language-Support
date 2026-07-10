@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -33,13 +35,17 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Normal Localisation
 
     @Test
     fun testNormalLocalisation_Basic() {
-        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        val project = project
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
             ChronicleIndexKeys.LocalisationName,
@@ -58,9 +64,8 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testSyncedLocalisation_Basic() {
-        markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        val project = project
+        markAndConfigureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
             ChronicleIndexKeys.SyncedLocalisationName,

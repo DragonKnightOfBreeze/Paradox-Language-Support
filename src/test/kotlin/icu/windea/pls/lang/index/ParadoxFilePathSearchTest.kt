@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.process
@@ -37,18 +39,21 @@ class ParadoxFilePathSearchTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Exact Path
 
     @Test
     fun test_ExactPath() {
-        val relPath = "common/example.test.txt"
-        markFileInfo(gameType, relPath)
-        myFixture.configureByFile("script/syntax/example.test.txt")
+        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
 
-        val project = project
+        val path = "common/test/local_vars.test.txt"
         val selector = ParadoxFilePathSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search(relPath, selector = selector).process { vf ->
+        ParadoxFilePathSearch.search(path, selector = selector).process { vf ->
             results += vf.path
             true
         }
@@ -57,14 +62,12 @@ class ParadoxFilePathSearchTest : BasePlatformTestCase() {
 
     @Test
     fun test_NotFound_ReturnsEmpty() {
-        val relPath = "localisation/ui/ui_l_english.test.yml"
-        markFileInfo(gameType, relPath)
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
-        val project = project
+        val path = "common/does/not/exist.txt"
         val selector = ParadoxFilePathSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).process { vf ->
+        ParadoxFilePathSearch.search(path, selector = selector).process { vf ->
             results += vf.path
             true
         }
@@ -78,10 +81,8 @@ class ParadoxFilePathSearchTest : BasePlatformTestCase() {
     @Test
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
         // Arrange: ensure only english file exists in test
-        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
-        val project = project
         val selector = ParadoxFilePathSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
         val asked = "localisation/ui/ui_l_french.test.yml"
 
@@ -102,14 +103,11 @@ class ParadoxFilePathSearchTest : BasePlatformTestCase() {
     @Test
     fun testIgnoreLocale_BothLocales_ReturnsBoth() {
         // Arrange: english and chinese files both exist
-        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         // configure chinese file as well and inject file info
-        markFileInfo(gameType, "localisation/ui/ui_l_simp_chinese.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
 
-        val project = project
         val selector = ParadoxFilePathSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
         val asked = "localisation/ui/ui_l_english.test.yml"
 

@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.process
@@ -31,13 +33,17 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Normal Localisation
 
     @Test
     fun testNormalLocalisation_byName() {
-        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        val project = project
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchNormal("UI_OK", selector).process { p ->
@@ -49,9 +55,8 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
 
     @Test
     fun testNormalLocalisation_notFound() {
-        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        val project = project
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchNormal("NOT_EXISTS", selector).process { p ->
@@ -67,9 +72,8 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
 
     @Test
     fun testSyncedLocalisation_byName() {
-        markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        val project = project
+        markAndConfigureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).process { p ->
@@ -81,9 +85,8 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
 
     @Test
     fun testSyncedLocalisation_notFound() {
-        markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        val project = project
+        markAndConfigureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.searchSynced("NOT_EXISTS", selector).process { p ->

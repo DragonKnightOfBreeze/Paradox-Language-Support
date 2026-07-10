@@ -49,7 +49,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/spell_schools/00_spell_schools.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("spell_school")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -69,7 +68,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/arcane_tomes/03_complex_enum.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("tome_tag")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -92,7 +90,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/whispered_words/00_words.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("whispered_word")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -110,7 +107,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/arcane_tomes/04_per_definition.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("ritual_phrase")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -131,7 +127,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("list_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -146,7 +141,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("key_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -165,7 +159,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("deep_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -180,7 +173,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("prop_value_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -195,7 +187,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("sibling_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -210,7 +201,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("key_block_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -225,7 +215,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("mix_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -241,7 +230,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("type_combo_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -256,7 +244,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("multi_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -272,7 +259,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("value_mix_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -291,7 +277,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("case_insensitive_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -306,7 +291,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("multi_level_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -322,7 +306,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("cross_level_mix_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -338,7 +321,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("case_insensitive_multi_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -354,7 +336,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("multi_level_multi_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -370,7 +351,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("cross_pvb_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -386,7 +366,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("case_insensitive_deep_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -402,7 +381,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val key = ChronicleIndexUtil.createTypeKey("repeat_typed_enum")
         val values = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.ComplexEnumValue, key, scope).flatten()
@@ -433,7 +411,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
         val magicNames = results.map { it.name }.toSet()
         assertNotEmpty(magicNames)
-        assertEquals(10, magicNames.size)
 
         val expected = setOf(
             "wind_blade",

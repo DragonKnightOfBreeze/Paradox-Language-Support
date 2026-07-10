@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -30,27 +32,30 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Basic
 
     @Test
     fun test_Basic() {
-        val relPath = "common/example.test.txt"
-        markFileInfo(gameType, relPath)
-        myFixture.configureByFile("script/syntax/example.test.txt")
+        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
 
+        val path = "common/test/local_vars.test.txt"
         val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.FilePath, project)
-        Assert.assertTrue(relPath in allKeys)
+        Assert.assertTrue(path in allKeys)
     }
 
     @Test
     fun test_Localisation() {
         // 本地化文件应当被索引
-        val relPath = "localisation/ui/ui_l_english.test.yml"
-        markFileInfo(gameType, relPath)
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
+        val path = "localisation/ui/ui_l_english.test.yml"
         val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.FilePath, project)
-        Assert.assertTrue(relPath in allKeys)
+        Assert.assertTrue(path in allKeys)
     }
 
     // endregion

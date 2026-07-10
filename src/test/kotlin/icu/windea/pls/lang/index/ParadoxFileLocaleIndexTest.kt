@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -30,12 +32,17 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Basic
 
     @Test
     fun test_English() {
-        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+
         val data = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_english", key)
@@ -43,8 +50,8 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
 
     @Test
     fun test_SimpChinese() {
-        markFileInfo(gameType, "localisation/simp_chinese/ui_l_simp_chinese.test.yml")
-        myFixture.configureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
+        markAndConfigureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
+
         val data = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_simp_chinese", key)
