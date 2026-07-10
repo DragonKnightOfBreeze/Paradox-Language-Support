@@ -114,7 +114,7 @@ object CwtConfigService {
                     .mapNotNull { it.splitByBlank(3).getOrNull(1) }
                     .firstNotNullOfOrNull t@{
                         when {
-                            it.contains("Paradox-Language-Support") -> {
+                            it.contains("Paradox-Language-Support") || it.contains("Paradox-Chronicle") -> {
                                 val coreRoot = VfsUtil.findRelativeFile(root, "cwt/core")
                                 val r = coreRoot != null && VfsUtil.isAncestor(coreRoot, file, true)
                                 if (r) "core" else null

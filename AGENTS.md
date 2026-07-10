@@ -2,12 +2,13 @@
 
 ## Overview
 
-This repository contains **Paradox Chronicle**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
+This repository contains **Paradox Chronicle**, the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.
 
-In narrative level, the plugin's name is **Paradox Chronicle**.
-While playing on the double meaning of **Chronicle** and **Prophecy Book**, this book is, indeed, also the guide book, to the paradox universe.
+On narrative level, this plugin symbolizes the book also titled **Paradox Chronicle**.
+While playing on the double meaning of **Chronicle** and **Prophecy Book**, it is, indeed, also the guide book, to the paradox universe.
 
-Given the large codebase (~110k lines of Kotlin production code) and high complexity (platform & domain & architecture), make this project a challenging undertaking.
+Given the large codebase (over 100k lines of Kotlin production code) and high complexity (platform & domain & architecture), make this project a challenging undertaking.
+
 As you embark on this journey, keep serious, cautious, and curious.
 
 ## Project quick orientation

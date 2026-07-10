@@ -9,6 +9,7 @@
 
   <resource-bundle>messages.ChronicleBundle</resource-bundle>
 
+  <!-- Dependencies of the guide book -->
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
   <depends optional="true" config-file="chronicle-extension-json.xml">com.intellij.modules.json</depends>
@@ -16,9 +17,8 @@
   <depends optional="true" config-file="chronicle-extension-diagram.xml">com.intellij.diagram</depends>
   <depends optional="true" config-file="chronicle-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
 
-  <!-- Needs to be placed at the very front -->
-  <xi:include href="/META-INF/chronicle-inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
-
+  <!-- Chapters of the guide book -->
+  <xi:include href="/META-INF/chronicle-inject.xml" xpointer="xpointer(/idea-plugin/*)"/> <!-- Chapter of the injection magic needs to be put at the very front -->
   <xi:include href="/META-INF/chronicle-base.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-ide.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -34,5 +34,5 @@
   <xi:include href="/META-INF/chronicle-extensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-ai.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/chronicle-tools.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/chronicle-ep.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/chronicle-ep.xml" xpointer="xpointer(/idea-plugin/*)"/> <!-- Chapter of the extension point magic is put at the end -->
 </idea-plugin>

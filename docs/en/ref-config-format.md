@@ -3,7 +3,7 @@
 <!--
 @doc-meta
 This document is the reference manual for the CWT config format, describing the purpose, format, fields, and considerations of the various configs supported by the plugin.
-The content is based on the implementation of the Paradox Chronicle plugin and is compatible with the CWTools config format in most cases, but differs in details and extension points.
+The content is based on the implementation of the plugin and is compatible with the CWTools config format in most cases, but differs in details and extension points.
 
 @see docs/zh/config.md
 @see icu.windea.pls.config.config.*

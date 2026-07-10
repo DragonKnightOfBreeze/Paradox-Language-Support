@@ -6,13 +6,18 @@
 
 Thank you for your interest in writing **Paradox Chronicle**.
 
-This is a large, mature and rather specialized project: an IntelliJ IDEA plugin with over 100k lines of Kotlin production code, built on PSI-based deep semantic analysis and driven by its own CWT config system.
+This is a rather special project: the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, built on PSI-based deep semantic analysis and driven by its own CWT config system.
+
+Although it may not be immediately noticeable at first glance, this project indeed has a fairly large codebase and a high level of complexity.
+It contains over 100k lines of Kotlin production code, along with tests, config files, and documentation.
 Its scope spans the IntelliJ Platform, the Paradox modding domain, and a fair amount of in-house architecture.
 That makes it both an interesting playground and a genuinely challenging codebase to work in.
 
 This guide explains **what kinds of contributions are welcome**, **what to read before you start**, and **how to actually get changes in**.
 It assumes you already have programming experience, so it favors keywords, links and short steps over step-by-step tool tutorials.
 If a tool or term is unfamiliar, treat the mentions here as search hints.
+
+As you embark on this journey, keep serious, cautious, and curious.
 
 ## Before You Start
 
@@ -129,7 +134,6 @@ If you use AI, please hold yourself to a few standards:
 - **Human review is mandatory.** Treat AI output as a draft, not a result. Read it, understand it, revise it, and verify it (compile, test, and when needed, debug) before submitting.
 - **Preserve conceptual consistency.** Match the existing naming conventions, package organization, domain terminology, and the established style of the surrounding code and docs. Consistency here is worth more than cleverness.
 - **Stay within accepted areas.** The same boundaries apply: AI does not make core-code changes acceptable. Use the discussion path for foundational areas.
-- **keep serious, cautious, and curious.** This is both for the AI assistant, and you human.
 
 ## Submitting Changes
 

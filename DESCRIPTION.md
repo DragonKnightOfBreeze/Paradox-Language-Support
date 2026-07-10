@@ -1,10 +1,8 @@
-Paradox Chronicle - The Paradox Chronicle
-
 <!-- Weary seekers who tread the path, these words are spoken unto you. -->
 
 <br/>
 
-Paradox Chronicle is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Chronicle (formerly known as Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, offering an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
 After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
@@ -27,7 +25,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 <br/>
 
-Paradox Chronicle 是为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
+Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Interactive 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能丰富的开发体验，助力轻松实现创意。
 
 插件会自动检测游戏目录和模组目录，分析其中的文件以构建缓存与索引。
 完成必要的配置工作（如游戏类型、游戏目录、模组依赖）以及项目分析（扫描文件、构建索引）后，即可启用并体验完整语言功能。
