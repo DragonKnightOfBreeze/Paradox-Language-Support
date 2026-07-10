@@ -25,7 +25,9 @@ root ::= property_list *
 property_list ::= COMMENT * (property_item_list_with_locale | property_item_list) {
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub"
-  implements="com.intellij.psi.PsiListLikeElement"
+  implements=[
+    "com.intellij.psi.PsiListLikeElement"
+  ]
   methods=[getIcon getComponents getIElementType]
 }
 private property_item_list_with_locale ::= locale property_item * {
@@ -38,10 +40,12 @@ private property_item ::= COMMENT | property {
 
 locale ::= LOCALE_TOKEN COLON {
   pin=1
+  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
+  stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIdElement getIcon getName setName getReference getReferences]
+  methods=[getIdElement getIcon getName setName getReference getReferences getIElementType]
 }
 
 property ::= property_key COLON property_number? property_value {

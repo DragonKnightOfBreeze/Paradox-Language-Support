@@ -61,7 +61,8 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxLocalisationLocale): String {
-        return element.idElement.text.orEmpty()
+        element.stub?.locale?.let { return it }
+        return element.idElement.text
     }
 
     @JvmStatic
@@ -70,6 +71,11 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createLocale(element.project, name).idElement
         idElement.replace(newIdElement)
         return element
+    }
+
+    @JvmStatic
+    fun getIElementType(element: ParadoxLocalisationLocale): IElementType {
+        return LOCALE
     }
 
     // endregion

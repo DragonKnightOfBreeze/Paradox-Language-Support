@@ -8,16 +8,26 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxLocalisationLocaleImpl extends ASTWrapperPsiElement implements ParadoxLocalisationLocale {
+public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationLocaleStub> implements ParadoxLocalisationLocale {
+
+  public ParadoxLocalisationLocaleImpl(@NotNull ParadoxLocalisationLocaleStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
+
+  public ParadoxLocalisationLocaleImpl(@NotNull ParadoxLocalisationLocaleStub stub, @NotNull IElementType type) {
+    super(stub, type);
+  }
 
   public ParadoxLocalisationLocaleImpl(@NotNull ASTNode node) {
     super(node);
@@ -61,6 +71,11 @@ public class ParadoxLocalisationLocaleImpl extends ASTWrapperPsiElement implemen
   @Override
   public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxLocalisationPsiImplUtil.getReferences(this);
+  }
+
+  @Override
+  public @NotNull IElementType getIElementType() {
+    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
   }
 
   @Override

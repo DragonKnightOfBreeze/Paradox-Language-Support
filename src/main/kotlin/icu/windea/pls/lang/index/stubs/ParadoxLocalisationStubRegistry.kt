@@ -15,16 +15,18 @@ import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
-import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationLocaleImpl
 import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl
 import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
 import icu.windea.pls.model.ParadoxLocalisationType
@@ -38,6 +40,8 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         registry.registerStubSerializer(ParadoxLocalisationFile.ELEMENT_TYPE, FileSerializer())
         registry.registerLightStubFactory(PROPERTY_LIST, PropertyListFactory())
         registry.registerStubSerializer(PROPERTY_LIST, PropertyListSerializer())
+        registry.registerLightStubFactory(LOCALE, LocaleFactory())
+        registry.registerStubSerializer(LOCALE, LocaleSerializer())
         registry.registerLightStubFactory(PROPERTY, PropertyFactory())
         registry.registerStubSerializer(PROPERTY, PropertySerializer())
     }
@@ -59,7 +63,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun indexStub(stub: ParadoxLocalisationFileStub, sink: IndexSink) {
-            pass() // do nothing
+            // do nothing
         }
     }
 
@@ -69,7 +73,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyListStub {
-            return ParadoxLocalisationStubFactory.createPropertyListStub(node, tree, parentStub)
+            return ParadoxLocalisationStubFactory.createPropertyListStub(tree, node, parentStub)
         }
 
         override fun createPsi(stub: ParadoxLocalisationPropertyListStub): ParadoxLocalisationPropertyList {
@@ -92,7 +96,39 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun indexStub(stub: ParadoxLocalisationPropertyListStub, sink: IndexSink) {
-            pass() // do nothing
+            // do nothing
+        }
+    }
+
+    class LocaleFactory : LightStubElementFactory<ParadoxLocalisationLocaleStub, ParadoxLocalisationLocale> {
+        override fun createStub(psi: ParadoxLocalisationLocale, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationLocaleStub {
+            return ParadoxLocalisationStubFactory.createLocaleStub(psi, parentStub)
+        }
+
+        override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationLocaleStub {
+            return ParadoxLocalisationStubFactory.createLocaleStub(tree, node, parentStub)
+        }
+
+        override fun createPsi(stub: ParadoxLocalisationLocaleStub): ParadoxLocalisationLocale {
+            return ParadoxLocalisationLocaleImpl(stub, LOCALE)
+        }
+    }
+
+    class LocaleSerializer : StubSerializer<ParadoxLocalisationLocaleStub> {
+        override fun getExternalId(): String {
+            return "paradox.localisation.locale"
+        }
+
+        override fun serialize(stub: ParadoxLocalisationLocaleStub, dataStream: StubOutputStream) {
+
+        }
+
+        override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationLocaleStub {
+            return ParadoxLocalisationLocaleStub.create(parentStub)
+        }
+
+        override fun indexStub(stub: ParadoxLocalisationLocaleStub, sink: IndexSink) {
+            // do nothing
         }
     }
 

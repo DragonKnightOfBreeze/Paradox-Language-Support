@@ -15,7 +15,6 @@ import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
-import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxDefineVariableKey
@@ -55,7 +54,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         }
 
         override fun indexStub(stub: ParadoxScriptFileStub, sink: IndexSink) {
-            pass() // do nothing
+            // do nothing
         }
     }
 
