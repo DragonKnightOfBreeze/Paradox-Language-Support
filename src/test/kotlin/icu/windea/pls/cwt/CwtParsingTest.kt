@@ -15,6 +15,7 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
 
     @Test
     fun example() = doTest(true)
+
     @Test
     fun empty() = doTest(true)
     @Test

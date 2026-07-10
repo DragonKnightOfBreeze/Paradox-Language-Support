@@ -1,4 +1,4 @@
-ParadoxScriptFile: conditional_blocks.test.txt(0,84)
+ParadoxScriptFile: construct_conditional_blocks.test.txt(0,84)
   ParadoxScriptRootBlock(0,84)
     ParadoxScriptConditionalBlock(0,12)
       PsiElement(LEFT_BRACKET)('[')(0,1)

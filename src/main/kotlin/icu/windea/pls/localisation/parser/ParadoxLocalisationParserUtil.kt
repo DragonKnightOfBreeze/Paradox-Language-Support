@@ -2,19 +2,14 @@ package icu.windea.pls.localisation.parser
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase
+import icu.windea.pls.core.lookup
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun isCommand(b: PsiBuilder, l: Int): Boolean {
-        val tokenAfterLeftBracket = b.rawLookup(1)
+        val tokenAfterLeftBracket =  b.lookup(1, forward = true)
         return tokenAfterLeftBracket != LEFT_SINGLE_QUOTE
-    }
-
-    @JvmStatic
-    fun isConceptCommand(b: PsiBuilder, l: Int): Boolean {
-        return ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(b)
     }
 }

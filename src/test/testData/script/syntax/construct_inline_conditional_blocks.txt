@@ -1,4 +1,4 @@
-ParadoxScriptFile: inline_conditional_blocks.test.txt(0,47)
+ParadoxScriptFile: construct_inline_conditional_blocks.test.txt(0,47)
   ParadoxScriptRootBlock(0,47)
     ParadoxScriptString: prefix_[[A]a]_suffix(0,20)
       PsiElement(STRING_TOKEN)('prefix_')(0,7)

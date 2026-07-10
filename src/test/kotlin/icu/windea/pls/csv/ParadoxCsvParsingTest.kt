@@ -25,6 +25,7 @@ class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxC
 
     @Test
     fun example() = doTest(true)
+
     @Test
     fun empty() = doTest(true)
     @Test

@@ -36,7 +36,7 @@ SEPARATOR=;
 // No extra token kinds beyond columns (booleans/numbers are treated as plain text)
 
 COLUMN_TOKEN=({UNQUOTED_COLUMN_TOKEN})|({QUOTED_COLUMN_TOKEN})
-UNQUOTED_COLUMN_TOKEN=[^#;\"\s]([^#;\"\r\n]*[^#;\s])? // inner whitespaces are permitted
+UNQUOTED_COLUMN_TOKEN=[^#;\"\s]([^#;\"\r\n]*[^#;\s])? // inner whitespaces are allowed
 QUOTED_COLUMN_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"? // closing quote optional for recovery
 
 %%

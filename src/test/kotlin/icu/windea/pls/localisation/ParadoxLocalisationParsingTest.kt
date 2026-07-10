@@ -25,10 +25,13 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
 
     @Test
     fun example() = doTest(true)
+
     @Test
     fun empty() = doTest(true)
     @Test
     fun escapes() = doTest(true)
+    @Test
+    fun with_or_without_number() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
     @Test
@@ -37,12 +40,6 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun only_header_eof() = doTest(true)
     @Test
     fun error_unclosed_quote() = doTest(true)
-    @Test
-    fun text_formats_ck3() = doTest(true)
-    @Test
-    fun text_formats_stellaris() = doTest(true)
-    @Test
-    fun text_icons_vic3() = doTest(true)
     @Test
     fun combined() = doTest(true)
     @Test
@@ -55,4 +52,21 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun multiple_headers() = doTest(true)
     @Test
     fun header_with_trailing_spaces() = doTest(true)
+
+    @Test
+    fun construct_icons() = doTest(true)
+    @Test
+    fun construct_commands() = doTest(true)
+    @Test
+    fun construct_concept_commands_vic3() = doTest(true)
+    @Test
+    fun construct_concept_commands_stellaris() = doTest(true)
+    @Test
+    fun construct_text_icons_vic3() = doTest(true)
+    @Test
+    fun construct_text_icons_stellaris() = doTest(true)
+    @Test
+    fun construct_text_formats_vic3() = doTest(true)
+    @Test
+    fun construct_text_formats_stellaris() = doTest(true)
 }

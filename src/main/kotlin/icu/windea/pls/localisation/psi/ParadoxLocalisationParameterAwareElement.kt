@@ -4,9 +4,17 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 
 /**
- * 可以带有本地化参数（[ParadoxLocalisationParameter]）的 PSI 元素。
+ * 名字中可以包含本地化参数（[ParadoxLocalisationParameter]）的 PSI 元素。
  *
- * 注意：目前不支持组合使用参数与字面量的情况，相关支持尚不完善。
+ * 备注：支持包含多个本地化参数的情况，以及与普通的标识符词元组合使用的情况。
+ *
+ * @see ParadoxLocalisationIcon
+ * @see ParadoxLocalisationIconArgument
+ * @see ParadoxLocalisationCommandText
+ * @see ParadoxLocalisationCommandArgument
+ * @see ParadoxLocalisationConceptName
+ * @see ParadoxLocalisationTextIcon
+ * @see ParadoxLocalisationTextFormat
  */
 interface ParadoxLocalisationParameterAwareElement : PsiElement {
     val parameters: List<ParadoxLocalisationParameter> get() = this.findChildren<_>()

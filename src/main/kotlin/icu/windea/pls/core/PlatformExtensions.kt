@@ -606,7 +606,7 @@ fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
 }
 
 context(_: GeneratedParserUtilBase)
-fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
+fun PsiBuilder.lookup(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): IElementType? {
     var offset = steps
     var token = rawLookup(offset)
     if (skipWhitespaces) {
@@ -615,8 +615,21 @@ fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, for
             token = rawLookup(offset)
         }
     }
-    return token to offset
+    return token
 }
+
+// context(_: GeneratedParserUtilBase)
+// fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
+//     var offset = steps
+//     var token = rawLookup(offset)
+//     if (skipWhitespaces) {
+//         while (token == TokenType.WHITE_SPACE) {
+//             if (forward) offset++ else offset--
+//             token = rawLookup(offset)
+//         }
+//     }
+//     return token to offset
+// }
 
 // endregion
 

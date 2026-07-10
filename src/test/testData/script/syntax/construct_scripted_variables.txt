@@ -1,4 +1,4 @@
-ParadoxScriptFile: scripted_variables.test.txt(0,213)
+ParadoxScriptFile: construct_scripted_variables.test.txt(0,213)
   ParadoxScriptRootBlock(0,213)
     ParadoxScriptScriptedVariable: v1(0,7)
       ParadoxScriptScriptedVariableName: v1(0,3)

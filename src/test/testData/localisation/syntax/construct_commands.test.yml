@@ -1,0 +1,22 @@
+l_english:
+ command:0 "[Root]"
+ command_complex:0 "[Root.GetName]"
+ command_escaped_incorrect:0 "\[Root]"
+ command_escaped_correct:0 "[[Root]"
+ command_within_spaces:0 "[  Root  ]"
+ command_within_left_space:0 "[ Root]"
+ command_within_right_space:0 "[Root ]"
+ command_with_argument:0 "[Root|ARG]"
+
+ command.mixed:0 "[Root] text"
+ command_complex.mixed:0 "[Root.GetName] text"
+ command_escaped_incorrect.mixed:0 "\[Root] text"
+ command_escaped_correct.mixed:0 "[[Root] text"
+ command_within_spaces.mixed:0 "[  Root  ] text"
+ command_within_left_space.mixed:0 "[ Root] text"
+ command_within_right_space.mixed:0 "[Root ] text"
+ command_with_argument.mixed:0 "[Root|ARG] text"
+
+ command_parameterized_1:0 "[a_$b$_c]"
+ command_parameterized_2:0 "[$b$_c]"
+ command_parameterized_3:0 "[a_$b$]"

@@ -120,6 +120,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         char c = yycharat(1);
         return c == '[' || c == '$' || isExactWord(c);
     }
+
+    private void pushbackIfBlank() {
+        int index = 0;
+        while (index < yylength() && Character.isWhitespace(yycharat(yylength() - index - 1))) index++;
+        if (index > 0) yypushback(index);
+    }
 %}
 
 %public
@@ -147,7 +153,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_COMMAND_ARGUMENT
 
 %s IN_CONCEPT_NAME
-%s IN_CONCEPT_BLANK
+%s IN_CONCEPT_AFTER_COMMA
 %s IN_CONCEPT_TEXT
 
 %s CHECK_TEXT_ICON
@@ -162,7 +168,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 BLANK=\s+
 
 PLAIN_TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
-ARGUMENT_TOKEN=[^\"§£\$\[\]\r\n\\]+ // pipe is allowed?
+ARGUMENT_TOKEN=[^\"§£\$\[\]\\\s]+ // pipe is allowed?
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
@@ -175,7 +181,7 @@ ICON_CHECK=£.?
 ICON_TOKEN=[A-Za-z0-9\-_\\/]+
 
 COMMAND_CHECK=\[.?
-COMMAND_TEXT_TOKEN=([^\r\n\'\[\]]+)|('([^'\\\r\n]|\\[\s\S])*'?)
+COMMAND_TEXT_TOKEN=([^\'\[\]\|\s][^\'\[\]\|\r\n]*)|('([^'\\\r\n]|\\[\s\S])*'?) // middle blank is allowed
 
 CONCEPT_NAME_TOKEN=[A-Za-z0-9_:]+
 
@@ -210,7 +216,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 
     "§!" {
-          exitState(EXPECT_COLORFUL_TEXT); return COLORFUL_TEXT_END;
+        exitState(EXPECT_COLORFUL_TEXT); return COLORFUL_TEXT_END;
     }
     "]" {
         if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
@@ -266,6 +272,10 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 }
 <IN_PARAMETER> {
+    "[" {
+        enterState(yystate(), EXPECT_COMMAND); yypushback(yylength()); yybegin(CHECK_COMMAND);
+    }
+
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
@@ -296,7 +306,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         }
     }
 }
-<IN_ICON, IN_ICON_ARGUMENT> {
+<IN_ICON> {
     "$" {
         enterState(yystate(), EXPECT_PARAMETER); yypushback(yylength()); yybegin(CHECK_PARAMETER);
     }
@@ -307,13 +317,20 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     "£" {
         exitState(EXPECT_ICON); return ICON_END;
     }
-}
-<IN_ICON> {
+
     "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
     {ICON_TOKEN} { return ICON_TOKEN; }
     [^] { exitState(); yypushback(yylength()); } // recovery
 }
 <IN_ICON_ARGUMENT> {
+    "$" {
+        enterState(yystate(), EXPECT_PARAMETER); yypushback(yylength()); yybegin(CHECK_PARAMETER);
+    }
+
+    "£" {
+        exitState(EXPECT_ICON); return ICON_END;
+    }
+
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
     [^] { exitState(); yypushback(yylength()); } // recovery
 }
@@ -333,7 +350,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 }
 <IN_COMMAND> {
-    . {
+    \S {
         if (yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
@@ -341,8 +358,9 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         yypushback(1);
         yybegin(IN_COMMAND_TEXT);
     }
+    {BLANK} { return WHITE_SPACE; } // compatible with blank
 }
-<IN_COMMAND_TEXT, IN_COMMAND_ARGUMENT> {
+<IN_COMMAND_TEXT> {
     "$" {
         enterState(yystate(), EXPECT_PARAMETER); yypushback(yylength()); yybegin(CHECK_PARAMETER);
     }
@@ -350,14 +368,21 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     "]" {
         exitState(EXPECT_COMMAND); return RIGHT_BRACKET;
     }
-}
-<IN_COMMAND_TEXT> {
+
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
-    {BLANK} { return WHITE_SPACE; }
-    {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; }
+    {COMMAND_TEXT_TOKEN} { pushbackIfBlank(); return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
+    {BLANK} { return WHITE_SPACE; } // compatible with blank
     [^] { exitState(); yypushback(yylength()); } // recovery
 }
 <IN_COMMAND_ARGUMENT> {
+    "$" {
+        enterState(yystate(), EXPECT_PARAMETER); yypushback(yylength()); yybegin(CHECK_PARAMETER);
+    }
+
+    "]" {
+        exitState(EXPECT_COMMAND); return RIGHT_BRACKET;
+    }
+
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
     [^] { exitState(); yypushback(yylength()); } // recovery
 }
@@ -375,11 +400,12 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
 
     "]" { return RIGHT_BRACKET; }
     "'" { return RIGHT_SINGLE_QUOTE; }
-    "," { yybegin(IN_CONCEPT_BLANK); return COMMA; }
+    "," { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
+    {BLANK} { return WHITE_SPACE; } // compatible with blank
     [^] { exitState(); yypushback(yylength()); } // recovery
 }
-<IN_CONCEPT_BLANK> {
+<IN_CONCEPT_AFTER_COMMA> {
     // enter text section
     {BLANK} { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
     // whitespace after COMMA may be absent, if so, treat as valid and still enter text section
@@ -414,6 +440,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 
     {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
+    [^] { exitState(); yypushback(yylength()); } // recovery
 }
 
 // [ck3, vic3] localisation text format rules
@@ -444,7 +471,6 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 
     {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
-
     // enter text section
     {BLANK} { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
     // whitespace after TEXT_FORMAT_TOKEN may be absent, if so, treat as valid and still enter text section

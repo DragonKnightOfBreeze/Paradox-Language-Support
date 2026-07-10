@@ -1,0 +1,15 @@
+l_english:
+ text_icon:0 "@icon!"
+ text_icon_missing_end_marker:0 "@icon"
+
+ text_icon.mixed:0 "@icon! text"
+ text_icon_missing_end_marker.mixed:0 "@icon text"
+
+ text_icon_parameterized_1:0 "@a_$b$_c!"
+ text_icon_parameterized_2:0 "@a_$b$_[c]_d!"
+ text_icon_parameterized_3:0 "@a_$b$[c]_d!"
+ text_icon_parameterized_4:0 "@$b$[c]_d!"
+ text_icon_parameterized_5:0 "@a_$b$[c]!"
+ text_icon_parameterized_6:0 "@$b$[c]!"
+ text_icon_parameterized_7:0 "@$b$!"
+ text_icon_parameterized_8:0 "@[c]!"

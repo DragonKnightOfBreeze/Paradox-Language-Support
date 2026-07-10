@@ -16,6 +16,15 @@ a_$p|v$_[[p]b] = a_$p|v$_[[p]b]
 $p$_[[p]b]_b = $p$_[[p]b]_b
 $p|v$_[[p]b]_b = $p|v$_[[p]b]_b
 
+k=v
+
+a_$p$_[[p]b]_b=a_$p$_[[p]b]_b
+a_$p|v$_[[p]b]_b=a_$p|v$_[[p]b]_b
+a_$p$_[[p]b]=a_$p$_[[p]b]
+a_$p|v$_[[p]b]=a_$p|v$_[[p]b]
+$p$_[[p]b]_b=$p$_[[p]b]_b
+$p|v$_[[p]b]_b=$p|v$_[[p]b]_b
+
 k = @sv
 
 a_$p$_[[p]b]_b = @a_$p$_[[p]b]_b
