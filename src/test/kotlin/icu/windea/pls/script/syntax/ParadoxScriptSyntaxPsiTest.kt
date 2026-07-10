@@ -31,9 +31,9 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     @Test
     fun escapes() = doTest(true)
     @Test
-    fun property_separators() = doTest(true)
-    @Test
     fun only_comments() = doTest(true)
+    @Test
+    fun property_separators() = doTest(true)
     @Test
     fun mixed_members() = doTest(true)
     @Test
@@ -45,7 +45,7 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     @Test
     fun inline_conditional_blocks() = doTest(true)
     @Test
-    fun advanced_nested() = doTest(true)
+    fun nested() = doTest(true)
     @Test
     fun attached_comments() = doTest(true)
     @Test
@@ -55,4 +55,7 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     fun inline_maths() = doTest(true)
     @Test
     fun inline_maths_mismatch() = doTest(true)
+
+    @Test
+    fun advanced_interpolation() = doTest(true)
 }

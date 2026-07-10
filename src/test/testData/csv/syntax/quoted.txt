@@ -1,4 +1,4 @@
-ParadoxCsvFile: advanced_quoted.test.csv(0,40)
+ParadoxCsvFile: quoted.test.csv(0,40)
   ParadoxCsvHeader(0,12)
     ParadoxCsvColumn: id(0,2)
       PsiElement(COLUMN_TOKEN)('id')(0,2)

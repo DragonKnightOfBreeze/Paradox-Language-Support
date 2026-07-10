@@ -386,34 +386,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     // endregion
 
-    // region ParadoxLocalisationTextFormat
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.elementType == TEXT_FORMAT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
-    }
-
-    @JvmStatic
-    fun getIcon(element: ParadoxLocalisationTextFormat, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.LocalisationTextFormat
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxLocalisationTextFormat): String? {
-        val idElement = element.idElement ?: return null
-        return idElement.text
-    }
-
-    @JvmStatic
-    fun setName(element: ParadoxLocalisationTextFormat, name: String): ParadoxLocalisationTextFormat {
-        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IncorrectOperationException()
-        idElement.replace(newIdElement)
-        return element
-    }
-
-    // endregion
-
     // region ParadoxLocalisationTextIcon
 
     @JvmStatic
@@ -436,6 +408,34 @@ object ParadoxLocalisationPsiImplUtil {
     fun setName(element: ParadoxLocalisationTextIcon, name: String): ParadoxLocalisationTextIcon {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createTextIcon(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationTextFormat
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == TEXT_FORMAT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxLocalisationTextFormat, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.LocalisationTextFormat
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationTextFormat): String? {
+        val idElement = element.idElement ?: return null
+        return idElement.text
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationTextFormat, name: String): ParadoxLocalisationTextFormat {
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }

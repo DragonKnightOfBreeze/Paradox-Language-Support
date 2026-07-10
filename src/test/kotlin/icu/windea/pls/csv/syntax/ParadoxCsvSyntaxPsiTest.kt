@@ -31,21 +31,21 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     @Test
     fun empty_columns() = doTest(true)
     @Test
+    fun only_comments() = doTest(true)
+    @Test
     fun error_unclosed_quote() = doTest(true)
     @Test
     fun header_and_rows() = doTest(true)
     @Test
     fun header_only() = doTest(true)
     @Test
-    fun only_comments() = doTest(true)
-    @Test
-    fun advanced_quoted() = doTest(true)
-    @Test
     fun header_and_rows_crlf() = doTest(true)
     @Test
-    fun quoted_with_newline() = doTest(true)
-    @Test
     fun header_trailing_separator() = doTest(true)
+    @Test
+    fun quoted() = doTest(true)
+    @Test
+    fun quoted_with_newline() = doTest(true)
     @Test
     fun unterminated_quote_no_eol() = doTest(true)
 }

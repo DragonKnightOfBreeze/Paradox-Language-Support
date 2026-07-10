@@ -31,11 +31,13 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     @Test
     fun escapes() = doTest(true)
     @Test
-    fun error_unclosed_quote() = doTest(true)
-    @Test
     fun only_comments() = doTest(true)
     @Test
     fun only_header() = doTest(true)
+    @Test
+    fun only_header_eof() = doTest(true)
+    @Test
+    fun error_unclosed_quote() = doTest(true)
     @Test
     fun text_formats_ck3() = doTest(true)
     @Test
@@ -43,9 +45,7 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     @Test
     fun text_icons_vic3() = doTest(true)
     @Test
-    fun advanced_combined() = doTest(true)
-    @Test
-    fun only_header_eof() = doTest(true)
+    fun combined() = doTest(true)
     @Test
     fun header_as_key() = doTest(true)
     @Test

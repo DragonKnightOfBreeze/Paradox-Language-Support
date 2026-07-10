@@ -21,9 +21,9 @@ class CwtSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefi
     @Test
     fun escapes() = doTest(true)
     @Test
-    fun property_separators() = doTest(true)
-    @Test
     fun only_comments() = doTest(true)
+    @Test
+    fun property_separators() = doTest(true)
     @Test
     fun mixed_members() = doTest(true)
     @Test
@@ -45,7 +45,7 @@ class CwtSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefi
     @Test
     fun option_value_on_value() = doTest(true)
     @Test
-    fun advanced_nested() = doTest(true)
+    fun nested() = doTest(true)
     @Test
     fun snippet_alias() = doTest(true)
     @Test

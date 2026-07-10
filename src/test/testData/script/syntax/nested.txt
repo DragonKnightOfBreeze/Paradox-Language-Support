@@ -1,4 +1,4 @@
-ParadoxScriptFile: advanced_nested.test.txt(0,101)
+ParadoxScriptFile: nested.test.txt(0,101)
   ParadoxScriptRootBlock(0,101)
     PsiComment(COMMENT)('# common/armies')(0,15)
     PsiWhiteSpace('\n\n')(15,17)
