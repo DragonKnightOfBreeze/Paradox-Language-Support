@@ -33,7 +33,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     // region Basic
 
     @Test
-    fun testFilePathIndex_Basic() {
+    fun test_Basic() {
         val relPath = "common/example.test.txt"
         markFileInfo(gameType, relPath)
         myFixture.configureByFile("script/syntax/example.test.txt")
@@ -43,7 +43,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testFilePathIndex_Localisation() {
+    fun test_Localisation() {
         // 本地化文件应当被索引
         val relPath = "localisation/ui/ui_l_english.test.yml"
         markFileInfo(gameType, relPath)

@@ -23,7 +23,6 @@ import org.junit.runners.JUnit4
 
 /**
  * @see CwtConfigSearch
- * @see icu.windea.pls.lang.search.searchers.CwtConfigSearcher
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -43,8 +42,10 @@ class CwtConfigSearchTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    // region Basic
+
     @Test
-    fun testSearch_ById() {
+    fun test_ById() {
         val typeConfig1 = CwtConfigSearch.searchById<CwtTypeConfig>("event", gameType, project).findAll().singleOrNull()!!
         Assert.assertTrue(typeConfig1.name == "event")
 
@@ -71,11 +72,13 @@ class CwtConfigSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testSearch_ByFilePath() {
+    fun test_ByFilePath() {
         val typeConfig1 = CwtConfigSearch.searchByFilePath<CwtTypeConfig>("events/test.txt", gameType, project).findAll()
         assertContainsElements(typeConfig1.map { it.name }, "event_namespace", "event")
 
         val complexEnumConfig1 = CwtConfigSearch.searchByFilePath<CwtComplexEnumConfig>("common/component_tags/test.txt", gameType, project).findAll()
         assertContainsElements(complexEnumConfig1.map { it.name }, "component_tag")
     }
+
+    // endregion
 }

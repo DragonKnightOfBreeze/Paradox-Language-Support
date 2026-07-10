@@ -50,7 +50,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search All
 
     @Test
-    fun testDefinitionInjectionSearcher_All() {
+    fun test_All() {
         // Arrange: 加载所有注入文件
         configureScriptFile("common/ai_strategies/00_default.txt", "features/index/common/ai_strategies/00_default.txt")
         configureScriptFile("common/ai_strategies/01_inject.txt", "features/index/common/ai_strategies/01_inject.txt")
@@ -78,7 +78,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search By Target
 
     @Test
-    fun testDefinitionInjectionSearcher_ByTarget() {
+    fun test_ByTarget() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -96,7 +96,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionSearcher_ByTarget_AcrossTypes() {
+    fun test_ByTarget_AcrossTypes() {
         // Arrange: 同一 target 出现在不同类型中
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
         configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
@@ -112,7 +112,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionSearcher_ByTarget_NotFound() {
+    fun test_ByTarget_NotFound() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -130,7 +130,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search By Type
 
     @Test
-    fun testDefinitionInjectionSearcher_ByType() {
+    fun test_ByType() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -153,7 +153,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search By Target And Type
 
     @Test
-    fun testDefinitionInjectionSearcher_ByTargetAndType() {
+    fun test_ByTargetAndType() {
         // Arrange
         configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
@@ -171,7 +171,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionSearcher_ByTargetAndType_Mismatch() {
+    fun test_ByTargetAndType_Mismatch() {
         // Arrange: target 存在但类型不匹配
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -189,7 +189,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search By Mode
 
     @Test
-    fun testDefinitionInjectionSearcher_ByMode_CaseInsensitive() {
+    fun test_ByMode_CaseInsensitive() {
         // Arrange: mode 参数大小写不敏感
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -204,7 +204,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionSearcher_ByMode_FilterResults() {
+    fun test_ByMode_FilterResults() {
         // Arrange: 同一类型中不同 mode 的结果应被过滤
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -224,7 +224,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search Element
 
     @Test
-    fun testDefinitionInjectionSearcher_SearchElement() {
+    fun test_SearchElement() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -239,7 +239,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionSearcher_SearchElement_Replace() {
+    fun test_SearchElement_Replace() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
@@ -258,7 +258,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     // region Search with File Scope
 
     @Test
-    fun testDefinitionInjectionSearcher_WithFileScope() {
+    fun test_WithFileScope() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
         val arcaneFile = myFixture.file.virtualFile
@@ -276,7 +276,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionSearcher_WithFileScope_MultiFile() {
+    fun test_WithFileScope_MultiFile() {
         // Arrange
         configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
         val arcaneFile = myFixture.file.virtualFile

@@ -43,7 +43,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     // region Basic
 
     @Test
-    fun testComplexEnumValueIndex_Basic_TopLevelValues() {
+    fun test_Basic_TopLevelValues() {
         // Arrange
         markFileInfo(gameType, "common/spell_schools/00_spell_schools.txt")
         myFixture.configureByFile("features/index/common/spell_schools/00_spell_schools.txt")
@@ -63,7 +63,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_Nested_ByScalarMatch() {
+    fun test_Nested_ByScalarMatch() {
         // Arrange
         markFileInfo(gameType, "common/arcane_tomes/03_complex_enum.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/03_complex_enum.txt")
@@ -86,7 +86,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     // region Config Flags
 
     @Test
-    fun testComplexEnumValueIndex_CaseInsensitiveFlags() {
+    fun test_CaseInsensitiveFlags() {
         // Arrange
         markFileInfo(gameType, "common/whispered_words/00_words.txt")
         myFixture.configureByFile("features/index/common/whispered_words/00_words.txt")
@@ -104,7 +104,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_PerDefinitionAndSkipParameterized() {
+    fun test_PerDefinitionAndSkipParameterized() {
         // Arrange
         markFileInfo(gameType, "common/arcane_tomes/04_per_definition.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/04_per_definition.txt")
@@ -127,7 +127,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     // region Enum Name Source
 
     @Test
-    fun testComplexEnumValueIndex_StartFromRootNo_ValueInBlockOnly() {
+    fun test_StartFromRootNo_ValueInBlockOnly() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -142,7 +142,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_EnumNameAsPropertyKey() {
+    fun test_EnumNameAsPropertyKey() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -161,7 +161,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     // region Structural Constraints
 
     @Test
-    fun testComplexEnumValueIndex_DeepEnum_MultiLevelBlockAndFilterProperty() {
+    fun test_DeepEnum_MultiLevelBlockAndFilterProperty() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -176,7 +176,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_EnumNameAsPropertyValue() {
+    fun test_EnumNameAsPropertyValue() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -191,7 +191,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_SiblingEnum_MultiPropertyConstraints() {
+    fun test_SiblingEnum_MultiPropertyConstraints() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -206,7 +206,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_KeyBlockEnum_PropertyKeyWithBlockConstraint() {
+    fun test_KeyBlockEnum_PropertyKeyWithBlockConstraint() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -221,7 +221,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_MixEnum_MixedKeyValueBlock() {
+    fun test_MixEnum_MixedKeyValueBlock() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -237,7 +237,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_TypeComboEnum_TypedConstraints() {
+    fun test_TypeComboEnum_TypedConstraints() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -252,7 +252,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_MultiEnum_MultipleEnumNameConfigs() {
+    fun test_MultiEnum_MultipleEnumNameConfigs() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -268,7 +268,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_ValueMixEnum_ValueEnumNameAndTypedConstraints() {
+    fun test_ValueMixEnum_ValueEnumNameAndTypedConstraints() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -287,7 +287,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     // region Combined Features
 
     @Test
-    fun testComplexEnumValueIndex_CaseInsensitiveEnum_ComplexStructure() {
+    fun test_CaseInsensitiveEnum_ComplexStructure() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -302,7 +302,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_MultiLevelEnum_MultipleLevels() {
+    fun test_MultiLevelEnum_MultipleLevels() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -318,7 +318,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_CrossLevelMixEnum_CrossLevelConstraints() {
+    fun test_CrossLevelMixEnum_CrossLevelConstraints() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -334,7 +334,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_CaseInsensitiveMultiEnum_ComplexAndTyped() {
+    fun test_CaseInsensitiveMultiEnum_ComplexAndTyped() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -350,7 +350,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_MultiLevelMultiEnum_MultipleLevels() {
+    fun test_MultiLevelMultiEnum_MultipleLevels() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -366,7 +366,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_CrossPvbEnum_CrossLevelPropertyValueBlock() {
+    fun test_CrossPvbEnum_CrossLevelPropertyValueBlock() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -382,7 +382,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_CaseInsensitiveDeepEnum_MultipleLevels() {
+    fun test_CaseInsensitiveDeepEnum_MultipleLevels() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -398,7 +398,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testComplexEnumValueIndex_RepeatTypedEnum_RepeatedEnumNameAndTypedConstraints() {
+    fun test_RepeatTypedEnum_RepeatedEnumNameAndTypedConstraints() {
         markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
@@ -415,10 +415,10 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region From Columns
+    // region Grimoires
 
     @Test
-    fun testComplexEnumValueIndex_FromColumn() {
+    fun testGrimoires_FromColumn() {
         markFileInfo(gameType, "common/grimoires/00_grimoires.txt")
         myFixture.configureByFile("features/index/common/grimoires/00_grimoires.txt")
 

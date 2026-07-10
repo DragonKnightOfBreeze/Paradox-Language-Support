@@ -43,7 +43,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     // region Basic
 
     @Test
-    fun testDefineIndex_Basic() {
+    fun test_Basic() {
         configureDefineFile("features/index/common/defines/defines_basic_stellaris.test.txt")
 
         // act
@@ -69,7 +69,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     // region Complex (Multiple Namespaces)
 
     @Test
-    fun testDefineIndex_Complex() {
+    fun test_Complex() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
         // act
@@ -108,7 +108,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testDefineIndex_Edge() {
+    fun test_Edge() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val project = project

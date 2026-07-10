@@ -40,7 +40,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     // region Usage Index
 
     @Test
-    fun testUsageIndex_DirectForm() {
+    fun test_UsageIndex_DirectForm() {
         markFileInfo(gameType, "common/test/usage_direct_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
         val project = project
@@ -52,7 +52,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testUsageIndex_BlockForm() {
+    fun test_UsageIndex_BlockForm() {
         markFileInfo(gameType, "common/test/usage_block_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
         val project = project
@@ -68,7 +68,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     // region Argument Index
 
     @Test
-    fun testArgumentIndex_BlockForm_All() {
+    fun test_ArgumentIndex_BlockForm_All() {
         markFileInfo(gameType, "common/test/usage_block_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
         val project = project
@@ -83,7 +83,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testUsageIndex_Parameterized_ShouldSkip() {
+    fun testEdge_UsageIndex_Parameterized_ShouldSkip() {
         markFileInfo(gameType, "common/test/usage_parameterized_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_parameterized_stellaris.test.txt")
         val project = project
@@ -95,7 +95,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testUsageIndex_VariableRef_ShouldSkip() {
+    fun testEdge_UsageIndex_VariableRef_ShouldSkip() {
         markFileInfo(gameType, "common/test/usage_variable_ref_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_variable_ref_stellaris.test.txt")
         val project = project

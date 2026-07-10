@@ -17,7 +17,6 @@ import org.junit.runners.JUnit4
 
 /**
  * @see ParadoxLocalisationSearch
- * @see icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -35,7 +34,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
     // region Normal Localisation
 
     @Test
-    fun testLocalisationSearch_ByName() {
+    fun testNormalLocalisation_byName() {
         markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
@@ -49,7 +48,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testLocalisationSearch_NotFound() {
+    fun testNormalLocalisation_notFound() {
         markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
@@ -67,7 +66,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
     // region Synced Localisation
 
     @Test
-    fun testSyncedLocalisationSearch_ByName() {
+    fun testSyncedLocalisation_byName() {
         markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project
@@ -81,7 +80,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testSyncedLocalisationSearch_NotFound() {
+    fun testSyncedLocalisation_notFound() {
         markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project

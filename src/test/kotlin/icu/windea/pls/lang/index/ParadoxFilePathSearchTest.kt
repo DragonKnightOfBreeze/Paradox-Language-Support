@@ -20,7 +20,6 @@ import org.junit.runners.JUnit4
 
 /**
  * @see ParadoxFilePathSearch
- * @see icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -41,7 +40,7 @@ class ParadoxFilePathSearchTest : BasePlatformTestCase() {
     // region Exact Path
 
     @Test
-    fun testFilePathSearcher_ExactPath() {
+    fun test_ExactPath() {
         val relPath = "common/example.test.txt"
         markFileInfo(gameType, relPath)
         myFixture.configureByFile("script/syntax/example.test.txt")
@@ -57,7 +56,7 @@ class ParadoxFilePathSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testFilePathSearcher_NotFound_ReturnsEmpty() {
+    fun test_NotFound_ReturnsEmpty() {
         val relPath = "localisation/ui/ui_l_english.test.yml"
         markFileInfo(gameType, relPath)
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")

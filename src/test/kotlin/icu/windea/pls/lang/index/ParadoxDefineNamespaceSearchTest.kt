@@ -19,7 +19,6 @@ import org.junit.runners.JUnit4
 
 /**
  * @see ParadoxDefineNamespaceSearch
- * @see icu.windea.pls.lang.search.searchers.ParadoxDefineNamespaceSearcher
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -47,7 +46,7 @@ class ParadoxDefineNamespaceSearchTest : BasePlatformTestCase() {
     // region Search By Namespace
 
     @Test
-    fun byNamespaceOnly() {
+    fun test_ByNamespaceOnly() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
         val selector = ParadoxDefineNamespaceSearch.selector(project, myFixture.file)
@@ -60,7 +59,7 @@ class ParadoxDefineNamespaceSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun allNamespaces() {
+    fun test_AllNamespaces() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
         val selector = ParadoxDefineNamespaceSearch.selector(project, myFixture.file)
@@ -77,7 +76,7 @@ class ParadoxDefineNamespaceSearchTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun edge_allNamespaces() {
+    fun testEdge_AllNamespaces() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val selector = ParadoxDefineNamespaceSearch.selector(project, myFixture.file)
@@ -89,7 +88,7 @@ class ParadoxDefineNamespaceSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun edge_notDirectValueNamespace() {
+    fun testEdge_NotDirectValueNamespace() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val selector = ParadoxDefineNamespaceSearch.selector(project, myFixture.file)

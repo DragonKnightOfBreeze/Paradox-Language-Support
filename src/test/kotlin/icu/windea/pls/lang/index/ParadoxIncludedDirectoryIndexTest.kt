@@ -35,7 +35,7 @@ class ParadoxIncludedDirectoryIndexTest : BasePlatformTestCase() {
     // region Basic
 
     @Test
-    fun testIncludedDirectoryIndex_Basic() {
+    fun test_Basic() {
         // 已包含的目录应当在索引中存在对应的键
         val copied = myFixture.copyFileToProject("script/syntax/example.test.txt", "common/example.test.txt")
         copied.injectFileInfo(gameType, "common/example.test.txt")
@@ -53,7 +53,7 @@ class ParadoxIncludedDirectoryIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testIncludedDirectoryIndex_ExcludedTopDirectory() {
+    fun testEdge_ExcludedTopDirectory() {
         // 被排除的顶级目录（如 jomini）不应出现在索引中
         val copied = myFixture.copyFileToProject("features/index/jomini/gfx/interface/icons/my_icon.png", "jomini/gfx/interface/icons/my_icon.png")
 
@@ -74,7 +74,7 @@ class ParadoxIncludedDirectoryIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testIncludedDirectoryIndex_HiddenDirectory() {
+    fun testEdge_HiddenDirectory() {
         // 隐藏目录（名称以点开头）不应出现在索引中
         val relPath = "common/.hidden.test.txt"
         markFileInfo(gameType, relPath)

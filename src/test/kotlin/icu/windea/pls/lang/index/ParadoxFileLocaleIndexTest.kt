@@ -33,7 +33,7 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     // region Basic
 
     @Test
-    fun testFileLocaleIndex_English() {
+    fun test_English() {
         markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val data = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.FileLocale, myFixture.file.virtualFile, project)
@@ -42,7 +42,7 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testFileLocaleIndex_SimpChinese() {
+    fun test_SimpChinese() {
         markFileInfo(gameType, "localisation/simp_chinese/ui_l_simp_chinese.test.yml")
         myFixture.configureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
         val data = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.FileLocale, myFixture.file.virtualFile, project)

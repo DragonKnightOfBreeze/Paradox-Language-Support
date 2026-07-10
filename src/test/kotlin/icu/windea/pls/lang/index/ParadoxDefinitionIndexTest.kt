@@ -43,7 +43,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Basic Property Definition
 
     @Test
-    fun testDefinitionIndex_BasicProperty() {
+    fun test_BasicProperty() {
         // Arrange
         markFileInfo(gameType, "common/starships/00_starships.txt")
         val psiFile = myFixture.configureByFile("features/index/common/starships/00_starships.txt")
@@ -76,7 +76,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_BasicProperty_ElementOffset() {
+    fun test_BasicProperty_ElementOffset() {
         // Arrange
         markFileInfo(gameType, "common/starships/00_starships.txt")
         val psiFile = myFixture.configureByFile("features/index/common/starships/00_starships.txt")
@@ -97,7 +97,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Type Per File
 
     @Test
-    fun testDefinitionIndex_TypePerFile() {
+    fun test_TypePerFile() {
         // Arrange & Act: ocean_world
         markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         val oceanFile = myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
@@ -122,7 +122,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_TypePerFile_MultipleFiles() {
+    fun test_TypePerFile_MultipleFiles() {
         // Arrange
         markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
@@ -146,7 +146,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Name Field
 
     @Test
-    fun testDefinitionIndex_NameField() {
+    fun test_NameField() {
         // Arrange
         markFileInfo(gameType, "common/alien_species/00_species.txt")
         val psiFile = myFixture.configureByFile("features/index/common/alien_species/00_species.txt")
@@ -181,7 +181,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Anonymous (name_field = "")
 
     @Test
-    fun testDefinitionIndex_AnonymousNameField() {
+    fun test_AnonymousNameField() {
         // Arrange
         markFileInfo(gameType, "common/star_systems/00_systems.txt")
         val psiFile = myFixture.configureByFile("features/index/common/star_systems/00_systems.txt")
@@ -209,7 +209,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Skip Root Key
 
     @Test
-    fun testDefinitionIndex_SkipRootKey() {
+    fun test_SkipRootKey() {
         // Arrange
         markFileInfo(gameType, "common/space_stations/00_stations.txt")
         val psiFile = myFixture.configureByFile("features/index/common/space_stations/00_stations.txt")
@@ -238,7 +238,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Type Key Filter
 
     @Test
-    fun testDefinitionIndex_TypeKeyFilter_Inclusion() {
+    fun test_TypeKeyFilter_Inclusion() {
         // Arrange
         markFileInfo(gameType, "common/drives/00_drives.txt")
         val psiFile = myFixture.configureByFile("features/index/common/drives/00_drives.txt")
@@ -254,7 +254,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_TypeKeyFilter_Exclusion() {
+    fun test_TypeKeyFilter_Exclusion() {
         // Arrange
         markFileInfo(gameType, "common/drives/00_drives.txt")
         val psiFile = myFixture.configureByFile("features/index/common/drives/00_drives.txt")
@@ -270,7 +270,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_TypeKeyFilter_AllDefinitionsPresent() {
+    fun test_TypeKeyFilter_AllDefinitionsPresent() {
         // Arrange
         markFileInfo(gameType, "common/drives/00_drives.txt")
         val psiFile = myFixture.configureByFile("features/index/common/drives/00_drives.txt")
@@ -290,7 +290,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Starts With
 
     @Test
-    fun testDefinitionIndex_StartsWith() {
+    fun test_StartsWith() {
         // Arrange
         markFileInfo(gameType, "common/districts/00_districts.txt")
         val psiFile = myFixture.configureByFile("features/index/common/districts/00_districts.txt")
@@ -320,7 +320,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_StartsWith_PrefixMismatch() {
+    fun test_StartsWith_PrefixMismatch() {
         // Arrange: districts 路径但包含不以 "d_" 开头的属性键
         // 由于 starts_with 要求 typeKey 匹配该前缀，不匹配前缀的属性不应被索引
         markFileInfo(gameType, "common/districts/00_districts.txt")
@@ -340,7 +340,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Type Key Regex
 
     @Test
-    fun testDefinitionIndex_TypeKeyRegex() {
+    fun test_TypeKeyRegex() {
         // Arrange
         markFileInfo(gameType, "common/fleets/00_fleets.txt")
         val psiFile = myFixture.configureByFile("features/index/common/fleets/00_fleets.txt")
@@ -364,7 +364,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Skip Root Key Alternatives
 
     @Test
-    fun testDefinitionIndex_SkipRootKey_Alternatives() {
+    fun test_SkipRootKey_Alternatives() {
         // Arrange
         markFileInfo(gameType, "common/garrisons/00_garrisons.txt")
         val psiFile = myFixture.configureByFile("features/index/common/garrisons/00_garrisons.txt")
@@ -391,7 +391,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Name Field Dash (name from property value)
 
     @Test
-    fun testDefinitionIndex_NameFieldDash() {
+    fun test_NameFieldDash() {
         // Arrange
         markFileInfo(gameType, "common/anomalies/00_anomalies.txt")
         val psiFile = myFixture.configureByFile("features/index/common/anomalies/00_anomalies.txt")
@@ -424,7 +424,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Cross-File Aggregation
 
     @Test
-    fun testDefinitionIndex_CrossFileAggregation_ByType() {
+    fun test_CrossFileAggregation_ByType() {
         // Arrange: 多个文件的同类型定义
         markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
@@ -444,7 +444,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_CrossFileAggregation_ByName() {
+    fun test_CrossFileAggregation_ByName() {
         // Arrange: 跨文件按 name key 聚合
         markFileInfo(gameType, "common/starships/00_starships.txt")
         myFixture.configureByFile("features/index/common/starships/00_starships.txt")
@@ -464,7 +464,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_CrossFileAggregation_MultipleTypes() {
+    fun test_CrossFileAggregation_MultipleTypes() {
         // Arrange: 加载不同类型的多个文件
         markFileInfo(gameType, "common/starships/00_starships.txt")
         myFixture.configureByFile("features/index/common/starships/00_starships.txt")
@@ -489,7 +489,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testDefinitionIndex_EmptyFile() {
+    fun test_EmptyFile() {
         // Arrange: 文件仅含注释，无任何属性
         markFileInfo(gameType, "common/starships/02_empty.txt")
         val psiFile = myFixture.configureByFile("features/index/common/starships/02_empty.txt")
@@ -503,7 +503,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_NoMatchedType() {
+    fun test_NoMatchedType() {
         // Arrange: 路径无匹配的类型规则
         markFileInfo(gameType, "common/no_rule/00_data.txt")
         val psiFile = myFixture.configureByFile("features/index/common/no_rule/01_inject.txt")
@@ -517,7 +517,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_TypePerFile_ElementOffset() {
+    fun test_TypePerFile_ElementOffset() {
         // Arrange: 文件级定义的 elementOffset 应为 0
         markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         val psiFile = myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
@@ -533,7 +533,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_NameTypeKey_CrossTypeIsolation() {
+    fun test_NameTypeKey_CrossTypeIsolation() {
         // Arrange: 加载不同类型的文件，验证 nameTypeKey 的类型隔离性
         markFileInfo(gameType, "common/starships/00_starships.txt")
         myFixture.configureByFile("features/index/common/starships/00_starships.txt")
@@ -565,7 +565,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     // region From Injection (create_mode)
 
     @Test
-    fun testDefinitionIndex_DefinitionInjection_ReplaceOrCreate() {
+    fun test_DefinitionInjection_ReplaceOrCreate() {
         // Arrange: REPLACE_OR_CREATE 模式的定义注入应被索引为定义
         markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
@@ -592,7 +592,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionIndex_DefinitionInjection_NonDefinitionModes_NotIndexed() {
+    fun test_DefinitionInjection_NonDefinitionModes_NotIndexed() {
         // Arrange: INJECT/REPLACE/TRY_INJECT 等非 create_mode 不应被索引为定义
         markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")

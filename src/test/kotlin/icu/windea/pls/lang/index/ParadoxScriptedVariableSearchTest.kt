@@ -17,7 +17,6 @@ import org.junit.runners.JUnit4
 
 /**
  * @see ParadoxScriptedVariableSearch
- * @see icu.windea.pls.lang.search.searchers.ParadoxScriptedVariableSearcher
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -35,7 +34,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase() {
     // region Local
 
     @Test
-    fun testScriptedVariableSearcher_Local() {
+    fun test_Local() {
         markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
@@ -49,7 +48,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScriptedVariableSearcher_Local_SkipAfterCaret() {
+    fun test_Local_SkipAfterCaret() {
         markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
@@ -65,7 +64,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testScriptedVariableSearcher_Local_WithOverride() {
+    fun test_Local_withOverride() {
         markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
@@ -95,7 +94,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase() {
     // region Global
 
     @Test
-    fun testScriptedVariableSearcher_Global() {
+    fun test_Global() {
         markFileInfo(gameType, "common/scripted_variables/global_vars.test.txt")
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
         val project = project

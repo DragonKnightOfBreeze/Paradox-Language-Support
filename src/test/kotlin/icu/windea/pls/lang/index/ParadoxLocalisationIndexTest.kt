@@ -36,7 +36,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
     // region Normal Localisation
 
     @Test
-    fun testLocalisationNameIndex_Basic() {
+    fun testNormalLocalisation_Basic() {
         markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
@@ -57,7 +57,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
     // region Synced Localisation
 
     @Test
-    fun testSyncedLocalisationNameIndex_Basic() {
+    fun testSyncedLocalisation_Basic() {
         markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project

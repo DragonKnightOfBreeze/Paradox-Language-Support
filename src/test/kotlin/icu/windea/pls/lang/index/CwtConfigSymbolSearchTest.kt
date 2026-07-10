@@ -42,10 +42,10 @@ class CwtConfigSymbolSearchTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region Declarations
+    // region Basic
 
     @Test
-    fun testConfigSymbolSearcher_Declarations() {
+    fun test_Declarations() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
@@ -68,12 +68,8 @@ class CwtConfigSymbolSearchTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Macro.id, "test_macro", ReadWriteAccess.Write, ParadoxGameType.Core)
     }
 
-    // endregion
-
-    // region Reference Expressions
-
     @Test
-    fun testConfigSymbolSearcher_ReferenceExpressions() {
+    fun test_ReferenceExpressions() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
@@ -111,12 +107,8 @@ class CwtConfigSymbolSearchTest : BasePlatformTestCase() {
         assertNoEmptyName(scope)
     }
 
-    // endregion
-
-    // region Multiple Types
-
     @Test
-    fun testConfigSymbolSearcher_MultipleTypes() {
+    fun test_MultipleTypes() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
@@ -133,12 +125,8 @@ class CwtConfigSymbolSearchTest : BasePlatformTestCase() {
         Assert.assertTrue(names.contains("test_subtype"))
     }
 
-    // endregion
-
-    // region Read/Write Access
-
     @Test
-    fun testConfigSymbolSearcher_ReadWriteAccess() {
+    fun test_ReadWriteAccess() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)

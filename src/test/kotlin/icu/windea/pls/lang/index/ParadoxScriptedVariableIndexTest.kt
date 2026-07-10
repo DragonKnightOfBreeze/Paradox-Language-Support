@@ -35,7 +35,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     // region Local
 
     @Test
-    fun testScriptedVariableNameIndex_Local() {
+    fun test_Local() {
         markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
@@ -56,7 +56,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     // region Global
 
     @Test
-    fun testScriptedVariableNameIndex_Global() {
+    fun test_Global() {
         markFileInfo(gameType, "common/scripted_variables/global_vars.test.txt")
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
         val project = project
