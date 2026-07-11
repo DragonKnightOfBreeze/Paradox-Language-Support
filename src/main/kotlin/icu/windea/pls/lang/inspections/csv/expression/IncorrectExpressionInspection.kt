@@ -14,6 +14,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
@@ -45,18 +46,21 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
+        val context = ParadoxExpressionInspectionService.createContext(this, holder)
         val checkers = ParadoxIncorrectExpressionChecker.EP_NAME.extensionList
         return object : ParadoxCsvVisitor() {
             override fun visitColumn(element: ParadoxCsvColumn) {
                 ProgressManager.checkCanceled()
                 if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
                 if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
+
+                // 得到完全匹配的规则
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
                 if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
                 val config = columnConfig.valueConfig ?: return
 
                 // 开始检查
-                ParadoxInspectionService.checkIncorrectExpression(element, config, holder, checkers)
+                ParadoxInspectionService.checkIncorrectExpression(element, config, context, checkers)
             }
         }
     }

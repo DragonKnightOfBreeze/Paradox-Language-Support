@@ -21,7 +21,14 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
  */
 @WithGameTypeEP
 interface ParadoxIncorrectSyntaxChecker : DumbAware {
-    fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext)
+    /**
+     * 执行检查。
+     *
+     * @param element 要检查的 [PsiElement]。
+     * @param context 文件级别的上下文。
+     * @return 是否继续执行下一个检查器。
+     */
+    fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectSyntaxChecker>("icu.windea.pls.incorrectSyntaxChecker")

@@ -2,8 +2,6 @@ package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
@@ -18,8 +16,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.truncate
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -27,7 +26,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.resolve.isDeclarationRoot
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -68,6 +66,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
+        val context = ParadoxExpressionInspectionService.createContext(this, holder)
+        val checkers = ParadoxUnresolvedExpressionChecker.EP_NAME.extensionList
         return object : PsiElementVisitor() {
             private var disabledElement: PsiElement? = null
 
@@ -104,10 +104,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val expectedConfigs = getExpectedConfigs(element)
                 if (isIgnored(propertyKey, expectedConfigs)) return true
 
-                val description = getDescription(propertyKey, expectedConfigs) ?: getDefaultDescription(propertyKey, expectedConfigs)
-                val highlightType = getHighlightType(propertyKey, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                val fixes = getFixes(propertyKey, expectedConfigs)
-                holder.registerProblem(element, description, highlightType, *fixes)
+                ParadoxInspectionService.checkUnresolvedExpression(propertyKey, expectedConfigs, context, checkers)
 
                 // skip checking children if parent has problems
                 return false
@@ -142,10 +139,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val expectedConfigs = getExpectedConfigs(element, configContext)
                 if (isIgnored(element, expectedConfigs)) return true
 
-                val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, expectedConfigs)
-                val highlightType = getHighlightType(element, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                val fixes = getFixes(element, expectedConfigs)
-                holder.registerProblem(element, description, highlightType, *fixes)
+                ParadoxInspectionService.checkUnresolvedExpression(element, expectedConfigs, context, checkers)
 
                 // skip checking children if parent has problems
                 return false
@@ -193,40 +187,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 return ignoredByConfigs && expectedConfigs.any { ParadoxConfigManager.checkExtendedConfig(element, it) }
             }
         }
-    }
-
-    private fun getDefaultDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
-        val expect = when {
-            expectedConfigs.isEmpty() -> ""
-            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
-            else -> null
-        }
-        val message = when (element) {
-            is ParadoxScriptValue -> when {
-                expect == null -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
-                expect.isNotEmpty() -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
-                else -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
-            }
-            else -> when {
-                expect == null -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.1.1", element.expression)
-                expect.isNotEmpty() -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.1.2", element.expression, expect)
-                else -> ChronicleBundle.message("inspection.script.unresolvedExpression.desc.1.3", element.expression)
-            }
-        }
-        return message
-    }
-
-    private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
-        return ParadoxInspectionService.getDescriptionForUnresolvedExpression(element, expectedConfigs)
-    }
-
-    private fun getHighlightType(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
-        return ParadoxInspectionService.getHighlightTypeForUnresolvedExpression(element, expectedConfigs)
-    }
-
-    private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
-        return ParadoxInspectionService.getFixesForUnresolvedExpression(element, expectedConfigs)
     }
 
     override fun createOptionsPanel(): JComponent {

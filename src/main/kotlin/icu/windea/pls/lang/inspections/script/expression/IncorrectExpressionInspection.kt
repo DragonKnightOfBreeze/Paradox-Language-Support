@@ -11,6 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -47,6 +48,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val context = ParadoxExpressionInspectionService.createContext(this, holder)
         val checkers = ParadoxIncorrectExpressionChecker.EP_NAME.extensionList
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -56,16 +58,14 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
                 ProgressManager.checkCanceled()
                 if (!element.isDataExpression()) return // skip check if element is not an expression
-
-                // 跳过一些脚本表达式类型
-                if (element is ParadoxScriptBlock) return
-                if (element is ParadoxScriptBoolean) return
+                if (element is ParadoxScriptBlock) return // skip
+                if (element is ParadoxScriptBoolean) return // skip
 
                 // 得到完全匹配的规则
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
 
                 // 开始检查
-                ParadoxInspectionService.checkIncorrectExpression(element, config, holder, checkers)
+                ParadoxInspectionService.checkIncorrectExpression(element, config, context, checkers)
 
                 // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }

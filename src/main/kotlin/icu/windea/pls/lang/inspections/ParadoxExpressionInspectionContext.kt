@@ -3,17 +3,14 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.model.ParadoxGameType
 
-data class ParadoxSyntaxInspectionContext(
+data class ParadoxExpressionInspectionContext(
     val tool: LocalInspectionTool,
     val holder: ProblemsHolder,
-    val file: VirtualFile?,
-    val rootFile: VirtualFile?,
-    val gameType: ParadoxGameType?,
-    val gameVersion: String?,
+    val configGroup: CwtConfigGroup,
 ) {
     val project: Project get() = holder.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
 }
-
