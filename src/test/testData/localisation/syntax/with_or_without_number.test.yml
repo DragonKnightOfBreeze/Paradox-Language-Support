@@ -2,5 +2,4 @@ l_english:
  without_number: "text"
  with_number:0 "text"
  with_big_number:42 "text"
- with_negative_number:-42 "text
  with_adjacent_number:0"text"
