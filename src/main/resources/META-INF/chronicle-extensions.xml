@@ -1,6 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="chronicle.extensions" groupWeight="10" parentId="chronicle" bundle="messages.ChronicleExtensionsBundle" key="settings"
+    <applicationConfigurable id="chronicle.extensions" parentId="chronicle" groupWeight="70"
+                             bundle="messages.ChronicleExtensionsBundle" key="settings"
                              instance="icu.windea.pls.extensions.settings.ChronicleExtensionsSettingsConfigurable"/>
   </extensions>
 </idea-plugin>
