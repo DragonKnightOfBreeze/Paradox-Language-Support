@@ -38,7 +38,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.configForDeclaration
+        val rootConfig = declarationConfig.rootConfig
         val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
@@ -70,7 +70,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = context.gameRuleConfig?.configForDeclaration ?: declarationConfig.configForDeclaration
+        val rootConfig = context.gameRuleConfig?.rootConfig ?: declarationConfig.rootConfig
         val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
@@ -102,7 +102,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.configForDeclaration
+        val rootConfig = declarationConfig.rootConfig
         val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context

@@ -60,7 +60,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
-        val supportedLocaleMap = supportedLocales.associateBy { it.id }
+        val supportedLocaleMap = supportedLocales.associateBy { it.name }
         val locales = mutableSetOf<CwtLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
         if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { supportedLocaleMap.get(it) }
@@ -107,7 +107,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     }
 
     private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
-        val localeId = codeInsightInfo.locale.id
+        val localeId = codeInsightInfo.locale.name
         codeInsightInfo.name
             ?.let { return ChronicleBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
         return null
@@ -149,11 +149,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     val configGroup = ChronicleFacade.getConfigGroup()
                     val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
-                    val globalLocaleMap = globalLocales.associateBy { it.id }
+                    val globalLocaleMap = globalLocales.associateBy { it.name }
                     val selectedLocales = localeSet.mapNotNull { globalLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(globalLocaleMap.values, selectedLocales)
                     if (dialog.showAndGet()) {
-                        val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
+                        val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.name else null }
                         localeSet = newLocaleSet
                         cb.text = locales // 通知UI locales 已经被更改
                     }

@@ -332,7 +332,7 @@ object CwtConfigManipulationService {
 
     @Optimized
     fun inlineMacro(macroConfig: CwtMacroConfig.InlineScript): CwtPropertyConfig {
-        val other = macroConfig.configForDeclaration
+        val other = macroConfig.contextContainerConfig
         val inlined = CwtPropertyConfig.copy(
             sourceConfig = other,
             keyExpression = CwtDataExpression.resolveKey(macroConfig.name),
@@ -341,35 +341,6 @@ object CwtConfigManipulationService {
         inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, other.optionData) // merge option data
         inlined.inlineConfig = macroConfig
-        return inlined
-    }
-
-    @Optimized
-    fun inlineForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
-        val valueExpression = config.valueExpression
-        return when (valueExpression.type) {
-            CwtDataTypes.AliasMatchLeft -> inlineAlias(config, key)
-            CwtDataTypes.SingleAliasRight -> inlineSingleAlias(config)?.let { listOf(it) }
-            else -> null
-        }
-    }
-
-    @Optimized
-    fun inlineForContextContainerConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
-        if (config is CwtPropertyConfig) return inlineSingleAlias(config) ?: config
-        return config
-    }
-
-    @Optimized
-    fun inlineForContextConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
-        val inlined = CwtValueConfig.create(
-            pointer = emptyPointer(),
-            configGroup = configGroup,
-            valueExpression = CwtDataExpression.resolveBlock(),
-            valueType = CwtExpressionType.Block,
-            configs = configs,
-        )
-        mergeOptionData(inlined.optionData, config?.optionData) // merge option data
         return inlined
     }
 
@@ -406,6 +377,48 @@ object CwtConfigManipulationService {
         inlined.inlineConfig = config.inlineConfig
         return inlined
     }
+
+    @Optimized
+    fun inlineForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
+        val valueExpression = config.valueExpression
+        return when (valueExpression.type) {
+            CwtDataTypes.AliasMatchLeft -> inlineAlias(config, key)
+            CwtDataTypes.SingleAliasRight -> inlineSingleAlias(config)?.let { listOf(it) }
+            else -> null
+        }
+    }
+
+    @Optimized
+    fun inlineForConfig(config: CwtPropertyConfig): CwtPropertyConfig {
+        // #76
+        return inlineSingleAlias(config) ?: config
+    }
+
+    @Optimized
+    fun inlineForConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
+        // #76
+        if (config is CwtPropertyConfig) return inlineSingleAlias(config) ?: config
+        return config
+    }
+
+    @Optimized
+    fun inlineForContextConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
+        val inlined = CwtValueConfig.create(
+            pointer = emptyPointer(),
+            configGroup = configGroup,
+            valueExpression = CwtDataExpression.resolveBlock(),
+            valueType = CwtExpressionType.Block,
+            configs = configs,
+        )
+        mergeOptionData(inlined.optionData, config?.optionData) // merge option data
+        return inlined
+    }
+
+    // endregion
+
+    // region Expand Methods
+
+    // TODO 3.0.1+
 
     // endregion
 }

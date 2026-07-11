@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -43,7 +44,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property name 规则名称。
  *
- * @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.inlineSingleAlias
+ * @see CwtConfigManipulationService.inlineSingleAlias
  */
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtExpandableConfig<CwtProperty> {
     @FromName("single_alias[$]")

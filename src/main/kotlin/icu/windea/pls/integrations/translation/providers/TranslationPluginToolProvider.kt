@@ -63,7 +63,7 @@ class TranslationPluginToolProvider : TranslationToolProvider {
 
     private fun toLang(localeConfig: CwtLocaleConfig?, supportedLangList: Collection<Lang> = emptyList()): Lang {
         if (localeConfig == null) return Lang.AUTO
-        if (localeConfig.id == "l_default") {
+        if (localeConfig.name == "l_default") {
             return Lang.default
         }
         for (code in localeConfig.codes) {

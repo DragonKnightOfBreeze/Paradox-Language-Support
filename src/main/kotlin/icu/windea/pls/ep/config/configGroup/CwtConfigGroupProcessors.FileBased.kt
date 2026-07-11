@@ -164,9 +164,9 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 key == "system_scopes" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val systemScopeConfig = CwtSystemScopeConfig.resolve(config)
+                        val systemScopeConfig = CwtSystemScopeConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(systemScopeConfig)) continue
-                        initializer.systemScopes[systemScopeConfig.id] = systemScopeConfig
+                        initializer.systemScopes[systemScopeConfig.name] = systemScopeConfig
                     }
                 }
                 key == "locales" -> {
@@ -174,7 +174,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     for (config in configs) {
                         val localeConfig = CwtLocaleConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(localeConfig)) continue
-                        initializer.locales[localeConfig.id] = localeConfig
+                        initializer.locales[localeConfig.name] = localeConfig
                     }
                 }
                 key == "types" -> {

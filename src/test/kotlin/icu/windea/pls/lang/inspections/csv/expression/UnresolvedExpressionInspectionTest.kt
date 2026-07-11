@@ -68,8 +68,8 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
 
     @Test
     fun rowTypeIsKey_failed() {
-        val tag1 = "Cannot resolve expression `1.234` (row config: test_row_key, expect matching: int[0..10])".toErrorTag()
-        val tag2 = "Cannot resolve expression `not` (row config: test_row_key, expect matching: bool)".toErrorTag()
+        val tag1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])".toErrorTag()
+        val tag2 = "Cannot resolve expression `not` (expect matching: bool)".toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv", """
@@ -124,8 +124,8 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), HighlightingT
 
     @Test
     fun rowTypeIsIndex_failed() {
-        val tag1 = "Cannot resolve expression `1.234` (row config: test_row_index, expect matching: int[0..10])".toErrorTag()
-        val tag2 = "Cannot resolve expression `not` (row config: test_row_index, expect matching: bool)".toErrorTag()
+        val tag1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])".toErrorTag()
+        val tag2 = "Cannot resolve expression `not` (expect matching: bool)".toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv", """

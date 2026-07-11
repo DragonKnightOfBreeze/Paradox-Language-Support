@@ -4,6 +4,7 @@ import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtContextConfigsType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -244,7 +245,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     val type: String?
 
     /**
-     * 提示信息。
+     * 提示文本。
      *
      * 用于在部分扩展规则中使用，以提供额外的内嵌提示。
      *
@@ -293,13 +294,12 @@ interface CwtOptionDataHolder : UserDataHolder {
     val contextKey: String?
 
     /**
-     * 上下文规则的聚合类型。
+     * 上下文规则的聚合类型。默认为 [CwtContextConfigsType.Single]。
      *
-     * 指定 `x = {...}` 根下的“上下文规则”是单个（`single`）还是多个（`multiple`）。
-     * 默认为 `single`。
+     * 决定上下文规则是直接来自其属性值规则，还是来自其中的一组子规则。
      *
      * 适用对象：
-     * - 可指定规则上下文的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
+     * - 可指定上下文规则的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
      *
      * 示例：
      *
@@ -309,7 +309,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val contextConfigsType: String
+    val contextConfigsType: CwtContextConfigsType
 
     /**
      * 分组名。
@@ -551,7 +551,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 即，继承自对应的使用处，与其保持一致。
      *
      * 适用对象：
-     * - 部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
+     * - 部分可指定上下文规则的扩展规则（[CwtExtendedParameterConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */

@@ -16,7 +16,7 @@ import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 /**
  * 声明规则上下文。
  *
- * 用于后续获取声明规则对应的处理后的顶级成员规则，确定定义声明的结构，从而提供各种高级语言功能。
+ * 用于后续获取声明规则对应的最终的顶级成员规则，确定声明的结构，从而提供各种高级语言功能。
  *
  * @see CwtDeclarationConfigContextProvider
  * @see CwtDeclarationConfig
@@ -29,7 +29,7 @@ data class CwtDeclarationConfigContext(
 ) : UserDataHolderBase() {
     lateinit var provider: CwtDeclarationConfigContextProvider
 
-    /** 得到对应的处理后的声明规则。 */
+    /** 得到最终的顶级成员规则。 */
     fun getConfig(declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         return ParadoxConfigService.getConfigForDeclarationConfigContext(this, declarationConfig)
     }

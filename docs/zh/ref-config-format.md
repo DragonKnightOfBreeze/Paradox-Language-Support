@@ -141,15 +141,15 @@ priorities = {
 系统作用域规则为内置的"系统级作用域"（如 This、Root、Prev、From 等）提供元信息，用于快速文档与作用域栈推导。
 
 路径定位：
-- `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
+- `system_scopes/{name}`。其中 `{name}` 匹配规则名称（即系统作用域的 ID）。
 
 字段说明：
 
-- `id`：系统作用域 ID。
-- `base_id`：基底作用域 ID，未指定时默认为 `id`。用于将同族系统作用域（如 `Prev` / `PrevPrev`、`From` / `FromFrom`）归类。
-- `: string`（值）：可读名称，未指定时默认为 `id`。
+- `base`：基础系统作用域的 ID。未指定时等同于规则名称。用于归类同族的系统作用域（如 `Prev` `PrevPrev` ...）。
 
-系统作用域规则与[作用域规则与作用域分组规则](#config-scope)一起决定作用域检查与提示。在部分[扩展规则](#configs-extended)中，可使用选项 `## replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。需要注意的是，`## replace_scopes` 不支持替换 `prev` 系列系统作用域。
+系统作用域规则与[作用域规则与作用域分组规则](#config-scope)一起决定作用域检查与提示。
+在部分[扩展规则](#configs-extended)中，可使用选项 `## replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。
+需要注意的是，`## replace_scopes` 不支持替换 `prev` 系列系统作用域。
 
 示例：
 
@@ -159,14 +159,14 @@ priorities = {
 system_scopes = {
     This = {}
     Root = {}
-    Prev = { base_id = Prev }
-    PrevPrev = { base_id = Prev }
-    PrevPrevPrev = { base_id = Prev }
-    PrevPrevPrevPrev = { base_id = Prev }
-    From = { base_id = From }
-    FromFrom = { base_id = From }
-    FromFromFrom = { base_id = From }
-    FromFromFromFrom = { base_id = From }
+    Prev = { base = Prev }
+    PrevPrev = { base = Prev }
+    PrevPrevPrev = { base = Prev }
+    PrevPrevPrevPrev = { base = Prev }
+    From = { base = From }
+    FromFrom = { base = From }
+    FromFromFrom = { base = From }
+    FromFromFromFrom = { base = From }
 }
 ```
 
@@ -182,11 +182,10 @@ system_scopes = {
 通用的规则分组中应声明所有全局的语言环境，其中部分可能不受当前游戏类型支持。
 
 路径定位：
-- `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
+- `locales/{name}`。其中 `{name}` 匹配规则名称（即语言环境 ID）。
 
 字段说明：
 
-- `id`：语言环境 ID（如 `l_english`）。
 - `codes: string[]`：此语言环境包含的语言代码列表（如 `en`、`zh-CN`）。默认为空。
 - `supports: boolean`：此语言环境是否受当前游戏类型支持。默认为 `yes`。
 
@@ -230,10 +229,10 @@ locales = {
 - `severity`：重名冲突的报告级别（如 `warning`、`error`）。
 - `skip_root_key`：允许跳过若干顶级键后继续匹配类型键。值为花括号集合，支持多组（忽略大小写，支持通配符 `any`/`*`/`?`）。若 `skip_root_key` 非空但文件中无根键则不匹配；若为空但文件中有根键同样不匹配。
 - `type_key_prefix`：类型键的必需前缀（忽略大小写）。
-- `## type_key_filter`：类型键的过滤条件（选项注释，忽略大小写）。支持包含集合 `{ a b }` 和排除集合 `<> { x y }`。
-- `## type_key_regex`：类型键的正则过滤（选项注释，忽略大小写）。
-- `## starts_with`：类型键的前缀过滤（选项注释，忽略大小写）。
-- `## graph_related_types`：声明图相关类型（选项注释），用于定义间依赖关系图。
+- `## type_key_filter`（选项）：类型键的过滤条件（选项注释，忽略大小写）。支持包含集合 `{ a b }` 和排除集合 `<> { x y }`。
+- `## type_key_regex`（选项）：类型键的正则过滤（选项注释，忽略大小写）。
+- `## starts_with`（选项）：类型键的前缀过滤（选项注释，忽略大小写）。
+- `## graph_related_types`（选项）：声明图相关类型（选项注释），用于定义间依赖关系图。
 - `localisation`：本地化展示小节，详见[类型展示规则](#config-type-presentation)。
 - `images`：图片展示小节，详见[类型展示规则](#config-type-presentation)。
 - `modifiers`：修正小节，派生出与类型绑定的[修正规则](#config-modifier)。
@@ -253,13 +252,13 @@ locales = {
 
 子类型通过内容匹配确定。子类型按声明顺序逐个检查，通常与[声明规则](#config-declaration)中的 `subtype[...] = {...}` 一起使用，以细化结构与校验。
 
-- `## type_key_filter`：按类型键过滤（选项注释，忽略大小写）。
-- `## type_key_regex`：按类型键正则过滤（选项注释，忽略大小写）。
-- `## starts_with`：按类型键前缀过滤（选项注释，不忽略大小写）。
-- `## push_scope`：匹配时推入的作用域类型（选项注释）。
-- `## display_name`：子类型的展示名称（选项注释）。
-- `only_if_not`：与指定子类型互斥——仅在指定的子类型均未匹配时才继续检查。
-- `## group`：子类型分组名（选项注释）。同一分组内的子类型互斥（最多匹配一个）。
+- `## type_key_filter`（选项）：按类型键过滤（选项注释，忽略大小写）。
+- `## type_key_regex`（选项）：按类型键正则过滤（选项注释，忽略大小写）。
+- `## starts_with`（选项）：按类型键前缀过滤（选项注释，不忽略大小写）。
+- `## push_scope`（选项）：匹配时推入的作用域类型（选项注释）。
+- `## display_name`（选项）：子类型的展示名称（选项注释）。
+- `## only_if_not`（选项）：与指定子类型互斥——仅在指定的子类型均未匹配时才继续检查。
+- `## group`（选项）：子类型分组名（选项注释）。同一分组内的子类型互斥（最多匹配一个）。
 
 子类型规则的匹配流程：
 
@@ -454,7 +453,6 @@ building = {
 - 单别名：`single_alias[{name}]`。其中 `{name}` 匹配规则名称。
 
 声明与引用语法：
-
 - 声明别名：`alias[effect:some_effect] = { ... }`
 - 使用别名：`alias_name[effect] = alias_match_left[effect]`
 - 声明单别名：`single_alias[trigger_clause] = { alias_name[trigger] = alias_match_left[trigger] }`
@@ -589,11 +587,14 @@ defines = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 
-枚举规则用于描述简单枚举，并提供一组可选项，作为固定的枚举值。
+简单枚举规则用于描述简单枚举，并提供一组可选项，作为固定的枚举值。
 简单枚举的枚举值必须是常量，且会忽略大小写。
 
 路径定位：
 - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
+
+引用语法：
+- `key = enum[{name}]` - 其中 `{name}` 匹配简单枚举规则或复杂枚举规则的名字。
 
 示例：
 
@@ -617,6 +618,9 @@ CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 路径定位：
 - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
 
+引用语法：
+- `key = enum[{name}]` - 其中 `{name}` 匹配简单枚举规则或复杂枚举规则的名字。
+
 字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
@@ -626,8 +630,8 @@ CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
 - `start_from_root`：指定是否从文件顶部（而非顶级属性的下一级）开始查询锚点。
 - `name`：描述如何在匹配文件中定位值锚点——实现会收集其中所有名为 `enum_name` 的属性键或属性值或块成员值作为锚点。
-- `## case_insensitive`：（扩展）布尔选项，将复杂枚举值标记为忽略大小写。
-- `## per_definition`：（扩展）布尔选项，将同名同类型复杂枚举值的等效性限制在定义级别（而非文件级别）。
+- `## case_insensitive`（布尔选项/扩展）：将复杂枚举值标记为忽略大小写。
+- `## per_definition`（布尔选项/扩展）：将同名同类型复杂枚举值的等效性限制在定义级别（而非文件级别）。
 
 匹配流程：
 
@@ -664,6 +668,9 @@ enums = {
 路径定位：
 - `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
 
+引用语法：
+- `key = union[{name}]` - 其中 `{name}` 匹配枚举规则的名字。
+
 示例：
 
 ```cwt
@@ -671,6 +678,11 @@ unions = {
     union[loc_or_text] = { localisation scalar }
 }
 ```
+
+注意事项：
+
+- 插件目前对并集规则的支持存在一些限制，例如，在检查上下文规则或者匹配的规则时，不会展开其中的所有候选项（或者实际匹配的那个候选项）。
+- 这条限制会影响一些语言功能的可用性，例如，针对不正确的表达式的代码检查。
 
 > CWTools 兼容性：不兼容，插件作为扩展提供。
 
@@ -703,6 +715,12 @@ values = {
 
 链接规则为复杂表达式中的"字段 / 函数样"节点提供语义与类型约束（作用域 / 值），支撑链式访问与补全检查。
 
+链接规则用于描述各种链式表达式中的链接节点的格式，并为其指定允许的数据源类型和作用域类型。
+这些链接节点通常用于切换作用域或取值，可以链式调用（如 `x.y.z`），并且可能带有数据源（如 `modifier:x` 和 `relations(x)`）。
+在语义与格式上，它们类似编程语言中的函数、属性或字段。
+
+链接规则驱动了这些复杂表达式的解析逻辑以及各种相关的语言功能。
+
 路径定位：
 - 常规链接：`links/{name}`。其中 `{name}` 匹配规则名称。
 - 本地化链接：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
@@ -715,7 +733,7 @@ values = {
 - `from_argument`：是否从传参中读取动态数据（格式如 `func(arg)`）。
 - `argument_separator`：多传参时使用的分隔符（`comma` / `pipe`，默认为 `comma`）。
 - `prefix`：动态链接的前缀。
-- `data_source`（可多值）：每个数据源是一个数据表达式，用于约束动态数据的合法取值。
+- `data_source`：每个数据源是一个数据表达式，用于约束动态数据的合法取值。如果指定了多个值，则意味着此链接为动态链接且有多个传参。
 - `input_scopes`：输入作用域集合，可写单个或集合，同时支持 `input_scope` 与 `input_scopes` 两种写法。
 - `output_scope`：输出作用域；为空时表示透传或基于数据源推导。
 - `for_definition_type`：仅在指定定义类型中可用。
@@ -805,7 +823,7 @@ localisation_promotions = {
 注意事项：
 
 - 名称大小写不敏感；请保持与实际使用一致的拼写风格以便检索。
-- 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
+- 提升规则的名字应与本地化链接名一致；否则无法正确匹配。
 - 静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
 
 > CWTools 兼容性：兼容。
@@ -1020,10 +1038,17 @@ scripted_variables = {
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
-为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`## hint`）、绑定定义类型（`## type`，必填）、以及按需指定的作用域上下文（`## replace_scopes` / `## push_scope`）。
+为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`## hint`），以及按需指定的作用域上下文（`## replace_scopes` / `## push_scope`）。
 
 路径定位：
 - `definitions/{name}`。其中 `{name}` 匹配规则名称。
+
+字段说明：
+
+- `## type`（选项/必填）：声明定义类型。
+- `## hint`（选项）：指定可选的提示文本。用于提供额外的内嵌提示。
+- `## replace_scopes`（选项）：指定显式的作用域上下文。
+- `## push_scope`（选项）：指定显式的作用域上下文。
 
 格式说明：
 
@@ -1033,6 +1058,7 @@ definitions = {
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
 
     ### Some documentation
+    ## hint = §RSome hint text§!
     ## type = civic_or_origin.civic
     x
 
@@ -1045,7 +1071,7 @@ definitions = {
 
 注意事项：
 
-- `type` 为必填；缺失将导致该条目被跳过。
+- `## type` 为必填；缺失将导致该条目被跳过。
 - 此扩展用于"提示与上下文增强"，并不直接改变[声明规则](#config-declaration)的结构。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
@@ -1061,7 +1087,11 @@ definitions = {
 路径定位：
 - `game_rules/{name}`。其中 `{name}` 匹配规则名称。
 
-当条目为属性节点时（如 `x = { ... }` 或 `x = single_alias_right[...]`），其值或子块会作为"声明规则重载"在使用处生效。仅当为属性节点时才会产生重载效果；纯值节点仅提供提示。
+字段说明：
+
+- `## hint`（选项）：指定可选的提示文本。用于提供额外的内嵌提示。
+- `## replace_scopes`（选项）：指定显式的作用域上下文。
+- `## push_scope`（选项）：指定显式的作用域上下文。
 
 格式说明：
 
@@ -1111,13 +1141,17 @@ game_rules = {
 
 字段说明：
 
-- `## event_type`（必填）：声明事件类型，用于在声明上下文中将与事件相关的数据表达式替换为该事件类型对应的表达式。
+- `## event_type`（选项/必填）：声明事件类型。用于按需重载声明规则中的所有对事件的引用为对该事件类型的事件的引用。
+- `## hint`（选项）：指定可选的提示文本。用于提供额外的内嵌提示。
+- `## replace_scopes`（选项）：指定显式的作用域上下文。
+- `## push_scope`（选项）：指定显式的作用域上下文。
 
 格式说明：
 
 ```cwt
 on_actions = {
     ### Some documentation
+    ## hint = §RSome hint text§!
     ## replace_scopes = { this = country root = country }
     ## event_type = country
     x
@@ -1161,9 +1195,11 @@ on_actions = {
 
 字段说明：
 
-- `## context_key`（必填）：上下文键（如 `scripted_trigger@some_trigger`），`@` 之前为包含的定义类型（或 `inline_script`），`@` 之后为定义名或内联脚本路径。上下文键自身也支持模式匹配。
-- `## context_configs_type`：`single`（默认）或 `multiple`，含义同内联脚本扩展规则。
-- `## inherit`：布尔选项，标记后从参数的"使用处"继承上下文（规则与作用域），而非使用静态声明。
+- `## context_key`（选项/必填）：上下文键（如 `scripted_trigger@some_trigger`），`@` 之前为包含的定义类型（或 `inline_script`），`@` 之后为定义名或内联脚本路径。上下文键自身也支持模式匹配。
+- `## context_configs_type`（选项）：上下文规则的聚合类型。决定上下文规则是直接来自其属性值规则（`single`），还是来自其中的一组子规则（`multiple`）。默认为 `single`。
+- `## inherit`（布尔选项）：标记后从参数的"使用处"继承上下文（规则与作用域），而非使用静态声明。
+- `## replace_scopes`（选项）：指定显式的作用域上下文。
+- `## push_scope`（选项）：指定显式的作用域上下文。
 
 格式说明：
 
@@ -1219,6 +1255,10 @@ parameters = {
 路径定位：
 - `complex_enum_values/{type}/{name}`。其中 `{type}` 匹配枚举名，`{name}` 匹配规则名称。
 
+字段说明：
+
+- `## hint`（选项）：指定可选的提示文本。用于提供额外的内嵌提示。
+
 格式说明：
 
 ```cwt
@@ -1248,6 +1288,10 @@ complex_enum_values = {
 
 路径定位：
 - `dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。
+
+字段说明：
+
+- `## hint`（选项）：指定可选的提示文本。用于提供额外的内嵌提示。
 
 格式说明：
 
@@ -1285,7 +1329,9 @@ dynamic_values = {
 
 字段说明：
 
-- `## context_configs_type`：控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
+- `## context_configs_type`：上下文规则的聚合类型。决定上下文规则是直接来自其属性值规则（`single`），还是来自其中的一组子规则（`multiple`）。默认为 `single`。
+- `## replace_scopes`（选项）：指定显式的作用域上下文。
+- `## push_scope`（选项）：指定显式的作用域上下文。
 
 格式说明：
 

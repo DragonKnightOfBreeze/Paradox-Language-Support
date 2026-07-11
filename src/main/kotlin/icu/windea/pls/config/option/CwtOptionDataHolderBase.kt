@@ -2,6 +2,7 @@ package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtConfigApiStatus
+import icu.windea.pls.config.config.CwtContextConfigsType
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -31,7 +32,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val hint by registerKey<String?>(this)
         val eventType by registerKey<String?>(this)
         val contextKey by registerKey<String?>(this)
-        val contextConfigsType by registerKey(this, "single")
+        val contextConfigsType by registerKey(this, CwtContextConfigsType.Single)
         val group by registerKey<String?>(this)
         val typeKeyFilter by registerKey<ReversibleValue<Set<@CaseInsensitive String>>?>(this)
         val typeKeyRegex by registerKey<Regex?>(this)

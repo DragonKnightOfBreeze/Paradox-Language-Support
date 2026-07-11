@@ -240,7 +240,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val qualifiedName = rootInfo.qualifiedName
             // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息（这里还会显示语言环境信息）
             val name = otherLocalisationName
-            val localeId = locale.id
+            val localeId = locale.name
             return ChronicleBundle.message("diff.compare.localisations.popup.name", name, localeId, path, qualifiedName)
         }
     }

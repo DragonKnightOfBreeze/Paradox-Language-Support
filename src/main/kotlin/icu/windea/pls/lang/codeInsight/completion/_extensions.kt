@@ -123,7 +123,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
         config is CwtSingleAliasConfig -> config.config
         config is CwtMacroConfig -> config.config
         else -> null
-    }?.let { c -> CwtConfigManipulationService.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
+    }?.let { c -> CwtConfigManipulationService.inlineForConfig(c) } // 这里需要进行必要的内联
 
     val contextElement = context.contextElement
     val isKeyElement = contextElement is ParadoxScriptPropertyKey

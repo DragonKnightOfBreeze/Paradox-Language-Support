@@ -43,7 +43,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -91,7 +90,7 @@ object ParadoxCompletionManager {
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if (c2 is CwtPropertyConfig) {
-                    configs += CwtConfigManipulationService.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
+                    configs += CwtConfigManipulationService.inlineForConfig(c2) // 这里需要进行必要的内联
                 }
             }
         }
@@ -413,8 +412,8 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             val element = locale.pointer.element ?: continue
             val typeFile = locale.pointer.containingFile
-            val matched = localeIdFromFileName?.let { it == locale.id }
-            val lookupElement = LookupElementBuilder.create(element, locale.id)
+            val matched = localeIdFromFileName?.let { it == locale.name }
+            val lookupElement = LookupElementBuilder.create(element, locale.name)
                 .withIcon(ChronicleIcons.Nodes.LocalisationLocale)
                 .withTailText(" " + locale.text) // 前面需要加一个空格
                 .withTypeText(typeFile?.name, typeFile?.icon, true)

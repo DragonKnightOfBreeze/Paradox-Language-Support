@@ -118,7 +118,6 @@
 
 - [x] P2 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用
 - [x] P2 优化索引逻辑（对于 `ParadoxComplexEnumValueIndex` `ParadoxDefinitionIndex` `ParadoxDefinitionInjectionIndex`，需要保留声明顺序）
-- [ ] P2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持
 - [x] P2 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持
 - [x] P3 API 变更：将 EP `unresolvedExpressionDecorator` 改为 `unresolvedExpressionChecker`
 - [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
@@ -131,7 +130,7 @@
 
 - [ ] P2 重构 select API，更好的链式调用方式，更好的向上或向下查询的方式
 - [ ] P2 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
-- [ ] P2  规范化展示（presentation）的相关 API
+- [ ] P2 规范化展示（presentation）的相关 API
   - 展示：包括相关本地化和相关图片
   - 考虑提供对应的 search/searcher/provider EP。
   - 服务类应放到 `icu.windea.pls.lang.resolve`。
@@ -159,6 +158,10 @@
   - 考虑新增 `ParadoxDefinitonNameService`，或者完善 `ParadoxDefinitonService`
   - 提取 `ParadoxDefinitionManipulationService`，主要用于重命名
   - 考虑优化：可以从 typeKey 或者 nameField 出发来重命名对应的定义
+
+### 附加
+
+- [ ] P2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持
 
 ## v3.0.2 {v3-0-2}
 

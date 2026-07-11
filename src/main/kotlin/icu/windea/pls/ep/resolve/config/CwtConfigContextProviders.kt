@@ -144,7 +144,7 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         val memberPath = context.memberPath ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val defineVariableInfo = context.defineVariableInfo ?: return null
-        val rootConfig = defineVariableInfo.config?.configForDeclaration ?: return null // NOTE 2.1.8 inline or deep copy ops should be unnecessary here
+        val rootConfig = defineVariableInfo.config?.rootConfig ?: return null // NOTE 2.1.8 inline or deep copy ops should be unnecessary here
         val rootConfigs = listOf(rootConfig)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }

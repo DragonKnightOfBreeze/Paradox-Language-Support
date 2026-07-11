@@ -54,10 +54,10 @@ interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     /**
      * 内联脚本的宏规则。为内联脚本用法提供快速文档和规则上下文。
      *
-     * @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.inlineMacro
+     * @see CwtConfigManipulationService.inlineMacro
      */
     interface InlineScript : CwtMacroConfig {
-        val configForDeclaration: CwtPropertyConfig
+        val contextContainerConfig: CwtPropertyConfig
     }
 
     /**
@@ -134,10 +134,10 @@ private class CwtInlineScriptMacroConfig(
     override val config: CwtPropertyConfig,
     override val name: String,
 ) : UserDataHolderBase(), CwtMacroConfig.InlineScript {
-    override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
+    override val contextContainerConfig: CwtPropertyConfig by lazy { computeContextContainerConfig() }
 
-    private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
+    private fun computeContextContainerConfig(): CwtPropertyConfig {
+        return CwtConfigManipulationService.inlineForConfig(config)
     }
 
     override fun toString() = "CwtInlineScriptMacroConfig(name='$name')"

@@ -24,6 +24,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 路径定位：
  * - `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
  *
+ * 引用语法：
+ * - `key = union[{name}]` - 其中 `{name}` 匹配枚举规则的名字。
+ *
  * 示例：
  *
  * ```cwt

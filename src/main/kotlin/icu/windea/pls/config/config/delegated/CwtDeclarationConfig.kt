@@ -51,7 +51,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  *
  * @property name 规则名称（即定义的类型名）。
  * @property attributes 综合属性。
- * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
+ * @property rootConfig 经过处理后的顶级成员规则，用于后续获取最终的顶级成员规则。
  *
  * @see CwtTypeConfig
  * @see CwtSubtypeConfig
@@ -61,7 +61,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val name: String
 
     val attributes: CwtDeclarationConfigAttributes
-    val configForDeclaration: CwtPropertyConfig
+    val rootConfig: CwtPropertyConfig
 
     companion object {
         /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。 */
@@ -89,10 +89,10 @@ private class CwtDeclarationConfigImpl(
     override val name: String,
 ) : UserDataHolderBase(), CwtDeclarationConfig {
     override val attributes: CwtDeclarationConfigAttributes by lazy { CwtDeclarationConfigAttributesEvaluator().evaluate(this) }
-    override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
+    override val rootConfig: CwtPropertyConfig by lazy { computeRootConfig() }
 
-    private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
+    private fun computeRootConfig(): CwtPropertyConfig {
+        return CwtConfigManipulationService.inlineForConfig(config)
     }
 
     override fun toString() = "CwtDeclarationConfigImpl(name='$name')"

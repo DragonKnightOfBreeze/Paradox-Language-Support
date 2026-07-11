@@ -37,7 +37,7 @@ object ParadoxLocalisationGenerationService {
     }
 
     fun getFileName(context: ParadoxLocalisationGenerationContext): String {
-        return "generated_localisations_${context.locale.id}.yml"
+        return "generated_localisations_${context.locale.name}.yml"
     }
 
     fun getFileText(context: ParadoxLocalisationGenerationContext): String {
@@ -52,7 +52,7 @@ object ParadoxLocalisationGenerationService {
     }
 
     private fun StringBuilder.appendLocaleLine(context: ParadoxLocalisationGenerationContext) {
-        append(context.locale.id).append(":\n")
+        append(context.locale.name).append(":\n")
     }
 
     private fun StringBuilder.appendLocalisationLines(context: ParadoxLocalisationGenerationContext, indent: String) {

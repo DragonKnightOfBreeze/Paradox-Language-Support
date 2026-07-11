@@ -37,7 +37,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
- * @property hint 额外提示信息（可选）。
+ * @property hint 可选的提示文本。用于提供额外的内嵌提示。
  */
 interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName

@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-// region Analysis Data Accessors
+// region Analysis Extensions
 
 inline val VirtualFile.rootInfo: ParadoxRootInfo? get() = ParadoxAnalysisManager.getRootInfo(this)
 inline val VirtualFile.fileInfo: ParadoxFileInfo? get() = ParadoxAnalysisManager.getFileInfo(this)
@@ -49,7 +49,7 @@ inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.s
 
 // endregion
 
-// region Resolution Data Accessors
+// region Resolution Extensions
 
 inline val ParadoxScriptProperty.defineInfo: ParadoxDefineInfo? get() = ParadoxDefineManager.getInfo(this)
 inline val ParadoxScriptProperty.defineNamespaceInfo: ParadoxDefineNamespaceInfo? get() = ParadoxDefineManager.getNamespaceInfo(this)
@@ -69,7 +69,7 @@ inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.
 
 // endregion
 
-// region Language Extensions
+// region Addon Extensions
 
 fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
     return StringUtil.isJavaIdentifierPart(this) || extraChars.isNotEmpty() && this in extraChars

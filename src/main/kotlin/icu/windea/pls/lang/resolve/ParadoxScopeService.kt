@@ -448,8 +448,8 @@ object ParadoxScopeService {
     @Suppress("UNUSED_PARAMETER")
     private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxSystemScopeAwareLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val systemScopeConfig = node.config
-        val id = systemScopeConfig.id
-        val baseId = systemScopeConfig.baseId
+        val id = systemScopeConfig.name
+        val baseId = systemScopeConfig.base
         val isFrom = baseId == "From"
         val systemScopeContext = when {
             id == "This" -> inputScopeContext

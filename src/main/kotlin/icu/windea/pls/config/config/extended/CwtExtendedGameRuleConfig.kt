@@ -39,8 +39,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * > CWTools 兼容性：不兼容。拥有不同的格式和行为。
  *
  * @property name 规则名称。
- * @property hint 额外提示信息（可选）。
- * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
+ * @property hint 可选的提示文本。用于提供额外的内嵌提示。
+ * @property rootConfig 经过处理后的顶级成员规则，用于后续获取最终的顶级成员规则。
  */
 interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
@@ -48,7 +48,7 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
     @FromOptionMember("hint: string?")
     val hint: String?
 
-    val configForDeclaration: CwtPropertyConfig?
+    val rootConfig: CwtPropertyConfig?
 
     companion object {
         /** 由成员规则解析为游戏规则的扩展规则。 */
@@ -77,15 +77,14 @@ private class CwtExtendedGameRuleConfigImpl(
     override val name: String,
     override val hint: String?
 ) : UserDataHolderBase(), CwtExtendedGameRuleConfig {
-    override val configForDeclaration: CwtPropertyConfig? by lazy { computeConfigForDeclaration() }
+    override val rootConfig: CwtPropertyConfig? by lazy { computeRootConfig() }
 
-    private fun computeConfigForDeclaration(): CwtPropertyConfig? {
+    private fun computeRootConfig(): CwtPropertyConfig? {
         if (config !is CwtPropertyConfig) return null
-        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
+        return CwtConfigManipulationService.inlineForConfig(config)
     }
 
     override fun toString() = "CwtExtendedGameRuleConfigImpl(name='$name')"
 }
-
 
 // endregion

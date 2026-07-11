@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * 通用的规则分组中应声明所有全局的语言环境，其中部分可能不受当前游戏类型支持。
  *
  * 路径定位：
- * - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
+ * - `locales/{name}`。其中 `{name}` 匹配规则名称（即语言环境 ID）。
  *
  * 示例：
  *
@@ -39,7 +39,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *
  * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
- * @property id 语言环境 ID（如 `l_english`）。
+ * @property name 规则名称。即语言环境 ID（如 `l_english`）。
  * @property codes 此语言环境包含的语言代码列表（如 `en`、`zh-CN`）。
  * @property supports 此语言环境是否受当前游戏类型支持。
  * @property text 此语言环境的显示文本（依具体实现）。
@@ -48,15 +48,15 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  */
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
-    val id: String
+    val name: String
     @FromMember("codes: string[]")
     val codes: List<String>
     @FromMember("supports: boolean", defaultValue = "yes")
     val supports: Boolean
 
     val text: String
-    val shortId: String get() = id.removePrefix("l_")
-    val idWithText: String get() = if (text.isEmpty()) id else "$id ($text)"
+    val shortId: String get() = name.removePrefix("l_")
+    val idWithText: String get() = if (text.isEmpty()) name else "$name ($text)"
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
@@ -101,59 +101,59 @@ private object CwtLocaleConfigResolver : CwtConfigResolverScope {
     fun resolveAuto(): CwtLocaleConfig = autoLocaleConfig
     fun resolveAutoOs(): CwtLocaleConfig = autoOsLocaleConfig
     fun resolveFallback(): CwtLocaleConfig = fallbackLocaleConfig
+
     fun resolve(config: CwtPropertyConfig): CwtLocaleConfig? {
-        val id = config.key
+        val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
-            logger.warn("Skipped invalid locale config (id: $id): Null properties.".withLocationPrefix(config))
+            logger.warn("Skipped invalid locale config (name: $name): Null properties.".withLocationPrefix(config))
             return null
         }
-
         val propGroup = propConfigs.groupBy { it.key }
         val codes = propGroup.getOne("codes")?.values?.mapNotNull { v -> v.stringValue }?.optimized().orEmpty()
         val supports = propGroup.getOne("supports")?.booleanValue ?: true
-        logger.debug { "Resolved locale config (id: $id).".withLocationPrefix(config) }
-        return CwtLocaleConfigImpl(config, id, codes, supports)
+        logger.debug { "Resolved locale config (name: $name).".withLocationPrefix(config) }
+        return CwtLocaleConfigImpl(config, name, codes, supports)
     }
 }
 
 private class CwtLocaleConfigImpl(
     override val config: CwtPropertyConfig,
-    override val id: String,
+    override val name: String,
     override val codes: List<String>,
     override val supports: Boolean,
 ) : UserDataHolderBase(), CwtLocaleConfig {
-    override val text: String get() = ChronicleDocBundle.locale(id)
+    override val text: String get() = ChronicleDocBundle.locale(name)
 
-    override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && id == other.id
-    override fun hashCode() = id.hashCode()
-    override fun toString() = "CwtLocaleConfig(id='$id')"
+    override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && name == other.name
+    override fun hashCode() = name.hashCode()
+    override fun toString() = "CwtLocaleConfig(name='$name')"
 }
 
 private class AutoCwtLocaleConfig(
-    override val id: String
+    override val name: String
 ) : UserDataHolderBase(), CwtLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException() // as placeholder
     override val codes: List<String> get() = emptyList() // as placeholder
     override val supports: Boolean get() = false // as placeholder
-    override val text: String get() = ChronicleDocBundle.locale(id)
+    override val text: String get() = ChronicleDocBundle.locale(name)
 
-    override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && id == other.id
-    override fun hashCode() = id.hashCode()
-    override fun toString() = "AutoCwtLocaleConfig(id='$id')"
+    override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && name == other.name
+    override fun hashCode() = name.hashCode()
+    override fun toString() = "AutoCwtLocaleConfig(name='$name')"
 }
 
 private class FallbackCwtLocaleConfig(
-    override val id: String
+    override val name: String
 ) : UserDataHolderBase(), CwtLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException() // as placeholder
     override val codes: List<String> get() = emptyList() // as placeholder
     override val supports: Boolean get() = false // as placeholder
-    override val text: String get() = ChronicleDocBundle.locale(id)
+    override val text: String get() = ChronicleDocBundle.locale(name)
 
-    override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && id == other.id
-    override fun hashCode() = id.hashCode()
-    override fun toString() = "FallbackCwtLocaleConfig(id='$id')"
+    override fun equals(other: Any?) = this === other || other is CwtLocaleConfig && name == other.name
+    override fun hashCode() = name.hashCode()
+    override fun toString() = "FallbackCwtLocaleConfig(name='$name')"
 }
 
 // endregion

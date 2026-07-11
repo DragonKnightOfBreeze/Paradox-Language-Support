@@ -141,15 +141,15 @@ priorities = {
 System scope configs provide metadata for built-in "system-level scopes" (such as This, Root, Prev, From, etc.), used for quick documentation and scope stack derivation.
 
 Path Location:
-- `system_scopes/{name}`, where `{name}` is the system scope ID.
+- `system_scopes/{name}`, where `{name}` is the config name (aka the system scope ID).
 
 Field Explanation:
 
-- `id`: System scope ID.
-- `base_id`: Base scope ID; defaults to `id` when not specified. Used to classify scopes of the same family (e.g. `Prev` / `PrevPrev`, `From` / `FromFrom`).
-- `: string` (value): Readable name; defaults to `id` when not specified.
+- `base`：Base system scope ID. Equivalent to config name when not specified. Used to classify system scopes of the same family (e.g. `Prev`, `PrevPrev`, ...).
 
-System scope configs, together with [scope configs and scope group configs](#config-scope), determine scope checking and hints. In some [extended configs](#configs-extended), the option `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in the current context (e.g. mapping `this` / `root` / `from` to `country`). Note that `## replace_scopes` does not support replacing `prev`-series system scopes.
+System scope configs, together with [scope configs and scope group configs](#config-scope), determine scope checking and hints.
+In some [extended configs](#configs-extended), the option `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in the current context (e.g. mapping `this` / `root` / `from` to `country`).
+Note that `## replace_scopes` does not support replacing `prev`-series system scopes.
 
 Examples:
 
@@ -159,14 +159,14 @@ Examples:
 system_scopes = {
     This = {}
     Root = {}
-    Prev = { base_id = Prev }
-    PrevPrev = { base_id = Prev }
-    PrevPrevPrev = { base_id = Prev }
-    PrevPrevPrevPrev = { base_id = Prev }
-    From = { base_id = From }
-    FromFrom = { base_id = From }
-    FromFromFrom = { base_id = From }
-    FromFromFromFrom = { base_id = From }
+    Prev = { base = Prev }
+    PrevPrev = { base = Prev }
+    PrevPrevPrev = { base = Prev }
+    PrevPrevPrevPrev = { base = Prev }
+    From = { base = From }
+    FromFrom = { base = From }
+    FromFromFrom = { base = From }
+    FromFromFromFrom = { base = From }
 }
 ```
 
@@ -182,11 +182,10 @@ Based on these configs, the plugin identifies and infers available locales, pref
 All global locales should be declared in the general config group, some of which may not be supported by the current game type.
 
 Path Location:
-- `locales/{id}`, where `{id}` is the locale ID.
+- `locales/{name}`, where `{name}` is the config name (aka the locale ID).
 
 Field Explanation:
 
-- `id`: locale ID (e.g. `l_english`).
 - `codes: string[]`: List of language codes contained in this locale (e.g. `en`, `zh-CN`). Default is empty.
 - `supports: boolean`: Whether this locale is supported by the current game type. Default is `yes`.
 
@@ -230,10 +229,10 @@ Field Explanation (for type configs):
 - `severity`: Reporting level for duplicate name conflicts (e.g. `warning`, `error`).
 - `skip_root_key`: Allows skipping several top-level keys before continuing to match the type key. The value is a curly-brace set, supporting multiple groups (case-insensitive, supports wildcards `any`/`*`/`?`). If `skip_root_key` is non-empty but the file has no root keys, matching fails; if empty but the file has root keys, matching also fails.
 - `type_key_prefix`: Required prefix for the type key (case-insensitive).
-- `## type_key_filter`: Filter condition for the type key (option comment, case-insensitive). Supports inclusion sets `{ a b }` and exclusion sets `<> { x y }`.
-- `## type_key_regex`: Regex filter for the type key (option comment, case-insensitive).
-- `## starts_with`: Prefix filter for the type key (option comment, case-insensitive).
-- `## graph_related_types`: Declares graph-related types (option comment), used for inter-definition dependency graphs.
+- `## type_key_filter`(option) : Filter condition for the type key (option comment, case-insensitive). Supports inclusion sets `{ a b }` and exclusion sets `<> { x y }`.
+- `## type_key_regex`(option) : Regex filter for the type key (option comment, case-insensitive).
+- `## starts_with` (option): Prefix filter for the type key (option comment, case-insensitive).
+- `## graph_related_types` (option): Declares graph-related types (option comment), used for inter-definition dependency graphs.
 - `localisation`: Localisation display section, see [Type Presentation Config](#config-type-presentation) for details.
 - `images`: Image display section, see [Type Presentation Config](#config-type-presentation) for details.
 - `modifiers`: Modifier section, which derives [modifier configs](#config-modifier) bound to the type.
@@ -253,13 +252,13 @@ Field Explanation (for subtype configs):
 
 Subtypes are determined through content matching. Subtypes are checked one by one in declaration order, typically used together with `subtype[...] = {...}` in [declaration configs](#config-declaration) to refine structure and validation.
 
-- `## type_key_filter`: Filters by type key (option comment, case-insensitive).
-- `## type_key_regex`: Filters by type key regex (option comment, case-insensitive).
-- `## starts_with`: Filters by type key prefix (option comment, case-sensitive).
-- `## push_scope`: Scope type pushed when matched (option comment).
-- `## display_name`: Display name for the subtype (option comment).
-- `only_if_not`: Mutually exclusive with specified subtypes — only continues checking if none of the specified subtypes have matched.
-- `## group`: Subtype group name (option comment). Subtypes within the same group are mutually exclusive (at most one matches).
+- `## type_key_filter` (option): Filters by type key (option comment, case-insensitive).
+- `## type_key_regex` (option): Filters by type key regex (option comment, case-insensitive).
+- `## starts_with` (option): Filters by type key prefix (option comment, case-sensitive).
+- `## push_scope` (option): Scope type pushed when matched (option comment).
+- `## display_name` (option): Display name for the subtype (option comment).
+- `## only_if_not` (option): Mutually exclusive with specified subtypes — only continues checking if none of the specified subtypes have matched.
+- `## group` (option): Subtype group name (option comment). Subtypes within the same group are mutually exclusive (at most one matches).
 
 Matching Flow (for subtype configs):
 
@@ -454,7 +453,6 @@ Path Location:
 - Single alias: `single_alias[{name}]`, where `{name}` is the config name.
 
 Declaration and reference syntax:
-
 - Declare alias: `alias[effect:some_effect] = { ... }`
 - Use alias: `alias_name[effect] = alias_match_left[effect]`
 - Declare single alias: `single_alias[trigger_clause] = { alias_name[trigger] = alias_match_left[trigger] }`
@@ -589,11 +587,14 @@ Notes:
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 
-Enum configs are used to describe a simple enumeration, providing a set of fixed available values as enum values.
+Simple enum configs are used to describe a simple enumeration, providing a set of fixed available values as enum values.
 The values of a simple enum must be constants, and are case-insensitive.
 
 Path Location:
 - `enums/enum[{name}]` – where `{name}` matches the config name.
+
+Reference syntax:
+- `key = enum[{name}]` - where `{name}` matches the name of a simple enum config or a complex enum config.
 
 Examples:
 
@@ -617,6 +618,9 @@ Complex enum values are case-sensitive by default.
 Path Location:
 - `enums/complex_enum[{name}]` – where `{name}` matches the config name.
 
+Reference syntax:
+- `key = enum[{name}]` - where `{name}` matches the name of a simple enum config or a complex enum config.
+
 Field Explanation:
 
 - `path`: The file directory path to be scanned (the `game/` prefix is automatically removed during resolution). Multiple paths can be declared.
@@ -626,8 +630,8 @@ Field Explanation:
 - `path_strict`: When set to `yes`, enforces exact directory matching, not matching subdirectories.
 - `start_from_root`: Specifies whether to start querying anchors from the top of the file (rather than from the next level after the top-level properties).
 - `name`: Describes how to locate value anchors within the matched files – the implementation collects all property keys, property values, or block member values named `enum_name` as anchors.
-- `## case_insensitive`: (Extension) A boolean option that marks complex enum values as case-insensitive.
-- `## per_definition`: (Extension) A boolean option that restricts the equivalence of complex enum values with the same name and type to the definition level (rather than the file level).
+- `## case_insensitive` (boolean option / extension): Marks complex enum values as case-insensitive.
+- `## per_definition` (boolean option / extension): Restricts the equivalence of complex enum values with the same name and type to the definition level (rather than the file level).
 
 Matching process:
 
@@ -664,6 +668,9 @@ Unlike enum configs, the available values here can be data expressions of variou
 Path location:
 - `unions/union[{name}]` – where `{name}` matches the config name.
 
+Reference synax:
+- `key = union[{name}]` - where `{name}` matches the name of an union config.
+
 Examples:
 
 ```cwt
@@ -671,6 +678,11 @@ unions = {
     union[loc_or_text] = { localisation scalar }
 }
 ```
+
+Notes:
+
+- The plugin's current support for union config has some limitations, for example, when checking context configs or matched configs, all candidates in it (or the one that actually matched) are not be expanded.
+- This restriction affects the availability of some language features, such as code inspection for incorrect expressions.
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -703,6 +715,12 @@ values = {
 
 Link configs provide semantic and type constraints (scope / value) for "field / function-like" nodes in complex expressions, supporting chained access and completion checking.
 
+Link configs are used to describe the format of link nodes in various linked expressions and specify the allowed data source types and scope types.
+These link nodes are usually used to switch scopes or retrieve values, can be chained (e.g., `x.y.z`), and may have data sources (e.g., `modifier:x` and `relations(x)`).
+In semantics and formats, they are similar to functions, properties, or fields in programming languages.
+
+Link configs drive the resolution logic of these complex expressions and various related language features.
+
 Path Location:
 - Regular links: `links/{name}`, where `{name}` is the config name.
 - Localisation links: `localisation_links/{name}`, where `{name}` is the config name. 
@@ -715,7 +733,7 @@ Field Explanation:
 - `from_argument`: Whether to read dynamic data from arguments (format like `func(arg)`).
 - `argument_separator`: Separator for multiple arguments (`comma` / `pipe`, defaults to `comma`).
 - `prefix`: Prefix for the dynamic link.
-- `data_source` (multivalued): Each data source is a data expression constraining the valid values for dynamic data.
+- `data_source`: Each data source is a data expression constraining the valid values for dynamic data.If multiple values are specified, then it means that the link is a dynamic link with multiple arguments.
 - `input_scopes`: Input scope set; can be a single value or a set, supporting both `input_scope` and `input_scopes` notations.
 - `output_scope`: Output scope; when empty, indicates passthrough or derivation based on data source.
 - `for_definition_type`: Only available within the specified definition type.
@@ -1020,10 +1038,17 @@ Notes:
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
-Provides additional context and hint information for specific "definitions", including documentation / hints (`## hint`), bound definition type (`## type`, required), and optionally specified scope context (`## replace_scopes` / `## push_scope`).
+Provides additional context and hint information for specific "definitions", including documentation / hints (`## hint`), and optionally specified scope context (`## replace_scopes` / `## push_scope`).
 
 Path Location:
 - `definitions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+
+Field description:
+
+- `## type` (option / required): Declares the definition type.
+- `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
+- `## replace_scopes` (option): Specifies explicit scope context.
+- `## push_scope` (option): Specifies explicit scope context.
 
 Format Explanation:
 
@@ -1033,6 +1058,7 @@ definitions = {
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
 
     ### Some documentation
+    ## hint = §RSome hint text§!
     ## type = civic_or_origin.civic
     x
 
@@ -1045,7 +1071,7 @@ definitions = {
 
 Notes:
 
-- `type` is required; if missing, the entry will be skipped.
+- `## type` is required; if missing, the entry will be skipped.
 - This extension is for "hint and context enhancement" and does not directly change the structure of [declaration configs](#config-declaration).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
@@ -1061,7 +1087,11 @@ Config names can be constants, template expressions, ANT expressions, or regular
 Path Location:
 - `game_rules/{name}`, where `{name}` is the config name.
 
-When the entry is a property node (e.g. `x = { ... }` or `x = single_alias_right[...]`), its value or sub-block acts as a "declaration config override" at the usage site. Only property nodes produce an override effect; pure value nodes only provide hints.
+Field description:
+
+- `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
+- `## replace_scopes` (option): Specifies explicit scope context.
+- `## push_scope` (option): Specifies explicit scope context.
 
 Format Explanation:
 
@@ -1111,13 +1141,17 @@ Path Location:
 
 Field Explanation:
 
-- `## event_type` (required): Declares the event type, used to replace event-related data expressions in the declaration context with expressions corresponding to that event type.
+- `## event_type` (option / required): Declares the event type. Used to override all references to events in the declaration config on demand as references to events of that event type.
+- `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
+- `## replace_scopes` (option): Specifies explicit scope context.
+- `## push_scope` (option): Specifies explicit scope context.
 
 Format Explanation:
 
 ```cwt
 on_actions = {
     ### Some documentation
+    ## hint = §RSome hint text§!
     ## replace_scopes = { this = country root = country }
     ## event_type = country
     x
@@ -1161,9 +1195,11 @@ Path Location:
 
 Field explanation:
 
-- `## context_key` (required): Context key (e.g. `scripted_trigger@some_trigger`); before `@` is the containing definition type (or `inline_script`), after `@` is the definition name or inline script path. The context key itself also supports pattern matching.
-- `## context_configs_type`: `single` (default) or `multiple`, with the same meaning as in inline script extended configs.
-- `## inherit`: Boolean option; when marked, inherits context (configs and scope) from the parameter's "usage site" rather than using static declarations.
+- `## context_key` (option / required): Context key (e.g. `scripted_trigger@some_trigger`); before `@` is the containing definition type (or `inline_script`), after `@` is the definition name or inline script path. The context key itself also supports pattern matching.
+- `## context_configs_type` (option): Aggregation type of context configs. Determines whether the context configs comes directly from its property value config (`single`), or from a set of child configs within it (`multiple`). Defaults to `single`.
+- `## inherit` (boolean option): When marked, inherits context (configs and scope) from the parameter's "usage site" rather than using static declarations.
+- `## replace_scopes` (option): Specifies explicit scope context.
+- `## push_scope` (option): Specifies explicit scope context.
 
 Format Explanation:
 
@@ -1219,6 +1255,10 @@ Config names can be constants, template expressions, ANT expressions, or regular
 Path Location:
 - `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name, and `{name}` is the config name.
 
+Field Explanation:
+
+- `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
+
 Format Explanation:
 
 ```cwt
@@ -1248,6 +1288,10 @@ Config names can be constants, template expressions, ANT expressions, or regular
 
 Path Location:
 - `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the config name.
+
+Field Explanation:
+
+- `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
 
 - Format Explanation:
 
@@ -1285,7 +1329,9 @@ Path Location:
 
 Field Explanation:
 
-- `## context_configs_type`: Controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
+- `## context_configs_type`: Aggregation type of context configs. Determines whether the context configs comes directly from its property value config (`single`), or from a set of child configs within it (`multiple`). Defaults to `single`.
+- `## replace_scopes` (option): Specifies explicit scope context.
+- `## push_scope` (option): Specifies explicit scope context.
 
 Format Explanation:
 

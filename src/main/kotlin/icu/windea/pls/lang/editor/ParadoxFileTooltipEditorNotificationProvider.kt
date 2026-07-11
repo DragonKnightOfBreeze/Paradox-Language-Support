@@ -59,6 +59,6 @@ class ParadoxFileTooltipEditorNotificationProvider : EditorNotificationProvider 
         if (psiFile !is ParadoxLocalisationFile) return null
         val fileLocale = file.getUserData(ParadoxLocalisationGenerationService.fileLocaleKey)
         return psiFile.children().filterIsInstance<ParadoxLocalisationPropertyList>()
-            .find { fileLocale == null || it.locale?.name == fileLocale.id }
+            .find { fileLocale == null || it.locale?.name == fileLocale.name }
     }
 }

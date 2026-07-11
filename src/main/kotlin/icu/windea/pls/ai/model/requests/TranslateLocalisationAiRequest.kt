@@ -21,7 +21,7 @@ class TranslateLocalisationAiRequest(
 
     override fun toPromptVariables(variables: MutableMap<String, Any?>): Map<String, Any?> {
         super.toPromptVariables(variables)
-        variables["target_locale_id"] = targetLocale.id
+        variables["target_locale_id"] = targetLocale.name
         variables["target_locale_text"] = targetLocale.text
         variables["description"] = description
         return variables

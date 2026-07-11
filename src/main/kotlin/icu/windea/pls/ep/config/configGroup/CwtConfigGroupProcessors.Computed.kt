@@ -135,7 +135,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             // NOTE 2.2.0 it's necessary to convert `any` to `*` in root keys before query by path
             val rawPaths = rootKeysList.map { rootKeys -> rootKeys.drop(1).map { if (it == "any") "*" else it } + typeKey }
             val paths = rawPaths.map { CwtConfigPath.resolve(it).path }
-            val rootConfig = baseDeclarationConfig.configForDeclaration
+            val rootConfig = baseDeclarationConfig.rootConfig
             val config = selectConfigScope { rootConfig.queryBy(paths).asProperty().one() } ?: continue
             // read action is required here (for logging)
             val declarationConfig = readAction { CwtDeclarationConfig.resolve(config, name = typeName) } ?: continue

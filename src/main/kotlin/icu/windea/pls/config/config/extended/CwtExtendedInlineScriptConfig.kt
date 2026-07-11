@@ -6,6 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtContextConfigsType
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -53,7 +54,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * @property name 规则名称。
- * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
+ * @property contextConfigsType 上下文规则的聚合类型（`single`/`multiple`，默认为 `single`）。决定上下文规则是直接来自其属性值规则，还是来自其中的一组子规则。
  *
  * @see CwtOptionDataHolder.replaceScopes
  * @see CwtOptionDataHolder.pushScope
@@ -62,12 +63,12 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     @FromName
     val name: String
     @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
-    val contextConfigsType: String // TODO [config-system] 2.0.4+ 需要详细说明这个属性的用处与行为
+    val contextConfigsType: CwtContextConfigsType
 
-    /** 得到处理后的上下文容器规则。 */
+    /** 得到经过处理后的上下文容器规则。在后续的语义解析流程中，需要获取的通常是上下文规则，而非上下文容器规则。 */
     fun getContextContainerConfig(): CwtMemberConfig<*>
 
-    /** 得到由其声明的上下文规则列表。 */
+    /** 得到由其声明的一组上下文规则。在后续的语义解析流程中，会加入作为从扩展规则推断的上下文规则。 */
     fun getContextConfigs(): List<CwtMemberConfig<*>>
 
     companion object {
@@ -95,7 +96,7 @@ private object CwtExtendedInlineScriptConfigResolver : CwtConfigResolverScope {
 private class CwtExtendedInlineScriptConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
-    override val contextConfigsType: String,
+    override val contextConfigsType: CwtContextConfigsType,
 ) : UserDataHolderBase(), CwtExtendedInlineScriptConfig {
     private val _contextContainerConfig by lazy { computeContextContainerConfig() }
     private val _contextConfigs by lazy { computeContextConfigs() }
@@ -110,24 +111,22 @@ private class CwtExtendedInlineScriptConfigImpl(
 
     private fun computeContextContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
-        // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
-        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
+        return CwtConfigManipulationService.inlineForConfig(config)
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
         val contextContainerConfig = _contextContainerConfig
         if (contextContainerConfig !is CwtPropertyConfig) return emptyList()
-        val r = when (contextConfigsType) {
-            "multiple" -> contextContainerConfig.configs.orEmpty()
-            else -> contextContainerConfig.valueConfig.to.singletonListOrEmpty()
+        val sourceConfigs = when (contextConfigsType) {
+            CwtContextConfigsType.Single -> contextContainerConfig.valueConfig.to.singletonListOrEmpty()
+            CwtContextConfigsType.Multiple -> contextContainerConfig.configs.orEmpty()
         }
-        if (r.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(config, r, config.configGroup)
+        if (sourceConfigs.isEmpty()) return emptyList()
+        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(config, sourceConfigs, config.configGroup)
         return listOf(contextConfig)
     }
 
     override fun toString() = "CwtExtendedInlineScriptConfigImpl(name='$name')"
 }
-
 
 // endregion

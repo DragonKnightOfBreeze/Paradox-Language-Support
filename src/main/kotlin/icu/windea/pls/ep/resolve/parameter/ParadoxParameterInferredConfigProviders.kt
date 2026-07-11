@@ -82,12 +82,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
 
     private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
-        val inlinedContextConfigs = expressionContextConfigs.map { config ->
-            if (config is CwtPropertyConfig) {
-                return@map CwtConfigManipulationService.inlineSingleAlias(config) ?: config
-            }
-            config
-        }
+        val inlinedContextConfigs = expressionContextConfigs.map { config -> CwtConfigManipulationService.inlineForConfig(config) }
         val parentElement = parameterInfo.parentElement
         val configGroup = expressionContextConfigs.first().configGroup
         val passingConfig = inlinedContextConfigs.find { it.configExpression.type == CwtDataTypes.ParameterValue }

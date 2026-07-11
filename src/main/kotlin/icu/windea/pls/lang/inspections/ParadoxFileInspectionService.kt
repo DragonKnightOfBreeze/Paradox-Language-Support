@@ -83,7 +83,7 @@ object ParadoxFileInspectionService {
         val locale = singlePropertyList.locale ?: return null
         if (!locale.isValid) return null // locale尚未填写完成时也跳过检查
         val localeConfig = selectLocale(locale) ?: return null // locale不支持时也跳过检查
-        val localeId = localeConfig.id
+        val localeId = localeConfig.name
         val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
         if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)

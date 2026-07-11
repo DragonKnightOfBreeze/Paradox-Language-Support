@@ -52,7 +52,7 @@ data class CwtConfigContext(
 
     lateinit var provider: CwtConfigContextProvider
 
-    /** 得到对应的一组作为上下文的成员规则。 */
+    /** 得到一组作为上下文的成员规则。 */
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         return ParadoxConfigService.getConfigsForConfigContext(this, options)
     }

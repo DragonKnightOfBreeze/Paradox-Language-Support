@@ -23,10 +23,12 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -168,6 +170,15 @@ object CwtConfigManager {
     fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.filePathPatternsForPriority) {
             CwtConfigService.getFilePathPatternsForPriority(config).optimized() // optimized to optimize memory
+        }
+    }
+
+    inline fun <T> sortedByPriority(collection: Collection<T>, crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
+        if (collection.size <= 1) return collection.toListOrThis()
+        return collection.sortedByDescending s@{
+            val expression = expressionProvider(it) ?: return@s Double.MAX_VALUE
+            val configGroup = configGroupProvider(it)
+            CwtConfigExpressionManager.getPriority(expression, configGroup)
         }
     }
 

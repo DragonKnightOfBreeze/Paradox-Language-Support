@@ -14,6 +14,6 @@ fun Row.localeComboBox(configGroup: CwtConfigGroup = ChronicleFacade.getConfigGr
 }
 
 fun Row.localeComboBox(allLocales: Collection<CwtLocaleConfig>): Cell<ComboBox<String>> {
-    val localeMap = allLocales.associateBy { it.id }
+    val localeMap = allLocales.associateBy { it.name }
     return comboBox(localeMap.keys, textListCellRenderer { it?.let { s -> localeMap[s]?.text ?: s } })
 }

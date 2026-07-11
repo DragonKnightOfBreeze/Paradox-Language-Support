@@ -3,6 +3,8 @@ package icu.windea.pls.config.config
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
+import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
 
 /**
  * @see CwtMemberConfig
@@ -103,6 +105,30 @@ enum class CwtLinkArgumentSeparator(val id: String) {
             return when (id?.lowercase()) {
                 "pipe" -> Pipe
                 else -> Comma
+            }
+        }
+    }
+}
+
+/**
+ * 上下文规则的聚合类型。默认为 [Single]。
+ *
+ * 决定上下文规则是直接来自其属性值规则（[Single]），还是来自其中的一组子规则（[Multiple]）。
+ *
+ * @see CwtExtendedParameterConfig
+ * @see CwtExtendedInlineScriptConfig
+ */
+enum class CwtContextConfigsType(val id: String) {
+    Single("single"), Multiple("multiple");
+
+    override fun toString() = id
+
+    companion object {
+        @JvmStatic
+        fun resolve(id: String?): CwtContextConfigsType {
+            return when (id?.lowercase()) {
+                "multiple" -> Multiple
+                else -> Single
             }
         }
     }

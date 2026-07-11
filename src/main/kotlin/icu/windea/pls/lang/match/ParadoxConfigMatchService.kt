@@ -131,7 +131,7 @@ object ParadoxConfigMatchService {
         // 判断 definition 的 propertyValue 是否需要是 block
         run {
             val configGroup = typeConfig.configGroup
-            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.rootConfig ?: return@run
             val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
             // 兼容进行代码补全时用户输入未完成的情况
             val isIncomplete = propertyValue.elementType == STRING

@@ -47,14 +47,14 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         element: ParadoxLocalisationLocale,
         private val localeConfig: CwtLocaleConfig,
     ) : PsiUpdateModCommandAction<ParadoxLocalisationLocale>(element) {
-        override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
+        override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale.item", localeConfig.name)
 
         override fun getPresentation(context: ActionContext, element: ParadoxLocalisationLocale): Presentation {
             return Presentation.of(localeConfig.idWithText).withIcon(ChronicleIcons.Nodes.LocalisationLocale)
         }
 
         override fun invoke(context: ActionContext, element: ParadoxLocalisationLocale, updater: ModPsiUpdater) {
-            element.setName(localeConfig.id)
+            element.setName(localeConfig.name)
         }
     }
 }

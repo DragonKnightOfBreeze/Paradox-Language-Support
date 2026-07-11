@@ -122,7 +122,7 @@ class GenerateLocalisationFileAction : AnAction() {
                             val propertyList = newPsiFile.propertyLists.firstOrNull() ?: continue
                             propertyList.processChild { e ->
                                 if (e is ParadoxLocalisationLocale) {
-                                    e.setName(missingLocaleConfig.id)
+                                    e.setName(missingLocaleConfig.name)
                                 } else if (e is ParadoxLocalisationProperty) {
                                     when (strategy) {
                                         ChronicleSettingsStrategies.LocalisationGeneration.EmptyText -> {
