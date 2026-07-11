@@ -10,6 +10,7 @@
 - [x] 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持） / Improve lexer for localisation files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[b]`)
 - [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 / Provide brace match and completion for quoted string expressions in script files ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
 - [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
+- [x] 改为为内联脚本文件提供编辑器通知，而非代码检查，以避免无法适用于非项目文件 / Provide editor notifications instead of code inspections for inline script files instead to avoid not working on non-project files
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.2.0 - 2026-07-05

@@ -2,19 +2,14 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.core.truncate
@@ -26,13 +21,9 @@ import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
-import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
-import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxExpressionInspectionService {
@@ -61,9 +52,9 @@ object ParadoxExpressionInspectionService {
             else -> null
         }
         val message = when {
-            expect == null -> ChronicleBundle.message("unresolvedExpression.desc.1", expression)
-            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.2", expression, expect)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.3", expression)
+            expect == null -> ChronicleBundle.message("unresolvedExpression.desc.withoutExpect", expression)
+            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.withExpect", expression, expect)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
         }
         return message
     }

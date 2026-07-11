@@ -316,6 +316,7 @@
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameTypeMismatchedEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxFileTooltipEditorNotificationProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
 
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>

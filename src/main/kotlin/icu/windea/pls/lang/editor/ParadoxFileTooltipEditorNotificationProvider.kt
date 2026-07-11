@@ -19,7 +19,9 @@ import java.util.function.Function
 import javax.swing.JComponent
 
 /**
- * 为带有文件提示元数据的特殊文件提供通知，以便提供额外的说明和快速操作。
+ * 为带有文件提示元数据的特殊文件提供编辑器通知，已提供额外的说明和快速操作。
+ *
+ * 通常适用于生成的临时文件。
  *
  * @see ParadoxLocalisationGenerationService.fileTooltipKey
  */

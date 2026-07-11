@@ -123,6 +123,7 @@
 - [x] P3 API 变更：将 EP `unresolvedExpressionDecorator` 改为 `unresolvedExpressionChecker`
 - [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
 - [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
+- [x] P2 改为为内联脚本文件提供编辑器通知，而非代码检查，以避免无法适用于非项目文件（回退到 `ParadoxInlineScriptEditorNotificationProvider`，移除 `DeclaredInlineScriptInspection`）
 
 ## v3.0.1 {v3-0-1}
 
