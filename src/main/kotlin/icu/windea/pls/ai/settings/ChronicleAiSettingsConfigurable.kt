@@ -21,7 +21,7 @@ import icu.windea.pls.ai.providers.OpenAiChatModelProvider
 import icu.windea.pls.ide.help.ChronicleHelpTopics
 
 class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("settings.ai")), SearchableConfigurable {
-    override fun getId() = "pls.ai"
+    override fun getId() = "chronicle.ai"
 
     override fun getHelpTopic() = ChronicleHelpTopics.aiSettings
 
@@ -62,7 +62,7 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
     }
 
     private fun Panel.configureGroupForFeatures() {
-        val group = "pls.ai.features"
+        val group = "chronicle.ai.features"
         val settings = ChronicleAiSettings.getInstance().state.features
 
         // localisationBatchSize
@@ -80,7 +80,7 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
     }
 
     private fun Panel.configureGroupForOpenAi() {
-        val group = "pls.ai.openAI"
+        val group = "chronicle.ai.openAI"
         val properties = OpenAiChatModelProvider.Options.AtomicProperties()
         val settings = ChronicleAiSettings.getInstance().state.openAI
 
@@ -141,7 +141,7 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
     }
 
     private fun Panel.configureGroupForAnthropic() {
-        val group = "pls.ai.anthropic"
+        val group = "chronicle.ai.anthropic"
         val properties = AnthropicChatModelProvider.Options.AtomicProperties()
         val settings = ChronicleAiSettings.getInstance().state.anthropic
 
@@ -202,7 +202,7 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
     }
 
     private fun Panel.configureGroupForLocal() {
-        val group = "pls.ai.local"
+        val group = "chronicle.ai.local"
         val properties = LocalChatModelProvider.Options.AtomicProperties()
         val settings = ChronicleAiSettings.getInstance().state.local
 

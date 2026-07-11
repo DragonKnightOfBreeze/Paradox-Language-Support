@@ -20,7 +20,7 @@ class Vic2EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Vic2EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Vic2) {
     companion object {
-        const val ID = "pls.diagram.Vic2.EventTree"
+        const val ID = "chronicle.diagram.Vic2.EventTree"
     }
 
     override val id: String = ID

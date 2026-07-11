@@ -23,7 +23,7 @@ class StellarisEventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {
     companion object {
-        const val ID = "pls.diagram.Stellaris.EventTree"
+        const val ID = "chronicle.diagram.Stellaris.EventTree"
     }
 
     override val id: String = ID
@@ -66,7 +66,7 @@ class StellarisTechTreeDiagramSettings(
     project: Project
 ) : ParadoxTechTreeDiagramSettings<StellarisTechTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {
     companion object {
-        const val ID = "pls.diagram.Stellaris.TechTree"
+        const val ID = "chronicle.diagram.Stellaris.TechTree"
     }
 
     override val id: String = ID

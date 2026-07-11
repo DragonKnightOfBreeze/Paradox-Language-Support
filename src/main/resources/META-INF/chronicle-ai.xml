@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls.ai" parentId="pls" groupWeight="90" bundle="messages.ChronicleAiBundle" key="settings.ai"
+    <applicationConfigurable id="chronicle.ai" parentId="chronicle" groupWeight="90" bundle="messages.ChronicleAiBundle" key="settings.ai"
                              instance="icu.windea.pls.ai.settings.ChronicleAiSettingsConfigurable"/>
 
     <intentionAction>

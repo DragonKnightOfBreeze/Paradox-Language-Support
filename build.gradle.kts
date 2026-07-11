@@ -25,8 +25,8 @@ plugins {
     id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
-val liteVersion = providers.gradleProperty("pls.is.lite").getOrElse("false").toBoolean()
-val includeSqlite = providers.gradleProperty("pls.include.sqlite").getOrElse("true").toBoolean()
+val liteVersion = providers.gradleProperty("chronicle.is.lite").getOrElse("false").toBoolean()
+val includeSqlite = providers.gradleProperty("chronicle.include.sqlite").getOrElse("true").toBoolean()
 
 val excludesInJar = emptyList<String>()
 val excludesInZip = buildList {
@@ -327,8 +327,8 @@ private fun processChangelogSection(content: String): String {
 // region CWT Config Source Setup
 
 // Configurable parameters for download behavior (override via -P)
-val cwtDownloadIfMissing = providers.gradleProperty("pls.cwt.downloadIfMissing").orElse("true")
-val cwtAcceptAnyCertificate = providers.gradleProperty("pls.cwt.acceptAnyCertificate").orElse("false")
+val cwtDownloadIfMissing = providers.gradleProperty("chronicle.cwt.downloadIfMissing").orElse("true")
+val cwtAcceptAnyCertificate = providers.gradleProperty("chronicle.cwt.acceptAnyCertificate").orElse("false")
 
 data class CwtRepository(
     val repoDir: String,
@@ -464,9 +464,9 @@ tasks {
         systemProperty("idea.log.debug.categories", "icu.windea.pls")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
 
-        // Forward all command-line -D properties that start with "pls.test."
+        // Forward all command-line -D properties that start with "chronicle.test."
         System.getProperties().stringPropertyNames()
-            .filter { it.startsWith("pls.test.") }
+            .filter { it.startsWith("chronicle.test.") }
             .forEach { k -> systemProperty(k, System.getProperty(k)) }
     }
     withType<AbstractArchiveTask> {

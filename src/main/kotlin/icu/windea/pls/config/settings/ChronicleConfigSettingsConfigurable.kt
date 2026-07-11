@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent
 class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("settings.config")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
-    override fun getId() = "pls.config"
+    override fun getId() = "chronicle.config"
 
     override fun getHelpTopic() = ChronicleHelpTopics.configSettings
 
@@ -34,7 +34,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
     }
 
     private fun Panel.configureGroupForConfigGroups() {
-        val groupName = "pls.config.configGroups"
+        val groupName = "config.configGroups"
         val settings = ChronicleConfigSettings.getInstance().state
 
         row {
@@ -141,7 +141,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
     }
 
     private fun Panel.configureGroupForFeatures() {
-        // val group = "pls.config.features"
+        // val group = "chronicle.config.features"
         val settings = ChronicleConfigSettings.getInstance().state.features
 
         // checkComparisonOperators

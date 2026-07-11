@@ -29,18 +29,18 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
 
     @After
     fun doTearDown() {
-        System.clearProperty("pls.ai.providerType")
+        System.clearProperty("chronicle.ai.providerType")
     }
 
     @Test
     fun testOpenAi() {
-        System.setProperty("pls.ai.providerType", "OPEN_AI")
+        System.setProperty("chronicle.ai.providerType", "OPEN_AI")
         doTest()
     }
 
     @Test
     fun testAnthropic() {
-        System.setProperty("pls.ai.providerType", "ANTHROPIC")
+        System.setProperty("chronicle.ai.providerType", "ANTHROPIC")
         doTest()
     }
 

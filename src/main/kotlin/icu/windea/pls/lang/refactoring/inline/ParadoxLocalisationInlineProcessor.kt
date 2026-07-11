@@ -68,7 +68,7 @@ class ParadoxLocalisationInlineProcessor(
     }
 
     override fun getRefactoringId(): String {
-        return "pls.refactoring.inline.localisation"
+        return "chronicle.refactoring.inline.localisation"
     }
 
     override fun getBeforeData(): RefactoringEventData {

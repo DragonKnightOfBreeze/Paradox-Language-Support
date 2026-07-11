@@ -18,8 +18,8 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerationService {
-    val fileLocaleKey = createKey<CwtLocaleConfig>("pls.localiation.generation.file.locale")
-    val fileTooltipKey = createKey<String>("pls.localiation.generation.file.tooltip")
+    val fileLocaleKey = createKey<CwtLocaleConfig>("chronicle.localiation.generation.file.locale")
+    val fileTooltipKey = createKey<String>("chronicle.localiation.generation.file.tooltip")
 
     fun generateFile(context: ParadoxLocalisationGenerationContext): VirtualFile {
         val fileName = getFileName(context)

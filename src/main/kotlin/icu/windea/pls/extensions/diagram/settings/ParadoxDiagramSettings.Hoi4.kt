@@ -20,7 +20,7 @@ class Hoi4EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Hoi4EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Hoi4) {
     companion object {
-        const val ID = "pls.diagram.Hoi4.EventTree"
+        const val ID = "chronicle.diagram.Hoi4.EventTree"
     }
 
     override val id: String = ID
