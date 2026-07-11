@@ -223,10 +223,6 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.event.NonTriggeredEventInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Inline scripts -->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDeclaredInlineScript"
-                     key="inspection.script.declaredInlineScript" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="false" level="TEXT ATTRIBUTES"
-                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.DeclaredInlineScriptInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedInlineScript"
                      key="inspection.script.unusedInlineScript" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
