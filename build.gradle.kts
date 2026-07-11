@@ -188,7 +188,7 @@ dependencies {
     testCompileOnly("gg.jte:jte-kotlin:3.2.4")
 
     // pebble - https://github.com/PebbleTemplates/pebble
-    testImplementation("io.pebbletemplates:pebble:4.1.1") {
+    testImplementation("io.pebbletemplates:pebble:4.1.2") {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
 }
