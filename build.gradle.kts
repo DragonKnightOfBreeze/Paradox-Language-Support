@@ -393,6 +393,10 @@ tasks {
     withType<Copy> {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
+    withType<AbstractArchiveTask> {
+        // Rename the plugin archive
+        archiveBaseName = providers.gradleProperty("pluginPackageName")
+    }
     jar {
         // Depend on the config preparation task: ensure local checks and any required download/unzip complete before packaging
         dependsOn(prepareCwtConfigs)
@@ -442,8 +446,6 @@ tasks {
         if (liteVersion) archiveVersion = providers.gradleProperty("pluginVersion").get() + "-lite"
         // Exclude specific files
         excludesInZip.forEach { exclude(it) }
-        // Rename the plugin archive
-        archiveBaseName = providers.gradleProperty("pluginPackageName")
     }
     runIde {
         jvmArgs("-Xmx4096m")
