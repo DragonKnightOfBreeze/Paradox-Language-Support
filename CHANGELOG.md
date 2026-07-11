@@ -4,8 +4,7 @@
 
 ## 3.0.0-dev
 
-- [ ] 将插件重命名为 *Paradox Chronicle*（同时拥有 *编年史* 与 *预言书* 的双关） / Rename plugin to *Paradox Chronicle* (With a pun on both *Chronicle* and *Prophecy*)
-- [ ] 同步更新代码、文档、社区等处的插件名、简介文本和描述文本 / Synchronously update the plugin name, introduction text and description text in code, documentation, community, etc.
+- [x] 将插件重命名为 *Paradox Chronicle*，同步更新代码、文档、社区等处的插件名、简介文本和描述文本 / Rename plugin to *Paradox Chronicle*, synchronously update the plugin name, introduction text and description text in code, documentation, community, etc.
 - [x] 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用 / Improve reference constraints, be compatible with union types and alias types when necessary, prevent some language features from being unavailable due to incompatibility
 - [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`) 
 - [x] 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持） / Improve lexer for localisation files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[b]`)
