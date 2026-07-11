@@ -117,7 +117,7 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
-        if (!ParadoxDefineManager.isDefineFile(file)) return null
+        if (!ParadoxDefineManager.isDefinesFile(file)) return null
         if (memberPathFromFile.length <= 1) return null // file level or top property level -> not within define variable
         val defineVariable = selectScope { element.parentDefineVariable() } ?: return null
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null

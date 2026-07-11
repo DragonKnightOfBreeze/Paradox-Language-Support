@@ -40,7 +40,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
         if (!ChronicleSettings.getInstance().state.completion.completeDefineNames) return
 
         val file = parameters.originalFile
-        if (!ParadoxDefineManager.isDefineFile(file)) return
+        if (!ParadoxDefineManager.isDefinesFile(file)) return
 
         val element = parameters.position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if (element.text.isParameterized()) return

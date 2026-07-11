@@ -13,6 +13,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.members
@@ -21,11 +22,12 @@ import icu.windea.pls.lang.resolve.ParadoxDefineService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
+import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
+import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -38,17 +40,31 @@ object ParadoxDefineManager {
         val cachedDefineInfo by registerKey<CachedValue<ParadoxDefineInfo>>(Keys)
     }
 
-    fun isDefineFile(file: VirtualFile): Boolean {
-        val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType) return false
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxPathConstraint.ForDefine.test(fileInfo.path)
+    @Suppress("unused")
+    fun isDefinesFile(file: VirtualFile): Boolean {
+        if (file.fileType != ParadoxScriptFileType) return false
+        val filePath = file.fileInfo?.path ?: return false
+        return isDefinesFilePath(filePath)
     }
 
-    fun isDefineFile(file: PsiFile): Boolean {
+    fun isDefinesFile(file: PsiFile): Boolean {
         if (file !is ParadoxScriptFile) return false
-        val vFile = selectFile(file) ?: return false
-        return isDefineFile(vFile)
+        val filePath = file.fileInfo?.path ?: return false
+        return isDefinesFilePath(filePath)
+    }
+
+    fun isDefinesFilePath(filePath: ParadoxPath): Boolean {
+        return ParadoxPathConstraint.ForDefine.test(filePath)
+    }
+
+    @Suppress("unused")
+    fun getGlobalScriptedVariablesDirectory(contextFile: VirtualFile): VirtualFile? {
+        val fileInfo = contextFile.fileInfo ?: return null
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val entryPath = fileInfo.entryPath ?: return null
+        val path = entryPath.resolve("common/defines")
+        return VirtualFileService.findDirectory(path)
     }
 
     fun getExpression(namespace: String, variable: String?): String {

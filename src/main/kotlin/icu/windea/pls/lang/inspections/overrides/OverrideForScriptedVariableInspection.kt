@@ -3,8 +3,8 @@ package icu.windea.pls.lang.inspections.overrides
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingScriptedVariablesFix
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
@@ -24,17 +24,16 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * @see ParadoxOverrideService
  */
 class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val file = holder.file
-        val fileInfo = file.fileInfo
-        if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
-        if (!ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        return super.isAvailableForFile(file) && ParadoxScriptedVariableManager.isGlobalScriptedVariablesFile(file)
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
             override fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 ProgressManager.checkCanceled()
 
-                val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, file)
+                val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, holder.file)
                 if (overrideResult == null) return
 
                 val locationElement = element.scriptedVariableName

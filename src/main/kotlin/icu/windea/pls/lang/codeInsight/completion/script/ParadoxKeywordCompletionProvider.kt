@@ -43,7 +43,7 @@ class ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
         if (ParadoxConfigManager.getContextConfigs(element).isNotEmpty()) return
 
         // 2.1.8 同样排除定值的脚本文件
-        if (ParadoxDefineManager.isDefineFile(context.file)) return
+        if (ParadoxDefineManager.isDefinesFile(context.file)) return
 
         result.addElements(ChronicleLookupElements.keywordLookupElements, context)
     }
