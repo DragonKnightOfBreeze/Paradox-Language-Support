@@ -4,7 +4,7 @@
 
 ## Welcome
 
-Thank you for your interest in writing **Paradox Chronicle**.
+Thank you for your interest in writing **Paradox Chronicle**, which is both the **Chronicle** and the **Prophecy Book**, and also the guide book, to the paradox universe.
 
 This is a rather special project: the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, built on PSI-based deep semantic analysis and driven by its own CWT config system.
 
