@@ -4,7 +4,6 @@ import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.StubElement
-import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLightTreeUtil
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

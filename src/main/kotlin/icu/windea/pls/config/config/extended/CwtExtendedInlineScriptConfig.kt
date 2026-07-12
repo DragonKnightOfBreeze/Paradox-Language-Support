@@ -87,7 +87,7 @@ private object CwtExtendedInlineScriptConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextConfigsType = config.optionData.contextConfigsType
+        val contextConfigsType = config.optionData.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
         logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
     }

@@ -34,6 +34,7 @@ enum class CwtSubtypeGroup(val id: String) {
     EventAttribute("event_attribute"),
     EventType("event_type"),
     TechnologyAttribute("technology_attribute"),
+    // DefinitionType("definition_type"),
     ;
 
     operator fun contains(config: CwtSubtypeConfig) = config.group == id

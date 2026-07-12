@@ -106,7 +106,7 @@ private object CwtExtendedParameterConfigResolver : CwtConfigResolverScope {
             logger.warn("Skipped invalid extended parameter config (name: $name): Missing context_key option.".withLocationPrefix(config))
             return null
         }
-        val contextConfigsType = config.optionData.contextConfigsType
+        val contextConfigsType = config.optionData.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
         val inherit = config.optionData.inherit
         logger.debug { "Resolved extended parameter config (name: $name, context key: $contextKey).".withLocationPrefix(config) }
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)

@@ -1,6 +1,7 @@
 package icu.windea.pls.inject.injectors
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.inject.CodeInjector
@@ -101,8 +102,11 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
 
             val instance = modelClass.getDeclaredConstructor().newInstance()
 
-            val getContextConfigsType = modelClass.getMethod("getContextConfigsType")
-            assertEquals("single", getContextConfigsType.invoke(instance))
+            val getCardinality = modelClass.getMethod("getCardinality")
+            val setCardinality = modelClass.getMethod("setCardinality", CwtCardinalityExpression::class.java)
+            assertEquals(null, getCardinality.invoke(instance))
+            setCardinality.invoke(instance, CwtCardinalityExpression.resolve("0..100"))
+            assertEquals(CwtCardinalityExpression.resolve("0..100"), getCardinality.invoke(instance))
 
             val getTag = modelClass.getMethod("getTag")
             val setTag = modelClass.getMethod("setTag", Boolean::class.javaPrimitiveType)

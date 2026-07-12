@@ -4,7 +4,6 @@ import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtContextConfigsType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
@@ -98,7 +97,7 @@ object CwtOptionDataProcessor {
                 optionData.contextKey = v
             }
             "context_configs_type" -> {
-                val v = config.getOptionValue()?.let { CwtContextConfigsType.resolve(it) } ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.contextConfigsType = v
             }
             "group" -> {

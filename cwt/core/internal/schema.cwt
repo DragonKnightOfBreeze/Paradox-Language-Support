@@ -584,7 +584,6 @@ $$options = {
     ####
     #### Determines whether the context configs comes directly from its property value config (`single`),
     #### or from a set of child configs within it (`multiple`).
-    #### Defaults to `single`.
     ####
     #### Applicable to: Extended configs that can specify context configs (e.g., extended configs for inline scripts and parameters).
     ####
@@ -597,7 +596,7 @@ $$options = {
     ####
     #### Applicable to: [Subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
     ####
-    #### Example: `## group = ships`
+    #### Example: `## group = event_type`
     group
 
     #### Specifies the filter for the type key (inclusion/exclusion, case-insensitive).
