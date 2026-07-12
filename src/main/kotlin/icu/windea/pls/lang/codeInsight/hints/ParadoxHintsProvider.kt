@@ -12,9 +12,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.ParadoxFile
 
+/**
+ * @see ParadoxHintTextProvider
+ */
 @Suppress("UnstableApiUsage")
 abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
     private val logger = thisLogger()

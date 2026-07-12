@@ -11,9 +11,13 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
+/**
+ * @see ParadoxQuickDocTextProvider
+ */
 class ParadoxDocumentationTarget(
     val element: PsiElement,
     val originalElement: PsiElement?

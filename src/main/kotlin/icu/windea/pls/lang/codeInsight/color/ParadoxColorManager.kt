@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.codeInsight.color
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
@@ -8,20 +8,16 @@ import icu.windea.pls.core.component2
 import icu.windea.pls.core.component3
 import icu.windea.pls.core.component4
 import icu.windea.pls.core.math.formatted
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.createKey
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptString
 import java.awt.Color
 
 object ParadoxColorManager {
-    object Keys : KeyRegistry() {
-        val cachedColor by registerKey<CachedValue<Color>>(Keys)
-    }
+    val cachedColorKey = createKey<CachedValue<Color>>("chronicle.color")
 
     // ## color_type = hex
     // format:

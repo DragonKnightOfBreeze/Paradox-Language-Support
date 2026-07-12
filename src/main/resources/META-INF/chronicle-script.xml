@@ -11,7 +11,7 @@
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
-    <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.lang.codeInsight.color.ParadoxElementColorProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler"/>
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.findUsages.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.findUsages.ParadoxScriptElementDescriptionProvider"/>

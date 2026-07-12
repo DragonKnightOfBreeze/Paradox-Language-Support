@@ -1,5 +1,7 @@
 # Quick Start
 
+## Getting Started
+
 <!-- TODO: updating -->
 
 ### Installation
@@ -17,7 +19,7 @@
 - Confirm the configuration and wait for the IDE to finish project analysis.
 - Start your mod development journey.
 
-### Practical Tips
+## Practical Tips
 
 - **Global Search**:
   - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
@@ -46,7 +48,7 @@
   - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
   - Adjust game directory, mod dependencies and other configurations in the mod settings.
 
-### Troubleshooting
+## Troubleshooting
 
 - Ensure both the IDE and the plugin are updated to the latest versions.
 - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).

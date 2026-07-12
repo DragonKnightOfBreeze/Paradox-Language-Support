@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.codeInsight.hints
+package icu.windea.pls.ep.codeInsight.color
 
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.progress.ProgressManager
@@ -13,9 +13,9 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.codeInsight.color.ParadoxColorManager
 import icu.windea.pls.lang.psi.isValidExpression
 import icu.windea.pls.lang.psi.resolved
-import icu.windea.pls.lang.util.ParadoxColorManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -129,7 +129,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorFromCache(element: ParadoxScriptBlock): Color? {
-        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
+        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.cachedColorKey) {
             ProgressManager.checkCanceled()
             val value = doGetColor(element)
             value.withDependencyItems(element)
@@ -214,7 +214,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorFromCache(element: ParadoxScriptColor): Color? {
-        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
+        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.cachedColorKey) {
             ProgressManager.checkCanceled()
             val value = doGetColor(element)
             value.withDependencyItems(element)

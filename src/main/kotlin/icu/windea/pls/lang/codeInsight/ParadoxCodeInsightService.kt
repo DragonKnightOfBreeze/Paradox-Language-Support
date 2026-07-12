@@ -3,14 +3,30 @@ package icu.windea.pls.lang.codeInsight
 import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.codeInsight.color.ParadoxColorProvider
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
-import icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import java.awt.Color
 
 object ParadoxCodeInsightService {
+    fun getColor(element: PsiElement, fromToken: Boolean = false): Color? {
+        return ParadoxColorProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            val targetElement = if (fromToken) ep.getTargetElement(element) else element
+            if (targetElement == null) return@f null
+            ep.getColor(targetElement)
+        }
+    }
+
+    fun setColor(element: PsiElement, color: Color, fromToken: Boolean = false) {
+        ParadoxColorProvider.EP_NAME.extensionList.any f@{ ep ->
+            val targetElement = if (fromToken) ep.getTargetElement(element) else element
+            if (targetElement == null) return@f false
+            ep.setColor(targetElement, color)
+        }
+    }
+
     @Suppress("unused")
     fun getQuickDocText(element: PsiElement): String? {
         val gameType = selectGameType(element)
@@ -42,22 +58,6 @@ object ParadoxCodeInsightService {
         return ParadoxHintTextProvider.EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
             ep.getHintLocalisation(element)
-        }
-    }
-
-    fun getColor(element: PsiElement, fromToken: Boolean = false): Color? {
-        return ParadoxColorProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            val targetElement = if (fromToken) ep.getTargetElement(element) else element
-            if (targetElement == null) return@f null
-            ep.getColor(targetElement)
-        }
-    }
-
-    fun setColor(element: PsiElement, color: Color, fromToken: Boolean = false) {
-        ParadoxColorProvider.EP_NAME.extensionList.any f@{ ep ->
-            val targetElement = if (fromToken) ep.getTargetElement(element) else element
-            if (targetElement == null) return@f false
-            ep.setColor(targetElement, color)
         }
     }
 }

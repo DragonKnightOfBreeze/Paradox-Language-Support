@@ -17,8 +17,8 @@ buildscript {
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.3.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.intellij.platform") version "2.18.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
-    id("org.jetbrains.grammarkit") version "2023.3.0.3"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
-    id("org.jetbrains.kotlinx.kover") version "0.9.8"  // https://github.com/Kotlin/kotlinx-kover
+    id("org.jetbrains.grammarkit") version "2023.3.0.3" // https://github.com/JetBrains/gradle-grammar-kit-plugin
+    id("org.jetbrains.kotlinx.kover") version "0.9.8" // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
@@ -281,12 +281,16 @@ private fun extractChangelogForVersion(fullChangelog: String, targetVersion: Str
     // Find the matching section for the target version
     var targetContent: String? = null
 
-    // 1. Try exact version match against the heading text
+    // 1. Try lenient version match against the heading text
+    val expectVersion = targetVersion.substringBefore('-')
     for (section in sections) {
         val vMatch = versionRegex.matchEntire(section.heading)
-        if (vMatch != null && vMatch.groupValues[1] == targetVersion) {
-            targetContent = section.content
-            break
+        if (vMatch != null) {
+            val actualVersion = vMatch.groupValues[1].substringBefore('-')
+            if (expectVersion == actualVersion) {
+                targetContent = section.content
+                break
+            }
         }
     }
 

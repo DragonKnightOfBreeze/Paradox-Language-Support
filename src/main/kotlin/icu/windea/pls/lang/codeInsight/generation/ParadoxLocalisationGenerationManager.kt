@@ -97,7 +97,8 @@ object ParadoxLocalisationGenerationManager {
             val title = getProgressTitle(context)
             val generatedFile = withModalProgress(project, title) {
                 val tooltip = getFileTooltip(context)
-                ParadoxLocalisationGenerationService.generateFile(file, locale, tooltip, elements) // 生成本地化文件
+                val generationContext = ParadoxLocalisationGenerationService.createContext(file, locale, tooltip, elements)
+                ParadoxLocalisationGenerationService.generateFile(generationContext) // 生成本地化文件
             }
             withContext(Dispatchers.EDT) {
                 OpenFileAction.openFile(generatedFile, project) // 在编辑器中打开临时文件
