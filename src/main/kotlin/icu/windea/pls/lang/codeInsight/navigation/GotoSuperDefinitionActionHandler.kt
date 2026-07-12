@@ -13,14 +13,14 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
+// com.intellij.codeInsight.navigation.JavaGotoSuperHandler
+// org.jetbrains.kotlin.idea.codeInsight.GotoSuperActionHandler
+// com.intellij.testIntegration.GotoTestOrCodeAction
+
 /**
  * 从光标位置对应的定义跳转到其父定义。
  */
 class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
-    // com.intellij.codeInsight.navigation.JavaGotoSuperHandler
-    // org.jetbrains.kotlin.idea.codeInsight.GotoSuperActionHandler
-    // com.intellij.testIntegration.GotoTestOrCodeAction
-
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxDefinitionElement? {
         val offset = editor.caretModel.offset
         val definition = ParadoxPsiFileService.findDefinition(file, offset) { BY_TYPE_KEY or BY_NAME or BY_REFERENCE } ?: return null

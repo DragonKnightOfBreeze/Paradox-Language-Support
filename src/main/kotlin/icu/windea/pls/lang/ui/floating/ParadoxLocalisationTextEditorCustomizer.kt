@@ -7,10 +7,12 @@ import com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.util.coroutines.childScope
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 
 // NOTE the EP interface is internal (but ignored by verifier)
 // com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
@@ -19,15 +21,28 @@ import kotlinx.coroutines.coroutineScope
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
-    // TODO [compatibility] `TextEditorCustomizer.execute(TextEditor)` is remove since IDEA-262 - Use `TextEditorCustomizer.execute(TextEditor, CoroutineScope)` instead
+    // NOTE 3.0.0-IU-262 [compatibility] `TextEditorCustomizer.execute(TextEditor)` is remove since IDEA-262 - Use `TextEditorCustomizer.execute(TextEditor, CoroutineScope)` instead
 
-    override suspend fun execute(textEditor: TextEditor) {
-        if (shouldAcceptEditor(textEditor) && shouldShowFloatingToolbar()) {
-            coroutineScope {
-                val toolbar = ParadoxLocalisationFloatingToolbar(textEditor.editor, this)
-                Disposer.register(textEditor, toolbar)
+    override fun customize(textEditor: TextEditor, coroutineScope: CoroutineScope) {
+        if (!shouldAcceptEditor(textEditor) || !shouldShowFloatingToolbar()) return
+
+        // See ParadoxLocalisationFloatingToolbarCustomizableGroupProvider: the toolbar holds its scope until disposed.
+        val toolbarScope = coroutineScope.childScope("ParadoxLocalisationTextEditorCustomizer")
+        var registered = false
+        try {
+            val toolbar = ParadoxLocalisationFloatingToolbar(textEditor.editor,  toolbarScope)
+            registered = Disposer.tryRegister(textEditor, toolbar)
+            if (!registered) {
+                Disposer.dispose(toolbar)
+            }
+        } finally {
+            if (!registered) {
+                toolbarScope.cancel()
             }
         }
+
+        val toolbar = ParadoxLocalisationFloatingToolbar(textEditor.editor, coroutineScope)
+        Disposer.register(textEditor, toolbar)
     }
 
     private fun shouldAcceptEditor(editor: TextEditor): Boolean {

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.tools
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
-import com.intellij.util.system.OS
+import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.execution.CommandType
@@ -43,8 +43,8 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
     }
 
     private fun resolveSteamPath(): Path? {
-        return when (OS.CURRENT) {
-            OS.Windows -> resolveSteamPathFromRegistry()
+        return when {
+            SystemInfo.isWindows -> resolveSteamPathFromRegistry()
             else -> resolveSteamPathForLinux()
         }
     }
@@ -84,7 +84,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
 
     private fun resolveSteamGamePath(steamId: String, gameName: String): Path? {
         resolveSteamGamePathFromVdf(gameName)?.let { return it }
-        if (OS.CURRENT == OS.Windows) resolveSteamGamePathFromRegistry(steamId)?.let { return it }
+        if (SystemInfo.isWindows) resolveSteamGamePathFromRegistry(steamId)?.let { return it }
         return null
     }
 
@@ -160,8 +160,8 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
 
     private fun resolveGameDataPath(gameType: ParadoxGameType): Path? {
         // 实际上应基于 `launcher-settings.json` 中的 `gameDataPath`
-        return when (OS.CURRENT) {
-            OS.Windows -> resolveGameDataPathForWindows(gameType)
+        return when {
+            SystemInfo.isWindows -> resolveGameDataPathForWindows(gameType)
             else -> resolveGameDataPathForLinux(gameType)
         }
     }

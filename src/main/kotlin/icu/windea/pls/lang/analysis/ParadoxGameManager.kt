@@ -3,7 +3,6 @@ package icu.windea.pls.lang.analysis
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.io.fileSizeSafe
-import com.intellij.util.system.OS
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -113,7 +112,7 @@ object ParadoxGameManager {
         // from candidates in game type metadata
         val candidates = gameType.metadata.executablePaths
         for (candidate in candidates) {
-            val p = if (OS.CURRENT == OS.Windows) "$candidate.exe" else candidate
+            val p = if (com.intellij.openapi.util.SystemInfo.isWindows) "$candidate.exe" else candidate
             val r = rootPath.resolve(p)
             if (r.isRegularFile() && r.fileSizeSafe() > 0) return r
         }

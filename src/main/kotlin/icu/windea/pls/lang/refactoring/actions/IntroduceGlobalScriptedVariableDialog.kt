@@ -3,7 +3,7 @@ package icu.windea.pls.lang.refactoring.actions
 import com.intellij.openapi.actionSystem.ActionManager.*
 import com.intellij.openapi.actionSystem.IdeActions.*
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import com.intellij.openapi.keymap.KeymapUtil.*
+import com.intellij.openapi.keymap.KeymapUtil
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.whenTextChanged
 import com.intellij.openapi.project.Project
@@ -98,7 +98,7 @@ class IntroduceGlobalScriptedVariableDialog(
                     .validationOnApply { validateScriptedVariableFilePath() }
             }
             row {
-                val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
+                val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
                 comment(message("path.completion.shortcut", shortcutText))
             }
         }.withPreferredWidth(preferredDialogWidth)

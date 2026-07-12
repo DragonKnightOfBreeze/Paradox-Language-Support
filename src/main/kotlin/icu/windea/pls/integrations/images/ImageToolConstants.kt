@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.images
 
+import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
-import org.cef.OS
 
 object ImageToolConstants {
     object Texconv {
@@ -14,7 +14,7 @@ object ImageToolConstants {
         const val url = "https://www.imagemagick.org"
 
         fun pathTip(): String {
-            val suffix = if (OS.isWindows()) ".exe" else ""
+            val suffix = if (SystemInfo.isWindows) ".exe" else ""
             return "/path/to/magick$suffix"
         }
     }

@@ -2,7 +2,7 @@ package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.util.system.OS
+import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
@@ -26,7 +26,7 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     override fun isSupported(): Boolean {
-        return OS.CURRENT == OS.Windows
+        return SystemInfo.isWindows
     }
 
     override fun isValid(): Boolean {

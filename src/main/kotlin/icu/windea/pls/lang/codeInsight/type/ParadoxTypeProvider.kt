@@ -8,7 +8,8 @@ import com.intellij.ui.Gray
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.util.values.FallbackStrings
-import org.jetbrains.uast.kotlin.orAnonymous
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
@@ -54,7 +55,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
             type?.let { this[ChronicleBundle.message("title.type")] = it.id }
 
             val name = ParadoxTypeManager.getName(element)
-            name?.let { this[ChronicleBundle.message("title.name")] = it.orAnonymous() }
+            name?.let { this[ChronicleBundle.message("title.name")] = it.or.anonymous() }
 
             val definitionType = ParadoxTypeManager.getDefinitionType(element)
             definitionType?.let { this[ChronicleBundle.message("title.definitionType")] = it }

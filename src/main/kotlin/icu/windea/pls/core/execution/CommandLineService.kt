@@ -1,6 +1,6 @@
 package icu.windea.pls.core.execution
 
-import com.intellij.util.system.OS
+import com.intellij.openapi.util.SystemInfo
 import java.nio.charset.Charset
 
 object CommandLineService {
@@ -17,9 +17,9 @@ object CommandLineService {
      */
     fun getCommandTypeForOs(commandType: CommandType = CommandType.AUTO): CommandType {
         return when (commandType) {
-            CommandType.AUTO -> if (OS.CURRENT != OS.Windows) CommandType.SHELL else CommandType.POWER_SHELL
-            CommandType.CMD -> commandType.also { if (OS.CURRENT != OS.Windows) throw UnsupportedOperationException() }
-            CommandType.POWER_SHELL -> commandType.also { if (OS.CURRENT != OS.Windows) throw UnsupportedOperationException() }
+            CommandType.AUTO -> if (SystemInfo.isWindows) CommandType.POWER_SHELL else CommandType.SHELL
+            CommandType.CMD -> if(SystemInfo.isWindows) commandType else throw UnsupportedOperationException()
+            CommandType.POWER_SHELL -> if(SystemInfo.isWindows) commandType else throw UnsupportedOperationException()
             CommandType.SHELL -> commandType // this is allowed and maybe available
             CommandType.NONE -> commandType
         }

@@ -1,8 +1,8 @@
 package icu.windea.pls.integrations.lints
 
+import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.model.ParadoxGameType
-import org.cef.OS
 
 object LintToolConstants {
     object Tiger {
@@ -11,7 +11,7 @@ object LintToolConstants {
 
         fun pathTip(gameType: ParadoxGameType): String {
             val name = TigerLintToolService.getInstance().findTool(gameType)?.exePath ?: "tiger"
-            val suffix = if (OS.isWindows()) ".exe" else ""
+            val suffix = if (SystemInfo.isWindows) ".exe" else ""
             return "/path/to/$name$suffix"
         }
 

@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.IdeActions.*
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.fileChooser.impl.FileChooserUtil
-import com.intellij.openapi.keymap.KeymapUtil.*
+import com.intellij.openapi.keymap.KeymapUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
@@ -84,7 +84,7 @@ class ConvertImageFormatDialog(
                     .resizableColumn()
             }
             row {
-                val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
+                val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
                 comment(message("path.completion.shortcut", shortcutText))
             }
         }.withPreferredWidth(preferredDialogWidth)

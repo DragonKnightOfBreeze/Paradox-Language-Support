@@ -1,9 +1,10 @@
 package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.CommonDataKeys.*
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.editor.EditorKind
 import com.intellij.openapi.editor.toolbar.floating.AbstractFloatingToolbarProvider
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarComponent
 import com.intellij.openapi.editor.toolbar.floating.isInsideMainEditor
@@ -17,12 +18,14 @@ import kotlinx.coroutines.withContext
 
 // com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
 
+private const val ACTION_GROUP = "Pls.ConfigGroupRefreshActionGroup"
+
 class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTION_GROUP) {
     override val autoHideable = false
 
-    // TODO [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262 - Use `isApplicableAsync` instead
-    override fun isApplicable(dataContext: DataContext): Boolean {
-        return isInsideMainEditor(dataContext)
+    // NOTE 3.0.0-IU-262 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262 - Use `isApplicableAsync` instead
+    override suspend fun isApplicableAsync(dataContext: DataContext): Boolean {
+        return isInsideMainEditor(dataContext) && dataContext.getData(EDITOR)?.editorKind == EditorKind.MAIN_EDITOR
     }
 
     private fun updateToolbarComponent(project: Project, component: FloatingToolbarComponent) {
@@ -40,16 +43,14 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTIO
     }
 
     override fun register(dataContext: DataContext, component: FloatingToolbarComponent, parentDisposable: Disposable) {
-        val project = dataContext.getData(CommonDataKeys.PROJECT) ?: return
+        val currentProject = dataContext.getData(PROJECT) ?: return
         application.messageBus.connect(parentDisposable).subscribe(CwtConfigGroupRefreshStatusListener.TOPIC, object : CwtConfigGroupRefreshStatusListener {
             override fun onChange(project: Project) {
-                updateToolbarComponent(project, component)
+                if (currentProject == project) {
+                    updateToolbarComponent(project, component)
+                }
             }
         })
-        updateToolbarComponent(project, component)
-    }
-
-    companion object {
-        private const val ACTION_GROUP = "Pls.ConfigGroupRefreshActionGroup"
+        updateToolbarComponent(currentProject, component)
     }
 }

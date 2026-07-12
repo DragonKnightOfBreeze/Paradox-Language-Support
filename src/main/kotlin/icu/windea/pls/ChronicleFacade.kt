@@ -79,10 +79,4 @@ object ChronicleFacade {
     fun isInternal(): Boolean {
         return ApplicationManager.getApplication().let { it != null && it.isInternal }
     }
-
-    // TODO [compatibility] `PluginManagerCore.getPlugin(PluginId)` is internal since IDEA-262 - Commented out since this method is currently not used
-    // /** 是否是开发中版本。 */
-    // fun isDevVersion(): Boolean {
-    //     return PluginManagerCore.getPlugin(ChronicleConstants.pluginId)?.version?.endsWith("-dev") == true
-    // }
 }

@@ -1,7 +1,7 @@
 package icu.windea.pls.core.execution
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.util.system.OS
+import com.intellij.openapi.util.SystemInfo
 import io.ktor.utils.io.charsets.Charset
 import java.io.File
 import java.io.IOException
@@ -63,7 +63,7 @@ class CommandLineExecutor(
         val processBuilder = ProcessBuilder(commands)
         val env = processBuilder.environment()
         env.putAll(environment)
-        if (OS.CURRENT != OS.Windows) {
+        if (!SystemInfo.isWindows) {
             env.put("LANG", "en_US.UTF-8")
             env.put("LC_ALL", "en_US.UTF-8")
         }
