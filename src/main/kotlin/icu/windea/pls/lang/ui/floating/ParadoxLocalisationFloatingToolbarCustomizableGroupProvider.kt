@@ -3,8 +3,12 @@ package icu.windea.pls.lang.ui.floating
 import com.intellij.ide.ui.customization.CustomizableActionGroupProvider
 import icu.windea.pls.ChronicleBundle
 
+// com.intellij.ui.codeFloatingToolbar.FloatingCodeToolbarGroupCustomizer
 // org.intellij.plugins.markdown.ui.floating.FloatingToolbarCustomizableGroupProvider
 
+/**
+ * @see ParadoxLocalisationFloatingToolbarActionGroup
+ */
 class ParadoxLocalisationFloatingToolbarCustomizableGroupProvider : CustomizableActionGroupProvider() {
     override fun registerGroups(registrar: CustomizableActionGroupRegistrar) {
         registrar.addCustomizableActionGroup(
