@@ -23,6 +23,7 @@ import javax.swing.JComponent
  * 说明：
  * - 忽略注入的文件和临时文件。
  * - 忽略直接位于游戏或入口目录下的文件。
+ * - 忽略用于声明定值、全局封装变量或内联脚本的文件。它们分别位于 `common/defines` `common/scripted_variables` 和 `common/inline_scripts` 目录下。
  *
  * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
  *
@@ -31,7 +32,7 @@ import javax.swing.JComponent
  * @see CwtComplexEnumConfig
  */
 class UnmatchedFileInspection : InlineScriptInspectionBase() {
-    @JvmField var ignoredFilePaths = "common/inline_scripts/**"
+    @JvmField var ignoredFilePaths = ""
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件

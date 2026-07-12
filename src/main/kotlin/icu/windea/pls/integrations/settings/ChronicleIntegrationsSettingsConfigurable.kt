@@ -41,6 +41,9 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
         row {
             comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
         }
+        row {
+            comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment.impl"), MAX_LINE_LENGTH_WORD_WRAP)
+        }
         // enableTexconv
         row {
             checkBox(ChronicleIntegrationsBundle.message("settings.integrations.image.from.texconv"))

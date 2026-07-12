@@ -4,9 +4,12 @@
   <p>
     The currently checked config types include type configs and complex enum configs.
   </p>
-  <p>
-    Ignore injected files and temporary files. Additionally, files located directly under the game or entry directory are also ignored.
-  </p>
+  <p>Description:</p>
+  <ul>
+    <li>Ignore injected files and temporary files. </li>
+    <li>Ignore files located directly in the game or portal directory. </li>
+    <li>Ignore files used to declare defines, global scripted variables, or inline scripts. They are located in the <code>common/defines</code> <code>common/scripted_variables</code> and <code>common/inline_scripts</code> directories respectively. </li>
+  </ul>
   <p>
     <strong>NOTE:</strong>
     This code inspection is based on config files, so if it produces false positives, it indicates that the current file is special or ignorable, or that the config files for current game type is incomplete.
