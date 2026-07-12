@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.hierarchy.call
 
 import com.intellij.codeInsight.highlighting.HighlightManager
-import com.intellij.ide.IdeBundle
 import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.markup.RangeHighlighter
@@ -15,6 +14,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.ui.SimpleTextAttributes
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
@@ -41,13 +41,15 @@ class ParadoxCallHierarchyNodeDescriptor(
     val references = mutableListOf<PsiReference>()
 
     override fun update(): Boolean {
+        val oldText = myHighlightedText
+        val oldIcon = icon
+
         var changes = super.update()
         val element = psiElement
         if (element == null) return invalidElement()
         if (changes && myIsBase) {
             icon = getBaseMarkerIcon(icon)
         }
-        val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
         val hierarchySettings = ChronicleSettings.getInstance().state.hierarchy
@@ -90,14 +92,15 @@ class ParadoxCallHierarchyNodeDescriptor(
         }
         run {
             if (usageCount <= 1) return@run
-            val text = IdeBundle.message("node.call.hierarchy.N.usages", usageCount)
+            val text = ChronicleBundle.message("node.call.hierarchy.N.usages", usageCount) // from IdeBundle
             myHighlightedText.ending.addText(" $text", getUsageCountPrefixAttributes())
         }
         myName = myHighlightedText.text
 
-        if (!Comparing.equal(myHighlightedText, oldText)) {
+        if (!(Comparing.equal(myHighlightedText, oldText) && Comparing.equal(icon, oldIcon))) {
             changes = true
         }
+
         return changes
     }
 

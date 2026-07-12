@@ -1,6 +1,5 @@
 package icu.windea.pls.ai.manipulation
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
@@ -10,6 +9,7 @@ import com.intellij.openapi.ui.popup.util.MinimizeButton
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
@@ -107,7 +107,7 @@ object ParadoxLocalisationAiManipulationService {
             .setRequestFocus(true)
             .setCancelOnClickOutside(false)
             .setCancelOnWindowDeactivation(false)
-            .setCancelButton(MinimizeButton(IdeBundle.message("tooltip.hide")))
+            .setCancelButton(MinimizeButton(ChronicleBundle.message("tooltip.hide"))) // from IdeBundle
             .setMinSize(Dimension(640, 120))
             .setDimensionServiceKey(project, "PLS_LOCALISATION_AI_MANIPULATION_POPUP", false)
             .setOkHandler { callback(textField.text.trim()) }

@@ -12,7 +12,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.TextComponentAccessors
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.refactoring.RefactoringBundle.*
+import com.intellij.refactoring.RefactoringBundle
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
@@ -99,7 +99,7 @@ class IntroduceGlobalScriptedVariableDialog(
             }
             row {
                 val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
-                comment(message("path.completion.shortcut", shortcutText))
+                comment(RefactoringBundle.message("path.completion.shortcut", shortcutText))
             }
         }.withPreferredWidth(preferredDialogWidth)
     }

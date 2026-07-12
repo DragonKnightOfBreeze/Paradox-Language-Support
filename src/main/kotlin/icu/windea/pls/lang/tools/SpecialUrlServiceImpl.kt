@@ -3,10 +3,10 @@ package icu.windea.pls.lang.tools
 import com.intellij.execution.CommandLineUtil
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.PathEnvironmentVariableUtil
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.util.ExecUtil
 import com.intellij.ide.BrowserUtil
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.ide.CopyPasteManager
@@ -146,16 +146,16 @@ class SpecialUrlServiceImpl : SpecialUrlService {
 
     private fun openUrlWithSystemCommand(url: String) {
         // see: com.intellij.ide.browsers.BrowserLauncherAppless.openWithDefaultBrowserCommand
+        // see: com.intellij.openapi.util.SystemInfo.hasXdgOpen (deprecated since IDEA 2026.1)
 
         val command = when {
             SystemInfo.isWindows -> listOf(CommandLineUtil.getWinShellName(), "/c", "start", GeneralCommandLine.inescapableQuote(""))
             SystemInfo.isMac -> listOf(ExecUtil.openCommandPath)
-            // see: com.intellij.openapi.util.SystemInfo.hasXdgOpen (deprecated since IDEA 2026.1)
-            SystemInfo.hasXdgOpen() -> listOf("xdg-open")
+            PathEnvironmentVariableUtil.isOnPath("xdg-open") -> listOf("xdg-open")
             else -> null
         }
         if (command == null) {
-            logger.warn(IdeBundle.message("browser.default.not.supported"))
+            logger.warn("Unfortunately, the IDE doesn't know how to launch the default browser on this system.")
             return
         }
         val commandLine = GeneralCommandLine(command).withParameters(url)

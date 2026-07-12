@@ -1,6 +1,5 @@
 package icu.windea.pls.images.actions
 
-import com.intellij.ide.IdeBundle
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -10,6 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.ChronicleBundle
 import org.intellij.images.ImagesBundle
 import javax.swing.JComponent
 
@@ -33,7 +33,7 @@ class EditExternalImageEditorAction : DumbAwareAction() {
 
         init {
             title = ImagesBundle.message("edit.external.editor.path.dialog.title")
-            setOKButtonText(IdeBundle.message("button.save"))
+            setOKButtonText(ChronicleBundle.message("button.save")) // from IdeBundle
             init()
         }
 

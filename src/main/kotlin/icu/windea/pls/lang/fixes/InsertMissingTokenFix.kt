@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.fixes
 
 import com.intellij.codeInsight.intention.IntentionAction
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
+import icu.windea.pls.ChronicleBundle
 
 // com.intellij.codeInsight.daemon.impl.quickfix.InsertMissingTokenFix
 
@@ -13,7 +13,7 @@ class InsertMissingTokenFix(
     private val token: String,
     private val offset: Int
 ) : IntentionAction, DumbAware {
-    override fun getText() = IdeBundle.message("quickfix.text.insert.0", token)
+    override fun getText() = ChronicleBundle.message("fix.insertMissingToken", token)
 
     override fun getFamilyName() = text
 

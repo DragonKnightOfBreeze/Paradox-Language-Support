@@ -18,7 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.refactoring.RefactoringBundle.*
+import com.intellij.refactoring.RefactoringBundle
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
@@ -85,7 +85,7 @@ class ConvertImageFormatDialog(
             }
             row {
                 val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
-                comment(message("path.completion.shortcut", shortcutText))
+                comment(RefactoringBundle.message("path.completion.shortcut", shortcutText))
             }
         }.withPreferredWidth(preferredDialogWidth)
     }
