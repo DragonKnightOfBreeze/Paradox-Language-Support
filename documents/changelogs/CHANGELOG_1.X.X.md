@@ -268,7 +268,7 @@
 
 - [x] 更新CWT规则文件以适配Stellaris 3.12.2（基本完成）/ Update CWT config files to match Stellaris 3.12.2 (almost done)
 - [x] 优化代码格式化功能，修复一些细节上的BUG / Optimize code reformatting feature, fixes some bugs in details
-- [x] 基于CWT规则文件来确定目标（定义、本地化等）的覆盖方式（可以自定义，参见参考文档）/ Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
+- [x] 基于CWT规则文件来确定目标（定义、本地化等）的覆盖策略（可以自定义，参见参考文档）/ Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
 - [x] 对于本地化文件，本地化文本中的双引号不需要转义（直到本行最后一个双引号之前为止，视为本地化文本）/ For localisation file, it's unnecessary to escape double quotes in localisation text
 - [x] 如果目标无法解析，但是存在对应的扩展的CWT规则，可以配置是否忽略相关的代码检查 / If a target cannot be resolved, but related extended CWT configs exist, related code inspection can be configured to be ignored
 - [x] 如果可以从扩展的CWT规则文件推断作用域上下文，就不要再尝试从使用推断 / If the scope context can be inferred from extended CWT configs, do not continue to be inferred from usages
@@ -518,7 +518,7 @@
 ## 1.0.8 - 2023-06-15
 
 - [x] 提供一种项目视图，用于显示合并后的所有游戏和模组文件（`Project Pane -> Paradox Files`）
-- [x] 初步提供对覆盖方式的支持，用于在查询文件、封装变量、定义、本地化时基于覆盖进行排序（除了代码补全等需要逐步遍历的地方）
+- [x] 初步提供对覆盖策略的支持，用于在查询文件、封装变量、定义、本地化时基于覆盖进行排序（除了代码补全等需要逐步遍历的地方）
 - [x] 修复可能无法从字符串常量规则和枚举值规则反向查找在脚本文件中的使用的问题
 - [x] 修复DIFF视图中没有正确重载文件类型的问题
 - [x] 修复在输入本地化引用时（以及其他类型情况）可能因为读写锁冲突导致IDE卡死的问题

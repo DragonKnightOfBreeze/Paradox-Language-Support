@@ -15,7 +15,7 @@ import icu.windea.pls.model.ParadoxRootInfo
  *
  * 说明：
  * - 文件路径相同时，按照所在根目录在当前上下文中的顺序，由大到小排序。
- * - 文件路径不同时，基于覆盖方式进行排序（对于 `LIOS` 和 `DUPL`，后到者优先）。
+ * - 文件路径不同时，基于覆盖策略进行排序（对于 `LIOS` 和 `DUPL`，后到者优先）。
  *
  * @see ParadoxOverrideStrategy
  * @see ParadoxOverrideService
@@ -55,7 +55,7 @@ class ParadoxOverrideComparator<T>(
             return -orderResult
         }
         val overrideStrategy = overrideStrategy ?: return 0
-        // 文件路径不同时，基于覆盖方式进行排序（对于 `LIOS` 和 `DUPL`，后到者优先）
+        // 文件路径不同时，基于覆盖策略进行排序（对于 `LIOS` 和 `DUPL`，后到者优先）
         return when (overrideStrategy) {
             ParadoxOverrideStrategy.FIOS -> pathResult
             ParadoxOverrideStrategy.LIOS -> -pathResult

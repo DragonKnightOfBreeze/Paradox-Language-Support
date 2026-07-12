@@ -60,7 +60,7 @@ import javax.swing.Icon
  * 对当前定义与包括其只读副本在内的拥有相同名称和主要类型的定义，或者相关注入，进行差异比较。
  *
  * - 忽略直接位于游戏或模组的根目录下的文件。
- * - 按照覆盖方式进行排序。
+ * - 按照覆盖策略进行排序。
  * - 仅适用于支持定义注入的游戏类型，同时可能支持定义注入的定义类型。
  */
 class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {

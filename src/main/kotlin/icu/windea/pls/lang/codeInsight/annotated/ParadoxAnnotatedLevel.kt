@@ -5,7 +5,7 @@ package icu.windea.pls.lang.codeInsight.annotated
  *
  * @property includeType 是否包含类型信息。
  * @property includeDefinitionType 是否包含定义类型信息。
- * @property includeOverrideStrategy 是否包含覆盖方式信息。
+ * @property includeOverrideStrategy 是否包含覆盖策略信息。
  * @property includeConfigExpression 是否包含规则表达式信息。
  * @property includeScopeContext 是否包含作用域上下文信息。
  * @property includeUnchancedScopeContext 是否包含未发生更改的作用域上下文信息。
