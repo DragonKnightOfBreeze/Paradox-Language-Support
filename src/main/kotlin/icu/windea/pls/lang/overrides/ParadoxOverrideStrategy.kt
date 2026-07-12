@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.overrides
 
+import icu.windea.pls.ChronicleBundle
+
 /**
  * 覆盖方式。
  *
@@ -14,15 +16,15 @@ package icu.windea.pls.lang.overrides
  *
  * @see ParadoxOverrideService
  */
-enum class ParadoxOverrideStrategy(val id: String) {
+enum class ParadoxOverrideStrategy(val id: String, val text: String) {
     /** 只读一次（First In, Only Served）。先加载者生效，后加载者会被直接忽略。 */
-    FIOS("FIOS"),
+    FIOS("FIOS", ChronicleBundle.message("overrideStrategy.fios")),
     /** 后读覆盖（Last In, Only Served）。后加载者覆盖先加载者。 */
-    LIOS("LIOS"),
+    LIOS("LIOS", ChronicleBundle.message("overrideStrategy.lios")),
     /** 整文件覆盖（Duplicates）。必须用同路径文件进行整体覆盖。 */
-    DUPL("DUPL"),
+    DUPL("DUPL", ChronicleBundle.message("overrideStrategy.dupl")),
     /** 顺序读取（Ordered）。不能覆盖既有条目，后加载者会被按序新增或合并。 */
-    ORDERED("ORDERED"),
+    ORDERED("ORDERED", ChronicleBundle.message("overrideStrategy.ordered")),
     ;
 
     override fun toString() = id
