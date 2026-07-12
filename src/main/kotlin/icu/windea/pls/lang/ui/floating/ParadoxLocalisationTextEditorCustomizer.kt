@@ -21,7 +21,8 @@ import kotlinx.coroutines.cancel
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
-    // NOTE 3.0.0-IU-262 [compatibility] `TextEditorCustomizer.execute(TextEditor)` is remove since IDEA-262 - Use `TextEditorCustomizer.execute(TextEditor, CoroutineScope)` instead
+    // NOTE 3.0.0 [compatibility] `TextEditorCustomizer.execute(TextEditor)` is remove since IDEA-262
+    //  - Use `TextEditorCustomizer.execute(TextEditor, CoroutineScope)` instead
 
     override fun customize(textEditor: TextEditor, coroutineScope: CoroutineScope) {
         if (!shouldAcceptEditor(textEditor) || !shouldShowFloatingToolbar()) return

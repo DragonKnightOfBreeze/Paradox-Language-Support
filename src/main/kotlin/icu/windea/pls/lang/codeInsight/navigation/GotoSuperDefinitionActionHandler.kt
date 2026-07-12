@@ -42,7 +42,8 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
     @Suppress("DEPRECATION")
     override fun update(editor: Editor, file: PsiFile, presentation: Presentation?, actionPlace: String?) {
         if (presentation == null) return
-        // TODO [compatibility] `ActionPlaces.isPopupPlace(String)` is deprecated - But else how can I get `AnActionEvent` here?
+        // TODO 3.0.0 [compatibility] `ActionPlaces.isPopupPlace(String)` is deprecated
+        //  - But else how can I get `AnActionEvent` here?
         val useShortName = actionPlace != null && (ActionPlaces.MAIN_MENU == actionPlace || ActionPlaces.isPopupPlace(actionPlace))
         if (useShortName) {
             presentation.text = ChronicleBundle.message("action.GotoSuperDefinition.MainMenu.text")

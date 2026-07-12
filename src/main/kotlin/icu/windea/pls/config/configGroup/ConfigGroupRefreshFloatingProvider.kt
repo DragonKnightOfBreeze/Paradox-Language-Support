@@ -23,7 +23,8 @@ private const val ACTION_GROUP = "Pls.ConfigGroupRefreshActionGroup"
 class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTION_GROUP) {
     override val autoHideable = false
 
-    // NOTE 3.0.0-IU-262 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262 - Use `isApplicableAsync` instead
+    // NOTE 3.0.0 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262
+    //  - Use `isApplicableAsync` instead
     override suspend fun isApplicableAsync(dataContext: DataContext): Boolean {
         return isInsideMainEditor(dataContext) && dataContext.getData(EDITOR)?.editorKind == EditorKind.MAIN_EDITOR
     }

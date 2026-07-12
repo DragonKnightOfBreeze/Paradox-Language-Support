@@ -1,5 +1,6 @@
 package icu.windea.pls
 
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
@@ -10,6 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ChronicleConstants
 import kotlinx.coroutines.CoroutineScope
 
 @Suppress("unused")
@@ -70,7 +72,7 @@ object ChronicleFacade {
         return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(context)
     }
 
-    /** 检查是否正在进行单元测试，或者 IDE 是否正处于单元测试模式。 */
+    /** 检查 IDE 是否正处于单元测试模式，或者是否正在进行不依赖于平台的单元测试。 */
     fun isUnitTestMode(): Boolean {
         return ApplicationManager.getApplication().let { it == null || it.isUnitTestMode }
     }
@@ -78,5 +80,13 @@ object ChronicleFacade {
     /** 检查 IDE 是否正处于内部模式。 */
     fun isInternal(): Boolean {
         return ApplicationManager.getApplication().let { it != null && it.isInternal }
+    }
+
+    /** 检查插件是否是开发中版本。 */
+    fun isDevVersion(): Boolean {
+        // TODO [compatibility] `PluginManagerCore.findEnabledPlugin(PluginId)` is internal since IDEA-262
+        //  - Use `PluginDetailsService` instead
+        @Suppress("UnstableApiUsage")
+        return PluginDetailsService.getInstance().findDetails(ChronicleConstants.pluginId)?.version?.endsWith("-dev") == true
     }
 }

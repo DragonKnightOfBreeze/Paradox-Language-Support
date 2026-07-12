@@ -16,7 +16,11 @@ import kotlin.reflect.full.findAnnotation
 abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     override val id: String = javaClass.name
 
+    @Suppress("UnstableApiUsage")
     final override fun inject() {
+        // TODO 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262
+        //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
+
         val injectionTargetInfo = getInjectionTargetInfo() ?: return
 
         val pluginId = injectionTargetInfo.injectPluginId
