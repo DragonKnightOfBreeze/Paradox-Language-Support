@@ -1,16 +1,12 @@
 package icu.windea.pls.inject
 
-import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.memberFunction
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runOnce
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.model.InjectionTargetInfo
@@ -46,18 +42,14 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         putUserData(CodeInjectorContext.targetClassKey, null)
     }
 
-    @Suppress("UnstableApiUsage")
     private fun isPluginEnabled(pluginId: PluginId): Boolean {
-        return !PluginDetailsService.getInstance().isDisabled(pluginId)
+        return PluginManager.getInstance().findEnabledPlugin(pluginId) != null
     }
 
     private fun getPluginClassLoader(pluginId: PluginId): ClassLoader {
         // TODO 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262
         //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
-
-        val pluginManager = PluginManager.getInstance()
-        val function = memberFunction<PluginManager>("findEnabledPlugin")
-        val pluginDescriptor = runCatchingCancelable { function(pluginManager, pluginId) }.getOrNull()?.castOrNull<PluginDescriptor>()
+        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(pluginId)
         return pluginDescriptor?.pluginClassLoader ?: PluginDescriptor::class.java.classLoader
     }
 
