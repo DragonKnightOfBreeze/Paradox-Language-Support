@@ -1,10 +1,10 @@
-package icu.windea.pls.lang.ui.floating.actions.styling
+package icu.windea.pls.lang.ui.actions.styling
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ChronicleStrings
 
 class CreateParameterAction : CreateRichTextAction() {
@@ -16,7 +16,7 @@ class CreateParameterAction : CreateRichTextAction() {
     override val unwrapActionName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateParameter.unwrap.text")
     override val unwrapActionDescription get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateParameter.unwrap.description")
 
-    override fun isAvailable(file: PsiFile): Boolean {
+    override fun isAvailable(file: ParadoxLocalisationFile): Boolean {
         return true
     }
 

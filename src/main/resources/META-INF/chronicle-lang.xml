@@ -425,6 +425,21 @@
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>
 
+  <!-- floating toolbars -->
+  <extensions defaultExtensionNs="com.intellij">
+    <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
+
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="CWT" minimal="true"/>
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="PARADOX_SCRIPT" minimal="true"/>
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="PARADOX_LOCALISATION" minimal="true" actionGroup="Pls.Localisation.Toolbar.Floating"/>
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="PARADOX_CSV" minimal="true"/>
+  </extensions>
+
+  <!-- registry keys -->
   <extensions defaultExtensionNs="com.intellij">
     <!-- Note that HTML is not available in registry key descriptions -->
     <registryKey key="chronicle.settings.localisationFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
@@ -676,21 +691,24 @@
       <add-to-group group-id="Pls.LocalisationGenerationContextMenuGroup"/>
     </group>
 
-    <group id="Pls.Localisation.Toolbar.Floating">
-      <action id="Pls.Localisation.Styling.CreateParameter" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateParameterAction" icon="icu.windea.pls.ChronicleIcons.Nodes.Parameter">
+    <group id="Pls.Localisation.Toolbar.Floating" class="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarActionGroup">
+      <reference ref="CommentByLineComment"/> <!-- from Floating.CodeToolbar -->
+      <reference ref="ReformatCode"/> <!-- from Floating.CodeToolbar -->
+      <separator/>
+      <action id="Pls.Localisation.Styling.CreateParameter" class="icu.windea.pls.lang.ui.actions.styling.CreateParameterAction" icon="icu.windea.pls.ChronicleIcons.Nodes.Parameter">
         <keyboard-shortcut first-keystroke="control alt r" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationIcon">
+      <action id="Pls.Localisation.Styling.CreateIcon" class="icu.windea.pls.lang.ui.actions.styling.CreateIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationIcon">
         <keyboard-shortcut first-keystroke="control alt i" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateTextIcon" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateTextIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationTextIcon">
+      <action id="Pls.Localisation.Styling.CreateTextIcon" class="icu.windea.pls.lang.ui.actions.styling.CreateTextIconAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationTextIcon">
         <keyboard-shortcut first-keystroke="control alt shift i" keymap="$default"/>
       </action>
-      <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.floating.actions.styling.CreateCommandAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationCommand">
+      <action id="Pls.Localisation.Styling.CreateCommand" class="icu.windea.pls.lang.ui.actions.styling.CreateCommandAction" icon="icu.windea.pls.ChronicleIcons.Nodes.LocalisationCommand">
         <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
       </action>
       <separator/>
-      <group id="Pls.Localisation.Styling.SetColorGroup" class="icu.windea.pls.lang.ui.floating.actions.styling.SetColorGroup" searchable="false"/>
+      <group id="Pls.Localisation.Styling.SetColorGroup" class="icu.windea.pls.lang.ui.actions.styling.SetColorGroup" searchable="false"/>
     </group>
 
     <group id="Pls.Localisation.InsertGroup">

@@ -1008,7 +1008,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_EXTRA) ?: return
         val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return
-        sections[ChronicleBundle.message("doc.sectionTitle.overrideStrategy")] = overrideStrategy.id
+        sections[ChronicleBundle.message("doc.sectionTitle.overrideStrategy")] = overrideStrategy.id + " - " + overrideStrategy.text
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {

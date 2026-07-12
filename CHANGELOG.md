@@ -196,7 +196,7 @@
 - [x] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions, for nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed
 - [x] 优化：对于脚本文件中用引号括起的字符串，如有必要，尝试通过语言注入将其识别为本地化文本 / OP: For quoted strings in script files, if necessary, try to recognize it as localisation text via language injection
 - [x] 优化：可以在插件设置页面中配置是否启用自动语言注入 / OP: Can configure whether to enable auto language injection in plugin settings page
-- [x] 优化：支持在快速文档和类型信息中显示使用的覆盖方式 / OP: Support to show used override strategy in quick doc and type info
+- [x] 优化：支持在快速文档和类型信息中显示使用的覆盖策略 / OP: Support to show used override strategy in quick doc and type info
 - [x] 优化：优化与重载/覆盖相关的代码检查 / OP: Optimize override related inspections
 - [x] 优化：支持渲染规则文件中的文档注释（从而兼容阅读器模式和 Translation 插件） / OP: Support to render documentation comments in config files (thus compatible with reader mode and Translation plugin)
 - [x] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving

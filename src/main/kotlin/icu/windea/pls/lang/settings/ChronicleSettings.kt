@@ -76,7 +76,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
      * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在）。
      * @property showGeneratedModifiers 是否需要在文档中显示生成的修正的信息（如果支持且存在）。
-     * @property showOverrideStrategy 是否需要在文档中显示使用的覆盖方式（如果适用）。
+     * @property showOverrideStrategy 是否需要在文档中显示使用的覆盖策略（如果适用）。
      */
     @Tag("documentation")
     class DocumentationState : BaseState() {

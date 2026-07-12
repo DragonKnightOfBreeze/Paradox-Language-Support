@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * - 如果当前上下文中存在同名的封装变量，那么就说存在对此封装变量的重载。
  * - 仅适用于项目中的、作为游戏或模组文件的、非内存非注入的脚本文件。
  * - 仅适用于非参数化的全局封装变量。
- * - 基于其使用的覆盖方式进行检查。
+ * - 基于其使用的覆盖策略进行检查。
  *
  * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
  *

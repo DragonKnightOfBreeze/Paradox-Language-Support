@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
  * @property key 用于一致性检测的键（文件的路径或目标的名字）。
  * @property target 目标（文件、全局封装变量、定义、本地化等）。
  * @property results 包括目标自身在内的重载项。
- * @property overrideStrategy 使用的覆盖方式。
+ * @property overrideStrategy 使用的覆盖策略。
  *
  * @see ParadoxOverrideStrategy
  * @see ParadoxOverrideService

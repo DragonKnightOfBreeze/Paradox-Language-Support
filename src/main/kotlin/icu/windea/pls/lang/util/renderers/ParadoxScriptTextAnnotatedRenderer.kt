@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * - 类型信息。参见 [ParadoxScriptAnnotatedManager.getTypeAnnotation]。
  * - 定义类型信息。参见 [ParadoxScriptAnnotatedManager.getDefinitionTypeAnnotation]。
  * - 规则表达式信息。参见 [ParadoxScriptAnnotatedManager.getConfigExpressionAnnotation]。
- * - 覆盖方式信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategyAnnotation]。
+ * - 覆盖策略信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategyAnnotation]。
  * - 作用域上下文信息。参见 [ParadoxScriptAnnotatedManager.getScopeContextAnnotation]。
  */
 class ParadoxScriptTextAnnotatedRenderer : ParadoxScriptTextRenderer<String, ParadoxScriptTextAnnotatedRenderContext, ParadoxScriptTextAnnotatedRenderSettings>() {

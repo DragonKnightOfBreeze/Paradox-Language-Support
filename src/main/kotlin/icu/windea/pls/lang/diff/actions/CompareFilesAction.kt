@@ -44,7 +44,7 @@ import javax.swing.Icon
  *
  * - 忽略直接位于游戏或模组的根目录下的文件。
  * - 可以用于比较二进制文件。（如DDS图片）
- * - 按照覆盖方式进行排序。
+ * - 按照覆盖策略进行排序。
  */
 class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {

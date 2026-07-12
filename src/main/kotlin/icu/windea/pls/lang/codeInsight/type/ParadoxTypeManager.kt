@@ -219,7 +219,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、定值变量、本地化。
+     * 覆盖策略 - 仅限（全局）封装变量、（作为脚本属性的）定义、定值变量、本地化。
      */
     fun getOverrideStrategy(element: PsiElement): ParadoxOverrideStrategy? {
         val targetElement = when {

@@ -15,17 +15,21 @@ import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import java.awt.Color
 
 object ParadoxSemanticHighlighterColors {
+    // NOTE [compatibility] `TextAttributesKey.createTextAttributesKey(String, TextAttributesKey)` is deprecated
+    //  - But necessary and intended here (use `createTempTextAttributesKey` will lead to undesirable behavior)
+    @Suppress("DEPRECATION")
     private val colorKeyCache = CacheBuilder().build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
         val externalName = "PARADOX_LOCALISATION.COLOR_$hex"
         val defaultAttributes = DefaultLanguageHighlighterColors.IDENTIFIER.defaultAttributes.clone().apply { foregroundColor = color }
-        createTempTextAttributesKey(externalName, defaultAttributes)
+        createTextAttributesKey(externalName, defaultAttributes)
     }
+    @Suppress("DEPRECATION")
     private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
         val externalName = "PARADOX_LOCALISATION.COLOR_ONLY_$hex"
         val defaultAttributes = TextAttributes().apply { foregroundColor = color }
-        createTempTextAttributesKey(externalName, defaultAttributes)
+        createTextAttributesKey(externalName, defaultAttributes)
     }
 
     fun color(color: Color): TextAttributesKey {

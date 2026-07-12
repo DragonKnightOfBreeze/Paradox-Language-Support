@@ -90,7 +90,7 @@ object ParadoxScriptAnnotatedManager {
     }
 
     /**
-     * 得到覆盖方式信息的注解。
+     * 得到覆盖策略信息的注解。
      *
      * 格式：
      * - `## @override_strategy = STRATEGY`

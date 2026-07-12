@@ -18,9 +18,7 @@ import kotlinx.coroutines.withContext
 
 // com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
 
-private const val ACTION_GROUP = "Pls.ConfigGroupRefreshActionGroup"
-
-class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTION_GROUP) {
+class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider("Pls.ConfigGroupRefreshActionGroup") {
     override val autoHideable = false
 
     // NOTE 3.0.0 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262

@@ -6,11 +6,11 @@
     <li>如果当前上下文中存在同名同类型的定义，那么就说存在对此定义的重载。</li>
     <li>仅适用于项目中的、作为游戏或模组文件的、非内存非注入的脚本文件。</li>
     <li>仅适用于非参数化的、非匿名的、作为脚本属性的定义。</li>
-    <li>基于其使用的覆盖方式进行检查。</li>
+    <li>基于其使用的覆盖策略进行检查。</li>
   </ul>
   <p>参见：<a href="https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority">优先级规则</a></p>
   <!-- tooltip end -->
-  <p>覆盖方式与行为：</p>
+  <p>覆盖策略与行为：</p>
   <ul>
     <li><code>FIOS</code>（First In, Only Served）：只读一次。先加载者生效，后加载者会被直接忽略。</li>
     <li><code>LIOS</code>（Last In, Only Served）：后读覆盖。后加载者覆盖先加载者。</li>
@@ -23,7 +23,7 @@
     被重载的定义声明于 <code>events/zzz_country_events.txt</code>。
   </p>
   <p>
-    此重载不正确，因为事件使用的覆盖方式为 <code>FIOS</code>。
+    此重载不正确，因为事件使用的覆盖策略为 <code>FIOS</code>。
   </p>
 </body>
 </html>

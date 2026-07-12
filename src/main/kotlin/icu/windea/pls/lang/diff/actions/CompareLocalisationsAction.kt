@@ -51,7 +51,7 @@ import javax.swing.Icon
  * 对当前本地化与包括其只读副本在内的拥有相同名称的本地化进行差异比较。
  *
  * - 忽略直接位于游戏或模组的根目录下的文件。
- * - 按照覆盖方式进行排序。
+ * - 按照覆盖策略进行排序。
  */
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findSourceFile(e: AnActionEvent): VirtualFile? {

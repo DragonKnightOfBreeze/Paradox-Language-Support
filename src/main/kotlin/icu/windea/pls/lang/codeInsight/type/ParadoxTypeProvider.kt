@@ -20,7 +20,7 @@ import icu.windea.pls.core.util.values.or
  * - 本地化类型 - 如果表示一个本地化属性或本地化参数则可用。
  * - 表达式 - 如果表示一个表达式则可用。
  * - 规则表达式 - 如果存在对应的规则表达式则可用。
- * - 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
+ * - 覆盖策略 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
  * - 作用域上下文信息 - 如果存在则可用。
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {

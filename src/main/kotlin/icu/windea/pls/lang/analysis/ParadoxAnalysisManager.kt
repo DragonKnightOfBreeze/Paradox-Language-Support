@@ -244,10 +244,7 @@ object ParadoxAnalysisManager {
             from is VirtualFile -> from
             from is PsiDirectory -> selectFile(from.virtualFile)
             from is PsiFile -> selectFile(from.originalFile.virtualFile)
-            from is PsiElement -> {
-                val nextFrom = runSmartReadAction { from.containingFile }
-                selectFile(nextFrom)
-            }
+            from is PsiElement -> selectFile(runSmartReadAction { from.containingFile })
             else -> null
         }
     }
@@ -266,12 +263,15 @@ object ParadoxAnalysisManager {
             from is PsiFile -> selectGameType(selectFile(from))
             from is CwtConfigLightElementBase -> from.gameType
             from is ParadoxLightElementBase -> from.gameType
-            from is StubBasedPsiElementBase<*> -> {
-                val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxStub<*>>() ?: from.containingFile }
-                selectGameType(nextFrom)
-            }
             from is PsiElement -> {
-                val nextFrom = runSmartReadAction { from.parent }
+                // NOTE 3.0.0 even green stubs can be erased in the files that are changed after they had been switched to AST mode
+                val nextFrom = runSmartReadAction action@{
+                    if (from is StubBasedPsiElementBase<*>) {
+                        from.greenStub?.castOrNull<ParadoxStub<*>>()?.let { return@action it }
+                        from.containingFile.let { return@action it }
+                    }
+                    from.parent
+                }
                 selectGameType(nextFrom)
             }
             from is ParadoxStub<*> -> from.gameType
@@ -287,23 +287,25 @@ object ParadoxAnalysisManager {
             from is VirtualFile -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
-            from is StubBasedPsiElementBase<*> -> {
-                val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
-                selectLocale(nextFrom)
-            }
-            from is ParadoxLocalisationPropertyList -> { // fallback for non-stub-based
-                val nextFrom = runSmartReadAction { from.locale } ?: return null
-                selectLocale(nextFrom)
-            }
-            from is ParadoxLocalisationLocale -> { // fallback for non-stub-based
-                val localeId = runSmartReadAction { from.name }
-                val project = from.project
-                val gameType = selectGameType(from)
-                val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-                configGroup.locales.get(localeId)
-            }
-            from is PsiElement && from.language is ParadoxLocalisationLanguage -> {
-                val nextFrom = runSmartReadAction { from.parent }
+            from is PsiElement && from.language == ParadoxLocalisationLanguage -> {
+                // NOTE 3.0.0 even green stubs can be erased in the files that are changed after they had been switched to AST mode
+                val nextFrom = runSmartReadAction action@{
+                    if (from is StubBasedPsiElementBase<*>) {
+                        from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>()?.let { return@action it }
+                    }
+                    when (from) {
+                        is ParadoxLocalisationLocale -> {
+                            // val localeId = from.name // will try access stub first, and it is unnecessary here
+                            val localeId = from.idElement.text
+                            val project = from.project
+                            val gameType = selectGameType(from)
+                            val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
+                            configGroup.locales.get(localeId)
+                        }
+                        is ParadoxLocalisationPropertyList -> from.locale
+                        else -> from.parent
+                    }
+                }
                 selectLocale(nextFrom)
             }
             from is ParadoxLocaleAwareStub<*> -> {
