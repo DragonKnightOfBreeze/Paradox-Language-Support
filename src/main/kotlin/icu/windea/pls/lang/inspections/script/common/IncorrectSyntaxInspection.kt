@@ -19,7 +19,7 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxSyntaxInspectionService.createContext(holder)
+        val context = ParadoxSyntaxInspectionService.createContext(this, holder)
         val checkers = ParadoxIncorrectSyntaxChecker.EP_NAME.extensionList
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {

@@ -105,7 +105,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptScriptedVariableName): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -188,7 +188,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptPropertyKey): PsiElement? {
-        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == PROPERTY_KEY_TOKEN }
+        return element.firstChild?.takeIf { it.elementType == PROPERTY_KEY_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -230,7 +230,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptString): PsiElement? {
-        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == STRING_TOKEN }
+        return element.firstChild?.takeIf { it.elementType == STRING_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -501,7 +501,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptScriptedVariableReference): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -534,7 +534,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathScriptedVariableReference): PsiElement? {
-        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+        return element.firstChild?.takeIf { it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -561,7 +561,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptParameter): PsiElement? {
-        return element.findChild { it.elementType == PARAMETER_TOKEN }
+        return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }
     }
 
     @JvmStatic
@@ -610,7 +610,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathParameter): PsiElement? {
-        return element.findChild { it.elementType == PARAMETER_TOKEN }
+        return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }
     }
 
     @JvmStatic
@@ -659,7 +659,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptParameterArgument): PsiElement? {
-        return element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
+        return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }
     }
 
     // endregion

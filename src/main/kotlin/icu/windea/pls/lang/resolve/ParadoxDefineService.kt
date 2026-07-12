@@ -4,7 +4,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxDefineManager.isDefineFile
+import icu.windea.pls.lang.util.ParadoxDefineManager.isDefinesFile
 import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
@@ -43,7 +43,7 @@ object ParadoxDefineService {
     }
 
     private fun resolveInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
-        if (!isDefineFile(file)) return null
+        if (!isDefinesFile(file)) return null
         val gameType = selectGameType(file) ?: return null
         val parent = element.parent
         if (parent is ParadoxScriptRootBlock) {

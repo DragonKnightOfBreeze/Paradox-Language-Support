@@ -1,4 +1,4 @@
-# Paradox Language Support - The Paradox Chronicle
+# Paradox Chronicle
 
 <!-- Here we inscribe the revelations from the old era, the truths and realities of this land. -->
 <!-- Ascend to the tower’s peak and open the Book of Prophecy, for within it are recorded all our discoveries and foresights. -->
@@ -24,7 +24,7 @@
 
 ## 概述
 
-Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
+Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Interactive 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能丰富的开发体验，助力轻松实现创意。
 
 插件会自动检测游戏目录和模组目录，分析其中的文件以构建缓存与索引。
 完成必要的配置工作（如游戏类型、游戏目录、模组依赖）以及项目分析（扫描文件、构建索引）后，即可启用并体验完整语言功能。
@@ -55,8 +55,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### 安装
 
-- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
-- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
+- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Chronicle" > `Install`
+- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825)，点击 `Install to ...` 按钮进行安装。
 - 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### 使用步骤
@@ -89,11 +89,11 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
   - 使用 `Code > Inspect Code…` 执行全局代码检查，并在问题面板中查看详细报告。
 - **设置修改**：
   - 可通过以下方式打开插件的全局设置页面：
-    - 点击设置页面中的 `Languages & Frameworks > Paradox Language Support`。
+    - 点击设置页面中的 `Languages & Frameworks > Paradox Chronicle`。
   - 可通过以下方式打开模组设置对话框：
     - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
-    - 点击编辑器右键菜单中的 `Paradox Language Support > Open Mod Settings...`。
-    - 点击主菜单中的 `Tools > Paradox Language Support > Open Mod Settings...`。
+    - 点击编辑器右键菜单中的 `Paradox Chronicle > Open Mod Settings...`。
+    - 点击主菜单中的 `Tools > Paradox Chronicle > Open Mod Settings...`。
   - 可在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
   - 可在模组设置中调整游戏目录、模组依赖等配置。
 
@@ -111,7 +111,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 - 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
 - 基于 [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html) 构建，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语义分析与丰富的语言功能。
-- 使用 JFlex 进行词法分析，使用 BNF 进行语法解析。
+- 使用 JFlex 进行词法分析，使用 BNF 进行语法分析。
 - 内置丰富的自定义扩展点，提供功能的灵活扩展，便于定制与增强插件行为。
 - 内置代码注入系统，用于实现常规手段无法达成的功能、修复与优化。
 - 内置图像处理模块（DDS、TGA），用于预览、渲染和处理额外的图片格式。
@@ -143,7 +143,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### 贡献代码
 
-鉴于插件同时拥有庞大的代码规模（约11万行 Kotlin 生产代码）与极高的复杂度（平台 & 领域 & 架构），贡献核心代码是极具挑战性的。
+鉴于插件同时拥有相当庞大的代码规模与相当高的复杂度，贡献核心代码是非常有挑战性的。
 尽管如此，通过参考已有的文档、代码、配置文件和规则文件，AI 协助以及自行探索，考虑与实践部分代码上的贡献仍然是可能的。
 
 例如，通过浏览参考文档和配置文件（如 `plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。
@@ -222,8 +222,9 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
 [badge:doc-ref]: https://img.shields.io/badge/参考文档-2f89d7.svg
 [badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
-[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
+[badge:build]: https://img.shields.io/endpoint?label=build&url=https%3A%2F%2Factions-badge.atrox.dev%2FDragonKnightOfBreeze%2FParadox-Language-Support%2Fbadge%3Fref%3Dmaster
 [badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
+[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
 [badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg?logo=jetbrains
 [badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
 [badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
@@ -239,8 +240,8 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 [url:build]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/workflows/build.yml
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
-[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
-[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825
+[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
 [url:afdian]: https://afdian.com/a/dk_breeze

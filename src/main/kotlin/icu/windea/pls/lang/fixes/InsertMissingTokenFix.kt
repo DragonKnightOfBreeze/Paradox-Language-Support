@@ -1,12 +1,7 @@
 package icu.windea.pls.lang.fixes
 
 import com.intellij.codeInsight.intention.IntentionAction
-import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.ide.IdeBundle
-import com.intellij.modcommand.ActionContext
-import com.intellij.modcommand.ModCommand
-import com.intellij.modcommand.ModCommandAction
-import com.intellij.modcommand.Presentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project

@@ -32,7 +32,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     override val configs: List<CwtMemberConfig<*>>?
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
-    var parentConfig: CwtMemberConfig<*>?
+    val parentConfig: CwtMemberConfig<*>?
     val optionData: CwtOptionDataHolder
 
     val valueExpression: CwtDataExpression
@@ -47,6 +47,9 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     fun acceptChildren(visitor: CwtMemberConfigVisitor): Boolean {
         return configs?.orNull()?.process { it.accept(visitor) } ?: true
     }
+
+    /** 尝试将 [parentConfig] 作为当前规则的父规则。返回是否操作成功。 */
+    fun withParentConfig(parentConfig: CwtMemberConfig<*>?): Boolean = false
 
     /** 尝试将 [configs] 作为当前规则的子规则列表。返回是否操作成功。 */
     fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean = false

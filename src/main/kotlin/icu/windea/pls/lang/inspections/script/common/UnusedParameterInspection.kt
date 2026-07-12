@@ -17,7 +17,7 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -56,7 +56,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 val references = element.references
                 for (reference in references) {
                     ProgressManager.checkCanceled()
-                    if (!ParadoxResolveConstraint.Parameter.canResolve(reference)) continue
+                    if (!ParadoxReferenceConstraint.Parameter.canResolve(reference)) continue
                     val resolved = reference.resolve()
                     if (resolved !is ParadoxParameterLightElement) continue
                     if (resolved.contextName.isParameterized()) continue // skip if context name is parameterized

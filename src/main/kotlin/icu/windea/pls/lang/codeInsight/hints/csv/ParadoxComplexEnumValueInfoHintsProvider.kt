@@ -8,7 +8,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
  * 通过内嵌提示显示复杂枚举值信息，即枚举名。
@@ -19,7 +19,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider
         val expression = element.name
         if (expression.isEmpty()) return
 
-        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        val resolveConstraint = ParadoxReferenceConstraint.ComplexEnumValue
         if (!resolveConstraint.canResolveReference(element)) return
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return

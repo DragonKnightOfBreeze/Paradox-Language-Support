@@ -18,7 +18,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectSyntaxChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.unresolvedExpressionDecorator" interface="icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionDecorator" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.unresolvedExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatchOptimizer" interface="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer" dynamic="true"/>
@@ -115,7 +115,7 @@
     <configGroupProcessor id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupProcessor"/>
     <configGroupProcessor id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupProcessor" order="last"/>
 
-    <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseDataConfigGroupPostProcessor"/>
+    <configGroupPostProcessor id="base" implementation="icu.windea.pls.ep.config.configGroup.CwtBaseConfigGroupPostProcessor"/>
 
     <dataExpressionSupport id="basic" implementation="icu.windea.pls.ep.config.configExpression.CwtBasicDataExpressionSupport"/>
     <dataExpressionSupport id="extraBasic" implementation="icu.windea.pls.ep.config.configExpression.CwtExtraBasicDataExpressionSupport"/>
@@ -160,9 +160,7 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 
-    <unresolvedExpressionDecorator implementation="icu.windea.pls.ep.inspections.ParadoxSimilarityBasedUnresolvedExpressionDecorator"/>
-    <unresolvedExpressionDecorator implementation="icu.windea.pls.ep.inspections.ParadoxIntFieldUnresolvedExpressionDecorator"/>
-    <unresolvedExpressionDecorator implementation="icu.windea.pls.ep.inspections.ParadoxLocalisationReferenceUnresolvedExpressionDecorator"/>
+    <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
 
     <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicScriptExpressionMatcher"/>

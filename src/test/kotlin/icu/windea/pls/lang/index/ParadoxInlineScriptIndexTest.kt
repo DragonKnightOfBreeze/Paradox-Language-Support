@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
@@ -37,13 +39,17 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Usage Index
 
     @Test
-    fun testUsageIndex_DirectForm() {
-        markFileInfo(gameType, "common/test/usage_direct_stellaris.test.txt")
-        myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
-        val project = project
+    fun test_UsageIndex_DirectForm() {
+        markAndConfigureByFile("features/index/common/test/usage_direct_stellaris.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, elements.size)
@@ -52,10 +58,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testUsageIndex_BlockForm() {
-        markFileInfo(gameType, "common/test/usage_block_stellaris.test.txt")
-        myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        val project = project
+    fun test_UsageIndex_BlockForm() {
+        markAndConfigureByFile("features/index/common/test/usage_block_stellaris.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, elements.size)
@@ -68,10 +73,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     // region Argument Index
 
     @Test
-    fun testArgumentIndex_BlockForm_All() {
-        markFileInfo(gameType, "common/test/usage_block_stellaris.test.txt")
-        myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        val project = project
+    fun test_ArgumentIndex_BlockForm_All() {
+        markAndConfigureByFile("features/index/common/test/usage_block_stellaris.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         val names = elements.map { it.name }.sorted()
@@ -83,10 +87,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testUsageIndex_Parameterized_ShouldSkip() {
-        markFileInfo(gameType, "common/test/usage_parameterized_stellaris.test.txt")
-        myFixture.configureByFile("features/index/usage_parameterized_stellaris.test.txt")
-        val project = project
+    fun testEdge_UsageIndex_Parameterized_ShouldSkip() {
+        markAndConfigureByFile("features/index/common/test/usage_parameterized_stellaris.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_\$PARAM$", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, elements.size)
@@ -95,10 +98,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testUsageIndex_VariableRef_ShouldSkip() {
-        markFileInfo(gameType, "common/test/usage_variable_ref_stellaris.test.txt")
-        myFixture.configureByFile("features/index/usage_variable_ref_stellaris.test.txt")
-        val project = project
+    fun testEdge_UsageIndex_VariableRef_ShouldSkip() {
+        markAndConfigureByFile("features/index/common/test/usage_variable_ref_stellaris.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, elements.size)

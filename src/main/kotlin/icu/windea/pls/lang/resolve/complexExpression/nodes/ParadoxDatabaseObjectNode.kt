@@ -27,7 +27,7 @@ import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
@@ -193,10 +193,10 @@ class ParadoxDatabaseObjectNode(
                 .createResults()
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> node.config?.type != null
-                ParadoxResolveConstraint.Localisation -> node.config?.localisation != null
+                ParadoxReferenceConstraint.Definition -> node.config?.type != null
+                ParadoxReferenceConstraint.Localisation -> node.config?.localisation != null
                 else -> false
             }
         }

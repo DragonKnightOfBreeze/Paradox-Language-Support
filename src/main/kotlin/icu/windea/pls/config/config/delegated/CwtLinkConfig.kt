@@ -31,15 +31,17 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
 /**
  * 链接规则。
  *
- * 用于描述部分复杂表达式中的部分节点的格式，并为其指定允许的作用域类型。
- * 这些节点被称为 **链接（link）**，它们通常用于切换作用域或取值，可以链式调用（如 `x.y.z`）。
- * 可参见：`scopes.log`。
+ * 用于描述各种链式表达式中的链接节点的格式，并为其指定允许的数据源类型和作用域类型。
+ * 这些链接节点通常用于切换作用域或取值，可以链式调用（如 `x.y.z`），并且可能带有数据源（如 `modifier:x` 和 `relations(x)`）。
+ * 在语义与格式上，它们类似编程语言中的函数、属性或字段。
+ *
+ * 链接规则驱动了这些复杂表达式的解析逻辑以及各种相关的语言功能。
  *
  * 链接可以以静态（静态链接）或动态（动态链接）两种方式声明。具体而言，动态链接可以：
  * - 整个文本作为动态数据（如 `var`）。
  * - 带前缀（如 `modifier:x`）。
  * - 使用函数调用形式（如 `relations(x)`）。
- * - 使用更复杂的函数调用形式。注意，插件尚未提供完整支持。
+ * - 使用更复杂的函数调用形式（如，使用嵌套的链式表达式作为参数）。注意，插件尚未提供完整支持。
  *
  * 以下是一些常见的链接形式：
  * - **作用域链接（scope link）** - 如 `owner`。
@@ -47,8 +49,6 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * - **本地化命令字段（localisation command field）** - 如 `GetName`。
  * - **事件对象引用（event target reference）** - 如 `event_target:x`。
  * - **动态数据引用（dynamic data reference）** - 如 `modifier:x` `value:x`。
- *
- * 在语义与格式上，它们类似编程语言中的函数、属性或字段。
  *
  * 路径定位：
  * - 常规链接：`links/{name}`。其中 `{name}` 匹配规则名称。
@@ -75,7 +75,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * @property fromArgument （扩展）为动态链接时，是否从传参中读取动态数据。对应的节点格式形如 `func(arg)`。
  * @property argumentSeparator （扩展） 为动态链接且有多个传参时，使用的传参分隔符（`comma`/`pipe`，默认为 `comma`）。
  * @property prefix 为动态链接时，携带的前缀。如果为 `null`，则将整个文本作为动态数据。
- * @property dataSources 数据源（数据表达式）。如果有多个传参，则可以有多个。如果为空，则将链接视为静态链接。
+ * @property dataSources 数据源（数据表达式）。如果有多个，则意味着此链接为动态链接且有多个传参。如果为空，则意味着此链接为静态链接。
  * @property inputScopes 输入作用域（类型）的集合。
  * @property outputScope 输出作用域（类型）。如果为 `null`，则表示需要基于数据源传递作用域。
  * @property forDefinitionType 仅用于指定的定义类型。

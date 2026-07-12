@@ -4,6 +4,16 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxGameType.*
 
+/**
+ * 游戏约束。
+ *
+ * 用于测试指定的 [ParadoxGameType] 是否符合特定的条件，以及列出符合这类条件的所有 [ParadoxGameType]。
+ *
+ * 用法示例：`gameType matchesBy ParadoxGameTypeConstraint.JominiBased`
+ *
+ * @see ParadoxGameType
+ */
+@Suppress("unused")
 enum class ParadoxGameTypeConstraint {
     Specific {
         override fun test(gameType: ParadoxGameType) = gameType != Core
@@ -19,7 +29,7 @@ enum class ParadoxGameTypeConstraint {
         override fun test(gameType: ParadoxGameType) = gameType in list
         override fun list() = list
     },
-    DescriptorMoUsed {
+    DescriptorModUsed {
         private val list = Specific.list().filterNot { it in MetadataJsonUsed.list() }.optimized()
         override fun test(gameType: ParadoxGameType) = gameType in list
         override fun list() = list

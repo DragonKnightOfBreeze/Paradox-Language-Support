@@ -46,7 +46,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
         val localePopup = ParadoxLocaleListPopup(supportedLocales)
         localePopup.onSelected { selectedValue ->
-            targetElement.putUserData(ParadoxLocaleManager.Keys.documentationLocale, selectedValue.id)
+            targetElement.putUserData(ParadoxLocaleManager.Keys.documentationLocale, selectedValue.name)
             browser.reload()
         }
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)

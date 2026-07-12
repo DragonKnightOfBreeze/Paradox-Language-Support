@@ -44,7 +44,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
         val existingModDirectories = modSetInfo.mods.mapNotNullTo(mutableSetOf()) { it.modDirectory?.orNull() }
 
         when {
-            gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> {
+            gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed -> {
                 val data = readData(filePath, DlcLoadJson::class.java)
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
@@ -84,7 +84,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
 
     private fun getJsonFileName(gameType: ParadoxGameType): String {
         return when {
-            gameType matchesBy ParadoxGameTypeConstraint.DescriptorMoUsed -> Constants.dlcLoadPath
+            gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed -> Constants.dlcLoadPath
             else -> Constants.contentLoadPath
         }
     }

@@ -43,7 +43,7 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -247,19 +247,19 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
 
             for (reference in element.references) {
                 when {
-                    ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
+                    ParadoxReferenceConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterLightElement>() ?: continue
                         val extendedConfigs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
                             .filterTo(result) { it.contextKey.matchesByPattern(resolved.contextKey, element, configGroup) }
                         result += extendedConfigs
                     }
-                    ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
+                    ParadoxReferenceConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueLightElement>() ?: continue
                         val extendedConfigs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
                         val extendedConfig = extendedConfigs.findByPattern(resolved.name, element, configGroup) ?: continue
                         result += extendedConfig
                     }
-                    ParadoxResolveConstraint.DynamicValueReference.canResolve(reference) -> {
+                    ParadoxReferenceConstraint.DynamicValueReference.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueLightElement>() ?: continue
                         for (type in resolved.types) {
                             val extendedConfigs = configGroup.extendedDynamicValues[type] ?: continue

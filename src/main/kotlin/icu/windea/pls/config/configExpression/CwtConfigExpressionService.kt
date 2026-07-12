@@ -71,17 +71,7 @@ object CwtConfigExpressionService {
                     true
                 }
             }
-            CwtDataTypes.SingleAliasRight -> {
-                val name = configExpression.value ?: return
-                val singleAliasConfig = configGroup.singleAliases[name] ?: return
-                withRecursionGuard { // 这里需要防止递归
-                    val e = singleAliasConfig.config.valueExpression
-                    withRecursionCheck(e) {
-                        collectLiterals(e, configGroup, result)
-                    }
-                }
-            }
-            CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
+            CwtDataTypes.AliasKeysField, CwtDataTypes.AliasName -> {
                 val name = configExpression.value ?: return
                 val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
                 withRecursionGuard { // 这里需要防止递归
@@ -90,6 +80,16 @@ object CwtConfigExpressionService {
                         withRecursionCheck(e) {
                             collectLiterals(e, configGroup, result)
                         }
+                    }
+                }
+            }
+            CwtDataTypes.SingleAliasRight -> {
+                val name = configExpression.value ?: return
+                val singleAliasConfig = configGroup.singleAliases[name] ?: return
+                withRecursionGuard { // 这里需要防止递归
+                    val e = singleAliasConfig.config.valueExpression
+                    withRecursionCheck(e) {
+                        collectLiterals(e, configGroup, result)
                     }
                 }
             }

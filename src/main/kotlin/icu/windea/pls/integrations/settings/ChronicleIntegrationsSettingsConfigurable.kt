@@ -18,7 +18,7 @@ import icu.windea.pls.integrations.translation.TranslationToolConstants
 class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrationsBundle.message("settings.integrations")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
-    override fun getId() = "pls.integrations"
+    override fun getId() = "chronicle.integrations"
 
     override fun getHelpTopic() = ChronicleHelpTopics.integrationsSettings
 
@@ -35,11 +35,14 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
     }
 
     private fun Panel.configureGroupForImage() {
-        val groupName = "pls.integrations.image"
+        val groupName = "integrations.image"
         val settings = ChronicleIntegrationsSettings.getInstance().state.image
 
         row {
             comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+        }
+        row {
+            comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment.impl"), MAX_LINE_LENGTH_WORD_WRAP)
         }
         // enableTexconv
         row {
@@ -86,7 +89,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
     }
 
     private fun Panel.configureGroupForLint() {
-        val groupName = "pls.integrations.lint"
+        val groupName = "integrations.lint"
         val settings = ChronicleIntegrationsSettings.getInstance().state.lint
 
         row {

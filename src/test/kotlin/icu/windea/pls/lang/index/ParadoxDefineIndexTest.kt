@@ -43,11 +43,10 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     // region Basic
 
     @Test
-    fun testDefineIndex_Basic() {
+    fun test_Basic() {
         configureDefineFile("features/index/common/defines/defines_basic_stellaris.test.txt")
 
         // act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val namespaces = StubIndex.getElements(ChronicleIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(1, namespaces.size)
@@ -69,11 +68,10 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     // region Complex (Multiple Namespaces)
 
     @Test
-    fun testDefineIndex_Complex() {
+    fun test_Complex() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
         // act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
 
         // assert namespaces
@@ -108,10 +106,9 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testDefineIndex_Edge() {
+    fun test_Edge() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
 
         // valid namespace should be indexed

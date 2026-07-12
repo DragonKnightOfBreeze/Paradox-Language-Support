@@ -342,7 +342,8 @@ private inline_math_abs_expr ::= LABS_SIGN inline_math_expr RABS_SIGN {
 pin=1
 }
 
-inline_math_factor ::= inline_math_number | inline_math_parameter | inline_math_scripted_variable_reference {
+// order: `1` -> `$PARAM$_part` -> `$PARAM$`
+inline_math_factor ::= inline_math_number | inline_math_scripted_variable_reference | inline_math_parameter {
   extends=inline_math_expression
 }
 inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
@@ -365,4 +366,4 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_r
     getIcon getName setName getReference getReferences
   ]
 }
-private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_conditional_block
+private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter

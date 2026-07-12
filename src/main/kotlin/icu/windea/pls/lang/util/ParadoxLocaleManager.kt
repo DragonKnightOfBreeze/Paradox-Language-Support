@@ -57,7 +57,7 @@ object ParadoxLocaleManager {
         val configGroup = ChronicleFacade.getConfigGroup()
         val locale = configGroup.locales[id] ?: return null
         if (!includeDefault) {
-            if (locale.id == ID_DEFAULT) return null
+            if (locale.name == ID_DEFAULT) return null
         }
         return locale
     }
@@ -90,7 +90,7 @@ object ParadoxLocaleManager {
         }
         var locales = locales
         if (!includeDefault) {
-            locales = locales.filter { it.id != ID_DEFAULT }
+            locales = locales.filter { it.name != ID_DEFAULT }
         }
         if (pinPreferred) {
             val preferredLocale = getPreferredLocaleConfig()

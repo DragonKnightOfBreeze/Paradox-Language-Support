@@ -45,7 +45,7 @@ object ParadoxScriptStubFactory {
     fun createPropertyStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub? {
         val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return null
         run {
-            if (!ParadoxDefineManager.isDefineFile(psi.containingFile)) return@run
+            if (!ParadoxDefineManager.isDefinesFile(psi.containingFile)) return@run
 
             return when (parentStub) {
                 is ParadoxScriptPropertyStub.DefineNamespace -> {
@@ -85,7 +85,7 @@ object ParadoxScriptStubFactory {
     fun createPropertyStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>, name: String): ParadoxScriptPropertyStub? {
         val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return null
         run {
-            if (!ParadoxDefineManager.isDefineFile(parentStub.psi.containingFile)) return@run
+            if (!ParadoxDefineManager.isDefinesFile(parentStub.psi.containingFile)) return@run
 
             return when (parentStub) {
                 is ParadoxScriptPropertyStub.DefineNamespace -> {

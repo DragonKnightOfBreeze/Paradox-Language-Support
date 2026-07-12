@@ -1,30 +1,23 @@
 package icu.windea.pls.lang.inspections.csv.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.util.values.singletonListOrEmpty
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
+import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -58,11 +51,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
+        val context = ParadoxExpressionInspectionService.createContext(this, holder)
+        val checkers = ParadoxUnresolvedExpressionChecker.EP_NAME.extensionList
         return object : ParadoxCsvVisitor() {
             override fun visitColumn(element: ParadoxCsvColumn) {
                 ProgressManager.checkCanceled()
-                if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
-                val location = getLocation(element) ?: return
+                if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header column
 
                 // - 如果不存在对应的列规则，则直接跳过
                 // - 如果存在对应的列规则且匹配，则直接跳过
@@ -71,64 +65,26 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
 
-                val expectedConfig = columnConfig.valueConfig
-                if (isSkipped(element, expectedConfig)) return
-                val expectedConfigs = expectedConfig.to.singletonListOrEmpty()
-                val description = getDescription(element, expectedConfigs) ?: getDefaultDescription(element, rowConfig, expectedConfig)
-                val highlightType = getHighlightType(element, expectedConfigs) ?: ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                val fixes = getFixes(element, expectedConfigs)
-                holder.registerProblem(location, description, highlightType, *fixes)
+                val expectedConfigs = getExpectedConfigs(columnConfig)
+                if (isIgnored(element, expectedConfigs)) return
+
+                ParadoxInspectionService.checkUnresolvedExpression(element, expectedConfigs, context, checkers)
             }
 
-            private fun isSkipped(element: ParadoxCsvColumn, expectedConfig: CwtValueConfig?): Boolean {
-                if (expectedConfig == null) return false
-                return when {
-                    isIgnoredByConfigs(element, expectedConfig) -> true
-                    else -> false
-                }
+            private fun getExpectedConfigs(columnConfig: CwtPropertyConfig): List<CwtValueConfig> {
+                val valueConfig = columnConfig.valueConfig ?: return emptyList()
+                return listOf(valueConfig)
             }
 
-            private fun isIgnoredByConfigs(element: ParadoxCsvColumn, expectedConfig: CwtValueConfig): Boolean {
-                return ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfig)
+            private fun isIgnored(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
+                if (expectedConfigs.isEmpty()) return false
+                return isIgnoredByConfigs(element, expectedConfigs)
+            }
+
+            private fun isIgnoredByConfigs(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
+                return ignoredByConfigs && expectedConfigs.any { ParadoxConfigManager.checkExtendedConfig(element, it) }
             }
         }
-    }
-
-    private fun getLocation(element: ParadoxCsvColumn): PsiElement? {
-        return when {
-            // special handle for empty columns
-            ParadoxCsvPsiService.isEmptyColumn(element) -> {
-                val isFirst = ParadoxCsvPsiService.getColumnIndex(element) == 0
-                element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR }
-            }
-            else -> element
-        }
-    }
-
-    private fun getDefaultDescription(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, expectedConfig: CwtValueConfig?): String {
-        val expect = when {
-            expectedConfig == null -> ""
-            showExpectInfo -> expectedConfig.configExpression.expressionString
-            else -> null
-        }
-        val message = when {
-            expect == null -> ChronicleBundle.message("inspection.csv.unresolvedExpression.desc.1", element.expression, rowConfig.name)
-            expect.isNotEmpty() -> ChronicleBundle.message("inspection.csv.unresolvedExpression.desc.2", element.expression, rowConfig.name, expect)
-            else -> ChronicleBundle.message("inspection.csv.unresolvedExpression.desc.3", element.expression, rowConfig.name)
-        }
-        return message
-    }
-
-    private fun getDescription(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
-        return ParadoxInspectionService.getDescriptionForUnresolvedExpression(element, expectedConfigs)
-    }
-
-    private fun getHighlightType(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
-        return ParadoxInspectionService.getHighlightTypeForUnresolvedExpression(element, expectedConfigs)
-    }
-
-    private fun getFixes(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
-        return ParadoxInspectionService.getFixesForUnresolvedExpression(element, expectedConfigs)
     }
 
     override fun createOptionsPanel(): JComponent {

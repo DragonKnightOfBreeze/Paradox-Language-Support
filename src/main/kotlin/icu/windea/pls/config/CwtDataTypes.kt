@@ -715,17 +715,6 @@ object CwtDataTypes {
     // region Alias Data Types
 
     /**
-     * 单别名右侧类型。
-     *
-     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
-     *
-     * 对应的数据表达式的格式：
-     * - `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
-     *
-     * > CWTools 兼容性：兼容。
-     */
-    val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
-    /**
      * 别名键字段类型。
      *
      * 匹配时解析别名子键并递归匹配。
@@ -758,6 +747,17 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
+    /**
+     * 单别名右侧类型。
+     *
+     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+     *
+     * 对应的数据表达式的格式：
+     * - `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
+     *
+     * > CWTools 兼容性：兼容。
+     */
+    val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
 
     // endregion
 

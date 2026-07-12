@@ -1,6 +1,6 @@
 package icu.windea.pls.localisation.lexer;
 
-import com.intellij.lexer.*;
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
@@ -10,9 +10,6 @@ import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for Paradox Localisation.
-// Notes:
-// - Locale header vs property key is distinguished by scanning after ':' on the same line.
-// - Right-quote heuristic: if another '"' exists before EOL, current '"' is text; otherwise it closes the value.
 
 %%
 
@@ -102,8 +99,6 @@ PROPERTY_KEY_TOKEN=[A-Za-z0-9_.\-']+
 PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
 
 %%
-
-// core rules
 
 <YYINITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }

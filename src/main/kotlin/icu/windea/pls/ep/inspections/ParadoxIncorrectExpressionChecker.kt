@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.inspections
 
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
@@ -11,7 +11,8 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
  *
  * 说明：
  * - 适用于脚本文件和 CSV 文件中的各种表达式。
- * - 某些表达式在语义匹配阶段可能采用更宽松的匹配策略，在检查阶段才会通过代码检查报告更多问题。
+ * - 仅当存在完全匹配的规则时才可用。
+ * - 某些表达式在语义匹配阶段可能采用更宽松的匹配策略，在检查阶段才会报告更多问题。
  * - 例如，数值超出区间、作用域不匹配等。
  *
  * @see icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
@@ -19,7 +20,15 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxIncorrectExpressionChecker {
-    fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder)
+    /**
+     * 执行检查。
+     *
+     * @param element 要检查的 [ParadoxExpressionElement]。
+     * @param config 完全匹配的规则。
+     * @param context 文件级别的上下文。
+     * @return 是否继续执行下一个检查器。
+     */
+    fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")

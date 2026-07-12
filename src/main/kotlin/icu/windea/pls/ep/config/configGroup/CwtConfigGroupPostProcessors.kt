@@ -1,31 +1,31 @@
 package icu.windea.pls.ep.config.configGroup
 
 import com.intellij.openapi.progress.checkCanceled
-import icu.windea.pls.config.attributes.CwtInlinedConfigAttributesEvaluator
+import icu.windea.pls.config.attributes.CwtExpandableConfigAttributesEvaluator
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
-class CwtBaseDataConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
+class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     override suspend fun postProcess(configGroup: CwtConfigGroup) {
-        // load lazy data for various configs
-        loadLazyData(configGroup)
-
-        // load lazy data async for various configs
-        loadLazyDataAsync(configGroup)
+        evaluateAttributes(configGroup)
     }
 
-    private suspend fun loadLazyData(configGroup: CwtConfigGroup) {
+    private suspend fun evaluateAttributes(configGroup: CwtConfigGroup) {
+        checkCanceled()
+        configGroup.unions.forEach { (k, v) ->
+            configGroup.unionAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
+        }
+        if (configGroup is CwtConfigGroupDataHolderBase) configGroup.unions.trim()
+
         checkCanceled()
         configGroup.singleAliases.forEach { (k, v) ->
-            configGroup.singleAliasAttributes[k] = CwtInlinedConfigAttributesEvaluator().evaluate(k, v, configGroup)
+            configGroup.singleAliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
         }
         if (configGroup is CwtConfigGroupDataHolderBase) configGroup.singleAliasAttributes.trim()
 
         checkCanceled()
         configGroup.aliasGroups.forEach { (k, v) ->
-            configGroup.aliasAttributes[k] = CwtInlinedConfigAttributesEvaluator().evaluate(k, v.values, configGroup)
+            configGroup.aliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v.values, configGroup)
         }
         if (configGroup is CwtConfigGroupDataHolderBase) configGroup.aliasAttributes.trim()
 
@@ -34,17 +34,5 @@ class CwtBaseDataConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
 
         checkCanceled()
         configGroup.declarations.values.forEach { it.attributes }
-    }
-
-    private suspend fun loadLazyDataAsync(configGroup: CwtConfigGroup) {
-        checkCanceled()
-        coroutineScope {
-            launch {
-                configGroup.declarations.values.forEach { it.configForDeclaration }
-            }
-            launch {
-                configGroup.complexEnums.values.forEach { it.enumNameConfigs }
-            }
-        }
     }
 }

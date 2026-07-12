@@ -4,9 +4,12 @@
   <p>
     目前检查的规则类型包括类型规则（type config）和复杂枚举规则（complex enum config）。
   </p>
-  <p>
-    忽略注入的文件和临时文件。另外，也忽略直接位于游戏或入口目录下的文件。
-  </p>
+  <p>说明：</p>
+  <ul>
+    <li>忽略注入的文件和临时文件。</li>
+    <li>忽略直接位于游戏或入口目录下的文件。</li>
+    <li>忽略用于声明定值、全局封装变量或内联脚本的文件。它们分别位于 <code>common/defines</code> <code>common/scripted_variables</code> 和 <code>common/inline_scripts</code> 目录下。</li>
+  </ul>
   <p>
     <strong>备注：</strong>
     此代码检查基于规则文件，如果产生了误报，则表明当前文件是特殊的或可忽略的，或者当前游戏类型的规则文件是不完善的。

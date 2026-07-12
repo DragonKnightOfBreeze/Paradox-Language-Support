@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptValueArgumentNameNode(
@@ -52,11 +52,8 @@ class ParadoxScriptValueArgumentNameNode(
             return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            return when (constraint) {
-                ParadoxResolveConstraint.Parameter -> true
-                else -> false
-            }
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+            return constraint == ParadoxReferenceConstraint.Parameter
         }
     }
 

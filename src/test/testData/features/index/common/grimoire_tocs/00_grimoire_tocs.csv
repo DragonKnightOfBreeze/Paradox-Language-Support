@@ -14,11 +14,11 @@ protective_wind;3;elemental_protection;encyclopedia
 # 光铸军刀
 auther_saber;5;arms_processed;book_of_arms_processed
 # 月之剑
-lunar_blade;5;weapon_processed;book_of_arms_processed
+lunar_blade;5;arms_processed;book_of_arms_processed
 # 川流
-streaming_stream;5;weapon_processed;book_of_arms_processed
+streaming_stream;5;arms_processed;book_of_arms_processed
 # 烈风
-attacking_wind;5;weapon_processed;book_of_arms_processed
+attacking_wind;5;arms_processed;book_of_arms_processed
 
 # 波纹之书
 

@@ -1,41 +1,32 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.config.CwtDataTypeSets.Expandable
+
+
 /**
- * 数据类型的预定义分组。
+ * 数据类型的分组。
  *
- * 将语义相关的 [CwtDataType] 实例组织为数组，用于匹配逻辑中的批量判断和功能分派。
+ * 将 [CwtDataType] 按照语义组织为数组，用于匹配逻辑中的批量判断和功能分派。
+ *
+ * 备注：对于需要展开的数据类型的分组，使用 [Expandable]。其他分组一般不检查展开前的状态。
  *
  * @see CwtDataType
  * @see CwtDataTypes
  */
 @Suppress("unused")
 object CwtDataTypeSets {
-    /** 整数相关的数据类型。 */
-    val Int = arrayOf(
+    /** 整数字段相关的数据类型。 */
+    val IntField = arrayOf(
         CwtDataTypes.Int,
         CwtDataTypes.IntValueField,
         CwtDataTypes.IntVariableField,
     )
-    /** 浮点数相关的数据类型。 */
-    val Float = arrayOf(
+    /** 浮点数字段相关的数据类型。 */
+    val FloatField = arrayOf(
         CwtDataTypes.Float,
         CwtDataTypes.ValueField,
         CwtDataTypes.VariableField,
     )
-    /** 本地化引用的数据类型。 */
-    val LocalisationReference = arrayOf(
-        CwtDataTypes.Localisation,
-        CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.InlineLocalisation,
-    )
-    /** 路径引用的数据类型。 */
-    val PathReference = arrayOf(
-        CwtDataTypes.FileName,
-        CwtDataTypes.FilePath,
-        CwtDataTypes.Icon,
-        CwtDataTypes.AbsoluteFilePath,
-    )
-
     /** 动态值相关的数据类型。 */
     val DynamicValue = arrayOf(
         CwtDataTypes.Value,
@@ -59,20 +50,38 @@ object CwtDataTypeSets {
         CwtDataTypes.VariableField,
     )
 
+    /** 本地化引用的数据类型。 */
+    val LocalisationReference = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.InlineLocalisation,
+    )
+    /** 路径引用的数据类型。 */
+    val PathReference = arrayOf(
+        CwtDataTypes.FileName,
+        CwtDataTypes.FilePath,
+        CwtDataTypes.Icon,
+        CwtDataTypes.AbsoluteFilePath,
+    )
+
     /** 可包含常量文本的数据类型。 */
     val ConstantAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
     )
-    /** 可解析为定义引用的数据类型。 */
+    /** 可解析为定义的数据类型。 */
     val DefinitionAware = arrayOf(
         CwtDataTypes.Definition,
         CwtDataTypes.TechnologyWithLevel,
     )
-    /** 可解析为本地化引用的数据类型。 */
+    /** 可解析为（普通）本地化的数据类型。 */
     val LocalisationAware = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation,
+    )
+    /** 可解析为同步本地化的数据类型。 */
+    val SyncedLocalisationAware = arrayOf(
+        CwtDataTypes.SyncedLocalisation,
     )
     /** 可定位图像资源的数据类型。 */
     val ImageLocationAware = arrayOf(
@@ -85,11 +94,6 @@ object CwtDataTypeSets {
         CwtDataTypes.Localisation,
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
-    )
-    /** 别名名称相关的数据类型。 */
-    val AliasNameAware = arrayOf(
-        CwtDataTypes.AliasKeysField,
-        CwtDataTypes.AliasName,
     )
     /** 所有模式感知的数据类型。 */
     val PatternAware = arrayOf(
@@ -104,6 +108,12 @@ object CwtDataTypeSets {
         CwtDataTypes.SuffixAwareDefinition,
         CwtDataTypes.SuffixAwareLocalisation,
         CwtDataTypes.SuffixAwareSyncedLocalisation,
+    )
+
+    /** 可展开为一组候选项的数据类型。 */
+    val Expandable = arrayOf(
+        CwtDataTypes.UnionValue,
+        CwtDataTypes.AliasKeysField,
     )
 
     /** 所有可评估脚本值引用的数据类型。 */

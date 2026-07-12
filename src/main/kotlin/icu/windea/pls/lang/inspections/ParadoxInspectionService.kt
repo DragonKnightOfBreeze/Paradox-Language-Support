@@ -1,19 +1,14 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.ChronicleAnnotationManager
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
-import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionDecorator
+import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -31,60 +26,35 @@ object ParadoxInspectionService {
     }
 
     @Optimized
-    fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, checkers: List<ParadoxIncorrectSyntaxChecker>) {
+    fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, checkers: List<ParadoxIncorrectSyntaxChecker>): Boolean {
         val gameType = context.gameType
         checkers.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
-            ep.check(element, context)
+            val r = ep.check(element, context)
+            if (!r) return false
         }
+        return true
     }
 
     @Optimized
-    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder, checkers: List<ParadoxIncorrectExpressionChecker>) {
-        val gameType = config.configGroup.gameType
+    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext, checkers: List<ParadoxIncorrectExpressionChecker>): Boolean {
+        val gameType = context.gameType
         checkers.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
-            ep.check(element, config, holder)
+            val r = ep.check(element, config, context)
+            if (!r) return false
         }
+        return true
     }
 
-    context(_: LocalInspectionTool)
     @Optimized
-    fun getDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String? {
-        if (expectedConfigs.isEmpty()) return null
-        val gameType = expectedConfigs.first().configGroup.gameType
-        val decorators = ParadoxUnresolvedExpressionDecorator.EP_NAME.extensionList
-        decorators.forEachFast f@{ ep ->
+    fun checkUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext, checkers: List<ParadoxUnresolvedExpressionChecker>): Boolean {
+        val gameType = context.gameType
+        checkers.forEachFast f@{ ep ->
             if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
-            ep.getDescription(element, expectedConfigs)?.let { return it }
+            val r = ep.check(element, expectedConfigs, context)
+            if (!r) return false
         }
-        return null
-    }
-
-    context(_: LocalInspectionTool)
-    @Optimized
-    fun getHighlightTypeForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType? {
-        if (expectedConfigs.isEmpty()) return null
-        val gameType = expectedConfigs.first().configGroup.gameType
-        val decorators = ParadoxUnresolvedExpressionDecorator.EP_NAME.extensionList
-        decorators.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
-            ep.getHighlightType(element, expectedConfigs)?.let { return it }
-        }
-        return null
-    }
-
-    context(_: LocalInspectionTool)
-    @Optimized
-    fun getFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
-        if (expectedConfigs.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
-        val result = mutableListOf<LocalQuickFix>()
-        val gameType = expectedConfigs.first().configGroup.gameType
-        val decorators = ParadoxUnresolvedExpressionDecorator.EP_NAME.extensionList
-        decorators.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
-            ep.collectFixes(element, expectedConfigs, result)
-        }
-        return result.toArray(LocalQuickFix.EMPTY_ARRAY)
+        return true
     }
 }

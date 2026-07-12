@@ -41,7 +41,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
  * @property name 规则名称（即变量名）。等同于 [variable]。
  * @property namespace 命名空间。
  * @property variable 变量名。
- * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
+ * @property rootConfig 经过处理后的顶级成员规则，用于后续获取最终的顶级成员规则。
  */
 interface CwtDefineVariableConfig : CwtDefineConfig {
     @FromName
@@ -50,7 +50,7 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
     override val namespace: String
     val variable: String
 
-    val configForDeclaration: CwtPropertyConfig
+    val rootConfig: CwtPropertyConfig
 
     companion object {
         /** 由属性规则解析为定值变量规则。 */
@@ -76,10 +76,10 @@ private class CwtDefineVariableConfigImpl(
     override val namespace: String,
     override val variable: String,
 ) : UserDataHolderBase(), CwtDefineVariableConfig {
-    override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
+    override val rootConfig: CwtPropertyConfig by lazy { computeRootConfig() }
 
-    private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
+    private fun computeRootConfig(): CwtPropertyConfig {
+        return CwtConfigManipulationService.inlineForConfig(config)
     }
 
     override fun toString() = "CwtDefineVariableConfigImpl(namespace=$namespace, variable=$variable)"

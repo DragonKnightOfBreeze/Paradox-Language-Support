@@ -11,10 +11,9 @@ object ParadoxLocalisationPsiService {
         return element is ParadoxLocalisationProperty
     }
 
-    fun isIdElement(element: PsiElement?): Boolean {
-        if (element == null) return false
-        if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TOKENS) return false
-        if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TOKENS) return false
+    fun isIdElement(element: PsiElement): Boolean {
+        if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.INTERPOLATION_TOKENS) return false
+        if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.INTERPOLATION_TOKENS) return false
         return true
     }
 

@@ -33,6 +33,6 @@ enum class CwtConfigApiStatus(
         private val map = entries.associateBy { it.id }
 
         @JvmStatic
-        fun get(id: String): CwtConfigApiStatus? = map[id]
+        fun get(id: String): CwtConfigApiStatus? = map[id.lowercase()]
     }
 }

@@ -3,14 +3,14 @@
 <!-- With the guidebook currently being written, we are fully prepared — welcome to the real world. -->
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Plugin Home](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Plugin Home](https://plugins.jetbrains.com/plugin/16825) |
 [Discord](https://discord.gg/vBpbET2bXT) |
 [群聊](https://qm.qq.com/q/oRPgLwrTZm) |
 [By me a coffee ☕](https://afdian.com/a/dk_breeze)
 
 ## 概述
 
-Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
+Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Interactive 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能丰富的开发体验，助力轻松实现创意。
 
 插件会自动检测游戏目录和模组目录，分析其中的文件以构建缓存与索引。
 完成必要的配置工作（如游戏类型、游戏目录、模组依赖）以及项目分析（扫描文件、构建索引）后，即可启用并体验完整语言功能。
@@ -41,7 +41,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 - 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
 - 基于 [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html) 构建，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语义分析与丰富的语言功能。
-- 使用 JFlex 进行词法分析，使用 BNF 进行语法解析。
+- 使用 JFlex 进行词法分析，使用 BNF 进行语法分析。
 - 内置丰富的自定义扩展点，提供功能的灵活扩展，便于定制与增强插件行为。
 - 内置代码注入系统，用于实现常规手段无法达成的功能、修复与优化。
 - 内置图像处理模块（DDS、TGA），用于预览、渲染和处理额外的图片格式。
@@ -73,7 +73,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 ### 贡献代码
 
-鉴于插件同时拥有庞大的代码规模（约11万行 Kotlin 生产代码）与极高的复杂度（平台 & 领域 & 架构），贡献核心代码是极具挑战性的。
+鉴于插件同时拥有相当庞大的代码规模与相当高的复杂度，贡献核心代码是非常有挑战性的。
 尽管如此，通过参考已有的文档、代码、配置文件和规则文件，AI 协助以及自行探索，考虑与实践部分代码上的贡献仍然是可能的。
 
 例如，通过浏览参考文档和配置文件（如 `plugin.xml` 以及其中引入的 XML 配置文件），结合关键词搜索，你可以尝试新增与完善各种语言功能，或是增强插件的能力和兼容性。

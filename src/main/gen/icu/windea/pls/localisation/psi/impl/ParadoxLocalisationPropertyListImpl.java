@@ -45,7 +45,7 @@ public class ParadoxLocalisationPropertyListImpl extends ParadoxLocalisationStub
   @Override
   @Nullable
   public ParadoxLocalisationLocale getLocale() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationLocale.class);
+    return PsiTreeUtil.getStubChildOfType(this, ParadoxLocalisationLocale.class);
   }
 
   @Override

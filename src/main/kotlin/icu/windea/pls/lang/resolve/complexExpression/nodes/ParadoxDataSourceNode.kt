@@ -6,7 +6,6 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -19,7 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
 class ParadoxDataSourceNode(
@@ -146,12 +145,21 @@ class ParadoxDataSourceNode(
             return ResolveResult.EMPTY_ARRAY
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            val dataTypes = node.linkConfigs.mapNotNull { it.configExpression?.type }
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+            // limit constraint
+            if (!isAcceptableConstraint(constraint)) return false
+            // test data type
+            return node.linkConfigs.any { linkConfig ->
+                val configExpression = linkConfig.configExpression ?: return@any false
+                constraint.test(configExpression.type)
+            }
+        }
+
+        private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> dataTypes.any { it in CwtDataTypeSets.DefinitionAware || it == CwtDataTypes.AliasKeysField }
-                ParadoxResolveConstraint.ComplexEnumValue -> dataTypes.any { it == CwtDataTypes.EnumValue || it == CwtDataTypes.AliasKeysField }
-                ParadoxResolveConstraint.DynamicValue -> dataTypes.any { it in CwtDataTypeSets.DynamicValue || it == CwtDataTypes.AliasKeysField }
+                ParadoxReferenceConstraint.Definition -> true
+                ParadoxReferenceConstraint.ComplexEnumValue -> true
+                ParadoxReferenceConstraint.DynamicValue -> true
                 else -> false
             }
         }

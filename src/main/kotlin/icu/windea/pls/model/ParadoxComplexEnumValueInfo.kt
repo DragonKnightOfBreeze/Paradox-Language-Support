@@ -1,7 +1,6 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup

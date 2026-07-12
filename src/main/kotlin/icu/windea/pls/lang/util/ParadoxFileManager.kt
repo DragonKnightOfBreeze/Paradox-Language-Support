@@ -15,7 +15,6 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.fileInfo
@@ -24,7 +23,6 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.script.ParadoxScriptFileType
 import java.nio.file.Files
@@ -35,17 +33,6 @@ import javax.swing.Icon
 @Suppress("unused")
 object ParadoxFileManager {
     private val logger = logger<ParadoxFileManager>()
-
-    const val scriptedVariablesPath = "common/scripted_variables"
-
-    fun getScriptedVariablesDirectory(contextFile: VirtualFile, createIfMissing: Boolean = true): VirtualFile? {
-        val fileInfo = contextFile.fileInfo ?: return null
-        val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val entryPath = fileInfo.entryPath ?: return null
-        val path = entryPath.resolve(scriptedVariablesPath)
-        return VirtualFileService.findDirectory(path)
-    }
 
     /**
      * 将输入路径视为相对于游戏的主要入口目录的路径，得到规范化后的绝对路径。

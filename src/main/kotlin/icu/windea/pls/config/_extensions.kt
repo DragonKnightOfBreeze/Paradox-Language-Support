@@ -2,8 +2,6 @@
 
 package icu.windea.pls.config
 
-import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
@@ -12,15 +10,14 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterFast
-import icu.windea.pls.core.collections.toListOrThis
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
+
+// region Config Extensions
 
 inline val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 
@@ -28,16 +25,12 @@ inline val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = C
 
 inline val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
 
-inline fun CwtUnionConfig.processUnionCandidates(processor: (CwtValueConfig) -> Boolean): Boolean = CwtConfigManager.processUnionCandidates(this, processor)
+inline fun CwtUnionConfig.processUnionCandidates(processor: (CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManager.processUnionCandidates(this, processor)
+}
 
-@Optimized
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
-    if (size <= 1) return toListOrThis()
-    return sortedByDescending s@{
-        val expression = expressionProvider(it) ?: return@s Double.MAX_VALUE
-        val configGroup = configGroupProvider(it)
-        CwtConfigExpressionManager.getPriority(expression, configGroup)
-    }
+    return CwtConfigManager.sortedByPriority(this, expressionProvider, configGroupProvider)
 }
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
@@ -52,23 +45,9 @@ inline fun List<CwtMemberConfig<*>>.filterValues(): List<CwtValueConfig> {
     return filterFast { it.memberType == CwtMemberType.VALUE } as List<CwtValueConfig>
 }
 
-/**
- * 判断两个规则对象是否指向同一 [PsiElement]。
- */
-infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
-    if (this == null || other == null) return false
-    // NOTE 2.1.1 reference equals can be used here & empty pointers are never same
-    return pointer === other.pointer && pointer !== emptyPointer<PsiElement>()
-}
+// endregion
 
-/**
- * 尝试解析当前规则指向的 [PsiElement]，并绑定当前规则。
- */
-fun <T : PsiElement> CwtConfig<T>?.resolveElementWithConfig(): T? {
-    val element = this?.pointer?.element ?: return null
-    element.putUserData(CwtConfigManager.Keys.config, this)
-    return element
-}
+// region Addon Extensions
 
 // in order to be compatible with eu5 config files
 private val pathPrefixes = arrayOf("game/", "game/in_game/", "game/main_menu/", "game/loading_screen/")
@@ -82,3 +61,5 @@ fun String.optimizedPathExtension(): String {
     val r = removePrefix(".")
     return r.optimized()
 }
+
+// endregion

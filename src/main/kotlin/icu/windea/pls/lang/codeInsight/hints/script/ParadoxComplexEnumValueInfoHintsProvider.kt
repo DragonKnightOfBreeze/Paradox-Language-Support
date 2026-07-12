@@ -3,13 +3,12 @@ package icu.windea.pls.lang.codeInsight.hints.script
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -22,7 +21,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider
         if (expression.isEmpty()) return
         if (expression.isParameterized()) return
 
-        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        val resolveConstraint = ParadoxReferenceConstraint.ComplexEnumValue
         if (!resolveConstraint.canResolveReference(element)) return
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return

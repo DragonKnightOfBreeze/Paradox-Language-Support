@@ -8,7 +8,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  */
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
-        val resolveConstraint = ParadoxResolveConstraint.Definition
+        val resolveConstraint = ParadoxReferenceConstraint.Definition
         if (!resolveConstraint.canResolveReference(element)) return
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return

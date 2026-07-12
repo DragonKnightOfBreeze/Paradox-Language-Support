@@ -48,6 +48,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
+import icu.windea.pls.model.ParadoxEconomicCategoryModifierInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.ReferenceLinkType
@@ -60,7 +61,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 val ParadoxModifierSupport.Keys.templateExpression by registerKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys).withSync()
 val ParadoxModifierSupport.Keys.economicCategoryInfo by registerKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).withSync()
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).withSync()
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryModifierInfo>(ParadoxModifierSupport.Keys).withSync()
 
 var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templateExpression
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
@@ -100,10 +101,12 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         if (modifiers.isEmpty()) return
 
         for (modifierConfig in modifiers.values) {
+            ProgressManager.checkCanceled()
+
             // 排除重复的
             if (!modifierNames.add(modifierConfig.name)) continue
 
-            // 排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
@@ -112,7 +115,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
+            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
@@ -134,7 +137,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对通过模板表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
+ * 提供对从模板表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
@@ -177,7 +180,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         for (modifierConfig in modifiers.values) {
             ProgressManager.checkCanceled()
 
-            // 排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
@@ -185,12 +188,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
-            // 生成的modifier
+            // 生成的 modifier
             ParadoxModifierManager.completeTemplateModifier(element, template, configGroup) p@{ name ->
                 // 排除重复的
                 if (!modifierNames.add(name)) return@p true
 
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
@@ -236,6 +239,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val snippetNodes = templateExpression.nodes.filterIsInstance<ParadoxTemplateSnippetNode>()
             if (snippetNodes.isNotEmpty()) {
                 for (snippetNode in snippetNodes) {
+                    ProgressManager.checkCanceled()
+
                     appendBr().appendIndent()
                     val configExpression = snippetNode.configExpression
                     when (configExpression.type) {
@@ -312,6 +317,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if (modifiers.isEmpty()) return false
         val gameType = definitionInfo.gameType
         for (modifier in modifiers) {
+            ProgressManager.checkCanceled()
+
             appendBr()
             append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
@@ -331,7 +338,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对通过经济分类（`economic_category`）生成的修正的支持。
+ * 提供对从经济分类（`economic_category`）生成的修正的支持。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
@@ -384,7 +391,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
-            // 排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配 modifier 的 supported_scopes 的情况
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
@@ -398,7 +405,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 // 排除重复的
                 if (!modifierNames.add(name)) continue
 
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeText, typeIcon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
@@ -442,9 +449,6 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             append(" ")
             val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
             appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = modifierElement)
-        } else {
-            appendBr().appendIndent()
-            append(ChronicleBundle.message("forAiBudget"))
         }
 
         return true
@@ -458,6 +462,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {
+            ProgressManager.checkCanceled()
+
             appendBr()
             append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
@@ -469,11 +475,6 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     append(" ")
                     val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)
-                }
-            } else {
-                append(" ")
-                grayed {
-                    append(ChronicleBundle.message("forAiBudget"))
                 }
             }
         }

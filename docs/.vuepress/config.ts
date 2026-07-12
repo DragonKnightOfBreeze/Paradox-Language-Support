@@ -10,11 +10,11 @@ export default defineUserConfig({
   locales: {
     "/zh/": {
       lang: "zh-CN",
-      title: "Paradox Language Support"
+      title: "Paradox Chronicle"
     },
     "/en/": {
       lang: "en-US",
-      title: "Paradox Language Support"
+      title: "Paradox Chronicle"
     }
   },
   plugins: [

@@ -31,7 +31,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val hint by registerKey<String?>(this)
         val eventType by registerKey<String?>(this)
         val contextKey by registerKey<String?>(this)
-        val contextConfigsType by registerKey(this, "single")
+        val contextConfigsType by registerKey<String?>(this)
         val group by registerKey<String?>(this)
         val typeKeyFilter by registerKey<ReversibleValue<Set<@CaseInsensitive String>>?>(this)
         val typeKeyRegex by registerKey<Regex?>(this)

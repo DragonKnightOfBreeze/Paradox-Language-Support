@@ -6,11 +6,11 @@
 
 > This document is written in Chinese. For non-Chinese users, please have your translation engine or AI assistant ready.
 
-本文档是基于原始的[开发路线笔记](documents/notes/笔记：开发路线.md)进一步整理后的路线图文档。
+本文档是基于原始的[开发路线笔记](documents/notes/开发路线.md)进一步整理后的路线图文档。
 原始笔记按日期组织，本文件将其重新归纳为按版本号组织后的结构，并且进一步规范化，补充了额外的细节。
 
-- 截止版本：v2.2.0
-- 截止日期：2026-07-04
+> - 截止版本：v3.0.0
+> - 截止日期：2026-07-06
 
 ## v2.1.10 {#v2-1-10}
 
@@ -71,7 +71,7 @@
 - [x] 重构：重构 `ParadoxAnalysisInjector` 中的方法并重命名为 `ParadoxAnalysisInjectionManager`
 - [x] 重构：变更 `ParadoxGameType` 中的静态方法，提供 `ParadoxGameTypeConstraint`
 - [x] 重构：将 `icu.windea.pls.lang.quickfix` 中的已有代码全部移到 `icu.windea.pls.lang.fixes`
-- [x] 重构：将 `参数条件/参数条件块/parameterCondition/parameterConditionBlock` 对应地重命名为 `参数化块/conditionalBlock`
+- [x] 重构：将 `参数条件/参数条件块/parameterCondition/parameterConditionBlock` 对应地重命名为 `条件化块/conditionalBlock`
 - [x] [Stellaris] 兼容 Stellaris 4.4 开始出现的 `? =`（包含空白的安全赋值运算符） ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P1 [Stellaris] 在文法级别区分 Stellaris 4.4 中的 `? =` (SAFE_CALL_ASSIGN) 与 CK3/VIC3/EU5 中的 `?=` (SAFE_ASSIGN) & 优化格式化逻辑 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
 - [x] P2 [Stellaris] 完善代码检查 `ParadoxScriptIncorrectSyntax`：验证 `? =` `?=` 是否受游戏类型支持，且左值和右值是否在文法级别合法 ([#331](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/331))
@@ -105,15 +105,31 @@
 
 ## v3.0.0-the-great-renaming {#v3-0-0}
 
-本版本聚焦于**大重命名**（项目名、类名、特殊字面量等）以及**文档的全面更新**（普通文档、参考文档、规则仓库的普通文档），同时完善社区文档。
+本版本聚焦于**大重命名**（插件名/类名/文档/等等）以及**文档更新**（根目录下的文档/参考文档）。
 
 ### 计划
 
-- [ ] P2/MS 改进英文 `README.md`，检查并修正用词问题和单复数问题。包括更准确的描述和说明、更符合个人风格和项目叙事风格的文字，适当引入叙事性
-- [ ] P2/MS 改进与补充 `README.md`（叙事 / 问题解决 / FAQ / 已知限制 / ……）
-- [ ] P2/MS 新增与补充 `CONTRIBUTING.md`（概述，说明如何贡献代码/文档/规则，包括步骤/建议/复杂性警告）
-- [ ] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
-- [ ] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
+- [x] P2/MS 改进与补充 `README.md`（叙事/问题解决/FAQ/已知限制/……）
+- [x] P2/MS 新增与补充 `CONTRIBUTING.md`（概述，说明如何贡献代码/文档/规则，包括步骤/建议/复杂性警告）
+- [x] P2/MS 改进与补充 `CONTRIBUTORS.md`（概述，列出主要贡献者：代码/文档/规则/特别感谢/其他）
+- [x] P2/MS 修订参考文档，尤其是各个参考手册（修正事实性错误，补充必要的细节）
+
+### 附加
+
+- [x] P2 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用
+- [x] P2 优化索引逻辑（对于 `ParadoxComplexEnumValueIndex` `ParadoxDefinitionIndex` `ParadoxDefinitionInjectionIndex`，需要保留声明顺序）
+- [ ] （延迟）P2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持
+- [x] P2 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持
+- [x] P3 API 变更：将 EP `unresolvedExpressionDecorator` 改为 `unresolvedExpressionChecker`
+- [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
+- [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
+- [x] P2 改为为内联脚本文件提供编辑器通知，而非代码检查，以避免无法适用于非项目文件（回退到 `ParadoxInlineScriptEditorNotificationProvider`，移除 `DeclaredInlineScriptInspection`）
+
+### 备注
+
+- 不能重命名插件ID（`icu.windea.pls`）。
+- 不建议更改配置文件名（`paradox-language-support.xml`）以及配置项的名字和结构。不过，未来可能会改进，并且编写迁移器（migrator）。
+- 不建议更改 GitHub 项目地址以及参考文档地址。
 
 ## v3.0.1 {v3-0-1}
 
@@ -121,7 +137,7 @@
 
 - [ ] P2 重构 select API，更好的链式调用方式，更好的向上或向下查询的方式
 - [ ] P2 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
-- [ ] P2  规范化展示（presentation）的相关 API
+- [ ] P2 规范化展示（presentation）的相关 API
   - 展示：包括相关本地化和相关图片
   - 考虑提供对应的 search/searcher/provider EP。
   - 服务类应放到 `icu.windea.pls.lang.resolve`。
@@ -149,6 +165,12 @@
   - 考虑新增 `ParadoxDefinitonNameService`，或者完善 `ParadoxDefinitonService`
   - 提取 `ParadoxDefinitionManipulationService`，主要用于重命名
   - 考虑优化：可以从 typeKey 或者 nameField 出发来重命名对应的定义
+
+### 附加
+
+- [ ] P2 继续分析与优化构建索引时的性能和内存占用
+- [ ] P2 继续分析与优化完成项目分析后的性能和内存占用
+- [ ] P2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持
 
 ## v3.0.2 {v3-0-2}
 
@@ -228,6 +250,7 @@
 - [ ] P3 开放内部规则：允许自定义除了 schema 之外的所有现有内部规则类型，考虑新增规则类型 liveTemplateSettings
   - 这些特殊规则的变化基本上不会导致刷新与重新解析，以后可以考虑优化相关代码。
   - 考虑借助 AI 补充更多默认提供的设置规则。
+- [ ] P3 对于作为上下文的规则以及匹配的规则，有时需要展开并集（`union[x]`）和别名（`alias_keys_field[x]`）
 
 ### 图片处理
 
@@ -245,7 +268,6 @@
   - 设置类：`icu.windea.pls.lang.tool.ExtraUtilitySettings`
   - 服务类：`icu.windea.pls.lang.tool.ExtraUtilityService`
   - 预设：打包模组（可配置）/ 审计游戏和模组文件（按查询作用域）/ 调用渲染器（不确定）
-- [ ] P3 关于 tiger 集成：经过检查，tiger 输出的 JSON 中未提供快速修复信息，且 tiger 的耦合程度较高，难以通过外部手段补充
 - [ ] P4 重构和扩展基于Diagrams插件/调用层级的图表功能
   - 优化相关的设置页面，提供更好的、更易扩展的配置方式。
   - 考虑在已有EP的基础上再次提取插件特定的EP。

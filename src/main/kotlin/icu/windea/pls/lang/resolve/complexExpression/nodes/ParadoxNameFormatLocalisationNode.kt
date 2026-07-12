@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
  * 命名格式表达式（[ParadoxNameFormatExpression]）中的本地化节点。即 `{x}` 中的 `x`。
@@ -89,11 +89,8 @@ class ParadoxNameFormatLocalisationNode(
             return resolved.createResults()
         }
 
-        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            return when (constraint) {
-                ParadoxResolveConstraint.Localisation -> true
-                else -> false
-            }
+        override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+            return constraint == ParadoxReferenceConstraint.Localisation
         }
     }
 

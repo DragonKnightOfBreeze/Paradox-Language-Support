@@ -2,7 +2,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <psi.implicitReferenceProvider implementation="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
 
-    <localInspection language="Markdown" shortName="PlsMarkdownUnresolvedReferenceLink"
+    <localInspection language="Markdown" shortName="ChronicleMarkdownUnresolvedReferenceLink"
                      bundle="messages.ChronicleExtensionsBundle"
                      key="inspection.markdown.unresolvedReferenceLinks" groupKey="inspection.markdown.group"
                      enabledByDefault="true" level="WARNING"

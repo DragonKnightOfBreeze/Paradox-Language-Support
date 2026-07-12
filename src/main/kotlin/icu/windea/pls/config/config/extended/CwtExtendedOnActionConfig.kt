@@ -21,7 +21,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
  * - on action 即类型为 `on_action` 的定义。
- * - 事件类型是通过 `## event_type` 选项指定的。这会重载声明规则中的所有对事件的引用为对该类型事件的引用。
+ * - 事件类型是通过 `## event_type` 选项指定的。这会按需重载声明规则中的所有对事件的引用为对该事件类型的事件的引用。
  *
  * 路径定位：
  * - `on_actions/{name}`。其中 `{name}` 匹配规则名称。
@@ -42,7 +42,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  *
  * @property name 规则名称。
  * @property eventType 事件类型。
- * @property hint 额外提示信息（可选）。
+ * @property hint 可选的提示文本。用于提供额外的内嵌提示。
  */
 interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName

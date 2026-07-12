@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
@@ -32,13 +34,17 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Local
 
     @Test
-    fun testScriptedVariableNameIndex_Local() {
-        markFileInfo(gameType, "common/test/local_vars.test.txt")
-        myFixture.configureByFile("features/index/local_vars.test.txt")
-        val project = project
+    fun test_Local() {
+        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
             ChronicleIndexKeys.ScriptedVariableName,
@@ -56,10 +62,9 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     // region Global
 
     @Test
-    fun testScriptedVariableNameIndex_Global() {
-        markFileInfo(gameType, "common/scripted_variables/global_vars.test.txt")
-        myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
-        val project = project
+    fun test_Global() {
+        markAndConfigureByFile("features/index/common/scripted_variables/global_vars.test.txt")
+
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
             ChronicleIndexKeys.ScriptedVariableName,

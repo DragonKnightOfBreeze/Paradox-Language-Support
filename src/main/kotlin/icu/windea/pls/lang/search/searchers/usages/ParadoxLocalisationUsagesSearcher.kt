@@ -10,7 +10,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import kotlin.experimental.or
 
 /**
@@ -36,7 +36,7 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {
-        return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Localisation)
+        return ParadoxFilteredRequestResultProcessor(target, ParadoxReferenceConstraint.Localisation)
     }
 }
 

@@ -1,0 +1,22 @@
+l_english:
+ concept_command:0 "['some_concept']"
+ concept_command_complex:0 "['civic:some_civic:some_swapped_civic']"
+ concept_command_with_body:0 "['some_concept', text]"
+ concept_command_with_empty_body:0 "['some_concept', ]"
+ concept_command_with_trailing_comma:0 "['some_concept',]"
+ concept_command_within_spaces:0 "[  'some_concept'  ]"
+ concept_command_within_left_space:0 "[ 'some_concept']"
+ concept_command_within_right_space:0 "['some_concept' ]"
+
+ concept_command.mixed:0 "['some_concept'] text"
+ concept_command_complex.mixed:0 "['civic:some_civic:some_swapped_civic'] text"
+ concept_command_with_body.mixed:0 "['some_concept', text] text"
+ concept_command_with_empty_body.mixed:0 "['some_concept', ] text"
+ concept_command_with_trailing_comma.mixed:0 "['some_concept',] text"
+ concept_command_within_spaces.mixed:0 "[  'some_concept'  ] text"
+ concept_command_within_left_space.mixed:0 "[ 'some_concept'] text"
+ concept_command_within_right_space.mixed:0 "['some_concept' ] text"
+
+ concept_command_parameterized_1:0 "['a_$b$_c']"
+ concept_command_parameterized_2:0 "['$b$_c']"
+ concept_command_parameterized_3:0 "['a_$b$']"

@@ -1,6 +1,6 @@
 package icu.windea.pls.script.lexer;
 
-import com.intellij.lexer.*;
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 import java.util.concurrent.atomic.*;
@@ -11,13 +11,12 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for inline math of Paradox Script.
-// Notes:
-// - Tracks a simple state for the absolute-value operator using a left/right '|' toggle.
 
 %%
 
 %{
-    private boolean leftAbsSign = true;
+    // state for abs operator signs (LABS_SIGN or RABS_SIGN)
+    private boolean absSignState = true;
 
     public _ParadoxScriptInlineMathLexer() {
         this((java.io.Reader)null);
@@ -38,21 +37,21 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 BLANK=\s+
 
-INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
-FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
-SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
-PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not permitted
-ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
+INT_NUMBER_TOKEN=[0-9]+ // leading zero is allowed
+FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is allowed
+SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not allowed
+PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not allowed
+ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\\\s]+ // compatible with leading '@'
 
 %%
 
 <YYINITIAL> {
     "|" {
-        if (leftAbsSign) {
-            leftAbsSign = false;
+        if (absSignState) {
+            absSignState = false;
             return LABS_SIGN;
         } else {
-            leftAbsSign = true;
+            absSignState = true;
             return RABS_SIGN;
         }
     }
@@ -64,13 +63,12 @@ ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
     "/" { return DIV_SIGN; }
     "%" { return MOD_SIGN; }
     "$" { yybegin(IN_PARAMETER); return PARAMETER_START; }
-    "@" { return AT; } // leading `@` is permitted (on syntax level)
+    "@" { return AT; } // leading `@` is allowed (on syntax level)
     {INT_NUMBER_TOKEN} { return INT_NUMBER_TOKEN; }
     {FLOAT_NUMBER_TOKEN} { return FLOAT_NUMBER_TOKEN; }
     {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
     {BLANK} { return WHITE_SPACE; }
 }
-
 <IN_PARAMETER> {
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "$" { yybegin(YYINITIAL); return PARAMETER_END; }

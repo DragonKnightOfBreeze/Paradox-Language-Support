@@ -34,6 +34,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.model.constants.ChronicleUrls
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
+import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ParadoxFileInspectionService {
@@ -83,7 +85,7 @@ object ParadoxFileInspectionService {
         val locale = singlePropertyList.locale ?: return null
         if (!locale.isValid) return null // locale尚未填写完成时也跳过检查
         val localeConfig = selectLocale(locale) ?: return null // locale不支持时也跳过检查
-        val localeId = localeConfig.id
+        val localeId = localeConfig.name
         val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
         if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
@@ -100,6 +102,9 @@ object ParadoxFileInspectionService {
         if (file !is ParadoxFile) return null
         val virtualFile = file.virtualFile ?: return null
         val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
+
+        // 忽略一些特殊的脚本文件
+        if (file is ParadoxScriptFile && fileInfo.path matchesBy ParadoxPathConstraint.SpecialScriptFile) return null
 
         // 排除忽略的文件
         if (fileInfo.path.path.matchesAntPatterns(ignoredFilePaths, ignoreCase = true)) return null // 忽略

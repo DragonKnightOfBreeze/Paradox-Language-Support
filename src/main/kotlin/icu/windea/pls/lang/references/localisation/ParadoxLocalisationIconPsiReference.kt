@@ -6,7 +6,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.createResults
-import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
+import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
@@ -46,7 +46,7 @@ class ParadoxLocalisationIconPsiReference(
         val element = element
         val name = element.name
         if (name.isNullOrEmpty()) return null
-        val resolved = ParadoxLocalisationIconService.resolve(name, element, project)
+        val resolved = ParadoxLocalisationIconManager.resolve(name, element, project)
         return resolved
     }
 
@@ -54,7 +54,7 @@ class ParadoxLocalisationIconPsiReference(
         val element = element
         val name = element.name
         if (name.isNullOrEmpty()) return ResolveResult.EMPTY_ARRAY
-        val resolved = ParadoxLocalisationIconService.resolveAll(name, element, project)
+        val resolved = ParadoxLocalisationIconManager.resolveAll(name, element, project)
         return resolved.createResults()
     }
 }

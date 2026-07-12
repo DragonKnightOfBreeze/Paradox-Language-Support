@@ -9,7 +9,7 @@ import icu.windea.pls.ai.settings.ChronicleAiSettings
 object ChatModelManager {
     fun getProviderType(): ChatModelProviderType {
         return when {
-            ChronicleFacade.isUnitTestMode() -> ChatModelProviderType.resolve(System.getProperty("pls.ai.providerType", "OPEN_AI"))
+            ChronicleFacade.isUnitTestMode() -> ChatModelProviderType.resolve(System.getProperty("chronicle.ai.providerType", "OPEN_AI"))
             else -> ChronicleAiSettings.getInstance().state.providerType
         }
     }

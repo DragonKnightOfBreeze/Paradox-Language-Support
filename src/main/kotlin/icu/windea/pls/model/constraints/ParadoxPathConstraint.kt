@@ -4,6 +4,12 @@ import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.paths.ParadoxPath
 
 /**
+ * 路径约束。
+ *
+ * 用于测试指定的 [ParadoxPath] 是否符合特定的条件。
+ *
+ * 用法示例：`path matchesBy ParadoxPathConstraint.ModDescriptorFile`
+ *
  * @see ParadoxPath
  */
 @Suppress("unused")
@@ -37,6 +43,9 @@ enum class ParadoxPathConstraint {
     ForScriptedVariable {
         override fun test(path: ParadoxPath) = path.matchesParent("common/scripted_variables") && path.matchesExtension("txt")
     },
+    ForInlineScript {
+        override fun test(path: ParadoxPath) = path.matchesParent("common/inline_scripts") && path.matchesExtension("txt")
+    },
     ForEvent {
         override fun test(path: ParadoxPath) = path.matchesParent("events") && path.matchesExtension("txt")
     },
@@ -48,6 +57,10 @@ enum class ParadoxPathConstraint {
         override fun test(path: ParadoxPath) = InSyncedLocalisationPath.test(path) && path.matchesExtensions(ChronicleConstants.localisationFileExtensions)
     },
 
+
+    SpecialScriptFile {
+        override fun test(path: ParadoxPath) = ForDefine.test(path) || ForScriptedVariable.test(path) || ForInlineScript.test(path)
+    },
     AcceptInlineScriptUsage {
         override fun test(path: ParadoxPath) = ScriptFile.test(path) && !path.matchesParent("common/defines") && !path.matchesParent("common/scripted_variables")
     },

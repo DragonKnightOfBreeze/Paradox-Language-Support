@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core.collections
 
-import icu.windea.pls.core.cast
 import java.util.*
 import kotlin.reflect.KProperty
 

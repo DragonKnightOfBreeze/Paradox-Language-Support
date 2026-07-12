@@ -1,20 +1,73 @@
 package icu.windea.pls.lang.inspections
 
+import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.siblings
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
+import icu.windea.pls.core.truncate
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxExpressionInspectionService {
+    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        val gameType = selectGameType(holder.file)
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, gameType)
+        return ParadoxExpressionInspectionContext(tool, holder, configGroup)
+    }
+
+    fun getLocation(element: ParadoxExpressionElement): PsiElement {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
+            // special handle for empty columns
+            val isFirst = ParadoxCsvPsiService.getColumnIndex(element) == 0
+            val result = element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR }
+            return result ?: element
+        }
+        return element
+    }
+
+    fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
+        val expression = element.expression
+        val expect = when {
+            expectedConfigs.isEmpty() -> ""
+            showExpectInfo(context) -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
+                .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
+            else -> null
+        }
+        val message = when {
+            expect == null -> ChronicleBundle.message("unresolvedExpression.desc.withoutExpect", expression)
+            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.withExpect", expression, expect)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
+        }
+        return message
+    }
+
+    private fun showExpectInfo(context: ParadoxExpressionInspectionContext): Boolean {
+        val tool = context.tool
+        return when (tool) {
+            is icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection -> tool.showExpectInfo
+            is icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection -> tool.showExpectInfo
+            else -> true
+        }
+    }
+
     fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
         val literals = CwtConfigManager.findLiterals(expectedConfigs)
         if (literals.isEmpty()) return emptyList()

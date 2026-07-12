@@ -13,7 +13,7 @@ class CwtApiStatusBasedConfigFilterProvider : CwtConfigFilterProvider {
     // 目前仅限别名规则和单别名规则
 
     override fun filter(config: CwtConfig<*>): Boolean {
-        if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
+        if (config !is CwtAliasConfig && config !is CwtSingleAliasConfig) return false
         return config.config.optionData.apiStatus == CwtConfigApiStatus.Removed
     }
 }

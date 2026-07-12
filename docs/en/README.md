@@ -3,13 +3,13 @@
 <!-- With the guidebook currently being written, we are fully prepared — welcome to the real world. -->
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Plugin Home](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Plugin Home](https://plugins.jetbrains.com/plugin/16825) |
 [Discord](https://discord.gg/vBpbET2bXT) |
 [By me a coffee ☕](https://afdian.com/a/dk_breeze)
 
 ## Overview
 
-Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, offering an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
 After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
@@ -40,7 +40,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 - Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
 - Built on the [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html), implementing deep semantic analysis and rich language features based on [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)).
-- Uses JFlex for lexing and BNF for grammar parsing.
+- Uses JFlex for lexical analysis and BNF for syntax analysis.
 - Built-in rich custom extension points for flexible feature extension, making it easy to customize and enhance plugin behavior.
 - Built-in code injection system for implementing functionalities, fixes, and optimizations that cannot be achieved through conventional means.
 - Built-in image processing module (DDS, TGA) for previewing, rendering, and processing additional image formats.

@@ -779,7 +779,7 @@ object ParadoxComplexExpressionCompletionManager {
         val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
-            val name = systemScopeConfig.id
+            val name = systemScopeConfig.name
             val element = systemScopeConfig.pointer.element ?: continue
             val tailText = " from system scopes"
             val typeFile = systemScopeConfig.pointer.containingFile
@@ -989,7 +989,7 @@ object ParadoxComplexExpressionCompletionManager {
         val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
-            val name = systemScopeConfig.id
+            val name = systemScopeConfig.name
             val element = systemScopeConfig.pointer.element ?: continue
             val tailText = " from system scopes"
             val typeFile = systemScopeConfig.pointer.containingFile

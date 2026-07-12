@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent
 class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("settings")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
-    override fun getId() = "pls"
+    override fun getId() = "chronicle"
 
     override fun createPanel(): DialogPanel {
         callbackLock.reset()

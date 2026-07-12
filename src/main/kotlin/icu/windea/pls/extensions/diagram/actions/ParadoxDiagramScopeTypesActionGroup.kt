@@ -8,7 +8,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Toggleable
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider

@@ -2,7 +2,7 @@
 
 ## Settings Page {#settings-page}
 
-In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Config` to open the settings page for Config System.
+In the IDE settings page, go to `Languages & Frameworks > Paradox Chronicle > Config` to open the settings page for Config System.
 
 Here you can configure the sources of the config groups to enable, as well as the related urls and directories.
 
@@ -18,7 +18,7 @@ The plugin implements various advanced language features based on config groups 
 
 Config groups can come from different sources. For the same source, there are config groups for each game type, and the shared config group for all game types.
 
-You can enable or disable each type of config group on the plugin settings page (`Paradox Language Support > Config`).
+You can enable or disable each type of config group on the plugin settings page (`Paradox Chronicle > Config`).
 The parent directories for these config groups, as well as the repository URLs for remote config groups, can also be configured there.
 
 Reference links:

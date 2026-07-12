@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
+
+## 3.0.0-dev
+
+- [x] 将插件重命名为 *Paradox Chronicle*，同步更新代码、文档、社区等处的插件名、简介文本和描述文本 / Rename plugin to *Paradox Chronicle*, synchronously update the plugin name, introduction text and description text in code, documentation, community, etc.
+- [x] 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用 / Improve reference constraints, be compatible with union types and alias types when necessary, prevent some language features from being unavailable due to incompatibility
+- [x] 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持） / Improve lexer for localisation files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[b]`)
+- [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 / Provide brace match and completion for quoted string expressions in script files ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
+- [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
+- [x] 改为为内联脚本文件提供编辑器通知，而非代码检查，以避免无法适用于非项目文件 / Provide editor notifications instead of code inspections for inline script files instead to avoid not working on non-project files
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
+
 ## 2.2.0 - 2026-07-05
 
 - [x] Missing localizations false positive ([#347](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/347))

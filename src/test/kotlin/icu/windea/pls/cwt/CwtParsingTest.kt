@@ -1,0 +1,53 @@
+package icu.windea.pls.cwt
+
+import com.intellij.testFramework.ParsingTestCase
+import com.intellij.testFramework.TestDataPath
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+
+@RunWith(JUnit4::class)
+@TestDataPath("/testData")
+class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefinition()) {
+    override fun getTestDataPath() = "src/test/testData"
+
+    override fun includeRanges() = true
+
+    @Test
+    fun example() = doTest(true)
+
+    @Test
+    fun empty() = doTest(true)
+    @Test
+    fun escapes() = doTest(true)
+    @Test
+    fun only_comments() = doTest(true)
+    @Test
+    fun property_separators() = doTest(true)
+    @Test
+    fun mixed_members() = doTest(true)
+    @Test
+    fun template_expression() = doTest(true)
+    @Test
+    fun error_missing_property_value() = doTest(true)
+    @Test
+    fun error_missing_option_value() = doTest(true)
+    @Test
+    fun error_unclosed_brace() = doTest(true)
+    @Test
+    fun error_unclosed_quote() = doTest(true)
+    @Test
+    fun option_comment_nested_eof() = doTest(true)
+    @Test
+    fun option_comments() = doTest(true)
+    @Test
+    fun option_value() = doTest(true)
+    @Test
+    fun option_value_on_value() = doTest(true)
+    @Test
+    fun nested() = doTest(true)
+    @Test
+    fun snippet_alias() = doTest(true)
+    @Test
+    fun snippet_triggers_has_flag() = doTest(true)
+}

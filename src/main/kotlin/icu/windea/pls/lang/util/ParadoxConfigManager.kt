@@ -58,7 +58,16 @@ object ParadoxConfigManager {
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的与之匹配的一组成员规则。
+     * 得到 [element] 对应的脚本成员的一组作为上下文的成员规则。如果当前位置不存在规则上下文，则返回空列表。
+     */
+    fun getContextConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
+        val configContext = getConfigContextFromCache(memberElement) ?: return emptyList()
+        return configContext.getConfigs(options)
+    }
+
+    /**
+     * 得到 [element] 对应的脚本成员的一组匹配的成员规则。
      */
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
@@ -90,6 +99,7 @@ object ParadoxConfigManager {
         return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
     }
 
+    @Optimized
     private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             // use soft referenced concurrent map to optimize more memory
@@ -123,6 +133,15 @@ object ParadoxConfigManager {
         return buildString {
             append(type)
             subtypeConfigs.forEachFast { append(", ").append(it.name) }
+        }
+    }
+
+    fun <C: CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
+        val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, config)
+        if (overriddenConfigs.isNotEmpty()) {
+            result.addAll(overriddenConfigs)
+        } else {
+            result.add(config)
         }
     }
 

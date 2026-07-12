@@ -18,7 +18,7 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -57,7 +57,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
                 val references = element.references
                 for (reference in references) {
                     ProgressManager.checkCanceled()
-                    if (!ParadoxResolveConstraint.DynamicValue.canResolve(reference)) continue
+                    if (!ParadoxReferenceConstraint.DynamicValue.canResolve(reference)) continue
                     val resolved = reference.resolveFirst()
                     if (resolved !is ParadoxDynamicValueLightElement) continue
                     if (resolved.readWriteAccess != Access.Read) continue

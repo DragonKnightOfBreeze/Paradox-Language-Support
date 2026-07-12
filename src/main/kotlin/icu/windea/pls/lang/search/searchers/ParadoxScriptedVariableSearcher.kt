@@ -15,7 +15,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
@@ -54,9 +53,9 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (!context.isValid()) return true
         when (context.type) {
             ParadoxScriptedVariableType.Local -> {
+                // NOTE fileInfo can be null here (e.g., injected files)
                 val file = context.selectorFile ?: return true
-                val fileInfo = file.fileInfo // NOTE fileInfo can be null here (e.g., injected files)
-                if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return true // skip global scripted variables
+                if (ParadoxScriptedVariableManager.isGlobalScriptedVariablesFile(file)) return true // skip global scripted variables
                 val startOffset = context.selectorContext?.castOrNull<PsiElement>()?.startOffset ?: -1
                 val fileScope = GlobalSearchScope.fileScope(context.project, file) // limit to current file
                 processScriptVariables(context.copy(scope = fileScope)) p@{ element ->

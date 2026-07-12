@@ -20,7 +20,6 @@ import org.junit.runners.JUnit4
 
 /**
  * @see ParadoxDefineVariableSearch
- * @see icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -48,7 +47,7 @@ class ParadoxDefineVariableSearchTest : BasePlatformTestCase() {
     // region Search By Namespace And Variable
 
     @Test
-    fun byNamespaceAndVariable() {
+    fun test_ByNamespaceAndVariable() {
         configureDefineFile("features/index/common/defines/defines_basic_stellaris.test.txt")
 
         // act
@@ -73,7 +72,7 @@ class ParadoxDefineVariableSearchTest : BasePlatformTestCase() {
     // region Search By Namespace
 
     @Test
-    fun byNamespace_AllVariables() {
+    fun test_ByNamespace_AllVariables() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
         val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
@@ -90,7 +89,7 @@ class ParadoxDefineVariableSearchTest : BasePlatformTestCase() {
     // region Search By Variable
 
     @Test
-    fun byVariableAcrossNamespaces() {
+    fun test_ByVariableAcrossNamespaces() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
 
         val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
@@ -107,7 +106,7 @@ class ParadoxDefineVariableSearchTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun edge_ByNamespace_AllVariables() {
+    fun testEdge_ByNamespace_AllVariables() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
@@ -119,7 +118,7 @@ class ParadoxDefineVariableSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun edge_byNamespaceAndVariable_parameterizedVariable() {
+    fun testEdge_ByNamespaceAndVariable_ParameterizedVariable() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)
@@ -128,7 +127,7 @@ class ParadoxDefineVariableSearchTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun edge_byNamespaceAndVariable_NestedVariable() {
+    fun testEdge_ByNamespaceAndVariable_NestedVariable() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
 
         val selector = ParadoxDefineVariableSearch.selector(project, myFixture.file)

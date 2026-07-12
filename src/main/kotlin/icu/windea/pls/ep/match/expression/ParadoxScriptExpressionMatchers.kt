@@ -125,10 +125,10 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             in CwtDataTypeSets.ValueField -> matchValueFieldExpression(context)
             in CwtDataTypeSets.VariableField -> matchVariableFieldExpression(context)
             CwtDataTypes.Modifier -> matchModifier(context)
-            CwtDataTypes.SingleAliasRight -> ParadoxMatchResult.NotMatch // 不在这里处理
             CwtDataTypes.AliasKeysField -> matchAliasName(context)
             CwtDataTypes.AliasName -> matchAliasName(context)
             CwtDataTypes.AliasMatchLeft -> ParadoxMatchResult.NotMatch // 不在这里处理
+            CwtDataTypes.SingleAliasRight -> ParadoxMatchResult.NotMatch // 不在这里处理
             CwtDataTypes.Command -> null // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
             CwtDataTypes.ScriptValueReference -> matchScriptValueReferenceExpression(context)
             CwtDataTypes.DefineReference -> matchDefineReferenceExpression(context)

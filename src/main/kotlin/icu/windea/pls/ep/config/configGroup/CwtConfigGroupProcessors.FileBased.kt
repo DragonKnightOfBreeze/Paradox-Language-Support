@@ -164,9 +164,9 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 key == "system_scopes" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val systemScopeConfig = CwtSystemScopeConfig.resolve(config)
+                        val systemScopeConfig = CwtSystemScopeConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(systemScopeConfig)) continue
-                        initializer.systemScopes[systemScopeConfig.id] = systemScopeConfig
+                        initializer.systemScopes[systemScopeConfig.name] = systemScopeConfig
                     }
                 }
                 key == "locales" -> {
@@ -174,7 +174,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     for (config in configs) {
                         val localeConfig = CwtLocaleConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(localeConfig)) continue
-                        initializer.locales[localeConfig.id] = localeConfig
+                        initializer.locales[localeConfig.name] = localeConfig
                     }
                 }
                 key == "types" -> {
@@ -394,15 +394,15 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 }
                 else -> {
                     run {
-                        val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
-                        if (CwtConfigService.filter(singleAliasConfig)) return@run
-                        initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
-                    }
-                    run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
                         if (CwtConfigService.filter(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
+                    }
+                    run {
+                        val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
+                        if (CwtConfigService.filter(singleAliasConfig)) return@run
+                        initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
                     }
                     run {
                         val macroConfig = CwtMacroConfig.resolve(property) ?: return@run

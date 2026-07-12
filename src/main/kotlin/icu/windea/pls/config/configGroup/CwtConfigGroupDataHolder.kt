@@ -1,6 +1,6 @@
 package icu.windea.pls.config.configGroup
 
-import icu.windea.pls.config.attributes.CwtInlinedConfigAttributes
+import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -98,9 +98,6 @@ interface CwtConfigGroupDataHolder {
     val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
     val scopeGroups: Map<@CaseInsensitive String, CwtScopeGroupConfig>
 
-    val singleAliases: Map<String, CwtSingleAliasConfig>
-    val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
-
     // name - config
     val modifierCategories: Map<String, CwtModifierCategoryConfig>
     // template_expression - config
@@ -108,6 +105,9 @@ interface CwtConfigGroupDataHolder {
 
     // name - config
     val databaseObjectTypes: Map<String, CwtDatabaseObjectTypeConfig>
+
+    val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
+    val singleAliases: Map<String, CwtSingleAliasConfig>
 
     val macros: List<CwtMacroConfig>
 
@@ -176,10 +176,12 @@ interface CwtConfigGroupDataHolder {
 
     // region Attributes
 
-    /** 单别名规则的综合属性的映射（键为规则的名字）。 */
-    val singleAliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
+    /** 并集规则的综合属性的映射（键为规则的名字）。 */
+    val unionAttributes: MutableMap<String, CwtExpandableConfigAttributes>
     /** 别名规则的综合属性的映射（键为规则的名字）。 */
-    val aliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
+    val aliasAttributes: MutableMap<String, CwtExpandableConfigAttributes>
+    /** 单别名规则的综合属性的映射（键为规则的名字）。 */
+    val singleAliasAttributes: MutableMap<String, CwtExpandableConfigAttributes>
 
     // endregion
 

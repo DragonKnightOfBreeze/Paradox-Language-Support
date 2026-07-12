@@ -70,7 +70,7 @@ class ParadoxScriptedEffectInlineProcessor(
     }
 
     override fun getRefactoringId(): String {
-        return "pls.refactoring.inline.scriptedEffect"
+        return "chronicle.refactoring.inline.scriptedEffect"
     }
 
     override fun getBeforeData(): RefactoringEventData {

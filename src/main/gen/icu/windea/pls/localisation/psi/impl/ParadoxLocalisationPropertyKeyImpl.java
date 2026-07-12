@@ -43,6 +43,16 @@ public class ParadoxLocalisationPropertyKeyImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
+  public @NotNull String getName() {
+    return ParadoxLocalisationPsiImplUtil.getName(this);
+  }
+
+  @Override
+  public @NotNull ParadoxLocalisationPropertyKey setName(@NotNull String name) {
+    return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }

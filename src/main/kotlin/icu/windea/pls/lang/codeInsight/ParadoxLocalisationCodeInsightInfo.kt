@@ -20,8 +20,8 @@ data class ParadoxLocalisationCodeInsightInfo(
     }
 
     val key = when {
-        relatedLocalisationInfo != null -> "@${relatedLocalisationInfo.key}@${locale.id}"
-        name != null -> "$name@${locale.id}"
+        relatedLocalisationInfo != null -> "@${relatedLocalisationInfo.key}@${locale.name}"
+        name != null -> "$name@${locale.name}"
         else -> null
     }
 }

@@ -47,12 +47,14 @@ PROPERTY_KEY_TOKEN=({UNQUOTED_PROPERTY_KEY_TOKEN})|({QUOTED_PROPERTY_KEY_TOKEN})
 UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\s\"]+\"?
 QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 PROPERTY_KEY_TRAILING=\s*(=|\!=|<>|==)
-BOOLEAN_TOKEN=(yes|no)
-INT_TOKEN=[+-]?\d+ // leading zero is permitted
-FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is permitted
-STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
+
 UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
+
+BOOLEAN_TOKEN=(yes|no)
+INT_TOKEN=[+-]?\d+ // leading zero is allowed
+FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is allowed
+STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
 
 OPTION_KEY_TOKEN=({UNQUOTED_OPTION_KEY_TOKEN})|({QUOTED_OPTION_KEY_TOKEN})
 UNQUOTED_OPTION_KEY_TOKEN=[^#={}\s\"]+\"?
@@ -60,7 +62,7 @@ QUOTED_OPTION_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 OPTION_KEY_TRAILING=\s*(=|\!=|<>|==)
 
 // top level option text (value in option comment, or option value of some option in option comment)
-// inner whitespaces are permitted and required
+// inner whitespaces are allowed and required
 OPTION_TEXT_TOKEN=[^#=!<>{}\s\"]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
 
 %%

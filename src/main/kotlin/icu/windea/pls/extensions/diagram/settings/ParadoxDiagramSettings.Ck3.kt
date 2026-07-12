@@ -20,7 +20,7 @@ class Ck3EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Ck3EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Ck3) {
     companion object {
-        const val ID = "pls.diagram.Ck3.EventTree"
+        const val ID = "chronicle.diagram.Ck3.EventTree"
     }
 
     override val id: String = ID

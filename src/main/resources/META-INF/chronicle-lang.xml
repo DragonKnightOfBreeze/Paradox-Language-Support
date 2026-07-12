@@ -41,7 +41,8 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls" groupId="language" bundle="messages.ChronicleBundle" key="settings"
+    <applicationConfigurable id="chronicle" groupId="language"
+                             bundle="messages.ChronicleBundle" key="settings"
                              instance="icu.windea.pls.lang.settings.ChronicleSettingsConfigurable"/>
 
     <!-- make first to optimize performance (before JSLibraryOverrider) -->
@@ -315,6 +316,9 @@
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameTypeMismatchedEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxFileTooltipEditorNotificationProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxDefinesEditorNotificationProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGlobalScriptedVariablesEditorNotificationProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
 
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
@@ -423,15 +427,15 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Note that HTML is not available in registry key descriptions -->
-    <registryKey key="pls.settings.localisationFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.localisationTextIconSizeLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.maxImageSize.for.documentation" defaultValue="300" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.localisationTextLengthLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.iconHeightLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.textLengthLimit.for.presentation" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.itemLimit" defaultValue="5" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.maxDefinitionDepth" defaultValue="4" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.defaultScriptedVariableName" defaultValue="var" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.localisationFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.localisationTextIconSizeLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.maxImageSize.for.documentation" defaultValue="300" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.localisationTextLengthLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.iconHeightLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.textLengthLimit.for.presentation" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.itemLimit" defaultValue="5" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.maxDefinitionDepth" defaultValue="4" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.defaultScriptedVariableName" defaultValue="var" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">

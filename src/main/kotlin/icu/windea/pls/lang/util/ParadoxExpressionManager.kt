@@ -266,16 +266,25 @@ object ParadoxExpressionManager {
 
     // region Annotate Methods
 
+    /**
+     * @see ParadoxExpressionService.annotateScriptExpression
+     */
     fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, config, holder)
     }
 
+    /**
+     * @see ParadoxExpressionService.annotateLocalisationExpression
+     */
     fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxExpressionService.annotateLocalisationExpression(element, rangeInElement, expressionText, holder)
     }
 
+    /**
+     * @see ParadoxExpressionService.annotateCsvExpression
+     */
     fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig, holder: AnnotationHolder) {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return
         val expressionText = getExpressionText(element, rangeInElement)
@@ -357,6 +366,9 @@ object ParadoxExpressionManager {
 
     // region Resolve Methods
 
+    /**
+     * @see ParadoxExpressionService.resolveScriptExpression
+     */
     fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configExpression = config.configExpression ?: return null
         val expressionText = getExpressionText(element, rangeInElement)
@@ -371,6 +383,9 @@ object ParadoxExpressionManager {
         return null
     }
 
+    /**
+     * @see ParadoxExpressionService.resolveAllScriptExpression
+     */
     fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configExpression = config.configExpression ?: return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
@@ -397,40 +412,48 @@ object ParadoxExpressionManager {
         return resolvedConfig.pointer.element
     }
 
+    /**
+     * @see ParadoxExpressionService.resolveLocalisationExpression
+     */
     fun resolveLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除文本带参数的情况
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveLocalisationExpression(element, rangeInElement, expressionText)
-        return result
+        return ParadoxExpressionService.resolveLocalisationExpression(element, rangeInElement, expressionText)
     }
 
+    /**
+     * @see ParadoxExpressionService.resolveAllLocalisationExpression
+     */
     fun resolveAllLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): List<PsiElement> {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return emptyList() // 排除文本带参数的情况
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveAllLocalisationExpression(element, rangeInElement, expressionText)
-        return result
+        return ParadoxExpressionService.resolveAllLocalisationExpression(element, rangeInElement, expressionText)
     }
 
+    /**
+     * @see ParadoxExpressionService.resolveCsvExpression
+     */
     fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): PsiElement? {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return null
         val expressionText = getExpressionText(element, rangeInElement)
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveCsvExpression(element, rangeInElement, expressionText, config)
-        return result
+        return ParadoxExpressionService.resolveCsvExpression(element, rangeInElement, expressionText, config)
     }
 
+    /**
+     * @see ParadoxExpressionService.resolveAllCsvExpression
+     */
     fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): List<PsiElement> {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveAllCsvExpression(element, rangeInElement, expressionText, config)
-        return result
+        return ParadoxExpressionService.resolveAllCsvExpression(element, rangeInElement, expressionText, config)
     }
 
     // endregion

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.inspections
 
+import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
@@ -15,18 +16,18 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 
 object ParadoxSyntaxInspectionService {
-    fun createContext(holder: ProblemsHolder): ParadoxSyntaxInspectionContext {
+    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder): ParadoxSyntaxInspectionContext {
         val file = selectFile(holder.file)
         val rootFile = selectRootFile(holder.file)
         val rootInfo = file?.fileInfo?.rootInfo
         val gameType = rootInfo?.gameType
         val gameVersion = rootInfo?.gameVersion
-        return ParadoxSyntaxInspectionContext(holder, file, rootFile, gameType, gameVersion)
+        return ParadoxSyntaxInspectionContext(tool, holder, file, rootFile, gameType, gameVersion)
     }
 
     fun checkByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, name: String): Boolean {
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return true
-        val testResult = constraint.testResult(context.gameType, context.gameVersion)
+        val testResult = constraint.getTestResult(context.gameType, context.gameVersion)
         if (!testResult.strictValue) {
             val description = when {
                 testResult.sinceGameVersion == null -> ChronicleBundle.message("incorrectSyntax.desc.in.game", name, context.gameType.title)

@@ -56,7 +56,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
     }
 
     override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
@@ -148,7 +148,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
         // -> `<event_type> = { id = <id> __scopes = { ... } }`
 
         if (element !is ParadoxScriptString) return -1
-        // TODO 3.0.0 [major-refactor]
+        // TODO 3.0.1+ [major-refactor]
         val containerConfig = config.takeIf { it is CwtValueConfig }
             ?.containingDirectConfig?.takeIf { it is CwtPropertyConfig && it.key == "id" }
             ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
@@ -164,7 +164,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     }
 
     override fun compressData(value: List<ParadoxEventInEventIndexInfo>): List<ParadoxEventInEventIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxEventInEventIndexInfo, previousInfo: ParadoxEventInEventIndexInfo?, gameType: ParadoxGameType) {
@@ -215,7 +215,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
         // -> `fire_on_action = { on_action = <id> __scopes = { ... } }`
 
         if (element !is ParadoxScriptString) return -1
-        // TODO 3.0.0 [major-refactor]
+        // TODO 3.0.1+ [major-refactor]
         val containerConfig = config.takeIf { it is CwtValueConfig }
             ?.containingDirectConfig?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
             ?.parentConfig?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
@@ -231,7 +231,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     override fun compressData(value: List<ParadoxOnActionInEventIndexInfo>): List<ParadoxOnActionInEventIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxOnActionInEventIndexInfo, previousInfo: ParadoxOnActionInEventIndexInfo?, gameType: ParadoxGameType) {

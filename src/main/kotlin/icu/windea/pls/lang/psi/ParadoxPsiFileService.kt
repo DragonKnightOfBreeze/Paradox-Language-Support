@@ -25,7 +25,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
@@ -92,7 +92,7 @@ object ParadoxPsiFileService {
         if (offset < 0) return null
         if (BitUtil.isSet(options, ScriptedVariableOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = file.findReferenceAt(offset) {
-                ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
+                ParadoxReferenceConstraint.ScriptedVariable.canResolve(it)
             }
             val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
             if (resolved != null) return resolved
@@ -125,7 +125,7 @@ object ParadoxPsiFileService {
         }
         val expressionReference by lazy {
             file.findReferenceAt(offset) {
-                it.element is ParadoxScriptExpressionElement && ParadoxResolveConstraint.Definition.canResolve(it)
+                it.element is ParadoxScriptExpressionElement && ParadoxReferenceConstraint.Definition.canResolve(it)
             }
         }
         if (BitUtil.isSet(options, DefinitionOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
@@ -190,7 +190,7 @@ object ParadoxPsiFileService {
         if (offset < 0) return null
         if (BitUtil.isSet(options, LocalisationOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = file.findReferenceAt(offset) {
-                ParadoxResolveConstraint.Localisation.canResolve(it)
+                ParadoxReferenceConstraint.Localisation.canResolve(it)
             }
             val resolved = reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()
             if (resolved != null) return resolved

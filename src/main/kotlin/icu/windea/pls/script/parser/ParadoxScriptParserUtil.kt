@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun postProcessFirstSnippet(b: PsiBuilder, l: Int): Boolean {
-        // compact format is allowed, e.g., k1 = "v1"k2 = v2
+        // compact format is allowed, e.g., `k1 = "v1"k2 = v2`
         // a token should not be parsed to a value when with a trailing separator
         var s = -1
         var end = false

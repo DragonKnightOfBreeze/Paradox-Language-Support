@@ -20,7 +20,7 @@ class Eu4EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Eu4EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Eu4) {
     companion object {
-        const val ID = "pls.diagram.Eu4.EventTree"
+        const val ID = "chronicle.diagram.Eu4.EventTree"
     }
 
     override val id: String = ID

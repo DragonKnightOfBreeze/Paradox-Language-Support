@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable id="pls.diagram" parentId="pls" groupWeight="9" bundle="messages.ChronicleDiagramBundle" key="settings.diagram"
+    <projectConfigurable id="chronicle.diagram" parentId="chronicle" groupWeight="69" bundle="messages.ChronicleDiagramBundle" key="settings.diagram"
                          instance="icu.windea.pls.extensions.diagram.settings.ChronicleDiagramSettingsConfigurable"/>
   </extensions>
 

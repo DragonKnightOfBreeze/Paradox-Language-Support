@@ -4,8 +4,8 @@
 
 ### 安装
 
-- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
-- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)，点击 `Install to ...` 按钮进行安装。
+- 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Chronicle" > `Install`
+- 使用 JetBrains Marketplace：前往 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825)，点击 `Install to ...` 按钮进行安装。
 - 手动安装：下载[最新版本](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest)并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### 使用步骤
@@ -38,11 +38,11 @@
   - 使用 `Code > Inspect Code…` 执行全局代码检查，并在问题面板中查看详细报告。
 - **设置修改**：
   - 可通过以下方式打开插件的全局设置页面：
-    - 点击设置页面中的 `Languages & Frameworks > Paradox Language Support`。
+    - 点击设置页面中的 `Languages & Frameworks > Paradox Chronicle`。
   - 可通过以下方式打开模组设置对话框：
     - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
-    - 点击编辑器右键菜单中的 `Paradox Language Support > Open Mod Settings...`。
-    - 点击主菜单中的 `Tools > Paradox Language Support > Open Mod Settings...`。
+    - 点击编辑器右键菜单中的 `Paradox Chronicle > Open Mod Settings...`。
+    - 点击主菜单中的 `Tools > Paradox Chronicle > Open Mod Settings...`。
   - 可在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
   - 可在模组设置中调整游戏目录、模组依赖等配置。
 

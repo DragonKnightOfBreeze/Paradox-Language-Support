@@ -1,9 +1,9 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup"/>
-    <notificationGroup id="pls.settings" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.settings"/>
-    <notificationGroup id="pls.diff" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.diff"/>
-    <notificationGroup id="pls.manipulation" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.manipulation"/>
+    <notificationGroup id="chronicle" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup"/>
+    <notificationGroup id="chronicle.settings" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.settings"/>
+    <notificationGroup id="chronicle.diff" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.diff"/>
+    <notificationGroup id="chronicle.manipulation" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.manipulation"/>
 
     <webHelpProvider implementation="icu.windea.pls.ide.help.ChronicleHelpProvider"/>
     <postStartupActivity implementation="icu.windea.pls.ide.ChronicleLifecycleListener"/>

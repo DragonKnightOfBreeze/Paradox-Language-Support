@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
@@ -45,7 +45,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
         val expression = element.name
         if (expression.isEmpty()) return
         if (expression.isParameterized()) return
-        val resolveConstraint = ParadoxResolveConstraint.DynamicValueReference
+        val resolveConstraint = ParadoxReferenceConstraint.DynamicValueReference
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
         if (resolved !is ParadoxDynamicValueLightElement) return
 

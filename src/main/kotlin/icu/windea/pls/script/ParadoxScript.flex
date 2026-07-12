@@ -1,6 +1,6 @@
 package icu.windea.pls.script.lexer;
 
-import com.intellij.lexer.*;
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 import java.util.concurrent.atomic.*;
@@ -10,9 +10,6 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for Paradox Script.
-// Notes:
-// - Uses a stack to manage nested braces/brackets.
-// - templateStateRef/parameterStateRef track states to resume after parameters/inline sections.
 
 %%
 

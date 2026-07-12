@@ -18,8 +18,8 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerationService {
-    val fileLocaleKey = createKey<CwtLocaleConfig>("pls.localiation.generation.file.locale")
-    val fileTooltipKey = createKey<String>("pls.localiation.generation.file.tooltip")
+    val fileLocaleKey = createKey<CwtLocaleConfig>("chronicle.localiation.generation.file.locale")
+    val fileTooltipKey = createKey<String>("chronicle.localiation.generation.file.tooltip")
 
     fun generateFile(context: ParadoxLocalisationGenerationContext): VirtualFile {
         val fileName = getFileName(context)
@@ -37,7 +37,7 @@ object ParadoxLocalisationGenerationService {
     }
 
     fun getFileName(context: ParadoxLocalisationGenerationContext): String {
-        return "generated_localisations_${context.locale.id}.yml"
+        return "generated_localisations_${context.locale.name}.yml"
     }
 
     fun getFileText(context: ParadoxLocalisationGenerationContext): String {
@@ -52,7 +52,7 @@ object ParadoxLocalisationGenerationService {
     }
 
     private fun StringBuilder.appendLocaleLine(context: ParadoxLocalisationGenerationContext) {
-        append(context.locale.id).append(":\n")
+        append(context.locale.name).append(":\n")
     }
 
     private fun StringBuilder.appendLocalisationLines(context: ParadoxLocalisationGenerationContext, indent: String) {

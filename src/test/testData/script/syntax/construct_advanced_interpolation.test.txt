@@ -1,0 +1,43 @@
+@sv = v
+
+@a_$p$_[[p]b]_b =a_$p$_[[p]b]_b
+@a_$p|v$_[[p]b]_b = a_$p|v$_[[p]b]_b
+@a_$p$_[[p]b] = a_$p$_[[p]b]
+@a_$p|v$_[[p]b] = a_$p|v$_[[p]b]
+@$p$_[[p]b]_b = $p$_[[p]b]_b
+@$p|v$_[[p]b]_b = $p|v$_[[p]b]_b
+
+k = v
+
+a_$p$_[[p]b]_b = a_$p$_[[p]b]_b
+a_$p|v$_[[p]b]_b = a_$p|v$_[[p]b]_b
+a_$p$_[[p]b] = a_$p$_[[p]b]
+a_$p|v$_[[p]b] = a_$p|v$_[[p]b]
+$p$_[[p]b]_b = $p$_[[p]b]_b
+$p|v$_[[p]b]_b = $p|v$_[[p]b]_b
+
+k=v
+
+a_$p$_[[p]b]_b=a_$p$_[[p]b]_b
+a_$p|v$_[[p]b]_b=a_$p|v$_[[p]b]_b
+a_$p$_[[p]b]=a_$p$_[[p]b]
+a_$p|v$_[[p]b]=a_$p|v$_[[p]b]
+$p$_[[p]b]_b=$p$_[[p]b]_b
+$p|v$_[[p]b]_b=$p|v$_[[p]b]_b
+
+k = @sv
+
+a_$p$_[[p]b]_b = @a_$p$_[[p]b]_b
+a_$p|v$_[[p]b]_b = @a_$p|v$_[[p]b]_b
+$p$_[[p]b]_b = @$p$_[[p]b]_b
+$p|v$_[[p]b]_b = @$p|v$_[[p]b]_b
+
+math = @[ 1 + $p$ + sv ]
+math = @[ 1 + $p|v$ + sv ]
+
+math = @[ 1 + $p|v$ + a_$p$_b ]
+math = @[ 1 + $p|v$ + a_$p|v$_b ]
+math = @[ 1 + $p|v$ + a_$p$ ]
+math = @[ 1 + $p|v$ + a_$p|v$ ]
+math = @[ 1 + $p|v$ + $p$_b ]
+math = @[ 1 + $p|v$ + $p|v$_b ]

@@ -1,4 +1,4 @@
-# Paradox Language Support - The Paradox Chronicle
+# Paradox Chronicle
 
 <!-- Here we inscribe the revelations from the old era, the truths and realities of this land. -->
 <!-- Ascend to the tower’s peak and open the Book of Prophecy, for within it are recorded all our discoveries and foresights. -->
@@ -23,7 +23,7 @@
 
 ## Overview
 
-Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, offering an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.
 After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
@@ -54,8 +54,8 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 ### Installation
 
-- Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
-- Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) and install it by clicking the `Install to ...` button.
+- Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Chronicle" > `Install`
+- Using JetBrains Marketplace: Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/16825) and install it by clicking the `Install to ...` button.
 - Manual Installation: Download the [latest release](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases/latest) and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### Usage Steps
@@ -88,11 +88,11 @@ The plugin comes with the latest version of built-in configs, ready to use out o
   - Use `Code > Inspect Code…` to perform a global code inspection and view the detailed report in the Problems panel upon completion.
 - **Modifying Settings**:
   - Access the plugin's global settings page via:
-    - `Settings > Languages & Frameworks > Paradox Language Support`
+    - `Settings > Languages & Frameworks > Paradox Chronicle`
   - Open the mod settings dialog via:
     - Clicking the blue gear icon in the editor's top-right floating toolbar.
-    - Selecting `Paradox Language Support > Open Mod Settings...` from the editor's right-click menu.
-    - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
+    - Selecting `Paradox Chronicle > Open Mod Settings...` from the editor's right-click menu.
+    - Selecting `Tools > Paradox Chronicle > Open Mod Settings...` from the main menu.
   - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
   - Adjust game directory, mod dependencies and other configurations in the mod settings.
 
@@ -110,7 +110,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 - Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
 - Built on the [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html), implementing deep semantic analysis and rich language features based on [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)).
-- Uses JFlex for lexing and BNF for grammar parsing.
+- Uses JFlex for lexical analysis and BNF for syntax analysis.
 - Built-in rich custom extension points for flexible feature extension, making it easy to customize and enhance plugin behavior.
 - Built-in code injection system for implementing functionalities, fixes, and optimizations that cannot be achieved through conventional means.
 - Built-in image processing module (DDS, TGA) for previewing, rendering, and processing additional image formats.
@@ -238,8 +238,8 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 [url:build]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/workflows/build.yml
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/releases
-[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
-[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825
+[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:afdian]: https://afdian.com/a/dk_breeze
 [url:windea]: https://github.com/DragonKnightOfBreeze

@@ -1,8 +1,10 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.startOffset
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -43,18 +45,20 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
+
     // region Basic Injection
 
     @Test
-    fun testDefinitionInjectionIndex_Basic() {
+    fun test_Basic() {
         // Arrange: 基础 INJECT 模式
-        markFileInfo(gameType, "common/ai_strategies/00_default.txt")
-        myFixture.configureByFile("features/index/common/ai_strategies/00_default.txt")
-        markFileInfo(gameType, "common/ai_strategies/01_inject.txt")
-        myFixture.configureByFile("features/index/common/ai_strategies/01_inject.txt")
+        markAndConfigureByFile("features/index/common/ai_strategies/00_default.txt")
+        markAndConfigureByFile("features/index/common/ai_strategies/01_inject.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val allData = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.DefinitionInjection, ChronicleIndexUtil.createAllKey(), scope).flatten()
 
@@ -70,10 +74,9 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     // region Multiple Modes
 
     @Test
-    fun testDefinitionInjectionIndex_MultipleModes() {
+    fun test_MultipleModes() {
         // Arrange: 同一文件中 INJECT / REPLACE / TRY_INJECT 三种模式
-        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         val properties = PsiTreeUtil.findChildrenOfType(psiFile, ParadoxScriptProperty::class.java)
         val injectFlames = properties.single { it.name == "INJECT:tome_of_flames" }
@@ -89,7 +92,6 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         )
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert: key 分发
@@ -105,13 +107,11 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionIndex_MultipleModes_IgnoredCases() {
+    fun test_MultipleModes_IgnoredCases() {
         // Arrange: 验证非法写法被正确忽略
-        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert: 标量值（非块）应被忽略
@@ -129,10 +129,9 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     // region Different Types
 
     @Test
-    fun testDefinitionInjectionIndex_DifferentTypes_ByFilePath() {
+    fun test_DifferentTypes_ByFilePath() {
         // Arrange: 不同路径对应不同类型
-        markFileInfo(gameType, "common/academy_spells/01_inject.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/academy_spells/01_inject.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
         val properties = PsiTreeUtil.findChildrenOfType(psiFile, ParadoxScriptProperty::class.java)
         val injectShared = properties.single { it.name == "INJECT:shared_name" }
         val injectMists = properties.single { it.name == "INJECT:spell_of_mists" }
@@ -142,7 +141,6 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         )
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
@@ -156,15 +154,12 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     // region Cross-File Aggregation
 
     @Test
-    fun testDefinitionInjectionIndex_CrossFileAggregation_ByTarget() {
+    fun test_CrossFileAggregation_ByTarget() {
         // Arrange: 同一 target 出现在不同类型的文件中
-        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
-        myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
-        markFileInfo(gameType, "common/academy_spells/01_inject.txt")
-        myFixture.configureByFile("features/index/common/academy_spells/01_inject.txt")
+        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val sharedInfos = FileBasedIndex.getInstance()
             .getValues(ChronicleIndexKeys.DefinitionInjection, ChronicleIndexUtil.createNameKey("shared_name"), scope).flatten()
@@ -175,15 +170,12 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionIndex_CrossFileAggregation_ByType() {
+    fun test_CrossFileAggregation_ByType() {
         // Arrange: 跨文件按类型聚合
-        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
-        myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
-        markFileInfo(gameType, "common/academy_spells/01_inject.txt")
-        myFixture.configureByFile("features/index/common/academy_spells/01_inject.txt")
+        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
-        val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val allInfos = FileBasedIndex.getInstance().getValues(ChronicleIndexKeys.DefinitionInjection, ChronicleIndexUtil.createAllKey(), scope).flatten()
 
@@ -197,13 +189,11 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     // region Edge Cases
 
     @Test
-    fun testDefinitionInjectionIndex_NoMatchedTypeConfig() {
+    fun test_NoMatchedTypeConfig() {
         // Arrange: 路径无匹配的类型规则
-        markFileInfo(gameType, "common/no_rule/01_inject.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/no_rule/01_inject.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/no_rule/01_inject.txt")
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
@@ -211,13 +201,11 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionIndex_WrongExtension() {
+    fun test_WrongExtension() {
         // Arrange: 扩展名不匹配（规则要求 .dat，实际为 .txt）
-        markFileInfo(gameType, "common/forbidden/01_inject.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/forbidden/01_inject.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/forbidden/01_inject.txt")
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
@@ -225,13 +213,11 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionIndex_EmptyTarget_Ignored() {
+    fun test_EmptyTarget_Ignored() {
         // Arrange: target 为空的注入表达式（如 "INJECT: = {}"）
-        markFileInfo(gameType, "common/arcane_tomes/02_edge.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/02_edge.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/arcane_tomes/02_edge.txt")
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert
@@ -239,13 +225,11 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testDefinitionInjectionIndex_ElementOffset() {
+    fun test_ElementOffset() {
         // Arrange: 验证 elementOffset 互不相同且有序
-        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
-        val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        val psiFile = markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
-        val project = project
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.DefinitionInjection, psiFile.virtualFile, project)
 
         // Assert

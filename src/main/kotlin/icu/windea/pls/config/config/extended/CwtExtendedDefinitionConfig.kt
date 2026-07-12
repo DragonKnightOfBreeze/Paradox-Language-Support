@@ -42,7 +42,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  *
  * @property name 规则名称。
  * @property type 定义类型。
- * @property hint 提示文本（可选）。
+ * @property hint 可选的提示文本。用于提供额外的内嵌提示。
  *
  * @see CwtOptionDataHolder.replaceScopes
  * @see CwtOptionDataHolder.pushScope

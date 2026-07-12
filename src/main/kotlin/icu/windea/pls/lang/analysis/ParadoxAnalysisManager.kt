@@ -266,7 +266,6 @@ object ParadoxAnalysisManager {
             from is PsiFile -> selectGameType(selectFile(from))
             from is CwtConfigLightElementBase -> from.gameType
             from is ParadoxLightElementBase -> from.gameType
-            from is ParadoxStub<*> -> from.gameType
             from is StubBasedPsiElementBase<*> -> {
                 val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxStub<*>>() ?: from.containingFile }
                 selectGameType(nextFrom)
@@ -275,6 +274,7 @@ object ParadoxAnalysisManager {
                 val nextFrom = runSmartReadAction { from.parent }
                 selectGameType(nextFrom)
             }
+            from is ParadoxStub<*> -> from.gameType
             else -> null
         }
     }
@@ -287,20 +287,20 @@ object ParadoxAnalysisManager {
             from is VirtualFile -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
-            from is ParadoxLocalisationLocale -> {
+            from is StubBasedPsiElementBase<*> -> {
+                val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
+                selectLocale(nextFrom)
+            }
+            from is ParadoxLocalisationPropertyList -> { // fallback for non-stub-based
+                val nextFrom = runSmartReadAction { from.locale } ?: return null
+                selectLocale(nextFrom)
+            }
+            from is ParadoxLocalisationLocale -> { // fallback for non-stub-based
                 val localeId = runSmartReadAction { from.name }
                 val project = from.project
                 val gameType = selectGameType(from)
                 val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
                 configGroup.locales.get(localeId)
-            }
-            from is ParadoxLocalisationPropertyList -> {
-                val nextFrom = runSmartReadAction { from.locale } ?: return null
-                selectLocale(nextFrom)
-            }
-            from is StubBasedPsiElementBase<*> -> {
-                val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
-                selectLocale(nextFrom)
             }
             from is PsiElement && from.language is ParadoxLocalisationLanguage -> {
                 val nextFrom = runSmartReadAction { from.parent }

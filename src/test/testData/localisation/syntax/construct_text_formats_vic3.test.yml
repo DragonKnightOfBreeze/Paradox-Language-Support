@@ -1,0 +1,21 @@
+l_english:
+ text_format:0 "#v text#!"
+ text_format_missing_end_marker:0 "#v text"
+ text_format_empty_body:0 "#v #!"
+ text_format_no_delimiter:0 "#vtext#!"
+ text_format_no_delimiter_dot:0 "#v.text#!"
+
+ text_format.mixed:0 "#v text#! text"
+ text_format_missing_end_marker.mixed:0 "#v text#! text"
+ text_format_empty_body.mixed:0 "#v #! text"
+ text_format_no_delimiter.mixed:0 "#vtext#! text"
+ text_format_no_delimiter_dot.mixed:0 "#v.text#! text"
+
+ text_format_parameterized_1:0 "#a_$b$_c text#!"
+ text_format_parameterized_2:0 "#a_$b$_[c]_d text#!"
+ text_format_parameterized_3:0 "#a_$b$[c]_d text#!"
+ text_format_parameterized_4:0 "#$b$[c]_d text#!"
+ text_format_parameterized_5:0 "#a_$b$[c] text#!"
+ text_format_parameterized_6:0 "#$b$[c] text#!"
+ text_format_parameterized_7:0 "#$b$ text#!"
+ text_format_parameterized_8:0 "#[c] text#!"

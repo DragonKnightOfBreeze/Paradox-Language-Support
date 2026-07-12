@@ -5,18 +5,18 @@ import com.intellij.notification.NotificationGroupManager
 
 object ChronicleNotificationGroups {
     fun global(): NotificationGroup {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+        return NotificationGroupManager.getInstance().getNotificationGroup("chronicle")
     }
 
     fun settings(): NotificationGroup {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls.settings")
+        return NotificationGroupManager.getInstance().getNotificationGroup("chronicle.settings")
     }
 
     fun diff(): NotificationGroup {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls.diff")
+        return NotificationGroupManager.getInstance().getNotificationGroup("chronicle.diff")
     }
 
     fun manipulation(): NotificationGroup {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls.manipulation")
+        return NotificationGroupManager.getInstance().getNotificationGroup("chronicle.manipulation")
     }
 }

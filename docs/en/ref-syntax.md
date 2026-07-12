@@ -2,7 +2,7 @@
 
 <!--
 @doc-meta
-This document is the syntax reference for the four languages supported by the Paradox Language Support plugin.
+This document is the syntax reference for the four languages supported by the plugin.
 The content reflects the plugin's parsing implementation, not the game engine's underlying behavior - the two are consistent in most cases, but differences may exist.
 
 @see src/test/testData/cwt/example.test.cwt
@@ -14,7 +14,7 @@ The content reflects the plugin's parsing implementation, not the game engine's 
 ## Overview {#overview}
 
 This document is the syntax reference for the domain-specific languages involved in writing CWT config files and Paradox mods.
-The content is based on the parsing implementation of the Paradox Language Support plugin and is consistent with the game engine's actual behavior in the vast majority of cases. However, since the engine's parsing details are not fully public, minor differences may exist in certain edge cases.
+The content is based on the parsing implementation of the plugin and is consistent with the game engine's actual behavior in the vast majority of cases. However, since the engine's parsing details are not fully public, minor differences may exist in certain edge cases.
 
 This document covers the following four languages:
 

@@ -14,7 +14,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableDialog
-import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class IntroduceGlobalVariableFix(
@@ -30,7 +30,7 @@ class IntroduceGlobalVariableFix(
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         // 打开对话框
         val virtualFile = file.virtualFile ?: return
-        val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return
+        val scriptedVariablesDirectory = ParadoxScriptedVariableManager.getGlobalScriptedVariablesDirectory(virtualFile) ?: return
         val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
         if (!dialog.showAndGet()) return // 取消
 

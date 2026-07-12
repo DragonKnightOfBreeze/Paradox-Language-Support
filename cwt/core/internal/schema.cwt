@@ -22,7 +22,7 @@ system_scopes = {
     #### The scope ID is used as the key. The value can be empty or provide a readable name.
     $system_scope$ = {
         #### The base scope ID; defaults to the scope's own ID. Used to classify scopes of the same family.
-        base_id = $system_scope$
+        base = $system_scope$
     }
 }
 
@@ -454,7 +454,7 @@ $$options = {
     ####
     #### Used to mark configs that require special handling (e.g., skip parsing).
     ####
-    #### Applicable to: Configs that need special handling (currently supports `single_alias` and `alias`).
+    #### Applicable to: Configs that need special handling (currently only for alias configs and single alias configs).
     ####
     #### Example: `## api_status = obsolete`
     api_status
@@ -555,7 +555,7 @@ $$options = {
     #### Example: `## type = scripted_trigger`
     type
 
-    #### Specifies hint information.
+    #### Specifies hint text.
     ####
     #### Used in some extended configs to provide additional inline hints.
     ####
@@ -582,9 +582,10 @@ $$options = {
 
     #### Specifies the aggregation type of context configs.
     ####
-    #### Specifies whether the "context configs" under the root of `x = {...}` is single (`single`) or multiple (`multiple`). Defaults to `single`.
+    #### Determines whether the context configs comes directly from its property value config (`single`),
+    #### or from a set of child configs within it (`multiple`).
     ####
-    #### Applicable to: Extended configs that can specify config contexts (e.g., extended configs for inline scripts and parameters).
+    #### Applicable to: Extended configs that can specify context configs (e.g., extended configs for inline scripts and parameters).
     ####
     #### Example: `## context_configs_type = multiple`
     context_configs_type
@@ -595,7 +596,7 @@ $$options = {
     ####
     #### Applicable to: [Subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
     ####
-    #### Example: `## group = ships`
+    #### Example: `## group = event_type`
     group
 
     #### Specifies the filter for the type key (inclusion/exclusion, case-insensitive).
@@ -702,7 +703,7 @@ $$option_flags = {
     ####
     #### That is, inherited from the corresponding usage site, keeping consistent with it.
     ####
-    #### Applicable to: Some extended configs that can specify config contexts (e.g., extended configs for parameters).
+    #### Applicable to: Some extended configs that can specify context configs (e.g., extended configs for parameters).
     inherit
 
     #### Marks the matched single value as a predefined tag.

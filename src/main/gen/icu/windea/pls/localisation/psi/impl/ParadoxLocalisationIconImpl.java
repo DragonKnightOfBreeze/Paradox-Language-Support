@@ -59,11 +59,6 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl
   }
 
   @Override
-  public int getFrame() {
-    return ParadoxLocalisationPsiImplUtil.getFrame(this);
-  }
-
-  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }

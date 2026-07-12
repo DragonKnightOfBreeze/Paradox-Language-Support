@@ -141,11 +141,10 @@ object ParadoxInlineScriptService {
         val selector = ParadoxInlineScriptUsageSearch.selector(project, contextElement)
         ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
             if (!ParadoxInlineScriptManager.isMatched(p.name)) return@p true // 再次确认
-            val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
-            val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
-            val usageConfigs = usageConfigContext.getConfigs(options).orNull()
+            val containerMemberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
+            val usageContextConfigs = ParadoxConfigManager.getContextConfigs(containerMemberElement).orNull() ?: return@p true
             // merge
-            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }.also {
+            val r = result.mergeValue(usageContextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }.also {
                 if (it) return@also
                 context.inlineScriptHasConflict = true
                 result.set(null)

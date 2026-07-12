@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfoTypes
@@ -33,8 +33,10 @@ import java.io.DataInput
 import java.io.DataOutput
 
 class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
-    private val constraint = ParadoxResolveConstraint.DynamicValue
-    private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
+    private val constraint = ParadoxReferenceConstraint.DynamicValue
+    private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo> { it.type }
 
     override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
 
@@ -83,21 +85,23 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 
     override fun saveData(storage: DataOutput, info: ParadoxDynamicValueIndexInfo, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
-        storage.writeOrWriteFrom(info, previousInfo, { it.dynamicValueType }, { storage.writeUTFFast(it) })
+        storage.writeOrWriteFrom(info, previousInfo, { it.type }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType): ParadoxDynamicValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
-        val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.dynamicValueType }, { storage.readUTFFast() })
+        val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.type }, { storage.readUTFFast() })
         val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
         return ParadoxDynamicValueIndexInfo(name, dynamicValueType, readWriteAccess, gameType)
     }
 }
 
 class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxParameterIndexInfo> {
-    private val constraint = ParadoxResolveConstraint.Parameter
-    private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
+    private val constraint = ParadoxReferenceConstraint.Parameter
+    private val compressComparator = compareBy<ParadoxParameterIndexInfo> { it.contextKey }
 
     override val indexInfoType = ParadoxIndexInfoTypes.Parameter
 
@@ -149,8 +153,10 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
 }
 
 class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxLocalisationParameterIndexInfo> {
-    private val constraint = ParadoxResolveConstraint.LocalisationParameter
-    private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
+    private val constraint = ParadoxReferenceConstraint.LocalisationParameter
+    private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo> { it.localisationName }
 
     override val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter
 

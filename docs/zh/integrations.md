@@ -9,7 +9,7 @@
 <!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable -->
 <!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettings -->
 
-在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 集成`，可以打开集成的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Chronicle > 集成`，可以打开集成的设置页面。
 
 可以在这里配置要启用的工具集成，以及具体的工具集成选项。
 

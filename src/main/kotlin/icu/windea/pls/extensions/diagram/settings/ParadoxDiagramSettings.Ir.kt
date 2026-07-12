@@ -20,7 +20,7 @@ class IrEventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<IrEventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Ir) {
     companion object {
-        const val ID = "pls.diagram.Ir.EventTree"
+        const val ID = "chronicle.diagram.Ir.EventTree"
     }
 
     override val id: String = ID

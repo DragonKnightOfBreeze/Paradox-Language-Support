@@ -7,7 +7,6 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
@@ -41,10 +40,10 @@ class ParadoxKeywordCompletionProvider : ParadoxCompletionProvider() {
         if (path != null && ParadoxConfigMatchService.getTypeConfigCandidates(CwtTypeConfigMatchContext(context.configGroup, path)).isNotEmpty()) return
 
         // 排除存在上下文规则的情况
-        if (ParadoxConfigManager.getConfigContext(element)?.getConfigs().isNotNullOrEmpty()) return
+        if (ParadoxConfigManager.getContextConfigs(element).isNotEmpty()) return
 
         // 2.1.8 同样排除定值的脚本文件
-        if (ParadoxDefineManager.isDefineFile(context.file)) return
+        if (ParadoxDefineManager.isDefinesFile(context.file)) return
 
         result.addElements(ChronicleLookupElements.keywordLookupElements, context)
     }

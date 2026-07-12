@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -22,7 +23,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * **系统作用域（system scope）** 是一组预定义的 **作用域连接（scope link）**，用于获取或切换到需要的作用域。
  *
  * 路径定位：
- * - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
+ * - `system_scopes/{name}`。其中 `{name}` 匹配规则名称（即系统作用域的 ID）。
  *
  * 示例：
  *
@@ -30,28 +31,25 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * system_scopes = {
  *     This = {}
  *     Root = {}
- *     Prev = { base_id = Prev }
- *     From = { base_id = From }
+ *     Prev = { base = Prev }
+ *     From = { base = From }
  *     # ...
  * }
  * ```
  *
  * > CWTools 兼容性：不兼容。插件作为扩展提供。
  *
- * @property id 系统作用域 ID。
- * @property baseId 基底作用域 ID（用于继承/归类）。
- * @property name 可读名称。
+ * @property name 规则名称。即系统作用域的 ID。
+ * @property base 基础系统作用域的 ID。未指定时等同于规则名称。用于归类同族的系统作用域（如 `Prev` `PrevPrev` ...）。
  *
  * @see ParadoxScope
  * @see ParadoxScopeContext
  */
 interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
-    val id: String
-    @FromMember("base_id: string")
-    val baseId: String
-    @FromMember(": string")
     val name: String
+    @FromMember("base: string")
+    val base: String
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
@@ -60,7 +58,7 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     companion object {
         /** 由属性规则解析为系统作用域规则。 */
         @JvmStatic
-        fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
+        fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig? {
             return CwtSystemScopeConfigResolver.resolve(config)
         }
     }
@@ -71,23 +69,27 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 private object CwtSystemScopeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
-        val id = config.key
-        val baseId = config.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
-        val name = config.stringValue ?: id
-        logger.debug { "Resolved system scope config (id: $id).".withLocationPrefix(config) }
-        return CwtSystemScopeConfigImpl(config, id, baseId, name)
+    fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig? {
+        val name = config.key
+        val propConfigs = config.properties
+        if (propConfigs == null) {
+            logger.warn("Skipped invalid system scope config (name: $name): Null properties.".withLocationPrefix(config))
+            return null
+        }
+        val propGroup = propConfigs.groupBy { it.key }
+        val base = propGroup.getOne("base")?.stringValue ?: name
+        logger.debug { "Resolved system scope config (name: $name).".withLocationPrefix(config) }
+        return CwtSystemScopeConfigImpl(config, name, base)
     }
 }
 
 private class CwtSystemScopeConfigImpl(
     override val config: CwtPropertyConfig,
-    override val id: String,
-    override val baseId: String,
-    override val name: String
+    override val name: String,
+    override val base: String,
 ) : UserDataHolderBase(), CwtSystemScopeConfig {
-    override fun equals(other: Any?) = this === other || other is CwtSystemScopeConfig && id == other.id
-    override fun hashCode() = id.hashCode()
+    override fun equals(other: Any?) = this === other || other is CwtSystemScopeConfig && name == other.name
+    override fun hashCode() = name.hashCode()
     override fun toString() = "CwtSystemScopeConfigImpl(name='$name')"
 }
 

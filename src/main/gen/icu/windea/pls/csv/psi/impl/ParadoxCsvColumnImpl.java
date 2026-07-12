@@ -35,6 +35,11 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxCsvPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxCsvPsiImplUtil.getIcon(this, flags);
   }

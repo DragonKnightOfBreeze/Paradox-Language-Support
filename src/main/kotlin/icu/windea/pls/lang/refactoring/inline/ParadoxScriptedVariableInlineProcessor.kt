@@ -68,7 +68,7 @@ class ParadoxScriptedVariableInlineProcessor(
     }
 
     override fun getRefactoringId(): String {
-        return "pls.refactoring.inline.scriptedVariable"
+        return "chronicle.refactoring.inline.scriptedVariable"
     }
 
     override fun getBeforeData(): RefactoringEventData {

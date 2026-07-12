@@ -19,7 +19,9 @@ import java.util.function.Function
 import javax.swing.JComponent
 
 /**
- * 为带有文件提示元数据的特殊文件提供通知，以便提供额外的说明和快速操作。
+ * 为带有文件提示元数据的特殊文件提供编辑器通知，以提供额外的说明和快速操作。
+ *
+ * 通常适用于生成的临时文件。
  *
  * @see ParadoxLocalisationGenerationService.fileTooltipKey
  */
@@ -57,6 +59,6 @@ class ParadoxFileTooltipEditorNotificationProvider : EditorNotificationProvider 
         if (psiFile !is ParadoxLocalisationFile) return null
         val fileLocale = file.getUserData(ParadoxLocalisationGenerationService.fileLocaleKey)
         return psiFile.children().filterIsInstance<ParadoxLocalisationPropertyList>()
-            .find { fileLocale == null || it.locale?.name == fileLocale.id }
+            .find { fileLocale == null || it.locale?.name == fileLocale.name }
     }
 }

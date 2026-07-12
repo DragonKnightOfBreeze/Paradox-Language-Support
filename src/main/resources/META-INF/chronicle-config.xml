@@ -1,6 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls.config" parentId="pls" groupWeight="100" bundle="messages.ChronicleBundle" key="settings.config"
+    <applicationConfigurable id="chronicle.config" parentId="chronicle" groupWeight="90"
+                             bundle="messages.ChronicleBundle" key="settings.config"
                              instance="icu.windea.pls.config.settings.ChronicleConfigSettingsConfigurable"/>
 
     <!-- commented out since it's light service -->

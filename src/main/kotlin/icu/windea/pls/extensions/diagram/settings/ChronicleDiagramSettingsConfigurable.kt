@@ -13,7 +13,7 @@ import icu.windea.pls.ide.help.ChronicleHelpTopics
 class ChronicleDiagramSettingsConfigurable(
     private val project: Project
 ) : BoundConfigurable(ChronicleDiagramBundle.message("settings.diagram")), SearchableConfigurable {
-    override fun getId() = "pls.diagram"
+    override fun getId() = "chronicle.diagram"
 
     override fun getHelpTopic() = ChronicleHelpTopics.diagramSettings
 

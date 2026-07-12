@@ -5,7 +5,7 @@
 <!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettingsConfigurable -->
 <!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettings -->
 
-在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 扩展`，可以打开扩展的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Chronicle > 扩展`，可以打开扩展的设置页面。
 
 可以在这里配置各种扩展功能的开关。
 
@@ -198,7 +198,7 @@ defense_army = {
 <!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings -->
 <!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettingsConfigurable -->
 
-在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 图表`，可以打开图表的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Chronicle > 图表`，可以打开图表的设置页面。
 
 可以在此根据多种条件，配置各类图表需要显示的节点。
 

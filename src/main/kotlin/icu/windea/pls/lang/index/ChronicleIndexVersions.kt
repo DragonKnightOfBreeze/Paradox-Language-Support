@@ -1,15 +1,15 @@
 package icu.windea.pls.lang.index
 
 object ChronicleIndexVersions {
-    const val ScriptStub = 95 // 2.1.10
-    const val LocalisationStub = 95 // 2.1.10
+    const val ScriptStub = 100 // 3.0.0
+    const val LocalisationStub = 100 // 3.0.0
 
-    const val FilePath = 95 // 2.1.10
-    const val FileLocale = 95 // 2.1.10
-    const val IncludedDirectory = 95 // 2.1.10
-    const val ConfigSymbol = 95 // 2.1.10
-    const val ComplexEnumValue = 95 // 2.1.10
-    const val Definition = 95 // 2.1.10
-    const val DefinitionInjection = 95 // 2.1.10
-    const val Merged = 95 // 2.1.10
+    const val FilePath = 100 // 3.0.0
+    const val FileLocale = 100 // 3.0.0
+    const val IncludedDirectory = 100 // 3.0.0
+    const val ConfigSymbol = 100 // 3.0.0
+    const val ComplexEnumValue = 100 // 3.0.0
+    const val Definition = 100 // 3.0.0
+    const val DefinitionInjection = 100 // 3.0.0
+    const val Merged = 100 // 3.0.0
 }

@@ -2,7 +2,7 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.attributes.CwtInlinedConfigAttributes
+import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -76,8 +76,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val scopes by registerKey<FastCustomMap<@CaseInsensitive String, CwtScopeConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val scopeAliasMap by registerKey<FastCustomMap<@CaseInsensitive String, CwtScopeConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val scopeGroups by registerKey<FastCustomMap<@CaseInsensitive String, CwtScopeGroupConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
-        val singleAliases by registerKey<FastMap<String, CwtSingleAliasConfig>, UserDataHolder>(this) { FastMap() }
         val aliasGroups by registerKey<FastMap<String, FastMap<String, FastList<CwtAliasConfig>>>, UserDataHolder>(this) { FastMap() }
+        val singleAliases by registerKey<FastMap<String, CwtSingleAliasConfig>, UserDataHolder>(this) { FastMap() }
         val modifierCategories by registerKey<FastMap<String, CwtModifierCategoryConfig>, UserDataHolder>(this) { FastMap() }
         val modifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val databaseObjectTypes by registerKey<FastMap<String, CwtDatabaseObjectTypeConfig>, UserDataHolder>(this) { FastMap() }
@@ -104,8 +104,9 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val macrosModel by registerKey<CwtMacrosModelBase, UserDataHolder>(this) { CwtMacrosModelBase() }
         val filePathExpressions by registerKey<FastSet<CwtDataExpression>, UserDataHolder>(this) { FastSet() }
         val parameterConfigs by registerKey<FastSet<CwtMemberConfig<*>>, UserDataHolder>(this) { FastSet() }
-        val singleAliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
-        val aliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val unionAttributes by registerKey<FastMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val aliasAttributes by registerKey<FastMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val singleAliasAttributes by registerKey<FastMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { FastMap() }
     }
 
     // region Accessors
@@ -134,8 +135,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val scopes by Keys.scopes
     final override val scopeAliasMap by Keys.scopeAliasMap
     final override val scopeGroups by Keys.scopeGroups
-    final override val singleAliases by Keys.singleAliases
     final override val aliasGroups by Keys.aliasGroups
+    final override val singleAliases by Keys.singleAliases
     final override val modifierCategories by Keys.modifierCategories
     final override val modifiers by Keys.modifiers
     final override val databaseObjectTypes by Keys.databaseObjectTypes
@@ -162,8 +163,9 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val macrosModel by Keys.macrosModel
     final override val filePathExpressions by Keys.filePathExpressions
     final override val parameterConfigs by Keys.parameterConfigs
-    final override val singleAliasAttributes by Keys.singleAliasAttributes
+    final override val unionAttributes by Keys.unionAttributes
     final override val aliasAttributes by Keys.aliasAttributes
+    final override val singleAliasAttributes by Keys.singleAliasAttributes
 
     // endregion
 
@@ -199,10 +201,10 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         scopes.trim()
         scopeAliasMap.trim()
         scopeGroups.trim()
-        singleAliases.trim()
         aliasGroups.trim()
         aliasGroups.values.forEach { it.trim() }
-        this@CwtConfigGroupDataHolderBase.macros.trim()
+        singleAliases.trim()
+        macros.trim()
         modifierCategories.trim()
         modifiers.trim()
         databaseObjectTypes.trim()
@@ -229,7 +231,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         relatedLocalisationPatterns.trim()
         linksModel.trim()
         localisationLinksModel.trim()
-        this@CwtConfigGroupDataHolderBase.macrosModel.trim()
+        macrosModel.trim()
         typesModel.trim()
         filePathExpressions.trim()
         parameterConfigs.trim()

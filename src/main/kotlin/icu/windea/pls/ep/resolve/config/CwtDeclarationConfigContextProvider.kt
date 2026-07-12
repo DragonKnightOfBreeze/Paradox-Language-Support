@@ -13,8 +13,8 @@ import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
  * 提供声明规则的上下文。
  *
  * 说明：
- * - 通过 [CwtDeclarationConfigContext] 可以得到声明规则对应的处理后的顶级成员规则。
- * - 最终得到的顶级成员规则可以直接用于确定定义声明的结构，另外也会作为定义的顶级上下文规则。
+ * - 通过 [CwtDeclarationConfigContext] 可以得到声明规则对应的最终的顶级成员规则，从而确定声明的结果。
+ * - 在后续的语义解析流程中，这里得到的规则会作为顶级的上下文规则被进一步展开，涉及深拷贝、内联等操作。
  *
  * @see CwtConfigContext
  * @see CwtDeclarationConfigContext
