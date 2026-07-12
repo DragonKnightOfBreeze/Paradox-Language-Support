@@ -32,14 +32,8 @@
     <navbar implementation="icu.windea.pls.localisation.navigationToolbar.ParadoxLocalisationNavBar"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.localisation.breadcrumbs.ParadoxLocalisationBreadCrumbsProvider"/>
 
-    <!-- floating toolbar -->
-    <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
-    <!--suppress PluginXmlValidity -->
-    <textEditorCustomizer implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
-
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
                              implementationClass="icu.windea.pls.localisation.psi.manipulators.ParadoxLocalisationPropertyKeyManipulator"/>
-
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>

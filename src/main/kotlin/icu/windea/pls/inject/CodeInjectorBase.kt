@@ -1,11 +1,14 @@
 package icu.windea.pls.inject
 
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.memberFunction
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runOnce
@@ -16,19 +19,14 @@ import kotlin.reflect.full.findAnnotation
 abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     override val id: String = javaClass.name
 
-    @Suppress("UnstableApiUsage")
     final override fun inject() {
-        // TODO 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262
-        //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
-
         val injectionTargetInfo = getInjectionTargetInfo() ?: return
 
-        val pluginId = injectionTargetInfo.injectPluginId
-        val enabledPlugin = pluginId.orNull()
-            ?.let { PluginId.getId(it) }
-            ?.let { PluginManager.getInstance().findEnabledPlugin(it) }
+        val pluginIdString = injectionTargetInfo.injectPluginId
+        val pluginId = pluginIdString.orNull()?.let { PluginId.getId(it) }
+
         // skip if plugin of specified plugin id is not enabled
-        if (pluginId.isNotEmpty() && enabledPlugin == null) return
+        if (pluginId != null && !isPluginEnabled(pluginId)) return
 
         val classPool = CodeInjectorContext.classPool ?: return
         val injectTargetName = injectionTargetInfo.injectTargetName
@@ -37,17 +35,30 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
 
         applyCodeInjectorSupports()
 
-        if (pluginId.isEmpty()) {
-            targetClass.toClass()
+        if (pluginId != null) {
+            targetClass.toClass(getPluginClassLoader(pluginId), null)
         } else {
-            val pluginClassLoader = runCatchingCancelable { enabledPlugin!!.pluginClassLoader }
-                .getOrElse { PluginDescriptor::class.java.classLoader }
-            targetClass.toClass(pluginClassLoader, null)
+            targetClass.toClass()
         }
         targetClass.detach()
 
         // clean up
         putUserData(CodeInjectorContext.targetClassKey, null)
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun isPluginEnabled(pluginId: PluginId): Boolean {
+        return !PluginDetailsService.getInstance().isDisabled(pluginId)
+    }
+
+    private fun getPluginClassLoader(pluginId: PluginId): ClassLoader {
+        // TODO 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262
+        //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
+
+        val pluginManager = PluginManager.getInstance()
+        val function = memberFunction<PluginManager>("findEnabledPlugin")
+        val pluginDescriptor = runCatchingCancelable { function(pluginManager, pluginId) }.getOrNull()?.castOrNull<PluginDescriptor>()
+        return pluginDescriptor?.pluginClassLoader ?: PluginDescriptor::class.java.classLoader
     }
 
     private fun getInjectionTargetInfo(): InjectionTargetInfo? {

@@ -425,6 +425,23 @@
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>
 
+  <!-- floating toolbars -->
+  <extensions defaultExtensionNs="com.intellij">
+    <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
+    <!--suppress PluginXmlValidity -->
+    <textEditorCustomizer implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
+
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="CWT" minimal="true"/>
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="PARADOX_SCRIPT" minimal="true"/>
+    <!--suppress PluginXmlValidity -->
+    <!-- <lang.floatingToolbar language="PARADOX_LOCALISATION" minimal="true" actionGroup="Pls.Localisation.Toolbar.Floating"/> -->
+    <!--suppress PluginXmlValidity -->
+    <lang.floatingToolbar language="PARADOX_CSV" minimal="true"/>
+  </extensions>
+
+  <!-- registry keys -->
   <extensions defaultExtensionNs="com.intellij">
     <!-- Note that HTML is not available in registry key descriptions -->
     <registryKey key="chronicle.settings.localisationFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>

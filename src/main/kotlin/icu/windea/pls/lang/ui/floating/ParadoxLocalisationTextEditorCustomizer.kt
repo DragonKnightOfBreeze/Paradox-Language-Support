@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
-// NOTE the EP interface is internal (but ignored by verifier)
+// NOTE the EP interface is internal (and not ignored by verifier since IDEA-262)
 // com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
 // com.intellij.ui.codeFloatingToolbar.FloatingCodeToolbarEditorCustomizer
 // org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
