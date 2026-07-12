@@ -15,6 +15,8 @@
 #		category = "default"									# The category from the database common/game_concept_categories.
 #		icon = "gfx/interface/icons/concepts/concept_icon.dds"	# Icon override (of category default).
 #		picture = "gfx/event_pictures/ancient_databank.dds"		# Big picture override to be displayed in upper right of Databank.
+#		prefix = "concept_prefix"								# Text to display before the concept text in the Databank.
+#		postfix = "concept_postfix"								# Text to display after the concept text in the Databank.
 #	}
 #}
 #
@@ -72,6 +74,7 @@
 #	tradition
 #	tradition_category
 #	trait and leader trait (note: use object type 'leader_trait' for the latter)
+#	scripted_actions (note: The scripted action key must also be a localization key, even if different than context_menu_name, otherwise the concept text itself will not be localized correctly)
 #
 # In GUI, instantTextBoxType has a "concepts_show_missing_dlc" parameter. If set to "yes", database concept tooltips inside the text box will show unmet DLC requirements for the database object.
 # Currently, this only works for authorities, civics, ethics and species traits.
