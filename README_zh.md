@@ -222,8 +222,9 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 [badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
 [badge:doc-ref]: https://img.shields.io/badge/参考文档-2f89d7.svg
 [badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
-[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
+[badge:build]: https://img.shields.io/endpoint?label=build&url=https%3A%2F%2Factions-badge.atrox.dev%2FDragonKnightOfBreeze%2FParadox-Language-Support%2Fbadge%3Fref%3Dmaster
 [badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
+[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
 [badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg?logo=jetbrains
 [badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
 [badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
