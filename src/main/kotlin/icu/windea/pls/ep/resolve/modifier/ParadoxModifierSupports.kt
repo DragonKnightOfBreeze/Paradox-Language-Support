@@ -231,7 +231,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val templateString = templateConfigExpression.expressionString
 
             appendBr().appendIndent()
-            append(ChronicleBundle.message("fromTemplate")).append(" ")
+            append(ChronicleBundle.message("doc.text.fromTemplate")).append(" ")
             val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
@@ -248,7 +248,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val definitionName = snippetNode.text
                             val definitionType = configExpression.value!!
                             val definitionTypes = definitionType.split('.')
-                            append(ChronicleBundle.message("generatedFromDefinition"))
+                            append(ChronicleBundle.message("doc.text.generatedFromDefinition"))
                             append(" ")
                             val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, gameType)
                             appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = modifierElement)
@@ -267,7 +267,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataTypes.EnumValue -> {
                             val enumValueName = snippetNode.text
                             val enumName = configExpression.value!!
-                            append(ChronicleBundle.message("generatedFromEnumValue"))
+                            append(ChronicleBundle.message("doc.text.generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, "$enumName/$enumValueName", gameType)
@@ -290,7 +290,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataTypes.Value -> {
                             val dynamicValueType = snippetNode.text
                             val valueName = configExpression.value!!
-                            append(ChronicleBundle.message("generatedFromDynamicValue"))
+                            append(ChronicleBundle.message("doc.text.generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, "$dynamicValueType/$valueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), valueName.escapeXml(), context = modifierElement)
@@ -439,13 +439,13 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         append(ChronicleStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济分类信息
         appendBr().appendIndent()
-        append(ChronicleBundle.message("generatedFromEconomicCategory"))
+        append(ChronicleBundle.message("doc.text.generatedFromEconomicCategory"))
         append(" ")
         val ecLink = ReferenceLinkType.Definition.createLink(economicCategoryInfo.name, ParadoxDefinitionTypes.economicCategory, gameType)
         appendPsiLinkOrUnresolved(ecLink.escapeXml(), economicCategoryInfo.name.escapeXml(), context = modifierElement)
         if (modifierInfo.resource != null) {
             appendBr().appendIndent()
-            append(ChronicleBundle.message("generatedFromResource"))
+            append(ChronicleBundle.message("doc.text.generatedFromResource"))
             append(" ")
             val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
             appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = modifierElement)
@@ -471,7 +471,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             if (modifierInfo.resource != null) {
                 append(" ")
                 grayed {
-                    append(ChronicleBundle.message("fromResource"))
+                    append(ChronicleBundle.message("doc.text.fromResource"))
                     append(" ")
                     val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)

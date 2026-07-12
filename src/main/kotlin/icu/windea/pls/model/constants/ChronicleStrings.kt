@@ -37,9 +37,14 @@ object ChronicleStrings {
     const val shaderEffectPrefix = "(shader effect)"
     const val meshLocatorPrefix = "(mesh locator)"
 
-    const val headerMarker = "<header>"
-    const val rowMarker = "<row>"
-    const val loadingMarker = "<loading...>"
+    const val headerText = "<header>"
+    const val rowText = "<row>"
+
+    const val complexText = "<complex>"
+    const val inlinedText = "<inlined>"
+    const val parameterizedText = "<parameterized>"
+    const val dynamicText = "<dynamic>"
+    const val noParametersText = "<no parameters>"
 
     const val parameterMarker = '$'
     const val colorMarker = '§'

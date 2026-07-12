@@ -34,9 +34,9 @@ object ParadoxCsvPsiPresentationService {
             // 文件名
             is ParadoxCsvFile -> element.name
             // 特殊标记
-            is ParadoxCsvHeader -> ChronicleStrings.headerMarker
+            is ParadoxCsvHeader -> ChronicleStrings.headerText
             // 特殊标记
-            is ParadoxCsvRow -> ChronicleStrings.rowMarker
+            is ParadoxCsvRow -> ChronicleStrings.rowText
             // 截断后的名字
             is ParadoxCsvColumn -> element.name.formatted()
             // 回退

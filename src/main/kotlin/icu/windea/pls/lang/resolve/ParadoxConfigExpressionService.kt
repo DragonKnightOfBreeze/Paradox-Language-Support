@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
@@ -30,6 +29,7 @@ import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -59,16 +59,16 @@ object ParadoxConfigExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.LocalisationLocationAware) {
-            return createLocalisationResolveResult(ChronicleBundle.message("dynamic"))
+            return createLocalisationResolveResult(ChronicleStrings.dynamicText)
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createLocalisationResolveResult(ChronicleBundle.message("parameterized"))
+            return createLocalisationResolveResult(ChronicleStrings.parameterizedText)
         }
         if (config.configExpression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-            return createLocalisationResolveResult(ChronicleBundle.message("inlined"))
+            return createLocalisationResolveResult(ChronicleStrings.inlinedText)
         }
         val name = valueElement.stringValue
         if (name.isEmpty()) return null
@@ -159,13 +159,13 @@ object ParadoxConfigExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ImageLocationAware) {
-            return createImageResolveResult(ChronicleBundle.message("dynamic"))
+            return createImageResolveResult(ChronicleStrings.dynamicText)
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createImageResolveResult(ChronicleBundle.message("parameterized"))
+            return createImageResolveResult(ChronicleStrings.parameterizedText)
         }
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, ParadoxExpressionRole.Value)
         when {

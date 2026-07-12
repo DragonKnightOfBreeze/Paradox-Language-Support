@@ -69,7 +69,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         // 加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()
-        append(ChronicleBundle.message("ofLocalisation")).append(" ")
+        append(ChronicleBundle.message("doc.text.ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
         val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)

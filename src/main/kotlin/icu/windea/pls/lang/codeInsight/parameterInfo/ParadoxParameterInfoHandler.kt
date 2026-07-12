@@ -7,13 +7,13 @@ import com.intellij.lang.parameterInfo.UpdateParameterInfoContext
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
+import icu.windea.pls.model.constants.ChronicleStrings
 
 /**
  * 在参数上下文引用中显示参数信息。
@@ -51,7 +51,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
         // PARAM1, PARAM2, ...
         // 不高亮特定的参数
         val text = when {
-            parameterContextInfo.parameters.isEmpty() -> ChronicleBundle.message("noParameters")
+            parameterContextInfo.parameters.isEmpty() -> ChronicleStrings.noParametersText
             else -> buildString {
                 val m = OnceMarker()
                 parameterContextInfo.parameters.forEach { (parameterName, elements) ->

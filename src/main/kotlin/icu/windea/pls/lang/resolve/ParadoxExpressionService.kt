@@ -190,8 +190,8 @@ object ParadoxExpressionService {
      * @see ParadoxLocalisationExpressionSupport.complete
      */
     fun completeLocalisationExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val configGroup = context.configGroup ?: return
+        val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
+        val configGroup = context.configGroup
         val gameType = configGroup.gameType
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
