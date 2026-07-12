@@ -41,7 +41,7 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 
 - 主要采用 [Kotlin](https://kotlinlang.org/) 编程语言开发。
 - 基于 [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html) 构建，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语义分析与丰富的语言功能。
-- 使用 JFlex 进行词法分析，使用 BNF 进行语法解析。
+- 使用 JFlex 进行词法分析，使用 BNF 进行语法分析。
 - 内置丰富的自定义扩展点，提供功能的灵活扩展，便于定制与增强插件行为。
 - 内置代码注入系统，用于实现常规手段无法达成的功能、修复与优化。
 - 内置图像处理模块（DDS、TGA），用于预览、渲染和处理额外的图片格式。

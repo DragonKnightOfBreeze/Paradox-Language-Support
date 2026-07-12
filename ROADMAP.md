@@ -9,8 +9,8 @@
 本文档是基于原始的[开发路线笔记](documents/notes/开发路线.md)进一步整理后的路线图文档。
 原始笔记按日期组织，本文件将其重新归纳为按版本号组织后的结构，并且进一步规范化，补充了额外的细节。
 
-> - 截止版本：v2.2.0
-> - 截止日期：2026-07-04
+> - 截止版本：v3.0.0
+> - 截止日期：2026-07-06
 
 ## v2.1.10 {#v2-1-10}
 
@@ -125,6 +125,12 @@
 - [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
 - [x] P2 改为为内联脚本文件提供编辑器通知，而非代码检查，以避免无法适用于非项目文件（回退到 `ParadoxInlineScriptEditorNotificationProvider`，移除 `DeclaredInlineScriptInspection`）
 
+### 备注
+
+- 不能重命名插件ID（`icu.windea.pls`）。
+- 不建议更改配置文件名（`paradox-language-support.xml`）以及配置项的名字和结构。不过，未来可能会改进，并且编写迁移器（migrator）。
+- 不建议更改 GitHub 项目地址以及参考文档地址。
+
 ## v3.0.1 {v3-0-1}
 
 ### 计划
@@ -162,6 +168,8 @@
 
 ### 附加
 
+- [ ] P2 继续分析与优化构建索引时的性能和内存占用
+- [ ] P2 继续分析与优化完成项目分析后的性能和内存占用
 - [ ] P2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持
 
 ## v3.0.2 {v3-0-2}
@@ -242,6 +250,7 @@
 - [ ] P3 开放内部规则：允许自定义除了 schema 之外的所有现有内部规则类型，考虑新增规则类型 liveTemplateSettings
   - 这些特殊规则的变化基本上不会导致刷新与重新解析，以后可以考虑优化相关代码。
   - 考虑借助 AI 补充更多默认提供的设置规则。
+- [ ] P3 对于作为上下文的规则以及匹配的规则，有时需要展开并集（`union[x]`）和别名（`alias_keys_field[x]`）
 
 ### 图片处理
 
@@ -259,7 +268,6 @@
   - 设置类：`icu.windea.pls.lang.tool.ExtraUtilitySettings`
   - 服务类：`icu.windea.pls.lang.tool.ExtraUtilityService`
   - 预设：打包模组（可配置）/ 审计游戏和模组文件（按查询作用域）/ 调用渲染器（不确定）
-- [ ] P3 关于 tiger 集成：经过检查，tiger 输出的 JSON 中未提供快速修复信息，且 tiger 的耦合程度较高，难以通过外部手段补充
 - [ ] P4 重构和扩展基于Diagrams插件/调用层级的图表功能
   - 优化相关的设置页面，提供更好的、更易扩展的配置方式。
   - 考虑在已有EP的基础上再次提取插件特定的EP。

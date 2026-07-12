@@ -110,7 +110,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 
 - Primarily developed using the [Kotlin](https://kotlinlang.org/) programming language.
 - Built on the [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html), implementing deep semantic analysis and rich language features based on [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)).
-- Uses JFlex for lexing and BNF for grammar parsing.
+- Uses JFlex for lexical analysis and BNF for syntax analysis.
 - Built-in rich custom extension points for flexible feature extension, making it easy to customize and enhance plugin behavior.
 - Built-in code injection system for implementing functionalities, fixes, and optimizations that cannot be achieved through conventional means.
 - Built-in image processing module (DDS, TGA) for previewing, rendering, and processing additional image formats.
