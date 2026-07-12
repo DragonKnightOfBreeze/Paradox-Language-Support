@@ -99,10 +99,10 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
 
     private fun deepCopyForInjection(configToInject: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): CwtMemberConfig<*> {
         val sourceConfigs = configToInject.configs
-            ?: return configToInject.delegated(null).also { it.parentConfig = parentConfig }
+            ?: return configToInject.delegated(null).also { it.withParentConfig(parentConfig) }
         val copiedChildConfigs = CwtConfigManipulationService.createListForDeepCopy(sourceConfigs)
-            ?: return configToInject.delegated(null).also { it.parentConfig = parentConfig }
-        val delegatedConfig = configToInject.delegated(copiedChildConfigs).also { it.parentConfig = parentConfig }
+            ?: return configToInject.delegated(null).also { it.withParentConfig(parentConfig) }
+        val delegatedConfig = configToInject.delegated(copiedChildConfigs).also { it.withParentConfig(parentConfig) }
         copiedChildConfigs += CwtConfigManipulationService.deepCopyConfigs(configToInject, delegatedConfig).orEmpty()
         delegatedConfig.postOptimize()
         return delegatedConfig

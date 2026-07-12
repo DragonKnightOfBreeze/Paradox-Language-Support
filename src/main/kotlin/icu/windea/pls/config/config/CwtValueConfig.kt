@@ -175,9 +175,14 @@ private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueCon
 
     override val configExpression: CwtDataExpression get() = valueExpression
 
+    override fun withParentConfig(parentConfig: CwtMemberConfig<*>?): Boolean {
+        this.parentConfig = parentConfig
+        return true
+    }
+
     override fun postProcess() {
         // bind parent config
-        this.configs?.forEachFast { it.parentConfig = this }
+        this.configs?.forEachFast { it.withParentConfig(this) }
         // run post processors
         CwtConfigService.postProcess(this)
         // collect information
@@ -186,7 +191,7 @@ private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueCon
 
     override fun postOptimize() {
         // bind parent config
-        this.configs?.forEachFast { it.parentConfig = this }
+        this.configs?.forEachFast { it.withParentConfig(this) }
     }
 
     override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtValueConfig {

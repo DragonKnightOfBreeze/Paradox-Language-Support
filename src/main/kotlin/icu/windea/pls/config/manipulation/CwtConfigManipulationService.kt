@@ -76,12 +76,12 @@ object CwtConfigManipulationService {
         val result = createListForDeepCopy()
         configs.forEachFast { config ->
             val childConfigs = createListForDeepCopy(config.configs)
-            val delegatedConfig = config.delegated(childConfigs).also { it.parentConfig = containerConfig }
+            val delegatedConfig = config.delegated(childConfigs).also { it.withParentConfig(containerConfig) }
             if (childConfigs != null) childConfigs += doDeepCopyConfigs(config, delegatedConfig).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
-        result.forEachFast { it.parentConfig = containerConfig } // 确保绑定了父规则
+        result.forEachFast { it.withParentConfig(containerConfig) } // 确保绑定了父规则
         injectConfigsForDeepCopy(parentConfig, containerConfig, result) ?: return emptyList() // 尝试注入规则，如果失败则返回空列表（即使输入的结果为空也要尝试）
         return result // 这里需要直接返回可变列表
     }
@@ -103,12 +103,12 @@ object CwtConfigManipulationService {
             }
 
             val childConfigs = createListForDeepCopy(config.configs)
-            val delegatedConfig = config.delegated(childConfigs).also { it.parentConfig = containerConfig }
+            val delegatedConfig = config.delegated(childConfigs).also { it.withParentConfig(containerConfig) }
             if (childConfigs != null) childConfigs += deepCopyConfigsInDeclaration(config, delegatedConfig, context).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
-        result.forEachFast { it.parentConfig = containerConfig } // 确保绑定了父规则
+        result.forEachFast { it.withParentConfig(containerConfig) } // 确保绑定了父规则
         injectConfigsForDeepCopy(parentConfig, containerConfig, result) ?: return emptyList() // 尝试注入规则，如果失败则返回空列表（即使输入的结果为空也要尝试）
         return result // 这里需要直接返回可变列表
     }
@@ -290,7 +290,7 @@ object CwtConfigManipulationService {
         )
         inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
-        inlined.parentConfig = config.parentConfig
+        inlined.withParentConfig(config.parentConfig)
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = aliasConfig
         inlined.inlineConfig = config.inlineConfig
@@ -323,7 +323,7 @@ object CwtConfigManipulationService {
         )
         inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
-        inlined.parentConfig = config.parentConfig
+        inlined.withParentConfig(config.parentConfig)
         inlined.singleAliasConfig = singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
         inlined.inlineConfig = config.inlineConfig
@@ -371,7 +371,7 @@ object CwtConfigManipulationService {
         )
         inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, config.optionData) // merge option data
-        inlined.parentConfig = config.parentConfig
+        inlined.withParentConfig(config.parentConfig)
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
         inlined.inlineConfig = config.inlineConfig

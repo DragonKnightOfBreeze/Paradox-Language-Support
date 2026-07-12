@@ -99,7 +99,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
                 return@map CwtValueConfig.createMock(configGroup, config.key)
             }
-            val delegatedConfig = config.delegated(CwtConfigManipulationService.deepCopyConfigs(config)).also { it.parentConfig = config.parentConfig }
+            val delegatedConfig = config.delegated(CwtConfigManipulationService.deepCopyConfigs(config)).also { it.withParentConfig(config.parentConfig) }
             delegatedConfig.postOptimize() // 进行后续优化
             delegatedConfig
         }
