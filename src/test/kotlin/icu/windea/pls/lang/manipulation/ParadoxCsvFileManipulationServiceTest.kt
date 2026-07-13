@@ -98,5 +98,34 @@ class ParadoxCsvFileManipulationServiceTest : BasePlatformTestCase() {
         }
     }
 
-    // TODO 3.0.1+ [test] columnsOfIndex
+    @Test
+    fun columnsOfIndex_basic() {
+        myFixture.configureByText("test.csv", """
+           name;value;status
+           n1;v1;true
+           n2;v2;false;comment
+        """.trimIndent())
+        val file = myFixture.file as ParadoxCsvFile
+
+        run {
+            val columns = ParadoxCsvFileManipulationService.columnsOfIndex(file, 0, includeHeaderColumn = true).map { it.text.trim() }.toList()
+            assertEquals(listOf("name", "n1", "n2"), columns)
+        }
+        run {
+            val columns = ParadoxCsvFileManipulationService.columnsOfIndex(file, 0, includeHeaderColumn = false).map { it.text.trim() }.toList()
+            assertEquals(listOf("n1", "n2"), columns)
+        }
+        run {
+            val columns = ParadoxCsvFileManipulationService.columnsOfIndex(file, 2, includeHeaderColumn = true).map { it.text.trim() }.toList()
+            assertEquals(listOf("status", "true", "false"), columns)
+        }
+        run {
+            val columns = ParadoxCsvFileManipulationService.columnsOfIndex(file, 3, includeHeaderColumn = true).map { it.text.trim() }.toList()
+            assertEquals(listOf("comment"), columns)
+        }
+        run {
+            val columns = ParadoxCsvFileManipulationService.columnsOfIndex(file, 4, includeHeaderColumn = true).map { it.text.trim() }.toList()
+            assertEquals(emptyList<String>(), columns)
+        }
+    }
 }
