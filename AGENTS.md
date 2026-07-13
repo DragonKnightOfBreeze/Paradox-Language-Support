@@ -186,6 +186,10 @@ Package organization:
 - `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
 - `icu.windea.pls.base`: Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
 - `icu.windea.pls.ide`: Global codes to handle IDE platform integration. Usually language-free and domain-free.
+- `icu.windea.pls.cwt` - Infrastructure for CWT file support. Usually semantic-free.
+- `icu.windea.pls.script` - Infrastructure for script file support. Usually semantic-free.
+- `icu.windea.pls.localisation` - Infrastructure for localization file support. Usually semantic-free.
+- `icu.windea.pls.csv` - Infrastructure for CSV file support. Usually semantic-free.
 - `icu.windea.pls.config`: Codes related to config, config expression and config group. Usually not depend on game or mod files. 
 - `icu.windea.pls.lang`: Codes which are domain specific, or related to semantic match and resolution.
   - `icu.windea.pls.lang.match`: Semantic-level matching (mainly based on indices, reference resolution and configs).
@@ -194,12 +198,7 @@ Package organization:
 - `icu.windea.pls.tools`: Codes related to bundled utilities and integrations. Including game launcher, config generator and others.
 - `icu.windea.pls.integrations`: Provides integrations with third-party tools.
 - `icu.windea.pls.extensions`: Provides integrations and extensions to third-party plugins.
-
-Service vs Manager vs Util:
-
-- `Service`: Lower-level, may involve EP-driven analysis/match/resolve logic.
-- `Manager`: Higher-level, convenient domain methods, typically hosts caching.
-- `Util`: Narrow-purpose helpers.
+- `icu.windea.pls.ep` - Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
 
 ### Code guidance
 
@@ -209,8 +208,8 @@ Here are some common code patterns:
 - Get the config group: Use `ChronicleFacade.getConfigGroup(project, gameType)` (or `ChronicleFacade.getConfigGroup(gameType)` for application level).
 - Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
 - Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
-- How to filter and query members in script files (e.g., query down, query up, by path): Use `ParadoxPsiSelectScope` API.
-- How to get script data and definition data via property delegates and model classes: Use `ParadoxScriptData` and `ParadoxDefinitionData` API.
+- How to filter and query configs in config trees (e.g., query down, by path): Use the config select API (see `icu.windea.pls.config.select`).
+- How to filter and query members in script files (e.g., query down, query up, by path): Use the select API (see `icu.windea.pls.lang.select`).
 - How to search definitions (e.g., an event with specific event id): Use `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
 - How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Util`, `...Service`, `...Manager` and so on.
 - How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
