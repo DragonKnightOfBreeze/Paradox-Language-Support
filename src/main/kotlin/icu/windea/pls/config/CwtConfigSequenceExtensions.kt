@@ -6,7 +6,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberContainerConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.util.Tuple2
 
 // region Builders
 
@@ -26,5 +28,16 @@ fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberCon
     val current = if (withSelf) this else this.parentConfig
     return generateSequence(current) { it.parentConfig }
 }
+
+// endregion
+
+// region Builders (expand)
+
+/** @see CwtConfigManipulationService.expandBySubtypeExpression */
+fun CwtMemberConfig<*>.expandBySubtypeExpression(): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
+    return CwtConfigManipulationService.expandBySubtypeExpression(this)
+}
+
+// TODO 3.0.1+
 
 // endregion

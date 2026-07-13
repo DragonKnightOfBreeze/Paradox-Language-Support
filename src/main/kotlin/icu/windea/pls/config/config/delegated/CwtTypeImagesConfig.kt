@@ -5,7 +5,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.expandBySubtypeExpression
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
@@ -63,10 +63,10 @@ private object CwtTypeImagesConfigResolver : CwtConfigResolverScope {
     fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
         val locationConfigGroup = mutableMapOf<String, MutableList<CwtLocationConfig>>()
 
-        // #324
-        CwtConfigManipulationService.flattenBySubtypeExpression(config) action@{ c, e ->
-            if (c !is CwtPropertyConfig) return@action
-            val locationConfig = CwtLocationConfig.resolve(c) ?: return@action
+        val expanded = config.expandBySubtypeExpression() // #324
+        for ((c, e) in expanded) {
+            if (c !is CwtPropertyConfig) continue
+            val locationConfig = CwtLocationConfig.resolve(c) ?: continue
             val key = e.optimized()
             locationConfigGroup.getOrPut(key) { mutableListOf() }.add(locationConfig)
         }

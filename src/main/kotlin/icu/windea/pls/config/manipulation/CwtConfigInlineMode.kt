@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.config.manipulation
 
 /**
  * 规则的内联模式。
