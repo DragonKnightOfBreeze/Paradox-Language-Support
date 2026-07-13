@@ -140,22 +140,22 @@ dependencies {
     // AI integration
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.14.1") {
+    implementation("dev.langchain4j:langchain4j:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.14.1") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.14.1") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-ollama:1.14.1") {
+    implementation("dev.langchain4j:langchain4j-ollama:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
@@ -183,8 +183,8 @@ dependencies {
     // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.8")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.8")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.11")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.11")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.4")
