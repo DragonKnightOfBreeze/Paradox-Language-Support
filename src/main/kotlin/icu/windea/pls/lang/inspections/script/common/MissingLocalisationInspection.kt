@@ -17,7 +17,7 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
@@ -84,7 +84,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
             private fun visitDefinitionElement(element: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(element, locales = locales, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextService.fromDefinition(element, locales = locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }
@@ -92,7 +92,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if (!element.isDataExpression()) return
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, locales = locales, forReference = false, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextService.fromExpression(element, locales = locales, forReference = false, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }
