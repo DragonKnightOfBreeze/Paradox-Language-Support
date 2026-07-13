@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         // Provides the IntelliJ Markdown parser for build-time markdown-to-HTML conversion
-        classpath("org.jetbrains:markdown-jvm:0.7.3")
+        classpath("org.jetbrains:markdown-jvm:0.7.7")
     }
 }
 
