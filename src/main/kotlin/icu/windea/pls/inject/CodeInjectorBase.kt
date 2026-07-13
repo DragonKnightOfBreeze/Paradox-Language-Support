@@ -46,15 +46,14 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         putUserData(CodeInjectorContext.targetClassKey, null)
     }
 
-    @Suppress("UnstableApiUsage")
     private fun isPluginEnabled(pluginId: PluginId): Boolean {
+        @Suppress("UnstableApiUsage")
         return !PluginDetailsService.getInstance().isDisabled(pluginId)
     }
 
     private fun getPluginClassLoader(pluginId: PluginId): ClassLoader {
         // TODO 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262
         //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
-
         val pluginManager = PluginManager.getInstance()
         val function = memberFunction<PluginManager>("findEnabledPlugin")
         val pluginDescriptor = runCatchingCancelable { function(pluginManager, pluginId) }.getOrNull()?.castOrNull<PluginDescriptor>()

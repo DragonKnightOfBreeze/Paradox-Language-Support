@@ -94,7 +94,7 @@ class SpecialUrlServiceImpl : SpecialUrlService {
     }
 
     override fun openUrl(url: String) {
-        // NOTE 2.1.7 since IDEA 2026.1, cannot use `BrowserUtil.open(url)` directly to handle Steam hyperlinks as expected
+        // NOTE 2.1.7 [compatibility] Since IDEA-261, cannot use `BrowserUtil.open(url)` directly to handle Steam hyperlinks as expected
         if (isCustomUrl(url)) return openCustomUrl(url)
 
         BrowserUtil.open(url)
@@ -148,6 +148,8 @@ class SpecialUrlServiceImpl : SpecialUrlService {
         // see: com.intellij.ide.browsers.BrowserLauncherAppless.openWithDefaultBrowserCommand
         // see: com.intellij.openapi.util.SystemInfo.hasXdgOpen (deprecated since IDEA 2026.1)
 
+        // NOTE 3.0.0 [compatibility] `SystemInfo.hasXdgOpen()` is deprecated since IDEA-261
+        //  - Use `PathEnvironmentVariableUtil.isOnPath("xdg-open")` instead
         val command = when {
             SystemInfo.isWindows -> listOf(CommandLineUtil.getWinShellName(), "/c", "start", GeneralCommandLine.inescapableQuote(""))
             SystemInfo.isMac -> listOf(ExecUtil.openCommandPath)
