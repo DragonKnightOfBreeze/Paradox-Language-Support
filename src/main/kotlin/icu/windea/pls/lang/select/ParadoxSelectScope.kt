@@ -12,8 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-@ParadoxPsiSelectDsl
-interface ParadoxPsiSelectScope {
+@ParadoxSelectDsl
+interface ParadoxSelectScope {
     // region Common
 
     fun <T : PsiElement> Sequence<T>.one(): T?
@@ -173,6 +173,6 @@ interface ParadoxPsiSelectScope {
     // endregion
 
     companion object {
-        @JvmStatic val INSTANCE = ParadoxPsiSelectScopeImpl()
+        @JvmStatic val INSTANCE = ParadoxSelectScopeImpl()
     }
 }

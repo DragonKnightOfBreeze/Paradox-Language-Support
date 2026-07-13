@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
+class ParadoxSelectDslTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
