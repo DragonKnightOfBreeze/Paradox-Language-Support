@@ -1,7 +1,5 @@
 <!-- Weary seekers who tread the path, these words are spoken unto you. -->
 
-<br/>
-
 Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, offering an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
