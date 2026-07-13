@@ -10,6 +10,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
+import icu.windea.pls.lang.manipulation.ParadoxScriptFileManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -33,17 +34,17 @@ inline infix fun WalkingContext.Builder.inline(value: Boolean? = true) = apply {
 
 // region Builders
 
-/** @see ParadoxPsiSequenceBuilder.members */
+/** @see ParadoxScriptFileManipulationService.members */
 fun ParadoxScriptMemberContext.members(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptMember> {
-    return ParadoxPsiSequenceBuilder.members(this).context { conditional(conditional) + inline(inline) }
+    return ParadoxScriptFileManipulationService.members(this).context { conditional(conditional) + inline(inline) }
 }
 
-/** @see ParadoxPsiSequenceBuilder.members */
+/** @see ParadoxScriptFileManipulationService.members */
 fun ParadoxScriptMemberContext.properties(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptProperty> {
     return members(conditional, inline).transform { filterIsInstance<ParadoxScriptProperty>() }
 }
 
-/** @see ParadoxPsiSequenceBuilder.members */
+/** @see ParadoxScriptFileManipulationService.members */
 inline fun ParadoxScriptMemberContext.values(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptValue> {
     return members(conditional, inline).transform { filterIsInstance<ParadoxScriptValue>() }
 }

@@ -10,19 +10,6 @@ import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.emptyPointer
 
-// region Config Predicates
-
-/**
- * 判断两个规则对象是否指向同一 [PsiElement]。
- */
-infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
-    if (this == null || other == null) return false
-    // NOTE 2.1.1 reference equals can be used here & empty pointers are never same
-    return pointer === other.pointer && pointer !== emptyPointer<PsiElement>()
-}
-
-// endregion
-
 // region Config Resolve Extensions
 
 /**
@@ -50,6 +37,19 @@ fun <T : CwtConfig<*>> T.resolvedOrNull(): T? {
         this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config
         else -> this
     } as? T
+}
+
+// endregion
+
+// region Config Predicates
+
+/**
+ * 判断两个规则对象是否指向同一 [PsiElement]。
+ */
+infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
+    if (this == null || other == null) return false
+    // NOTE 2.1.1 reference equals can be used here & empty pointers are never same
+    return pointer === other.pointer && pointer !== emptyPointer<PsiElement>()
 }
 
 // endregion

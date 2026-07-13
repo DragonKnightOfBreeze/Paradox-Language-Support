@@ -18,7 +18,7 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationFileManipulationService
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -73,8 +73,8 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
         val editor = e.editor
-        if (editor != null) return ParadoxPsiSequenceBuilder.selectedLocalisations(editor, psiFile)
-        return ParadoxPsiSequenceBuilder.localisations(psiFile)
+        if (editor != null) return ParadoxLocalisationFileManipulationService.selectedLocalisations(editor, psiFile)
+        return ParadoxLocalisationFileManipulationService.localisations(psiFile)
     }
 
     protected open fun beforeInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {

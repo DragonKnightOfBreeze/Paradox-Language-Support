@@ -15,11 +15,11 @@ import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.core.editor
+import icu.windea.pls.core.editor.EditorService
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.lang.manipulation.ParadoxCsvManipulationService
 import kotlinx.coroutines.launch
 
 sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
@@ -123,7 +123,7 @@ class SelectRowAction : ManipulateRowActionBase() {
             if (elementList.isEmpty()) return@launch
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                ParadoxCsvManipulationService.selectElements(editor, elementList)
+                EditorService.selectElements(editor, elementList)
             }
         }
     }

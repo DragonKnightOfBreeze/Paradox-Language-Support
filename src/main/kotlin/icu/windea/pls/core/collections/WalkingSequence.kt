@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 
 /**
- * 带有上下文的序列。
+ * 一种带有上下文的序列，可以根据上下文定制构建逻辑。
  */
 class WalkingSequence<T>(
     private val delegate: Sequence<T> = emptySequence(),

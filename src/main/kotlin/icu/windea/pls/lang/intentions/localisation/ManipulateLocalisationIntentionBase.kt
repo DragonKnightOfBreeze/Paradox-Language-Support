@@ -11,7 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationFileManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -49,7 +49,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     override fun startInWriteAction() = false
 
     protected open fun findElements(editor: Editor, file: ParadoxLocalisationFile): WalkingSequence<ParadoxLocalisationProperty> {
-        return ParadoxPsiSequenceBuilder.selectedLocalisations(editor, file)
+        return ParadoxLocalisationFileManipulationService.selectedLocalisations(editor, file)
     }
 
     protected abstract fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: WalkingSequence<ParadoxLocalisationProperty>)
