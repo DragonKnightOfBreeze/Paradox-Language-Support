@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.resolved
+import icu.windea.pls.config.config.resolved
 import icu.windea.pls.core.icon
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxScopeManager

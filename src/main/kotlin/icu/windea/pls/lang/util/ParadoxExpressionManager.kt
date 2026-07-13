@@ -23,8 +23,8 @@ import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.resolved
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt

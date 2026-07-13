@@ -3,9 +3,18 @@
 package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.WalkingContext
+import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.collections.context
+import icu.windea.pls.core.collections.transform
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.setValue
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.manipulation.ParadoxScriptFileManipulationService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.normalized
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
@@ -23,7 +32,10 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
@@ -37,7 +49,7 @@ import icu.windea.pls.script.psi.parentBlock
 import icu.windea.pls.script.psi.parentProperty
 import java.awt.Color
 
-// region Value Resolve Extensions
+// region PSI Value Resolve Extensions
 
 fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
     val resolved = resolved() ?: return null
@@ -223,6 +235,41 @@ fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
 
 fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Boolean = false): Boolean {
     return this is ParadoxLocalisationConceptName && (!strict || this.textContains(':')) // 简单判断
+}
+
+// endregion
+
+// region Sequence Context Builders
+
+/** 如果包含参数化快，是否需要处理其中的子节点。默认为 `false`。 */
+var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
+
+/** @see WalkingContext.conditional */
+infix fun WalkingContext.Builder.conditional(value: Boolean? = true) = apply { value?.let { context.conditional = it } }
+
+/** 如果包含内联脚本用法，是否需要先进行内联。默认为 `false`。 */
+var WalkingContext.inline: Boolean by registerKey(WalkingContext.Keys) { false }
+
+/** @see WalkingContext.inline */
+infix fun WalkingContext.Builder.inline(value: Boolean? = true) = apply { value?.let { context.inline = it } }
+
+// endregion
+
+// region Sequence Builders
+
+/** @see ParadoxScriptFileManipulationService.members */
+fun ParadoxScriptMemberContext.members(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptMember> {
+    return ParadoxScriptFileManipulationService.members(this).context { conditional(conditional) + inline(inline) }
+}
+
+/** @see ParadoxScriptFileManipulationService.members */
+fun ParadoxScriptMemberContext.properties(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptProperty> {
+    return members(conditional, inline).transform { filterIsInstance<ParadoxScriptProperty>() }
+}
+
+/** @see ParadoxScriptFileManipulationService.members */
+fun ParadoxScriptMemberContext.values(conditional: Boolean? = null, inline: Boolean? = null): WalkingSequence<ParadoxScriptValue> {
+    return members(conditional, inline).transform { filterIsInstance<ParadoxScriptValue>() }
 }
 
 // endregion

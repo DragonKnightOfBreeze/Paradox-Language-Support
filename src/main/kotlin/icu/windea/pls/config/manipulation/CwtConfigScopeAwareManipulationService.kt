@@ -3,7 +3,7 @@ package icu.windea.pls.config.manipulation
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.parents
+import icu.windea.pls.config.config.parents
 
 @Suppress("unused")
 object CwtConfigScopeAwareManipulationService {

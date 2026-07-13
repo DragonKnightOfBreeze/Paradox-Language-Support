@@ -10,9 +10,9 @@ import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.resolved
+import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.resolved
-import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.isNotNullOrEmpty

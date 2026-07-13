@@ -11,10 +11,10 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.config.util.CwtConfigManager
@@ -425,7 +425,7 @@ object CwtConfigManipulationService {
         }
     }
 
-    // TODO 3.0.1+
+    // TODO 3.0.1+ more expansion
 
     // endregion
 }

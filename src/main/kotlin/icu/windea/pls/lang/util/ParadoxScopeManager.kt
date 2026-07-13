@@ -7,10 +7,10 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parents
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.resolved
+import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.resolved
-import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry

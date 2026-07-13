@@ -1,14 +1,13 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.config
+package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.util.Tuple2
 
 // region Config Resolve Extensions
 
@@ -51,5 +50,33 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
     // NOTE 2.1.1 reference equals can be used here & empty pointers are never same
     return pointer === other.pointer && pointer !== emptyPointer<PsiElement>()
 }
+
+// endregion
+
+// region Builders
+
+fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
+    return configs?.orNull()?.asSequence().orEmpty()
+}
+
+fun CwtMemberContainerConfig<*>.properties(): Sequence<CwtPropertyConfig> {
+    return properties?.orNull()?.asSequence().orEmpty()
+}
+
+fun CwtMemberContainerConfig<*>.values(): Sequence<CwtValueConfig> {
+    return values?.orNull()?.asSequence().orEmpty()
+}
+
+fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberConfig<*>> {
+    val current = if (withSelf) this else this.parentConfig
+    return generateSequence(current) { it.parentConfig }
+}
+
+/** @see CwtConfigManipulationService.expandBySubtypeExpression */
+fun CwtMemberConfig<*>.expandBySubtypeExpression(): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
+    return CwtConfigManipulationService.expandBySubtypeExpression(this)
+}
+
+// TODO 3.0.1+ more expansion
 
 // endregion

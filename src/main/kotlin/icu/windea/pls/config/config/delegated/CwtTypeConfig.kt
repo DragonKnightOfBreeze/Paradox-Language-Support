@@ -14,11 +14,11 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
+import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.getAll

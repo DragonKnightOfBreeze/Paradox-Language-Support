@@ -73,6 +73,8 @@ object ParadoxPsiService {
         val cachedArgumentTupleList by registerKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
     }
 
+    // TODO 3.0.1+ [refactor] extract into manipulation services
+
     // region Common Methods
 
     fun getOwnedComments(element: PsiElement): List<PsiComment> {

@@ -2,8 +2,8 @@ package icu.windea.pls.lang.util
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
 import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.script.psi.ParadoxScriptString

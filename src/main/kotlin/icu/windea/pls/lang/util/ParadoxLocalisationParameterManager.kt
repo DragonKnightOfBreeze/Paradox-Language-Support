@@ -10,7 +10,7 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.isSamePointer
+import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted

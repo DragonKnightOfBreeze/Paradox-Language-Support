@@ -10,8 +10,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.processUnionCandidates
-import icu.windea.pls.config.resolved
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
