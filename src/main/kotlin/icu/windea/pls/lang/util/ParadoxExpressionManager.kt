@@ -197,16 +197,16 @@ object ParadoxExpressionManager {
             element is ParadoxScriptBlock -> "" // should not be used
             element is ParadoxScriptInlineMath -> "" // should not be used
             rangeInElement != null -> rangeInElement.substring(element.text)
-            element is ParadoxScriptStringExpressionElement -> element.text.unquote()
-            element is ParadoxCsvColumn -> element.text.unquote()
+            element is ParadoxScriptStringExpressionElement -> element.value // = element.text.unquote()
+            element is ParadoxCsvColumn -> element.value // = element.text.unquote()
             else -> element.text
         }
     }
 
     fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
         return when (element) {
-            is ParadoxScriptBlock -> TextRange.create(0, 1) // "{"
-            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // "@[" or "@\["
+            is ParadoxScriptBlock -> TextRange.create(0, 1) // `{`
+            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // `@[` or `@\[`
             is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.textLength).unquote(element.text)
             is ParadoxCsvColumn -> TextRange.create(0, element.textLength).unquote(element.text)
             else -> TextRange.create(0, element.textLength)
