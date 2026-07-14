@@ -20,6 +20,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
@@ -667,10 +668,34 @@ fun <T> runSmartReadAction(
 ): T {
     if (application.isReadAccessAllowed) {
         return task.call()
+    } else if (application.isDispatchThread) {
+        // #363 [RWA] cannot run non-blocking read actions in EDT
+        return runReadAction { task.call() }
     }
 
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
+    return action.executeSynchronously()
+}
+
+fun <T> runSmartReadAction(
+    project: Project,
+    parentDisposable: Disposable? = null,
+    inSmartMode: Boolean = false,
+    withDocumentsCommitted: Boolean = false,
+    task: Callable<T>,
+): T {
+    if (application.isReadAccessAllowed && !(inSmartMode && DumbService.isDumb(project) || withDocumentsCommitted)) {
+        return task.call()
+    } else if (application.isDispatchThread && !(inSmartMode && DumbService.isDumb(project) || withDocumentsCommitted)) {
+        // #363 [RWA] cannot run non-blocking read actions on EDT (and it should be impossible to run in smart mode safely in EDT, so skip and expect throwing)
+        return runReadAction { task.call() }
+    }
+
+    var action = ReadAction.nonBlocking(task)
+    if (parentDisposable != null) action = action.expireWith(parentDisposable)
+    if (inSmartMode) action = action.inSmartMode(project)
+    if (withDocumentsCommitted) action = action.withDocumentsCommitted(project)
     return action.executeSynchronously()
 }
 
@@ -682,28 +707,9 @@ fun <T> runSmartReadActionAsync(
     if (application.isReadAccessAllowed) {
         return resolvedCancellablePromise(task.call())
     }
-
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
     return action.submit(executor)
-}
-
-fun <T> runSmartReadAction(
-    project: Project,
-    parentDisposable: Disposable? = null,
-    inSmartMode: Boolean = false,
-    withDocumentsCommitted: Boolean = false,
-    task: Callable<T>,
-): T {
-    if (application.isReadAccessAllowed && (!inSmartMode || !DumbService.isDumb(project)) && !withDocumentsCommitted) {
-        return task.call()
-    }
-
-    var action = ReadAction.nonBlocking(task)
-    if (parentDisposable != null) action = action.expireWith(parentDisposable)
-    if (inSmartMode) action = action.inSmartMode(project)
-    if (withDocumentsCommitted) action = action.withDocumentsCommitted(project)
-    return action.executeSynchronously()
 }
 
 fun <T> runSmartReadActionAsync(

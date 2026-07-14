@@ -3,9 +3,6 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -14,8 +11,6 @@ import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.core.truncate
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
@@ -31,16 +26,6 @@ object ParadoxExpressionInspectionService {
         val gameType = selectGameType(holder.file)
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, gameType)
         return ParadoxExpressionInspectionContext(tool, holder, configGroup)
-    }
-
-    fun getLocation(element: ParadoxExpressionElement): PsiElement {
-        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
-            // special handle for empty columns
-            val isFirst = ParadoxCsvPsiService.getColumnIndex(element) == 0
-            val result = element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR }
-            return result ?: element
-        }
-        return element
     }
 
     fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {

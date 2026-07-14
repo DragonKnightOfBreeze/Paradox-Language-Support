@@ -1,7 +1,9 @@
 package icu.windea.pls.csv.psi
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -44,12 +46,12 @@ object ParadoxCsvPsiService {
         return element.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
     }
 
-    fun isEmptyColumn(column: ParadoxCsvColumn): Boolean {
-        return column.firstChild == null
-    }
-
     fun isHeaderColumn(column: ParadoxCsvColumn): Boolean {
         return column.parent is ParadoxCsvHeader
+    }
+
+    fun isEmptyColumn(column: ParadoxCsvColumn): Boolean {
+        return column.firstChild == null
     }
 
     fun getColumnIndex(column: ParadoxCsvColumn): Int {
@@ -62,6 +64,13 @@ object ParadoxCsvPsiService {
         val header = column.parent?.castOrNull<ParadoxCsvRow>()?.parent?.findChild<ParadoxCsvHeader>() ?: return null
         val index = getColumnIndex(column)
         return getColumn(header, index)
+    }
+
+    fun getLocationForEmptyColumn(column: ParadoxCsvColumn): PsiElement {
+        // special handle for empty columns
+        val isFirst = getColumnIndex(column) == 0
+        val result = column.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR }
+        return result ?: column
     }
 
     fun isLastRow(element: ParadoxCsvColumnContainer): Boolean {
