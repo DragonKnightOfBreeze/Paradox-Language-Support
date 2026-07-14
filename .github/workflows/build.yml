@@ -16,7 +16,8 @@ on:
   push:
     branches:
       - master
-      - "dev/**"
+      - "dev/**" # in-developing branches
+      - "releases/**" # compatibility branches (e.g., IDE versions)
     paths-ignore:
       - ".idea/**"
       - "agents/**"
