@@ -20,7 +20,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
@@ -670,7 +670,7 @@ fun <T> runSmartReadAction(
         return task.call()
     } else if (application.isDispatchThread) {
         // #363 [RWA] cannot run non-blocking read actions in EDT
-        return runReadAction { task.call() }
+        return runReadActionBlocking { task.call() }
     }
 
     var action = ReadAction.nonBlocking(task)
@@ -689,7 +689,7 @@ fun <T> runSmartReadAction(
         return task.call()
     } else if (application.isDispatchThread && !(inSmartMode && DumbService.isDumb(project) || withDocumentsCommitted)) {
         // #363 [RWA] cannot run non-blocking read actions on EDT (and it should be impossible to run in smart mode safely in EDT, so skip and expect throwing)
-        return runReadAction { task.call() }
+        return runReadActionBlocking { task.call() }
     }
 
     var action = ReadAction.nonBlocking(task)

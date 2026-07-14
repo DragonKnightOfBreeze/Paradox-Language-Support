@@ -4,6 +4,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys.*
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.editor.EditorKind
 import com.intellij.openapi.editor.toolbar.floating.AbstractFloatingToolbarProvider
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarComponent
 import com.intellij.openapi.editor.toolbar.floating.isInsideMainEditor
@@ -22,8 +23,8 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider("Pls.
 
     // NOTE 3.0.0 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262
     //  - Use `isApplicableAsync` instead
-    override fun isApplicable(dataContext: DataContext): Boolean {
-        return isInsideMainEditor(dataContext)
+    override suspend fun isApplicableAsync(dataContext: DataContext): Boolean {
+        return isInsideMainEditor(dataContext) && dataContext.getData(EDITOR)?.editorKind == EditorKind.MAIN_EDITOR
     }
 
     private fun updateToolbarComponent(project: Project, component: FloatingToolbarComponent) {
