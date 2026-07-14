@@ -3,7 +3,6 @@ package icu.windea.pls.lang.tools
 import com.intellij.execution.CommandLineUtil
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.execution.configurations.PathEnvironmentVariableUtil
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.util.ExecUtil
 import com.intellij.ide.BrowserUtil
@@ -153,7 +152,7 @@ class SpecialUrlServiceImpl : SpecialUrlService {
         val command = when {
             SystemInfo.isWindows -> listOf(CommandLineUtil.getWinShellName(), "/c", "start", GeneralCommandLine.inescapableQuote(""))
             SystemInfo.isMac -> listOf(ExecUtil.openCommandPath)
-            PathEnvironmentVariableUtil.isOnPath("xdg-open") -> listOf("xdg-open")
+            SystemInfo.hasXdgOpen() -> listOf("xdg-open")
             else -> null
         }
         if (command == null) {

@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - master
-      - "dev/**"
+      - "dev/**" # in-developing branches
     paths:
       - "docs/**"
   pull_request:
     branches:
       - master
-      - "dev/**"
+      - "dev/**" # in-developing branches
     paths:
       - "docs/**"
 

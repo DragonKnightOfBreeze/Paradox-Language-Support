@@ -1,7 +1,6 @@
 package icu.windea.pls.config.manipulation
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.CwtConfigInlineMode
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -12,10 +11,10 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.config.util.CwtConfigManager
@@ -23,10 +22,13 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
@@ -94,7 +96,7 @@ object CwtConfigManipulationService {
             run r@{
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
                 val subtypes = context.definitionSubtypes ?: return@r
-                val subtypeExpression = getSubtypeExpression(config) ?: return@r
+                val subtypeExpression = extractSubtypeExpression(config) ?: return@r
                 if (config.configs.isNullOrEmpty()) return@f // skip
                 val matched = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)
                 if (!matched) return@f // skip
@@ -129,35 +131,17 @@ object CwtConfigManipulationService {
         return parentConfig.pointer.takeIf { it !== emptyPointer<PsiElement>() }
     }
 
-    fun getSubtypeExpression(config: CwtMemberConfig<*>): String? {
+    fun extractSubtypeExpression(config: CwtMemberConfig<*>): String? {
         if (config !is CwtPropertyConfig) return null
         return config.key.removeSurroundingOrNull("subtype[", "]")
     }
 
-    @Optimized
-    fun flattenBySubtypeExpression(rootConfig: CwtMemberConfig<*>, action: (config: CwtMemberConfig<*>, expression: String) -> Unit) {
-        flattenBySubtypeExpressionRecursively(rootConfig, "", action)
-    }
-
-    private fun flattenBySubtypeExpressionRecursively(rootConfig: CwtMemberConfig<*>, currentExpression: String, action: (CwtMemberConfig<*>, String) -> Unit) {
-        rootConfig.configs?.forEachFast f@{ config ->
-            val nextExpression = getSubtypeExpression(config)
-            if (nextExpression != null) {
-                if (config.configs.isNullOrEmpty()) return@f // skip
-                val mergedExpression = mergeSubtypeExpression(currentExpression, nextExpression)
-                flattenBySubtypeExpressionRecursively(config, mergedExpression, action)
-            } else {
-                action(config, currentExpression)
-            }
-        }
-    }
-
-    private fun mergeSubtypeExpression(expression1: String, expression2: String): String {
+    fun mergeSubtypeExpression(expression: String, otherExpression: String): String {
         return when {
-            expression1.isEmpty() -> expression2
-            expression2.isEmpty() -> expression1
-            expression1 == expression2 -> expression1
-            else -> "$expression1&$expression2"
+            expression.isEmpty() -> otherExpression
+            otherExpression.isEmpty() -> expression
+            expression == otherExpression -> expression
+            else -> "$expression&$otherExpression"
         }
     }
 
@@ -418,7 +402,30 @@ object CwtConfigManipulationService {
 
     // region Expand Methods
 
-    // TODO 3.0.1+
+    /**
+     * 递归展开 [config] 的子规则中的所有形如 `subtype[{expression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。
+     * 将合并后的当前的子类型表达式保留作为结果序列中元组的第二个元素。
+     */
+    fun expandBySubtypeExpression(config: CwtMemberConfig<*>): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
+        if (config.configs.isNullOrEmpty()) return emptySequence()
+        return sequence { expandBySubtypeExpressionRecursively(config, "") }
+    }
+
+    private suspend fun SequenceScope<Tuple2<CwtMemberConfig<*>, String>>.expandBySubtypeExpressionRecursively(config: CwtMemberConfig<*>, currentExpression: String) {
+        config.configs?.orNull()?.forEachFast { childConfig ->
+            val nextExpression = extractSubtypeExpression(childConfig)
+            if (nextExpression != null) {
+                if (childConfig.configs?.orNull() != null) {
+                    val mergedExpression = mergeSubtypeExpression(currentExpression, nextExpression)
+                    expandBySubtypeExpressionRecursively(childConfig, mergedExpression)
+                }
+            } else {
+                yield(tupleOf(childConfig, currentExpression))
+            }
+        }
+    }
+
+    // TODO 3.0.1+ more expansion
 
     // endregion
 }

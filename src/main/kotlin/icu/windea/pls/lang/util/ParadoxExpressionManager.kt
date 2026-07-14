@@ -23,8 +23,8 @@ import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.resolved
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
@@ -197,16 +197,16 @@ object ParadoxExpressionManager {
             element is ParadoxScriptBlock -> "" // should not be used
             element is ParadoxScriptInlineMath -> "" // should not be used
             rangeInElement != null -> rangeInElement.substring(element.text)
-            element is ParadoxScriptStringExpressionElement -> element.text.unquote()
-            element is ParadoxCsvColumn -> element.text.unquote()
+            element is ParadoxScriptStringExpressionElement -> element.value // = element.text.unquote()
+            element is ParadoxCsvColumn -> element.value // = element.text.unquote()
             else -> element.text
         }
     }
 
     fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
         return when (element) {
-            is ParadoxScriptBlock -> TextRange.create(0, 1) // "{"
-            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // "@[" or "@\["
+            is ParadoxScriptBlock -> TextRange.create(0, 1) // `{`
+            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // `@[` or `@\[`
             is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.textLength).unquote(element.text)
             is ParadoxCsvColumn -> TextRange.create(0, element.textLength).unquote(element.text)
             else -> TextRange.create(0, element.textLength)

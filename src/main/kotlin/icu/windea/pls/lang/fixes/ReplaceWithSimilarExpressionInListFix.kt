@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.fixes
 
 import com.intellij.codeInsight.intention.PriorityAction
-import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
@@ -28,6 +27,7 @@ class ReplaceWithSimilarExpressionInListFix(
     override fun getPriority() = PriorityAction.Priority.HIGH
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+        if (editor == null) return
         if (startElement !is ParadoxExpressionElement) return
         val items = replacements.distinct()
         if (items.isEmpty()) return
@@ -35,7 +35,7 @@ class ReplaceWithSimilarExpressionInListFix(
             doReplace(project, startElement, items.first())
             return
         }
-        if (editor == null) return
+
         val step = object : BaseListPopupStep<SimilarityMatchResult>(ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
             override fun getTextFor(value: SimilarityMatchResult) = value.render()
 
@@ -60,10 +60,6 @@ class ReplaceWithSimilarExpressionInListFix(
         }
     }
 
-    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-
     // false here
     override fun availableInBatchMode() = false
-
-    override fun startInWriteAction() = false
 }

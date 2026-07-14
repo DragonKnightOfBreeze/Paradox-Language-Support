@@ -11,7 +11,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProcessor
-import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor

@@ -1,22 +1,9 @@
-package icu.windea.pls.lang.manipulation
+package icu.windea.pls.core.editor
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import icu.windea.pls.core.children
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 
-object ParadoxCsvManipulationService {
-    fun findAllColumnsOfIndex(file: PsiFile, index: Int): Sequence<ParadoxCsvColumn> {
-        return file.children().filterIsInstance<ParadoxCsvColumnContainer>().mapNotNull f@{ rowElement ->
-            val column = rowElement.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
-            if (column == null || ParadoxCsvPsiService.getColumnIndex(column) != index) return@f null
-            column
-        }
-    }
-
+object EditorService {
     fun selectElement(editor: Editor, element: PsiElement) {
         val caretModel = editor.caretModel
         val range = element.textRange

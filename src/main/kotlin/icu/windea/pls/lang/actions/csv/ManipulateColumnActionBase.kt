@@ -9,7 +9,7 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.core.psiFile
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.manipulation.ParadoxCsvFileManipulationService
 
 /**
  * 用于处理列的一类动作。
@@ -39,7 +39,7 @@ abstract class ManipulateColumnActionBase : AnAction() {
 
     protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): WalkingSequence<ParadoxCsvColumn> {
         val editor = e.editor ?: return WalkingSequence()
-        return ParadoxPsiSequenceBuilder.selectedColumns(editor, file)
+        return ParadoxCsvFileManipulationService.selectedColumns(editor, file)
     }
 
     protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>): Boolean {

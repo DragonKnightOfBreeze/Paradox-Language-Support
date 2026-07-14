@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
@@ -25,7 +26,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_parentPointers() {
-        myFixture.configureByFile("features/config/property_config_cases.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -127,7 +128,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_nullContainerConfigs_returnsNull_and_parentUnchanged() {
-        myFixture.configureByFile("features/config/property_config_cases.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -158,7 +159,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_nullContainerConfigs_returnsNull_and_parentUnchanged() {
-        myFixture.configureByFile("features/config/property_config_cases.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -191,7 +192,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_nullContainerConfigs_withDifferentParent_noSideEffect() {
-        myFixture.configureByFile("features/config/property_config_cases.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -214,7 +215,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_nullContainerConfigs_withDifferentParent_noSideEffect() {
-        myFixture.configureByFile("features/config/property_config_cases.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -234,8 +235,8 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testFlattenBySubtypeExpression() {
-        myFixture.configureByFile("features/config/manipulation/flatten_by_subtype_expression.test.cwt")
+    fun testExpandBySubtypeExpression() {
+        myFixture.configureByFile("features/config/manipulation/expand_by_subtype_expression.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -243,11 +244,16 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
         val containerProp = root.findChild<CwtProperty> { it.name == "k1" }!!
         val container = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
 
-        val expressions = mutableListOf<String>()
-        CwtConfigManipulationService.flattenBySubtypeExpression(container) { _, expression ->
-            expressions.add(expression)
-        }
-        val expect = listOf("", "t2", "t2&t4", "t2&t4&t5", "t2&t4&t6")
-        assertOrderedEquals(expressions, expect)
+        val result = CwtConfigManipulationService.expandBySubtypeExpression(container)
+            .map { (c, t) -> tupleOf(c.toString(), t) }
+            .toList()
+        val expect = listOf(
+            tupleOf("(property) k2 = v", ""),
+            tupleOf("(property) k3 = v", "t2"),
+            tupleOf("(property) k4 = v", "t2&t4"),
+            tupleOf("(property) k5 = v", "t2&t4&t5"),
+            tupleOf("(property) k6 = v", "t2&t4&t6"),
+        )
+        assertEquals(expect, result)
     }
 }

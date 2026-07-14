@@ -18,7 +18,7 @@ import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
@@ -68,7 +68,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return object : ParadoxLocalisationVisitor() {
             override fun visitProperty(element: ParadoxLocalisationProperty) {
                 ProgressManager.checkCanceled()
-                val context = ParadoxLocalisationCodeInsightContextBuilder.fromLocalisation(element, locales, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextService.fromLocalisation(element, locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
             }

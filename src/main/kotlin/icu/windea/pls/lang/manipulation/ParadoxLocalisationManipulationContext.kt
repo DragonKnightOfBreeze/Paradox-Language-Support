@@ -20,7 +20,7 @@ data class ParadoxLocalisationManipulationContext(
     companion object {
         @JvmStatic
         fun create(element: ParadoxLocalisationProperty): ParadoxLocalisationManipulationContext {
-            return ParadoxLocalisationManipulationContextBuilder.build(element)
+            return ParadoxLocalisationManipulationContextBuilder.create(element)
         }
     }
 }
@@ -28,7 +28,7 @@ data class ParadoxLocalisationManipulationContext(
 // region Implementations
 
 private object ParadoxLocalisationManipulationContextBuilder {
-    fun build(element: ParadoxLocalisationProperty): ParadoxLocalisationManipulationContext {
+    fun create(element: ParadoxLocalisationProperty): ParadoxLocalisationManipulationContext {
         val name = element.name
         val elementText = element.text
         val i1 = elementText.indexOf('"')

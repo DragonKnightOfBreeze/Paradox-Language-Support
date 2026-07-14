@@ -53,7 +53,7 @@ data class CwtConfigCompletionContext(
     companion object {
         @JvmStatic
         fun create(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
-            return CwtConfigCompletionContextBuilder.build(globalContext)
+            return CwtConfigCompletionContextBuilder.create(globalContext)
         }
     }
 }
@@ -61,7 +61,7 @@ data class CwtConfigCompletionContext(
 // region Implementations
 
 private object CwtConfigCompletionContextBuilder {
-    fun build(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
+    fun create(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
         val contextElement = globalContext.contextElement
 
         val configGroup = CwtConfigManager.getContainingConfigGroup(globalContext.file) ?: return null

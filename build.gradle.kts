@@ -10,13 +10,16 @@ buildscript {
     }
     dependencies {
         // Provides the IntelliJ Markdown parser for build-time markdown-to-HTML conversion
-        classpath("org.jetbrains:markdown-jvm:0.7.3")
+        classpath("org.jetbrains:markdown-jvm:0.7.7")
     }
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.3.20" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.18.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    // NOTE 3.0.0 [compatibility] DO NOT update `org.jetbrains.intellij.platform` to 2.18.0+ - may cause `Indexing timeout` during tests
+    // https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/2188
+
+    id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
+    id("org.jetbrains.intellij.platform") version "2.17.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.3" // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.kotlinx.kover") version "0.9.8" // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
@@ -55,6 +58,7 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
+            untilBuild = providers.gradleProperty("pluginUntilBuild")
         }
     }
 
@@ -136,22 +140,22 @@ dependencies {
     // AI integration
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.14.1") {
+    implementation("dev.langchain4j:langchain4j:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.14.1") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.14.1") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-ollama:1.14.1") {
+    implementation("dev.langchain4j:langchain4j-ollama:1.17.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
@@ -171,7 +175,7 @@ dependencies {
 
     // Compile only
 
-    compileOnly("com.google.errorprone:error_prone_annotations:2.49.0")
+    compileOnly("com.google.errorprone:error_prone_annotations:2.50.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.18")
     compileOnly("org.jetbrains:annotations:26.1.0") // https://github.com/JetBrains/java-annotations
@@ -179,8 +183,8 @@ dependencies {
     // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.8")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.8")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.11")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.11")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.4")
@@ -216,9 +220,9 @@ sourceSets {
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(21)
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_25
+        jvmTarget = JvmTarget.JVM_21
         freeCompilerArgs.addAll(
             listOf(
                 "-Xjvm-default=all",

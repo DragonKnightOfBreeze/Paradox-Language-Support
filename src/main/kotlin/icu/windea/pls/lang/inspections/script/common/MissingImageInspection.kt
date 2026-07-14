@@ -13,7 +13,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext
-import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextBuilder
+import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -58,7 +58,7 @@ class MissingImageInspection : LocalInspectionTool() {
 
             private fun visitDefinitionElement(definition: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
-                val context = ParadoxImageCodeInsightContextBuilder.fromDefinition(definition, fromInspection = true)
+                val context = ParadoxImageCodeInsightContextService.fromDefinition(definition, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, definition, context)
             }
@@ -66,7 +66,7 @@ class MissingImageInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if (!element.isDataExpression()) return
-                val context = ParadoxImageCodeInsightContextBuilder.fromExpression(element, fromInspection = true)
+                val context = ParadoxImageCodeInsightContextService.fromExpression(element, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)
             }

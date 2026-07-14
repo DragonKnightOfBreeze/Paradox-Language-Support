@@ -33,7 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDirectValue
 
-class ParadoxPsiSelectScopeImpl : ParadoxPsiSelectScope {
+class ParadoxSelectScopeImpl : ParadoxSelectScope {
     // region Common
 
     override fun <T : PsiElement> Sequence<T>.one(): T? = firstOrNull()

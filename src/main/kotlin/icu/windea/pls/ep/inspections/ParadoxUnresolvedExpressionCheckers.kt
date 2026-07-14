@@ -2,12 +2,15 @@ package icu.windea.pls.ep.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.inspections.InspectionService
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
@@ -26,12 +29,20 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChecker {
     override fun check(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
-        val location = ParadoxExpressionInspectionService.getLocation(element)
+        val location = getLocation(element)
         val description = ParadoxExpressionInspectionService.getDefaultDescriptionForUnresolvedExpression(element, expectedConfigs, context)
         val highlightType = getHighlightType(element, expectedConfigs, context)
         val fixes = getFixes(element, expectedConfigs)
         context.holder.registerProblem(location, description, highlightType, *fixes)
         return false
+    }
+
+    private fun getLocation(element: ParadoxExpressionElement): PsiElement {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
+            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
+        }
+
+        return element
     }
 
     private fun getHighlightType(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): ProblemHighlightType {
@@ -61,6 +72,10 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
     }
 
     private fun getFixes(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
+            return LocalQuickFix.EMPTY_ARRAY // in case
+        }
+
         val result = mutableListOf<LocalQuickFix>()
         result += ParadoxExpressionInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
         result += ParadoxExpressionInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)

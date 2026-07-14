@@ -6,8 +6,8 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized

@@ -133,7 +133,7 @@ object ChronicleAnalysisManager {
                     val psiFile = file.toPsiFile(project) ?: continue
                     // NOTE 3.0.0 [compatibility] `DaemonCodeAnalyzer.restart(PsiFile)` is deprecated since IDEA-253
                     //  - Use `DaemonCodeAnalyzer.restart(PsiFile, Object)` instead
-                    DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "ChronicleAnalysisManager.refreshFiles")
+                    DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
                 }
             }
         }

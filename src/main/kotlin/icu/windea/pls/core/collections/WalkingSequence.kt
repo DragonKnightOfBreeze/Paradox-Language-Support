@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package icu.windea.pls.core.collections
 
 import com.intellij.openapi.util.UserDataHolderBase
@@ -10,7 +8,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 
 /**
- * 带有上下文的序列。
+ * 一种带有上下文的序列，可以根据上下文定制构建逻辑。
  */
 class WalkingSequence<T>(
     private val delegate: Sequence<T> = emptySequence(),
@@ -27,6 +25,7 @@ class WalkingContext : UserDataHolderBase() {
 
     @JvmInline
     value class Builder(val context: WalkingContext) {
+        @Suppress("NOTHING_TO_INLINE")
         inline operator fun <T> plus(value: T): T = value
     }
 }
@@ -50,4 +49,4 @@ inline fun <T> WalkingSequence<T>.context(block: WalkingContext.Builder.() -> Un
 var WalkingContext.forward: Boolean by registerKey(WalkingContext.Keys) { true }
 
 /** @see WalkingContext.forward */
-inline infix fun WalkingContext.Builder.forward(value: Boolean? = true) = apply { value?.let { context.forward = it } }
+infix fun WalkingContext.Builder.forward(value: Boolean? = true) = apply { value?.let { context.forward = it } }
