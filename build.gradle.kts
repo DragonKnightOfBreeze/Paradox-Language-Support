@@ -18,7 +18,7 @@ plugins {
     // NOTE 3.0.0 [compatibility] DO NOT update `org.jetbrains.intellij.platform` to 2.18.0+ - may cause `Indexing timeout` during tests
     // https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/2188
 
-    id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
+    id("org.jetbrains.kotlin.jvm") version "2.3.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.intellij.platform") version "2.17.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.3" // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.kotlinx.kover") version "0.9.8" // https://github.com/Kotlin/kotlinx-kover
@@ -58,7 +58,6 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
-            untilBuild = providers.gradleProperty("pluginUntilBuild")
         }
     }
 
@@ -220,9 +219,9 @@ sourceSets {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_21
+        jvmTarget = JvmTarget.JVM_25
         freeCompilerArgs.addAll(
             listOf(
                 "-Xjvm-default=all",
