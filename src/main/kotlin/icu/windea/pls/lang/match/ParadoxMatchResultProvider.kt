@@ -22,7 +22,7 @@ import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.RegistedKeyWithFactory
+import icu.windea.pls.core.util.KeyWithFactory
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -52,7 +52,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
 private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult>
-private typealias MatchResultNestedCacheKey = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
+private typealias MatchResultNestedCacheKey = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
