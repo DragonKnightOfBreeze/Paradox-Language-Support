@@ -10,6 +10,7 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -129,21 +130,24 @@ object ParadoxMemberService {
     /**
      * 得到 [element] 的类型键。
      *
-     * 如果是文件定义，则使用去除扩展名后的文件名；如果是属性定义，则直接使用其名字。
+     * 说明：
+     * - 如果定义来自脚本文件 ，则使用去除扩展名后的文件名。
+     * - 如果定义来自脚本属性，则使用属性名（需要检查是否合法）。
      */
     fun getTypeKey(element: ParadoxDefinitionElement, elementName: String = element.name): String? {
         if (elementName.isEmpty()) return null // 不期望
-        if (element is ParadoxScriptFile) return elementName.substringBeforeLast('.') // 如果是文件定义，则使用去除扩展名后的文件名
-        return isTypeKeyForProperty(elementName, element) // 如果是属性定义，需要检查是否合法
-    }
-
-    /**
-     * 检查 [name] 是否是（脚本属性的）合法的类型键（会从 [context] 选取游戏类型并检查）。
-     */
-    fun isTypeKeyForProperty(name: String, context: Any?): String? {
-        // if (!name.isIdentifier(".-")) return null // #369 can also be any string literals
-        if (ParadoxInlineScriptManager.isMatched(name, context)) return null // skip if is inline script usage
-        if (name.isParameterized()) return null // skip if is parameterized
-        return name
+        return when (element) {
+            is ParadoxScriptFile -> {
+                elementName.substringBeforeLast('.') // trim file extension
+            }
+            is ParadoxScriptProperty -> {
+                // if (!elementName.isIdentifier(".-")) return null // #369 can also be any (valid) string literals
+                if (ParadoxInlineScriptManager.isMatched(elementName, element)) return null // skip if is inline script usage
+                if (ParadoxDefinitionInjectionManager.isMatched(elementName, element)) return null // skip if is definition injection usage
+                if (elementName.isParameterized()) return null // skip if is parameterized
+                elementName
+            }
+            else -> elementName
+        }
     }
 }
