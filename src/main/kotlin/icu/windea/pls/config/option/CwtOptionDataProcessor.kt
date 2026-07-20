@@ -12,7 +12,7 @@ import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
@@ -223,7 +223,7 @@ object CwtOptionDataProcessor {
 
     private fun resolveTypeKeyFilter(config: CwtOptionConfig): ReversibleValue<Set<@CaseInsensitive String>>? {
         val values = config.getOptionValueOrValues() ?: return null
-        val value = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
+        val value = CaseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val operator = config.separatorType == CwtSeparatorType.Equal
         val r = ReversibleValue(value.optimized(), operator)
         return r

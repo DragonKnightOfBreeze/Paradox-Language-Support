@@ -327,11 +327,11 @@ class CollectionExtensionsTest {
 
     private class Holder {
         val backing = mutableMapOf<String, Int>()
-        var count by (backing includeDefault 1)
+        var count by (backing withDefault 1)
     }
 
     @Test
-    fun includeDefault_delegate_inserts_default_and_updates() {
+    fun withDefault_delegate_inserts_default_and_updates() {
         val h = Holder()
         // default inserted at delegate binding time
         assertEquals(1, h.backing["count"])

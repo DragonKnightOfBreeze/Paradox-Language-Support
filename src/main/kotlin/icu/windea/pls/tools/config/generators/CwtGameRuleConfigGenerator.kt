@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -72,7 +72,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
     }
 
     private fun parseConfigInfo(configs: List<CwtExtendedGameRuleConfig>): GameRuleConfigInfo {
-        val names = caseInsensitiveStringSet()
+        val names = CaseInsensitiveStringSet()
         val templates = mutableSetOf<CwtTemplateExpression>()
         configs.forEach {
             val name = it.name

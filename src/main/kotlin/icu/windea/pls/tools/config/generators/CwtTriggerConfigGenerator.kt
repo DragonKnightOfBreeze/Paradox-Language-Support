@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
  * @see CwtAliasConfig
  */
 class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenerator {
-    val ignoredNames = caseInsensitiveStringSet()
+    val ignoredNames = CaseInsensitiveStringSet()
 
     init {
         configureDefaults()

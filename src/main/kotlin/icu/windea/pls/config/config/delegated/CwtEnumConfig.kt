@@ -11,8 +11,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -78,8 +78,8 @@ private object CwtEnumConfigResolver : CwtConfigResolverScope {
             logger.debug { "Resolved enum config with empty values (name: $name).".withLocationPrefix(config) }
             return CwtEnumConfigImpl(config, name, emptySet(), emptyMap())
         }
-        val values = caseInsensitiveStringSet() // ignore case
-        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // ignore case
+        val values = CaseInsensitiveStringSet()
+        val valueConfigMap = CaseInsensitiveStringKeyMap<CwtValueConfig>()
         for (valueElement in valueConfigs) {
             values.add(valueElement.value)
             valueConfigMap.put(valueElement.value, valueElement)

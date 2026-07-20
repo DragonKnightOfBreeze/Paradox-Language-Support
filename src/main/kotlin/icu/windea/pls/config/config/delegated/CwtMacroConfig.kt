@@ -13,8 +13,9 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
+import icu.windea.pls.core.collections.associateByNotNullTo
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -101,16 +102,16 @@ private object CwtMacroConfigResolver : CwtConfigResolverScope {
                 val propConfigs = config.properties.orEmpty()
                 val propGroup = propConfigs.groupBy { it.key }
                 val modeConfigs = propGroup.getOne("modes")?.let { prop ->
-                    prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
+                    prop.values?.associateByNotNullTo(CaseInsensitiveStringKeyMap()) { it.stringValue }
                 }?.optimized().orEmpty()
                 val lenientModes = propGroup.getOne("lenient_modes")?.let { prop ->
-                    prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+                    prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
                 }?.optimized().orEmpty()
                 val replaceModes = propGroup.getOne("replace_modes")?.let { prop ->
-                    prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+                    prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
                 }?.optimized().orEmpty()
                 val createModes = propGroup.getOne("create_modes")?.let { prop ->
-                    prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+                    prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
                 }?.optimized().orEmpty()
                 logger.debug { "Resolved macro config for definition injections (name: $name).".withLocationPrefix(config) }
                 CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, lenientModes, replaceModes, createModes)

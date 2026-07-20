@@ -2,7 +2,7 @@
 
 package icu.windea.pls.core.util.properties
 
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.MutableStringSet
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import kotlin.reflect.KMutableProperty0
@@ -26,13 +26,13 @@ fun <T, V> KMutableProperty0<T>.observeMutable(transform: (T) -> V, revertedTran
  */
 @JvmName("fromCommandDelimitedString")
 fun KMutableProperty0<String>.fromCommandDelimitedString(ignoreCase: Boolean = false): ObservableMutableProperty<String, Set<String>> {
-    return observeMutable({ it.toCommaDelimitedStringSet(stringSet(ignoreCase)) }, { it.toCommaDelimitedString() })
+    return observeMutable({ it.toCommaDelimitedStringSet(MutableStringSet(ignoreCase)) }, { it.toCommaDelimitedString() })
 }
 
 /** 与上类似，但源属性可为空；为空时读取为 `emptySet()`。 */
 @JvmName("fromCommandDelimitedStringNullable")
 fun KMutableProperty0<String?>.fromCommandDelimitedString(ignoreCase: Boolean = false): ObservableMutableProperty<String?, Set<String>> {
-    return observeMutable({ it?.toCommaDelimitedStringSet(stringSet(ignoreCase)).orEmpty() }, { it.toCommaDelimitedString() })
+    return observeMutable({ it?.toCommaDelimitedStringSet(MutableStringSet(ignoreCase)).orEmpty() }, { it.toCommaDelimitedString() })
 }
 
 /**
@@ -43,7 +43,5 @@ fun KMutableProperty0<String?>.fromCommandDelimitedString(ignoreCase: Boolean = 
  * - [ignoreCase] 为 `true` 时使用不区分大小写的 `MutableSet`。
  */
 fun KMutableProperty0<Set<String>>.toCommandDelimitedString(ignoreCase: Boolean = false): ObservableMutableProperty<Set<String>, String> {
-    return observeMutable({ it.toCommaDelimitedString() }, { it.toCommaDelimitedStringSet(stringSet(ignoreCase)) })
+    return observeMutable({ it.toCommaDelimitedString() }, { it.toCommaDelimitedStringSet(MutableStringSet(ignoreCase)) })
 }
-
-private fun stringSet(ignoreCase: Boolean) = if (ignoreCase) caseInsensitiveStringSet() else mutableSetOf()

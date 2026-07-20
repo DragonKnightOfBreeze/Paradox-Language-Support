@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.optimized
@@ -131,7 +131,7 @@ object CwtConfigKeyManager {
     private fun doGetInBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
         val childConfigs = config.configs
         if (childConfigs.isNullOrEmpty()) return emptySet()
-        val keys = caseInsensitiveStringSet()
+        val keys = CaseInsensitiveStringSet()
         childConfigs.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
         if (keys.isEmpty()) return emptySet()
         when (config) {

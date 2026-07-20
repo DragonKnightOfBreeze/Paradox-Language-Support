@@ -35,6 +35,30 @@ inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toL
 /** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。 */
 inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
 
+inline fun <T, K> Iterable<T>.associateByNotNull(keySelector: (T) -> K?): Map<K, T> {
+    return associateByNotNullTo(LinkedHashMap(), keySelector)
+}
+
+inline fun <T, K, V> Iterable<T>.associateByNotNull(keySelector: (T) -> K, valueTransform: (T) -> V): Map<K, V> {
+    return associateByNotNullTo(LinkedHashMap(), keySelector, valueTransform)
+}
+
+inline fun <T, K, M : MutableMap<in K, in T>> Iterable<T>.associateByNotNullTo(destination: M, keySelector: (T) -> K?): M {
+    for (element in this) {
+        val key = keySelector(element) ?: continue
+        destination.put(key, element)
+    }
+    return destination
+}
+
+inline fun <T, K, V, M : MutableMap<in K, in V>> Iterable<T>.associateByNotNullTo(destination: M, keySelector: (T) -> K?, valueTransform: (T) -> V): M {
+    for (element in this) {
+        val key = keySelector(element) ?: continue
+        destination.put(key, valueTransform(element))
+    }
+    return destination
+}
+
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为列表。 */
 inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
     return filterIsInstanceTo(ArrayList<R>(), predicate)
@@ -42,7 +66,7 @@ inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): 
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤到指定的 [destination]。 */
 inline fun <reified R, C : MutableCollection<in R>> Iterable<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
-    for (element in this) if (element is R && predicate(element)) destination.add(element)
+    forEach { e -> if (e is R && predicate(e)) destination.add(e) }
     return destination
 }
 
@@ -60,8 +84,8 @@ inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { 
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     if (this is Collection && this.isEmpty()) return true
     for (e in this) {
-        val result = processor(e)
-        if (!result) return false
+        val r = processor(e)
+        if (!r) return false
     }
     return true
 }
@@ -70,8 +94,8 @@ inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
 inline fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
     if (this.isEmpty()) return true
     for (entry in this) {
-        val result = processor(entry)
-        if (!result) return false
+        val r = processor(entry)
+        if (!r) return false
     }
     return true
 }
@@ -81,8 +105,8 @@ inline fun <K, V> Map<K, V>.processValue(key: K?, processor: (V) -> Boolean): Bo
     if (this.isEmpty()) return true
     if (key != null) return this[key]?.let { processor(it) } ?: true
     for (value in values) {
-        val result = processor(value)
-        if (!result) return false
+        val r = processor(value)
+        if (!r) return false
     }
     return true
 }
@@ -145,21 +169,6 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
     return result
 }
 
-// fun <T> List<T>.toMutableIfNotEmptyInActual(): List<T> {
-//    // make List<T> properties mutable in actual if not empty (to hack them if necessary)
-//    if (this.isEmpty()) return this
-//    if (this is ArrayList || this is LinkedList || this is CopyOnWriteArrayList) return this
-//    try {
-//        this as MutableList
-//        this.removeAt(-1)
-//    } catch (e: UnsupportedOperationException) {
-//        return this.toMutableList()
-//    } catch (e: Exception) {
-//        return this
-//    }
-//    return this
-// }
-
 /**
  * 如果当前列表存在指定的作为前缀的子列表 [prefix]（可以为空），则去除并返回。否则，返回 `null`。
  * 如果指定了通配符 [wildcard]，则当前缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
@@ -198,8 +207,8 @@ inline operator fun <V> MapWithDefaultValueDelegate<V>.provideDelegate(thisRef: 
     return map
 }
 
-/** 为 [MutableMap] 提供默认值委托构建器，语法：`myMap includeDefault defaultValue`。 */
-inline infix fun <V> MutableMap<String, V>.includeDefault(defaultValue: V) = MapWithDefaultValueDelegate(this, defaultValue)
+/** 为 [MutableMap] 提供默认值委托构建器。 */
+inline infix fun <V> MutableMap<String, V>.withDefault(defaultValue: V) = MapWithDefaultValueDelegate(this, defaultValue)
 
 /** 得到指定键 [key] 对应的类型为 [List] 的值中的最后一个元素，如果不存在则返回 `null`。 */
 fun <K, V> Map<K, List<V>>.getOne(key: K): V? = get(key)?.lastOrNull()

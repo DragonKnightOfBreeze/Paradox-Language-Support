@@ -7,7 +7,6 @@ import com.intellij.openapi.util.Key.*
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
-import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KProperty
 
@@ -66,20 +65,9 @@ class KeyWithFactory<T, in THIS>(val name: String, val factory: THIS.() -> T) : 
 // Key Providers
 
 sealed class KeyProvider<T>(val registry: KeyRegistry) {
-    private val callbacks: MutableSet<KeyProviderCallback<T>> = ObjectArraySet()
-
-    fun addCallback(callback: KeyProviderCallback<T>) {
-        callbacks += callback
-    }
-
     @Suppress("UNCHECKED_CAST")
     protected fun <K : Key<T>> register(name: String, block: () -> K): K {
-        return registry.keys.computeIfAbsent(name) {
-            val key = block()
-            callbacks.forEach { it.call(key, name) }
-            callbacks.clear()
-            key
-        } as K
+        return registry.keys.computeIfAbsent(name) { block() } as K
     }
 }
 
