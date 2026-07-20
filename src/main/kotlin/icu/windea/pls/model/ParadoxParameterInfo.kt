@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
@@ -25,13 +26,14 @@ data class ParadoxParameterInfo(
     val contextName: String,
     val contextIcon: Icon?,
     val contextKey: String,
+    val readWriteAccess: ReadWriteAccess,
     val gameType: ParadoxGameType,
     val project: Project,
 ) : UserDataHolderBase() {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
 
     companion object {
-        val EMPTY by lazy { ParadoxParameterInfo("", "", null, "", ParadoxGameType.Core, getDefaultProject()) }
+        val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, ParadoxGameType.Core, getDefaultProject())
     }
 }
 

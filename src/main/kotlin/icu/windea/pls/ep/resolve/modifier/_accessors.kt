@@ -5,12 +5,11 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxModifierInfo
 
-val ParadoxModifierSupport.Keys.support by registerKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys).withSync()
-val ParadoxModifierSupport.Keys.modifierConfig by registerKey<CwtModifierConfig>(ParadoxModifierSupport.Keys).withSync()
+val ParadoxModifierSupport.Keys.support by registerKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.modifierConfig by registerKey<CwtModifierConfig>(ParadoxModifierSupport.Keys)
 
 var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

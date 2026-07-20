@@ -138,7 +138,7 @@ class KeyAccessorsTest {
         val key = registerNamedKey(registry, "k", "d").getKey()
 
         val obj = Obj()
-        Assert.assertEquals("d", obj.getOrPutUserData(key as KeyNormal<String>))
+        Assert.assertEquals("d", obj.getOrPutUserData(key))
         Assert.assertNull(obj.getUserData(key))
     }
 
@@ -207,7 +207,7 @@ class KeyAccessorsTest {
         val key = registerNamedKey(registry, "k", "d").getKey()
 
         val context = ProcessingContext()
-        Assert.assertEquals("d", context.getOrPut(key as KeyNormal<String>))
+        Assert.assertEquals("d", context.getOrPut(key))
         Assert.assertNull(context.get(key))
     }
 
@@ -227,9 +227,9 @@ class KeyAccessorsTest {
 
     @Test
     fun testPropertyDelegates_commonUsages_comprehensive() {
-        class RegistrySynced : KeyRegistrySynced() {
+        class RegistrySynced : KeyRegistry() {
             val nullableKey by registerKey<String?>(this)
-            val defaultKey by registerKey(this, "d").withSync()
+            val defaultKey by registerKey(this, "d")
             val factoryKey by registerKey<Int, UserDataHolderBase>(this) { 42 }
             val namedKey by registerNamedKey<String?>(this, "KeyAccessorsTest.namedKey")
             val namedDefaultKey by registerNamedKey(this, "KeyAccessorsTest.namedDefaultKey", "nd")

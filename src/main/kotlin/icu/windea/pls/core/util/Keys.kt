@@ -30,7 +30,7 @@ fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boole
 // Key Registries
 
 abstract class KeyRegistry {
-    val id = javaClass.name.replace("\$Keys", "")
+    val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
     val keys: MutableMap<String, Key<*>> = ConcurrentHashMap()
 
     fun getKeyName(shortName: String): String {
@@ -52,15 +52,6 @@ abstract class KeyRegistry {
     fun copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
         keys.values.forEach { key -> key.copy(source, target, ifPresent) }
-    }
-}
-
-abstract class KeyRegistrySynced : KeyRegistry() {
-    val syncedKeys: MutableMap<String, Key<*>> = ConcurrentHashMap()
-
-    fun sync(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
-        // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
-        syncedKeys.values.forEach { key -> key.copy(source, target, ifPresent) }
     }
 }
 
@@ -134,12 +125,6 @@ class KeyProviderNamedWithFactory<T, THIS>(registry: KeyRegistry, val name: Stri
         return register(name) { KeyWithFactory(name, factory) }
     }
 }
-
-// KeyProvider Extensions
-
-fun <P : KeyProvider<T>, T> P.withCallback(callback: KeyProviderCallback<T>) = apply { addCallback(callback) }
-
-fun <P : KeyProvider<T>, T> P.withSync() = withCallback { key, name -> if (registry is KeyRegistrySynced) registry.syncedKeys[name] = key }
 
 // Register Extensions
 

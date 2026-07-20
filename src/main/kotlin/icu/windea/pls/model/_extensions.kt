@@ -3,7 +3,6 @@
 package icu.windea.pls.model
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
@@ -21,26 +20,26 @@ fun ParadoxGameType?.orDefault(): ParadoxGameType = this ?: ParadoxGameType.getD
 
 fun ParadoxModifierInfo.toPsiElement(parent: PsiElement): ParadoxModifierLightElement {
     return ParadoxModifierLightElement(parent, name, gameType, project)
-        .also { ParadoxModifierSupport.Keys.sync(this, it) }
+        .also { ParadoxModifierSupport.Keys.copy(this, it) }
 }
 
 fun ParadoxModifierLightElement.toInfo(): ParadoxModifierInfo {
     return ParadoxModifierInfo(name, gameType, project)
-        .also { ParadoxModifierSupport.Keys.sync(this, it) }
+        .also { ParadoxModifierSupport.Keys.copy(this, it) }
 }
 
 // endregion
 
 // region Parameters
 
-fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccess): ParadoxParameterLightElement {
+fun ParadoxParameterInfo.toPsiElement(parent: PsiElement): ParadoxParameterLightElement {
     return ParadoxParameterLightElement(parent, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
-        .also { ParadoxParameterSupport.Keys.sync(this, it) }
+        .also { ParadoxParameterSupport.Keys.copy(this, it) }
 }
 
 fun ParadoxParameterLightElement.toInfo(): ParadoxParameterInfo {
-    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project)
-        .also { ParadoxParameterSupport.Keys.sync(this, it) }
+    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+        .also { ParadoxParameterSupport.Keys.copy(this, it) }
 }
 
 // endregion

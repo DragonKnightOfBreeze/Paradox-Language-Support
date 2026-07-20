@@ -8,7 +8,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.text.DocumentationBuilder
-import icu.windea.pls.core.util.KeyRegistrySynced
+import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -39,7 +39,6 @@ interface ParadoxParameterSupport {
      * @param element 开始查找的位置。
      * @param from 从哪里向上查找。
      * @param extraArgs 对于每个实现需要的额外参数可能是不同的。
-     * @see icu.windea.pls.lang.codeInsight.parameterInfo.ParadoxParameterInfoHandler
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
 
@@ -53,14 +52,12 @@ interface ParadoxParameterSupport {
 
     /**
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
-     *
      * @return 此扩展点是否适用。
      */
     fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
 
     /**
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
-     *
      * @return 此扩展点是否适用。
      */
     fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
@@ -72,7 +69,7 @@ interface ParadoxParameterSupport {
      */
     fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = false
 
-    object Keys : KeyRegistrySynced()
+    object Keys : KeyRegistry()
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
