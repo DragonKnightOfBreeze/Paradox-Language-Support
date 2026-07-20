@@ -5,7 +5,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
@@ -25,7 +24,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     private fun prepare(): Triple<CwtFile, CwtConfigGroup, String> {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val path = "common/test/property_config_cases.cwt"
         return Triple(file, group, path)
     }
@@ -97,7 +96,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     fun testBoundaries_numberFormats() {
         myFixture.configureByFile("features/config/property_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         // empty block property -> configs should be non-null and empty

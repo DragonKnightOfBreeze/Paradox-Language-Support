@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Test
@@ -21,7 +21,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
     fun testFindConfigsByPathExpression_basic_properties() {
         myFixture.configureByFile("features/config/resolver_find_configs_by_path_expression.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         val filePath = "common/test/resolver_find_configs_by_path_expression.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
@@ -72,7 +72,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
     fun testFindConfigsByPathExpression_basic_values() {
         myFixture.configureByFile("features/config/resolver_find_configs_by_path_expression.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         val filePath = "common/test/resolver_find_configs_by_path_expression.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
@@ -110,7 +110,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
     fun testFindConfigsByPathExpression_boundaries() {
         myFixture.configureByFile("features/config/resolver_find_configs_by_path_expression.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         val filePath = "common/test/resolver_find_configs_by_path_expression.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
@@ -172,7 +172,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
     @Test
     fun testFindConfigsByPathExpression_invalid_or_not_found() {
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         run {
             val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "invalid")

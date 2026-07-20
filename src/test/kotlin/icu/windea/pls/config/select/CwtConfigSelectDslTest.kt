@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.members
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -254,7 +254,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     private fun resolveFileConfig(path: String): CwtFileConfig {
         myFixture.configureByFile(path)
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val fileConfig = CwtFileConfig.resolve(file, configGroup, file.name)
         return fileConfig
     }

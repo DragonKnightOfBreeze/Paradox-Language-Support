@@ -12,7 +12,6 @@ import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
@@ -32,53 +31,53 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
  */
 class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     override suspend fun process(configGroup: CwtConfigGroup) {
-        val initializer = configGroup.initializer
+        checkCanceled()
+        computeLocales(configGroup)
 
         checkCanceled()
-        computeLocales(initializer)
+        addModifiersFromTypes(configGroup)
 
         checkCanceled()
-        addModifiersFromTypes(initializer)
+        computeModifiers(configGroup)
 
         checkCanceled()
-        computeModifiers(initializer)
+        computeSwappedTypesAndAddMissingDeclarations(configGroup)
 
         checkCanceled()
-        computeSwappedTypesAndAddMissingDeclarations(initializer)
+        addMissingLocalisationLinksFromLinks(configGroup)
 
         checkCanceled()
-        addMissingLocalisationLinksFromLinks(initializer)
+        bindCategoryConfigMapForModifierConfigs(configGroup)
 
         checkCanceled()
-        bindCategoryConfigMapForModifierConfigs(initializer)
+        computeAliasKeysGroups(configGroup)
 
         checkCanceled()
-        computeAliasKeysGroups(initializer)
+        computeRelatedLocalisationPatterns(configGroup)
 
         checkCanceled()
-        computeRelatedLocalisationPatterns(initializer)
+        computeLinksModel(configGroup, configGroup.initializer.linksModel, configGroup.initializer.links.values)
 
         checkCanceled()
-        computeLinksModel(initializer, initializer.linksModel, initializer.links.values)
+        computeLinksModel(configGroup, configGroup.initializer.localisationLinksModel, configGroup.initializer.localisationLinks.values)
 
         checkCanceled()
-        computeLinksModel(initializer, initializer.localisationLinksModel, initializer.localisationLinks.values)
+        computeMacrosModel(configGroup)
 
         checkCanceled()
-        computeMacrosModel(initializer)
-
-        checkCanceled()
-        computeDefinitionTypeModel(initializer)
+        computeTypesModel(configGroup)
     }
 
-    private fun computeLocales(initializer: CwtConfigGroupInitializer) {
+    private fun computeLocales(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         for (localeConfig in initializer.locales.values) {
             initializer.globalLocales += localeConfig
             if (localeConfig.supports) initializer.supportedLocales += localeConfig
         }
     }
 
-    private fun addModifiersFromTypes(initializer: CwtConfigGroupInitializer) {
+    private fun addModifiersFromTypes(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         // compute `type2ModifiersMap`
         for ((name, modifierConfig) in initializer.modifiers) {
             for (snippetExpression in modifierConfig.template.snippetExpressions) {
@@ -113,7 +112,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeModifiers(initializer: CwtConfigGroupInitializer) {
+    private fun computeModifiers(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         initializer.modifiers.values
             .filter { it.template.expressionString.isEmpty() }
             .associateByTo(initializer.predefinedModifiers) { it.name }
@@ -123,7 +123,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             .associateByTo(initializer.generatedModifiers) { it.name }
     }
 
-    private suspend fun computeSwappedTypesAndAddMissingDeclarations(initializer: CwtConfigGroupInitializer) {
+    private suspend fun computeSwappedTypesAndAddMissingDeclarations(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         for (typeConfig in initializer.types.values) {
             if (typeConfig.baseType.isNullOrEmpty()) continue
             val typeName = typeConfig.name
@@ -143,7 +144,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun addMissingLocalisationLinksFromLinks(initializer: CwtConfigGroupInitializer) {
+    private fun addMissingLocalisationLinksFromLinks(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         val localisationLinksStatic = initializer.localisationLinks.values.filter { it.dataSources.isEmpty() }
         if (localisationLinksStatic.isNotEmpty()) return
         val linksStatic = initializer.links.values.filter { it.dataSources.isEmpty() }
@@ -152,7 +154,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun bindCategoryConfigMapForModifierConfigs(initializer: CwtConfigGroupInitializer) {
+    private fun bindCategoryConfigMapForModifierConfigs(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         for (modifier in initializer.modifiers.values) {
             for (category in modifier.categories) {
                 val categoryConfig = initializer.modifierCategories[category] ?: continue
@@ -161,7 +164,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeAliasKeysGroups(initializer: CwtConfigGroupInitializer) {
+    private fun computeAliasKeysGroups(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         for ((k, v) in initializer.aliasGroups) {
             val keysConst = caseInsensitiveStringKeyMap<String>()
             val keysNoConst = ObjectLinkedOpenHashSet<String>()
@@ -176,7 +180,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 initializer.aliasKeysGroupConst[k] = keysConst
             }
             if (keysNoConst.isNotEmpty()) {
-                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { initializer })
+                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroup })
                 val fastSet = ObjectLinkedOpenHashSet<String>()
                 fastSet.addAll(sorted)
                 initializer.aliasKeysGroupNoConst[k] = fastSet
@@ -184,7 +188,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeRelatedLocalisationPatterns(initializer: CwtConfigGroupInitializer) {
+    private fun computeRelatedLocalisationPatterns(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         with(initializer.relatedLocalisationPatterns) {
             val r = mutableSetOf<String>()
             initializer.types.values.forEach { c ->
@@ -203,7 +208,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeLinksModel(initializer: CwtConfigGroupInitializer, linksModel: CwtLinksModelBase, links: Collection<CwtLinkConfig>) {
+    private fun computeLinksModel(configGroup: CwtConfigGroup, linksModel: CwtLinksModelBase, links: Collection<CwtLinkConfig>) {
         with(linksModel) {
             val staticLinks = links.filter { it.isStatic }
             staticLinks.forEach { c ->
@@ -214,7 +219,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                     forValueStatic += c
                 }
             }
-            val dynamicLinksSorted = links.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { initializer })
+            val dynamicLinksSorted = links.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroup })
             dynamicLinksSorted.forEach { c ->
                 if (c.type.forScope()) {
                     if (c.prefix == null) {
@@ -250,7 +255,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeMacrosModel(initializer: CwtConfigGroupInitializer) {
+    private fun computeMacrosModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         with(initializer.macrosModel) {
             initializer.macros.forEach { c ->
                 when (c) {
@@ -261,7 +267,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeDefinitionTypeModel(initializer: CwtConfigGroupInitializer) {
+    private fun computeTypesModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         with(initializer.typesModel) {
             initializer.types.values.forEach { c ->
                 if (c.baseType.isNotNullOrEmpty()) {
