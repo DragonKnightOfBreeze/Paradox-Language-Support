@@ -222,9 +222,10 @@ Field Explanation (for type configs):
 - `path_extension`: Restricts the file extension (automatically normalized during resolving, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
 - `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
 - `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
-- `type_per_file`: When set to `yes`, indicates "one type instance per file" (the definition corresponds to the entire script file rather than a property within it).
-- `name_field`: Reads the display name from the property key specified within the definition body. When present, the type key only accepts values explicitly listed in `## type_key_filter`, or is unrestricted.
-- `name_from_file`: When set to `yes`, derives the definition name from the filename.
+- `base_name`: The base type name. If present, it indicates inheriting part of the semantics of another type.
+- `name_field`: The name field key. Used to resolve the definition name. If it is an empty string, it forces anonymity; if it is `-`, the definition name is resolved from the attribute value; otherwise, the definition name is resolved from child property value of corresponding name (ignore case).
+- `name_from_file`: When set to `yes`, it indicates that the definition name is resolved from the file name (trimming the file extension).
+- `type_per_file`: When set to `yes`, it indicates that one file corresponds to one type instance (aka the corresponding definition is declared directly at the file level).
 - `unique`: When set to `yes`, enables duplicate name conflict checking.
 - `severity`: Reporting level for duplicate name conflicts (e.g. `warning`, `error`).
 - `skip_root_key`: Allows skipping several top-level keys before continuing to match the type key. The value is a curly-brace set, supporting multiple groups (case-insensitive, supports wildcards `any`/`*`/`?`). If `skip_root_key` is non-empty but the file has no root keys, matching fails; if empty but the file has root keys, matching also fails.
@@ -256,7 +257,7 @@ Subtypes are determined through content matching. Subtypes are checked one by on
 - `## type_key_regex` (option): Filters by type key regex (option comment, case-insensitive).
 - `## starts_with` (option): Filters by type key prefix (option comment, case-sensitive).
 - `## push_scope` (option): Scope type pushed when matched (option comment).
-- `## display_name` (option): Display name for the subtype (option comment).
+- `## display_name` (option / unused): Display name for the subtype (option comment).
 - `## only_if_not` (option): Mutually exclusive with specified subtypes — only continues checking if none of the specified subtypes have matched.
 - `## group` (option): Subtype group name (option comment). Subtypes within the same group are mutually exclusive (at most one matches).
 
