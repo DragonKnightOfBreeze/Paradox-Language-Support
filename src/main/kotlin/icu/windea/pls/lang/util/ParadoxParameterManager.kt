@@ -210,7 +210,7 @@ object ParadoxParameterManager {
 
     fun completeArguments(context: ParadoxCompletionContext, result: CompletionResultSet, element: PsiElement) {
         ProgressManager.checkCanceled()
-        if (context.globalContext.leftQuoted) return // 输入参数不允许用引号括起
+        if (context.leftQuoted) return // 输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
         val completionOffset = context.offset

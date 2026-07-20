@@ -2,11 +2,10 @@
 
 ## Unreleased
 
-- [x] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
-
 ## 3.0.1
 
 - [x] 定义名应允许为任意字符串字面量（而非仅限合法的标识符） / Definition names should be allowed to be any string literals (not just valid identifiers) ([#369](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/369))
+- [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.0 - 2026-07-13
