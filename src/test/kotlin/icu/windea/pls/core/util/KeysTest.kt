@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util
 
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
 import org.junit.Assert.*
 import org.junit.Test
@@ -94,9 +95,9 @@ class KeysTest {
     @Test
     fun testKeyProviderCallback_calledOnceAndCleared() {
         val registry = object : KeyRegistry() {}
-        val callbackKeys = mutableListOf<RegistedKey<String>>()
+        val callbackKeys = mutableListOf<Key<String>>()
 
-        val provider = registerKey<String>(registry).withCallback { callbackKeys.add(it) }
+        val provider = registerKey<String>(registry).withCallback { k, _ -> callbackKeys.add(k) }
 
         val k1 = provider.getKey("a")
         val k1Again = provider.getKey("a")
@@ -111,7 +112,7 @@ class KeysTest {
 
     @Test
     fun testWithSync_registerAndSyncOnlySelectedKeys() {
-        val registry = object : KeyRegistryWithSync() {}
+        val registry = object : KeyRegistrySynced() {}
 
         val providerToSync = registerKey<String>(registry).withSync()
         val providerNormal = registerKey<String>(registry)
@@ -119,8 +120,8 @@ class KeysTest {
         val syncKey = providerToSync.getKey("sync")
         val normalKey = providerNormal.getKey("normal")
 
-        assertTrue(registry.keysToSync.containsKey(syncKey.name))
-        assertFalse(registry.keysToSync.containsKey(normalKey.name))
+        assertTrue(registry.syncedKeys.containsKey(syncKey.name))
+        assertFalse(registry.syncedKeys.containsKey(normalKey.name))
 
         val from = Obj()
         val to = Obj()
@@ -175,7 +176,7 @@ class KeysTest {
 
     @Test
     fun testPropertyDelegates_commonUsages_comprehensive() {
-        class Registry : KeyRegistryWithSync() {
+        class RegistrySynced : KeyRegistrySynced() {
             val nullableKey by registerKey<String?>(this)
             val defaultKey by registerKey(this, "d1").withSync()
             val factoryKey by registerKey<String, Obj>(this) { "f1" }
@@ -184,7 +185,7 @@ class KeysTest {
             val namedFactoryKey by registerNamedKey<String, Obj>(this, "KeysTest.namedFactoryKey") { "f2" }
         }
 
-        val registry = Registry()
+        val registry = RegistrySynced()
 
         val nullableKey = registry.nullableKey
         val defaultKey = registry.defaultKey
@@ -213,12 +214,12 @@ class KeysTest {
         assertTrue(registry.keys.containsKey(defaultKey.name))
         assertTrue(registry.keys.containsKey(namedDefaultKey.name))
 
-        assertTrue(registry.keysToSync.containsKey(defaultKey.name))
-        assertTrue(registry.keysToSync.containsKey(namedDefaultKey.name))
-        assertFalse(registry.keysToSync.containsKey(nullableKey.name))
-        assertFalse(registry.keysToSync.containsKey(factoryKey.name))
-        assertFalse(registry.keysToSync.containsKey(namedKey.name))
-        assertFalse(registry.keysToSync.containsKey(namedFactoryKey.name))
+        assertTrue(registry.syncedKeys.containsKey(defaultKey.name))
+        assertTrue(registry.syncedKeys.containsKey(namedDefaultKey.name))
+        assertFalse(registry.syncedKeys.containsKey(nullableKey.name))
+        assertFalse(registry.syncedKeys.containsKey(factoryKey.name))
+        assertFalse(registry.syncedKeys.containsKey(namedKey.name))
+        assertFalse(registry.syncedKeys.containsKey(namedFactoryKey.name))
     }
 
     @Test

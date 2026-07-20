@@ -33,8 +33,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.KeyNormal
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.RegistedKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -473,7 +473,7 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun getReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
+    private fun getReferencesCacheKey(): KeyNormal<CachedValue<Array<out PsiReference>>> {
         val isDumb = ParadoxMatchService.isDumb()
         return if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
     }
@@ -525,7 +525,7 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
+    private fun getExpressionReferencesCacheKey(): KeyNormal<CachedValue<Array<out PsiReference>>> {
         val isDumb = ParadoxMatchService.isDumb()
         return if (isDumb) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
     }

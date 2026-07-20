@@ -40,14 +40,14 @@ class KeyAccessorsTest {
         Assert.assertEquals(1, count)
 
         Assert.assertEquals(null, obj.getUserData(k2))
-        Assert.assertEquals(null, obj.getOrPutUserData<String?>(k2) { count++; null })
+        Assert.assertEquals(null, obj.getOrPutUserData(k2) { count++; null })
         Assert.assertEquals(2, count)
         Assert.assertEquals(null, obj.getOrPutUserData<String?>(k2) { count++; "value" })
         Assert.assertEquals(2, count)
     }
 
     @Test
-    fun testGetOrPutUserData_registedKey_withoutFactory_returnsNullAndDoesNotStore() {
+    fun testGetOrPutUserData_KeyNormal_returnsNullAndDoesNotStore() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey<String?>(registry, "k").getKey()
 
@@ -57,7 +57,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testGetOrPutUserData_registedKeyWithFactory_valueCached() {
+    fun testGetOrPutUserData_KeyWithFactory_valueCached() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey<String, Obj>(registry, "k") { "v" }.getKey()
 
@@ -68,7 +68,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testGetOrPutUserData_registedKeyWithFactory_nullValueCachedWithEmptyObject() {
+    fun testGetOrPutUserData_KeyWithFactory_nullValueCachedWithEmptyObject() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey<String?, Obj>(registry, "k") { null }.getKey()
 
@@ -80,7 +80,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testRegistedKey_propertyDelegateReadWriteOnUserDataHolder() {
+    fun testKeyNormal_propertyDelegateReadWriteOnUserDataHolder() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey<String?>(registry, "k").getKey()
 
@@ -100,7 +100,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testRegistedKeyWithFactory_propertyDelegateReadOnUserDataHolder() {
+    fun testKeyWithFactory_propertyDelegateReadOnUserDataHolder() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey<String, UserDataHolderBase>(registry, "k") { "v" }.getKey()
 
@@ -115,7 +115,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testGetOrPutUserData_registedKeyWithDefault_returnsDefaultAndDoesNotStore() {
+    fun testGetOrPutUserData_KeyWithDefault_returnsDefaultAndDoesNotStore() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey(registry, "k", "d").getKey()
 
@@ -133,17 +133,17 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testGetOrPutUserData_registedKeyWithDefault_asRegistedKeyOverload() {
+    fun testGetOrPutUserData_KeyWithDefault_asKeyOverload() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey(registry, "k", "d").getKey()
 
         val obj = Obj()
-        Assert.assertEquals("d", obj.getOrPutUserData(key as RegistedKey<String>))
+        Assert.assertEquals("d", obj.getOrPutUserData(key as KeyNormal<String>))
         Assert.assertNull(obj.getUserData(key))
     }
 
     @Test
-    fun testRegistedKeyWithDefault_propertyDelegateOnUserDataHolder() {
+    fun testKeyWithDefault_propertyDelegateOnUserDataHolder() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey(registry, "k", "d").getKey()
 
@@ -164,7 +164,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testProcessingContext_getOrPut_registedKeyAndFactoryAndNullCaching() {
+    fun testProcessingContext_getOrPut_KeyAndFactoryAndNullCaching() {
         val registry = object : KeyRegistry() {}
         val key1 = registerNamedKey<String?>(registry, "k1").getKey()
         val key2 = registerNamedKey<String, ProcessingContext>(registry, "k2") { "v" }.getKey()
@@ -184,7 +184,7 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testProcessingContext_getOrPut_registedKeyWithDefault_returnsDefaultAndDoesNotStore() {
+    fun testProcessingContext_getOrPut_KeyWithDefault_returnsDefaultAndDoesNotStore() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey(registry, "k", "d").getKey()
 
@@ -202,17 +202,17 @@ class KeyAccessorsTest {
     }
 
     @Test
-    fun testProcessingContext_getOrPut_registedKeyWithDefault_asRegistedKeyOverload() {
+    fun testProcessingContext_getOrPutKeyWithDefault_asKeyOverload() {
         val registry = object : KeyRegistry() {}
         val key = registerNamedKey(registry, "k", "d").getKey()
 
         val context = ProcessingContext()
-        Assert.assertEquals("d", context.getOrPut(key as RegistedKey<String>))
+        Assert.assertEquals("d", context.getOrPut(key as KeyNormal<String>))
         Assert.assertNull(context.get(key))
     }
 
     @Test
-    fun testRegistedKeyWithDefault_propertyDelegateOnProcessingContext() {
+    fun testKeyWithDefault_propertyDelegateOnProcessingContext() {
         val context = ProcessingContext()
         Assert.assertEquals("d", context.defaultValue)
         Assert.assertNull(context.get(Keys.defaultKey))
@@ -227,7 +227,7 @@ class KeyAccessorsTest {
 
     @Test
     fun testPropertyDelegates_commonUsages_comprehensive() {
-        class Registry : KeyRegistryWithSync() {
+        class RegistrySynced : KeyRegistrySynced() {
             val nullableKey by registerKey<String?>(this)
             val defaultKey by registerKey(this, "d").withSync()
             val factoryKey by registerKey<Int, UserDataHolderBase>(this) { 42 }
@@ -236,7 +236,7 @@ class KeyAccessorsTest {
             val namedFactoryKey by registerNamedKey<String, UserDataHolderBase>(this, "KeyAccessorsTest.namedFactoryKey") { "nf" }
         }
 
-        val registry = Registry()
+        val registry = RegistrySynced()
 
         class Holder : UserDataHolderBase() {
             var a: String? by registry.nullableKey
