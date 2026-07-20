@@ -65,7 +65,7 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyScriptedVariableLocalizedNameIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.CopyScriptedVariablePresentableNameIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
@@ -75,7 +75,7 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyDefinitionLocalizedNameIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.CopyDefinitionPresentableNameIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
@@ -173,7 +173,7 @@
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.CopyScriptedVariableLocalizedNameIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyScriptedVariablePresentableNameIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
@@ -183,7 +183,7 @@
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.CopyDefinitionLocalizedNameIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyDefinitionPresentableNameIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>

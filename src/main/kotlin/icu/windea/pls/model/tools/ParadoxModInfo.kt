@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxModSource
  *
  * @property modDirectory 模组根目录。
  * @property enabled 是否启用。
- * @property name 显示名称。如果为空，需要基于 [modDirectory] 进一步获取。
+ * @property name 展示名字。如果为空，需要基于 [modDirectory] 进一步获取。
  * @property remoteId 远端 ID（Steam/Paradox 等平台上的 ID）。如果为空，需要基于 [modDirectory] 进一步获取。
  * @property source 模组来源（本地、Steam、Paradox Launcher 等）。如果为空，需要基于 [modDirectory] 进一步获取。
  * @property version 模组版本。如果为空，需要基于 [modDirectory] 进一步获取。

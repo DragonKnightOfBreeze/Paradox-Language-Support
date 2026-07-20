@@ -284,11 +284,11 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBundle.message(
                 .bindSelected(settings::completeOnlyScopeIsMatched)
             contextHelp(ChronicleBundle.message("settings.completion.completeOnlyScopeIsMatched.tip"))
         }
-        // completeByLocalizedName
+        // completeByPresentableName
         row {
-            checkBox(ChronicleBundle.message("settings.completion.completeByLocalizedName"))
-                .bindSelected(settings::completeByLocalizedName)
-            contextHelp(ChronicleBundle.message("settings.completion.completeByLocalizedName.tip"))
+            checkBox(ChronicleBundle.message("settings.completion.completeByPresentableName"))
+                .bindSelected(settings::completeByPresentableName)
+            contextHelp(ChronicleBundle.message("settings.completion.completeByPresentableName.tip"))
         }
         // completeByExtendedConfigs
         row {
@@ -440,10 +440,10 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBundle.message(
     private fun Panel.configureGroupForHierarchy() {
         val settings = ChronicleSettings.getInstance().state.hierarchy
 
-        // showLocalizedName
+        // showPresentableName
         row {
-            checkBox(ChronicleBundle.message("settings.hierarchy.showLocalizedName"))
-                .bindSelected(settings::showLocalizedName)
+            checkBox(ChronicleBundle.message("settings.hierarchy.showPresentableName"))
+                .bindSelected(settings::showPresentableName)
         }
         // showLocationInfo
         row {

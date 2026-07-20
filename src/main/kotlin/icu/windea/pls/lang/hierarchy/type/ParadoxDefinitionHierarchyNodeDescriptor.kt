@@ -55,23 +55,23 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         run {
             if (nodeType.grouped) {
                 val gameType = selectGameType(file)
-                val localizedName = when (nodeType) {
+                val presentableName = when (nodeType) {
                     NodeType.EventType -> ChronicleDocBundle.eventType(name, gameType)
                     NodeType.TechTier -> ChronicleDocBundle.technologyTier(name, gameType)
                     NodeType.TechArea -> ChronicleDocBundle.technologyArea(name, gameType, project, file)
                     NodeType.TechCategory -> ChronicleDocBundle.technologyCategory(name, gameType, project, file)
                     else -> return@run // unexpected
                 }
-                if (localizedName.isEmpty()) return@run
-                myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
+                if (presentableName.isEmpty()) return@run
+                myHighlightedText.ending.addText(" $presentableName", getPresentableNameAttributes())
                 return@run
             }
 
             if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
-            if (!(hierarchySettings.showLocalizedName)) return@run
-            val localizedName = getLocalizedName(element)
-            if (localizedName.isNullOrEmpty()) return@run
-            myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
+            if (!(hierarchySettings.showPresentableName)) return@run
+            val presentableName = getPresentableName(element)
+            if (presentableName.isNullOrEmpty()) return@run
+            myHighlightedText.ending.addText(" $presentableName", getPresentableNameAttributes())
         }
         run {
             if (type != Type.EventTreeInvoker && type != Type.EventTreeInvoked) return@run
@@ -161,10 +161,10 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         return changes
     }
 
-    private fun getLocalizedName(element: PsiElement): String? {
+    private fun getPresentableName(element: PsiElement): String? {
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
-            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedName(element)
+            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getPresentableName(element)
             else -> null
         }
     }
@@ -181,7 +181,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
 
         @JvmStatic
-        private fun getLocalizedNameAttributes() = grayedAttributes
+        private fun getPresentableNameAttributes() = grayedAttributes
 
         @JvmStatic
         private fun getRelatedInfoAttributes() = grayedAttributes

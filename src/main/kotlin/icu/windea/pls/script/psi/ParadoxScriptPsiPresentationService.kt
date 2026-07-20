@@ -151,12 +151,12 @@ object ParadoxScriptPsiPresentationService {
         return when (element) {
             is ParadoxScriptFile -> {
                 run {
-                    // 定义的类型信息和显示名称
+                    // 定义的类型信息和展示名字
                     if (element.name.endsWith(".mod", true)) return@run // 排除模组描述符文件
                     val definitionInfo = element.definitionInfo ?: return@run
                     return buildString {
                         append(": ").append(definitionInfo.typeText)
-                        ParadoxDefinitionManager.getLocalizedName(element)?.let { append(" ").append(it) }
+                        ParadoxDefinitionManager.getPresentableName(element)?.let { append(" ").append(it) }
                     }.optimized() // optimized to optimize memory
                 }
                 null
@@ -168,31 +168,31 @@ object ParadoxScriptPsiPresentationService {
                     return ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {
-                    // 定义的类型信息和显示名称
+                    // 定义的类型信息和展示名字
                     val definitionInfo = element.definitionInfo ?: return@run
                     return buildString {
                         append(": ").append(definitionInfo.typeText)
-                        ParadoxDefinitionManager.getLocalizedName(element)?.let { append(" ").append(it) }
+                        ParadoxDefinitionManager.getPresentableName(element)?.let { append(" ").append(it) }
                     }
                 }
                 null
             }
             is ParadoxScriptStringExpressionElement -> {
                 run {
-                    // 复杂枚举值的类型信息和显示名称
+                    // 复杂枚举值的类型信息和展示名字
                     val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
                     return buildString {
                         append(": ").append(complexEnumValueInfo.enumName)
-                        ParadoxComplexEnumValueManager.getLocalizedName(complexEnumValueInfo.name, element)?.let { append(" ").append(it) }
+                        ParadoxComplexEnumValueManager.getPresentableName(complexEnumValueInfo.name, element)?.let { append(" ").append(it) }
                     }
                 }
                 null
             }
             is ParadoxScriptScriptedVariable -> {
-                // 封装变量的值和显示名称
+                // 封装变量的值和展示名字
                 buildString {
                     element.value?.let { append(" = ").append(it) }
-                    ParadoxScriptedVariableManager.getLocalizedName(element)?.let { append(" ").append(it) }
+                    ParadoxScriptedVariableManager.getPresentableName(element)?.let { append(" ").append(it) }
                 }.orNull()
             }
             else -> null

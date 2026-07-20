@@ -128,12 +128,12 @@ object ParadoxDefinitionManager {
         return definitionInfo.images.filter { it.primary || it.primaryByInference }.optimized()
     }
 
-    fun getLocalizedName(element: ParadoxDefinitionElement): String? {
+    fun getPresentableName(element: ParadoxDefinitionElement): String? {
         val primaryLocalisation = getPrimaryLocalisation(element)
         return primaryLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
     }
 
-    fun getLocalizedNames(element: ParadoxDefinitionElement): Set<String> {
+    fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
         return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
     }

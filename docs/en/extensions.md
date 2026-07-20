@@ -218,7 +218,7 @@ Event tree diagrams display key information about events and their invocation re
 
 ![](../assets/extensions/diagram_event_tree_1.png)
 
-1. Configure node elements to display. From left to right: type, properties, localized name (event title).
+1. Configure node elements to display. From left to right: type, properties, presentable name (event title).
 2. Filter nodes by query scope. For example, only show nodes for events in open files.
 3. Open the diagram settings pages. From left to right: Diagrams plugin's, The plugin's.
 
@@ -239,7 +239,7 @@ Technology tree diagrams display key information about technologies and their pr
 
 ![](../assets/extensions/diagram_tech_tree_1.png)
 
-1. Configure node elements to display. From left to right: type, properties, localized name (technology name), presentation (displayed as technology card).
+1. Configure node elements to display. From left to right: type, properties, presentable name (technology name), presentation (displayed as technology card).
 2. Filter nodes by query scope. For example, only show nodes for technologies in open files.
 3. Open the diagram settings pages. From left to right: Diagrams plugin's, The plugin's.
 

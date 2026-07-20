@@ -54,9 +54,9 @@ import icu.windea.pls.model.ParadoxTagType
  * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property name 规则名称（即类型名）。
- * @property baseType 基类型名，如果存在则表示继承另一类型的部分语义。
- * @property nameField 名称字段键（用于解析定义名）。如果为空字符串，则强制匿名；如果为 `-`，则从属性值解析定义名；否则从对应名字（忽略大小写）的子属性值解析定义名。
- * @property nameFromFile 是否从文件名解析定义名。默认为 `false`。
+ * @property baseType 基本类型名。如果存在则表示继承另一类型的部分语义。
+ * @property nameField 名称字段键。用于解析定义名。如果为空字符串，则强制匿名；如果为 `-`，则从属性值解析定义名；否则从对应名字（忽略大小写）的子属性值解析定义名。
+ * @property nameFromFile 是否从文件名解析定义名（去除文件扩展名）。默认为 `false`。
  * @property typePerFile 是否一个文件对应一个类型实例。默认为 `false`。
  * @property skipRootKey 需要跳过的顶级键（支持多组设置，忽略大小写，兼容通配符）。用于规则匹配。
  * @property typeKeyPrefix 类型键前缀（位于类型键之前的单独的字符串，忽略大小写）。用于规则匹配。

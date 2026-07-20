@@ -28,7 +28,7 @@ object ParadoxCompletionUtil {
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.ScriptedVariable)
-            .withScriptedVariableLocalizedNamesIfNecessary(element)
+            .withScriptedVariablePresentableNames(element)
             .forExpression(context)
         result.addElement(lookupElement, context)
         return true
@@ -43,7 +43,7 @@ object ParadoxCompletionUtil {
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
             .withPatchableTailText(context.patchableTailText)
-            .withDefinitionLocalizedNamesIfNecessary(element)
+            .withDefinitionPresentableNames(element)
             .forExpression(context)
         result.addElement(lookupElement, context)
         return true

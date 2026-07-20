@@ -38,16 +38,16 @@ object ParadoxPresentationUtil {
     }
 
     fun getNameText(definition: ParadoxDefinitionElement): String? {
-        val localizedName = getNameLocalisation(definition)
-        if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
+        val presentableName = getNameLocalisation(definition)
+        if (presentableName != null) return ParadoxLocalisationTextHtmlRenderer().render(presentableName)
         return null
     }
 
     fun getNameTextOrKey(definition: ParadoxDefinitionElement): String? {
-        val localizedName = getNameLocalisation(definition)
-        if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
-        val localizedNameKey = getNameLocalisationKey(definition)
-        return localizedNameKey
+        val presentableName = getNameLocalisation(definition)
+        if (presentableName != null) return ParadoxLocalisationTextHtmlRenderer().render(presentableName)
+        val presentableNameKey = getNameLocalisationKey(definition)
+        return presentableNameKey
     }
 
     fun getProperties(definition: ParadoxDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {

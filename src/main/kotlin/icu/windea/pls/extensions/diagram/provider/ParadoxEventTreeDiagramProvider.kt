@@ -42,7 +42,7 @@ import javax.swing.JComponent
 
 /**
  * 提供事件树图表。
- * - 可以配置是否显示类型、关键属性、显示名称（事件标题）。
+ * - 可以配置是否显示类型、关键属性、展示名字（事件标题）。
  * - 可以按类型过滤要显示的事件。
  * - 可以按作用域过滤要显示的事件。（例如，仅限原版，仅限当前模组）
  * - 支持任何通用的图表操作。（例如，导出为图片）
@@ -51,9 +51,9 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     object Categories {
         val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
         val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
-        val LocalizedName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.localizedName"), ChronicleIcons.Nodes.Localisation, false, false)
+        val PresentableName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.presentableName"), ChronicleIcons.Nodes.Localisation, false, false)
 
-        val All = arrayOf(Type, Properties, LocalizedName)
+        val All = arrayOf(Type, Properties, PresentableName)
     }
 
     object Relations {
@@ -65,7 +65,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     object Items {
         class Type(val text: String)
         class Property(val property: ParadoxScriptProperty, val detail: Boolean)
-        class LocalizedName(val text: String)
+        class PresentableName(val text: String)
     }
 
     object Keys : KeyRegistry() {
@@ -90,7 +90,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             return when (item) {
                 is Items.Type -> category == Categories.Type
                 is Items.Property -> category == Categories.Properties
-                is Items.LocalizedName -> category == Categories.LocalizedName
+                is Items.PresentableName -> category == Categories.PresentableName
                 else -> true
             }
         }
@@ -123,7 +123,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         val properties = ParadoxPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
                         properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
                     }
-                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.LocalizedName(it) }
+                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.PresentableName(it) }
                     result.toTypedArray()
                 }
                 else -> emptyArray()
@@ -133,7 +133,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.LocalizedName -> {
+                is Items.PresentableName -> {
                     ParadoxPresentationUtil.getLabel(nodeItem.text.or.anonymous())
                 }
                 else -> null

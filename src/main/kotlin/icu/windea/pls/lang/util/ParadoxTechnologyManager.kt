@@ -53,7 +53,7 @@ object ParadoxTechnologyManager {
         return element.name // = element.definitionInfo.name
     }
 
-    fun getLocalizedNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
+    fun getPresentableNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 

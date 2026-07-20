@@ -15,6 +15,6 @@ var LookupElement.extraLookupElements: List<LookupElement>? by registerKey(Chron
 var LookupElement.priority: Double? by registerKey(ChronicleLookupKeys)
 var LookupElement.patchableIcon: Icon? by registerKey(ChronicleLookupKeys)
 var LookupElement.patchableTailText: String? by registerKey(ChronicleLookupKeys)
-var LookupElement.localizedNames: Set<String>? by registerKey(ChronicleLookupKeys)
+var LookupElement.presentableNames: Set<String>? by registerKey(ChronicleLookupKeys)
 var LookupElement.scopeMatched: Boolean by registerKey(ChronicleLookupKeys) { true }
 var LookupElement.forceInsertCurlyBraces: Boolean by registerKey(ChronicleLookupKeys) { false }

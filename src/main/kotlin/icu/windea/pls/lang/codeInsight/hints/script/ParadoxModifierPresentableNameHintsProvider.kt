@@ -24,11 +24,11 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
 /**
- * 通过内嵌提示显示修正的显示名称。
+ * 通过内嵌提示显示修正的展示名字。
  * 来自对应的本地化。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
+class ParadoxModifierPresentableNameHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.modifierHintText")
 
     override val name get() = ChronicleBundle.message("script.hints.modifierHintText")
