@@ -1,0 +1,11 @@
+# <map_setup_scenario>
+
+setup_scenario = {
+    name = "no_spaces"
+    # ...
+}
+
+setup_scenario = {
+    name = "spaced out"
+    # ...
+}

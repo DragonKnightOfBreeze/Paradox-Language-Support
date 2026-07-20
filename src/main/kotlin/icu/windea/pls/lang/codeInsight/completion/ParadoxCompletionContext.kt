@@ -14,8 +14,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 
 data class ParadoxCompletionContext(
     override val globalContext: GlobalCompletionContext,
-    val configGroup: CwtConfigGroup,
     override val keyword: String,
+    val configGroup: CwtConfigGroup,
     val keywordOffset: Int = 0,
     val expressionOffset: Int = 0,
     val extraFilter: ((PsiElement) -> Boolean)? = null,
@@ -50,13 +50,13 @@ data class ParadoxCompletionContext(
 private object ParadoxCompletionContextBuilder {
     fun build(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
         val gameType = selectGameType(globalContext.file)
-        val configGroup = ChronicleFacade.getConfigGroup(globalContext.project, gameType)
         val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)
+        val configGroup = ChronicleFacade.getConfigGroup(globalContext.project, gameType)
 
         return ParadoxCompletionContext(
             globalContext = globalContext,
-            configGroup = configGroup,
             keyword = keyword,
+            configGroup = configGroup,
         )
     }
 

@@ -23,15 +23,13 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class Issue288Test : BasePlatformTestCase() {
-    private val gameType = ParadoxGameType.Eu5
-
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("issues/288")
-        initConfigGroups(project, gameType)
+        initConfigGroups(project, ParadoxGameType.Eu5)
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
     }
 
@@ -40,7 +38,7 @@ class Issue288Test : BasePlatformTestCase() {
 
     @Test
     fun test() {
-        markFileInfo(gameType, "common/location_ranks/issue_288_eu5.test.txt")
+        markFileInfo(ParadoxGameType.Eu5, "common/location_ranks/issue_288_eu5.test.txt")
         myFixture.configureByFile("issues/288/common/location_ranks/issue_288_eu5.test.txt")
         myFixture.checkHighlighting()
     }

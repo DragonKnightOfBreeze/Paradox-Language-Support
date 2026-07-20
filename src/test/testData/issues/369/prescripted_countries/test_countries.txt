@@ -1,0 +1,9 @@
+# <prescripted_country>
+
+"no_spaces" = {
+    # ...
+}
+
+"spaced out" = {
+    # ...
+}

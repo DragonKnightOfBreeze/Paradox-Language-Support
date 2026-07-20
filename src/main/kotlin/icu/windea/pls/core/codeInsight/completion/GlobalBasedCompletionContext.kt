@@ -17,7 +17,6 @@ abstract class GlobalBasedCompletionContext : CompletionContext {
     val offsetInParent: Int get() = globalContext.offsetInParent
     val leftQuoted: Boolean get() = globalContext.leftQuoted
     val rightQuoted: Boolean get() = globalContext.rightQuoted
-    val quoted: Boolean get() = globalContext.quoted
 
     final override val context: ProcessingContext get() = globalContext.context
     final override val parameters: CompletionParameters get() = globalContext.parameters

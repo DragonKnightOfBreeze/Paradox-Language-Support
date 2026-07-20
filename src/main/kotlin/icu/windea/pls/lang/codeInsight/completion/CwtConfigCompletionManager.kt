@@ -445,7 +445,7 @@ object CwtConfigCompletionManager {
         lookupElement = lookupElement.withTailText(tailText, true)
 
         val params = ChronicleInsertHandlers.Params(
-            quoted = context.quoted,
+            quoted = context.globalContext.leftQuoted,
             isKey = context.isKey,
             insertCurlyBraces = insertCurlyBraces,
         )
@@ -486,7 +486,7 @@ object CwtConfigCompletionManager {
                 if (element !is CwtPropertyKey && element !is CwtString) return@c
                 val startAction = StartMarkAction.start(editor, project, commandName)
                 val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
-                val shift = element.startOffset + if (context.quoted) 1 else 0
+                val shift = element.startOffset + if (context.globalContext.leftQuoted) 1 else 0
                 schemaExpression.parameterRanges.forEach { parameterRange ->
                     val parameterText = parameterRange.substring(schemaExpression.expressionString)
                     val expression = CwtConfigCompletionTemplateExpression.resolve(context, parameterRange, parameterText)

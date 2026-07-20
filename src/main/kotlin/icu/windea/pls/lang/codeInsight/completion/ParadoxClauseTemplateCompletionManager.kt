@@ -98,7 +98,7 @@ object ParadoxClauseTemplateCompletionManager {
         val propertyName = CwtConfigManager.getEntryName(config)
 
         val params = ChronicleInsertHandlers.Params(
-            quoted = context.quoted,
+            quoted = context.globalContext.leftQuoted,
             isKey = context.isKey,
             insertCurlyBraces = true,
         )

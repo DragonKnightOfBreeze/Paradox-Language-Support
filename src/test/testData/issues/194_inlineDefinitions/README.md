@@ -1,2 +1,1 @@
-See:
-- https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194
+See: [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194)

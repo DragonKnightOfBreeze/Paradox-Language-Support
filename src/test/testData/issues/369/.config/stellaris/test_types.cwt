@@ -1,0 +1,13 @@
+types = {
+    type[test_entity] = {
+        path = "common/test_entities"
+        path_extension = .txt
+    }
+}
+
+test_entity = {
+    ## cardinality = 0..inf
+    setup_scenario = <map_setup_scenario>
+    ## cardinality = 0..inf
+    country = <prescripted_country>
+}

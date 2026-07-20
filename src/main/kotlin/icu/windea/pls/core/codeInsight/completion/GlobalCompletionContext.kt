@@ -19,7 +19,6 @@ data class GlobalCompletionContext(
     val offsetInParent: Int = parameters.offset - contextElement.startOffset
     val leftQuoted: Boolean = contextElement.text.isLeftQuoted()
     val rightQuoted: Boolean = contextElement.text.isRightQuoted()
-    val quoted: Boolean get() = leftQuoted
 
     override val completionIds: MutableSet<String> = mutableSetOf<String>().synced()
     override val file: PsiFile get() = parameters.originalFile

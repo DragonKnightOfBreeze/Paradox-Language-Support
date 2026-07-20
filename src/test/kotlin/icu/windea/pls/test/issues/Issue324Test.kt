@@ -21,8 +21,6 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class Issue324Test : BasePlatformTestCase() {
-    private val gameType = ParadoxGameType.Core
-
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -30,7 +28,7 @@ class Issue324Test : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("issues/324")
         markConfigDirectory("issues/324/.config")
-        initConfigGroups(project, gameType)
+        initConfigGroups(project, ParadoxGameType.Core)
     }
 
     @After
