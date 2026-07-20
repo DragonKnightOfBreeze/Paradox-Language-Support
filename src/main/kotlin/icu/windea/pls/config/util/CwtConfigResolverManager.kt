@@ -18,12 +18,10 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
-import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
@@ -41,11 +39,9 @@ import icu.windea.pls.cwt.psi.CwtValue
 
 object CwtConfigResolverManager {
     object Keys : KeyRegistry() {
-        val fileConfigs by registerKey<MutableMap<String, CwtFileConfig>>(Keys)
         val postProcessActions by registerKey<MutableList<Runnable>>(Keys)
     }
 
-    @Optimized
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtMemberContainer) return null
         val configs: MutableList<CwtMemberConfig<*>> = mutableListOf()
@@ -62,7 +58,6 @@ object CwtConfigResolverManager {
         return configs // delay optimization
     }
 
-    @Optimized
     fun getOptionConfigs(element: CwtMember, configGroup: CwtConfigGroup): List<CwtOptionMemberConfig<*>> {
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = mutableListOf()
         var current: PsiElement = element
@@ -87,7 +82,6 @@ object CwtConfigResolverManager {
         return optionConfigs // delay optimization
     }
 
-    @Optimized
     fun getOptionConfigsInOption(element: CwtValue, configGroup: CwtConfigGroup): List<CwtOptionMemberConfig<*>>? {
         if (element !is CwtBlock) return null
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = mutableListOf()
@@ -100,10 +94,9 @@ object CwtConfigResolverManager {
             if (resolved == null) return@f
             optionConfigs += resolved
         }
-        return optionConfigs.optimized() // optimized to optimize memory
+        return optionConfigs // delay optimization
     }
 
-    @Optimized
     fun getMembersType(configs: List<CwtMemberConfig<*>>): CwtMembersType {
         if (configs.isEmpty()) return CwtMembersType.NONE
         var result = CwtMembersType.NONE
@@ -162,7 +155,7 @@ object CwtConfigResolverManager {
     }
 
     fun getFileConfigs(configGroup: CwtConfigGroup): MutableMap<String, CwtFileConfig> {
-        return configGroup.initializer.getOrPutUserData(Keys.fileConfigs) { mutableMapOf() }
+        return configGroup.initializer.fileConfigs
     }
 
     fun getPostProcessActions(configGroup: CwtConfigGroup): MutableList<Runnable> {

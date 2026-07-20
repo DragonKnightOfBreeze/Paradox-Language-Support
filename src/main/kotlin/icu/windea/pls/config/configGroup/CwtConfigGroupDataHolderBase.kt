@@ -3,6 +3,7 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
+import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -52,6 +53,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
     object Keys : KeyRegistry() {
+        val fileConfigs by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtFileConfig>, CwtConfigGroupDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
         val schemas by registerKey<ObjectArrayList<CwtSchemaConfig>, CwtConfigGroupDataHolder>(this) { ObjectArrayList() }
         val foldingSettings by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
         val postfixTemplateSettings by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
@@ -111,6 +113,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
 
     // region Accessors
 
+    final override val fileConfigs by Keys.fileConfigs
     final override val schemas by Keys.schemas
     final override val foldingSettings by Keys.foldingSettings
     final override val postfixTemplateSettings by Keys.postfixTemplateSettings
