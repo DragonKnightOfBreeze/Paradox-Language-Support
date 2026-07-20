@@ -42,13 +42,13 @@ object ParadoxScriptedVariableManager {
         return VirtualFileService.findDirectory(path)
     }
 
-    fun getLocalizedName(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
+    fun getPresentableName(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
         val name = element.name?.orNull() ?: return null
         val nameLocalisation = getNameLocalisation(name, element, locale)
         return nameLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
     }
 
-    fun getLocalizedNames(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
+    fun getPresentableNames(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val name = element.name?.orNull() ?: return emptySet()
         val nameLocalisation = getNameLocalisations(name, element, locale)
         return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()

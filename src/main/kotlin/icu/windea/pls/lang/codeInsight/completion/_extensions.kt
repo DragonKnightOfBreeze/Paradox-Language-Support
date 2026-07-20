@@ -88,27 +88,27 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
     return withItemTextForeground(JBColor.GRAY)
 }
 
-fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
-    if (ChronicleSettings.getInstance().state.completion.completeByLocalizedName) {
-        ProgressManager.checkCanceled()
-        localizedNames = ParadoxScriptedVariableManager.getLocalizedNames(element)
-    }
+fun LookupElementBuilder.withScriptedVariablePresentableNames(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
+    if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
+
+    ProgressManager.checkCanceled()
+    presentableNames = ParadoxScriptedVariableManager.getPresentableNames(element)
     return this
 }
 
-fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxDefinitionElement): LookupElementBuilder {
-    if (ChronicleSettings.getInstance().state.completion.completeByLocalizedName) {
-        ProgressManager.checkCanceled()
-        localizedNames = ParadoxDefinitionManager.getLocalizedNames(element)
-    }
+fun LookupElementBuilder.withDefinitionPresentableNames(element: ParadoxDefinitionElement): LookupElementBuilder {
+    if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
+
+    ProgressManager.checkCanceled()
+    presentableNames = ParadoxDefinitionManager.getPresentableNames(element)
     return this
 }
 
-fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: ParadoxScriptStringExpressionElement): LookupElementBuilder {
-    if (ChronicleSettings.getInstance().state.completion.completeByLocalizedName) {
-        ProgressManager.checkCanceled()
-        localizedNames = ParadoxModifierManager.getModifierLocalizedNames(modifierName, element, element.project)
-    }
+fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, element: ParadoxScriptStringExpressionElement): LookupElementBuilder {
+    if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
+
+    ProgressManager.checkCanceled()
+    presentableNames = ParadoxModifierManager.getModifierPresentableNames(modifierName, element, element.project)
     return this
 }
 
@@ -158,7 +158,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
     var lookupElement = this
 
     lookupElement = lookupElement.withBaseLookupString(lookupString) // #369
-    lookupElement = lookupElement.addLocalizedNames()
+    lookupElement = lookupElement.addPresentableNames()
     lookupElement = lookupElement.patchIcon(config)
     lookupElement = lookupElement.patchTailText(withValueText)
 
@@ -190,10 +190,10 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
     return lookupElement
 }
 
-private fun LookupElementBuilder.addLocalizedNames(): LookupElementBuilder {
-    val localizedNames = localizedNames
-    if (localizedNames.isNullOrEmpty()) return this
-    return withLookupStrings(localizedNames)
+private fun LookupElementBuilder.addPresentableNames(): LookupElementBuilder {
+    val presentableNames = presentableNames
+    if (presentableNames.isNullOrEmpty()) return this
+    return withLookupStrings(presentableNames)
 }
 
 private fun LookupElementBuilder.patchIcon(config: CwtConfig<*>?): LookupElementBuilder {

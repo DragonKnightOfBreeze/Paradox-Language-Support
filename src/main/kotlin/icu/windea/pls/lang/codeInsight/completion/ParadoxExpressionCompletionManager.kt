@@ -170,7 +170,7 @@ object ParadoxExpressionCompletionManager {
                 .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
-                .withDefinitionLocalizedNamesIfNecessary(definition)
+                .withDefinitionPresentableNames(definition)
                 .forExpression(context)
             result.addElement(lookupElement, context)
             true

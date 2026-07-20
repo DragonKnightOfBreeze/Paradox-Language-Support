@@ -18,12 +18,12 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationManager {
     object Keys : KeyRegistry() {
-        val cachedLocalizedName by registerKey<CachedValue<String>>(Keys)
+        val cachedPresentableName by registerKey<CachedValue<String>>(Keys)
     }
 
     fun getLocalizedText(element: ParadoxLocalisationProperty): String? {
         // from cache (invalidate on element modification)
-        return CachedValuesManager.getCachedValue(element, Keys.cachedLocalizedName) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedPresentableName) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxLocalisationService.resolveLocalizedText(element)

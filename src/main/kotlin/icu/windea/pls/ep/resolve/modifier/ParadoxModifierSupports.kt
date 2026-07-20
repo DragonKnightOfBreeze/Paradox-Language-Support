@@ -29,7 +29,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forExpression
-import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNecessary
+import icu.windea.pls.lang.codeInsight.completion.withModifierPresentableNames
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
 import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
@@ -120,7 +120,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
                 .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
-                .withModifierLocalizedNamesIfNecessary(name, element)
+                .withModifierPresentableNames(name, element)
                 .forExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -198,7 +198,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
-                    .withModifierLocalizedNamesIfNecessary(name, element)
+                    .withModifierPresentableNames(name, element)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
                 true
@@ -409,7 +409,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withTypeText(typeText, typeIcon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
-                    .withModifierLocalizedNamesIfNecessary(name, element)
+                    .withModifierPresentableNames(name, element)
                     .forExpression(context)
                 result.addElement(lookupElement, context)
             }

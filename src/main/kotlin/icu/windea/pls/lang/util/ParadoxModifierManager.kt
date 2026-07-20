@@ -237,7 +237,7 @@ object ParadoxModifierManager {
         }
     }
 
-    fun getModifierLocalizedNames(name: String, element: PsiElement, project: Project): Set<String> {
+    fun getModifierPresentableNames(name: String, element: PsiElement, project: Project): Set<String> {
         ProgressManager.checkCanceled()
         val keys = getModifierNameKeys(name, element)
         return keys.firstNotNullOfOrNull { key ->

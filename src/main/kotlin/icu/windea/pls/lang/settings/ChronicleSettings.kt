@@ -103,7 +103,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      * @property completeWithValue 如有可能，应用代码补全后，将会自动插入常量值或花括号。
      * @property completeWithClauseTemplate 如有可能，也会提供带有子句模板的补全项。应用代码补全后，将会展开可编辑的子句模板，以配置要插入的成员。
      * @property completeOnlyScopeIsMatched 如果支持，将会过滤掉作用域不匹配的补全项。
-     * @property completeByLocalizedName 如果存在，也会提供基于定义或修正的显示名称（本地化文本）的补全项。
+     * @property completeByPresentableName 如果存在，也会提供基于定义或修正的展示名字（本地化文本）的补全项。
      * @property completeByExtendedConfigs 如果存在，也会提供基于扩展规则的补全项。
      */
     @Tag("completion")
@@ -118,7 +118,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)
         var completeOnlyScopeIsMatched by property(true)
-        var completeByLocalizedName by property(false)
+        var completeByPresentableName by property(false)
         var completeByExtendedConfigs by property(false)
 
         @get:Property(surroundWithTag = false)
@@ -200,7 +200,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
     }
 
     /**
-     * @property showLocalizedName 是否在层级视图中额外显示显示名称。
+     * @property showPresentableName 是否在层级视图中额外显示展示名字。
      * @property showLocationInfo 是否在层级视图中额外显示位置信息。
      * @property showLocationInfoByPath 显示位置信息时，是否显示路径。
      * @property showLocationInfoByRootInfo 显示位置信息时，是否显示游戏或模组信息。
@@ -221,7 +221,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      */
     @Tag("hierarchy")
     class HierarchyState : BaseState() {
-        var showLocalizedName by property(true)
+        var showPresentableName by property(true)
         var showLocationInfo by property(true)
         var showLocationInfoByPath by property(true)
         var showLocationInfoByRootInfo by property(false)

@@ -20,7 +20,7 @@ import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 /**
  * 通过内嵌提示显示动态值的提示文本。
- * 来自显示名称（即同名的本地化文本），或者对应的扩展规则。优先级从低到高。
+ * 来自展示名字（即同名的本地化文本），或者对应的扩展规则。优先级从低到高。
  *
  * @see ParadoxHintTextProvider
  * @see ParadoxHintTextProviderBase.DynamicValue

@@ -71,10 +71,10 @@ class ParadoxCallHierarchyNodeDescriptor(
             }
         }
         run {
-            if (!(hierarchySettings.showLocalizedName)) return@run
-            val localizedName = getLocalizedName(element)
-            if (localizedName.isNullOrEmpty()) return@run
-            myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
+            if (!(hierarchySettings.showPresentableName)) return@run
+            val presentableName = getPresentableName(element)
+            if (presentableName.isNullOrEmpty()) return@run
+            myHighlightedText.ending.addText(" $presentableName", getPresentableNameAttributes())
         }
         run {
             if (!hierarchySettings.showLocationInfo) return@run
@@ -104,11 +104,11 @@ class ParadoxCallHierarchyNodeDescriptor(
         return changes
     }
 
-    private fun getLocalizedName(element: PsiElement): String? {
+    private fun getPresentableName(element: PsiElement): String? {
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
-            is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableManager.getLocalizedName(element)
-            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedName(element)
+            is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableManager.getPresentableName(element)
+            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getPresentableName(element)
             else -> null
         }
     }
@@ -176,7 +176,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         private fun getTypeAttributes() = grayedAttributes
 
         @JvmStatic
-        private fun getLocalizedNameAttributes() = grayedAttributes
+        private fun getPresentableNameAttributes() = grayedAttributes
 
         @JvmStatic
         private fun getLocationAttributes() = grayedAttributes
