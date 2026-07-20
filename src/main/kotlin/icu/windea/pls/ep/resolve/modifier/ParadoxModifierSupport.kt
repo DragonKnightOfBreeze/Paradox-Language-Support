@@ -8,7 +8,7 @@ import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.text.DocumentationBuilder
-import icu.windea.pls.core.util.KeyRegistrySynced
+import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -50,7 +50,7 @@ interface ParadoxModifierSupport {
      */
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = false
 
-    object Keys : KeyRegistrySynced()
+    object Keys : KeyRegistry()
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")

@@ -7,18 +7,17 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-val ParadoxParameterSupport.Keys.support by registerKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.containingContext by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.containingContextReference by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.definitionName by registerKey<String>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.definitionTypes by registerKey<List<String>>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.inlineScriptExpression by registerKey<String>(ParadoxParameterSupport.Keys).withSync()
+val ParadoxParameterSupport.Keys.support by registerKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.containingContext by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.containingContextReference by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.definitionName by registerKey<String>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.definitionTypes by registerKey<List<String>>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.inlineScriptExpression by registerKey<String>(ParadoxParameterSupport.Keys)
 
 var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
