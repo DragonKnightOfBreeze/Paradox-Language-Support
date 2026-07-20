@@ -8,7 +8,6 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -142,8 +141,9 @@ object ParadoxMemberService {
      * 检查 [name] 是否是（脚本属性的）合法的类型键（会从 [context] 选取游戏类型并检查）。
      */
     fun isTypeKeyForProperty(name: String, context: Any?): String? {
-        if (!name.isIdentifier(".-")) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
-        if (ParadoxInlineScriptManager.isMatched(name, context)) return null // 排除是内联脚本用法的情况
+        // if (!name.isIdentifier(".-")) return null // #369 can also be any string literals
+        if (ParadoxInlineScriptManager.isMatched(name, context)) return null // skip if is inline script usage
+        if (name.isParameterized()) return null // skip if is parameterized
         return name
     }
 }

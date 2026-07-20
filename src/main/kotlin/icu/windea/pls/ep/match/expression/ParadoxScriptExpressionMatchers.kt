@@ -149,7 +149,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchDefinition(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch
+        // if (!context.expression.value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, context.expression.value, context.configExpression)
     }

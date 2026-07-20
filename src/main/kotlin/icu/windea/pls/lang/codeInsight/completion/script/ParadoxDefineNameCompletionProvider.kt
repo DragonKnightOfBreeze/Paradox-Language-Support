@@ -2,20 +2,14 @@ package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
-import icu.windea.pls.core.icon
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forExpression
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
@@ -64,7 +58,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
                 val selector = ParadoxDefineNamespaceSearch.selector(context.project, element).contextSensitive().distinct()
                     .filterBy { it.name != context.keyword } // skip if name = input
                 ParadoxDefineNamespaceSearch.search(null, selector).processAsync {
-                    processDefineNamespace(context, result, it)
+                    ParadoxCompletionUtil.processDefineNamespace(context, result, it)
                 }
             }
             // possible define variable input
@@ -77,37 +71,9 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
                 val selector = ParadoxDefineVariableSearch.selector(context.project, element).contextSensitive().distinct()
                     .filterBy { it.name != context.keyword } // skip if name = input
                 ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync {
-                    processDefineVariable(context, result, it)
+                    ParadoxCompletionUtil.processDefineVariable(context, result, it)
                 }
             }
         }
-    }
-
-    @Suppress("SameReturnValue")
-    private fun processDefineNamespace(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
-        // 不自动插入后面的等号
-        ProgressManager.checkCanceled()
-        val name = element.name.orNull() ?: return true
-        val typeFile = element.containingFile
-        val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(ChronicleIcons.Nodes.DefineNamespace)
-            .withTypeText(typeFile.name, typeFile.icon, true)
-            .forExpression(context)
-        result.addElement(lookupElement, context)
-        return true
-    }
-
-    @Suppress("SameReturnValue")
-    private fun processDefineVariable(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
-        // 不自动插入后面的等号
-        ProgressManager.checkCanceled()
-        val name = element.name.orNull() ?: return true
-        val typeFile = element.containingFile
-        val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(ChronicleIcons.Nodes.DefineVariable)
-            .withTypeText(typeFile.name, typeFile.icon, true)
-            .forExpression(context)
-        result.addElement(lookupElement, context)
-        return true
     }
 }

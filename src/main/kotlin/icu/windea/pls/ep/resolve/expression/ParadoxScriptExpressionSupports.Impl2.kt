@@ -220,7 +220,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        if (context.quoted) return
+        if (context.globalContext.leftQuoted) return
         ParadoxExpressionCompletionManager.completeLocalisation(context, result)
     }
 }

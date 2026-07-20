@@ -20,6 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.codeInsight.completion.CompletionContext
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -128,8 +129,12 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
     val contextElement = context.contextElement
     val isKeyElement = contextElement is ParadoxScriptPropertyKey
     val isStringElement = contextElement is ParadoxScriptString
-    val isKey = context.isKey
     val isBlockConfig = targetConfig?.let { it.valueType == CwtExpressionType.Block } ?: false
+
+    val lookupString = when {
+        context.leftQuoted -> lookupString // already quoted
+        else -> lookupString.quoteIfNeeded() // #369 should be quoted if is blank or contains blank
+    }
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null
@@ -142,7 +147,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
 
     // 排除重复项
     val withValueText = when {
-        isKeyElement || (isStringElement && isKey != true) -> ""
+        isKeyElement || (isStringElement && context.isKey != true) -> ""
         constantValue != null -> " = $constantValue"
         insertCurlyBraces -> " = {...}"
         else -> ""
@@ -152,30 +157,31 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
 
     var lookupElement = this
 
+    lookupElement = lookupElement.withBaseLookupString(lookupString) // #369
     lookupElement = lookupElement.addLocalizedNames()
     lookupElement = lookupElement.patchIcon(config)
     lookupElement = lookupElement.patchTailText(withValueText)
 
     if (!isKeyElement && !isStringElement) return lookupElement // not in a key or value position
-    if (isKey == null) return lookupElement // not complete full key or value
+    if (context.isKey == null) return lookupElement // not complete full key or value
 
     val params = ChronicleInsertHandlers.Params(
-        quoted = context.quoted,
+        quoted = context.globalContext.leftQuoted,
         isKey = context.isKey,
         insertCurlyBraces = insertCurlyBraces,
         constantValue = constantValue,
     )
 
-    if (isKeyElement || isStringElement && !isKey) { // key or value only
+    if (isKeyElement || isStringElement && !context.isKey) { // key or value only
         lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
-    } else if (isKey) { // key with value
+    } else if (context.isKey) { // key with value
         lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
     }
 
     val extraLookupElements = mutableListOf<LookupElement>()
 
     // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
-    if (isKey && !isKeyElement && isBlockConfig && config != null) {
+    if (context.isKey && !isKeyElement && isBlockConfig && config != null) {
         val extraLookupElement = ParadoxClauseTemplateCompletionManager.buildLookupElement(context, config, lookupElement)
         if (extraLookupElement != null) extraLookupElements.add(extraLookupElement)
     }

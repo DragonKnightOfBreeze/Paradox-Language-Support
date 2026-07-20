@@ -25,15 +25,13 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class Issue284Test : BasePlatformTestCase() {
-    private val gameType = ParadoxGameType.Vic3
-
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("issues/284")
-        initConfigGroups(project, gameType)
+        initConfigGroups(project, ParadoxGameType.Vic3)
         myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
     }
 
@@ -42,14 +40,14 @@ class Issue284Test : BasePlatformTestCase() {
 
     @Test
     fun testScopeLinkInTrigger() {
-        markFileInfo(gameType, "common/scripted_triggers/test_trigger.test.txt")
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_triggers/test_trigger.test.txt")
         myFixture.configureByFile("issues/284/common/scripted_triggers/test_trigger.test.txt")
         myFixture.checkHighlighting()
     }
 
     @Test
     fun testScopeLinkInEffect() {
-        markFileInfo(gameType, "common/scripted_effects/test_effect.test.txt")
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/test_effect.test.txt")
         myFixture.configureByFile("issues/284/common/scripted_effects/test_effect.test.txt")
         myFixture.checkHighlighting()
     }

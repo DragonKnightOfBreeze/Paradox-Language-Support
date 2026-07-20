@@ -101,7 +101,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         val expression = context.expression.value
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
-        if (!expression.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
+        // if (!expression.isIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, expression, context.configExpression)
     }
 
