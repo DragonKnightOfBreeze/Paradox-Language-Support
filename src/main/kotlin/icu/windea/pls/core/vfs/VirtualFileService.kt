@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
 import icu.windea.pls.core.editor
-import icu.windea.pls.core.util.Processors
+import icu.windea.pls.core.util.ProcessorFactory
 import java.nio.file.Path
 
 object VirtualFileService {
@@ -45,7 +45,7 @@ object VirtualFileService {
             files.forEach { file ->
                 if (deep && file.isDirectory) {
                     // NOTE 这里或许存在更好的实现方式，但是目前就这样吧
-                    val processor = Processors.collect(mutableSetOf<VirtualFile>())
+                    val processor = ProcessorFactory.collect(mutableSetOf<VirtualFile>())
                     VfsUtil.processFilesRecursively(file, processor)
                     yieldAll(processor.collection)
                 } else {

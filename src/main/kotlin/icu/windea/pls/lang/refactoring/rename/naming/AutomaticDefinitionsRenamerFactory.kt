@@ -6,7 +6,7 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.process
-import icu.windea.pls.core.util.Processors
+import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -20,7 +20,7 @@ class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
         val type = definitionInfo.type
         if (name.isEmpty()) return false
         val selector = ParadoxDefinitionSearch.selector(element.project, element)
-        val processor = Processors.duplicate<ParadoxScriptProperty>()
+        val processor = ProcessorFactory.duplicate<ParadoxScriptProperty>()
         ParadoxDefinitionSearch.searchProperty(name, type, selector).process(processor)
         return processor.duplicated
     }
