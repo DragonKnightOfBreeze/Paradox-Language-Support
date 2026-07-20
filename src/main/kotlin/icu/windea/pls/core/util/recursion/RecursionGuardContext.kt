@@ -1,16 +1,16 @@
 package icu.windea.pls.core.util.recursion
 
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 
 @Optimized
 @PublishedApi
 internal object RecursionGuardContext {
-    private val cache = ThreadLocal.withInitial { FastMap<String, RecursionGuard>() }
-    private val cacheKey = createKey<MutableMap<String, RecursionGuard>>("RecursionGuardContext.cacheKey")
+    private val cache: ThreadLocal<MutableMap<String, RecursionGuard>> = ThreadLocal.withInitial { hashMapOf() }
+    private val cacheKey: Key<MutableMap<String, RecursionGuard>> = createKey("RecursionGuardContext.cacheKey")
 
     @PublishedApi
     internal fun createRecursionGuard(recursionGuardCache: MutableMap<String, RecursionGuard>, name: String): RecursionGuard {
@@ -26,7 +26,7 @@ internal object RecursionGuardContext {
 
     @PublishedApi
     internal fun getContextRecursionGuardCache(context: UserDataHolder): MutableMap<String, RecursionGuard> {
-        return context.getOrPutUserData(cacheKey) { FastMap() }
+        return context.getOrPutUserData(cacheKey) { hashMapOf() }
     }
 
     @PublishedApi

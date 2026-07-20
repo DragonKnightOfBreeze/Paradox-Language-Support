@@ -4,7 +4,12 @@ package icu.windea.pls.core.collections
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
+import com.intellij.openapi.util.text.StringUtilRt
+import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.isNotNullOrEmpty
+import it.unimi.dsi.fastutil.Hash
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
 import java.util.*
 
 /**
@@ -30,10 +35,7 @@ inline fun <T : Any> ImmutableSet(expectedSize: Int, init: (index: Int) -> T): S
 }
 
 /**
- * 创建一个可变集（[MutableSet]）。
- *
- * - 若提供 [comparator]，则返回基于 [TreeSet] 的有序集合；
- * - 否则返回标准库默认实现的可变集合。
+ * 创建一个可变集（[MutableSet]）。如果指定了 [comparator]，则返回使用此比较器的 [TreeSet]，否则返回默认的 [MutableSet]。
  */
 fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
     return if (comparator == null) mutableSetOf() else TreeSet(comparator)
@@ -42,6 +44,33 @@ fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
 // inline fun <reified T : Enum<T>> enumSetOf(vararg values: T): EnumSet<T> {
 //    return EnumSet.noneOf(T::class.java).apply { values.forEach { add(it) } }
 // }
+
+/**
+ * 忽略大小写的字符串哈希与相等策略。
+ */
+object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
+    override fun hashCode(s: String?): Int {
+        return if (s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
+    }
+
+    override fun equals(s1: String?, s2: String?): Boolean {
+        return s1.equals(s2, ignoreCase = true)
+    }
+}
+
+/**
+ * 创建一个忽略大小写的字符串集合。
+ */
+inline fun caseInsensitiveStringSet(): ObjectLinkedOpenCustomHashSet<@CaseInsensitive String> {
+    return ObjectLinkedOpenCustomHashSet<@CaseInsensitive String>(CaseInsensitiveStringHashingStrategy)
+}
+
+/**
+ * 创建一个键为忽略大小写字符串的映射。
+ */
+inline fun <V> caseInsensitiveStringKeyMap(): Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, V> {
+    return Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, V>(CaseInsensitiveStringHashingStrategy)
+}
 
 /**
  * 将多个集合合并到 [destination]，忽略 `null` 或空集合，返回 [destination] 本身。
@@ -54,7 +83,7 @@ fun <T : Any, C : MutableCollection<T>> mergeTo(destination: C, vararg collectio
 }
 
 /**
- * 合并多个集合得到新的 [List]，忽略 `null` 或空集合。
+ * 合并多个集合得到新的 [List]，忽略 `null` 或空集合，返回新创建的 [ArrayList]。
  */
 fun <T : Any> merge(vararg collections: Collection<T>?): List<T> {
     return mergeTo(ArrayList(), *collections)

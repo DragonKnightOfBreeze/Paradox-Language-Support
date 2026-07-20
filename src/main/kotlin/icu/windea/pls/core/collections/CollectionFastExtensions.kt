@@ -3,6 +3,7 @@
 package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.annotations.Fast
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 
 /** @see kotlin.collections.forEach */
 @Fast
@@ -44,7 +45,7 @@ inline fun <T> List<T>.forEachReversedIndexedFast(action: (Int, T) -> Unit) {
 @Fast
 inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
     if (isEmpty()) return emptyList()
-    val destination = FastList<R>(size)
+    val destination = ObjectArrayList<R>(size)
     forEachFast { e -> destination.add(transform(e)) }
     return destination
 }
@@ -53,7 +54,7 @@ inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
 @Fast
 inline fun <T, R> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
     if (isEmpty()) return emptyList()
-    val destination = FastList<R>(size)
+    val destination = ObjectArrayList<R>(size)
     forEachFast { e -> transform(e)?.let { destination.add(it) } }
     return destination
 }
@@ -62,7 +63,7 @@ inline fun <T, R> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
 @Fast
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
     if (isEmpty()) return emptyList()
-    val destination = FastList<T>()
+    val destination = ObjectArrayList<T>()
     forEachFast { e -> if (predicate(e)) destination.add(e) }
     return destination
 }
@@ -71,7 +72,7 @@ inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
 @Fast
 inline fun <T> List<T?>.filterNotNullFast(): List<T> {
     if (isEmpty()) return emptyList()
-    val destination = FastList<T>()
+    val destination = ObjectArrayList<T>()
     forEachFast { e -> if (e != null) destination.add(e) }
     return destination
 }

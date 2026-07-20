@@ -20,7 +20,6 @@ import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
@@ -49,7 +48,7 @@ object CwtConfigResolverManager {
     @Optimized
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtMemberContainer) return null
-        val configs: MutableList<CwtMemberConfig<*>> = FastList()
+        val configs: MutableList<CwtMemberConfig<*>> = mutableListOf()
         element.forEachChild f@{ e ->
             val resolved = when (e) {
                 is CwtProperty -> CwtPropertyConfig.resolve(e, file, configGroup)
@@ -65,7 +64,7 @@ object CwtConfigResolverManager {
 
     @Optimized
     fun getOptionConfigs(element: CwtMember, configGroup: CwtConfigGroup): List<CwtOptionMemberConfig<*>> {
-        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
+        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = mutableListOf()
         var current: PsiElement = element
         while (true) {
             current = current.prevSibling ?: break
@@ -91,7 +90,7 @@ object CwtConfigResolverManager {
     @Optimized
     fun getOptionConfigsInOption(element: CwtValue, configGroup: CwtConfigGroup): List<CwtOptionMemberConfig<*>>? {
         if (element !is CwtBlock) return null
-        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
+        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = mutableListOf()
         element.forEachChild f@{ e ->
             val resolved = when (e) {
                 is CwtOption -> CwtOptionConfig.resolve(e, configGroup)

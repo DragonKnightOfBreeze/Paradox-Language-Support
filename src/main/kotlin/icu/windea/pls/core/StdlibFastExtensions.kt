@@ -1,7 +1,6 @@
 package icu.windea.pls.core
 
 import icu.windea.pls.core.annotations.Fast
-import it.unimi.dsi.fastutil.objects.ObjectArrayList
 
 /** @see kotlin.text.trim */
 @Fast
@@ -39,7 +38,7 @@ fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 
     }
 
     val isLimited = limit > 0
-    val result = ObjectArrayList<String>(if (isLimited) limit.coerceAtMost(10) else 10)
+    val result = ArrayList<String>(if (isLimited) limit.coerceAtMost(10) else 10)
     do {
         result.add(substring(currentOffset, nextIndex))
         currentOffset = nextIndex + 1

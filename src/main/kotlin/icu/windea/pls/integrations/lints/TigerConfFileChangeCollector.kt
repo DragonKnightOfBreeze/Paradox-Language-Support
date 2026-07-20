@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.filterIsInstanceTo
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.normalizePath
@@ -18,8 +17,8 @@ import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 
 @Optimized
 class TigerConfFileChangeCollector {
-    private val enabledTools: MutableSet<TigerLintToolProvider> = FastSet()
-    private val changedConfFileNames: MutableSet<String> = FastSet()
+    private val enabledTools: MutableSet<TigerLintToolProvider> = mutableSetOf()
+    private val changedConfFileNames: MutableSet<String> = mutableSetOf()
 
     fun collectChange(events: List<VFileEvent>) {
         LintToolProvider.EP_NAME.extensionList.filterIsInstanceTo<TigerLintToolProvider, _>(enabledTools) { it.isEnabled() }

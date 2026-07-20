@@ -12,8 +12,6 @@ import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastMap
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
@@ -187,7 +185,7 @@ object CwtOptionDataProcessor {
     private fun resolvePredicate(config: CwtOptionConfig): Map<String, ReversibleValue<String>>? {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
-        val r = FastMap<String, ReversibleValue<String>>()
+        val r = mutableMapOf<String, ReversibleValue<String>>()
         optionConfigs.forEachFast f@{ optionConfig ->
             if (optionConfig !is CwtOptionConfig) return@f
             val k = optionConfig.key
@@ -201,7 +199,7 @@ object CwtOptionDataProcessor {
     private fun resolveReplaceScopes(config: CwtOptionConfig): Map<String, String>? {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
-        val r = FastMap<String, String>()
+        val r = mutableMapOf<String, String>()
         optionConfigs.forEachFast f@{ optionConfig ->
             if (optionConfig !is CwtOptionConfig) return@f
             // ignore case for both system scopes and scopes (to lowercase)
@@ -218,15 +216,15 @@ object CwtOptionDataProcessor {
 
     private fun resolveSupportedScopes(config: CwtOptionConfig): Set<String>? {
         val values = config.getOptionValueOrValues()?.orNull() ?: return null
-        val r = values.mapTo(FastSet()) { ParadoxScope.getId(it) }
+        val r = values.mapTo(mutableSetOf()) { ParadoxScope.getId(it) }
         return r.optimized()
     }
 
     private fun resolveTypeKeyFilter(config: CwtOptionConfig): ReversibleValue<Set<@CaseInsensitive String>>? {
         val values = config.getOptionValueOrValues() ?: return null
+        val value = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val operator = config.separatorType == CwtSeparatorType.Equal
-        val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
-        val r = ReversibleValue(set.optimized(), operator)
+        val r = ReversibleValue(value.optimized(), operator)
         return r
     }
 }
