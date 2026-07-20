@@ -28,12 +28,13 @@ object CwtOptionDataProcessor {
     fun process(optionData: CwtOptionDataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
         if (optionData !is CwtOptionDataHolderBase) return
         if (optionConfigs.isEmpty()) return
-        if (ChronicleThreadContext.skipProcessingOptionData.get() == true) {
-            optionData.optionConfigs = optionConfigs // 始终保留选项规则到成员规则的用户数据中
-            return
+        val skipProcessing = ChronicleThreadContext.skipProcessingOptionData.get() == true
+        val keepOptionConfigs = skipProcessing || ChronicleCapacities.keepOptionConfigs()
+        if (keepOptionConfigs) {
+            optionData.optionConfigs = optionConfigs.optimized() // optimized to optimize memory
         }
-        if (ChronicleCapacities.keepOptionConfigs()) {
-            optionData.optionConfigs = optionConfigs // 此时保留选项规则到成员规则的用户数据中
+        if (skipProcessing) {
+            return
         }
         optionConfigs.forEachFast { config ->
             when (config) {

@@ -1,6 +1,7 @@
 package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolder
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -40,12 +41,12 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * @see CwtMemberConfig
  */
 interface CwtOptionDataHolder : UserDataHolder {
-    // region Internal
-
-    // NOTE by default, only reserved for internal configs
+    /**
+     * 得到原始的选项规则列表。
+     *
+     * 备注：默认仅为内部规则保留。参见 [ChronicleCapacities.keepOptionConfigs]。
+     */
     val optionConfigs: List<CwtOptionMemberConfig<*>>
-
-    // endregion
 
     // region Core
 

@@ -118,6 +118,7 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
                 CwtOptionConfigImpl(key, value, valueType, separatorType)
             }
         }
+        val optionConfigs = optionConfigs.optimized() // optimized to optimize memory
         return CwtOptionConfigImplNested(key, separatorType, optionConfigs)
     }
 }

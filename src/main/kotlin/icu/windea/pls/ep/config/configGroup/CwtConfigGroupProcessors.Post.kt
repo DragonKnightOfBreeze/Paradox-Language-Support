@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.config.configGroup
 
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigResolverManager
 
@@ -13,9 +14,12 @@ class CwtPostConfigGroupProcessor : CwtConfigGroupProcessor {
     }
 
     private fun clearData(configGroup: CwtConfigGroup) {
-        // NOTE 2.1.5 为了优化内存，文件规则最终不会保留在规则分组数据中
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
-        fileConfigs.clear()
+        // NOTE 2.1.5 为了优化内存，文件规则最终默认不会保留在规则分组数据中
+        val keepFileConfigs = ChronicleCapacities.keepFileConfigs()
+        if (!keepFileConfigs) {
+            val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+            fileConfigs.clear()
+        }
 
         val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
         postProcessActions.clear()

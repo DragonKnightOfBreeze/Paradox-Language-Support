@@ -102,29 +102,35 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
         if (overrideBuiltIn) fileInfos.removeIf { it.source == CwtConfigGroupFileSource.BuiltIn }
 
         checkCanceled()
-        val internalFileConfigs = mutableMapOf<String, CwtFileConfig>()
-        val fileConfigs = mutableMapOf<String, CwtFileConfig>()
+        val internalFileConfigMap = mutableMapOf<String, CwtFileConfig>()
+        val fileConfigMap = mutableMapOf<String, CwtFileConfig>()
         // 允许覆盖先加入的同路径的规则文件
         for ((filePath, file, source) in internalFileInfos) {
             checkCanceled()
             if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
             val fileConfig = readAction { resolveInternalFileConfig(configGroup, file, filePath) } ?: continue
-            internalFileConfigs[filePath] = fileConfig
+            internalFileConfigMap[filePath] = fileConfig
         }
         for ((filePath, file) in fileInfos) {
             checkCanceled()
             val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
-            fileConfigs[filePath] = fileConfig
+            fileConfigMap[filePath] = fileConfig
         }
 
-        CwtConfigResolverManager.getFileConfigs(configGroup).putAll(fileConfigs)
-        CwtConfigResolverManager.getPostProcessActions(configGroup).forEach { it.run() }
+        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+        fileConfigs += internalFileConfigMap
+        fileConfigs += fileConfigMap
 
-        for (fileConfig in internalFileConfigs.values) {
+        val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
+        for (it in postProcessActions) {
+            it.run()
+        }
+
+        for (fileConfig in internalFileConfigMap.values) {
             checkCanceled()
             readAction { processInternalFile(fileConfig) }
         }
-        for (fileConfig in fileConfigs.values) {
+        for (fileConfig in fileConfigMap.values) {
             checkCanceled()
             readAction { processFile(fileConfig) }
         }

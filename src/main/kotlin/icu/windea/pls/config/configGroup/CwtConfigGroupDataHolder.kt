@@ -1,6 +1,9 @@
 package icu.windea.pls.config.configGroup
 
+import com.intellij.openapi.util.UserDataHolder
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
+import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -49,7 +52,14 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
  * @see CwtConfigGroup
  * @see CwtConfigGroupInitializer
  */
-interface CwtConfigGroupDataHolder {
+interface CwtConfigGroupDataHolder : UserDataHolder {
+    /**
+     * 得到原始的文件规则映射，键为相对于规则分组根目录的路径。
+     *
+     * 备注：默认不保留。参见 [ChronicleCapacities.keepFileConfigs]。
+     */
+    val fileConfigs: Map<String, CwtFileConfig>
+
     // region Internal
 
     val schemas: List<CwtSchemaConfig>

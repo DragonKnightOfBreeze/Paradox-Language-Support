@@ -38,7 +38,7 @@ class CwtConfigGroupImpl(
         try {
             val start = System.currentTimeMillis()
             initializer.clear() // 清空以避免数据残留
-            doApplyDataProviders() // 应用 dataProviders
+            doApplyProcessors() // 应用 processors
             initializer.copyUserDataTo(this) // 直接一次性替换规则数据
             initializer.clear() // 清空以避免内存泄露
             doApplyPostProcessors() // 应用 postProcessors
@@ -54,7 +54,7 @@ class CwtConfigGroupImpl(
         }
     }
 
-    private suspend fun doApplyDataProviders() {
+    private suspend fun doApplyProcessors() {
         val dataProviders = CwtConfigGroupProcessor.EP_NAME.extensionList
         dataProviders.forEachFast { it.process(this) }
     }
