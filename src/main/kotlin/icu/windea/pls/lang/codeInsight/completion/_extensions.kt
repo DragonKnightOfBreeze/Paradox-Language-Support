@@ -166,7 +166,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
     if (context.isKey == null) return lookupElement // not complete full key or value
 
     val params = ChronicleInsertHandlers.Params(
-        quoted = context.globalContext.leftQuoted,
+        quoted = context.leftQuoted,
         isKey = context.isKey,
         insertCurlyBraces = insertCurlyBraces,
         constantValue = constantValue,

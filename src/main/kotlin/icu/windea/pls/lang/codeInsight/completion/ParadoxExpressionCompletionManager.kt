@@ -381,12 +381,12 @@ object ParadoxExpressionCompletionManager {
         if (!configExpression.isKey) {
             // 常量的值也可能是yes/no
             if (name == "yes") {
-                if (context.globalContext.leftQuoted) return
+                if (context.leftQuoted) return
                 result.addElement(ChronicleLookupElements.yesLookupElement, context)
                 return
             }
             if (name == "no") {
-                if (context.globalContext.leftQuoted) return
+                if (context.leftQuoted) return
                 result.addElement(ChronicleLookupElements.noLookupElement, context)
                 return
             }
