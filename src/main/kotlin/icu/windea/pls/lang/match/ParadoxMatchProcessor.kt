@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.match
 
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
 
 object ParadoxMatchProcessor {
@@ -19,7 +18,7 @@ object ParadoxMatchProcessor {
         // - 如果不是直接返回的情况，还需要处理带参数的匹配（`ParameterizedMatch`），如果有结果，则需要加入最终的结果中
 
         if (candidates.isEmpty()) return emptyList()
-        val matched = FastList<ParadoxMatchCandidate>()
+        val matched = mutableListOf<ParadoxMatchCandidate>()
         process(candidates, matched, options)
         return matched
     }
@@ -69,7 +68,7 @@ object ParadoxMatchProcessor {
     }
 
     private inline fun processLazy(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
-        val lazyMatched = FastList<ParadoxMatchCandidate>()
+        val lazyMatched = mutableListOf<ParadoxMatchCandidate>()
         processUnchecked(candidates, lazyMatched, predicate)
         val lazyMatchedSize = lazyMatched.size
         if (lazyMatchedSize == 1) {

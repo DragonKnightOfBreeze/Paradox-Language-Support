@@ -47,13 +47,13 @@ import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
@@ -331,7 +331,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     for (config in configs) {
                         val definitionConfig = CwtExtendedDefinitionConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(definitionConfig)) continue
-                        initializer.extendedDefinitions.computeIfAbsent(definitionConfig.name) { FastList() } += definitionConfig
+                        initializer.extendedDefinitions.computeIfAbsent(definitionConfig.name) { ObjectArrayList() } += definitionConfig
                     }
                 }
                 key == "game_rules" -> {
@@ -355,7 +355,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     for (config in configs) {
                         val parameterConfig = CwtExtendedParameterConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(parameterConfig)) continue
-                        initializer.extendedParameters.computeIfAbsent(parameterConfig.name) { FastList() } += parameterConfig
+                        initializer.extendedParameters.computeIfAbsent(parameterConfig.name) { ObjectArrayList() } += parameterConfig
                     }
                 }
                 key == "complex_enum_values" -> {
@@ -367,7 +367,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         for (config1 in configs1) {
                             val complexEnumValueConfig = CwtExtendedComplexEnumValueConfig.resolve(config1, type)
                             if (CwtConfigService.filter(complexEnumValueConfig)) continue
-                            initializer.extendedComplexEnumValues.computeIfAbsent(type) { FastMap() }[complexEnumValueConfig.name] = complexEnumValueConfig
+                            initializer.extendedComplexEnumValues.computeIfAbsent(type) { Object2ObjectLinkedOpenHashMap() }[complexEnumValueConfig.name] = complexEnumValueConfig
                         }
                     }
                 }
@@ -380,7 +380,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         for (config1 in configs1) {
                             val dynamicValueConfig = CwtExtendedDynamicValueConfig.resolve(config1, type)
                             if (CwtConfigService.filter(dynamicValueConfig)) continue
-                            initializer.extendedDynamicValues.computeIfAbsent(type) { FastMap() }[dynamicValueConfig.name] = dynamicValueConfig
+                            initializer.extendedDynamicValues.computeIfAbsent(type) { Object2ObjectLinkedOpenHashMap() }[dynamicValueConfig.name] = dynamicValueConfig
                         }
                     }
                 }
@@ -397,7 +397,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
                         if (CwtConfigService.filter(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
-                        initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
+                        initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { Object2ObjectLinkedOpenHashMap() }.computeIfAbsent(aliasConfig.subName) { ObjectArrayList() } += aliasConfig
                     }
                     run {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run

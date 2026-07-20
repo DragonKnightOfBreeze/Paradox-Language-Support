@@ -17,15 +17,15 @@ import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.FastMap
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.paths.CwtConfigPath
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 
 /**
  * 用于初始化规则分组中需要经过计算的那些数据。
@@ -84,7 +84,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             for (snippetExpression in modifierConfig.template.snippetExpressions) {
                 if (snippetExpression.type == CwtDataTypes.Definition) {
                     val typeExpression = snippetExpression.value ?: continue
-                    initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { FastMap() }[name] = modifierConfig
+                    initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { Object2ObjectLinkedOpenHashMap() }[name] = modifierConfig
                 }
             }
         }
@@ -100,13 +100,13 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                             val typeExpression = "$name.$subtypeName"
                             val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
                             initializer.modifiers[modifierConfig.name] = modifierConfig
-                            initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { FastMap() }[pp.key] = modifierConfig
+                            initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { Object2ObjectLinkedOpenHashMap() }[pp.key] = modifierConfig
                         }
                     } else {
                         val typeExpression = name
                         val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
                         initializer.modifiers[modifierConfig.name] = modifierConfig
-                        initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { FastMap() }[p.key] = modifierConfig
+                        initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { Object2ObjectLinkedOpenHashMap() }[p.key] = modifierConfig
                     }
                 }
             }
@@ -164,7 +164,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     private fun computeAliasKeysGroups(initializer: CwtConfigGroupInitializer) {
         for ((k, v) in initializer.aliasGroups) {
             val keysConst = caseInsensitiveStringKeyMap<String>()
-            val keysNoConst = FastSet<String>()
+            val keysNoConst = ObjectLinkedOpenHashSet<String>()
             for (key in v.keys) {
                 if (CwtDataExpression.resolve(key, true).type == CwtDataTypes.Constant) {
                     keysConst[key] = key
@@ -177,7 +177,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             }
             if (keysNoConst.isNotEmpty()) {
                 val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { initializer })
-                val fastSet = FastSet<String>()
+                val fastSet = ObjectLinkedOpenHashSet<String>()
                 fastSet.addAll(sorted)
                 initializer.aliasKeysGroupNoConst[k] = fastSet
             }
@@ -227,7 +227,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                         }
                         if (c.fromArgument) {
                             forScopeFromArgumentSorted += c
-                            forScopeFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { FastList() } += c
+                            forScopeFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { ObjectArrayList() } += c
                         }
                     }
                 }
@@ -242,7 +242,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                         }
                         if (c.fromArgument) {
                             forValueFromArgumentSorted += c
-                            forValueFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { FastList() } += c
+                            forValueFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { ObjectArrayList() } += c
                         }
                     }
                 }

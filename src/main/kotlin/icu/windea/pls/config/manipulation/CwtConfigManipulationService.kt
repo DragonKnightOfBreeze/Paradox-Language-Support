@@ -20,7 +20,6 @@ import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
@@ -35,6 +34,7 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.type.CwtExpressionType
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -43,7 +43,7 @@ object CwtConfigManipulationService {
 
     @Optimized
     fun createListForDeepCopy(): MutableList<CwtMemberConfig<*>> {
-        return FastList()
+        return ObjectArrayList()
     }
 
     @Optimized
@@ -53,7 +53,7 @@ object CwtConfigManipulationService {
             returnsNotNull() implies (configs != null)
         }
         if (configs == null) return null
-        return FastList()
+        return ObjectArrayList()
     }
 
     /**

@@ -4,7 +4,6 @@ import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider
@@ -27,7 +26,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val project = file.project
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroupsToChange = FastSet<CwtConfigGroup>()
+        val configGroupsToChange = mutableSetOf<CwtConfigGroup>()
         fileProviders.forEach f@{ fileProvider ->
             if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f
             if (!fileProvider.isEnabled) return@f // 如果未启用则不要把规则分组标记为已更改

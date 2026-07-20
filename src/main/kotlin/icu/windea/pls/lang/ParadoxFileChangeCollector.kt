@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -18,12 +17,12 @@ import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized
 class ParadoxFileChangeCollector {
-    private val rootInfoContextFiles: MutableSet<VirtualFile> = FastSet()
-    private val rootFilesToClearRootInfo: MutableSet<VirtualFile> = FastSet()
+    private val rootInfoContextFiles: MutableSet<VirtualFile> = mutableSetOf()
+    private val rootFilesToClearRootInfo: MutableSet<VirtualFile> = mutableSetOf()
 
-    private val filesToClearFileInfo: MutableSet<VirtualFile> = FastSet()
-    private val filesToClearLocaleConfig: MutableSet<VirtualFile> = FastSet()
-    private val filesToClearSliceInfos: MutableSet<VirtualFile> = FastSet()
+    private val filesToClearFileInfo: MutableSet<VirtualFile> = mutableSetOf()
+    private val filesToClearLocaleConfig: MutableSet<VirtualFile> = mutableSetOf()
+    private val filesToClearSliceInfos: MutableSet<VirtualFile> = mutableSetOf()
 
     private var reparseAllOpenFiles: Boolean = false
     private var refreshFilePaths: Boolean = false

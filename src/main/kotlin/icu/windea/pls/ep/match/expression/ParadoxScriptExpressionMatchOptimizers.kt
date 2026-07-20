@@ -5,8 +5,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -45,7 +43,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         if (filteredGroup.isEmpty()) return null
         val block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
         val blockExpression = ParadoxExpression.resolveBlock()
-        val configsToRemove = FastSet<CwtPropertyConfig>()
+        val configsToRemove = mutableSetOf<CwtPropertyConfig>()
         filteredGroup.forEachFast f1@{ filteredConfigs ->
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
@@ -69,7 +67,7 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
     @Optimized
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.isEmpty()) return null
-        val result = FastList<T>()
+        val result = mutableListOf<T>()
         var hasOverride = false
         configs.forEachFast f1@{ config ->
             val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.element, config)

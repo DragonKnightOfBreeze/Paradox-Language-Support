@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
@@ -17,8 +16,8 @@ import icu.windea.pls.model.ParadoxGameType
 
 @Optimized
 class CwtConfigFileChangeCollector {
-    private val contextFiles: MutableSet<VirtualFile> = FastSet()
-    private val contextDirectories: MutableSet<VirtualFile> by lazy { contextFiles.mapNotNullTo(FastSet()) { it.parent } }
+    private val contextFiles: MutableSet<VirtualFile> = mutableSetOf()
+    private val contextDirectories: MutableSet<VirtualFile> by lazy { contextFiles.mapNotNullTo(mutableSetOf()) { it.parent } }
 
     fun collectChange(events: List<VFileEvent>) {
         events.forEachFast f@{ event ->
@@ -65,7 +64,7 @@ class CwtConfigFileChangeCollector {
         val openProjects = ProjectManager.getInstance().openProjects
         openProjects.forEach f1@{ project ->
             val configGroupService = CwtConfigGroupService.getInstance(project)
-            val configGroupsToChange = FastSet<CwtConfigGroup>()
+            val configGroupsToChange = mutableSetOf<CwtConfigGroup>()
             fileProviders.forEachFast f2@{ fileProvider ->
                 if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f2
                 if (!fileProvider.isEnabled) return@f2 // 如果未启用则不要把规则分组标记为已更改

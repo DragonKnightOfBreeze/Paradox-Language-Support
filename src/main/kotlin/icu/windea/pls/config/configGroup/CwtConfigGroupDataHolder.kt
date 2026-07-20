@@ -185,9 +185,9 @@ interface CwtConfigGroupDataHolder {
 
     // endregion
 
-    fun clear()
-
     fun trim()
+
+    fun clear()
 }
 
 /** 用于获取符合特定条件的定义类型。 */

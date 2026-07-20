@@ -10,12 +10,12 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
-import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.ParadoxGameType
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -40,8 +40,8 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
             val aliasConfig = CwtAliasConfig.resolve(prop)
             if (aliasConfig != null) {
                 val subtype = aliasConfig.subName
-                val aliasGroup = initializer.aliasGroups.getOrPut(aliasConfig.name) { FastMap() }
-                val configs = aliasGroup.getOrPut(subtype) { FastList() }
+                val aliasGroup = initializer.aliasGroups.getOrPut(aliasConfig.name) { Object2ObjectLinkedOpenHashMap() }
+                val configs = aliasGroup.getOrPut(subtype) { ObjectArrayList() }
                 configs.add(aliasConfig)
             }
             val singleAliasConfig = CwtSingleAliasConfig.resolve(prop)
