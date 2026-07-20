@@ -7,7 +7,7 @@ import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.process
-import icu.windea.pls.core.util.Processors
+import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -18,7 +18,7 @@ class AutomaticLocalisationsRenamerFactory : AutomaticRenamerFactory {
         val name = element.name.orNull() ?: return false
         val type = element.type ?: return false
         val selector = ParadoxLocalisationSearch.selector(element.project, element)
-        val processor = Processors.duplicate<ParadoxLocalisationProperty>()
+        val processor = ProcessorFactory.duplicate<ParadoxLocalisationProperty>()
         ParadoxLocalisationSearch.search(name, type, selector).process(processor)
         return processor.duplicated
     }

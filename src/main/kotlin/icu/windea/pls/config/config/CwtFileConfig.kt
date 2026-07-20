@@ -38,6 +38,9 @@ interface CwtFileConfig : CwtMemberContainerConfig<CwtFile> {
     override val properties: List<CwtPropertyConfig>
     override val values: List<CwtValueConfig>
 
+    /** 尝试将 [configs] 作为当前规则的子规则列表。返回是否操作成功。 */
+    fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean = false
+
     companion object {
         @JvmStatic
         fun create(
@@ -47,10 +50,6 @@ interface CwtFileConfig : CwtMemberContainerConfig<CwtFile> {
             filePath: String,
             configs: List<CwtMemberConfig<*>> = emptyList(),
         ): CwtFileConfig = CwtFileConfigResolver.create(pointer, configGroup, fileName, filePath, configs)
-
-        @Suppress("unused")
-        @JvmStatic
-        fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean = CwtFileConfigResolver.withConfigs(config, configs)
 
         @JvmStatic
         fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig = CwtFileConfigResolver.resolve(file, configGroup, filePath)
@@ -75,19 +74,10 @@ private object CwtFileConfigResolver : CwtConfigResolverScope {
         val withConfigs = configs.isNotEmpty()
         val config = when (withConfigs) {
             true -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath)
+                .also { it.configs = configs.optimized() } // optimized to optimize memory
             else -> CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
         }
-        if (withConfigs) withConfigs(config, configs)
         return config
-    }
-
-    fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean {
-        if (config is CwtFileConfigImplWithConfigs) {
-            config.configs = configs.optimized() // optimized to optimize memory
-            config.memberType = CwtMembersType.UNSET
-            return true
-        }
-        return false
     }
 
     fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig {
@@ -155,6 +145,12 @@ private class CwtFileConfigImplWithConfigs(
             if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
             return CwtConfigResolverManager.getValues(configs, memberType)
         }
+
+    override fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
+        this.configs = configs.optimized() // optimized to optimize memory
+        this.memberType = CwtMembersType.UNSET
+        return true
+    }
 }
 
 // endregion
