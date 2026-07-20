@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -74,7 +74,7 @@ private object CwtScopeConfigResolver : CwtConfigResolverScope {
         }
         val propGroup = propConfigs.groupBy { it.key }
         val aliases = propGroup.getOne("aliases")?.let { prop ->
-            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+            prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
         }?.optimized().orEmpty()
         val isSubscopeOf = propGroup.getOne("is_subscope_of")?.stringValue
         logger.debug { "Resolved scope config (name: $name).".withLocationPrefix(config) }

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate
 
@@ -42,7 +42,7 @@ private object CwtPostfixTemplateSettingsConfigResolver : CwtConfigResolverScope
         val configs = fileConfig.properties
         for (groupProperty in configs) {
             val groupName = groupProperty.key
-            val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettingsConfig>()
+            val map = CaseInsensitiveStringKeyMap<CwtPostfixTemplateSettingsConfig>()
             for (property in groupProperty.properties.orEmpty()) {
                 val id = property.key
                 val propConfigs = property.properties

@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
@@ -36,8 +36,8 @@ import kotlinx.coroutines.withContext
  * @see CwtModifierCategoryConfig
  */
 class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGenerator {
-    val ignoredNames = caseInsensitiveStringSet()
-    val ignoredCategories = caseInsensitiveStringSet()
+    val ignoredNames = CaseInsensitiveStringSet()
+    val ignoredCategories = CaseInsensitiveStringSet()
 
     init {
         configureDefaults()
@@ -110,7 +110,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
         if (!file.exists()) return ModifierConfigInfo() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
-        val names = caseInsensitiveStringSet()
+        val names = CaseInsensitiveStringSet()
         val templates = mutableSetOf<CwtTemplateExpression>()
         readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()

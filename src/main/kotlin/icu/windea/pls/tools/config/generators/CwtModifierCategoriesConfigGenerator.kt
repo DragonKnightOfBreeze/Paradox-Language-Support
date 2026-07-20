@@ -4,7 +4,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.unquote
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
  * @see CwtModifierCategoryConfig
  */
 class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtConfigGenerator {
-    val ignoredNames = caseInsensitiveStringSet()
+    val ignoredNames = CaseInsensitiveStringSet()
 
     init {
         configureDefaults()

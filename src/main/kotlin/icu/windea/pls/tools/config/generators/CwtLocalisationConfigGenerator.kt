@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -32,8 +32,8 @@ import java.io.File
  * @see CwtLocalisationCommandConfig
  */
 class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigGenerator {
-    val ignoredPromotionNames = caseInsensitiveStringSet()
-    val ignoredCommandNames = caseInsensitiveStringSet()
+    val ignoredPromotionNames = CaseInsensitiveStringSet()
+    val ignoredCommandNames = CaseInsensitiveStringSet()
 
     init {
         configureDefaults()

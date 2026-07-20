@@ -16,7 +16,7 @@ import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -83,7 +83,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             for (snippetExpression in modifierConfig.template.snippetExpressions) {
                 if (snippetExpression.type == CwtDataTypes.Definition) {
                     val typeExpression = snippetExpression.value ?: continue
-                    initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { Object2ObjectLinkedOpenHashMap() }[name] = modifierConfig
+                    initializer.type2ModifiersMap.getOrPut(typeExpression) { Object2ObjectLinkedOpenHashMap() }[name] = modifierConfig
                 }
             }
         }
@@ -99,13 +99,13 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                             val typeExpression = "$name.$subtypeName"
                             val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
                             initializer.modifiers[modifierConfig.name] = modifierConfig
-                            initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { Object2ObjectLinkedOpenHashMap() }[pp.key] = modifierConfig
+                            initializer.type2ModifiersMap.getOrPut(typeExpression) { Object2ObjectLinkedOpenHashMap() }[pp.key] = modifierConfig
                         }
                     } else {
                         val typeExpression = name
                         val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
                         initializer.modifiers[modifierConfig.name] = modifierConfig
-                        initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { Object2ObjectLinkedOpenHashMap() }[p.key] = modifierConfig
+                        initializer.type2ModifiersMap.getOrPut(typeExpression) { Object2ObjectLinkedOpenHashMap() }[p.key] = modifierConfig
                     }
                 }
             }
@@ -167,7 +167,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     private fun computeAliasKeysGroups(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
         for ((k, v) in initializer.aliasGroups) {
-            val keysConst = caseInsensitiveStringKeyMap<String>()
+            val keysConst = CaseInsensitiveStringKeyMap<String>()
             val keysNoConst = ObjectLinkedOpenHashSet<String>()
             for (key in v.keys) {
                 if (CwtDataExpression.resolve(key, true).type == CwtDataTypes.Constant) {

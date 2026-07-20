@@ -3,7 +3,7 @@ package icu.windea.pls.config.attributes
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
 
@@ -15,8 +15,8 @@ import icu.windea.pls.core.util.values.ReversibleValue
  */
 @Optimized
 class CwtTypeConfigAttributesEvaluator {
-    private val involvedTypeKeys = caseInsensitiveStringSet()
-    private val possibleTypeKeys = caseInsensitiveStringSet()
+    private val involvedTypeKeys = CaseInsensitiveStringSet()
+    private val possibleTypeKeys = CaseInsensitiveStringSet()
 
     fun evaluate(config: CwtTypeConfig): CwtTypeConfigAttributes {
         val maxRootKeyDepth = computeMaxRootKeyDepth(config)
