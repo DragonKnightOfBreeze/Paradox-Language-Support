@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.cwt.psi.CwtFile
@@ -29,7 +29,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/config/injection_target.test.cwt")
         val targetFile = myFixture.file as CwtFile
 
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         val sourceFilePath = "common/test/injection_source.cwt"
         val targetFilePath = "common/test/injection_target.cwt"
@@ -189,7 +189,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/config/injection_deep_recursive_target.test.cwt")
         val targetFile = myFixture.file as CwtFile
 
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         val sourceFilePath = "common/test/injection_deep_recursive_source.cwt"
         val targetFilePath = "common/test/injection_deep_recursive_target.cwt"
@@ -231,7 +231,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/config/injection_recursive_target.test.cwt")
         val fileTarget = myFixture.file as CwtFile
 
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         val pathA = "common/test/injection_recursive_a.cwt"
         val pathB = "common/test/injection_recursive_b.cwt"
@@ -258,7 +258,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         }
     }
 
-    private fun runPostProcessActions(configGroup: CwtConfigGroupImpl) {
+    private fun runPostProcessActions(configGroup: CwtConfigGroup) {
         val actions = CwtConfigResolverManager.getPostProcessActions(configGroup)
         while (actions.isNotEmpty()) {
             val action = actions.removeAt(0)

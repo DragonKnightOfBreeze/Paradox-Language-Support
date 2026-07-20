@@ -127,7 +127,7 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
     }
 
     fun resolveFromColumnConfig(config: CwtPropertyConfig): CwtComplexEnumConfig? {
-        val name = config.declareComplexEnum?.orNull() ?: return null
+        val name = config.optionData.declareComplexEnum?.orNull() ?: return null
         return CwtComplexEnumConfigFromColumnConfig(config, name)
     }
 }

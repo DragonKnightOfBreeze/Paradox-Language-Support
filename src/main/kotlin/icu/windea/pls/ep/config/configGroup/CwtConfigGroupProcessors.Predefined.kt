@@ -2,7 +2,6 @@ package icu.windea.pls.ep.config.configGroup
 
 import icu.windea.pls.base.data.ChronicleJsonService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -12,12 +11,11 @@ import icu.windea.pls.model.ParadoxGameType
  */
 class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
     override suspend fun process(configGroup: CwtConfigGroup) {
-        val initializer = configGroup.initializer
-
-        processJsonData(configGroup, initializer)
+        processJsonData(configGroup)
     }
 
-    private fun processJsonData(configGroup: CwtConfigGroup, initializer: CwtConfigGroupInitializer) {
+    private fun processJsonData(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         val jsonData = ChronicleJsonService.configGroupDataList
         val jsonList = jsonData.filter { it.gameType == ParadoxGameType.Core || it.gameType == configGroup.gameType }
         for (json in jsonList) {

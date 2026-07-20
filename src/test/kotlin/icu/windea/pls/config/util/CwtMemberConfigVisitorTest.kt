@@ -5,7 +5,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -23,14 +22,14 @@ class CwtMemberConfigVisitorTest : BasePlatformTestCase() {
     private fun preparePropertyCases(): Pair<CwtFile, CwtConfigGroup> {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         return file to configGroup
     }
 
     private fun prepareValueCases(): Pair<CwtFile, CwtConfigGroup> {
         myFixture.configureByFile("features/config/value_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         return file to configGroup
     }
 

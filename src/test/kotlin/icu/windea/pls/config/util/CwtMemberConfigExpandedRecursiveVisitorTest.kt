@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -28,7 +27,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     private fun prepareCases(): Pair<CwtFile, CwtConfigGroup> {
         myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
 
         // 解析文件配置并注册别名到配置组
         val filePath = "common/test/expandable_visitor_cases.cwt"

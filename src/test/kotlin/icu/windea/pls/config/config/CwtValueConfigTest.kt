@@ -4,7 +4,6 @@ import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
@@ -25,7 +24,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     private fun prepare(): Triple<CwtFile, CwtConfigGroup, String> {
         myFixture.configureByFile("features/config/value_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val path = "common/test/value_config_cases.cwt"
         return Triple(file, group, path)
     }
@@ -81,7 +80,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     fun testBoundaries_values() {
         myFixture.configureByFile("features/config/value_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         // number forms
@@ -195,7 +194,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     fun testResolver_resolveFromPropertyConfig_valueWrapper_userDataIsolation() {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val prop = root.findChild<CwtProperty> { it.name == "block_prop" }!!
