@@ -3,6 +3,8 @@ import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.CancellationToken
 import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.extensions.excludeCoroutines
+import org.jetbrains.intellij.platform.gradle.extensions.excludeKotlinStdlib
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
@@ -16,11 +18,8 @@ buildscript {
 }
 
 plugins {
-    // NOTE 3.0.0 [compatibility] DO NOT update `org.jetbrains.intellij.platform` to 2.18.0+ - may cause `Indexing timeout` during tests
-    // https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/2188
-
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.17.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform") version "2.18.1" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.3" // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.kotlinx.kover") version "0.9.8" // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
@@ -119,7 +118,11 @@ dependencies {
     }
 
     // kotlin test junit - https://kotlinlang.org
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit") {
+        // The exclusion here is necessary, see: https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/2188
+        excludeKotlinStdlib()
+        excludeCoroutines()
+    }
     // junit - https://github.com/junit-team/junit4
     testImplementation("junit:junit:4.13.2")
     // opentest4j - https://github.com/ota4j-team/opentest4j
@@ -215,7 +218,7 @@ sourceSets {
     }
     test {
         java.srcDirs("src/test/java", "src/test/kotlin")
-        java.srcDirs("src/test/unused") // unused codes (NOTE: cannot move to another source set)
+        java.srcDirs("src/test/unused") // unused codes (cannot move to another source set)
         resources.srcDirs("src/test/resources")
     }
 }
