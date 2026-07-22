@@ -8,7 +8,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.util.data.ParadoxModDescriptorData
-import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
+import icu.windea.pls.lang.data.ParadoxScriptDataResolver
 import icu.windea.pls.model.analysis.ParadoxDescriptorModInfo
 import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
 import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo

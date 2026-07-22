@@ -10,9 +10,9 @@ import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
+import icu.windea.pls.lang.presentation.ParadoxPresentationUtil
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
-import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleConstants
 

@@ -20,6 +20,8 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
+import icu.windea.pls.lang.data.ParadoxScriptDataResolver
+import icu.windea.pls.lang.data.get
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
@@ -27,8 +29,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
-import icu.windea.pls.lang.util.data.get
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType

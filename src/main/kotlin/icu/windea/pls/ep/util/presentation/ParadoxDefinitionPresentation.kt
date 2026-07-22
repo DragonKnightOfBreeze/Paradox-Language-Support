@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.util.presentation
 
-import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
+import icu.windea.pls.lang.presentation.ParadoxPresentationService
 import javax.swing.JComponent
 
 /**

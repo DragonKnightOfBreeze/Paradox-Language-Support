@@ -14,9 +14,9 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.data.ParadoxScriptData
+import icu.windea.pls.lang.data.ParadoxScriptDataResolver
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.data.ParadoxScriptData
-import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
