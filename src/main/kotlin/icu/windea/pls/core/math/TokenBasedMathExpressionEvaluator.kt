@@ -6,21 +6,35 @@ import kotlin.math.min
 import kotlin.math.pow
 
 /**
- * 默认的数学表达式的评估器。
- *
- * @see MathExpressionEvaluator
+ * 使用一组数学词元（[MathToken]）作为输入的数学表达式评估器。
  */
-class DefaultMathExpressionEvaluator(
+@Suppress("unused")
+class TokenBasedMathExpressionEvaluator(
     override var precision: Int? = null,
     override var isFloatingPoint: Boolean? = null,
 ) : MathExpressionEvaluator {
-    private enum class State { None, Operand, Operator, LeftPar, LeftAbs }
-
     /**
+     * 评估来自 [tokens] 的数学表达式。如果发生意外，则会抛出异常。
+     *
      * @throws ArithmeticException 如果在评估过程中发生任何数学异常。
      * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
      */
-    override fun evaluate(tokens: List<MathToken>): MathResult {
+    fun evaluate(tokens: List<MathToken>): MathResult {
+        return evaluateInternal(tokens)
+    }
+
+    /**
+     * 评估来自 [tokens] 的数学表达式。如果发生意外，则会直接返回 `null`。
+     */
+    fun evaluateOrNull(tokens: List<MathToken>): MathResult? {
+        return runCatching { evaluateInternal(tokens) }.getOrNull()
+    }
+
+    // region Implementations
+
+    private enum class State { None, Operand, Operator, LeftPar, LeftAbs }
+
+    private fun evaluateInternal(tokens: List<MathToken>): MathResult {
         val values = ArrayDeque<MathResult>()
         val expressions = ArrayDeque<MathExpression>()
         var state = State.None
@@ -141,7 +155,7 @@ class DefaultMathExpressionEvaluator(
         return values.last()
     }
 
-    override fun toUnaryOperator(token: MathToken.Operator): MathOperator.Unary? {
+    private fun toUnaryOperator(token: MathToken.Operator): MathOperator.Unary? {
         return when (token) {
             MathToken.Operator.Plus -> MathOperator.Unary.Plus
             MathToken.Operator.Minus -> MathOperator.Unary.Minus
@@ -149,7 +163,7 @@ class DefaultMathExpressionEvaluator(
         }
     }
 
-    override fun toBinaryOperator(token: MathToken.Operator): MathOperator.Binary? {
+    private fun toBinaryOperator(token: MathToken.Operator): MathOperator.Binary? {
         return when (token) {
             MathToken.Operator.Plus -> MathOperator.Binary.Plus
             MathToken.Operator.Minus -> MathOperator.Binary.Minus
@@ -161,7 +175,7 @@ class DefaultMathExpressionEvaluator(
         }
     }
 
-    override fun evaluateUnaryOperator(operator: MathOperator.Unary, input: MathResult): MathResult {
+    private fun evaluateUnaryOperator(operator: MathOperator.Unary, input: MathResult): MathResult {
         val value = when (operator) {
             MathOperator.Unary.Plus -> input.value
             MathOperator.Unary.Minus -> -input.value
@@ -173,7 +187,7 @@ class DefaultMathExpressionEvaluator(
         return result
     }
 
-    override fun evaluateBinaryOperator(operator: MathOperator.Binary, left: MathResult, right: MathResult): MathResult {
+    private fun evaluateBinaryOperator(operator: MathOperator.Binary, left: MathResult, right: MathResult): MathResult {
         if (operator == MathOperator.Binary.Div || operator == MathOperator.Binary.Mod) {
             // 数学检查
             if (right.value == 0.0) throw ArithmeticException("Divided by zero")
@@ -195,4 +209,6 @@ class DefaultMathExpressionEvaluator(
         }
         return result
     }
+
+    // endregion
 }

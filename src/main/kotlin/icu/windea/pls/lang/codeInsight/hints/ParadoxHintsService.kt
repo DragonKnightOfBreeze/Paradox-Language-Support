@@ -13,6 +13,7 @@ import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
+@Suppress("UnstableApiUsage")
 object ParadoxHintsService {
     /**
      * @see ParadoxHintTextProvider.getHintText
@@ -50,7 +51,6 @@ object ParadoxHintsService {
         return true
     }
 
-    @Suppress("UnstableApiUsage")
     context(provider: ParadoxHintsProvider, context: ParadoxHintsContext)
     fun fillPreviewData(element: PsiElement, sink: InlayHintsSink) {
         val providerId = provider.key.id

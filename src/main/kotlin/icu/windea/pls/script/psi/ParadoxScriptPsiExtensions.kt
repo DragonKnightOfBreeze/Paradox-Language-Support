@@ -11,16 +11,19 @@ import icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 import java.awt.Color
+import java.math.BigDecimal
 
 // region PSI Value Accessors
 
+val ParadoxScriptStringExpressionElement.stringValue: String get() = this.value
+
+val ParadoxScriptNumberExpressionElement.numberValue: BigDecimal? get() = this.value.toBigDecimalOrNull()
+
 val ParadoxScriptBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
 
-val ParadoxScriptInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
+val ParadoxScriptInt.intValue: Int? get() = this.value.toIntOrNull()
 
-val ParadoxScriptFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
-
-val ParadoxScriptString.stringValue: String get() = this.value
+val ParadoxScriptFloat.floatValue: Float? get() = this.value.toFloatOrNull()
 
 val ParadoxScriptColor.colorValue: Color? get() = this.color
 

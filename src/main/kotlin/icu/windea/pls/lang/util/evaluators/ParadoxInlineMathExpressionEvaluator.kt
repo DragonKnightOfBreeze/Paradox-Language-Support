@@ -9,10 +9,12 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
-import icu.windea.pls.core.math.DefaultMathExpressionEvaluator
+import icu.windea.pls.core.math.MathExpressionEvaluator
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.math.MathToken
+import icu.windea.pls.core.math.TokenBasedMathExpressionEvaluator
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.psi.resolved
@@ -29,25 +31,63 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReferenc
  *
  * @see ParadoxScriptInlineMath
  * @see ParadoxScriptInlineMathExpression
- * @see DefaultMathExpressionEvaluator
+ * @see TokenBasedMathExpressionEvaluator
  */
 @Suppress("unused")
 class ParadoxInlineMathExpressionEvaluator(
-    var precision: Int? = null,
-    var isFloatingPoint: Boolean? = null,
-) {
+    override var precision: Int? = null,
+    override var isFloatingPoint: Boolean? = null,
+) : MathExpressionEvaluator {
     fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, ParadoxInlineMathArgument> {
-        val expressionElement = element.inlineMathExpression ?: return emptyMap()
-        return resolveArgumentsInternal(expressionElement)
+        return resolveArgumentsInternal(element.inlineMathExpression)
     }
 
     fun resolveArguments(element: ParadoxScriptInlineMathExpression): Map<String, ParadoxInlineMathArgument> {
         return resolveArgumentsInternal(element)
     }
 
-    private fun resolveArgumentsInternal(tokenElement: ParadoxScriptInlineMathExpression): Map<String, ParadoxInlineMathArgument> {
+    /**
+     * 评估来自 [element] 的内联数学表达式。如果发生意外，则会抛出异常。
+     *
+     * @throws ArithmeticException 如果在评估过程中发生任何数学异常。
+     * @throws IllegalArgumentException 如果在评估过程中发生任何与参数有关的异常（缺少参数、参数值不合法等）。
+     * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
+     */
+    fun evaluate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathResult {
+        return evaluateInternal(element.inlineMathExpression, args)
+    }
+
+    /**
+     * 评估来自 [element] 的内联数学表达式。如果发生意外，则会抛出异常。
+     *
+     * @throws ArithmeticException 如果在评估过程中发生任何数学异常。
+     * @throws IllegalArgumentException 如果在评估过程中发生任何与参数有关的异常（缺少参数、参数值不合法等）。
+     * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
+     */
+    fun evaluate(element: ParadoxScriptInlineMathExpression, args: Map<String, String> = emptyMap()): MathResult {
+        return evaluateInternal(element, args)
+    }
+
+    /**
+     * 评估来自 [element] 的内联数学表达式。如果发生意外，则会直接返回 `null`。
+     */
+    fun evaluateOrNull(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathResult? {
+        return runCatchingCancelable { evaluateInternal(element.inlineMathExpression, args) }.getOrNull()
+    }
+
+    /**
+     * 评估来自 [element] 的内联数学表达式。如果发生意外，则会直接返回 `null`。
+     */
+    fun evaluateOrNull(element: ParadoxScriptInlineMathExpression, args: Map<String, String> = emptyMap()): MathResult? {
+        return runCatchingCancelable { evaluateInternal(element, args) }.getOrNull()
+    }
+
+    // region Implementations
+
+    private fun resolveArgumentsInternal(element: ParadoxScriptInlineMathExpression?): Map<String, ParadoxInlineMathArgument> {
+        if (element == null) return emptyMap()
         val result = sortedMapOf<String, ParadoxInlineMathArgument>()
-        tokenElement.accept(object : PsiRecursiveElementVisitor() {
+        element.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
                     is ParadoxScriptInlineMathParameter -> {
@@ -61,7 +101,7 @@ class ParadoxInlineMathExpressionEvaluator(
                         val expression = element.text?.trim()?.orNull() ?: return
                         val id = element.name?.trim()?.orNull() ?: return // = expression
                         val resolved = when {
-                            DumbService.isDumb(tokenElement.project) -> null
+                            DumbService.isDumb(element.project) -> null
                             else -> element.resolved()
                         }
                         val defaultValue = resolved?.text.orEmpty()
@@ -76,26 +116,8 @@ class ParadoxInlineMathExpressionEvaluator(
         return result
     }
 
-    /**
-     * @throws ArithmeticException 如果在评估过程中发生任何数学异常。
-     * @throws IllegalArgumentException 如果在评估过程中发生任何与参数有关的异常（缺少参数、参数值不合法等）。
-     * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
-     */
-    fun evaluate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathResult {
-        val expressionElement = element.inlineMathExpression ?: throw IllegalStateException("Cannot evaluate: empty inline math expression.")
-        return evaluateInternal(expressionElement, args)
-    }
-
-    /**
-     * @throws ArithmeticException 如果在评估过程中发生任何数学异常。
-     * @throws IllegalArgumentException 如果在评估过程中发生任何与参数有关的异常（缺少参数、参数值不合法等）。
-     * @throws IllegalStateException 如果在评估过程中发生任何导致无法评估的异常。
-     */
-    fun evaluate(element: ParadoxScriptInlineMathExpression, args: Map<String, String> = emptyMap()): MathResult {
-        return evaluateInternal(element, args)
-    }
-
-    private fun evaluateInternal(element: ParadoxScriptInlineMathExpression, args: Map<String, String>): MathResult {
+    private fun evaluateInternal(element: ParadoxScriptInlineMathExpression?, args: Map<String, String>): MathResult {
+        if (element == null) throw IllegalStateException("Cannot evaluate: empty inline math expression.")
         val arguments = resolveArgumentsInternal(element)
         prepareArguments(args, arguments)
         return evaluateWithArguments(element, args, arguments)
@@ -178,7 +200,7 @@ class ParadoxInlineMathExpressionEvaluator(
     }
 
     private fun evaluateTokens(tokens: List<MathToken>): MathResult {
-        val evaluator = DefaultMathExpressionEvaluator(precision, isFloatingPoint)
+        val evaluator = TokenBasedMathExpressionEvaluator(precision, isFloatingPoint)
         return evaluator.evaluate(tokens)
     }
 
@@ -258,4 +280,6 @@ class ParadoxInlineMathExpressionEvaluator(
         this.isFloatingPoint?.let { result.isFloatingPoint = it }
         return result
     }
+
+    // endregion
 }

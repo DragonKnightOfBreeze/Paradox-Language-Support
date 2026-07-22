@@ -3,6 +3,9 @@ package icu.windea.pls.core.math
 import org.junit.Assert
 import org.junit.Test
 
+/**
+ * @see TextMathExpressionScanner
+ */
 class TextMathExpressionScannerTest {
     @Test
     fun scan_simpleTest_1() {
