@@ -1,5 +1,8 @@
 package icu.windea.pls.core.math
 
+/**
+ * 数学词元。
+ */
 sealed interface MathToken {
     fun render(): String
 

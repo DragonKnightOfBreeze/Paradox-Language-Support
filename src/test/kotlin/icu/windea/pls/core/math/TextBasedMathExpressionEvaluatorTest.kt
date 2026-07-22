@@ -3,7 +3,10 @@ package icu.windea.pls.core.math
 import org.junit.Assert
 import org.junit.Test
 
-class TextMathExpressionEvaluatorTest {
+/**
+ * @see TextBasedMathExpressionEvaluator
+ */
+class TextBasedMathExpressionEvaluatorTest {
     @Test
     fun evaluate_simpleTest_1() {
         val source = "2.2"
@@ -26,7 +29,7 @@ class TextMathExpressionEvaluatorTest {
     }
 
     @Test
-    fun evaluate_simpleTest_failed() {
+    fun evaluate_simpleTest_failed_1() {
         val source = "2.2 + 3.3 = ?"
         assertEvaluateFailed(IllegalStateException::class.java, source)
     }
@@ -45,10 +48,10 @@ class TextMathExpressionEvaluatorTest {
     }
 
     private fun assertEvaluate(expect: MathResult, source: String) {
-        Assert.assertEquals(expect, TextMathExpressionEvaluator().evaluate(source))
+        Assert.assertEquals(expect, TextBasedMathExpressionEvaluator().evaluate(source))
     }
 
     private fun assertEvaluateFailed(expect: Class<out Throwable>, source: String) {
-        Assert.assertThrows(expect) { TextMathExpressionEvaluator().evaluate(source) }
+        Assert.assertThrows(expect) { TextBasedMathExpressionEvaluator().evaluate(source) }
     }
 }

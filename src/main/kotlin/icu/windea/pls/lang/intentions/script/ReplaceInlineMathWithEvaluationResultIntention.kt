@@ -6,7 +6,6 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.math.MathResult
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -41,6 +40,6 @@ class ReplaceInlineMathWithEvaluationResultIntention : PsiUpdateModCommandAction
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return null
 
         val evaluator = ParadoxInlineMathExpressionEvaluator()
-        return runCatchingCancelable { evaluator.evaluate(element) }.getOrNull()
+        return evaluator.evaluateOrNull(element)
     }
 }

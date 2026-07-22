@@ -4,7 +4,6 @@ import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
@@ -22,7 +21,7 @@ class ParadoxInlineMathResultHintsProvider : ParadoxDeclarativeHintsProvider() {
         if (!ParadoxEvaluationService.isEvaluableForInlineMath(element)) return
 
         val evaluator = ParadoxInlineMathExpressionEvaluator()
-        val result = runCatchingCancelable { evaluator.evaluate(element) }.getOrNull() ?: return
+        val result = evaluator.evaluateOrNull(element) ?: return
         sink.addInlinePresentation(element.endOffset) {
             text("=> ${result.formatted()}".optimized())
         }

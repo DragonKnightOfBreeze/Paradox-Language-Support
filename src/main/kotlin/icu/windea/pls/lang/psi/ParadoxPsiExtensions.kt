@@ -9,6 +9,7 @@ import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.transform
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -32,6 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptLiteralValue
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
@@ -39,113 +41,98 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.booleanValue
-import icu.windea.pls.script.psi.floatValue
-import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.parentBlock
 import icu.windea.pls.script.psi.parentProperty
 import java.awt.Color
+import java.math.BigDecimal
 
 // region PSI Value Resolve Extensions
 
-fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
-    val resolved = resolved() ?: return null
-    val r = resolved.value
-    if (valid && !isValidExpression()) return null
-    return r
+fun ParadoxScriptExpressionElement.value(resolve: Boolean = true): String? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    return element.value
 }
 
-fun ParadoxScriptExpressionElement.booleanValue(strict: Boolean = false, valid: Boolean = false): Boolean? {
-    val resolved = resolved() ?: return null
-    if (strict && resolved !is ParadoxScriptBoolean) return null
-    val r = when (resolved) {
-        is ParadoxScriptBoolean -> resolved.booleanValue
+fun ParadoxScriptExpressionElement.stringValue(resolve: Boolean = true, strict: Boolean = false): String? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptStringExpressionElement) return null
+    return when (element) {
+        is ParadoxScriptStringExpressionElement -> element.value
+        is ParadoxScriptLiteralValue -> element.value
+        else -> null
+    }
+}
+
+fun ParadoxScriptExpressionElement.numberValue(resolve: Boolean = true, strict: Boolean = false): BigDecimal? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptNumberExpressionElement) return null
+    return when (element) {
+        is ParadoxScriptNumberExpressionElement -> element.value.toBigDecimalOrNull()
+        is ParadoxScriptStringExpressionElement -> element.value.toBigDecimalOrNull()
+        else -> null
+    }
+}
+
+fun ParadoxScriptExpressionElement.booleanValue(resolve: Boolean = true, strict: Boolean = false): Boolean? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptBoolean) return null
+    return when (element) {
+        is ParadoxScriptBoolean -> element.value.toBooleanYesNo()
         else -> true
     }
-    if (valid && !isValidExpression()) return null
-    return r
 }
 
-fun ParadoxScriptExpressionElement.intValue(strict: Boolean = false, valid: Boolean = false): Int? {
-    val resolved = resolved() ?: return null
-    if (strict && this !is ParadoxScriptInt) return null
-    val r = when (resolved) {
-        is ParadoxScriptInt -> resolved.intValue
-        is ParadoxScriptFloat -> resolved.floatValue.toInt()
-        is ParadoxScriptStringExpressionElement -> resolved.value.toIntOrNull()
+fun ParadoxScriptExpressionElement.intValue(resolve: Boolean = true, strict: Boolean = false): Int? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptInt) return null
+    return when (element) {
+        is ParadoxScriptInt -> element.value.toIntOrNull()
+        is ParadoxScriptFloat -> element.value.toFloatOrNull()?.toInt()
+        is ParadoxScriptStringExpressionElement -> element.value.toIntOrNull()
         else -> null
     }
-    if (r == null) return null
-    if (valid && !isValidExpression()) return null
-    return r
 }
 
-fun ParadoxScriptExpressionElement.floatValue(strict: Boolean = false, valid: Boolean = false): Float? {
-    val resolved = resolved() ?: return null
-    if (strict && this !is ParadoxScriptFloat) return null
-    val r = when (resolved) {
-        is ParadoxScriptFloat -> resolved.floatValue
-        is ParadoxScriptInt -> resolved.intValue.toFloat()
-        is ParadoxScriptStringExpressionElement -> resolved.value.toFloatOrNull()
+fun ParadoxScriptExpressionElement.floatValue(resolve: Boolean = true, strict: Boolean = false): Float? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptFloat) return null
+    return when (element) {
+        is ParadoxScriptFloat -> element.value.toFloatOrNull()
+        is ParadoxScriptInt -> element.value.toIntOrNull()?.toFloat()
+        is ParadoxScriptStringExpressionElement -> element.value.toFloatOrNull()
         else -> null
     }
-    if (r == null) return null
-    if (valid && !isValidExpression()) return null
-    return r
 }
 
-fun ParadoxScriptExpressionElement.stringValue(strict: Boolean = false, valid: Boolean = false): String? {
-    val resolved = resolved() ?: return null
-    if (strict && this !is ParadoxScriptStringExpressionElement) return null
-    val r = when (resolved) {
-        is ParadoxScriptStringExpressionElement -> resolved.value
-        is ParadoxScriptBoolean -> resolved.value
-        is ParadoxScriptInt -> resolved.value
-        is ParadoxScriptFloat -> resolved.value
-        else -> null
+fun ParadoxScriptExpressionElement.colorValue(resolve: Boolean = true): Color? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (element !is ParadoxScriptColor) return null
+    return element.color
+}
+
+fun ParadoxScriptExpressionElement.inlineMathValue(resolve: Boolean = true): MathResult? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (element !is ParadoxScriptInlineMath) return null
+    return ParadoxInlineMathExpressionEvaluator().evaluateOrNull(element)
+}
+
+fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true): String? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    return when (element) {
+        is ParadoxScriptStringExpressionElement -> element.value.quoteIfNeeded()
+        else -> element.value
     }
-    if (r == null) return null
-    if (valid && !isValidExpression()) return null
-    return r
-}
-
-fun ParadoxScriptValue.colorValue(valid: Boolean = false): Color? {
-    if (this !is ParadoxScriptColor) return null
-    val r = this.color ?: return null
-    if (valid && !isValidExpression()) return null
-    return r
-}
-
-fun ParadoxScriptValue.inlineMathValue(valid: Boolean = false): MathResult? {
-    if (this !is ParadoxScriptInlineMath) return null
-    val r = runCatching { ParadoxInlineMathExpressionEvaluator().evaluate(this) }.getOrNull() ?: return null
-    if (valid && !isValidExpression()) return null
-    return r
-}
-
-fun ParadoxScriptValue.evaluatedValue(strict: Boolean = false, valid: Boolean = false): Any? {
-    val resolved = resolved() ?: return null
-    val r = when (resolved) {
-        is ParadoxScriptBoolean -> resolved.booleanValue(strict, valid)
-        is ParadoxScriptInt -> resolved.intValue(strict, valid)
-        is ParadoxScriptFloat -> resolved.floatValue(strict, valid)
-        is ParadoxScriptString -> resolved.stringValue(strict, valid)
-        is ParadoxScriptColor -> resolved.colorValue(valid)
-        is ParadoxScriptInlineMath -> resolved.inlineMathValue(valid)
-        else -> null // unsupported
-    }
-    return r
-}
-
-fun ParadoxScriptValue.formattedValue(): String {
-    val r = when (this) {
-        is ParadoxScriptString -> this.value.quoteIfNeeded()
-        else -> this.value
-    }
-    return r
 }
 
 // endregion
