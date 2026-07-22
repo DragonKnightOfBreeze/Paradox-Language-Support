@@ -36,7 +36,7 @@ You can also specify an image tool for the plugin. In this case, if DDS or TGA i
 This applies to many scenarios, most commonly previewing images directly in the IDE (editing still requires an external editor) and rendering images in quick documentation and inlay hints.
 You can also reference DDS images directly in HTML and Markdown documents. Although this is generally not possible, you can preview the rendered document directly in the IDE, where they should display correctly.
 
-In certain scenarios, the plugin needs to split images to render quick documentation and inlay hints more accurately. The generated PNG images can be found in `~/.pls/images`.
+In certain scenarios, the plugin needs to split images to render quick documentation and inlay hints more accurately. The generated PNG images can be found in `~/.windea/chronicle/images`.
 
 Additionally, the plugin provides actions for converting between different image formats (PNG, DDS, and TGA).
 The plugin also allows selecting multiple images in the project view and performing batch conversion of image types.
