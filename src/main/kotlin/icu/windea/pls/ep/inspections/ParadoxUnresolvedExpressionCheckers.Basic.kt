@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.inspections.InspectionService
@@ -41,27 +42,32 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
             return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
         }
-
         return element
     }
 
     private fun getHighlightType(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): ProblemHighlightType {
-        // int, int value field, int variable field -> actual is float (after resolution) -> use weaker highlight type
-        if (expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.IntField }) {
-            if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
-                return getWeakerHighlightType(context)
-            }
-        }
-        // int percentage field -> actual is float percentage field -> use weaker highlight type
-        if (expectedConfigs.any { it.configExpression.type == CwtDataTypes.IntPercentageField }) {
-            if (ParadoxMatchProvider.matchesFloatPercentageField(element.value)) {
-                return getWeakerHighlightType(context)
-            }
-        }
-        // localisation reference -> expression can be a string literal instead -> use weaker highlight type
-        if (expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.LocalisationReference }) {
-            if (element is ParadoxScriptStringExpressionElement) {
-                return getWeakerHighlightType(context)
+        // rules:
+        // - int field -> actual is float (after resolution) -> use weaker highlight type
+        // - int percentage field -> actual is float percentage field -> use weaker highlight type
+        // - localisation reference -> expression can be a string literal instead -> use weaker highlight type
+
+        for (configExpression in expectedConfigs.expandConfigExpression()) {
+            when(configExpression.type) {
+                in CwtDataTypeSets.IntField -> {
+                    if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
+                        return getWeakerHighlightType(context)
+                    }
+                }
+                CwtDataTypes.IntPercentageField -> {
+                    if (ParadoxMatchProvider.matchesFloatPercentageField(element.value)) {
+                        return getWeakerHighlightType(context)
+                    }
+                }
+                in CwtDataTypeSets.LocalisationReference -> {
+                    if (element is ParadoxScriptStringExpressionElement) {
+                        return getWeakerHighlightType(context)
+                    }
+                }
             }
         }
         return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
@@ -72,10 +78,13 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
     }
 
     private fun getFixes(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
+        // rules:
+        // - add similarity based fixes if expect some literals
+        // - add localisation reference fixes if expect some localisation references
+
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
             return LocalQuickFix.EMPTY_ARRAY // in case
         }
-
         val result = mutableListOf<LocalQuickFix>()
         result += ParadoxExpressionInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
         result += ParadoxExpressionInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)

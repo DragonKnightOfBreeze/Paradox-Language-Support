@@ -8,6 +8,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
@@ -93,9 +94,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
-        return configs.any { config ->
-            val configExpression = config.configExpression
-            constraint.test(configExpression.type)
-        }
+        // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
+        return configs.expandConfigExpression().any { constraint.test(it.type) }
     }
 }

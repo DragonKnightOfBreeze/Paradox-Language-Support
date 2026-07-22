@@ -9,9 +9,9 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.inspections.InspectionService
-import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
@@ -240,7 +240,7 @@ object ParadoxLocalisationCodeInsightContextService {
         val inspection = if (fromInspection) getMissingLocalisationInspection(project, element) else null
         if (!(inspection == null || inspection.checkForModifiers)) return null
 
-        if (config.configExpression.type != CwtDataTypes.Modifier) return null
+        if (config.expandConfigExpression().none { it.type == CwtDataTypes.Modifier }) return null
         val modifierName = element.value
         val localisationType = ParadoxLocalisationType.Normal
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
@@ -286,16 +286,21 @@ object ParadoxLocalisationCodeInsightContextService {
         val type = ParadoxLocalisationCodeInsightInfo.Type.Reference
         val name = element.value
         if (name.isEmpty()) return null
-        val contextType = when {
-            config.configExpression.type == CwtDataTypes.Localisation -> Type.LocalisationReference
-            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
-            config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
-            else -> null
-        } ?: return null
-        val localisationType = when {
-            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> ParadoxLocalisationType.Synced
+
+        val contextType = config.expandConfigExpression().firstNotNullOfOrNull { configExpression ->
+            when (configExpression.type) {
+                CwtDataTypes.Localisation -> Type.LocalisationReference
+                CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
+                CwtDataTypes.InlineLocalisation -> Type.LocalisationReference // even is not quoted
+                else -> null
+            }
+        }
+        if (contextType == null) return null
+        val localisationType = when (contextType) {
+            Type.SyncedLocalisationReference -> ParadoxLocalisationType.Synced
             else -> ParadoxLocalisationType.Normal
         }
+
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
         for (locale in locales) {
             ProgressManager.checkCanceled()

@@ -22,4 +22,3 @@ class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupportBase() {
         result.addElement(ChronicleLookupElements.noLookupElement, context)
     }
 }
-

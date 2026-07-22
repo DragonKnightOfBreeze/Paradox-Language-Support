@@ -2,6 +2,7 @@ package icu.windea.pls.config.manipulation
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -404,24 +405,67 @@ object CwtConfigManipulationService {
 
     /**
      * 递归展开 [config] 的子规则中的所有形如 `subtype[{expression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。
-     * 将合并后的当前的子类型表达式保留作为结果序列中元组的第二个元素。
+     *
+     * 结果序列中的元组的第一个元素是展开后的子规则，第二个元素是合并后的当前子类型表达式。
      */
     fun expandBySubtypeExpression(config: CwtMemberConfig<*>): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
         if (config.configs.isNullOrEmpty()) return emptySequence()
-        return sequence { expandBySubtypeExpressionRecursively(config, "") }
+        return sequence { doExpandBySubtypeExpression(config, "") }
     }
 
-    private suspend fun SequenceScope<Tuple2<CwtMemberConfig<*>, String>>.expandBySubtypeExpressionRecursively(config: CwtMemberConfig<*>, currentExpression: String) {
+    private suspend fun SequenceScope<Tuple2<CwtMemberConfig<*>, String>>.doExpandBySubtypeExpression(config: CwtMemberConfig<*>, currentExpression: String) {
         config.configs?.orNull()?.forEachFast { childConfig ->
             val nextExpression = extractSubtypeExpression(childConfig)
             if (nextExpression != null) {
                 if (childConfig.configs?.orNull() != null) {
                     val mergedExpression = mergeSubtypeExpression(currentExpression, nextExpression)
-                    expandBySubtypeExpressionRecursively(childConfig, mergedExpression)
+                    doExpandBySubtypeExpression(childConfig, mergedExpression)
                 }
             } else {
                 yield(tupleOf(childConfig, currentExpression))
             }
+        }
+    }
+
+    fun expandConfigExpression(config: CwtConfig<*>): Sequence<CwtDataExpression> {
+        return sequence { doExpandConfigExpression(config.configExpression, config.configGroup) }
+    }
+
+    fun expandConfigExpression(configs: Collection<CwtConfig<*>>): Sequence<CwtDataExpression> {
+        if (configs.isEmpty()) return emptySequence()
+        return sequence { configs.forEach { config -> doExpandConfigExpression(config.configExpression, config.configGroup) } }
+    }
+
+    fun expandKeyExpression(config: CwtPropertyConfig): Sequence<CwtDataExpression> {
+        return sequence { doExpandConfigExpression(config.keyExpression, config.configGroup) }
+    }
+
+    fun expandKeyExpression(configs: Collection<CwtPropertyConfig>): Sequence<CwtDataExpression> {
+        if (configs.isEmpty()) return emptySequence()
+        return sequence { configs.forEach { config -> doExpandConfigExpression(config.keyExpression, config.configGroup) } }
+    }
+
+    fun expandValueExpression(config: CwtValueConfig): Sequence<CwtDataExpression> {
+        return sequence { doExpandConfigExpression(config.valueExpression, config.configGroup) }
+    }
+
+    fun expandValueExpression(configs: Collection<CwtValueConfig>): Sequence<CwtDataExpression> {
+        if (configs.isEmpty()) return emptySequence()
+        return sequence { configs.forEach { config -> doExpandConfigExpression(config.valueExpression, config.configGroup) } }
+    }
+
+    private suspend fun SequenceScope<CwtDataExpression>.doExpandConfigExpression(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup) {
+        if (configExpression == null) return
+        when (configExpression.type) {
+            CwtDataTypes.UnionValue -> {
+                val name = configExpression.value ?: return
+                configGroup.unions[name]?.valueConfigs?.orNull()?.forEach { yield(it.valueExpression) }
+            }
+            CwtDataTypes.AliasKeysField -> {
+                val name = configExpression.value ?: return
+                configGroup.aliasGroups[name]?.values?.orNull()?.forEach { yield(it.first().configExpression) }
+            }
+            else -> yield(configExpression)
         }
     }
 

@@ -6,6 +6,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.createResults
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -69,8 +70,8 @@ class ParadoxCsvExpressionPsiReference(
     }
 
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
+        // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
         val config = columnConfig.valueConfig ?: return false
-        val configExpression = config.configExpression
-        return constraint.test(configExpression.type)
+        return config.expandConfigExpression().any { constraint.test(it.type) }
     }
 }

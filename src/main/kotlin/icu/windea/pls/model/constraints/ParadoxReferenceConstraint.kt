@@ -96,7 +96,7 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType in CwtDataTypeSets.DefinitionAware || dataType in CwtDataTypeSets.Expandable
+            return dataType in CwtDataTypeSets.DefinitionAware
         }
     },
 
@@ -119,7 +119,7 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType in CwtDataTypeSets.LocalisationAware || dataType in CwtDataTypeSets.Expandable
+            return dataType in CwtDataTypeSets.LocalisationAware
         }
     },
 
@@ -141,7 +141,7 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.EnumValue || dataType in CwtDataTypeSets.Expandable
+            return dataType == CwtDataTypes.EnumValue
         }
     },
 
@@ -163,7 +163,7 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType in CwtDataTypeSets.DynamicValue || dataType in CwtDataTypeSets.Expandable
+            return dataType in CwtDataTypeSets.DynamicValue
         }
     },
 
@@ -187,7 +187,7 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Parameter || dataType in CwtDataTypeSets.Expandable
+            return dataType == CwtDataTypes.Parameter
         }
     },
 
@@ -209,7 +209,7 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.LocalisationParameter || dataType in CwtDataTypeSets.Expandable
+            return dataType == CwtDataTypes.LocalisationParameter
         }
     },
 
@@ -227,7 +227,7 @@ enum class ParadoxReferenceConstraint {
 
         override fun test(dataType: CwtDataType): Boolean {
             // also for synced_localisation
-            return dataType in CwtDataTypeSets.LocalisationReference || dataType in CwtDataTypeSets.Expandable
+            return dataType in CwtDataTypeSets.LocalisationReference
         }
     },
 
@@ -244,15 +244,18 @@ enum class ParadoxReferenceConstraint {
         }
 
         override fun test(dataType: CwtDataType): Boolean {
-            return dataType in CwtDataTypeSets.DynamicValue || dataType in CwtDataTypeSets.Expandable
+            return dataType in CwtDataTypeSets.DynamicValue
         }
     },
 
     ;
 
+    /** 是否可以从指定的 [element] 得到 [PsiReference]。 */
     open fun canResolveReference(element: PsiElement): Boolean = true
 
+    /** 是否可以从指定的 [reference] 解析得到 [PsiElement]。 */
     open fun canResolve(reference: PsiReference): Boolean = true
 
+    /** 测试指定的 [dataType] 是否符合约束。备注：这里测试的是已展开后的数据类型。 */
     open fun test(dataType: CwtDataType): Boolean = true
 }

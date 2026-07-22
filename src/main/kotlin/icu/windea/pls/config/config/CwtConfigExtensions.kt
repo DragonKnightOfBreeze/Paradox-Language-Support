@@ -3,6 +3,7 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.orNull
@@ -53,7 +54,7 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
 
 // endregion
 
-// region Builders
+// region Sequence Builders
 
 fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
     return configs?.orNull()?.asSequence().orEmpty()
@@ -75,6 +76,36 @@ fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberCon
 /** @see CwtConfigManipulationService.expandBySubtypeExpression */
 fun CwtMemberConfig<*>.expandBySubtypeExpression(): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
     return CwtConfigManipulationService.expandBySubtypeExpression(this)
+}
+
+/** @see CwtConfigManipulationService.expandConfigExpression */
+fun CwtConfig<*>.expandConfigExpression(): Sequence<CwtDataExpression> {
+    return CwtConfigManipulationService.expandConfigExpression(this)
+}
+
+/** @see CwtConfigManipulationService.expandConfigExpression */
+fun Collection<CwtConfig<*>>.expandConfigExpression(): Sequence<CwtDataExpression> {
+    return CwtConfigManipulationService.expandConfigExpression(this)
+}
+
+/** @see CwtConfigManipulationService.expandKeyExpression */
+fun CwtPropertyConfig.expandKeyExpression(): Sequence<CwtDataExpression> {
+    return CwtConfigManipulationService.expandKeyExpression(this)
+}
+
+/** @see CwtConfigManipulationService.expandKeyExpression */
+fun Collection<CwtPropertyConfig>.expandKeyExpression(): Sequence<CwtDataExpression> {
+    return CwtConfigManipulationService.expandKeyExpression(this)
+}
+
+/** @see CwtConfigManipulationService.expandValueExpression */
+fun CwtValueConfig.expandValueExpression(): Sequence<CwtDataExpression> {
+    return CwtConfigManipulationService.expandValueExpression(this)
+}
+
+/** @see CwtConfigManipulationService.expandValueExpression */
+fun Collection<CwtValueConfig>.expandValueExpression(): Sequence<CwtDataExpression> {
+    return CwtConfigManipulationService.expandValueExpression(this)
 }
 
 // TODO 3.0.1+ more expansion
