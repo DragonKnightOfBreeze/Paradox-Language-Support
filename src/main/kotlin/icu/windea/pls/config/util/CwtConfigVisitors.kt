@@ -43,7 +43,7 @@ abstract class CwtMemberConfigRecursiveVisitor : CwtMemberConfigVisitor() {
 }
 
 /**
- * 可以按展开规则（并集规则、别名规则、单别名规则）的，递归向下遍历的成员规则的访问者。
+ * 可以按需展开规则（并集规则、别名规则、单别名规则）的，递归向下遍历的成员规则的访问者。
  *
  * @see CwtExpandableConfig
  */

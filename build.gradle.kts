@@ -1,5 +1,6 @@
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.CancellationToken
 import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -244,7 +245,8 @@ private fun markdownToHTML(markdown: String): String {
     // Normalize text to LF, because a Markdown library currently fully supports only this line separator
     val text = markdown.normalizeLineSeparator()
     val flavour = GFMFlavourDescriptor()
-    val ast = MarkdownParser(flavour).buildMarkdownTreeFromString(text)
+    val parser = MarkdownParser(flavour, cancellationToken = CancellationToken.NonCancellable)
+    val ast = parser.buildMarkdownTreeFromString(text as CharSequence)
     return HtmlGenerator(text, ast, flavour).generateHtml().normalizeLineSeparator()
 }
 

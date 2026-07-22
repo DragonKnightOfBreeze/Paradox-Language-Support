@@ -15,6 +15,7 @@ import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
@@ -138,7 +139,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
         propertyConfig: CwtPropertyConfig?,
         injectable: Boolean,
     ): CwtValueConfig {
-        val withConfigs = configs != null && (injectable || configs.isNotEmpty()) // 2.0.6 NOTE configs may be injectable
+        val withConfigs = configs != null && (injectable || configs.isNotEmpty()) // NOTE 2.0.6 configs may be injectable
         val config = when (withConfigs) {
             true -> CwtValueConfigImplWithConfigs(pointer, configGroup, propertyConfig)
                 .also { it.configs = configs.optimized() } // optimized to optimize memory
@@ -169,9 +170,12 @@ private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactor
 
 // 12 + 2 * 4 = 20 -> 24
 private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueConfig {
-    override val optionData: CwtOptionDataHolder get() = this
+    override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
+    override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
+
+    override val optionData: CwtOptionDataHolder get() = this
 
     override val configExpression: CwtDataExpression get() = valueExpression
 
@@ -195,7 +199,7 @@ private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueCon
     }
 
     override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtValueConfig {
-        val withConfigs = configs != null  // 2.0.6 NOTE configs may be injectable
+        val withConfigs = configs != null  // NOTE 2.0.6 configs may be injectable
         val config = when (withConfigs) {
             true -> CwtValueConfigDelegateWithConfigs(this)
                 .also { it.configs = configs } // do not do optimization here

@@ -17,6 +17,7 @@ import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
@@ -169,7 +170,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         configs: List<CwtMemberConfig<*>>?,
         injectable: Boolean,
     ): CwtPropertyConfig {
-        val withConfigs = configs != null && (injectable || configs.isNotEmpty()) // 2.0.6 NOTE configs may be injectable
+        val withConfigs = configs != null && (injectable || configs.isNotEmpty()) // NOTE 2.0.6 configs may be injectable
         val config = when (withConfigs) {
             true -> CwtPropertyConfigImplWithConfigs(pointer, configGroup, keyExpression, separatorType)
                 .also { it.configs = configs.optimized() } // optimized to optimize memory
@@ -197,9 +198,14 @@ private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactor
 
 // 12 + 3 * 4 = 24 -> 24
 private sealed class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPropertyConfig {
-    override val optionData: CwtOptionDataHolder get() = this
+    override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
+    override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
+
+    override val optionData: CwtOptionDataHolder get() = this
+
+    override val configExpression: CwtDataExpression get() = keyExpression
 
     // use memory-optimized lazy property
     @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
@@ -218,8 +224,6 @@ private sealed class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPrope
         } ?: return null
         return CwtValueConfig.resolveFromPropertyConfig(valuePointer, this)
     }
-
-    override val configExpression: CwtDataExpression get() = keyExpression
 
     override fun withParentConfig(parentConfig: CwtMemberConfig<*>?): Boolean {
         this.parentConfig = parentConfig
@@ -242,7 +246,7 @@ private sealed class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPrope
     }
 
     override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtPropertyConfig {
-        val withConfigs = configs != null // 2.0.6 NOTE configs may be injectable
+        val withConfigs = configs != null // NOTE 2.0.6 configs may be injectable
         val config = when (withConfigs) {
             true -> CwtPropertyConfigDelegateWithConfigs(this)
                 .also { it.configs = configs } // do not do optimization here

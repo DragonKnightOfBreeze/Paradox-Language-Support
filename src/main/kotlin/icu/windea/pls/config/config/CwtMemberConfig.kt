@@ -30,8 +30,8 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     val value: String
     val valueType: CwtExpressionType
     override val configs: List<CwtMemberConfig<*>>?
-    override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
-    override val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
+    override val properties: List<CwtPropertyConfig>?
+    override val values: List<CwtValueConfig>?
     val parentConfig: CwtMemberConfig<*>?
     val optionData: CwtOptionDataHolder
 
@@ -61,9 +61,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     fun postOptimize() {}
 
     /** 创建基于当前规则的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-    fun delegated(configs: List<CwtMemberConfig<*>>? = this.configs): CwtMemberConfig<T> {
-        throw UnsupportedOperationException()
-    }
+    fun delegated(configs: List<CwtMemberConfig<*>>? = this.configs): CwtMemberConfig<T> = throw UnsupportedOperationException()
 
     object Keys : KeyRegistry()
 }
