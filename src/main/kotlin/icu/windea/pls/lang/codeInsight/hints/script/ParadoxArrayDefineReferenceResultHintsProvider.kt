@@ -30,7 +30,7 @@ class ParadoxArrayDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsPr
 
         val evaluator = ParadoxArrayDefineReferenceExpressionEvaluator()
         val result = runCatching { evaluator.evaluate(element) }.getOrNull() ?: return
-        val value = formatValue(result)
+        val value = formatValue(result) ?: return
         sink.addInlinePresentation(element.endOffset) {
             text("=> $value".optimized())
         }
