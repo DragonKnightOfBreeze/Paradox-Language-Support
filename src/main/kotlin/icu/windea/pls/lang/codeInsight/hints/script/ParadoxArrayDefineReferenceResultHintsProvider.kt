@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -47,6 +49,6 @@ class ParadoxArrayDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsPr
         val limit = settings.truncateArrayValueForDefines
         val values = element.values().letIf(limit >= 0) { it.take(limit) }.toList()
         if (values.isEmpty()) return "{}"
-        return values.joinToString(" ", "{ ", " }") { it.formattedValue() }
+        return values.joinToString(" ", "{ ", " }") { it.formattedValue().or.unresolved() }
     }
 }
