@@ -21,7 +21,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.intellij.platform") version "2.17.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.3" // https://github.com/JetBrains/gradle-grammar-kit-plugin
-    id("org.jetbrains.kotlinx.kover") version "0.9.8" // https://github.com/Kotlin/kotlinx-kover
+    id("org.jetbrains.kotlinx.kover") version "0.9.9" // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
