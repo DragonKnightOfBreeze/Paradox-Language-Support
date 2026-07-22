@@ -11,6 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runCatchingCancelable
@@ -111,7 +112,10 @@ private sealed class CwtFileConfigImplBase(
     override val configGroup: CwtConfigGroup,
     override val name: String,
     override val path: String,
-) : CwtFileConfigBase()
+) : CwtFileConfigBase() {
+    override val properties: List<CwtPropertyConfig> get() = configs.filterIsInstanceFast()
+    override val values: List<CwtValueConfig> get() = configs.filterIsInstanceFast()
+}
 
 // 12 + 5 * 4 = 32 -> 32
 private class CwtFileConfigImpl(
@@ -121,8 +125,6 @@ private class CwtFileConfigImpl(
     path: String,
 ) : CwtFileConfigImplBase(pointer, configGroup, name, path) {
     override val configs: List<CwtMemberConfig<*>> get() = emptyList()
-    override val properties: List<CwtPropertyConfig> get() = emptyList()
-    override val values: List<CwtValueConfig> get() = emptyList()
 }
 
 // 12 + 7 * 4 = 40 -> 40
