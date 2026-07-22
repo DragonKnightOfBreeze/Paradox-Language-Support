@@ -17,7 +17,7 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
+import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.*
@@ -267,12 +267,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getColor(element: ParadoxScriptColor): Color? {
-        return ParadoxCodeInsightService.getColor(element, fromToken = false)
+        return ParadoxColorService.getColor(element, fromToken = false)
     }
 
     @JvmStatic
     fun setColor(element: ParadoxScriptColor, color: Color) {
-        return ParadoxCodeInsightService.setColor(element, color, fromToken = false)
+        ParadoxColorService.setColor(element, color, fromToken = false)
     }
 
     // endregion

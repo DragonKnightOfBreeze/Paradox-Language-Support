@@ -8,8 +8,8 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -49,6 +49,6 @@ class ParadoxDefinitionHintTextHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptPropertyKey) return
-        ParadoxHintsPreviewUtil.fillData(element, sink)
+        ParadoxHintsService.fillPreviewData(element, sink)
     }
 }

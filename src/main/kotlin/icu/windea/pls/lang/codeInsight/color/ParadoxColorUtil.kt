@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptString
 import java.awt.Color
 
-object ParadoxColorManager {
+object ParadoxColorUtil {
     val cachedColorKey = createKey<CachedValue<Color>>("chronicle.color")
 
     // ## color_type = hex

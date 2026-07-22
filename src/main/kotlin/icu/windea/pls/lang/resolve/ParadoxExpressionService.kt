@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
@@ -38,7 +38,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
                 withRecursionCheck("${ep.javaClass.name}@a@${text}") {
                     ep.annotate(element, rangeInElement, text, config, holder)
                 }
@@ -58,7 +58,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@r@${text}") {
                     ep.resolve(element, rangeInElement, text, config, role)
                 }
@@ -78,7 +78,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@ra@${text}") {
                     ep.resolveAll(element, rangeInElement, text, config, role).orNull()
                 }
@@ -98,7 +98,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
                 withRecursionCheck("${ep.javaClass.name}@gr@${text}") {
                     ep.getReferences(element, rangeInElement, text, config, role).orNull()
                 }
@@ -118,7 +118,7 @@ object ParadoxExpressionService {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
                 withRecursionCheck("${ep.javaClass.name}@c@${context.keyword}") {
                     ep.complete(context, result)
                 }
@@ -139,7 +139,7 @@ object ParadoxExpressionService {
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ep.annotate(element, rangeInElement, text, holder)
         }
     }
@@ -153,7 +153,7 @@ object ParadoxExpressionService {
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.resolve(element, rangeInElement, text)
         }
     }
@@ -167,7 +167,7 @@ object ParadoxExpressionService {
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.resolveAll(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
@@ -181,7 +181,7 @@ object ParadoxExpressionService {
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.getReferences(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
@@ -196,7 +196,7 @@ object ParadoxExpressionService {
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ep.complete(context, result)
         }
     }
@@ -215,7 +215,7 @@ object ParadoxExpressionService {
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ep.annotate(element, rangeInElement, text, config, holder)
         }
     }
@@ -230,7 +230,7 @@ object ParadoxExpressionService {
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.resolve(element, rangeInElement, text, config)
         }
     }
@@ -245,7 +245,7 @@ object ParadoxExpressionService {
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.resolveAll(element, rangeInElement, text, config).orNull()
         }.orEmpty()
     }
@@ -260,7 +260,7 @@ object ParadoxExpressionService {
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ep.complete(context, result)
         }
     }

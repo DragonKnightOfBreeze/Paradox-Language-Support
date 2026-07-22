@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.base.annotations.WithDefinitionType
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.core.cache.CacheBuilder
@@ -31,8 +31,8 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
     override fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, lenient: Boolean): Boolean {
         if (lenient) return true
         val definitionInfo = element.definitionInfo ?: return false
-        if (!ChronicleAnnotationManager.check(type, definitionInfo.gameType)) return false
-        if (!ChronicleAnnotationManager.check(type, definitionInfo)) return false
+        if (!ChronicleAnnotationService.check(type, definitionInfo.gameType)) return false
+        if (!ChronicleAnnotationService.check(type, definitionInfo)) return false
         return true
     }
 

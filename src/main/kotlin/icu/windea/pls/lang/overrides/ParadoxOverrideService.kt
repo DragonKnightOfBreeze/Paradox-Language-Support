@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
@@ -35,7 +35,7 @@ object ParadoxOverrideService {
     fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
         val gameType by lazy { selectGameType(target) }
         return ParadoxOverrideStrategyProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (gameType != null && !ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (gameType != null && !ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.get(target)
         }
     }
@@ -47,7 +47,7 @@ object ParadoxOverrideService {
     fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
         val gameType = searchParameters.selector.gameType
         return ParadoxOverrideStrategyProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (gameType != null && !ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (gameType != null && !ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.get(searchParameters)
         }
     }

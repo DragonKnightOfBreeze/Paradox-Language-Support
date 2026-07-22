@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -99,7 +99,7 @@ object ParadoxConfigService {
         val gameType = config.configGroup.gameType
         val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.getOverriddenConfigs(contextElement, config).orNull()
                 ?.onEach {
                     it.originalConfig = config
@@ -119,7 +119,7 @@ object ParadoxConfigService {
         val result = mutableSetOf<CwtConfig<*>>()
         val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
@@ -138,7 +138,7 @@ object ParadoxConfigService {
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.getContext(element, file, configGroup, memberPathFromFile, memberRole)?.also { it.provider = ep }
             if (r != null) return r
         }
@@ -153,7 +153,7 @@ object ParadoxConfigService {
         val gameType = configGroup.gameType
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)?.also { it.provider = ep }
             if (r != null) return r
         }

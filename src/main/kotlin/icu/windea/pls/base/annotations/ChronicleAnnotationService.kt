@@ -6,7 +6,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
-object ChronicleAnnotationManager {
+object ChronicleAnnotationService {
     private val definitionTypesCache = CacheBuilder().build<Class<*>, Set<String>> {
         it.getAnnotation(WithDefinitionType::class.java)?.value?.toSet()?.optimized().orEmpty()
     }

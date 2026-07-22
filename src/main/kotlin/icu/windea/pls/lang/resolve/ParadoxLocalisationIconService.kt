@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -18,7 +18,7 @@ object ParadoxLocalisationIconService {
     fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
         val gameType = selectGameType(element)
         return ParadoxLocalisationIconSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ProgressManager.checkCanceled()
             ep.resolve(name, element, project)
         }
@@ -30,7 +30,7 @@ object ParadoxLocalisationIconService {
     fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
         val gameType = selectGameType(element)
         return ParadoxLocalisationIconSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ProgressManager.checkCanceled()
             ep.resolveAll(name, element, project).orNull()
         }.orEmpty()
@@ -42,7 +42,7 @@ object ParadoxLocalisationIconService {
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val gameType = context.gameType
         ParadoxLocalisationIconSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled()
             ep.complete(context, result)
         }
