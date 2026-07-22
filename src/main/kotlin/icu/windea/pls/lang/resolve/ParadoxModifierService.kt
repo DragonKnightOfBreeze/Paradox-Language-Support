@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.text.DocumentationBuilder
@@ -23,7 +23,7 @@ object ParadoxModifierService {
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val gameType = configGroup.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f false
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f false
             ep.matchModifier(name, element, configGroup)
         }
     }
@@ -34,7 +34,7 @@ object ParadoxModifierService {
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val gameType = configGroup.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.resolveModifier(name, element, configGroup)?.also { it.support = ep }
         }
     }
@@ -45,7 +45,7 @@ object ParadoxModifierService {
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
         val gameType = context.gameType
         ParadoxModifierSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ep.completeModifier(context, result, modifierNames)
         }
     }
@@ -56,7 +56,7 @@ object ParadoxModifierService {
     fun getModifierCategories(element: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val gameType = element.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.getModifierCategories(element)
         }
     }
@@ -67,7 +67,7 @@ object ParadoxModifierService {
     fun getDocumentationDefinition(element: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean {
         val gameType = element.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f false
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f false
             ep.buildDocumentationDefinition(element, builder)
         }
     }
@@ -78,7 +78,7 @@ object ParadoxModifierService {
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
         val gameType = definitionInfo.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f false
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f false
             ep.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder)
         }
     }
@@ -90,7 +90,7 @@ object ParadoxModifierService {
         val gameType = modifierInfo.gameType
         return buildSet {
             ParadoxModifierIconProvider.EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
                 ep.addModifierIconPath(modifierInfo, element, this)
             }
         }
@@ -103,7 +103,7 @@ object ParadoxModifierService {
         val gameType = modifierInfo.gameType
         return buildSet {
             ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
                 ep.addModifierNameKey(modifierInfo, element, this)
             }
         }
@@ -116,7 +116,7 @@ object ParadoxModifierService {
         val gameType = modifierInfo.gameType
         return buildSet {
             ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
                 ep.addModifierDescKey(modifierInfo, element, this)
             }
         }

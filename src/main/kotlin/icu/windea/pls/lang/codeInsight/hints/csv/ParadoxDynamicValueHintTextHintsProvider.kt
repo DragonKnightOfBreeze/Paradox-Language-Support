@@ -8,10 +8,9 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
-import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
@@ -49,7 +48,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
         val resolved = reference.resolve() ?: return
         if (resolved !is ParadoxDynamicValueLightElement) return
 
-        val hintLocalisation = ParadoxCodeInsightService.getHintLocalisation(resolved) ?: return
+        val hintLocalisation = ParadoxHintsService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(hintLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
@@ -58,6 +57,6 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxCsvColumn) return
-        ParadoxHintsPreviewUtil.fillData(element, sink)
+        ParadoxHintsService.fillPreviewData(element, sink)
     }
 }

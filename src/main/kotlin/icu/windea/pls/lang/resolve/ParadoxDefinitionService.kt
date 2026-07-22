@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -53,7 +53,7 @@ object ParadoxDefinitionService {
     fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.getSuperDefinition(definitionInfo)
         }
     }
@@ -64,7 +64,7 @@ object ParadoxDefinitionService {
     fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
         val gameType = definitionInfo.gameType
         ParadoxDefinitionInheritSupport.EP_NAME.extensionList.process p@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@p true
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@p true
             ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
         }
     }
@@ -75,7 +75,7 @@ object ParadoxDefinitionService {
     fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionModifierProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             ep.getModifierCategories(definitionInfo)
         }
     }

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.inspections
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
@@ -19,7 +19,7 @@ object ParadoxInspectionService {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
         ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             result += ep.getSuppressedToolIds(definition, definitionInfo)
         }
         return result
@@ -29,7 +29,7 @@ object ParadoxInspectionService {
     fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, checkers: List<ParadoxIncorrectSyntaxChecker>): Boolean {
         val gameType = context.gameType
         checkers.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.check(element, context)
             if (!r) return false
         }
@@ -40,7 +40,7 @@ object ParadoxInspectionService {
     fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext, checkers: List<ParadoxIncorrectExpressionChecker>): Boolean {
         val gameType = context.gameType
         checkers.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.check(element, config, context)
             if (!r) return false
         }
@@ -51,7 +51,7 @@ object ParadoxInspectionService {
     fun checkUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext, checkers: List<ParadoxUnresolvedExpressionChecker>): Boolean {
         val gameType = context.gameType
         checkers.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationManager.check(ep, gameType)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             val r = ep.check(element, expectedConfigs, context)
             if (!r) return false
         }

@@ -38,8 +38,8 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): InlayHintsCollector? {
         val project = editor.project ?: file.project
         if (project.isDefault || file !is ParadoxFile) return null
-        val preview = ParadoxHintsPreviewUtil.detectPreview(file, 4)
-        if (!preview && !isAvailable(file, editor)) return null
+        val isPreview = ParadoxHintsService.detectPreview(file, 4)
+        if (!isPreview && !isAvailable(file, editor)) return null
 
         return object : FactoryInlayHintsCollector(editor) {
             private val context = ParadoxHintsContext(file, editor, settings, factory)
@@ -49,7 +49,7 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
                 ProgressManager.checkCanceled()
                 try {
                     with(context) {
-                        if (preview) {
+                        if (isPreview) {
                             collectForPreview(element, sink)
                         } else {
                             collectFromElement(element, sink)

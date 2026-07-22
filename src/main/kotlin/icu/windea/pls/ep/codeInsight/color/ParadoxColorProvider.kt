@@ -2,7 +2,7 @@ package icu.windea.pls.ep.codeInsight.color
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.codeInsight.color.ParadoxColorManager
+import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.codeInsight.color.ParadoxElementColorProvider
 import java.awt.Color
 
@@ -11,8 +11,8 @@ import java.awt.Color
  *
  * 备注：alpha值可以小于0或者大于255（对于浮点数写法则是小于0.0或者大于1.0），表示粒子外溢的光照强度。
  *
+ * @see ParadoxColorService
  * @see ParadoxElementColorProvider
- * @see ParadoxColorManager
  */
 interface ParadoxColorProvider {
     fun getTargetElement(tokenElement: PsiElement): PsiElement?

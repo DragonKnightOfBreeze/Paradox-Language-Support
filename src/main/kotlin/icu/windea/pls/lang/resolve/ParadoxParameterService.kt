@@ -6,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationManager
+import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -135,7 +135,7 @@ object ParadoxParameterService {
         val gameType = parameterContextInfo.gameType
         return withRecursionGuard {
             ParadoxParameterInferredConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!ChronicleAnnotationManager.check(ep, gameType)) return@f null
+                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
                 if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
                 ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             }

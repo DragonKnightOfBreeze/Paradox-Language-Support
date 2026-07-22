@@ -105,6 +105,9 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     return this != null && this.size != 0
 }
 
+/** 如果当前布尔值为 `false`，则返回 `null`，否则返回自身。 */
+inline fun Boolean.orNull() = takeIf { it }
+
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
 inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 

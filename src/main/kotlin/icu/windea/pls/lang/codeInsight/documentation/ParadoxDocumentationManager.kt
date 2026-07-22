@@ -16,7 +16,6 @@ import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -1012,7 +1011,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val contents = ParadoxCodeInsightService.listQuickDocText(element)
+        val contents = ParadoxDocumentationService.listQuickDocText(element)
         if (contents.isEmpty()) return
         contents.forEach { content { append(it) } }
     }

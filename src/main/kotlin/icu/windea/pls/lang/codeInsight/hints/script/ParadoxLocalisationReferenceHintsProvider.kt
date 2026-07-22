@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
@@ -49,6 +49,6 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
     context(context: ParadoxHintsContext)
     override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
-        ParadoxHintsPreviewUtil.fillData(element, sink)
+        ParadoxHintsService.fillPreviewData(element, sink)
     }
 }

@@ -13,7 +13,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.codeInsight.color.ParadoxColorManager
+import icu.windea.pls.lang.codeInsight.color.ParadoxColorUtil
 import icu.windea.pls.lang.psi.isValidExpression
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -65,9 +65,9 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
     private fun doGetColor(element: ParadoxScriptString): Color? {
         val hex = element.value.lowercase().removePrefixOrNull("0x") ?: return null
         if (hex.length != 6 && hex.length != 8) return null
-        val colorType = ParadoxColorManager.getColorType(element) ?: return null
+        val colorType = ParadoxColorUtil.getColorType(element) ?: return null
         if (colorType != "hex") return null
-        return ParadoxColorManager.getColor(hex)
+        return ParadoxColorUtil.getColor(hex)
     }
 
     private fun doSetColor(element: ParadoxScriptString, color: Color) {
@@ -129,7 +129,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorFromCache(element: ParadoxScriptBlock): Color? {
-        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.cachedColorKey) {
+        return CachedValuesManager.getCachedValue(element, ParadoxColorUtil.cachedColorKey) {
             ProgressManager.checkCanceled()
             val value = doGetColor(element)
             value.withDependencyItems(element)
@@ -140,7 +140,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         val colorType = getColorType(element)
         val colorArgs = getColorArgs(element)
         if (colorType == null || colorArgs == null) return null
-        return ParadoxColorManager.getColor(colorType, colorArgs)
+        return ParadoxColorUtil.getColor(colorType, colorArgs)
     }
 
     private fun doSetColor(element: ParadoxScriptBlock, color: Color) {
@@ -148,7 +148,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         val colorType = getColorType(element)
         val colorArgs = getColorArgs(element)
         if (colorType == null || colorArgs == null) return
-        val newColorArgs = ParadoxColorManager.getNewColorArgs(colorType, colorArgs, color) ?: return
+        val newColorArgs = ParadoxColorUtil.getNewColorArgs(colorType, colorArgs, color) ?: return
         val newText = newColorArgs.joinToString(" ", "{ ", " }")
         val newBlock = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newBlock !is ParadoxScriptBlock) return
@@ -169,7 +169,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
             else -> null
         }
         if (elementToGetOption == null) return null
-        return ParadoxColorManager.getColorType(elementToGetOption)
+        return ParadoxColorUtil.getColorType(elementToGetOption)
     }
 
     private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
@@ -214,7 +214,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorFromCache(element: ParadoxScriptColor): Color? {
-        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.cachedColorKey) {
+        return CachedValuesManager.getCachedValue(element, ParadoxColorUtil.cachedColorKey) {
             ProgressManager.checkCanceled()
             val value = doGetColor(element)
             value.withDependencyItems(element)
@@ -224,14 +224,14 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
     private fun doGetColor(element: ParadoxScriptColor): Color? {
         val colorType = element.colorType
         val colorArgs = element.colorArgs
-        return ParadoxColorManager.getColor(colorType, colorArgs)
+        return ParadoxColorUtil.getColor(colorType, colorArgs)
     }
 
     private fun doSetColor(element: ParadoxScriptColor, color: Color) {
         val project = element.project
         val colorType = element.colorType
         val colorArgs = element.colorArgs
-        val newColorArgs = ParadoxColorManager.getNewColorArgs(colorType, colorArgs, color) ?: return
+        val newColorArgs = ParadoxColorUtil.getNewColorArgs(colorType, colorArgs, color) ?: return
         val newText = newColorArgs.joinToString(" ", "$colorType { ", " }")
         val newColor = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newColor !is ParadoxScriptColor) return
