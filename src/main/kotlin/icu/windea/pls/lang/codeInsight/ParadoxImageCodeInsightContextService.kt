@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.inspections.InspectionService
@@ -121,7 +122,7 @@ object ParadoxImageCodeInsightContextService {
         val inspection = if (fromInspection) getMissingImageInspection(project, element) else null
 
         if (!(inspection == null || inspection.checkForModifiers)) return null
-        if (config.configExpression.type != CwtDataTypes.Modifier) return null
+        if (config.expandConfigExpression().none { it.type == CwtDataTypes.Modifier }) return null
         val modifierName = element.value
         val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
 

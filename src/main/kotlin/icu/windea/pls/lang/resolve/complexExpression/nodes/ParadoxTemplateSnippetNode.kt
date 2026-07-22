@@ -9,6 +9,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
@@ -145,8 +146,8 @@ class ParadoxTemplateSnippetNode(
             // limit constraint
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
-            val dataType = config.configExpression.type
-            return constraint.test(dataType)
+            // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
+            return config.expandConfigExpression().any { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

@@ -8,6 +8,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
@@ -149,10 +150,8 @@ class ParadoxDataSourceNode(
             // limit constraint
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
-            return node.linkConfigs.any { linkConfig ->
-                val configExpression = linkConfig.configExpression ?: return@any false
-                constraint.test(configExpression.type)
-            }
+            // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
+            return node.linkConfigs.expandConfigExpression().any { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

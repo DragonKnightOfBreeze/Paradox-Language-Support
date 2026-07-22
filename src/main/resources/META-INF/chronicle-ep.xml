@@ -149,14 +149,15 @@
     <incorrectSyntaxChecker implementation="icu.windea.pls.ep.inspections.ParadoxDanglingRichTextEndMarkerChecker"/>
     <incorrectSyntaxChecker implementation="icu.windea.pls.ep.inspections.ParadoxLeftBracketEscapeChecker"/>
 
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedIntChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedFloatChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedIntFieldChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedFloatFieldChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxColorFieldChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeBasedScopeFieldExpressionChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxIntValueFieldChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxFloatValueFieldChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.StellarisTechnologyWithLevelChecker"/>
+
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 

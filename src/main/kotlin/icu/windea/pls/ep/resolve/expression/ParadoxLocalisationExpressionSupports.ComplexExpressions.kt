@@ -10,6 +10,8 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
+// Complex Expressions
+
 /**
  * @see ParadoxCommandExpression
  */
