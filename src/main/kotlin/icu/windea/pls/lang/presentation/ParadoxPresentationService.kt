@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.presentation
+package icu.windea.pls.lang.presentation
 
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentationProvider

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.data
+package icu.windea.pls.lang.data
 
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.util.createKey

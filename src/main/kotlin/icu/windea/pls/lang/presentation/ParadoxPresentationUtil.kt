@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.presentation
+package icu.windea.pls.lang.presentation
 
 import com.intellij.diagram.DiagramElementManager
 import com.intellij.openapi.project.Project

@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.util.data
 
-import icu.windea.pls.lang.util.data.ParadoxDataService
+import icu.windea.pls.lang.data.ParadoxDataService
 
 /**
  * 定义的数据。

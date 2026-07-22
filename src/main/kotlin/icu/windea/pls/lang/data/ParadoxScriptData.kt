@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.data
+package icu.windea.pls.lang.data
 
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey

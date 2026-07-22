@@ -4,9 +4,9 @@ package icu.windea.pls.ep.util.data
 
 import icu.windea.pls.base.annotations.WithDefinitionType
 import icu.windea.pls.base.annotations.WithGameType
-import icu.windea.pls.lang.util.data.ParadoxScriptData
-import icu.windea.pls.lang.util.data.get
-import icu.windea.pls.lang.util.data.getAll
+import icu.windea.pls.lang.data.ParadoxScriptData
+import icu.windea.pls.lang.data.get
+import icu.windea.pls.lang.data.getAll
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 

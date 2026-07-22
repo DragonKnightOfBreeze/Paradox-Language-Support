@@ -11,6 +11,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
+import icu.windea.pls.lang.data.ParadoxDataService
+import icu.windea.pls.lang.presentation.ParadoxPresentationService
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionCandidateManager
@@ -18,8 +20,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTagManager
-import icu.windea.pls.lang.util.data.ParadoxDataService
-import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefineNamespaceInfo

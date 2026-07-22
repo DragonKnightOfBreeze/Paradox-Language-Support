@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.data
+package icu.windea.pls.lang.data
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
