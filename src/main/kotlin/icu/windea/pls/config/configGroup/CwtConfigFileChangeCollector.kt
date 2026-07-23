@@ -3,7 +3,9 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
@@ -22,7 +24,13 @@ class CwtConfigFileChangeCollector {
     fun collectChange(events: List<VFileEvent>) {
         events.forEachFast f@{ event ->
             ProgressManager.checkCanceled()
+            // NOTE 3.0.1 should also watch VFileCreateEvent and VFileContentChangeEvent
             when (event) {
+                is VFileCreateEvent -> {
+                    val fileName = event.childName
+                    if (!isCwtFile(fileName)) return@f
+                    event.parent.let { contextFiles += it }
+                }
                 is VFileDeleteEvent -> {
                     val fileName = event.file.name
                     if (!isCwtFile(fileName)) return@f
@@ -41,6 +49,11 @@ class CwtConfigFileChangeCollector {
                 }
                 is VFilePropertyChangeEvent -> {
                     if (event.propertyName != VirtualFile.PROP_NAME) return@f
+                    val fileName = event.file.name
+                    if (!isCwtFile(fileName)) return@f
+                    event.file.parent?.let { contextFiles += it }
+                }
+                is VFileContentChangeEvent -> {
                     val fileName = event.file.name
                     if (!isCwtFile(fileName)) return@f
                     event.file.parent?.let { contextFiles += it }

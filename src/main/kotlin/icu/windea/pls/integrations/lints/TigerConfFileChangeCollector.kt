@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
@@ -29,21 +30,37 @@ class TigerConfFileChangeCollector {
         events.forEachFast f@{ event ->
             ProgressManager.checkCanceled()
             when (event) {
+                // NOTE 3.0.1 should also watch VFileCreateEvent and VFileContentChangeEvent
+                is VFileCreateEvent -> {
+                    val fileName = event.childName
+                    if (!isConfFile(fileName)) return@f
+                    changedConfFileNames += fileName
+                }
                 is VFileDeleteEvent -> {
-                    event.file.name.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
+                    val fileName = event.file.name
+                    if (!isConfFile(fileName)) return@f
+                    changedConfFileNames += fileName
                 }
                 is VFileCopyEvent -> {
-                    event.newChildName.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
+                    val fileName = event.newChildName
+                    if (!isConfFile(fileName)) return@f
+                    changedConfFileNames += fileName
                 }
                 is VFileMoveEvent -> {
-                    event.file.name.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
+                    val fileName = event.file.name
+                    if (!isConfFile(fileName)) return@f
+                    changedConfFileNames += fileName
                 }
                 is VFilePropertyChangeEvent -> {
                     if (event.propertyName != VirtualFile.PROP_NAME) return@f
-                    event.file.name.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
+                    val fileName = event.file.name
+                    if (!isConfFile(fileName)) return@f
+                    changedConfFileNames += fileName
                 }
                 is VFileContentChangeEvent -> {
-                    event.file.name.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
+                    val fileName = event.file.name
+                    if (!isConfFile(fileName)) return@f
+                    changedConfFileNames += fileName
                 }
             }
         }
