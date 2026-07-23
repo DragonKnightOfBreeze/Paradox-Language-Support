@@ -5,6 +5,7 @@ import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.excludeCoroutines
 import org.jetbrains.intellij.platform.gradle.extensions.excludeKotlinStdlib
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
@@ -74,6 +75,14 @@ intellijPlatform {
     }
 
     pluginVerification {
+        failureLevel = listOf(
+            VerifyPluginTask.FailureLevel.COMPATIBILITY_PROBLEMS, // not expected
+            // VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES, // have to use atm (few situations, but should be ignored by the verifier)
+            VerifyPluginTask.FailureLevel.SCHEDULED_FOR_REMOVAL_API_USAGES, // not have to use atm
+            VerifyPluginTask.FailureLevel.OVERRIDE_ONLY_API_USAGES, // not have to use atm
+            VerifyPluginTask.FailureLevel.NON_EXTENDABLE_API_USAGES, // not have to use atm
+        )
+
         ides {
             recommended()
         }

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.platform.images.icons.PlatformImagesIcons
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.Icon
 
@@ -21,6 +22,13 @@ object ChronicleIcons {
         @JvmField val Presentation = PlatformImagesIcons.ThumbnailToolWindow
 
         @JvmField val Steam = getIcon("/icons/steam.svg")
+
+        @JvmStatic
+        fun RootDirectory(rootInfo: ParadoxRootInfo) = when (rootInfo) {
+            is ParadoxRootInfo.Game -> GameDirectory
+            is ParadoxRootInfo.Mod -> ModDirectory
+            else -> ModDirectory // fallback
+        }
     }
 
     object FileTypes {

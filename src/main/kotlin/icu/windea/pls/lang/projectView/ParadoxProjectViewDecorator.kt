@@ -10,7 +10,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxFileGroup
-import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
@@ -33,11 +32,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
 
         // 特殊图标
         run {
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return@run
-            val icon = when (rootInfo) {
-                is ParadoxRootInfo.Game -> ChronicleIcons.General.GameDirectory
-                is ParadoxRootInfo.Mod -> ChronicleIcons.General.ModDirectory
-            }
+            val icon = ChronicleIcons.General.RootDirectory(rootInfo)
             data.setIcon(icon)
         }
 

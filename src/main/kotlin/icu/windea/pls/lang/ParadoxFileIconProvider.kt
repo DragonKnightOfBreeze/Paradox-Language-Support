@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.model.ParadoxFileGroup
-import icu.windea.pls.model.ParadoxRootInfo
 import javax.swing.Icon
 
 /**
@@ -16,28 +15,26 @@ import javax.swing.Icon
  */
 class ParadoxFileIconProvider : FileIconProvider, DumbAware {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {
-        if (project == null) return null
-        val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return null
         if (file.isDirectory) {
-            val rootInfo = fileInfo.rootInfo
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            if (file == rootInfo.rootFile) {
+            if (project != null) {
                 if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
                 if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
-                val icon = when (rootInfo) {
-                    is ParadoxRootInfo.Game -> ChronicleIcons.General.GameDirectory
-                    is ParadoxRootInfo.Mod -> ChronicleIcons.General.ModDirectory
-                }
-                return icon
-            } else {
-                if (fileInfo.path.isNotEmpty()) return null
+            }
+            val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return null
+            val rootInfo = fileInfo.rootInfo
+            if (rootInfo.rootFile != null && file == rootInfo.rootFile) {
+                return ChronicleIcons.General.RootDirectory(rootInfo)
+            }
+            if (fileInfo.path.isEmpty()) {
                 return ChronicleIcons.General.EntryDirectory
             }
         } else {
-            if (fileInfo.group != ParadoxFileGroup.ModDescriptor) return null
-            val icon = ChronicleIcons.FileTypes.ModDescriptor
-            return icon
+            val group = ParadoxFileGroup.resolvePossible(file.name)
+            if (group == ParadoxFileGroup.ModDescriptor) {
+                return ChronicleIcons.FileTypes.ModDescriptor
+            }
         }
+        return null
     }
 }
 
