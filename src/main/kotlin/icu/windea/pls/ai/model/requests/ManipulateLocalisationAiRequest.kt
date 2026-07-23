@@ -2,12 +2,12 @@ package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
+import icu.windea.pls.ai.settings.ChronicleAiSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
@@ -24,12 +24,14 @@ abstract class ManipulateLocalisationAiRequest(
         variables["index"] = index
         variables["total"] = localisationContexts.size
 
-        val gameType = selectGameType(file) ?: ParadoxGameType.getDefault()
-        val fileInfo: ParadoxFileInfo? by lazy { selectFile(file)?.fileInfo }
-        variables["game_type_id"] = gameType.id
-        variables["game_type_title"] = gameType.title
-        variables["mod_name"] = fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name
-        variables["file_path"] = fileInfo?.path?.path
+        if (ChronicleAiSettings.getInstance().state.withContext) {
+            val gameType = selectGameType(file) ?: ParadoxGameType.getDefault()
+            val fileInfo = selectFile(file)?.fileInfo
+            variables["game_type_id"] = gameType.id
+            variables["game_type_title"] = gameType.title
+            variables["mod_name"] = fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name
+            variables["file_path"] = fileInfo?.path?.path
+        }
 
         variables["supports_concept_command"] = ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(file)
         variables["supports_text_format"] = ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(file)

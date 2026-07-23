@@ -45,8 +45,8 @@ class ChronicleSettingsMigrator : AppLifecycleListener {
     }
 
     private fun migrate() {
-        val v = PropertiesComponent.getInstance().getInt(migrationPropertyName, 0)
-        if (v >= migrationVersion) return
+        val oldMigrationVersion = PropertiesComponent.getInstance().getInt(migrationPropertyName, 0)
+        if (oldMigrationVersion >= migrationVersion) return
 
         val optionsPath = PathManager.getOptionsPath()
         val settingsFileName = ChronicleConstants.pluginSettingsFileName
@@ -58,12 +58,12 @@ class ChronicleSettingsMigrator : AppLifecycleListener {
             val newText = replacementMap.entries.fold(text) { t, r -> t.replace(r.key, r.value) }
             if (newText == text) return
             settingsFile.writeText(newText)
-            logger.info("Migration for '$settingsFileName' finished. (migration version: $v)")
+            logger.info("Migration for '$settingsFileName' finished. (migration version: $migrationVersion)")
         } catch (e: Exception) {
             if (e is ProcessCanceledException) return
-            logger.info("Migration for '$settingsFileName' failed. Skip. (migration version: $v)")
+            logger.info("Migration for '$settingsFileName' failed. Skip. (migration version: $migrationVersion)")
         } finally {
-            PropertiesComponent.getInstance().setValue(migrationPropertyName, v, 0)
+            PropertiesComponent.getInstance().setValue(migrationPropertyName, migrationVersion, 0)
         }
     }
 }
