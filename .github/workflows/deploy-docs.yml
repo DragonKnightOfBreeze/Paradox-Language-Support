@@ -7,12 +7,6 @@ on:
       - "dev/**" # in-developing branches
     paths:
       - "docs/**"
-  pull_request:
-    branches:
-      - master
-      - "dev/**" # in-developing branches
-    paths:
-      - "docs/**"
 
 jobs:
   deploy-gh-pages:
