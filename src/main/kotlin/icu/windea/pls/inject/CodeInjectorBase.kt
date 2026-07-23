@@ -47,7 +47,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     }
 
     private fun getPluginClassLoader(pluginId: PluginId): ClassLoader {
-        // TODO 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262
+        // NOTE 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal (but ignored) since IDEA-262
         //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
         val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(pluginId)
         return pluginDescriptor?.pluginClassLoader ?: PluginDescriptor::class.java.classLoader

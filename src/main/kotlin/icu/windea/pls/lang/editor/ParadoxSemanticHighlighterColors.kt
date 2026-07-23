@@ -15,7 +15,7 @@ import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import java.awt.Color
 
 object ParadoxSemanticHighlighterColors {
-    // NOTE [compatibility] `TextAttributesKey.createTextAttributesKey(String, TextAttributesKey)` is deprecated
+    // NOTE 3.0.0 [compatibility] `TextAttributesKey.createTextAttributesKey(String, TextAttributesKey)` is deprecated
     //  - But necessary and intended here (use `createTempTextAttributesKey` will lead to undesirable behavior)
     @Suppress("DEPRECATION")
     private val colorKeyCache = CacheBuilder().build { color: Color ->

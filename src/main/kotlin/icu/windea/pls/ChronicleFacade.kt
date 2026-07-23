@@ -84,7 +84,7 @@ object ChronicleFacade {
 
     /** 检查插件是否是开发中版本。 */
     fun isDevVersion(): Boolean {
-        // NOTE [compatibility] `PluginManagerCore.findEnabledPlugin(PluginId)` is internal since IDEA-262
+        // NOTE 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal (but ignored) since IDEA-262
         //  - Use `PluginDetailsService` instead
         return PluginManager.getInstance().findEnabledPlugin(ChronicleConstants.pluginId)?.version?.endsWith("-dev") == true
     }

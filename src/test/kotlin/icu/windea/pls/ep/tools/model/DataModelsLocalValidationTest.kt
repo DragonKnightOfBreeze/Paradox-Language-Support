@@ -19,9 +19,6 @@ import kotlin.io.path.isRegularFile
  * 基于本地文件的验证测试：
  * - JSON：dlc_load.json / content_load.json / launcher-settings.json
  * - SQLite：launcher-v2.sqlite（或 launcher-v2_openbeta.sqlite）
- *
- * 仅在本地环境运行（CI 默认跳过）：
- *   -Dchronicle.test.include.local.env=true
  */
 class DataModelsLocalValidationTest {
     private val gameDataDir = SpecialPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris)

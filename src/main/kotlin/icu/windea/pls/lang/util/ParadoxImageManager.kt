@@ -16,10 +16,6 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -47,10 +43,6 @@ import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 
 object ParadoxImageManager {
-    object Keys : KeyRegistry() {
-        val sliceInfos by registerKey<MutableSet<String>>(Keys)
-    }
-
     private val logger = logger<ParadoxImageManager>()
 
     fun isImageFile(file: PsiFile): Boolean {
