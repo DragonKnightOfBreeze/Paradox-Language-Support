@@ -48,29 +48,43 @@ jobs:
         id: properties
         shell: bash
         run: |
+          PROPERTIES="$(./gradlew properties --console=plain -q)"
+          PLUGIN_VERSION="$(echo "$PROPERTIES" | grep "^pluginVersion:" | cut -f2- -d ' ')"
+          PLUGIN_PRERELEASE_VERSION="$(echo "$PROPERTIES" | grep "^pluginPreReleaseVersion:" | cut -f2- -d ' ')"
+          PLUGIN_BUILD_METADATA="$(echo "$PROPERTIES" | grep "^pluginBuildMetadata:" | cut -f2- -d ' ')"
           CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
           ${{ github.event.release.body }}
           EOM
           )"
 
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "pluginVersion: $PLUGIN_VERSION"
+          echo "pluginPrereleaseVersion: $PLUGIN_PRERELEASE_VERSION"
+          echo "pluginBuildMetadata: $PLUGIN_BUILD_METADATA"
+          echo "changelog:"
+          echo "$CHANGELOG"
+
+          echo "pluginVersion=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
+          echo "pluginPrereleaseVersion=$PLUGIN_PRERELEASE_VERSION" >> $GITHUB_OUTPUT
+          echo "pluginBuildMetadata=$PLUGIN_BUILD_METADATA" >> $GITHUB_OUTPUT
+
+          echo 'changelog<<EOF' >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       # Publish to JetBrains Marketplace
       - name: Publish Plugin
         env:
-          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-          CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+          IDEA_TOKEN: ${{ secrets.IDEA_TOKEN }}
+          CERTIFICATE_CHAIN_CHRONICLE: ${{ secrets.CERTIFICATE_CHAIN_CHRONICLE }}
+          PRIVATE_KEY_CHRONICLE: ${{ secrets.PRIVATE_KEY_CHRONICLE }}
+          PRIVATE_KEY_PASSWORD_CHRONICLE: ${{ secrets.PRIVATE_KEY_PASSWORD_CHRONICLE }}
         run: ./gradlew publishPlugin
 
       # Upload artifact as a release asset
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload v${{ steps.properties.outputs.pluginVersion }} ./build/distributions/*
+        run: gh release upload ${{ github.event.release.tag_name }} ./build/distributions/*
 
       # Close the milestone
       - name: Close Milestone
