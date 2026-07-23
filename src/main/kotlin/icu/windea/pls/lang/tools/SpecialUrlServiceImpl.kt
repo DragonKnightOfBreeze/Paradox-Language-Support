@@ -11,6 +11,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.core.execution.configurations.PathEnvironmentVariableService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
@@ -145,14 +146,10 @@ class SpecialUrlServiceImpl : SpecialUrlService {
 
     private fun openUrlWithSystemCommand(url: String) {
         // see: com.intellij.ide.browsers.BrowserLauncherAppless.openWithDefaultBrowserCommand
-        // see: com.intellij.openapi.util.SystemInfo.hasXdgOpen (deprecated since IDEA 2026.1)
-
-        // NOTE 3.0.0 [compatibility] `SystemInfo.hasXdgOpen()` is deprecated since IDEA-261
-        //  - Use `PathEnvironmentVariableUtil.isOnPath("xdg-open")` instead
         val command = when {
             SystemInfo.isWindows -> listOf(CommandLineUtil.getWinShellName(), "/c", "start", GeneralCommandLine.inescapableQuote(""))
             SystemInfo.isMac -> listOf(ExecUtil.openCommandPath)
-            SystemInfo.hasXdgOpen() -> listOf("xdg-open")
+            hasXdgOpen() -> listOf("xdg-open")
             else -> null
         }
         if (command == null) {
@@ -172,6 +169,12 @@ class SpecialUrlServiceImpl : SpecialUrlService {
             logger.warn("Failed to run system command: ${commandLine.commandLineString}")
             logger.warn(e.message, e)
         }
+    }
+
+    private fun hasXdgOpen(): Boolean {
+        // NOTE 3.0.0 [compatibility] `SystemInfo.hasXdgOpen()` is deprecated since IDEA-261
+        //  - Use `PathEnvironmentVariableUtil.isOnPath("xdg-open")` instead (which was introduced in IDEA-253, so there is a workaround)
+        return PathEnvironmentVariableService.isOnPath("xdg-open")
     }
 
     override fun copyUrl(url: String) {

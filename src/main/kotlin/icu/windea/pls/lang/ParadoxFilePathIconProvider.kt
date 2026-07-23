@@ -3,21 +3,31 @@ package icu.windea.pls.lang
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vcs.changes.FilePathIconProvider
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
 import javax.swing.Icon
 
 /**
- * 用于在VCS提交记录中直接基于文件路径为（可能已经不存在的）文件提供正确的图标。
+ * 在 VCS 提交记录中直接基于文件路径为文件提供特殊图标。这些文件可能并不存在于本地.
  */
-@Suppress("removal", "OVERRIDE_DEPRECATION")
 class ParadoxFilePathIconProvider : FilePathIconProvider {
-    override fun getIcon(filePath: FilePath, project: Project?): Icon? {
-        val possibleGroup = ParadoxFileGroup.resolvePossible(filePath.name)
-        if (possibleGroup == ParadoxFileGroup.Other) return null
-
-        val fileInfo = ParadoxAnalysisManager.getFileInfo(filePath) ?: return null
-        return ParadoxFileManager.getFileTypeIcon(fileInfo.group)
+    override fun getIcon(filePath: FilePath, isDirectory: Boolean, project: Project?): Icon? {
+        if (isDirectory) {
+            val fileInfo = ParadoxAnalysisManager.getFileInfo(filePath) ?: return null
+            val rootInfo = fileInfo.rootInfo
+            if (rootInfo.rootFile != null && filePath.virtualFile == rootInfo.rootFile) {
+                return ChronicleIcons.General.RootDirectory(rootInfo)
+            }
+            if (fileInfo.path.isEmpty()) {
+                return ChronicleIcons.General.EntryDirectory
+            }
+        } else {
+            val group = ParadoxFileGroup.resolvePossible(filePath.name)
+            if (group == ParadoxFileGroup.ModDescriptor) {
+                return ChronicleIcons.FileTypes.ModDescriptor
+            }
+        }
+        return null
     }
 }

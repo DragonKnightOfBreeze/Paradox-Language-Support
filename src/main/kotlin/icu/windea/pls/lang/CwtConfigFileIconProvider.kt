@@ -22,16 +22,17 @@ class CwtConfigFileIconProvider : FileIconProvider, DumbAware {
             if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
             val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
             val fileProvider = fileProviders.find { it.getRootDirectory(project) == file }
-            if (fileProvider == null) return null
-            val icon = ChronicleIcons.General.ConfigGroupDirectory
-            return icon
+            if (fileProvider != null) {
+                return ChronicleIcons.General.ConfigGroupDirectory
+            }
         } else {
             // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
             if (file.fileType !is CwtFileType) return null
             val configGroup = CwtConfigManager.getContainingConfigGroup(file, project)
-            if (configGroup == null) return null
-            val icon = ChronicleIcons.FileTypes.CwtConfig
-            return icon
+            if (configGroup != null) {
+                return ChronicleIcons.FileTypes.CwtConfig
+            }
         }
+        return null
     }
 }
