@@ -168,7 +168,7 @@ object ParadoxImageManager {
     private fun doResolveImagePath(imageAbsPath: String, imageRelPath: String?, frameInfo: ImageFrameInfo): Path {
         val imagesPath = ChronicleDataPathService.getInstance().imagesPath
         if (imageRelPath != null) {
-            // 路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
+            // 路径：~/.windea/chronicle/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
             // UUID：基于游戏或模组目录的绝对路径
             val relPathWithoutExtension = imageRelPath.substringBeforeLast('.')
             val uuid = imageAbsPath.removeSuffix(imageRelPath).trim('/').toUUID().toString()
@@ -176,7 +176,7 @@ object ParadoxImageManager {
             val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
             return imagesPath.resolve(finalPath).toAbsolutePath()
         } else {
-            // 路径：~/.pls/images/_external/${fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
+            // 路径：~/.windea/chronicle/images/_external/${fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
             // UUID：基于DDS文件所在目录
             val index = imageAbsPath.lastIndexOf('/')
             val parent = if (index == -1) "" else imageAbsPath.substring(0, index)
