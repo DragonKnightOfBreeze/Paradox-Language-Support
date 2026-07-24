@@ -2,7 +2,6 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -32,7 +31,7 @@ class Issue324Test : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testWeapons() {
-        val configGroup = ChronicleFacade.getConfigGroup(myFixture.project)
+        val configGroup = getConfigGroup(myFixture.project)
 
         val typeConfig = configGroup.types["weapon"]
         assertNotNull(typeConfig)

@@ -3,9 +3,12 @@ package icu.windea.pls.config.manipulation
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.config.expandConfigExpression
+import icu.windea.pls.config.config.expandKeyExpression
+import icu.windea.pls.config.config.expandValueExpression
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.tupleOf
@@ -14,21 +17,36 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.test.ChronicleTestScope
+import org.junit.After
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
+class CwtConfigManipulationServiceTest  : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun doSetUp() {
+        markIntegrationTest()
+        markRootDirectory("features/config/manipulation")
+        markConfigDirectory("features/config/manipulation/.config")
+        initConfigGroups(project, ParadoxGameType.Stellaris)
+    }
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun testDeepCopyConfigs_parentPointers() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val p = root.findChild<CwtProperty> { it.name == "block_prop" }!!
@@ -47,9 +65,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_subtypeFlatten_and_parent() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/deep_copy_declaration.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val p = root.findChild<CwtProperty> { it.name == "decl" }!!
@@ -80,9 +99,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_parentChain_nested() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/deep_copy_nested.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val topProp = root.findChild<CwtProperty> { it.name == "top" }!!
@@ -101,9 +121,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_optionConfigs_and_userData_semantics() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/deep_copy_options.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val containerProp = root.findChild<CwtProperty> { it.name == "container" }!!
@@ -128,9 +149,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_nullContainerConfigs_returnsNull_and_parentUnchanged() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
@@ -143,9 +165,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_emptyContainerConfigs_returnsEmptyList_and_parentUnchanged() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/deep_copy_empty.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
@@ -159,9 +182,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_nullContainerConfigs_returnsNull_and_parentUnchanged() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
@@ -175,9 +199,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_emptyContainerConfigs_returnsEmptyList_and_parentUnchanged() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/deep_copy_empty.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
@@ -192,9 +217,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_nullContainerConfigs_withDifferentParent_noSideEffect() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
@@ -215,9 +241,9 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_nullContainerConfigs_withDifferentParent_noSideEffect() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
@@ -235,16 +261,17 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testExpandBySubtypeExpression() {
+    fun testExpandBySubtypeExpression_Basic() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
         myFixture.configureByFile("features/config/manipulation/expand_by_subtype_expression.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val containerProp = root.findChild<CwtProperty> { it.name == "k1" }!!
-        val container = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
+        val containerConfig = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
 
-        val result = CwtConfigManipulationService.expandBySubtypeExpression(container)
+        val result = CwtConfigManipulationService.expandBySubtypeExpression(containerConfig)
             .map { (c, t) -> tupleOf(c.toString(), t) }
             .toList()
         val expect = listOf(
@@ -255,5 +282,27 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
             tupleOf("(property) k6 = v", "t2&t4&t6"),
         )
         assertEquals(expect, result)
+    }
+
+    @Test
+    fun testExpandConfigExpression_Basic() {
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+
+        myFixture.configureByFile("features/config/manipulation/expand_config_expression.test.cwt")
+        val file = myFixture.file as CwtFile
+        val root = file.block!!
+
+        val propMap = root.propertyList.associateBy({ it.name }, { CwtPropertyConfig.resolve(it, file, configGroup)!! })
+
+        assertTrue(propMap.values.expandConfigExpression().all { it.type == CwtDataTypes.Constant }) // keys -> all constant
+
+        assertTrue(propMap.values.expandKeyExpression().all { it.type == CwtDataTypes.Constant }) // keys -> all constant
+
+        assertTrue(propMap.getValue("k1").expandValueExpression().any { it.type === CwtDataTypes.Int })
+        assertTrue(propMap.getValue("k2").expandValueExpression().any { it.type === CwtDataTypes.Int }) // expanded
+        assertTrue(propMap.getValue("k3").expandValueExpression().any { it.type === CwtDataTypes.Int }) // expanded
+        assertTrue(propMap.getValue("k4").expandValueExpression().none { it.type === CwtDataTypes.Int }) // ignored
+        assertTrue(propMap.getValue("k5").expandValueExpression().none { it.type === CwtDataTypes.Int }) // ignored
+        assertTrue(propMap.getValue("k0").expandValueExpression().none { it.type === CwtDataTypes.Int })
     }
 }

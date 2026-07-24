@@ -63,5 +63,5 @@ globs:
 关于规则系统以及规则和规则表达式的格式，可参考：
 - `docs/zh/config.md`
 - `docs/zh/ref-config-format.md`
-- `cwt/cwtools-stellaris-config/config`
-- `src/test/testData/chronicle`
+- `src/test/testData/chronicle/`
+- `cwt/cwtools-stellaris-config/config/`

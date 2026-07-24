@@ -99,7 +99,7 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 - For `ParsingTestCase`-based tests, the input file is `<caseName>.test.txt` while the expected PSI-tree snapshot file is `<caseName>.txt` (no `.test.` segment).
 - Some feature tests provide a test-local `.config/` directory under test data to simulate config groups (e.g. `features/index/.config`, `features/inspections/.config`); config files must live in a subdirectory of `.config/` (e.g. `core/`, `stellaris/`), never directly inside it.
 - `src/test/testData/issues/<issueNumber>[_shortDesc]/` holds regression test data for GitHub-issue-specific tests (see `icu.windea.pls.test.issues.IssueNNNTest` below), typically with a `README.md` describing the scenario.
-- `src/test/testData/chronicle/` is a self-contained showcase "game/mod" content tree (see Snapshot tests below) and follows Paradox's own numeric-prefix file naming (e.g. `00_events.txt`) instead of the `.test.` convention, since it simulates real game/mod content rather than being a narrow test fixture.
+- `src/test/testData/chronicle/` is a self-contained showcase "game/mod" content tree (see Snapshot tests below) and follows common file naming (e.g. `00_events.txt`) instead of the `.test.` convention, since it simulates real game/mod content rather than being a narrow test fixture.
 
 ### IntelliJ platform test patterns
 
@@ -122,6 +122,7 @@ Key `ChronicleTestScope` methods:
 - `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version - useful for testing version-gated behavior.
 - `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
 - `initConfigGroups(project, ...gameTypes)` initializes the required built-in config groups for the specified game types (the shared `Core` group is always initialized).
+- `getConfigGroup(project, gameType)` get the config group of specified game type in tests. If game type is not specified, return the shared config group.
 
 For the showcase test demonstrating `ChronicleTestScope` usage, see:
 
@@ -131,7 +132,7 @@ Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
 - The marked file path DO NOT start with `game/` (see `ParadoxGameTypeMetadata` for details about root directories VS entry directories).
 - Alignment between real file path and marked file path is not required.
-- If a config-driven test fails unexpectedly, first check whether `markRootDirectory(...)` was omitted (some caches are keyed at the root-directory level) or whether the relevant config groups were never loaded via `initConfigGroups(...)`.
+- If a config-driven test fails unexpectedly, first check whether `markRootDirectory(...)` was omitted (some caches are keyed at the root-directory level), the config files were not correctly injected, or the relevant config groups were not correctly loaded.
 
 ### Snapshot tests
 
@@ -295,8 +296,8 @@ For the documents and examples, see:
 
 - `docs/en/config.md` (the config system document)
 - `docs/en/ref-config-format.md` (the config format manual)
-- `src/test/testData/chronicle` (the easter-egg config directory)
-- `cwt/cwtools-stellaris-config` (the real-game config directory for Stellaris, also available for other game types)
+- `src/test/testData/chronicle/` (the easter-egg config directory)
+- `cwt/cwtools-stellaris-config/` (the real-game config directory for Stellaris, also available for other game types)
 
 ## Agent instructions
 

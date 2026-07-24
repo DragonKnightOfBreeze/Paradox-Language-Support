@@ -1,0 +1,9 @@
+unions = {
+    union[test_union] = {
+        int
+        value[test_flag]
+    }
+}
+
+alias[test_alias:int] = v1
+alias[test_alias:scalar] = v2

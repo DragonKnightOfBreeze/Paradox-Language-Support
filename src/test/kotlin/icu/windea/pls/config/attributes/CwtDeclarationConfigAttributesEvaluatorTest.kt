@@ -2,8 +2,6 @@ package icu.windea.pls.config.attributes
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -13,11 +11,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see CwtDeclarationConfigAttributesEvaluator
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), ChronicleTestScope {
-    private val gameType = ParadoxGameType.Stellaris
-
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -25,20 +24,16 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
         markIntegrationTest()
         markRootDirectory("features/config/attributes")
         markConfigDirectory("features/config/attributes/.config")
-        initConfigGroups(project, gameType)
+        initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun loadDeclarations(): Map<String, CwtDeclarationConfig> {
-        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        return configGroup.declarations
-    }
-
     @Test
     fun testSimpleDeclaration_noInvolvedTypes() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_simple"]
         Assert.assertNotNull(decl)
         decl!!
@@ -55,7 +50,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithSubtypes_onlySubtypes() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_subtypes"]
         Assert.assertNotNull(decl)
         decl!!
@@ -71,7 +67,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithDynamicValue_variousVariants() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_dynamic_value"]
         Assert.assertNotNull(decl)
         decl!!
@@ -86,7 +83,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithParameter_detected() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_parameter"]
         Assert.assertNotNull(decl)
         decl!!
@@ -101,7 +99,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithLocalisationParameter_detected() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_loc_parameter"]
         Assert.assertNotNull(decl)
         decl!!
@@ -116,7 +115,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithUnion_expandableTypesDetected() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_union"]
         Assert.assertNotNull(decl)
         decl!!
@@ -129,7 +129,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithAlias_expandableTypesDetected() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_alias"]
         Assert.assertNotNull(decl)
         decl!!
@@ -142,7 +143,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeclarationWithSingleAlias_expandableTypesDetected() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_with_single_alias"]
         Assert.assertNotNull(decl)
         decl!!
@@ -155,7 +157,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testComplexDeclaration_allTypesDetected() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_complex"]
         Assert.assertNotNull(decl)
         decl!!
@@ -171,7 +174,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testExpandableConfigsWithInvolvedTypes_detectedRecursively() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_expandable_involved"]
         Assert.assertNotNull(decl)
         decl!!
@@ -185,7 +189,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testDeepNestedExpanding_detectedRecursively() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_deep_nested"]
         Assert.assertNotNull(decl)
         decl!!
@@ -198,7 +203,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testSubtypesNotInExpandableConfigs_onlyDirectSubtypes() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_complex"]
         Assert.assertNotNull(decl)
         decl!!
@@ -214,7 +220,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testEmptyAttributesOptimization_returnsSharedInstance() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_simple"]
         Assert.assertNotNull(decl)
         decl!!
@@ -227,7 +234,8 @@ class CwtDeclarationConfigAttributesEvaluatorTest : BasePlatformTestCase(), Chro
 
     @Test
     fun testMultipleEvaluations_consistent() {
-        val declarations = loadDeclarations()
+        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val declarations = configGroup.declarations
         val decl = declarations["test_decl_complex"]
         Assert.assertNotNull(decl)
         decl!!
