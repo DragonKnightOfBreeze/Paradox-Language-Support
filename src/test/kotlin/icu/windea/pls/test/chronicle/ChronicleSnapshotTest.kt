@@ -3,11 +3,15 @@ package icu.windea.pls.test.chronicle
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.toPath
 import icu.windea.pls.model.ParadoxFileGroup
+import icu.windea.pls.test.ChronicleTestScope
 import java.nio.file.Path
 import kotlin.io.path.name
 import kotlin.io.path.walk
 
-abstract class ChronicleSnapshotTest : BasePlatformTestCase() {
+/**
+ * 快照测试的基类。
+ */
+abstract class ChronicleSnapshotTest : BasePlatformTestCase(), ChronicleTestScope {
     protected val rootPath = "src/test/testData".toPath()
     protected val chroniclePath = rootPath.resolve("chronicle")
 

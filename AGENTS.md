@@ -71,12 +71,21 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 
 ## Testing guidance
 
-### Test taxonomy
+### Principles and preferences
 
-- Prefer Kotlin for tests.
 - Unit tests: for pure components/tools/extensions; usually no IntelliJ API.
-- Integration tests: for PSI/index/query/semantic match and resolve/tool integrations; usually uses the IntelliJ test framework.
+- Integration tests (Platform tests): for PSI/index/query/semantic match and resolve/tool integrations; usually uses the IntelliJ test framework.
+- Prefer Kotlin for tests.
 - Tooling: JUnit4 + IntelliJ test framework.
+
+### Best practices
+
+- Prefer **targeted** test runs during development:
+  - `./gradlew test --tests "<fully.qualified.TestClass>"`
+  - `./gradlew test --tests "*SomeKeyword*"`
+- Prefer adding or updating tests when behavior changes:
+  - Unit tests for pure logic.
+  - Integration tests for syntax/semantic/PSI/index/config-driven logic.
 
 ### Test data conventions
 
@@ -94,7 +103,7 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 
 The plugin is config-driven. Many features (e.g. type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
 
-Scope extensions exist to make these tests deterministic:
+Scope extensions exist in interface `ChronicleTestScope` to make these tests deterministic:
 
 - `initConfigGroups(project, ...)` initializes the required built-in config groups for the specified game types.
 - `markIntegrationTest()` and `clearIntegrationTest()` toggles integration-test-only behavior and cleans up injected state.
@@ -126,7 +135,7 @@ myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
 
 Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
-- The marked file path DO NOT start with `game/` (see `ParadoxGameTypeMetadata` for details about root directory VS entry directory).
+- The marked file path DO NOT start with `game/` (see `ParadoxGameTypeMetadata` for details about root directories VS entry directories).
 - Alignment between real file path and marked file path is not required.
 
 ### Optional / on-demand tests (assume-based)
@@ -134,16 +143,7 @@ Notes:
 Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties.
 
 - Gatekeeping is done via `Assume` predicates (e.g. AI tests, local-environment-only tests, benchmarks).
-- Enable categories using specific system properties (see `ChronicleAssumes` for details).
-
-### Best practices
-
-- Prefer **targeted** test runs during development:
-  - `./gradlew test --tests "<fully.qualified.TestClass>"`
-  - `./gradlew test --tests "*SomeKeyword*"`
-- Prefer adding or updating tests when behavior changes:
-  - Unit tests for pure logic.
-  - Integration tests for syntax/semantic/PSI/index/config-driven logic.
+- Enable categories using specific system properties (see `ChronicleAssume` for details).
 
 ## Coding conventions
 
@@ -156,6 +156,12 @@ Here are some common conversions:
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
 
 For more details, see: `agents/context/naming-conventions.md`
+
+### Importing
+
+<!-- TODO -->
+
+For more details, see: `agents/context/importing-conventions.md` <!-- TODO write -->
 
 ### Comments
 
@@ -179,7 +185,7 @@ For more details, see: `agents/context/naming-conventions.md`
 - Data depending on analysis data and/or PSI-structure, not depending on dynamic data (e.g., scripted variables, localisations): prefer `StubIndex`.
 - Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
 
-### Code organization
+### Code structure
 
 Package organization:
 

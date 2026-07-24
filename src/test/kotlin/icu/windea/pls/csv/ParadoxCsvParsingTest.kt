@@ -2,8 +2,7 @@ package icu.windea.pls.csv
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -11,8 +10,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-@TestDataPath("/testData")
-class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxCsvParserDefinition()) {
+@TestDataPath("\$CONTENT_ROOT/testData")
+class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxCsvParserDefinition()), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true

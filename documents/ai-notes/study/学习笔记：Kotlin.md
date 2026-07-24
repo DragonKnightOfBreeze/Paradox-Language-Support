@@ -85,7 +85,7 @@ class Vm(scope: CoroutineScope, repo: Repo) {
 ## 测试（Kotest 与 Coroutines Test）
 
 - **推荐**：`kotest` + `kotlinx-coroutines-test`
-- **要点**：使用 `runTest`、`TestScope` 与虚拟时间（`advanceUntilIdle`）。
+- **要点**：使用 `runTest`、`ChronicleTestScope` 与虚拟时间（`advanceUntilIdle`）。
 
 ```kotlin
 import io.kotest.core.spec.style.StringSpec

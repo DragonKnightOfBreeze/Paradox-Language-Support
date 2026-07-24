@@ -1,8 +1,7 @@
 package icu.windea.pls.localisation.codeInsight.unwrap
 
 import com.intellij.codeInsight.unwrap.UnwrapTestCase
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -27,7 +26,7 @@ import icu.windea.pls.lang.text.ParadoxLocalisationTextBuilder.parameter as p
  * @see ParadoxLocalisationTextFormatUnwrapper
  */
 @RunWith(JUnit4::class)
-class ParadoxLocalisationUnwrappersTest : UnwrapTestCase() {
+class ParadoxLocalisationUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     override fun getFileNameToCreate() = "test.yml"
 
     override fun createCode(code: String) = code

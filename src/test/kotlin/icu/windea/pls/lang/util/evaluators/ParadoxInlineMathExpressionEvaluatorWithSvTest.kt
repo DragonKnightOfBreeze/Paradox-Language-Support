@@ -7,9 +7,7 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markFileInfo
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -22,7 +20,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxInlineMathExpressionEvaluatorWithSvTest : BasePlatformTestCase() {
+class ParadoxInlineMathExpressionEvaluatorWithSvTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

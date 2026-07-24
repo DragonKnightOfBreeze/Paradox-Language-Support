@@ -40,7 +40,7 @@ They may involve specific architectural details and implementation details, as w
 
 ## 活跃更新的笔记 / Actively Updated Notes
 
-- [代码规范 / Code specifications](notes/代码规范.md)
+- [开发规范 / Development specifications](notes/开发规范.md)
 - [架构决策 / Architectural decisions](notes/架构决策.md)
 - [想法记录 / Thought record](notes/想法记录.md)
 - [开发路线 / Development roadmap](notes/开发路线.md)

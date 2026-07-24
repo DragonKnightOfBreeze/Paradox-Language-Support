@@ -2,14 +2,12 @@ package icu.windea.pls.core.psi
 
 import com.intellij.psi.PsiComment
 import com.intellij.psi.util.parentOfType
-import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -17,11 +15,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see PsiService
+ */
 @RunWith(JUnit4::class)
-@TestDataPath("\$CONTENT_ROOT/testData")
-class PsiServiceTest : BasePlatformTestCase() {
-    override fun getTestDataPath() = "src/test/testData"
-
+class PsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     @Before
     fun doSetUp() = markIntegrationTest()
 
@@ -109,7 +107,8 @@ class PsiServiceTest : BasePlatformTestCase() {
             myFixture.configureByText("test.cwt", """
                 # <caret>comment
             """.trimIndent())
-            val r = PsiService.findSiblingComments(findCommentAtCaret())
+            val comment = findCommentAtCaret()!!
+            val r = PsiService.findSiblingComments(comment)
             assertEquals(1, r.size)
         }
 
@@ -119,7 +118,8 @@ class PsiServiceTest : BasePlatformTestCase() {
                 # <caret>comment
                 # comment
             """.trimIndent())
-            val r = PsiService.findSiblingComments(findCommentAtCaret())
+            val comment = findCommentAtCaret()!!
+            val r = PsiService.findSiblingComments(comment)
             assertEquals(3, r.size)
         }
 
@@ -132,7 +132,8 @@ class PsiServiceTest : BasePlatformTestCase() {
 
                 # comment
             """.trimIndent())
-            val r = PsiService.findSiblingComments(findCommentAtCaret())
+            val comment = findCommentAtCaret()!!
+            val r = PsiService.findSiblingComments(comment)
             assertEquals(2, r.size)
         }
 
@@ -146,12 +147,23 @@ class PsiServiceTest : BasePlatformTestCase() {
                 # comment
                 ### comment
             """.trimIndent())
-            val r = PsiService.findSiblingComments(findCommentAtCaret()) { it is CwtDocComment }
+            val comment = findCommentAtCaret()!!
+            val r = PsiService.findSiblingComments(comment) { it is CwtDocComment }
             assertEquals(2, r.size)
         }
     }
 
+    @Test
+    fun findAllSiblingCommentsIn_basic() {
+        // TODO 3.0.1
+    }
+
+    @Test
+    fun getOwnedComments_basic() {
+        // TODO 3.0.1
+    }
+
     private val PsiComment.commentText get() = text.trimStart('#').trim()
 
-    private fun findCommentAtCaret() = myFixture.file.findElementAt(myFixture.caretOffset)?.parentOfType<PsiComment>()!!
+    private fun findCommentAtCaret() = myFixture.findElementAtCaret()?.parentOfType<PsiComment>(withSelf = true)
 }

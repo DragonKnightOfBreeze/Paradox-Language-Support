@@ -3,7 +3,7 @@ package icu.windea.pls.cwt.annotator
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.test.HighlightingTestScope
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtSyntaxAnnotatorTest : BasePlatformTestCase(), HighlightingTestScope {
+class CwtSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test

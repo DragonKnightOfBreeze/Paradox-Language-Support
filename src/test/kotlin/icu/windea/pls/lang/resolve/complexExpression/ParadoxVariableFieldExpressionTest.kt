@@ -5,9 +5,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -20,7 +18,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
+class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -34,7 +32,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxVariableFieldExpression? {
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        return mark(incomplete) { ParadoxVariableFieldExpression.resolve(text, null, configGroup) }
+        return markIncomplete(incomplete) { ParadoxVariableFieldExpression.resolve(text, null, configGroup) }
     }
 
     @Test

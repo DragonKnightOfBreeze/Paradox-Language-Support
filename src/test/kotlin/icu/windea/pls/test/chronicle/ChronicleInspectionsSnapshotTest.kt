@@ -9,12 +9,6 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toClass
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleConstants
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markConfigDirectory
-import icu.windea.pls.test.markFileInfo
-import icu.windea.pls.test.markIntegrationTest
-import icu.windea.pls.test.markRootDirectory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -30,7 +24,7 @@ import java.nio.file.Path
  * @see LocalInspectionTool
  */
 @RunWith(JUnit4::class)
-@TestDataPath("/testData")
+@TestDataPath("\$CONTENT_ROOT/testData")
 class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
     private val gameType = ParadoxGameType.Stellaris
 

@@ -24,7 +24,9 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun doSetUp() = ChronicleAssume.includeAi()
+    fun doSetUp() {
+        ChronicleAssume.includeAi()
+    }
 
     @After
     fun doTearDown() {

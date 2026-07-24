@@ -5,10 +5,6 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markConfigDirectory
-import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -36,7 +32,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxCommandExpression? {
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        return mark(incomplete) { ParadoxCommandExpression.resolve(text, null, configGroup) }
+        return markIncomplete(incomplete) { ParadoxCommandExpression.resolve(text, null, configGroup) }
     }
 
     @Test

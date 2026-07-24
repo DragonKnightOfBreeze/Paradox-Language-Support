@@ -3,8 +3,7 @@ package icu.windea.pls.script.codeInsight.unwrap
 import com.intellij.codeInsight.unwrap.UnwrapTestCase
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +27,7 @@ import icu.windea.pls.lang.text.ParadoxScriptTextBuilder.parameter as p
  * @see ParadoxScriptInlineConditionalBlockUnwrapper
  */
 @RunWith(JUnit4::class)
-class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
+class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     override fun getFileNameToCreate() = "test.txt"
 
     override fun createCode(code: String) = code
