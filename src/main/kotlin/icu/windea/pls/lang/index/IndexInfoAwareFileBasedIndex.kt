@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
@@ -10,8 +11,10 @@ import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.ID
+import com.intellij.util.indexing.hints.FileTypeInputFilterPredicate
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.toPsiFile
@@ -26,8 +29,11 @@ import java.util.Collections.*
 /**
  * 各种索引信息的文件索引的基类。
  */
+@Optimized
 sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
-    private val inputFilter = FileBasedIndex.InputFilter { filterFile(it) }
+    // NOTE 3.0.1 mainly depends on specific file types - use `FileTypeInputFilterPredicate` to speed up scanning
+    @Suppress("UnstableApiUsage")
+    private val inputFilter = FileTypeInputFilterPredicate { filterFileType(it) }
     private val indexer = DataIndexer<String, V, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
     private val valueExternalizer = object : DataExternalizer<V> {
@@ -50,9 +56,9 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
 
     abstract override fun getName(): ID<String, V>
 
-    override fun getInputFilter() = inputFilter
-
     override fun dependsOnFileContent() = true
+
+    override fun getInputFilter() = inputFilter
 
     override fun getIndexer() = indexer
 
@@ -60,20 +66,28 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
 
     override fun getValueExternalizer() = valueExternalizer
 
+    protected open fun filterFileType(fileType: FileType): Boolean = true
+
     protected open fun filterFile(file: VirtualFile): Boolean = true
 
-    protected open fun useLazyIndex(file: VirtualFile): Boolean = false
-
     protected open fun indexData(fileContent: FileContent): Map<String, V> {
-        val fileData = when {
-            useLazyIndex(fileContent.file) -> indexLazyData(fileContent.psiFile)
-            else -> indexData(fileContent.psiFile)
+        // fast return (unnecessary, pre-checked by the input filter)
+        // if (!filterFileType(fileContent.fileType)) return emptyMap()
+        // fast return
+        if (!filterFile(fileContent.file)) return emptyMap()
+
+        if (useLazyIndex(fileContent.file)) {
+            // use lazy index (`VirtualFileGist`)
+            return indexLazyData(fileContent.psiFile)
         }
-        if (fileData.isEmpty()) return emptyMap()
-        return fileData
+
+        // use file based index (`FileBasedIndex`)
+        return indexData(fileContent.psiFile)
     }
 
     protected open fun indexData(psiFile: PsiFile): Map<String, V> = emptyMap()
+
+    protected open fun useLazyIndex(file: VirtualFile): Boolean = false
 
     protected open fun indexLazyData(psiFile: PsiFile): Map<String, V> = emptyMap()
 
@@ -82,7 +96,11 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
     protected abstract fun readValue(storage: DataInput): V
 
     private fun calculateGistData(project: Project, file: VirtualFile): Map<String, V> {
+        // fast return
+        if (!filterFileType(file.fileType)) return emptyMap()
+        // fast return
         if (!filterFile(file)) return emptyMap()
+
         val psiFile = file.toPsiFile(project) ?: return emptyMap()
         return indexData(psiFile)
     }
@@ -112,17 +130,32 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
     }
 
     fun getFileData(file: VirtualFile, project: Project): Map<String, V> {
+        // fast return
+        if (!filterFileType(file.fileType)) return emptyMap()
+        // fast return
+        if (!filterFile(file)) return emptyMap()
+
         if (useLazyIndex(file)) {
+            // use lazy index (`VirtualFileGist`)
             return gist.getFileData(project, file).orEmpty()
         }
+
+        // use file based index (`FileBasedIndex`)
         return FileBasedIndex.getInstance().getFileData(name, file, project)
     }
 
     fun getFileDataWithKey(file: VirtualFile, project: Project, key: String): V? {
+        // fast return
+        if (!filterFileType(file.fileType)) return null
+        // fast return
+        if (!filterFile(file)) return null
+
         if (useLazyIndex(file)) {
-            val fileData = gist.getFileData(project, file) ?: return null
-            return fileData[key]
+            // use lazy index (`VirtualFileGist`)
+            return gist.getFileData(project, file)?.get(key)
         }
+
+        // use file based index (`FileBasedIndex`)
         // use fast return value processor to optimize performance
         val valueProcessor = FastReturnValueProcessor<V>()
         FileBasedIndex.getInstance().processValues(name, key, file, valueProcessor, GlobalSearchScope.fileScope(project, file))

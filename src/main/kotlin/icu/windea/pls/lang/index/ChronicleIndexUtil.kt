@@ -14,7 +14,7 @@ object ChronicleIndexUtil {
     fun createTypeKey(type: String) = "$typeKeyPrefix$type"
     fun createNameTypeKey(name: String, type: String) = "$idKeyPrefix$name\u0000$type"
 
-    private val excludedDirectoryNames = listOf(
+    val excludedDirectoryNames = listOf(
         "_CommonRedist",
         "binaries",
         "clausewitz",
@@ -28,14 +28,23 @@ object ChronicleIndexUtil {
         "tweakergui_assets",
     )
 
-    fun isIncludedDirectory(file: VirtualFile): Boolean {
+    fun isExcludedDirectory(file: VirtualFile): Boolean {
         if (!file.isDirectory) return false
-        if (file.fileInfo == null) return false
-        val parent = file.parent
-        if (parent != null && parent.fileInfo != null && !isIncludedDirectory(parent)) return false
-        val fileName = file.name
-        if (fileName.startsWith('.')) return false // 排除隐藏目录
-        if (fileName in excludedDirectoryNames) return false // 排除一些特定的目录
-        return true
+        if (file.fileInfo == null) return true
+        if (isExcludedDirectoryByName(file)) return true
+        var current = file
+        while (true) {
+            current = current.parent ?: break
+            if (current.fileInfo == null) break
+            if (isExcludedDirectoryByName(current)) return true
+        }
+        return false
+    }
+
+    fun isExcludedDirectoryByName(file: VirtualFile): Boolean {
+        val name = file.name
+        if (name.startsWith('.')) return true // 排除隐藏目录
+        if (name in excludedDirectoryNames) return true // 排除一些特定的目录
+        return false
     }
 }

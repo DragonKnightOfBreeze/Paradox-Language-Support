@@ -12,6 +12,7 @@ import icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameTypeInfo
@@ -110,8 +111,9 @@ object ParadoxAnalysisService {
     }
 
     fun resolveLocaleId(file: VirtualFile, project: Project): String? {
+        if (file.fileType != ParadoxLocalisationFileType) return null // fast return (meaningless for non-loc file types)
         val indexId = ChronicleIndexKeys.FileLocale
-        val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-        return localeId.orNull()
+        val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull()
+        return localeId?.orNull()
     }
 }

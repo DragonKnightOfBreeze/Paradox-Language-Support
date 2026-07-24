@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -57,17 +58,12 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
     override fun getVersion() = ChronicleIndexVersions.ComplexEnumValue
 
-    override fun filterFile(file: VirtualFile): Boolean {
-        val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType && fileType != ParadoxCsvFileType) return false
-        if (file.fileInfo == null) return false
-        return true
+    override fun filterFileType(fileType: FileType): Boolean {
+        return fileType == ParadoxScriptFileType || fileType == ParadoxCsvFileType
     }
 
-    override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (VirtualFileService.isInjectedFile(file)) return true
-        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
-        return false
+    override fun filterFile(file: VirtualFile): Boolean {
+        return file.fileInfo != null
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {
@@ -194,6 +190,12 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         val type = info.enumName
         fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+    }
+
+    override fun useLazyIndex(file: VirtualFile): Boolean {
+        if (VirtualFileService.isInjectedFile(file)) return true
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
+        return false
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {

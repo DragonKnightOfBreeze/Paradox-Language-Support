@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.util.indexing.DataIndexer
-import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.ScalarIndexExtension
+import com.intellij.util.indexing.hints.AcceptAllFilesAndDirectoriesIndexingHint
 import com.intellij.util.io.EnumeratorStringDescriptor
 import icu.windea.pls.lang.fileInfo
 import java.util.*
@@ -14,11 +14,11 @@ import java.util.*
  * 键的格式为 `{gameTypeId}:{directoryPath}`，其中 `{directoryPath}` 是相对于入口目录的路径。
  *
  * 仅索引通过包含检查的目录（排除隐藏目录和某些特定目录）。
- *
- * @see ChronicleIndexUtil.isIncludedDirectory
  */
 class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
-    private val inputFilter = FileBasedIndex.InputFilter { it.fileInfo != null }
+    // NOTE 3.0.1 can be any directories - use `AcceptAllFilesAndDirectoriesIndexingHint` to speed up scanning
+    @Suppress("UnstableApiUsage")
+    private val inputFilter = AcceptAllFilesAndDirectoriesIndexingHint
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
@@ -28,18 +28,18 @@ class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
 
     override fun getInputFilter() = inputFilter
 
+    override fun indexDirectories() = true
+
     override fun dependsOnFileContent() = false
 
     override fun getIndexer() = indexer
 
     override fun getKeyDescriptor() = keyDescriptor
 
-    override fun indexDirectories() = true
-
     private fun indexData(fileContent: FileContent): Map<String, Void?> {
         val file = fileContent.file
         if (!file.isDirectory) return emptyMap()
-        if (!ChronicleIndexUtil.isIncludedDirectory(file)) return emptyMap()
+        if (ChronicleIndexUtil.isExcludedDirectory(file)) return emptyMap()
         val fileInfo = file.fileInfo ?: return emptyMap()
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path.path

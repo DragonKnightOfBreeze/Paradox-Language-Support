@@ -79,7 +79,12 @@ class ParadoxAnalysisDataService : Disposable {
         // 避免内存泄露
         markedRootInfo = null
         markedFileInfo = null
+        markedRootPath = null
+        markedRootDirectory = null
+        markedConfigPath = null
+        markedConfigDirectory = null
         trackedFiles.keys.forEach { file -> Keys.clear(file) }
+        trackedFiles.clear()
     }
 
     companion object {

@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 @Suppress("unused")
 object ChronicleIndexStatisticService {
-    var recordIndexStats = ChronicleCapacities.recordIndexStats()
+    private var recordIndexStats = ChronicleCapacities.recordIndexStats()
 
     private val configSymbolCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val complexEnumValueCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
@@ -54,6 +54,11 @@ object ChronicleIndexStatisticService {
         if (!recordIndexStats) return
         val counter = mergedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.getOrPut(indexInfoType) { AtomicLong() }
         counter.incrementAndGet()
+    }
+
+    fun refresh() {
+        recordIndexStats = ChronicleCapacities.recordIndexStats()
+        cleanUp()
     }
 
     fun cleanUp() {

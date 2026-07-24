@@ -3,9 +3,11 @@ package icu.windea.pls.lang.index
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigIndexInfo
 
+@Optimized
 sealed class CwtConfigIndexInfoAwareFileBasedIndex<V, out T : CwtConfigIndexInfo> : IndexInfoAwareFileBasedIndex<V, T>() {
     override fun checkFile(file: VirtualFile, project: Project, expectGameType: ParadoxGameType?): Boolean {
         // check game type at file level
