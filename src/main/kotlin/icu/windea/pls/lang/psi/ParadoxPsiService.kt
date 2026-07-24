@@ -47,17 +47,18 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -72,8 +73,6 @@ object ParadoxPsiService {
     object Keys : KeyRegistry() {
         val cachedArgumentTupleList by registerKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
     }
-
-    // TODO 3.0.1+ [refactor] extract into manipulation services
 
     // region Common Methods
 
@@ -109,50 +108,40 @@ object ParadoxPsiService {
         }
     }
 
-    fun findMemberElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
+    fun findMemberElementsToInline(element: ParadoxScriptMemberContainer): Tuple2<PsiElement?, PsiElement?> {
         return when (element) {
-            is ParadoxScriptRootBlock -> {
-                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
-                    ?.find { it.elementType != TokenType.WHITE_SPACE }
-                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
-                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+            is ParadoxScriptBoundMemberContainer -> {
+                val e1 = element.leftBound?.siblings(forward = true, withSelf = false)?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.rightBound?.siblings(forward = false, withSelf = false)?.find { it.elementType != TokenType.WHITE_SPACE }
                 e1 to e2
             }
-            is ParadoxScriptBlock -> {
-                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
-                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.LEFT_BRACE }?.drop(1)
-                    ?.find { it.elementType != TokenType.WHITE_SPACE }
-                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
-                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACE }?.drop(1)
-                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+            else -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
                 e1 to e2
             }
-            is ParadoxScriptConditionalBlock -> {
-                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
-                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET }?.drop(1)
-                    ?.find { it.elementType != TokenType.WHITE_SPACE }
-                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
-                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACKET }?.drop(1)
-                    ?.find { it.elementType != TokenType.WHITE_SPACE }
-                e1 to e2
-            }
-            else -> null to null
         }
     }
 
-    fun findRichTextElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
-        return when {
-            element is ParadoxLocalisationPropertyValue -> {
-                val element0 = element.findChild { it.elementType == ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN }
-                val e1 = element0?.firstChild
-                val e2 = element0?.lastChild
+    fun findRichTextElementsToInline(element: ParadoxLocalisationRichTextContainer): Tuple2<PsiElement?, PsiElement?> {
+        return when (element) {
+            is ParadoxLocalisationPropertyValue -> {
+                val tokenElement = element.findChild { it.elementType == ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN }
+                val e1 = tokenElement?.firstChild
+                val e2 = tokenElement?.lastChild
                 e1 to e2
             }
-            else -> null to null
+            else -> {
+                val e1 = element.firstChild
+                val e2 = element.lastChild
+                e1 to e2
+            }
         }
     }
 
     // endregion
+
+    // TODO 3.0.1+ [refactor] extract into manipulation services
 
     // region Inline Methods
 
