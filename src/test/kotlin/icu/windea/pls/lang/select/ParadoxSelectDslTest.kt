@@ -12,8 +12,7 @@ import icu.windea.pls.lang.psi.values
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.isDirectValue
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -23,7 +22,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxSelectDslTest : BasePlatformTestCase() {
+class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

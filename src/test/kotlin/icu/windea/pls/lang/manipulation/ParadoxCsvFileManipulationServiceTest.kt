@@ -5,8 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -19,7 +18,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxCsvFileManipulationServiceTest : BasePlatformTestCase() {
+class ParadoxCsvFileManipulationServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

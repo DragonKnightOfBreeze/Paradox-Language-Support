@@ -72,7 +72,7 @@ object ChronicleFacade {
         return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(context)
     }
 
-    /** 检查 IDE 是否正处于单元测试模式，或者是否正在进行不依赖于平台的单元测试。 */
+    /** 检查 IDE 是否正处于单元测试模式。或者，是否正在进行不依赖于平台的单元测试。 */
     fun isUnitTestMode(): Boolean {
         return ApplicationManager.getApplication().let { it == null || it.isUnitTestMode }
     }

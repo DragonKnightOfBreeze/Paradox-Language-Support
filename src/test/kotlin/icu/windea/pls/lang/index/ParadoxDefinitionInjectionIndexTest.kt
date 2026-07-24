@@ -11,12 +11,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markConfigDirectory
-import icu.windea.pls.test.markFileInfo
-import icu.windea.pls.test.markIntegrationTest
-import icu.windea.pls.test.markRootDirectory
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -29,7 +24,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
+class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     private val gameType = ParadoxGameType.Vic3
 
     override fun getTestDataPath() = "src/test/testData"

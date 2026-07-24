@@ -4,8 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -15,7 +14,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxCsvTextPlainRendererTest : BasePlatformTestCase() {
+class ParadoxCsvTextPlainRendererTest : BasePlatformTestCase(), ChronicleTestScope {
     private val counter = AtomicInteger()
 
     override fun getTestDataPath() = "src/test/testData"

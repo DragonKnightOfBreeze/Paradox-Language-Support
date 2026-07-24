@@ -4,8 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +19,7 @@ import icu.windea.pls.lang.text.ParadoxScriptTextBuilder.parameter as p
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ConditionalStatementIntentionsTest : BasePlatformTestCase() {
+class ConditionalStatementIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

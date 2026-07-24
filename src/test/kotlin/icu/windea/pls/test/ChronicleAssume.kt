@@ -14,7 +14,7 @@ object ChronicleAssume {
     }
 
     fun includeLocalEnv() {
-        val v = ChronicleTestCapacities.includeAll() || ChronicleTestCapacities.includeLocalDev()
+        val v = ChronicleTestCapacities.includeAll() || ChronicleTestCapacities.includeLocalEnv()
         Assume.assumeTrue("Local environment only tests are not included", v)
     }
 
@@ -23,4 +23,3 @@ object ChronicleAssume {
         Assume.assumeTrue("Config generator tests are not included", v)
     }
 }
-

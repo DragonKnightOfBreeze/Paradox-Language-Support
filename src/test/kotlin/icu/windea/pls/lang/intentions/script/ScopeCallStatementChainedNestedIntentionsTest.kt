@@ -5,12 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markConfigDirectory
-import icu.windea.pls.test.markFileInfo
-import icu.windea.pls.test.markIntegrationTest
-import icu.windea.pls.test.markRootDirectory
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +19,7 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase() {
+class ScopeCallStatementChainedNestedIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

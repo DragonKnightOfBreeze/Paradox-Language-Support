@@ -6,10 +6,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markConfigDirectory
-import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -38,7 +34,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxTagsExpression? {
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val config = CwtValueConfig.createMock(configGroup, "value[tag]")
-        return mark(incomplete) { ParadoxTagsExpression.resolve(text, null, configGroup, config) }
+        return markIncomplete(incomplete) { ParadoxTagsExpression.resolve(text, null, configGroup, config) }
     }
 
     @Test

@@ -5,9 +5,6 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
-import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assume

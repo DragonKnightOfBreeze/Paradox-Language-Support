@@ -3,8 +3,7 @@ package icu.windea.pls.lang.intentions.localisation
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +16,7 @@ import java.awt.datatransfer.DataFlavor
  * @see CopyLocalisationListWithoutLocaleIntention
  */
 @RunWith(JUnit4::class)
-class CopyLocalisationListIntentionsTest : BasePlatformTestCase() {
+class CopyLocalisationListIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
     @Before
     fun doSetUp() = markIntegrationTest()
 

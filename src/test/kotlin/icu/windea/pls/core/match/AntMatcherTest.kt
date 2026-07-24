@@ -12,7 +12,7 @@ class AntMatcherTest {
     }
 
     @Test
-    fun matches() {
+    fun matches_complex() {
         // 基本匹配
         Assert.assertTrue(AntMatcher.matches("/foo/bar/name", "/foo/bar/name**", false))
         Assert.assertTrue(AntMatcher.matches("/foo/bar/name", "foo/bar/name**", false))

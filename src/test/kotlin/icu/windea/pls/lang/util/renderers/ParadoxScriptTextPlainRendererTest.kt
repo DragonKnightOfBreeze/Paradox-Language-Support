@@ -7,9 +7,7 @@ import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markFileInfo
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -19,7 +17,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
+class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase(), ChronicleTestScope {
     private val gameType = ParadoxGameType.Stellaris
     private val counter = AtomicInteger()
     private val unresolved = FallbackStrings.unresolved

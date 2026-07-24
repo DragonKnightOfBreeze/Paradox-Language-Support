@@ -15,9 +15,7 @@ import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspec
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
-import icu.windea.pls.test.markRootDirectory
+import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
@@ -37,7 +35,7 @@ import kotlin.io.path.walk
 @Ignore
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxDefineSnapshotTest : BasePlatformTestCase() {
+class ParadoxDefineSnapshotTest : BasePlatformTestCase(), ChronicleTestScope {
     private val logger = thisLogger()
     private val definesRelPath = "common/defines"
 

@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-@TestDataPath("/testData")
+@TestDataPath("\$CONTENT_ROOT/testData")
 class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 

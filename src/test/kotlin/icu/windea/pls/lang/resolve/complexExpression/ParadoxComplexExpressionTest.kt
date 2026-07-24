@@ -5,12 +5,13 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.test.ChronicleTestScope
 
 /**
  * @see ParadoxComplexExpression
  */
-abstract class ParadoxComplexExpressionTest : BasePlatformTestCase() {
-    protected inline fun <T> mark(incomplete: Boolean, action: () -> T): T {
+abstract class ParadoxComplexExpressionTest : BasePlatformTestCase(), ChronicleTestScope {
+    protected inline fun <T> markIncomplete(incomplete: Boolean, action: () -> T): T {
         if (!incomplete) return action()
         return withState(ChronicleThreadContext.incompleteComplexExpression, action)
     }

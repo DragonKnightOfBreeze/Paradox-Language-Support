@@ -7,7 +7,7 @@ import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.ChronicleAssume
-import icu.windea.pls.test.addAdditionalAllowedRoots
+import icu.windea.pls.test.ChronicleTestScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -22,7 +22,7 @@ import kotlin.io.path.exists
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxModImporterTest : BasePlatformTestCase() {
+class ParadoxModImporterTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     private val gameType = ParadoxGameType.Stellaris
