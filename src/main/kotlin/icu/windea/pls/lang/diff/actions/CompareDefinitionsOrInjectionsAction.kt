@@ -74,7 +74,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val project = e.project ?: return null
         val psiFile = file.toPsiFile(project) ?: return null
         if (!ParadoxPsiFileMatchService.isScriptFile(psiFile, ParadoxPathConstraint.AcceptDefinitionInjection)) return null
-        if (!ParadoxDefinitionInjectionManager.isSupported(fileInfo.rootInfo.gameType)) return null // 忽略游戏类型不支持的情况
+        if (!ParadoxDefinitionInjectionManager.isSupported(fileInfo.gameType)) return null // 忽略游戏类型不支持的情况
         return file
     }
 

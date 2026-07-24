@@ -39,7 +39,7 @@ class ParadoxDirectoryElementNode(
     private fun canRepresent(file: VirtualFile): Boolean {
         if (!file.isDirectory) return false
         val fileInfo = file.fileInfo ?: return false
-        if (value.gameType != fileInfo.rootInfo.gameType) return false
+        if (value.gameType != fileInfo.gameType) return false
         if (value.path != fileInfo.path) return false
         return true
     }
@@ -47,7 +47,7 @@ class ParadoxDirectoryElementNode(
     override fun contains(file: VirtualFile): Boolean {
         if (value == null) return false
         val fileInfo = file.fileInfo ?: return false
-        if (value.gameType != fileInfo.rootInfo.gameType) return false
+        if (value.gameType != fileInfo.gameType) return false
         if (!value.path.path.matchesPath(fileInfo.path.parent)) return false
         return true
     }
@@ -77,7 +77,7 @@ class ParadoxDirectoryElementNode(
         return files.mapNotNull { file ->
             if (file.isDirectory) {
                 val fileInfo = file.fileInfo ?: return@mapNotNull null
-                val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.rootInfo.gameType, value.preferredRootFile)
+                val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.gameType, value.preferredRootFile)
                 ParadoxDirectoryElementNode(project, element, settings)
             } else {
                 val psiFile = file.toPsiFile(project) ?: return@mapNotNull null

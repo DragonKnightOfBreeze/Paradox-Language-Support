@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 object ParadoxDefinitionInjectionService {
     fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val expression = element.name
         if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return null
         if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return null

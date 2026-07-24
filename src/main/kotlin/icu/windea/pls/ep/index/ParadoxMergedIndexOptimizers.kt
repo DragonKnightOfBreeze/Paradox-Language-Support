@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
     override fun isAvailableForScriptFile(file: ParadoxScriptFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
@@ -98,7 +98,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
 class ParadoxRowBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
     override fun isAvailableForCsvFile(file: ParadoxCsvFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtRowConfigMatchContext(configGroup, path)

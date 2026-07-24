@@ -22,7 +22,7 @@ object ParadoxFileEncodingService {
      * 检查当前文件 [file] 是否应当使用 BOM。如果返回 null，则表示不确定。
      */
     fun useBom(file: PsiFile, fileInfo: ParadoxFileInfo): Boolean? {
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val path = fileInfo.path
         return when {
             // may be BOM or NO BOM

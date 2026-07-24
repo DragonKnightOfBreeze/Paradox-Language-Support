@@ -31,7 +31,7 @@ class ParadoxGameElementNode(
     private fun canRepresent(file: VirtualFile): Boolean {
         if (!file.isDirectory) return false
         val fileInfo = file.fileInfo ?: return false
-        if (value.gameType != fileInfo.rootInfo.gameType) return false
+        if (value.gameType != fileInfo.gameType) return false
         if (fileInfo.path.isNotEmpty()) return false
         return true
     }
@@ -39,7 +39,7 @@ class ParadoxGameElementNode(
     override fun contains(file: VirtualFile): Boolean {
         if (value == null) return false
         val fileInfo = file.fileInfo ?: return false
-        if (value.gameType != fileInfo.rootInfo.gameType) return false
+        if (value.gameType != fileInfo.gameType) return false
         if (fileInfo.path.isEmpty()) return false
         return true
     }
@@ -58,7 +58,7 @@ class ParadoxGameElementNode(
             // 必须是目录
             if (file.isDirectory) {
                 if (!directoryNames.add(file.name)) return@p true
-                val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.rootInfo.gameType, value.preferredRootFile)
+                val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children += elementNode
             } else {

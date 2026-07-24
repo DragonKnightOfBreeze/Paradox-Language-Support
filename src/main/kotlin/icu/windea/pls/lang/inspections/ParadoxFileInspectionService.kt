@@ -109,7 +109,7 @@ object ParadoxFileInspectionService {
         // 排除忽略的文件
         if (fileInfo.path.path.matchesAntPatterns(ignoredFilePaths, ignoreCase = true)) return null // 忽略
 
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val matched = ParadoxConfigMatchService.isMatchedOnFileLevel(file, configGroup, fileInfo.path)
         if (matched) return null

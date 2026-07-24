@@ -21,7 +21,7 @@ object ParadoxCsvService {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val matchContext = CwtRowConfigMatchContext(configGroup, path)
         val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(matchContext)
