@@ -19,6 +19,7 @@ import org.junit.runners.JUnit4
 
 @Suppress("unused")
 @RunWith(JUnit4::class)
+/** @see CodeInjector */
 class CodeInjectorReturnValueTest : BasePlatformTestCase() {
     private companion object {
         const val TARGET_RV_AT_START = "icu.windea.pls.inject.injectors.CodeInjectorReturnValueTest\$TargetReturnValueAtStart"

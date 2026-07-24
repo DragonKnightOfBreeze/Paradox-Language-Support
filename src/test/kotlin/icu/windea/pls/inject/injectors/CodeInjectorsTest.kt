@@ -21,6 +21,7 @@ import org.junit.runners.JUnit4
 
 @Suppress("unused")
 @RunWith(JUnit4::class)
+/** @see CodeInjector */
 class CodeInjectorsTest : BasePlatformTestCase() {
     private companion object {
         // NOTE: Annotation arguments must be compile-time constants.

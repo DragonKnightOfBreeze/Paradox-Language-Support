@@ -3,6 +3,7 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
+/** @see StdlibFastExtensions */
 class StdlibFastExtensionsTest {
     @Test
     fun trimFast_basic() {

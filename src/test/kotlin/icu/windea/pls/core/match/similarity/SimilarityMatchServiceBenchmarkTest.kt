@@ -8,6 +8,7 @@ import org.junit.Test
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
+/** @see SimilarityMatchService */
 class SimilarityMatchServiceBenchmarkTest {
     @Before
     fun doSetUp() {

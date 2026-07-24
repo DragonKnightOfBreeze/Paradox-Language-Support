@@ -155,22 +155,22 @@ class PsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun findAllSiblingCommentsIn_basic() {
-        // TODO 3.0.1
+        // TODO 3.0.1+
     }
 
     @Test
     fun getOwnedComments_basic() {
-        // TODO 3.0.1
+        // TODO 3.0.1+
     }
 
     @Test
     fun getLineCommentText_basic() {
-        // TODO 3.0.1
+        // TODO 3.0.1+
     }
 
     @Test
     fun getDocCommentText_basic() {
-        // TODO 3.0.1
+        // TODO 3.0.1+
     }
 
     private val PsiComment.commentText get() = text.trimStart('#').trim()

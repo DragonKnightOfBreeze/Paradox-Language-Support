@@ -5,6 +5,7 @@ import org.junit.Test
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
+/** @see ChronicleDataPathService */
 class ChronicleDataPathServiceTest {
     private val service = ChronicleDataPathServiceImpl()
 

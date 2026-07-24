@@ -17,13 +17,7 @@ import java.util.*
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
-/**
- * 基于测试数据文件（src/test/resources/tools）的数据模型验证测试。
- *
- * 涵盖：
- * - playlist_v2.json / playlist_v3.json 的基本结构与字段校验
- * - 使用 SQL 脚本构建的 SQLite（V4+）最小数据集的读取与验证
- */
+/** @see DataModels */
 class DataModelsValidationTest {
     @Test
     fun parsePlaylistV2_fromResources() {

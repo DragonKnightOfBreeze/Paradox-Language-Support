@@ -4,6 +4,7 @@ import com.intellij.util.containers.TreeTraversal
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see SequenceBuilders */
 class SequenceBuildersTest {
     private val children: Map<Int, List<Int>> = mapOf(
         1 to listOf(2, 3),

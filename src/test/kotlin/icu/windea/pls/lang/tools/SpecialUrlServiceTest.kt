@@ -11,6 +11,7 @@ import org.junit.runner.RunWith
 import java.net.HttpURLConnection
 import java.net.URI
 
+/** @see SpecialUrlService */
 @Suppress("UnstableApiUsage")
 @RunWith(ParallelMethodRunner::class)
 class SpecialUrlServiceTest {

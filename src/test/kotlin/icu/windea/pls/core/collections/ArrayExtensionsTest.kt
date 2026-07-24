@@ -3,6 +3,7 @@ package icu.windea.pls.core.collections
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see ArrayExtensions */
 class ArrayExtensionsTest {
     @Test
     fun orNull_on_array() {

@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.toPath
 
+/** @see ParadoxRootMetadataUtil */
 @RunWith(JUnit4::class)
 class ParadoxRootMetadataUtilTest : BasePlatformTestCase() {
     @Test

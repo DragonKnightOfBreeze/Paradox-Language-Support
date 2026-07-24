@@ -3,6 +3,7 @@ package icu.windea.pls.core.match
 import org.junit.Assert
 import org.junit.Test
 
+/** @see GlobMatcher */
 class GlobMatcherTest {
     @Test
     fun matches_basic() {

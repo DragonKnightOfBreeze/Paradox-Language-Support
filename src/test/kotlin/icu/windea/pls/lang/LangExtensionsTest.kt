@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import org.junit.Assert
 import org.junit.Test
 
+/** @see LangExtensions */
 class LangExtensionsTest {
     @Test
     fun isIdentifierCharTest() {

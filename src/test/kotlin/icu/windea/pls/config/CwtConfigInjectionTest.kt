@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.util.concurrent.atomic.AtomicBoolean
 
+/** @see CwtInjectedConfigProvider @see CwtConfigManipulationService */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigInjectionTest : BasePlatformTestCase() {

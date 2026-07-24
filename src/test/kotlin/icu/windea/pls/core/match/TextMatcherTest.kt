@@ -3,6 +3,7 @@ package icu.windea.pls.core.match
 import org.junit.Assert
 import org.junit.Test
 
+/** @see TextMatcher */
 class TextMatcherTest {
     // region matchesInt
 

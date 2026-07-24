@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/** @see CwtTemplateExpression */
 @RunWith(JUnit4::class)
 class CwtTemplateExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {

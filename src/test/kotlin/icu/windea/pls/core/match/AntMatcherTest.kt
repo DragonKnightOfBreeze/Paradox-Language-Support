@@ -3,6 +3,7 @@ package icu.windea.pls.core.match
 import org.junit.Assert
 import org.junit.Test
 
+/** @see AntMatcher */
 class AntMatcherTest {
     @Test
     fun matches_basic() {

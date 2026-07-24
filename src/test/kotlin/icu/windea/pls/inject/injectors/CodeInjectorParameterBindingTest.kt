@@ -20,6 +20,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 @Suppress("unused")
 @RunWith(JUnit4::class)
+/** @see CodeInjector */
 class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     private companion object {
         const val TARGET_LESS_ARGS = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetLessArgs"

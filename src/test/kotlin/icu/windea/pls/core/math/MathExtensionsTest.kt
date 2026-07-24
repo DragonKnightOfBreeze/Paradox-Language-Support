@@ -3,6 +3,7 @@ package icu.windea.pls.core.math
 import org.junit.Assert
 import org.junit.Test
 
+/** @see MathExtensions */
 class MathExtensionsTest {
     @Test
     fun formatted_test_isInteger() {

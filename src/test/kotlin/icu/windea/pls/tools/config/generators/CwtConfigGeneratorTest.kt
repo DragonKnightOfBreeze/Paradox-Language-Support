@@ -7,6 +7,7 @@ import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
+/** @see CwtConfigGenerator */
 abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
     val latestStellarisVersion = "v4.1.5"
 

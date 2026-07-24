@@ -9,6 +9,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/** @see ParadoxCsvParserDefinition */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxCsvParserDefinition()), ChronicleTestScope {

@@ -4,6 +4,7 @@ import icu.windea.pls.core.text.EscapeType
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see ParadoxEscapeManager */
 class ParadoxEscapeManagerTest {
     // region unescapeScriptText
 

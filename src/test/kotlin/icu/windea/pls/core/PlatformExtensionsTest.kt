@@ -5,6 +5,7 @@ import icu.windea.pls.core.util.tupleOf
 import org.junit.Assert
 import org.junit.Test
 
+/** @see PlatformExtensions */
 class PlatformExtensionsTest {
     @Test
     fun unquoteTest() {

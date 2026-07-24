@@ -27,7 +27,17 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun getArgumentTupleList() {
+    fun getOwnedComments_basic() {
+        // TODO 3.0.1+
+    }
+
+    @Test
+    fun getLineCommentText_basic() {
+        // TODO 3.0.1+
+    }
+
+    @Test
+    fun getArgumentTupleList_basic() {
         val file = myFixture.configureByFile("script/stubs/argument_aware_elements.test.txt") as ParadoxScriptFile
 
         run {
@@ -61,4 +71,13 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         }
     }
 
+    @Test
+    fun findMemberElementsToInline_basic() {
+        // TODO 3.0.1+
+    }
+
+    @Test
+    fun findRichTextElementsToInline_basic() {
+        // TODO 3.0.1+
+    }
 }
