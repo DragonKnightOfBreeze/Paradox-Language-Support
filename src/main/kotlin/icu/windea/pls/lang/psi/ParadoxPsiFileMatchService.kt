@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.psi
 
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -29,16 +30,24 @@ object ParadoxPsiFileMatchService {
         return fileInfo.isTopFromRoot()
     }
 
+    /**
+     * 是否是来自脚本文件的注入的文件（如：内联脚本的参数值对应的注入的文件）。
+     */
+    fun isInjectedFileFromScriptFile(file: PsiFile): Boolean {
+        return VirtualFileService.isInjectedFile(file.virtualFile)
+            && InjectedLanguageManager.getInstance(file.project).getInjectionHost(file) is ParadoxLanguageInjectionHost
+    }
+
     // NOTE 2.2.0 检测逻辑：
     // - 检测 PSI 文件类型是否匹配
     // - 如果可以获取文件信息，则要求匹配指定的路径约束（默认约束：要求文件路径在语义上是有效的）
-    // - 如果无法获取文件信息，则要求必须是一个注入的文件（如：内联脚本的参数值对应的注入的文件）
+    // - 如果无法获取文件信息，则要求必须是来自脚本文件的注入的文件（如：内联脚本的参数值对应的注入的文件）
 
     /**
      * 是否是有效的脚本文件。
      *
      * @param file 需要检测的 PSI 文件。
-     * @param constraint 需要匹配的路径约束。默认要求文件路径在语义上是有效的。如果无法获取文件信息，则必须是一个注入的文件。
+     * @param constraint 需要匹配的路径约束。默认要求文件路径在语义上是有效的。如果无法获取文件信息，则必须是来自脚本文件的注入的文件。
      */
     @OptIn(ExperimentalContracts::class)
     fun isScriptFile(file: PsiFile, constraint: ParadoxPathConstraint = ParadoxPathConstraint.ScriptFile): Boolean {
@@ -47,7 +56,7 @@ object ParadoxPsiFileMatchService {
         }
         if (file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo
-        if (fileInfo == null) return VirtualFileService.isInjectedFile(file.virtualFile)
+        if (fileInfo == null) return isInjectedFileFromScriptFile(file)
         return constraint.test(fileInfo.path)
     }
 
@@ -55,7 +64,7 @@ object ParadoxPsiFileMatchService {
      * 是否是有效的本地化文件。
      *
      * @param file 需要检测的 PSI 文件。
-     * @param constraint 需要匹配的路径约束。默认要求文件路径在语义上是有效的。如果无法获取文件信息，则必须是一个注入的文件。
+     * @param constraint 需要匹配的路径约束。默认要求文件路径在语义上是有效的。如果无法获取文件信息，则必须是来自脚本文件的注入的文件。
      */
     @OptIn(ExperimentalContracts::class)
     fun isLocalisationFile(file: PsiFile, constraint: ParadoxPathConstraint = ParadoxPathConstraint.LocalisationFile): Boolean {
@@ -64,7 +73,7 @@ object ParadoxPsiFileMatchService {
         }
         if (file !is ParadoxLocalisationFile) return false
         val fileInfo = file.fileInfo
-        if (fileInfo == null) return VirtualFileService.isInjectedFile(file.virtualFile)
+        if (fileInfo == null) return isInjectedFileFromScriptFile(file)
         return constraint.test(fileInfo.path)
     }
 
@@ -72,7 +81,7 @@ object ParadoxPsiFileMatchService {
      * 是否是有效的CSV文件。
      *
      * @param file 需要检测的 PSI 文件。
-     * @param constraint 需要匹配的路径约束。默认要求文件路径在语义上是有效的。如果无法获取文件信息，则必须是一个注入的文件。
+     * @param constraint 需要匹配的路径约束。默认要求文件路径在语义上是有效的。如果无法获取文件信息，则必须是来自脚本文件的注入的文件。
      */
     @OptIn(ExperimentalContracts::class)
     fun isCsvFile(file: PsiFile, constraint: ParadoxPathConstraint = ParadoxPathConstraint.CsvFile): Boolean {
@@ -81,7 +90,7 @@ object ParadoxPsiFileMatchService {
         }
         if (file !is ParadoxCsvFile) return false
         val fileInfo = file.fileInfo
-        if (fileInfo == null) return VirtualFileService.isInjectedFile(file.virtualFile)
+        if (fileInfo == null) return isInjectedFileFromScriptFile(file)
         return constraint.test(fileInfo.path)
     }
 
