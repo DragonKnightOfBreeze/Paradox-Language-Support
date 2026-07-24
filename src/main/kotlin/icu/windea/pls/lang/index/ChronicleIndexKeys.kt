@@ -13,6 +13,19 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ChronicleIndexKeys {
+    // file based indexes
+
+    val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
+    val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
+    val FilePath = ID.create<String, Void>("paradox.file.path.index")
+    val IncludedDirectory = ID.create<String, Void>("paradox.includedDirectory.index")
+    val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
+    val Definition = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index")
+    val DefinitionInjection = ID.create<String, List<ParadoxDefinitionInjectionIndexInfo>>("paradox.definitionInjection.index") // #252
+    val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
+
+    // stub indexes
+
     val ScriptedVariableName = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
     val LocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
     val LocalisationNameForModifier = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
@@ -28,13 +41,4 @@ object ChronicleIndexKeys {
     val InlineScriptUsage = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptUsage.index")
     // for inline script arguments, expression -> `ParadoxScriptProperty`
     val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
-
-    val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
-    val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
-    val FilePath = ID.create<String, Void>("paradox.file.path.index")
-    val IncludedDirectory = ID.create<String, Void>("paradox.includedDirectory.index")
-    val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
-    val Definition = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index")
-    val DefinitionInjection = ID.create<String, List<ParadoxDefinitionInjectionIndexInfo>>("paradox.definitionInjection.index") // #252
-    val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 }

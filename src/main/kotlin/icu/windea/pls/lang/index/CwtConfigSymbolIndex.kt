@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -35,10 +36,13 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
 
     override fun getVersion() = ChronicleIndexVersions.ConfigSymbol
 
+    override fun filterFileType(fileType: FileType): Boolean {
+        return fileType == CwtFileType
+    }
+
     override fun filterFile(file: VirtualFile): Boolean {
         // 仅判断文件类型，不判断是否从属于某个规则分组
-        val fileType = file.fileType
-        return fileType is CwtFileType
+        return true
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<CwtConfigSymbolIndexInfo>> {

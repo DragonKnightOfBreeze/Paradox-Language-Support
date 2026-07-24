@@ -2,11 +2,12 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.DataIndexer
-import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.DefaultFileTypeSpecificInputFilter
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.PsiDependentFileContent
 import com.intellij.util.indexing.ScalarIndexExtension
 import com.intellij.util.io.EnumeratorStringDescriptor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLightTreeUtil
@@ -17,8 +18,9 @@ import java.util.*
  *
  * 当需要从 [VirtualFile] 得到语言环境时，改为使用此索引以优化性能。
  */
+@Optimized
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
-    private val inputFilter = FileBasedIndex.InputFilter { true }
+    private val inputFilter = DefaultFileTypeSpecificInputFilter(ParadoxLocalisationFileType)
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
@@ -26,16 +28,16 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
 
     override fun getVersion() = ChronicleIndexVersions.FileLocale
 
-    override fun getInputFilter() = inputFilter
-
     override fun dependsOnFileContent() = true
+
+    override fun getInputFilter() = inputFilter
 
     override fun getIndexer() = indexer
 
     override fun getKeyDescriptor() = keyDescriptor
 
     private fun indexData(inputData: FileContent): Map<String, Void?> {
-        if (inputData.fileType !is ParadoxLocalisationFileType) return emptyMap()
+        if (inputData.fileType != ParadoxLocalisationFileType) return emptyMap()
         if (inputData is PsiDependentFileContent) {
             // use lighter AST if possible to optimize performance
             val tree = inputData.lighterAST

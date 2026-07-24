@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -52,16 +53,13 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
     override fun getVersion() = ChronicleIndexVersions.DefinitionInjection
 
-    override fun filterFile(file: VirtualFile): Boolean {
-        val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType) return false
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxPathConstraint.AcceptDefinitionInjection.test(fileInfo.path)
+    override fun filterFileType(fileType: FileType): Boolean {
+        return fileType == ParadoxScriptFileType
     }
 
-    override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (VirtualFileService.isInjectedFile(file)) return true
-        return false
+    override fun filterFile(file: VirtualFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        return ParadoxPathConstraint.AcceptDefinitionInjection.test(fileInfo.path)
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
@@ -141,6 +139,11 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (name.isEmpty()) return
         fileData.getOrPut(ChronicleIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
         fileData.getOrPut(ChronicleIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
+    }
+
+    override fun useLazyIndex(file: VirtualFile): Boolean {
+        if (VirtualFileService.isInjectedFile(file)) return true
+        return false
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {

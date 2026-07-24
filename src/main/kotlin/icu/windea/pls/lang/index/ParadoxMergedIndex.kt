@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -73,17 +74,12 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
     override fun getVersion() = ChronicleIndexVersions.Merged
 
-    override fun filterFile(file: VirtualFile): Boolean {
-        val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType && fileType != ParadoxCsvFileType) return false
-        if (file.fileInfo == null) return false
-        return true
+    override fun filterFileType(fileType: FileType): Boolean {
+        return fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType || fileType == ParadoxCsvFileType
     }
 
-    override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (VirtualFileService.isInjectedFile(file)) return true
-        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
-        return false
+    override fun filterFile(file: VirtualFile): Boolean {
+        return file.fileInfo != null
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
@@ -294,6 +290,12 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             val newValue = support.compressData(oldValue)
             fileData[key] = newValue
         }
+    }
+
+    override fun useLazyIndex(file: VirtualFile): Boolean {
+        if (VirtualFileService.isInjectedFile(file)) return true
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
+        return false
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
