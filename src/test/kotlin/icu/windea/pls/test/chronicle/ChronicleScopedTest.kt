@@ -30,7 +30,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("chronicle")
-        markConfigDirectory("chronicle/.config") // showcase only, not required for this test case
+        markConfigDirectory("chronicle/.config") // showcase only, not actually required for this test case
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 

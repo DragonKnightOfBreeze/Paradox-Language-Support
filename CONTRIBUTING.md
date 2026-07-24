@@ -47,7 +47,7 @@ We gladly accept the following kinds of contributions:
 - **Documentation** - Fixes and improvements to general docs (e.g. `README.md`), reference docs (the `docs` directory), and config-repository docs. Reference manuals especially benefit from corrected factual errors and added detail.
 - **Config files** - Additions and fixes to CWT config files. Because the plugin is config-driven, this is one of the most effective ways to improve support for a specific game. See [Contributing Config Files](#contributing-config-files).
 
-These are well-suited for community work, with existing references and even AI assistance — provided the result is reviewed, validated, tested and (when needed) debugged before submission.
+These are well-suited for community work, with existing references and even AI assistance - provided the result is reviewed, validated, tested and (when needed) debugged before submission.
 
 ## What We Don't Accept (Directly)
 
