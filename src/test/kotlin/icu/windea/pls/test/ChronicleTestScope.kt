@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
@@ -27,8 +28,6 @@ import java.nio.file.Path
  */
 interface ChronicleTestScope {
     // region Common Methods
-
-    val defaultTestDataPath: String get() = "src/test/testData"
 
     fun CodeInsightTestFixture.findElementAtCaret(): PsiElement? {
         return file.findElementAt(caretOffset)
@@ -210,6 +209,17 @@ interface ChronicleTestScope {
             configGroupService.refreshBuiltInConfigFiles()
             configGroupService.initConfigGroups(configGroups)
         }
+    }
+
+    /**
+     * 得到指定游戏类型的规则分组。
+     *
+     * 说明：
+     * - 默认使用 [ParadoxGameType.Core]，对应共享的规则分组。
+     */
+    fun getConfigGroup(project: Project, gameType: ParadoxGameType = ParadoxGameType.Core): CwtConfigGroup {
+        val configGroupService = CwtConfigGroupService.getInstance(project)
+        return configGroupService.getConfigGroup(gameType)
     }
 
     // endregion

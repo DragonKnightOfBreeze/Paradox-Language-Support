@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -28,7 +27,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, formatName: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxNameFormatExpression? {
-        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
+        val configGroup = getConfigGroup(project, gameType)
         val config = CwtValueConfig.createMock(configGroup, "name_format[$formatName]")
         return markIncomplete(incomplete) { ParadoxNameFormatExpression.resolve(text, null, configGroup, config) }
     }

@@ -99,12 +99,12 @@ fun Collection<CwtPropertyConfig>.expandKeyExpression(): Sequence<CwtDataExpress
 }
 
 /** @see CwtConfigManipulationService.expandValueExpression */
-fun CwtValueConfig.expandValueExpression(): Sequence<CwtDataExpression> {
+fun CwtMemberConfig<*>.expandValueExpression(): Sequence<CwtDataExpression> {
     return CwtConfigManipulationService.expandValueExpression(this)
 }
 
 /** @see CwtConfigManipulationService.expandValueExpression */
-fun Collection<CwtValueConfig>.expandValueExpression(): Sequence<CwtDataExpression> {
+fun Collection<CwtMemberConfig<*>>.expandValueExpression(): Sequence<CwtDataExpression> {
     return CwtConfigManipulationService.expandValueExpression(this)
 }
 

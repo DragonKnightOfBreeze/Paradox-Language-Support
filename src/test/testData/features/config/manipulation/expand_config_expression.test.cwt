@@ -1,0 +1,6 @@
+k1 = int
+k2 = union[test_union] # expanded
+k3 = alias_keys_field[test_alias] # expanded
+k4 = alias_name[test_alias] # ignored (invalid to expand)
+k5 = alias_match_left[test_alias] # ignored (invalid to expand)
+k0 = not_int

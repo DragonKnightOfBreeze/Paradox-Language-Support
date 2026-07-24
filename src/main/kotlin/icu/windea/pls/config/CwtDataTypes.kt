@@ -1,14 +1,6 @@
 package icu.windea.pls.config
 
 import icu.windea.pls.base.annotations.WithGameType
-import icu.windea.pls.config.CwtDataTypes.AliasMatchLeft
-import icu.windea.pls.config.CwtDataTypes.AliasName
-import icu.windea.pls.config.CwtDataTypes.Definition
-import icu.windea.pls.config.CwtDataTypes.IntValueField
-import icu.windea.pls.config.CwtDataTypes.Localisation
-import icu.windea.pls.config.CwtDataTypes.ScopeField
-import icu.windea.pls.config.CwtDataTypes.SyncedLocalisation
-import icu.windea.pls.config.CwtDataTypes.ValueField
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.core.match.AntMatcher
@@ -312,7 +304,7 @@ object CwtDataTypes {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val UnionValue = CwtDataType.builder("Union").reference().build()
+    val UnionValue = CwtDataType.builder("UnionValue").reference().build()
 
     /**
      * 动态值读取类型。

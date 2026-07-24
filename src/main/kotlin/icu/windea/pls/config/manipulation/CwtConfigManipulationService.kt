@@ -445,11 +445,11 @@ object CwtConfigManipulationService {
         return sequence { configs.forEach { config -> doExpandConfigExpression(config.keyExpression, config.configGroup) } }
     }
 
-    fun expandValueExpression(config: CwtValueConfig): Sequence<CwtDataExpression> {
+    fun expandValueExpression(config: CwtMemberConfig<*>): Sequence<CwtDataExpression> {
         return sequence { doExpandConfigExpression(config.valueExpression, config.configGroup) }
     }
 
-    fun expandValueExpression(configs: Collection<CwtValueConfig>): Sequence<CwtDataExpression> {
+    fun expandValueExpression(configs: Collection<CwtMemberConfig<*>>): Sequence<CwtDataExpression> {
         if (configs.isEmpty()) return emptySequence()
         return sequence { configs.forEach { config -> doExpandConfigExpression(config.valueExpression, config.configGroup) } }
     }
