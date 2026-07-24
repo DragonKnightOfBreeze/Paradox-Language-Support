@@ -18,6 +18,7 @@ import icu.windea.pls.core.data.MarkdownService
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.runSmartReadAction
 
+@Suppress("unused")
 object PsiService {
     fun toPresentableString(element: PsiElement): String {
         return buildString {
@@ -50,7 +51,6 @@ object PsiService {
         return start.siblings(forward, withSelf = false).takeWhile { it != end }
     }
 
-    @Suppress("unused")
     fun isBeforeLeftBound(element: PsiBoundElement, offset: Int): Boolean {
         val leftBound = element.leftBound ?: return false
         return offset <= leftBound.startOffset
@@ -67,30 +67,6 @@ object PsiService {
 
     fun containsBlankLine(element: PsiWhiteSpace): Boolean {
         return StringUtil.getLineBreakCount(element.text) > 1
-    }
-
-    /**
-     * 得到附加到 [element] 上的所有注释，顺序从后到前。
-     *
-     * 向前遍历，仅采用注释以及不包含空白行的空白，然后返回其中的所有注释。
-     */
-    fun getAttachedComments(element: PsiElement): Sequence<PsiComment> {
-        if (element is PsiComment || element is PsiWhiteSpace) return emptySequence()
-        return element.siblings(forward = false, withSelf = false)
-            .takeWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
-            .filterIsInstance<PsiComment>()
-    }
-
-    /**
-     * 得到 [comment] 附加到的元素。
-     *
-     * 向后遍历，仅采用注释、不包含空白行的空白以及第一个非注释非空白的元素，然后然后此元素。
-     */
-    fun getAttachingElement(comment: PsiComment): PsiElement? {
-        return comment.siblings(forward = true, withSelf = false)
-            .dropWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
-            .firstOrNull()
-            ?.takeIf { it !is PsiComment && it !is PsiWhiteSpace }
     }
 
     /**
@@ -140,7 +116,40 @@ object PsiService {
         }
     }
 
-    fun findSiblingComments(element: PsiComment, predicate: (PsiComment) -> Boolean): List<PsiComment> {
+    /**
+     * 得到展开 [element] 周围的空白后的文本范围。
+     */
+    fun getSpaceExtendedTextRange(element: PsiElement): TextRange {
+        val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
+        val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
+        return TextRange.create(startElement.startOffset, endElement.endOffset)
+    }
+
+    /**
+     * 得到附加到 [element] 上的所有注释，顺序从后到前。
+     *
+     * 向前遍历，仅采用注释以及不包含空白行的空白，然后返回其中的所有注释。
+     */
+    fun getAttachedComments(element: PsiElement): Sequence<PsiComment> {
+        if (element is PsiComment || element is PsiWhiteSpace) return emptySequence()
+        return element.siblings(forward = false, withSelf = false)
+            .takeWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
+            .filterIsInstance<PsiComment>()
+    }
+
+    /**
+     * 得到 [comment] 附加到的元素。
+     *
+     * 向后遍历，仅采用注释、不包含空白行的空白以及第一个非注释非空白的元素，然后然后此元素。
+     */
+    fun getAttachingElement(comment: PsiComment): PsiElement? {
+        return comment.siblings(forward = true, withSelf = false)
+            .dropWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
+            .firstOrNull()
+            ?.takeIf { it !is PsiComment && it !is PsiWhiteSpace }
+    }
+
+    fun findSiblingComments(element: PsiComment, predicate: (PsiComment) -> Boolean = { true }): List<PsiComment> {
         if (!predicate(element)) return emptyList()
         val before = element.siblings(forward = false, withSelf = false)
             .takeWhile { (it is PsiComment && predicate(it)) || (it is PsiWhiteSpace && !containsBlankLine(it)) }
@@ -150,7 +159,6 @@ object PsiService {
             .takeWhile { (it is PsiComment && predicate(it)) || (it is PsiWhiteSpace && !containsBlankLine(it)) }
             .filterIsInstance<PsiComment>()
             .toList()
-        if (before.isEmpty() && after.isEmpty()) return emptyList()
         val result = mutableListOf<PsiComment>()
         result.addAll(before.reversed())
         result.add(element)
@@ -158,7 +166,7 @@ object PsiService {
         return result
     }
 
-    fun findAllSiblingCommentsIn(parentElement: PsiElement, predicate: (PsiComment) -> Boolean): List<List<PsiComment>> {
+    fun findAllSiblingCommentsIn(parentElement: PsiElement, predicate: (PsiComment) -> Boolean = { true }): List<List<PsiComment>> {
         var current = parentElement.firstChild
         val result = mutableListOf<List<PsiComment>>()
         while (current != null) {
@@ -177,7 +185,7 @@ object PsiService {
     /**
      * 得到属于 [element] 的符合特定条件的所有注释，顺序从前向后。这些注释的文本可用于渲染到快速文档中。
      */
-    fun getOwnedComments(element: PsiElement, predicate: (PsiComment) -> Boolean): List<PsiComment> {
+    fun getOwnedComments(element: PsiElement, predicate: (PsiComment) -> Boolean = { true }): List<PsiComment> {
         // 这里使用“截断”而非“过滤”逻辑
         val attachedComments = getAttachedComments(element)
         return attachedComments.dropWhile { !predicate(it) }.takeWhile(predicate).toList().reversed()
@@ -236,14 +244,5 @@ object PsiService {
             return MarkdownService.toHtml(result)
         }
         return result
-    }
-
-    /**
-     * 得到展开 [element] 周围的空白后的文本范围。
-     */
-    fun getSpaceExtendedTextRange(element: PsiElement): TextRange {
-        val startElement = element.siblings(forward = false).takeWhile { it === element || it is PsiWhiteSpace }.last()
-        val endElement = element.siblings(forward = true).takeWhile { it === element || it is PsiWhiteSpace }.last()
-        return TextRange.create(startElement.startOffset, endElement.endOffset)
     }
 }

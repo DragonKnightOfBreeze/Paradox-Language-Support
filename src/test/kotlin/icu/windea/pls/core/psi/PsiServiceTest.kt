@@ -1,9 +1,11 @@
 package icu.windea.pls.core.psi
 
 import com.intellij.psi.PsiComment
+import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.findChild
+import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
@@ -26,11 +28,23 @@ class PsiServiceTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private val PsiComment.commentText get() = text.trimStart('#').trim()
-
     @Test
-    fun getAttachedComments() {
-        myFixture.configureByFile("script/stubs/attached_comments.test.txt")
+    fun getAttachedComments_basic() {
+        myFixture.configureByText("test.txt", """
+            # root comment
+
+            # root attached comment
+            root = {
+                # comment
+
+                # attached comment
+                key_1 = value
+
+                # detached comment
+
+                key_2 = value
+            }
+        """.trimIndent())
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 
@@ -51,8 +65,22 @@ class PsiServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun getAttachingElement() {
-        myFixture.configureByFile("script/stubs/attached_comments.test.txt")
+    fun getAttachingElement_basic() {
+        myFixture.configureByText("test.txt", """
+            # root comment
+
+            # root attached comment
+            root = {
+                # comment
+
+                # attached comment
+                key_1 = value
+
+                # detached comment
+
+                key_2 = value
+            }
+        """.trimIndent())
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 
@@ -74,4 +102,56 @@ class PsiServiceTest : BasePlatformTestCase() {
         val comment3 = block.findChild<PsiComment> { it.commentText == "detached comment" }!!
         Assert.assertNull(PsiService.getAttachingElement(comment3))
     }
+
+    @Test
+    fun findSiblingComments_basic() {
+        run {
+            myFixture.configureByText("test.cwt", """
+                # <caret>comment
+            """.trimIndent())
+            val r = PsiService.findSiblingComments(findCommentAtCaret())
+            assertEquals(1, r.size)
+        }
+
+        run {
+            myFixture.configureByText("test.cwt", """
+                # comment
+                # <caret>comment
+                # comment
+            """.trimIndent())
+            val r = PsiService.findSiblingComments(findCommentAtCaret())
+            assertEquals(3, r.size)
+        }
+
+        run {
+            myFixture.configureByText("test.cwt", """
+                # comment
+
+                # <caret>comment
+                # comment
+
+                # comment
+            """.trimIndent())
+            val r = PsiService.findSiblingComments(findCommentAtCaret())
+            assertEquals(2, r.size)
+        }
+
+        run {
+            myFixture.configureByText("test.cwt", """
+                # comment
+
+                # comment
+                ### <caret>doc comment
+                ### doc comment
+                # comment
+                ### comment
+            """.trimIndent())
+            val r = PsiService.findSiblingComments(findCommentAtCaret()) { it is CwtDocComment }
+            assertEquals(2, r.size)
+        }
+    }
+
+    private val PsiComment.commentText get() = text.trimStart('#').trim()
+
+    private fun findCommentAtCaret() = myFixture.file.findElementAt(myFixture.caretOffset)?.parentOfType<PsiComment>()!!
 }
