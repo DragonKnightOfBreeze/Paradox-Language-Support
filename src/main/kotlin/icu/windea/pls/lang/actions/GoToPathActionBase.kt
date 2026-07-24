@@ -76,7 +76,7 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
         // 尝试从上下文文件获取游戏类型
         val files = VirtualFileService.findFiles(e)
         val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
-        if (fileInfo != null) return fileInfo.rootInfo.gameType
+        if (fileInfo != null) return fileInfo.gameType
 
         return null
     }

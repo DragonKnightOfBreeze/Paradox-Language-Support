@@ -77,7 +77,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
         if (psiFile !is ParadoxScriptFile) return
         val fileInfo = psiFile.fileInfo ?: return
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         ProgressManager.checkCanceled()
 
         // 2.1.3 要求存在候选项

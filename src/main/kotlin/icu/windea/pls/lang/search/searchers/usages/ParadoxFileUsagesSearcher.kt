@@ -24,7 +24,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
 
         val fileInfo = target.fileInfo
         if (fileInfo == null) return
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val filePath = fileInfo.path.path
         val project = queryParameters.project
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)

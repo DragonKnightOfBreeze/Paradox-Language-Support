@@ -71,7 +71,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
         if (psiFile !is ParadoxScriptFile) return
         val fileInfo = psiFile.fileInfo ?: return
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         ProgressManager.checkCanceled()
 
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return

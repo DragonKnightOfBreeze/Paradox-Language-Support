@@ -1,14 +1,15 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 
 /**
  * 文件信息。
  *
- * @property path 文件路径。相对于入口目录，参见 [icu.windea.pls.model.analysis.ParadoxGameTypeMetadata]。
- * @property entry 入口名称。参见 [icu.windea.pls.model.analysis.ParadoxGameTypeMetadata]。
+ * @property path 文件路径。相对于入口目录，参见 [ParadoxGameTypeMetadata]。
+ * @property entry 入口名称。参见 [ParadoxGameTypeMetadata]。
  * @property group 文件分组。
  * @property rootInfo 游戏或模组信息。
  *
@@ -20,6 +21,9 @@ data class ParadoxFileInfo(
     val group: ParadoxFileGroup,
     val rootInfo: ParadoxRootInfo,
 ) {
+    val gameType: ParadoxGameType get() = rootInfo.gameType
+    val gameVersion: String? get() = rootInfo.gameVersion
+
     val rootPath: Path? get() = rootInfo.rootFile?.toNioPath()
     val entryPath: Path? get() = if (entry.isEmpty()) rootPath else rootPath?.resolve(entry)
 

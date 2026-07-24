@@ -57,7 +57,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         if (DumbService.isDumb(directory.project)) return // skip for dumb mode
         val path = fileInfo.path.path
         val pathPrefix = if (path.isEmpty()) "" else "$path/"
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val project = directory.project
         val gameTypePrefix = "${gameType.id}:"
         val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.IncludedDirectory, project)

@@ -22,7 +22,6 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -100,7 +99,7 @@ object ParadoxInlineScriptManager {
         val fileType = file.fileType
         if (fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         if (!isSupported(gameType)) return null
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression

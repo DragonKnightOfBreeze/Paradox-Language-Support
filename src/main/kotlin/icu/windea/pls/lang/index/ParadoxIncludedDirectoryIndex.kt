@@ -41,7 +41,7 @@ class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
         if (!file.isDirectory) return emptyMap()
         if (ChronicleIndexUtil.isExcludedDirectory(file)) return emptyMap()
         val fileInfo = file.fileInfo ?: return emptyMap()
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val path = fileInfo.path.path
         val key = "${gameType.id}:$path"
         return Collections.singletonMap(key, null)

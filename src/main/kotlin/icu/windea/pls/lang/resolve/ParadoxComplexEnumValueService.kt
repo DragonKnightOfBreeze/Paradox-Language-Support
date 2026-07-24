@@ -28,7 +28,7 @@ object ParadoxComplexEnumValueService {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         if (ParadoxInlineScriptManager.isMatched(name, gameType)) return null // 排除是内联脚本用法的情况
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)

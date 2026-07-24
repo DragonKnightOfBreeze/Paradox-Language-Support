@@ -83,7 +83,7 @@ object ParadoxDefinitionService {
     fun resolveInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
         resolveInfoFromInjection(element, file, fileInfo)?.let { return it }
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val path = fileInfo.path
         val source = resolveSource(element) ?: return null
         val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
@@ -101,7 +101,7 @@ object ParadoxDefinitionService {
 
     private fun resolveInfoFromInjection(element: ParadoxDefinitionElement, file: PsiFile, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
         if (element !is ParadoxScriptProperty) return null
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         val path = fileInfo.path
         val source = ParadoxDefinitionSource.Injection
         val expression = element.name

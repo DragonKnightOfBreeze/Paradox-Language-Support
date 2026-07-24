@@ -149,7 +149,7 @@ object ParadoxImageManager {
         if (frameInfo == null || !frameInfo.canApply()) return filePath.absolutePathString()
 
         val imageAbsPath = filePath.absolutePathString().normalizePath()
-        val imageRelPath = file.fileInfo?.let { it.rootInfo.gameType.id + "/" + it.path.path }?.normalizePath()
+        val imageRelPath = file.fileInfo?.let { it.gameType.id + "/" + it.path.path }?.normalizePath()
         val imagePath = doResolveImagePath(imageAbsPath, imageRelPath, frameInfo)
         val created = doCreateImageFile(file, filePath, imagePath, frameInfo)
         if (created) return imagePath.absolutePathString()

@@ -81,7 +81,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
     private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
         val fileInfo = file.fileInfo ?: return
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         ProgressManager.checkCanceled()
 
         // 2.1.3 要求存在候选项
@@ -129,7 +129,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
     private fun buildDataForCsvFile(file: ParadoxCsvFile, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
         val fileInfo = file.fileInfo ?: return
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = fileInfo.gameType
         ProgressManager.checkCanceled()
 
         // 2.1.3 要求存在候选项
