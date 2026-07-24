@@ -4,8 +4,7 @@
 
 This repository contains **Paradox Chronicle** (formerly **Paradox Language Support**), the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.
 
-On narrative level, this plugin symbolizes the book also titled **Paradox Chronicle**.
-While playing on the double meaning of **Chronicle** and **Prophecy Book**, it is, indeed, also the guide book, to the paradox universe.
+On narrative level, this plugin symbolizes the book also titled **Paradox Chronicle**. While playing on the double meaning of **Chronicle** and **Prophecy Book**, it is, indeed, also the guide book, to the paradox universe.
 
 Given the large codebase (over 100k lines of Kotlin production code) and high complexity (platform & domain & architecture), make this project a challenging undertaking.
 
@@ -74,7 +73,8 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 ### Principles and preferences
 
 - Unit tests: for pure components/tools/extensions; usually no IntelliJ Platform API.
-- Integration tests (a.k.a. "platform tests"): for PSI/index/query/semantic match and resolve/tool integrations; usually depend on the IntelliJ Platform API or another external integration.
+- Integration tests: for PSI/index/query/semantic match and resolve/tool integrations; usually depend on the IntelliJ Platform API or another external integration.
+- Platform tests: aka integration tests depend on IntelliJ Platform API.
 - Prefer Kotlin for tests.
 - Tooling: JUnit4 + IntelliJ Platform test framework.
 - If a test class targets one or a few specific subjects (rather than a theme or a bag of extension methods), call it out in the class KDoc via `@see TestTarget`.
@@ -95,7 +95,7 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 ### Test data conventions
 
 - Most platform/integration tests use test data under `src/test/testData`.
-- Recommended (not universally enforced) naming: `*.test.txt` / `*.test.yml` / `*.test.cwt` / `*.test.csv`, in `snake_case`, optionally with a `.{gameTypeId}` segment to pin a game type (e.g. `example.stellaris.txt`). Some older test data (e.g. under `issues/`) predates this convention and doesn't fully follow it.
+- Recommended (not universally enforced) naming: `*.test.txt` / `*.test.yml` / `*.test.cwt` / `*.test.csv`, in `snake_case`, optionally with a `.{gameTypeId}` segment to pin a game type (e.g. `example.stellaris.txt`).
 - For `ParsingTestCase`-based tests, the input file is `<caseName>.test.txt` while the expected PSI-tree snapshot file is `<caseName>.txt` (no `.test.` segment).
 - Some feature tests provide a test-local `.config/` directory under test data to simulate config groups (e.g. `features/index/.config`, `features/inspections/.config`); config files must live in a subdirectory of `.config/` (e.g. `core/`, `stellaris/`), never directly inside it.
 - `src/test/testData/issues/<issueNumber>[_shortDesc]/` holds regression test data for GitHub-issue-specific tests (see `icu.windea.pls.test.issues.IssueNNNTest` below), typically with a `README.md` describing the scenario.
@@ -105,46 +105,27 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 
 - **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g. `icu.windea.pls.script.ParadoxScriptParsingTest`).
 - **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByText(fileName, text)` (preferred for simple cases) or `myFixture.configureByFile(filePath)` (for more complex, file-based cases).
-- **Highlighting tests** (annotators/inspections): wrap the expected-diagnostic span in the source text using the `ChronicleTestScope` helpers `String.toErrorTag()` / `.toWarningTag()` / `.toWeakWarningTag()` / `.toInfoTag()` (usually applied to a `*Bundle.message(...)` string), then call `myFixture.checkHighlighting(...)`. Hand-written `<warning descr="...">...</warning>`-style markup is also acceptable when the diagnostic text isn't backed by an i18n bundle.
-- A custom JUnit runner, `icu.windea.pls.test.ParallelMethodRunner`, is available (`@RunWith(ParallelMethodRunner::class)`) to run a test class's `@Test` methods in parallel threads; used sparingly for slower tests (e.g. `SpecialPathServiceTest`, `SpecialUrlServiceTest`).
+- **Highlighting tests** (annotators/inspections): wrap the expected-diagnostic span in the source text using the `ChronicleTestScope` helpers `String.toErrorTag()` / `.toWarningTag()` / `.toWeakWarningTag()` / `.toInfoTag()` (usually applied to a `*Bundle.message(...)` string), then call `myFixture.checkHighlighting(...)`. Handwritten `<warning descr="...">...</warning>`-style markup is also acceptable when the diagnostic text isn't retrieved from i18n bundles (or not that easy).
 
 ### Config-driven integration tests (config groups + context injection)
 
 The plugin is config-driven. Many features (e.g. type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
 
-A set of scope methods, defined in interface `icu.windea.pls.test.ChronicleTestScope`, makes these tests deterministic. It's mixed into test classes via interface composition (not a shared base class): `class XxxTest : BasePlatformTestCase(), ChronicleTestScope`. There is no common `ChronicleBasePlatformTestCase`; only a few narrower abstract bases exist for specific test families (e.g. `ChronicleSnapshotTest`, `ParadoxComplexExpressionTest`, `CwtConfigGeneratorTest`).
+A set of scope methods, defined in interface `icu.windea.pls.test.ChronicleTestScope`, makes these tests deterministic. It's mixed into test classes via interface composition (not a shared base class): `class XxxTest : BasePlatformTestCase(), ChronicleTestScope`. There is no common `ChronicleBasePlatformTestCase`; only a few narrower abstract bases exist for specific test families (e.g. `ParadoxComplexExpressionTest`).
 
 Key `ChronicleTestScope` methods:
 
-- `markIntegrationTest()` / `clearIntegrationTest()` toggle integration-test-only behavior (inferring file type/game type from file name) and clean up injected state.
-- `markRootDirectory(relPath)` / `markConfigDirectory(relPath)` inject the root/config directory path, relative to the test data directory (`src/test/testData`).
-- `initConfigGroups(project, ...gameTypes)` initializes the required built-in config groups for the specified game types (the shared `Core` group is always initialized).
-- `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version — useful for testing version-gated behavior.
-- `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterwards, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
 - `findElementAtCaret()` / `findReferenceAtCaret()` are `CodeInsightTestFixture` extensions for caret-based lookups.
 - `addAdditionalAllowedRoots(...)` whitelists extra filesystem roots for VFS access checks (used e.g. to reach a real local Steam/game path in `ParadoxModImporterTest`).
+- `markIntegrationTest()` / `clearIntegrationTest()` toggle integration-test-only behavior (inferring file type/game type from file name) and clean up injected state.
+- `markRootDirectory(relPath)` / `markConfigDirectory(relPath)` inject the root/config directory path, relative to the test data directory (`src/test/testData`).
+- `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version - useful for testing version-gated behavior.
+- `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
+- `initConfigGroups(project, ...gameTypes)` initializes the required built-in config groups for the specified game types (the shared `Core` group is always initialized).
 
-Minimal setup example (typical for index/resolve tests):
+For the showcase test demonstrating `ChronicleTestScope` usage, see:
 
-```kotlin
-@Before
-fun doSetUp() {
-    markIntegrationTest()
-    markRootDirectory("features/index")
-    markConfigDirectory("features/index/.config")
-    initConfigGroups(project, ParadoxGameType.Stellaris)
-}
-
-@After
-fun doTearDown() = clearIntegrationTest()
-```
-
-Typical per-test file arrangement pattern:
-
-```kotlin
-markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
-myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
-```
+- `icu.windea.pls.test.chronicle.ChronicleScopedTest`
 
 Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
@@ -156,12 +137,9 @@ Notes:
 
 Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests driven by the showcase content tree `src/test/testData/chronicle/`:
 
-- `ChronicleSnapshotTest` — abstract base providing `computeDataFilePaths()` over the `chronicle/` directory.
-- `ChronicleInspectionsSnapshotTest` — runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
-- `ChronicleAnnotatedSnapshotTest` — renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
-- `ChronicleScopedTest` — a teaching/showcase test demonstrating `ChronicleTestScope` usage; not a real regression test.
-
-Other snapshot-style tests live in `icu.windea.pls.test.snapshots` (e.g. `ParadoxDefineSnapshotTest`). Regression tests tied to a specific GitHub issue live in `icu.windea.pls.test.issues` as `IssueNNNTest`, paired with `src/test/testData/issues/NNN[_shortDesc]/`.
+- `ChronicleSnapshotTest` - abstract base providing `computeDataFilePaths()` over the `chronicle/` directory.
+- `ChronicleInspectionsSnapshotTest` - runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
+- `ChronicleAnnotatedSnapshotTest` - renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
 
 ### Optional / on-demand tests (assume-based)
 
@@ -185,10 +163,6 @@ Here are some common conversions:
 - Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
 - prefer using verb form for actions and intentions (e.g, `CopyDefinitionNameIntention`).
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
-- EP implementation classes: prefer `[Domain][Layer][ImplementationType][Role]`, domain-first for natural grouping (e.g. `Domain` like `Cwt`/`Paradox`/`Stellaris`; `Layer` like `Base`/`Core`/`Default`; `Role` is the core part of the EP interface name, e.g. `ExpressionSupport`). For abstract classes, `Base` may instead go last (e.g. `ParadoxScriptExpressionSupportBase`).
-- Interfaces with a specific purpose: `*Aware` (aware of some domain model), `*Resolver`/`*.Resolver` (semantic-level resolution of a domain model/config/expression), `*Scope` (utility/extension methods scoped to a specific component; prefer this over `*ImplExtensions`).
-- `calculate` vs `evaluate`: prefer `evaluate` when parameter resolution/context (or dynamic game data) is involved, e.g. evaluating an inline math expression or a trigger; `calculate` otherwise.
-- `Call` vs `Invoke`: both mean "execute a piece of code", but `call` leans static/direct (compile-time-known target, e.g. `scripted_trigger`/`scripted_effect`/`script_value`/`inline_script`), while `invoke` leans indirect/dynamic (reflection, delegates/callbacks, cross-thread dispatch, e.g. `event` invocation — also seen as `trigger`/`fire`).
 
 For more details, see: `agents/context/naming-conventions.md`
 
@@ -196,7 +170,7 @@ For more details, see: `agents/context/naming-conventions.md`
 
 - Prefer explicit imports; avoid wildcard (`*`) imports except for a short list of DSL-style packages (see below), or when the explicit imports from one package would exceed the star-import threshold (50).
 - Packages preferred for wildcard imports (including subpackages): `com.intellij.ui.dsl` (IntelliJ UI DSL), `icu.windea.pls.lang.resolve.complexExpression.dsl`, `icu.windea.pls.lang.resolve.complexExpression.nodes`.
-- It's fine for agent-authored code to leave behind unused or slightly unordered imports — these are trivial for a human (or an "Optimize Imports" pass) to clean up afterwards, so don't block on perfecting imports over correct logic.
+- It's fine for agent-authored code to leave behind unused or slightly unordered imports - these are trivial for a human (or an "Optimize Imports" pass) to clean up afterward, so don't block on perfecting imports over correct logic.
 
 For more details, see: `agents/context/importing-conventions.md`
 
@@ -207,9 +181,8 @@ For more details, see: `agents/context/importing-conventions.md`
 - Prefer KDoc style for Kotlin.
 - When referencing types like `PsiElement` in KDoc, prefer KDoc links like `[PsiElement]`.
 - Prefer natural-language descriptions over embedding literal code snippets; reference key code locations instead (e.g. via `@see`) when necessary.
-- Avoid documenting member properties individually — fold them into the containing class/interface KDoc (using `@property`) unless a property truly needs detailed documentation.
+- Avoid documenting member properties individually - fold them into the containing class/interface KDoc (using `@property`) unless a property truly needs detailed documentation.
 - Avoid overly long parameter-by-parameter docs (`@param`) unless truly necessary; prefer describing the method as a whole and referencing parameters inline (e.g. `[param]`) when needed.
-- For "interface code" (e.g. an EP interface), consider linking a few key related locations (classes, interfaces, methods) via `@see`.
 
 ### Caching
 
@@ -225,27 +198,27 @@ For more details, see: `agents/context/importing-conventions.md`
 - Data depending on analysis data and/or PSI-structure, not depending on dynamic data (e.g., scripted variables, localisations): prefer `StubIndex`.
 - Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
 - For file indices that depend on resolved/matched member configs, prefer unifying via a merged index (e.g. `ParadoxMergedIndex`) for performance.
-- Compress serialized index data when necessary (e.g. via `readOrReadFrom`).
+- Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readWithIndexStringList`).
 
 ### Code structure
 
 Package organization:
 
-- `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
-- `icu.windea.pls.base`: Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
-- `icu.windea.pls.ide`: Global codes to handle IDE platform integration. Usually language-free and domain-free.
+- `icu.windea.pls.core` - Common extensions, utilities and components for stdlib, platform and third-party libraries.
+- `icu.windea.pls.base` - Plugin specific base code. Including internal state management, external data processing, environment detection and other logic.
+- `icu.windea.pls.ide` - Global codes to handle IDE platform integration. Usually language-free and domain-free.
 - `icu.windea.pls.cwt` - Infrastructure for CWT file support. Usually semantic-free.
 - `icu.windea.pls.script` - Infrastructure for script file support. Usually semantic-free.
 - `icu.windea.pls.localisation` - Infrastructure for localization file support. Usually semantic-free.
 - `icu.windea.pls.csv` - Infrastructure for CSV file support. Usually semantic-free.
-- `icu.windea.pls.config`: Codes related to config, config expression and config group. Usually not depend on game or mod files. 
-- `icu.windea.pls.lang`: Codes which are domain specific, or related to semantic match and resolution.
-  - `icu.windea.pls.lang.match`: Semantic-level matching (mainly based on indices, reference resolution and configs).
-  - `icu.windea.pls.lang.resolve`: Semantic-level resolution (mainly based on indices, reference resolution and configs).
-  - `icu.windea.pls.lang.util`: High-level managers and special components.
-- `icu.windea.pls.tools`: Codes related to bundled utilities and integrations. Including game launcher, config generator and others.
-- `icu.windea.pls.integrations`: Provides integrations with third-party tools.
-- `icu.windea.pls.extensions`: Provides integrations and extensions to third-party plugins.
+- `icu.windea.pls.config` - Codes related to config, config expression and config group. Usually not depend on game or mod files. 
+- `icu.windea.pls.lang` - Codes which are domain specific, or related to semantic match and resolution.
+  - `icu.windea.pls.lang.match` - Semantic-level matching (mainly based on indices, reference resolution and configs).
+  - `icu.windea.pls.lang.resolve` - Semantic-level resolution (mainly based on indices, reference resolution and configs).
+  - `icu.windea.pls.lang.util` - High-level managers and special components.
+- `icu.windea.pls.tools` - Codes related to bundled utilities and integrations. Including game launcher, config generator and others.
+- `icu.windea.pls.integrations` - Provides integrations with third-party tools.
+- `icu.windea.pls.extensions` - Provides integrations and extensions to third-party plugins.
 - `icu.windea.pls.ep` - Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
 
 Notes on `icu.windea.pls.lang.match` / `icu.windea.pls.lang.resolve` vs `icu.windea.pls.lang.util.*Manager`:
@@ -265,7 +238,7 @@ Notes on `Service` vs `Manager` vs `Util`:
 - `Service` - lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
 - `Manager` - higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
 - `Util` - narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
-- `Service` and `Manager` don't need to be declared as IntelliJ services — a plain Kotlin singleton object is fine too.
+- `Service` and `Manager` don't need to be declared as IntelliJ services - a plain Kotlin singleton object is fine too.
 - Caching logic usually lives at the `Manager` level; `Service`-level code is usually a direct fetch/resolve without caching.
 
 ### Code guidance
