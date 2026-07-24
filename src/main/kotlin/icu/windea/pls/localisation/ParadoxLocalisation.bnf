@@ -76,6 +76,9 @@ private property_number ::= PROPERTY_NUMBER
 
 property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE { // lazy-parsing PROPERTY_VALUE_TOKEN
   pin=1
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+  ]
   methods=[getTokenElement getRichTextList]
 }
 
@@ -89,7 +92,11 @@ text_root ::= text_items {
 private text_items ::= text_item +
 private text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
-rich_text ::= text | colorful_text | parameter | icon | command | concept_command | text_icon | text_format
+rich_text ::= text | colorful_text | parameter | icon | command | concept_command | text_icon | text_format {
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
+}
 
 text ::= TEXT_TOKEN {
   extends=rich_text
@@ -103,8 +110,8 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_part ? COLORFUL_T
   pin=1
   extends=rich_text
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
   methods=[getIdElement getName setName getReference getReferences]
 }
@@ -120,7 +127,6 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   pin=1
   extends=rich_text
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
   ]
@@ -144,7 +150,6 @@ parameter_argument ::= ARGUMENT_TOKEN {
 
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
   methods=[getIdElement getIcon getName setName getReference getReferences]
@@ -156,7 +161,6 @@ icon ::= ICON_START icon_name icon_argument_part ? ICON_END {
   pin=1
   extends=rich_text
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
@@ -185,7 +189,6 @@ command ::= <<isCommand>> LEFT_BRACKET command_text ? command_argument_part ? RI
   pin=2
   extends=rich_text
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
   ]
   methods=[
@@ -196,7 +199,6 @@ command ::= <<isCommand>> LEFT_BRACKET command_text ? command_argument_part ? RI
 // can be parameterized (via parameters)
 command_text ::= (COMMAND_TEXT_TOKEN | parameter) + {
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
   ]
@@ -221,15 +223,11 @@ command_argument ::= (ARGUMENT_TOKEN | parameter) + {
 concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE concept_text_part ? RIGHT_BRACKET {
   pin=2
   extends=rich_text
-  implements=[
-    "com.intellij.psi.NavigatablePsiElement"
-  ]
   methods=[getIcon getName setName getReference getReferences]
 }
 // can be parameterized (via parameters)
 concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
   ]
@@ -239,7 +237,11 @@ concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
   ]
 }
 private concept_text_part ::= COMMA concept_text ?
-concept_text ::= concept_text_item +
+concept_text ::= concept_text_item + {
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+  ]
+}
 private concept_text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 // [ck3, vic3] localisation text icon rules
@@ -248,7 +250,6 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   pin=1
   extends=rich_text
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
   ]
@@ -266,7 +267,6 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
   pin=1
   extends=rich_text
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
   ]
@@ -278,5 +278,9 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
 // can be parameterized (via parameters and commands)
 private text_format_name ::= (TEXT_FORMAT_TOKEN | parameter | command) +
 private text_format_text_part ::= text_format_text
-text_format_text ::= text_format_text_item +
+text_format_text ::= text_format_text_item + {
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+  ]
+}
 private text_format_text_item ::= rich_text | COLORFUL_TEXT_END

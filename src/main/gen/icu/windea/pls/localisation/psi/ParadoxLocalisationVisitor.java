@@ -1,24 +1,23 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiListLikeElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import org.jetbrains.annotations.NotNull;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitColorfulText(@NotNull ParadoxLocalisationColorfulText o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
     // visitTextColorAwareElement(o);
+    // visitRichTextContainer(o);
   }
 
   public void visitCommand(@NotNull ParadoxLocalisationCommand o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
     // visitArgumentAwareElement(o);
   }
 
@@ -29,29 +28,25 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
-    visitNavigatablePsiElement(o);
-    // visitExpressionElement(o);
+    visitExpressionElement(o);
     // visitParameterAwareElement(o);
   }
 
   public void visitConceptCommand(@NotNull ParadoxLocalisationConceptCommand o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
-    visitNavigatablePsiElement(o);
-    // visitExpressionElement(o);
+    visitExpressionElement(o);
     // visitParameterAwareElement(o);
   }
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
-    visitPsiElement(o);
+    visitRichTextContainer(o);
   }
 
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
     // visitArgumentAwareElement(o);
     // visitParameterAwareElement(o);
     // visitCommandAwareElement(o);
@@ -68,7 +63,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitParameter(@NotNull ParadoxLocalisationParameter o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
     // visitArgumentAwareElement(o);
     // visitCommandAwareElement(o);
   }
@@ -92,16 +86,15 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
-    visitPsiElement(o);
+    visitRichTextContainer(o);
   }
 
   public void visitRichText(@NotNull ParadoxLocalisationRichText o) {
-    visitPsiElement(o);
+    visitNavigatablePsiElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
-    visitNavigatablePsiElement(o);
-    // visitParadoxScriptedVariableReference(o);
+    visitParadoxScriptedVariableReference(o);
   }
 
   public void visitText(@NotNull ParadoxLocalisationText o) {
@@ -110,18 +103,16 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitTextFormat(@NotNull ParadoxLocalisationTextFormat o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
     // visitParameterAwareElement(o);
     // visitCommandAwareElement(o);
   }
 
   public void visitTextFormatText(@NotNull ParadoxLocalisationTextFormatText o) {
-    visitPsiElement(o);
+    visitRichTextContainer(o);
   }
 
   public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {
     visitRichText(o);
-    // visitNavigatablePsiElement(o);
     // visitParameterAwareElement(o);
     // visitCommandAwareElement(o);
   }
@@ -138,7 +129,19 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
+    visitElement(o);
+  }
+
   public void visitArgument(@NotNull ParadoxLocalisationArgument o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExpressionElement(@NotNull ParadoxLocalisationExpressionElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitRichTextContainer(@NotNull ParadoxLocalisationRichTextContainer o) {
     visitPsiElement(o);
   }
 
