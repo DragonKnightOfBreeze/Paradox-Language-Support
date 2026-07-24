@@ -16,6 +16,8 @@ import org.junit.runners.JUnit4
 
 /**
  * 验证 [ParadoxLocalisationPropertyValueElementType] 的懒解析行为和 PSI 层级关系。
+ *
+ * @see ParadoxLocalisationPropertyValueElementType
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

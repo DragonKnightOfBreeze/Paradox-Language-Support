@@ -3,6 +3,7 @@ package icu.windea.pls.core.collections
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see SequenceExtensions */
 class SequenceExtensionsTest {
     @Test
     fun filterIsInstance_and_findIsInstance() {

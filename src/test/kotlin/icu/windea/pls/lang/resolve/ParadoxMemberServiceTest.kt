@@ -22,6 +22,8 @@ import icu.windea.pls.lang.text.ParadoxScriptTextBuilder.parameter as p
 
 /**
  * 为 [ParadoxMemberService] 中的各公开方法提供全面的测试用例。
+ *
+ * @see ParadoxMemberService
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

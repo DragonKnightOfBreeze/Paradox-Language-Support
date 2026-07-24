@@ -21,6 +21,9 @@ import org.junit.runners.JUnit4
 
 /**
  * 测试定义和定义注入的缓存机制。
+ *
+ * @see ParadoxDefinitionManager
+ * @see ParadoxDefinitionService
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

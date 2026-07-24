@@ -3,6 +3,7 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
+/** @see StdlibExtensions */
 class StdlibPathExtensionsTest {
     @Test
     fun matchesPath_basic_and_strict() {

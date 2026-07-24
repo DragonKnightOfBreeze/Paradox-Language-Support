@@ -3,6 +3,7 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
+/** @see StdlibExtensions */
 class StdlibExtensionsTest {
     @Test
     fun quote_unquote_and_escape() {

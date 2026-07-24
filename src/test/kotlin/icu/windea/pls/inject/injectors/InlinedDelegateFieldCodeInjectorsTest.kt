@@ -18,6 +18,7 @@ import org.junit.runners.JUnit4
 
 @Suppress("unused")
 @RunWith(JUnit4::class)
+/** @see InlinedDelegateFieldCodeInjectors */
 class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
     @Suppress("unused")
     private class OptionDataModel : CwtOptionDataHolderBase()

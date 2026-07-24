@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
+/** @see ParadoxGameManager */
 class ParadoxGameManagerTest {
     @Test
     fun compareGameVersion() {

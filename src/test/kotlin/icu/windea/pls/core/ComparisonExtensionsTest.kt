@@ -3,6 +3,7 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
+/** @see ComparisonExtensions */
 class ComparisonExtensionsTest {
     @Test
     fun thenPossible_basic() {

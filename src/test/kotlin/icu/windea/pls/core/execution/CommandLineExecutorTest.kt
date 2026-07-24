@@ -5,6 +5,7 @@ import org.junit.Assert
 import org.junit.Assume
 import org.junit.Test
 
+/** @see CommandLineExecutor */
 class CommandLineExecutorTest {
     @Test
     fun testUtf8OutputForCmd() {

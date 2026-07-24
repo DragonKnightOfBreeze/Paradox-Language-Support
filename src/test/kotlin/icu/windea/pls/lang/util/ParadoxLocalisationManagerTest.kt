@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import org.junit.Assert
 import org.junit.Test
 
+/** @see ParadoxLocalisationManager */
 class ParadoxLocalisationManagerTest {
     @Test
     fun isRichTextTest() {

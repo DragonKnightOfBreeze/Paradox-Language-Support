@@ -4,6 +4,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see Keys */
 class KeysTest {
     private class Obj : UserDataHolderBase()
 

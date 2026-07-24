@@ -10,6 +10,8 @@ import org.junit.Test
  * - fromEnv = false：优先使用非空 value，其次 defaultValue
  * - fromEnv = true：优先读取 env，其次 defaultEnv；若均不可用，回退到 value / defaultValue
  * - fromEnv(...) 两个重载方法的语义
+ *
+ * @see OptionProvider
  */
 class OptionProviderPureTest {
     private fun nonExistingEnvKey(): String = "NON_EXISTING_ENV_KEY_" + System.nanoTime()

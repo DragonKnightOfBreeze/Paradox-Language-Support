@@ -3,6 +3,7 @@ package icu.windea.pls.core.match
 import org.junit.Test
 import kotlin.test.assertTrue
 
+/** @see MatchService */
 class MatchServiceTest {
     @Test
     fun anyMatch_forGlob() {

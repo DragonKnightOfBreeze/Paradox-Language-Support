@@ -3,6 +3,7 @@ package icu.windea.pls.config.configExpression
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see CwtCardinalityExpression */
 class CwtCardinalityExpressionTest {
     @Test
     fun resolveEmpty() {

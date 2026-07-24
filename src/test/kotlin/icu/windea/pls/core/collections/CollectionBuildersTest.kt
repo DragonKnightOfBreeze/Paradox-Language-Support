@@ -4,6 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
 
+/** @see CollectionBuilders */
 class CollectionBuildersTest {
     @Test
     fun mutableSet_without_comparator() {

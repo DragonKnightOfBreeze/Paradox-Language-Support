@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
+/** @see Matchers */
 class MatchersBenchmarkTest {
     @Before
     fun doSetUp() = ChronicleAssume.includeBenchmark()

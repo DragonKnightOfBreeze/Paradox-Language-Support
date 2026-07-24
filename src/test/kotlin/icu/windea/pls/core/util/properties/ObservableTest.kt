@@ -3,6 +3,7 @@ package icu.windea.pls.core.util.properties
 import org.junit.Assert
 import org.junit.Test
 
+/** @see Observable */
 class ObservableTest {
     @Suppress("ktPropBy")
     class Role(

@@ -7,6 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.time.measureTime
 
+/** @see RunTiger */
 class RunTigerTest {
     @Before
     fun doSetUp() = ChronicleAssume.includeLocalEnv()

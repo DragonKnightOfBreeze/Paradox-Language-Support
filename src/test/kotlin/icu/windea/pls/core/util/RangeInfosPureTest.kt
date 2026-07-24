@@ -10,6 +10,8 @@ import org.junit.Test
  * - from(...) 表达式解析（四种开/闭端点、缺失端点、负数、空表达式/非法表达式）
  * - contains(...) 包含判断（开/闭边界、无下界/无上界、双无界、start>end 情况）
  * - expression/toString 一致性
+ *
+ * @see RangeInfos
  */
 class RangeInfosPureTest {
     // --------------- IntRangeInfo.from ---------------

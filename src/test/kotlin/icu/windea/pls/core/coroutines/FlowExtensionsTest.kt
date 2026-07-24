@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see FlowExtensions */
 class FlowExtensionsTest {
     @Test
     fun chunked_basic_and_tail() = runBlocking {

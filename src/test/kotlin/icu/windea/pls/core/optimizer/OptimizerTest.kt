@@ -7,6 +7,7 @@ import icu.windea.pls.core.ReadWriteAccess
 import org.junit.Assert.*
 import org.junit.Test
 
+/** @see Optimizer */
 class OptimizerTest {
     // ========== String ==========
     @Test
