@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.lang.isParameterized
 import org.junit.Assert
 import org.junit.Test
 
@@ -9,7 +10,30 @@ import org.junit.Test
  */
 class ParadoxExpressionManagerTest {
     @Test
-    fun getParameterRangesTest() {
+    fun isParameterized_test() {
+        Assert.assertFalse("".isParameterized())
+        Assert.assertTrue("\$abc$".isParameterized())
+        Assert.assertTrue("aaa\$abc\$bbb".isParameterized())
+        Assert.assertTrue("[[a]]".isParameterized())
+        Assert.assertTrue("aaa[[a]]bbb".isParameterized())
+        Assert.assertTrue("\$abc\\$".isParameterized())
+        Assert.assertFalse("\\\$abc$".isParameterized())
+        Assert.assertFalse("\\[[a]]".isParameterized())
+        Assert.assertFalse("abc".isParameterized())
+    }
+
+    @Test
+    fun isFullParameterized_test() {
+        Assert.assertFalse("".isParameterized(full = true))
+        Assert.assertTrue("\$abc$".isParameterized(full = true))
+        Assert.assertFalse("aaa\$abc\$bbb".isParameterized(full = true))
+        Assert.assertFalse("\$abc\\$".isParameterized(full = true))
+        Assert.assertFalse("\\\$abc$".isParameterized(full = true))
+        Assert.assertFalse("\$abc\$def\$gh$".isParameterized(full = true))
+    }
+
+    @Test
+    fun getParameterRanges_test() {
         Assert.assertEquals(listOf(TextRange.create(0, 5)), ParadoxExpressionManager.getParameterRanges("\$abc$"))
         Assert.assertEquals(listOf(TextRange.create(3, 8)), ParadoxExpressionManager.getParameterRanges("aaa\$abc\$bbb"))
         Assert.assertEquals(listOf(TextRange.create(0, 5)), ParadoxExpressionManager.getParameterRanges("[[a]]"))
@@ -19,7 +43,7 @@ class ParadoxExpressionManagerTest {
     }
 
     @Test
-    fun toRegexWhenIsParameterizedTest() {
+    fun toRegex_test() {
         val r1 = ParadoxExpressionManager.toRegex("a\$b\$c")
         Assert.assertTrue(r1.matches("ac"))
         Assert.assertTrue(r1.matches("abc"))

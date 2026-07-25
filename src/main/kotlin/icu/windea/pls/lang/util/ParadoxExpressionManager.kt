@@ -103,13 +103,6 @@ object ParadoxExpressionManager {
         return false
     }
 
-    @Suppress("unused")
-    fun getParameterName(text: String): String? {
-        // `$PARAM$` - 仅限 高级插值语法 A
-        if (!isParameterized(text, full = true)) return null
-        return text.substring(1, text.length - 1).substringBefore('|')
-    }
-
     fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
         // 比较复杂的实现逻辑
         val ranges = mutableListOf<TextRange>()

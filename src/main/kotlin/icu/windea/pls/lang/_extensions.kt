@@ -69,7 +69,7 @@ inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.
 
 // endregion
 
-// region Addon Extensions
+// region Expression Extensions
 
 fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
     return StringUtil.isJavaIdentifierPart(this) || extraChars.isNotEmpty() && this in extraChars
@@ -99,6 +99,10 @@ fun String.isParameterAwareIdentifier(extraChars: String = ""): Boolean {
 
 fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false): Boolean {
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
+}
+
+fun String.getParameterRanges(conditionBlock: Boolean = true): List<TextRange> {
+    return ParadoxExpressionManager.getParameterRanges(this, conditionBlock)
 }
 
 // fun ParadoxExpressionElement.isQuoted(): Boolean {
