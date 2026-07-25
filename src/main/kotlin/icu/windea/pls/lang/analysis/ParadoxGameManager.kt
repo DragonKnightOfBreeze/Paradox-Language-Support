@@ -100,7 +100,7 @@ object ParadoxGameManager {
         }
     }
 
-    fun isBinariesPath(rootPath: Path): Boolean {
+    fun isBinariesDirectoryPath(rootPath: Path): Boolean {
         if (!rootPath.isDirectory()) return false
         val name = rootPath.name
         if (name.equals("binaries", true)) return true
@@ -109,19 +109,44 @@ object ParadoxGameManager {
     }
 
     fun getExecutablePath(gameType: ParadoxGameType, rootPath: Path): Path? {
-        // from candidates in game type metadata
-        val candidates = gameType.metadata.executablePaths
-        for (candidate in candidates) {
-            val p = if (com.intellij.openapi.util.SystemInfo.isWindows) "$candidate.exe" else candidate
-            val r = rootPath.resolve(p)
-            if (r.isRegularFile() && r.fileSizeSafe() > 0) return r
+        // check whether is executable file for all candidates in game type metadata
+        // formats of candidates: `{baseName}`, `{baseNamae}.exe`, `bin/{baseName}`, `bin/{baseName}.exe`, `binaries/{baseName}`, `binaries/{baseName}.exe`
+        // #339 the executable file will also use `.exe` extension, if using Proton on Linux OS
+        val baseNames = gameType.metadata.executableBaseNames
+        for (baseName in baseNames) {
+            doGetExecutablePath(rootPath, baseName)?.let { return it }
+            doGetExecutablePath(rootPath, "${baseName}.exe")?.let { return it }
+            doGetExecutablePath(rootPath, "bin/${baseName}")?.let { return it }
+            doGetExecutablePath(rootPath, "bin/${baseName}.exe")?.let { return it }
+            doGetExecutablePath(rootPath, "binaries/${baseName}")?.let { return it }
+            doGetExecutablePath(rootPath, "binaries/${baseName}.exe")?.let { return it }
         }
         return null
+    }
+
+    private fun doGetExecutablePath(rootPath: Path, relPath: String): Path? {
+        return rootPath.resolve(relPath).takeIf { doCheckExecutablePath(it) }
+    }
+
+    private fun doCheckExecutablePath(path: Path): Boolean {
+        // still simple check (not empty -> ok)
+        // note that the JVM may not have appropriate privileges the execute the game executable file
+        return path.isRegularFile() && path.fileSizeSafe() > 0
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun getBranchPath(gameType: ParadoxGameType, rootPath: Path): Path? {
         // although there may be other branch files (e.g., `caligula_branch.txt` for vic3), we use the common `clausewitz_branch.txt` here
-        return rootPath.resolve("clausewitz_branch.txt").takeIf { it.isRegularFile() }
+        return doGetBranchPath(rootPath, "clausewitz_branch.txt")
+    }
+
+    @Suppress("SameParameterValue")
+    private fun doGetBranchPath(rootPath: Path, relPath: String): Path? {
+        return rootPath.resolve(relPath).takeIf { doCheckBranchPath(it) }
+    }
+
+    private fun doCheckBranchPath(path: Path): Boolean {
+        // simple check
+        return path.isRegularFile()
     }
 }

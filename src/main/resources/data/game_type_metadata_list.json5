@@ -13,9 +13,8 @@
       "previewer_assets",
       "tweakergui_assets",
     ],
-    "executablePaths": [
+    "executableBaseNames": [
       "stellaris",
-      "binaries/stellaris", // 2.1.10 for compatibility
     ]
   },
   // ck2
@@ -28,9 +27,8 @@
       "clausewitz",
       "jomini",
     ],
-    "executablePaths": [
-      "ck2", // 2.1.10 for compatibility
-      "binaries/ck2",
+    "executableBaseNames": [
+      "ck2",
     ]
   },
   // ck3
@@ -43,9 +41,8 @@
       "clausewitz",
       "jomini",
     ],
-    "executablePaths": [
-      "ck3", // 2.1.10 for compatibility
-      "binaries/ck3",
+    "executableBaseNames": [
+      "ck3",
     ]
   },
   // eu4
@@ -55,9 +52,8 @@
       "clausewitz",
       "jomini",
     ],
-    "executablePaths": [
+    "executableBaseNames": [
       "eu4",
-      "binaries/eu4", // 2.1.10 for compatibility
     ]
   },
   // eu5
@@ -82,9 +78,8 @@
       "main_menu",
       "loading_screen",
     ],
-    "executablePaths": [
-      "eu5", // 2.1.10 for compatibility
-      "binaries/eu5",
+    "executableBaseNames": [
+      "eu5",
     ]
   },
   // hoi4
@@ -97,9 +92,8 @@
       "clausewitz",
       "jomini",
     ],
-    executablePaths: [
+    executableBaseNames: [
       "hoi4",
-      "binaries/hoi4", // 2.1.10 for compatibility
     ]
   },
   // ir
@@ -112,9 +106,8 @@
       "clausewitz",
       "jomini",
     ],
-    "executablePaths": [
-      "imperator", // 2.1.10 for compatibility
-      "binaries/imperator",
+    "executableBaseNames": [
+      "imperator",
     ]
   },
   // vic2
@@ -127,10 +120,9 @@
       "clausewitz",
       "jomini",
     ],
-    "executablePaths": [
+    "executableBaseNames": [
       // not `victoria2`
-      "v2game", // 2.1.10 for compatibility
-      "binaries/v2game",
+      "v2game",
     ]
   },
   // vic3
@@ -144,9 +136,8 @@
       "clausewitz",
       "jomini",
     ],
-    "executablePaths": [
-      "victoria3", // 2.1.10 for compatibility
-      "binaries/victoria3",
+    "executableBaseNames": [
+      "victoria3",
     ]
   }
 ]

@@ -24,7 +24,7 @@
         "modExtraEntries": {
           "$ref": "#/definitions/stringSet"
         },
-        "executablePaths": {
+        "executableBaseNames": {
           "$ref": "#/definitions/stringSet"
         },
       },

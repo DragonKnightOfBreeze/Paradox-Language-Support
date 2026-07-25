@@ -8,7 +8,7 @@ data class ParadoxGameTypeMetadataJson(
     val gameExtraEntries: Set<String> = emptySet(),
     val modMainEntries: Set<String> = singleEmptyStringSet,
     val modExtraEntries: Set<String> = emptySet(),
-    val executablePaths: Set<String> = emptySet(),
+    val executableBaseNames: Set<String> = emptySet(),
 )
 
 data class CwtConfigGroupDataJson(

@@ -31,10 +31,12 @@ class ParadoxExecutableFileBasedGameMetadataProvider : ParadoxRootMetadataProvid
     )
 
     override fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
-        // 尝试查找游戏的可执行文件
+        // 尝试根据 `executableBaseNames` 在根目录或者特定的子目录中查找游戏的可执行文件
         // 如果找到，再尝试查找游戏的分支标记文件，并尝试从中获取游戏版本信息
+        // 排除直接的二进制文件目录（如 `binaries`）
+        // #339 注意如果用 Proton 运行（许多 Linux 用户如此），Linux 系统上的游戏可执行文件也会使用 `.exe` 扩展名（Windows 二进制）
 
-        if (ParadoxGameManager.isBinariesPath(rootPath)) return null
+        if (ParadoxGameManager.isBinariesDirectoryPath(rootPath)) return null
         for (gameType in allowedGameTypes) {
             val executablePath = ParadoxGameManager.getExecutablePath(gameType, rootPath) ?: continue
             val branchPath = ParadoxGameManager.getBranchPath(gameType, rootPath)

@@ -30,7 +30,7 @@ data class ParadoxGameTypeMetadata(
     val gameExtraEntries: Set<String>,
     val modMainEntries: Set<String>,
     val modExtraEntries: Set<String>,
-    val executablePaths: Set<String>,
+    val executableBaseNames: Set<String>,
 ) {
     val gameEntries: Set<String> = gameMainEntries + gameExtraEntries
     val modEntries: Set<String> = modMainEntries + modExtraEntries
