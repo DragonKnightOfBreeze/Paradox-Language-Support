@@ -356,7 +356,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Constant) return null
-        val value = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch
+        val value = context.configExpression.expressionString
         if (!context.configExpression.isKey) {
             // 作为常量的值也可能是布尔值（`yes` / `no`）
             val text = context.expression.value

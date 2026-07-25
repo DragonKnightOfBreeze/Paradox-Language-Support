@@ -18,7 +18,7 @@ interface CwtDataExpressionMetadata {
     val suffixes: Set<String>? get() = null
 
     companion object {
-        @JvmField val EMPTY = object : CwtDataExpressionMetadata {}
+        @JvmField val EMPTY: CwtDataExpressionMetadata = EmptyCwtDataExpressionMetadata
     }
 }
 
@@ -27,3 +27,5 @@ typealias CwtDataExpressionMetadataBuilder = CwtDataExpressionMetadataBase.() ->
 typealias CwtDataExpressionMetadataBuilderWithInput = CwtDataExpressionMetadataBase.(String) -> Unit
 
 fun CwtDataExpressionMetadataBuilderWithInput.acceptInput(input: String): CwtDataExpressionMetadataBuilder = { invoke(this, input) }
+
+private object EmptyCwtDataExpressionMetadata : CwtDataExpressionMetadata
