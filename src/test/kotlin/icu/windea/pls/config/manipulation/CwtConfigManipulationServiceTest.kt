@@ -3,6 +3,7 @@ package icu.windea.pls.config.manipulation
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -46,7 +47,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigs_parentPointers() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
@@ -68,7 +69,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigsInDeclaration_subtypeFlatten_and_parent() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/deep_copy_declaration.test.cwt")
         val file = myFixture.file as CwtFile
@@ -102,7 +103,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigs_parentChain_nested() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/deep_copy_nested.test.cwt")
         val file = myFixture.file as CwtFile
@@ -124,7 +125,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigs_optionConfigs_and_userData_semantics() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/deep_copy_options.test.cwt")
         val file = myFixture.file as CwtFile
@@ -152,7 +153,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigs_nullContainerConfigs_returnsNull_and_parentUnchanged() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
@@ -168,7 +169,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigs_emptyContainerConfigs_returnsEmptyList_and_parentUnchanged() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/deep_copy_empty.test.cwt")
         val file = myFixture.file as CwtFile
@@ -185,7 +186,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigsInDeclaration_nullContainerConfigs_returnsNull_and_parentUnchanged() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
@@ -202,7 +203,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigsInDeclaration_emptyContainerConfigs_returnsEmptyList_and_parentUnchanged() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/deep_copy_empty.test.cwt")
         val file = myFixture.file as CwtFile
@@ -220,7 +221,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigs_nullContainerConfigs_withDifferentParent_noSideEffect() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
@@ -244,7 +245,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testDeepCopyConfigsInDeclaration_nullContainerConfigs_withDifferentParent_noSideEffect() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
         myFixture.configureByFile("features/config/manipulation/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
         val root = file.block!!
@@ -265,7 +266,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testExpandBySubtypeExpression_Basic() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/expand_by_subtype_expression.test.cwt")
         val file = myFixture.file as CwtFile
@@ -289,7 +290,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testExpandConfigExpression_Basic() {
-        val configGroup = getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
         myFixture.configureByFile("features/config/manipulation/expand_config_expression.test.cwt")
         val file = myFixture.file as CwtFile

@@ -6,8 +6,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
-import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
@@ -216,17 +214,6 @@ interface ChronicleTestScope {
         ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(true)
         ChronicleTestManager.initInjectedConfigGroups(project, *gameTypes)
         ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(false)
-    }
-
-    /**
-     * 得到指定游戏类型的规则分组。
-     *
-     * 说明：
-     * - 默认使用 [ParadoxGameType.Core]，对应通用的规则分组。
-     */
-    fun getConfigGroup(project: Project, gameType: ParadoxGameType = ParadoxGameType.Core): CwtConfigGroup {
-        val configGroupService = CwtConfigGroupService.getInstance(project)
-        return configGroupService.getConfigGroup(gameType)
     }
 
     // endregion
