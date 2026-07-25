@@ -55,8 +55,8 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
@@ -75,9 +75,9 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(localisationEnglishPath)
-        checkMarkedResult(localisationChinesePath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
     }
 
     @Test
@@ -96,9 +96,9 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
-        checkMarkedResult(fanPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
+        checkMarkedResult(fanPath, "after_definition")
     }
 
     @Test
@@ -119,11 +119,11 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
-        checkMarkedResult(localisationEnglishPath)
-        checkMarkedResult(localisationChinesePath)
-        checkMarkedResult(fanPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
+        checkMarkedResult(fanPath, "after_definition_combined")
     }
 
     @Test
@@ -141,8 +141,8 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(fanPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(fanPath, "after")
     }
 
     // TODO 2.1.3+ 暂不验证以下类型的关联重命名：定义的相关图片、定义的生成的修正
@@ -155,8 +155,8 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         return testDataPath
     }
 
-    private fun checkMarkedResult(@TestDataFile testDataPath: String) {
-        val expectedPath = testDataPath.convertPath { b, e -> "$b.after$e" }
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
         myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

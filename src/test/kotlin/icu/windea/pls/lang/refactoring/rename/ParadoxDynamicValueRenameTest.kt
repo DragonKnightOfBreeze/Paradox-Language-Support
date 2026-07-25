@@ -54,7 +54,7 @@ class ParadoxDynamicValueRenameTest : BasePlatformTestCase(), ChronicleTestScope
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
+        checkMarkedResult(mainPath, "after")
     }
 
     @Test
@@ -73,9 +73,9 @@ class ParadoxDynamicValueRenameTest : BasePlatformTestCase(), ChronicleTestScope
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(localisationEnglishPath)
-        checkMarkedResult(localisationChinesePath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
     }
 
     // endregion
@@ -86,8 +86,8 @@ class ParadoxDynamicValueRenameTest : BasePlatformTestCase(), ChronicleTestScope
         return testDataPath
     }
 
-    private fun checkMarkedResult(@TestDataFile testDataPath: String) {
-        val expectedPath = testDataPath.convertPath { b, e -> "$b.after$e" }
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
         myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

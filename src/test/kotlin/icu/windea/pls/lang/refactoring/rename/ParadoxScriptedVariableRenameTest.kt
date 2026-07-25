@@ -53,8 +53,8 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
@@ -73,9 +73,9 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(localisationEnglishPath)
-        checkMarkedResult(localisationChinesePath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
     }
 
     private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
@@ -84,8 +84,8 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase(), ChronicleTestS
         return testDataPath
     }
 
-    private fun checkMarkedResult(@TestDataFile testDataPath: String) {
-        val expectedPath = testDataPath.convertPath { b, e -> "$b.after$e" }
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
         myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

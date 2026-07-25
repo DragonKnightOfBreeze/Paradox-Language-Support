@@ -55,8 +55,8 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
@@ -74,8 +74,8 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
@@ -95,10 +95,10 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        checkMarkedResult(mainPath)
-        checkMarkedResult(otherPath)
-        checkMarkedResult(localisationEnglishPath)
-        checkMarkedResult(localisationChinesePath)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
     }
 
     // endregion
@@ -109,8 +109,8 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         return testDataPath
     }
 
-    private fun checkMarkedResult(@TestDataFile testDataPath: String) {
-        val expectedPath = testDataPath.convertPath { b, e -> "$b.after$e" }
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
         myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }
