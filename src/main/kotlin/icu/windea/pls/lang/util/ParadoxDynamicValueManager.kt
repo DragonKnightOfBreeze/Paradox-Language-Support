@@ -40,7 +40,7 @@ object ParadoxDynamicValueManager {
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueLightElement? {
         if (!name.isIdentifier()) return null // skip invalid names
         val readWriteAccess = getReadWriteAccess(configExpression)
-        val dynamicValueType = configExpression.value ?: return null
+        val dynamicValueType = configExpression.metadata.value ?: return null
         return ParadoxDynamicValueLightElement(element, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
     }
 
@@ -48,7 +48,7 @@ object ParadoxDynamicValueManager {
         if (!name.isIdentifier()) return null // skip invalid names
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
-        val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
+        val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.metadata.value }
         return ParadoxDynamicValueLightElement(element, name, dynamicValueTypes, readWriteAccess, configGroup.gameType, configGroup.project)
     }
 

@@ -135,7 +135,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val project = configGroup.project
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
-        val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
+        val definitionTypes = contextConfig.configExpression.metadata.value?.split('.') ?: return null
         val contextName = definitionName
         val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
@@ -212,7 +212,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextReferenceElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return null
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
-        val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
+        val definitionTypes = contextConfig.configExpression.metadata.value?.split('.') ?: return null
         val name = element.name.orNull() ?: return null
         val contextName = definitionName
         val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])

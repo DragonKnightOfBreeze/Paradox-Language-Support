@@ -10,6 +10,8 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
  * 提供对数据表达式的支持。
  *
  * 例如，决定数据表达式的实际解析逻辑。
+ *
+ * @see CwtDataExpression
  */
 interface CwtDataExpressionSupport {
     /**

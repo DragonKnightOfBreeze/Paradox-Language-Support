@@ -51,13 +51,13 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(1, e.referenceExpressions.size)
         // snippet 0: constant "a_"
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[0].type)
-        assertEquals("a_", e.snippetExpressions[0].value)
+        assertEquals("a_", e.snippetExpressions[0].metadata.value)
         // snippet 1: dynamic value[foo]
         assertEquals(CwtDataTypes.Value, e.snippetExpressions[1].type)
-        assertEquals("foo", e.snippetExpressions[1].value)
+        assertEquals("foo", e.snippetExpressions[1].metadata.value)
         // snippet 2: constant "_b"
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[2].type)
-        assertEquals("_b", e.snippetExpressions[2].value)
+        assertEquals("_b", e.snippetExpressions[2].metadata.value)
 
         assertEquals(s, e.toString())
         assertSame(e, CwtTemplateExpression.resolve(s)) // cached
@@ -71,17 +71,17 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         val e1 = CwtTemplateExpression.resolve(s1)
         assertEquals(2, e1.snippetExpressions.size)
         assertEquals(CwtDataTypes.Value, e1.snippetExpressions[0].type)
-        assertEquals("foo", e1.snippetExpressions[0].value)
+        assertEquals("foo", e1.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.Constant, e1.snippetExpressions[1].type)
-        assertEquals("_b", e1.snippetExpressions[1].value)
+        assertEquals("_b", e1.snippetExpressions[1].metadata.value)
 
         val s2 = "a_value[foo]"
         val e2 = CwtTemplateExpression.resolve(s2)
         assertEquals(2, e2.snippetExpressions.size)
         assertEquals(CwtDataTypes.Constant, e2.snippetExpressions[0].type)
-        assertEquals("a_", e2.snippetExpressions[0].value)
+        assertEquals("a_", e2.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.Value, e2.snippetExpressions[1].type)
-        assertEquals("foo", e2.snippetExpressions[1].value)
+        assertEquals("foo", e2.snippetExpressions[1].metadata.value)
     }
 
     @Test
@@ -93,13 +93,13 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(4, e.snippetExpressions.size)
         assertEquals(2, e.referenceExpressions.size)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[0].type)
-        assertEquals("a_", e.snippetExpressions[0].value)
+        assertEquals("a_", e.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.Value, e.snippetExpressions[1].type)
-        assertEquals("foo", e.snippetExpressions[1].value)
+        assertEquals("foo", e.snippetExpressions[1].metadata.value)
         assertEquals(CwtDataTypes.Value, e.snippetExpressions[2].type)
-        assertEquals("bar", e.snippetExpressions[2].value)
+        assertEquals("bar", e.snippetExpressions[2].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[3].type)
-        assertEquals("_b", e.snippetExpressions[3].value)
+        assertEquals("_b", e.snippetExpressions[3].metadata.value)
     }
 
     @Test
@@ -110,15 +110,15 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(5, e.snippetExpressions.size)
         assertEquals(2, e.referenceExpressions.size)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[0].type)
-        assertEquals("foo_", e.snippetExpressions[0].value)
+        assertEquals("foo_", e.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.Value, e.snippetExpressions[1].type)
-        assertEquals("bar", e.snippetExpressions[1].value)
+        assertEquals("bar", e.snippetExpressions[1].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[2].type)
-        assertEquals("_", e.snippetExpressions[2].value)
+        assertEquals("_", e.snippetExpressions[2].metadata.value)
         assertEquals(CwtDataTypes.Value, e.snippetExpressions[3].type)
-        assertEquals("baz", e.snippetExpressions[3].value)
+        assertEquals("baz", e.snippetExpressions[3].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[4].type)
-        assertEquals("_qux", e.snippetExpressions[4].value)
+        assertEquals("_qux", e.snippetExpressions[4].metadata.value)
     }
 
     @Test
@@ -147,11 +147,11 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(3, e.snippetExpressions.size)
         assertEquals(1, e.referenceExpressions.size)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[0].type)
-        assertEquals("job_", e.snippetExpressions[0].value)
+        assertEquals("job_", e.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.Definition, e.snippetExpressions[1].type)
-        assertEquals("foo", e.snippetExpressions[1].value)
+        assertEquals("foo", e.snippetExpressions[1].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[2].type)
-        assertEquals("_add", e.snippetExpressions[2].value)
+        assertEquals("_add", e.snippetExpressions[2].metadata.value)
     }
 
     @Test
@@ -162,11 +162,11 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(3, e.snippetExpressions.size)
         assertEquals(1, e.referenceExpressions.size)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[0].type)
-        assertEquals("a_", e.snippetExpressions[0].value)
+        assertEquals("a_", e.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.Icon, e.snippetExpressions[1].type)
-        assertEquals("ui/icon.dds", e.snippetExpressions[1].value)
+        assertEquals("ui/icon.dds", e.snippetExpressions[1].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[2].type)
-        assertEquals("_b", e.snippetExpressions[2].value)
+        assertEquals("_b", e.snippetExpressions[2].metadata.value)
     }
 
     @Test
@@ -177,7 +177,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(3, e.snippetExpressions.size)
         assertEquals(1, e.referenceExpressions.size)
         assertEquals(CwtDataTypes.Scope, e.snippetExpressions[1].type)
-        assertNull(e.snippetExpressions[1].value)
+        assertNull(e.snippetExpressions[1].metadata.value)
     }
 
     @Test
@@ -188,15 +188,15 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(5, e.snippetExpressions.size)
         assertEquals(2, e.referenceExpressions.size)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[0].type)
-        assertEquals("x_", e.snippetExpressions[0].value)
+        assertEquals("x_", e.snippetExpressions[0].metadata.value)
         assertEquals(CwtDataTypes.EnumValue, e.snippetExpressions[1].type)
-        assertEquals("PLANET_CLASS", e.snippetExpressions[1].value)
+        assertEquals("PLANET_CLASS", e.snippetExpressions[1].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[2].type)
-        assertEquals("_", e.snippetExpressions[2].value)
+        assertEquals("_", e.snippetExpressions[2].metadata.value)
         assertEquals(CwtDataTypes.Value, e.snippetExpressions[3].type)
-        assertEquals("foo", e.snippetExpressions[3].value)
+        assertEquals("foo", e.snippetExpressions[3].metadata.value)
         assertEquals(CwtDataTypes.Constant, e.snippetExpressions[4].type)
-        assertEquals("_y", e.snippetExpressions[4].value)
+        assertEquals("_y", e.snippetExpressions[4].metadata.value)
     }
 
     @Test

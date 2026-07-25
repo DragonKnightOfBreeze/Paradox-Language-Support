@@ -2,8 +2,6 @@
 
 package icu.windea.pls.config.configExpression
 
-import com.intellij.openapi.util.UserDataHolder
-import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.annotations.Optimized
@@ -16,12 +14,11 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 /**
  * 数据表达式。
  *
- * 用于描述脚本文件中的表达式（键或值）的匹配模式，基于数据类型以及数种元数据。
+ * 用于描述脚本文件中的表达式（键或值）的匹配模式，基于数据类型以及可选的元数据。
  *
  * 说明：
- * - 对应的数据类型可通过 [type] 获取。
- * - 主要的元数据可通过 [value] 获取。
- * - 额外的元数据会存储到 [UserDataHolder] 中，可通过扩展属性获取。
+ * - 可通过 [type] 获取对应的数据类型。
+ * - 可通过 [metadata] 获取对应的元数据。
  *
  * 适用对象：
  * - 定义成员对应的规则的键或值。
@@ -31,7 +28,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * ```cwt
  * int                         # 整数
  * float[0.0..1.0]             # 带范围约束的浮点数
- * enum[shipsize_class]        # 枚举引用
+ * enum[ship_size]        # 枚举引用
  * scope[country]              # 作用域引用
  * <ship_size>                 # 定义引用
  * value[event_target]         # 动态值引用
@@ -42,23 +39,28 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  *
  * @property isKey 是否来源于作为键的表达式。
  * @property type 数据类型。
- * @property value 主要的元数据。可用于存储定义类型、枚举名等信息。
+ * @property metadata 可选的元数据。
  *
  * @see CwtDataType
+ * @see CwtDataExpressionMetadata
  * @see CwtDataExpressionSupport
  * @see ParadoxExpression
  */
-interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
+interface CwtDataExpression : CwtConfigExpression {
     val isKey: Boolean
     val type: CwtDataType
-    var value: String?
+    val metadata: CwtDataExpressionMetadata
+
+    override fun equals(other: Any?): Boolean // NOTE 3.0.1 only based on `expressionString`
+    override fun hashCode(): Int // NOTE 3.0.1 only based on `expressionString`
+    override fun toString(): String
 
     object Keys : KeyRegistry()
 
     companion object {
         @JvmStatic
-        fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
-            return CwtDataExpressionResolver.create(expressionString, isKey, type)
+        fun create(expressionString: String, isKey: Boolean, type: CwtDataType, metadataBuilder: CwtDataExpressionMetadataBuilder? = null): CwtDataExpression {
+            return CwtDataExpressionResolver.create(expressionString, isKey, type, metadataBuilder)
         }
 
         @JvmStatic
@@ -100,13 +102,14 @@ private object CwtDataExpressionResolver {
     private val cacheForValue = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, false) }
     private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolveTemplate(it) }
 
-    private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant, "")
-    private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant, "")
-    private val blockExpression = CwtDataExpressionImpl(ChronicleStrings.blockFolder, false, CwtDataTypes.Block)
+    private val emptyKeyExpression = CwtDataExpressionImplWithMetadata("", true, CwtDataTypes.Constant).apply { value = "" }
+    private val emptyValueExpression = CwtDataExpressionImplWithMetadata("", false, CwtDataTypes.Constant).apply { value = "" }
+    private val blockExpression = create(ChronicleStrings.blockFolder, false, CwtDataTypes.Block)
 
-    fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
+    fun create(expressionString: String, isKey: Boolean, type: CwtDataType, metadataBuilder: CwtDataExpressionMetadataBuilder? = null): CwtDataExpression {
         if (expressionString.isEmpty()) return resolveEmpty(isKey)
-        return CwtDataExpressionImpl(expressionString, isKey, type)
+        if (metadataBuilder == null) return CwtDataExpressionImplWithoutMetadata(expressionString, isKey, type)
+        return CwtDataExpressionImplWithMetadata(expressionString, isKey, type).apply(metadataBuilder)
     }
 
     fun resolveEmpty(isKey: Boolean): CwtDataExpression {
@@ -138,21 +141,34 @@ private object CwtDataExpressionResolver {
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
         return CwtConfigExpressionService.resolve(expressionString, isKey)
-            ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant, expressionString)
+            ?: create(expressionString, isKey, CwtDataTypes.Constant) { value = expressionString }
     }
 
     private fun doResolveTemplate(expressionString: String): CwtDataExpression {
         return CwtConfigExpressionService.resolveTemplate(expressionString)
-            ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant, expressionString)
+            ?: create(expressionString, false, CwtDataTypes.Constant) { value = expressionString }
     }
 }
 
-private class CwtDataExpressionImpl(
+private class CwtDataExpressionImplWithoutMetadata(
     override val expressionString: String,
     override val isKey: Boolean,
     override val type: CwtDataType,
-    override var value: String? = null,
-) : UserDataHolderBase(), CwtDataExpression {
+) : CwtDataExpression {
+    override val metadata get() = CwtDataExpressionMetadata.EMPTY
+
+    override fun equals(other: Any?) = this === other || other is CwtDataExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
+}
+
+private class CwtDataExpressionImplWithMetadata(
+    override val expressionString: String,
+    override val isKey: Boolean,
+    override val type: CwtDataType,
+) : CwtDataExpressionMetadataBase(), CwtDataExpression {
+    override val metadata: CwtDataExpressionMetadata get() = this
+
     override fun equals(other: Any?) = this === other || other is CwtDataExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString

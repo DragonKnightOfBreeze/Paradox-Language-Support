@@ -1463,7 +1463,7 @@ Examples:
 ```cwt
 int                         # integer
 float[0.0..1.0]             # float with range constraint
-enum[shipsize_class]        # enum reference
+enum[ship_size]        # enum reference
 scope[country]              # scope reference
 <ship_size>                 # definition reference
 value[event_target]         # dynamic value reference

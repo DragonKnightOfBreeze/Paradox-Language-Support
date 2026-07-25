@@ -245,7 +245,7 @@ object CwtConfigManipulationService {
     fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
-        val aliasName = valueExpression.value ?: return null
+        val aliasName = valueExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
         val aliasKeys = CwtConfigManager.getAliasKeys(configGroup, aliasName, key)
@@ -290,7 +290,7 @@ object CwtConfigManipulationService {
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
-        val singleAliasName = valueExpression.value ?: return null
+        val singleAliasName = valueExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
         return inlineSingleAlias(config, singleAliasConfig)
@@ -458,11 +458,11 @@ object CwtConfigManipulationService {
         if (configExpression == null) return
         when (configExpression.type) {
             CwtDataTypes.UnionValue -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 configGroup.unions[name]?.valueConfigs?.orNull()?.forEach { yield(it.valueExpression) }
             }
             CwtDataTypes.AliasKeysField -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 configGroup.aliasGroups[name]?.values?.orNull()?.forEach { yield(it.first().configExpression) }
             }
             else -> yield(configExpression)

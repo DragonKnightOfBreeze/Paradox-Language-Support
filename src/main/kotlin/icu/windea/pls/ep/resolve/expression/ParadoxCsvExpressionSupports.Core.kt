@@ -42,7 +42,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
     override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.configExpression.value ?: return null
+        val typeExpression = config.configExpression.metadata.value ?: return null
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(text, type, selector).find()
@@ -51,7 +51,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
     override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.configExpression.value ?: return emptyList()
+        val typeExpression = config.configExpression.metadata.value ?: return emptyList()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(text, type, selector).findAll()
@@ -72,7 +72,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
-        val enumName = config.configExpression.value ?: return
+        val enumName = config.configExpression.metadata.value ?: return
         val attributesKey = when {
             configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
             else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
@@ -101,7 +101,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() 
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
-        val unionName = config.configExpression.value ?: return
+        val unionName = config.configExpression.metadata.value ?: return
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return
@@ -110,7 +110,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() 
 
     override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
-        val unionName = config.configExpression.value ?: return null
+        val unionName = config.configExpression.metadata.value ?: return null
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return null
@@ -119,7 +119,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() 
 
     override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
-        val unionName = config.configExpression.value ?: return emptyList()
+        val unionName = config.configExpression.metadata.value ?: return emptyList()
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()

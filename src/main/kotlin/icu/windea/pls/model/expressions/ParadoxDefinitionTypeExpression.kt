@@ -12,7 +12,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
  * - 在规则文件中，数据表达式 `<{x}>` 用于匹配一个定义引用，其中 `{x}` 即是一个定义类型表达式。
  *
  * 示例：
- * ```
+ * ```text
  * event
  * event.hidden
  * event.hidden.country_event

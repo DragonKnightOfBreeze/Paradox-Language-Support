@@ -25,6 +25,7 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -54,7 +55,7 @@ object ParadoxModifierManager {
         val modifierIconPaths by registerKey<Set<String>>(Keys)
     }
 
-    private val CwtConfigGroup.modifierInfoCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.modifierInfoCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> modifierInfo
         createNestedCache<VirtualFile, _, _> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
@@ -109,7 +110,7 @@ object ParadoxModifierManager {
                 doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + text)
             }
             CwtDataTypes.Definition -> {
-                val typeExpression = snippetExpression.value ?: return
+                val typeExpression = snippetExpression.metadata.value ?: return
                 val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
                 ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
@@ -120,7 +121,7 @@ object ParadoxModifierManager {
                 }
             }
             CwtDataTypes.EnumValue -> {
-                val enumName = snippetExpression.value ?: return
+                val enumName = snippetExpression.metadata.value ?: return
                 // 提示简单枚举
                 val enumConfig = configGroup.enums[enumName]
                 if (enumConfig != null) {
@@ -149,7 +150,7 @@ object ParadoxModifierManager {
                 }
             }
             CwtDataTypes.Value -> {
-                val dynamicValueType = snippetExpression.value ?: return
+                val dynamicValueType = snippetExpression.metadata.value ?: return
                 ProgressManager.checkCanceled()
                 val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
                 val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values

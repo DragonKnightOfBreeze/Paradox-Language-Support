@@ -48,8 +48,8 @@ interface ParadoxExpression {
     fun matchesFloat(): Boolean
     fun matchesConstant(v: String): Boolean
 
-    override fun equals(other: Any?): Boolean
-    override fun hashCode(): Int
+    override fun equals(other: Any?): Boolean // NOTE 3.0.1 only based on `text`
+    override fun hashCode(): Int // NOTE 3.0.1 only based on `text`
     override fun toString(): String
 
     companion object {

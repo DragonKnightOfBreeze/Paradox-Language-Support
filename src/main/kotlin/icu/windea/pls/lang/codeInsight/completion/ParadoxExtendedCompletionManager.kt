@@ -47,7 +47,7 @@ object ParadoxExtendedCompletionManager {
             is CwtPropertyConfig -> CwtValueConfig.createMock(configGroup, "<${contextConfig.key}>")
             else -> contextConfig
         }
-        val typeExpression = config.configExpression?.value ?: return
+        val typeExpression = config.configExpression?.metadata?.value ?: return
         val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         run r1@{
             configGroup.extendedDefinitions.values.forEach { configs0 ->
@@ -137,7 +137,7 @@ object ParadoxExtendedCompletionManager {
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
-        val enumName = config.configExpression?.value ?: return
+        val enumName = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
         val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
@@ -165,7 +165,7 @@ object ParadoxExtendedCompletionManager {
         val finalConfigs = configs.ifEmpty { config.to.singletonListOrEmpty() }
         if (finalConfigs.isEmpty()) return
         for (config in finalConfigs) {
-            val dynamicValueType = config.configExpression?.value ?: continue
+            val dynamicValueType = config.configExpression?.metadata?.value ?: continue
             val configGroup = config.configGroup
             val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
 

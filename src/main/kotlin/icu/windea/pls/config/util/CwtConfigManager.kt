@@ -24,7 +24,6 @@ import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.core.collections.forEachFast
@@ -244,7 +243,7 @@ object CwtConfigManager {
     }
 
     fun getFullNamesFromSuffixAware(config: CwtConfig<*>, name: String): List<String> {
-        val suffixes = config.configExpression?.suffixes
+        val suffixes = config.configExpression?.metadata?.suffixes
         if (suffixes.isNullOrEmpty()) return listOf(name)
         return suffixes.map { name + it }
     }

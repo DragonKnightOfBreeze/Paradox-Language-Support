@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.values.ReversibleValue
  * - 在脚本文件中，`[[{x}]...]` 表示一个参数化快 ，其中 `{x}` 即是一个参数化快表达式。
  *
  * 示例：
- * ```
+ * ```text
  * PARAM
  * !PARAM
  * ```

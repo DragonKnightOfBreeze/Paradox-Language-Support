@@ -231,7 +231,7 @@ object ParadoxScopeService {
         val configGroup = config.configGroup
         for (it in properties) {
             val aliasName = when {
-                it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.value
+                it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.metadata.value
                 else -> continue
             }
             if (aliasName in configGroup.aliasNamesSupportScope) return true
@@ -429,8 +429,7 @@ object ParadoxScopeService {
             // result: country (don't validate & inline allowed)
             run r2@{
                 val inferredScope = contextContainerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
-                    ?.takeIf { it.type == CwtDataTypes.Scope }
-                    ?.value?.orNull() ?: return@r2
+                                ?.takeIf { it.type == CwtDataTypes.Scope }?.metadata?.value?.orNull() ?: return@r2
                 return inputScopeContext.resolveNext(inferredScope)
             }
 

@@ -1463,7 +1463,7 @@ inline_scripts = {
 ```cwt
 int                         # 整数
 float[0.0..1.0]             # 带范围约束的浮点数
-enum[shipsize_class]        # 枚举引用
+enum[ship_size]        # 枚举引用
 scope[country]              # 作用域引用
 <ship_size>                 # 定义引用
 value[event_target]         # 动态值引用

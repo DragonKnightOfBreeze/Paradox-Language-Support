@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtFileConfig
@@ -51,64 +50,65 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 
+/** @see icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors.CwtConfigGroupDataHolderBase */
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
     object Keys : KeyRegistry() {
-        val fileConfigs by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtFileConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val schemas by registerKey<ObjectArrayList<CwtSchemaConfig>, UserDataHolder>(this) { ObjectArrayList() }
-        val foldingSettings by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val postfixTemplateSettings by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val priorities by registerKey<Object2ObjectLinkedOpenHashMap<String, ParadoxOverrideStrategy>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val systemScopes by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtSystemScopeConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val localesById by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtLocaleConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val types by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtTypeConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val swappedTypes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtTypeConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val type2ModifiersMap by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, CwtModifierConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val declarations by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDeclarationConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val rows by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtRowConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val defineNamespaces by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDefineNamespaceConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val enums by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtEnumConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val complexEnums by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtComplexEnumConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val complexEnumsFromColumns by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtComplexEnumConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val unions by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtUnionConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val dynamicValueTypes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDynamicValueTypeConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val links by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLinkConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val localisationLinks by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLinkConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val localisationCommands by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLocalisationCommandConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val localisationPromotions by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLocalisationPromotionConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val scopes by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtScopeConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val scopeAliasMap by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtScopeConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val scopeGroups by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtScopeGroupConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val aliasGroups by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtAliasConfig>>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val singleAliases by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtSingleAliasConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val modifierCategories by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtModifierCategoryConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val modifiers by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val databaseObjectTypes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDatabaseObjectTypeConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val macros by registerKey<ObjectArrayList<CwtMacroConfig>, UserDataHolder>(this) { ObjectArrayList() }
-        val extendedScriptedVariables by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedScriptedVariableConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedDefinitions by registerKey<Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExtendedDefinitionConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedGameRules by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedGameRuleConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedOnActions by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedOnActionConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedParameters by registerKey<Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExtendedParameterConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedComplexEnumValues by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, CwtExtendedComplexEnumValueConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedDynamicValues by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, CwtExtendedDynamicValueConfig>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val extendedInlineScripts by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedInlineScriptConfig>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val globalLocales by registerKey<ObjectArrayList<CwtLocaleConfig>, UserDataHolder>(this) { ObjectArrayList() }
-        val supportedLocales by registerKey<ObjectArrayList<CwtLocaleConfig>, UserDataHolder>(this) { ObjectArrayList() }
-        val predefinedModifiers by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val generatedModifiers by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val aliasKeysGroupConst by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, String>>, UserDataHolder>(this) { CaseInsensitiveStringKeyMap() }
-        val aliasKeysGroupNoConst by registerKey<Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val aliasNamesSupportScope by registerKey<ObjectLinkedOpenHashSet<String>, UserDataHolder>(this) { ObjectLinkedOpenHashSet() }
-        val relatedLocalisationPatterns by registerKey<ObjectLinkedOpenHashSet<Tuple2<String, String>>, UserDataHolder>(this) { ObjectLinkedOpenHashSet() }
-        val typesModel by registerKey<CwtTypesModelBase, UserDataHolder>(this) { CwtTypesModelBase() }
-        val linksModel by registerKey<CwtLinksModelBase, UserDataHolder>(this) { CwtLinksModelBase() }
-        val localisationLinksModel by registerKey<CwtLinksModelBase, UserDataHolder>(this) { CwtLinksModelBase() }
-        val macrosModel by registerKey<CwtMacrosModelBase, UserDataHolder>(this) { CwtMacrosModelBase() }
-        val filePathExpressions by registerKey<ObjectLinkedOpenHashSet<CwtDataExpression>, UserDataHolder>(this) { ObjectLinkedOpenHashSet() }
-        val parameterConfigs by registerKey<ObjectLinkedOpenHashSet<CwtMemberConfig<*>>, UserDataHolder>(this) { ObjectLinkedOpenHashSet() }
-        val unionAttributes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val aliasAttributes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
-        val singleAliasAttributes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>, UserDataHolder>(this) { Object2ObjectLinkedOpenHashMap() }
+        val fileConfigs by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtFileConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val schemas by registerKey<ObjectArrayList<CwtSchemaConfig>>(this) { ObjectArrayList() }
+        val foldingSettings by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val postfixTemplateSettings by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val priorities by registerKey<Object2ObjectLinkedOpenHashMap<String, ParadoxOverrideStrategy>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val systemScopes by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtSystemScopeConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val localesById by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtLocaleConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val types by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtTypeConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val swappedTypes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtTypeConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val type2ModifiersMap by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, CwtModifierConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val declarations by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDeclarationConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val rows by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtRowConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val defineNamespaces by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDefineNamespaceConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val enums by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtEnumConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val complexEnums by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtComplexEnumConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val complexEnumsFromColumns by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtComplexEnumConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val unions by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtUnionConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val dynamicValueTypes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDynamicValueTypeConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val links by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLinkConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val localisationLinks by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLinkConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val localisationCommands by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLocalisationCommandConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val localisationPromotions by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtLocalisationPromotionConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val scopes by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtScopeConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val scopeAliasMap by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtScopeConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val scopeGroups by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtScopeGroupConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val aliasGroups by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtAliasConfig>>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val singleAliases by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtSingleAliasConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val modifierCategories by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtModifierCategoryConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val modifiers by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val databaseObjectTypes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtDatabaseObjectTypeConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val macros by registerKey<ObjectArrayList<CwtMacroConfig>>(this) { ObjectArrayList() }
+        val extendedScriptedVariables by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedScriptedVariableConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedDefinitions by registerKey<Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExtendedDefinitionConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedGameRules by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedGameRuleConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedOnActions by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedOnActionConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedParameters by registerKey<Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExtendedParameterConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedComplexEnumValues by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, CwtExtendedComplexEnumValueConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedDynamicValues by registerKey<Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenHashMap<String, CwtExtendedDynamicValueConfig>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val extendedInlineScripts by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExtendedInlineScriptConfig>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val globalLocales by registerKey<ObjectArrayList<CwtLocaleConfig>>(this) { ObjectArrayList() }
+        val supportedLocales by registerKey<ObjectArrayList<CwtLocaleConfig>>(this) { ObjectArrayList() }
+        val predefinedModifiers by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val generatedModifiers by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig>>(this) { CaseInsensitiveStringKeyMap() }
+        val aliasKeysGroupConst by registerKey<Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, String>>>(this) { CaseInsensitiveStringKeyMap() }
+        val aliasKeysGroupNoConst by registerKey<Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val aliasNamesSupportScope by registerKey<ObjectLinkedOpenHashSet<String>>(this) { ObjectLinkedOpenHashSet() }
+        val relatedLocalisationPatterns by registerKey<ObjectLinkedOpenHashSet<Tuple2<String, String>>>(this) { ObjectLinkedOpenHashSet() }
+        val typesModel by registerKey(this) { CwtTypesModelBase() }
+        val linksModel by registerKey(this) { CwtLinksModelBase() }
+        val localisationLinksModel by registerKey(this) { CwtLinksModelBase() }
+        val macrosModel by registerKey(this) { CwtMacrosModelBase() }
+        val filePathExpressions by registerKey<ObjectLinkedOpenHashSet<CwtDataExpression>>(this) { ObjectLinkedOpenHashSet() }
+        val parameterConfigs by registerKey<ObjectLinkedOpenHashSet<CwtMemberConfig<*>>>(this) { ObjectLinkedOpenHashSet() }
+        val unionAttributes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val aliasAttributes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>>(this) { Object2ObjectLinkedOpenHashMap() }
+        val singleAliasAttributes by registerKey<Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>>(this) { Object2ObjectLinkedOpenHashMap() }
     }
 
     // region Accessors

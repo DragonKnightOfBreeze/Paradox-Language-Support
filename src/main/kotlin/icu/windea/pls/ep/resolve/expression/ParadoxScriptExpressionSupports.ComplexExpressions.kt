@@ -60,8 +60,8 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionS
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
         val context = when (configExpression.type) {
-            CwtDataTypes.Scope -> context.copy(scopeName = configExpression.value)
-            CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.value)
+            CwtDataTypes.Scope -> context.copy(scopeName = configExpression.metadata.value)
+            CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.metadata.value)
             else -> context
         }
         ParadoxComplexExpressionCompletionManager.completeScopeFieldExpression(context, result)

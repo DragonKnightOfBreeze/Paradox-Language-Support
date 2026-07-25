@@ -245,7 +245,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     when (configExpression.type) {
                         CwtDataTypes.Definition -> {
                             val definitionName = snippetNode.text
-                            val definitionType = configExpression.value!!
+                            val definitionType = configExpression.metadata.value!!
                             val definitionTypes = definitionType.split('.')
                             append(ChronicleBundle.message("doc.text.generatedFromDefinition"))
                             append(" ")
@@ -265,7 +265,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         }
                         CwtDataTypes.EnumValue -> {
                             val enumValueName = snippetNode.text
-                            val enumName = configExpression.value!!
+                            val enumName = configExpression.metadata.value!!
                             append(ChronicleBundle.message("doc.text.generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
@@ -288,7 +288,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         }
                         CwtDataTypes.Value -> {
                             val dynamicValueType = snippetNode.text
-                            val valueName = configExpression.value!!
+                            val valueName = configExpression.metadata.value!!
                             append(ChronicleBundle.message("doc.text.generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
                                 val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, "$dynamicValueType/$valueName", gameType)

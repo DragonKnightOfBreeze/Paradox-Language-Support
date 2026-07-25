@@ -25,7 +25,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果嵌套在链式表达式中，`@` 之后仅允许一个链接节点，作为单个作用域，再之后的链接节点属于外层的链式表达式。
  *
  * 示例：
- * ```
+ * ```text
  * some_variable
  * some_variable@root
  * ```

@@ -136,12 +136,12 @@ object CwtConfigResolverManager {
         val initializer = configGroup.initializer
         when (configExpression.type) {
             CwtDataTypes.FilePath -> {
-                if (configExpression.value != null) {
+                if (configExpression.metadata.value != null) {
                     initializer.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Icon -> {
-                if (configExpression.value != null) {
+                if (configExpression.metadata.value != null) {
                     initializer.filePathExpressions += configExpression
                 }
             }

@@ -5,7 +5,6 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configExpression.condition
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.indexOf
 import icu.windea.pls.core.lastIndexOf
@@ -34,7 +33,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - [ParadoxBlankNode] - 对应其中的空白。
  *
  * 示例：
- * ```
+ * ```text
  * tag
  * tag1,tag2
  * tag1,not(tag2)
@@ -65,8 +64,8 @@ private object ParadoxTagsExpressionResolver {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        val type = config.configExpression?.value ?: return null
-        val condition = config.configExpression?.condition ?: false
+        val type = config.configExpression?.metadata?.value ?: return null
+        val condition = config.configExpression?.metadata?.condition ?: false
         val dynamicValueConfigText = if (condition) "value[$type]" else "value_set[$type]"
         val dynamicValueConfigs = CwtValueConfig.createMock(configGroup, dynamicValueConfigText).to.singletonList()
 
@@ -153,7 +152,7 @@ private object ParadoxTagsExpressionValidator : ParadoxComplexExpressionValidato
     }
 
     private fun checkNegated(expression: ParadoxTagsExpression, errors: MutableList<ParadoxComplexExpressionError>) {
-        val condition = expression.config.configExpression?.condition ?: false
+        val condition = expression.config.configExpression?.metadata?.condition ?: false
         if (condition) return
         for (node in expression.nodes) {
             if (node is ParadoxNegatedDynamicValueNode) {

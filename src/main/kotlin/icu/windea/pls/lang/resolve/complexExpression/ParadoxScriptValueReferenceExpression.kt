@@ -27,7 +27,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 评估结果应是一个数字字面量。
  *
  * 示例：
- * ```
+ * ```text
  * some_sv
  * some_sv|PARAM|VALUE|
  * some_sv|P1|V1|P2|V2|

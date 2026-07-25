@@ -16,4 +16,9 @@ interface InlinedDelegateFieldCodeInjectors {
     @InjectionTarget("icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase", pluginId = "icu.windea.pls")
     @InlinedDelegateFields
     class CwtConfigGroupDataHolderBase : CodeInjectorBase()
+
+    /** @see icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBase */
+    @InjectionTarget("icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBase", pluginId = "icu.windea.pls")
+    @InlinedDelegateFields
+    class CwtDataExpressionMetadataBase : CodeInjectorBase()
 }

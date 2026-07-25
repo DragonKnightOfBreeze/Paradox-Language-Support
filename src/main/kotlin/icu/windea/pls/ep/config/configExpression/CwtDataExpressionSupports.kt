@@ -1,18 +1,10 @@
 package icu.windea.pls.ep.config.configExpression
 
-import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.configExpression.condition
-import icu.windea.pls.config.configExpression.floatRange
-import icu.windea.pls.config.configExpression.ignoreCase
-import icu.windea.pls.config.configExpression.intRange
-import icu.windea.pls.config.configExpression.suffixes
-import icu.windea.pls.config.configExpression.wildcard
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.FloatRangeInfo
@@ -123,7 +115,7 @@ class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant) { value = expressionString }
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
@@ -134,7 +126,7 @@ class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
 class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression).apply { value = expressionString }
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression) { value = expressionString }
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
@@ -142,22 +134,16 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 }
 
-class CwtPatternDataExpressionSupport : CwtDataExpressionSupport {
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        doResolve(expressionString, isKey, CwtDataTypes.Glob, "glob:", false)?.let { return it }
-        doResolve(expressionString, isKey, CwtDataTypes.Glob, "glob.i:", true)?.let { return it }
-        doResolve(expressionString, isKey, CwtDataTypes.Ant, "ant:", false)?.let { return it }
-        doResolve(expressionString, isKey, CwtDataTypes.Ant, "ant.i:", true)?.let { return it }
-        doResolve(expressionString, isKey, CwtDataTypes.Regex, "re:", false)?.let { return it }
-        doResolve(expressionString, isKey, CwtDataTypes.Regex, "re.i:", true)?.let { return it }
-        doResolve(expressionString, isKey, CwtDataTypes.Regex, "regex:", false)?.let { return it } // for compatibility
-        doResolve(expressionString, isKey, CwtDataTypes.Regex, "regex.i:", true)?.let { return it } // for compatibility
-        return null
-    }
-
-    private fun doResolve(expressionString: String, isKey: Boolean, dataType: CwtDataType, prefix: String, ignoreCase: Boolean): CwtDataExpression? {
-        val v = expressionString.removePrefixOrNull(prefix) ?: return null
-        return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v }.apply { this.ignoreCase = ignoreCase }
+class CwtPatternDataExpressionSupport : CwtPrefixBasedDataExpressionSupport() {
+    override fun registerProviders() {
+        from(CwtDataTypes.Glob, "glob:", false)
+        from(CwtDataTypes.Glob, "glob.i:", true)
+        from(CwtDataTypes.Ant, "ant:", false)
+        from(CwtDataTypes.Ant, "ant.i:", true)
+        from(CwtDataTypes.Regex, "re:", false)
+        from(CwtDataTypes.Regex, "re.i:", true)
+        from(CwtDataTypes.Regex, "regex:", false) // for compatibility
+        from(CwtDataTypes.Regex, "regex.i:", true) // for compatibility
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
@@ -170,21 +156,21 @@ class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
         val separatorIndex = expressionString.indexOf('|')
         if (separatorIndex == -1) return null
         val text = expressionString.substring(0, separatorIndex)
-        val suffixes = expressionString.substring(separatorIndex + 1).toCommaDelimitedStringSet()
+        val expectedSuffixes = expressionString.substring(separatorIndex + 1).toCommaDelimitedStringSet()
         run {
             val t = text.removeSurroundingOrNull("<", ">") ?: return@run
-            if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition).apply { value = t.orNull() }
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareDefinition).apply { value = t.orNull() }.apply { this.suffixes = suffixes }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition) { value = t.orNull() }
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareDefinition) { value = t.orNull(); suffixes = expectedSuffixes }
         }
         run {
             if (text != "localisation") return@run
-            if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Localisation)
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareLocalisation).apply { this.suffixes = suffixes }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Localisation)
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareLocalisation) { suffixes = expectedSuffixes }
         }
         run {
             if (text != "localisation_synced") return@run
-            if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareSyncedLocalisation).apply { this.suffixes = suffixes }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareSyncedLocalisation) { suffixes = expectedSuffixes }
         }
         return null
     }

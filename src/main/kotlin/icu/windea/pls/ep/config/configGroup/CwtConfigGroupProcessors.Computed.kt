@@ -82,7 +82,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         for ((name, modifierConfig) in initializer.modifiers) {
             for (snippetExpression in modifierConfig.template.snippetExpressions) {
                 if (snippetExpression.type == CwtDataTypes.Definition) {
-                    val typeExpression = snippetExpression.value ?: continue
+                    val typeExpression = snippetExpression.metadata.value ?: continue
                     initializer.type2ModifiersMap.getOrPut(typeExpression) { Object2ObjectLinkedOpenHashMap() }[name] = modifierConfig
                 }
             }
@@ -283,7 +283,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
                 else CwtDataExpression.resolve(aliasSubName, true)
                 if (contextExpression.type == CwtDataTypes.Definition) {
-                    contextExpression.value?.let { supportParameters += it }
+                    contextExpression.metadata.value?.let { supportParameters += it }
                 }
             }
 

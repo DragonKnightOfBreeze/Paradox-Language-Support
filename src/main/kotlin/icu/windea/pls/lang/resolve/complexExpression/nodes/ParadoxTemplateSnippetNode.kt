@@ -48,11 +48,11 @@ class ParadoxTemplateSnippetNode(
                 false // for simple code
             }
             dataType in CwtDataTypeSets.DefinitionAware -> {
-                val definitionType = config.configExpression.value ?: return true
+                val definitionType = config.configExpression.metadata.value ?: return true
                 definitionType !in configGroup.types.keys
             }
             dataType == CwtDataTypes.EnumValue -> {
-                val enumName = config.configExpression.value ?: return true
+                val enumName = config.configExpression.metadata.value ?: return true
                 enumName !in configGroup.complexEnums.keys
             }
             else -> true

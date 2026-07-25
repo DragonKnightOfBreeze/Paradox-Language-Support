@@ -4,7 +4,6 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.processUnionCandidates
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
@@ -68,7 +67,7 @@ class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchColorField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        val r = context.expression.type == ParadoxExpressionType.Color && context.configExpression.value?.let { context.expression.value.startsWith(it) } != false
+        val r = context.expression.type == ParadoxExpressionType.Color && context.configExpression.metadata.value?.let { context.expression.value.startsWith(it) } != false
         return ParadoxMatchResult.exactOrNot(r)
     }
 
@@ -104,7 +103,7 @@ class ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher 
 
     private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val datePattern = context.configExpression.value
+        val datePattern = context.configExpression.metadata.value
         val r = ParadoxMatchProvider.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
     }
@@ -186,7 +185,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.type.isBlockLike()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val name = context.expression.value
-        val enumName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val enumName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         // match simple enums
         val enumConfig = context.configGroup.enums[enumName]
         if (enumConfig != null) {
@@ -202,7 +201,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 
     private fun matchUnionValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val unionName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
         unionConfig.processUnionCandidates { valueConfig ->
             val nextContext = context.copy(configExpression = valueConfig.configExpression)
@@ -218,7 +217,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val name = context.expression.value.substringBefore('@')
         if (!name.isParameterAwareIdentifier(".")) return ParadoxMatchResult.NotMatch
-        val dynamicValueType = context.configExpression.value
+        val dynamicValueType = context.configExpression.metadata.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch
     }
@@ -268,7 +267,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val (element, expression, configExpression, _, configGroup, options) = context
-        val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
+        val aliasName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch
         val aliasExpression = expression
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
         val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
@@ -357,7 +356,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Constant) return null
-        val value = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
+        val value = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch
         if (!context.configExpression.isKey) {
             // 作为常量的值也可能是布尔值（`yes` / `no`）
             val text = context.expression.value
@@ -386,8 +385,8 @@ class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         val value = context.expression.value
-        val pattern = context.configExpression.value ?: return null
-        val ignoreCase = context.configExpression.ignoreCase
+        val pattern = context.configExpression.metadata.value ?: return null
+        val ignoreCase = context.configExpression.metadata.ignoreCase
         val r = when (context.dataType) {
             CwtDataTypes.Glob -> value.matchesPattern(pattern, ignoreCase)
             CwtDataTypes.Ant -> value.matchesAntPattern(pattern, ignoreCase)

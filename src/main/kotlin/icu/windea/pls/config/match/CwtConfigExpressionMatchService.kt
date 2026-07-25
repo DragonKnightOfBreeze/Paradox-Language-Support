@@ -21,19 +21,19 @@ object CwtConfigExpressionMatchService {
 
     fun matchesInferredScopeContextAwareDefinitionReference(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         if (dataExpression.type != CwtDataTypes.Definition) return false
-        val definitionType = dataExpression.value?.substringBefore('.') ?: return false
+        val definitionType = dataExpression.metadata.value?.substringBefore('.') ?: return false
         return definitionType in configGroup.typesModel.supportScopeContextInference
     }
 
     fun matchesOnActionReference(dataExpression: CwtDataExpression): Boolean {
         if (dataExpression.type != CwtDataTypes.Definition) return false
-        val definitionType = dataExpression.value?.substringBefore('.') ?: return false
+        val definitionType = dataExpression.metadata.value?.substringBefore('.') ?: return false
         return definitionType == ParadoxDefinitionTypes.onAction
     }
 
     fun matchesEventReference(dataExpression: CwtDataExpression): Boolean {
         if (dataExpression.type != CwtDataTypes.Definition) return false
-        val definitionType = dataExpression.value?.substringBefore('.') ?: return false
+        val definitionType = dataExpression.metadata.value?.substringBefore('.') ?: return false
         return definitionType == ParadoxDefinitionTypes.event
     }
 

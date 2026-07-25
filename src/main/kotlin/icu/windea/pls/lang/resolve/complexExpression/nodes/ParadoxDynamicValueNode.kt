@@ -28,7 +28,7 @@ class ParadoxDynamicValueNode(
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         val expression = configs.first().configExpression ?: return null // first is ok
-        val dynamicValueType = expression.value ?: return null
+        val dynamicValueType = expression.metadata.value ?: return null
         return when (dynamicValueType) {
             "variable" -> ParadoxSemanticHighlighterColors.variable(element.language)
             else -> ParadoxSemanticHighlighterColors.dynamicValue(element.language)

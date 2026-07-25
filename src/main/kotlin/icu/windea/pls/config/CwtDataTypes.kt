@@ -287,7 +287,7 @@ object CwtDataTypes {
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference().build {
         withPriority { configExpression, configGroup ->
-            val enumName = configExpression.value ?: return@withPriority 0.0 // unexpected
+            val enumName = configExpression.metadata.value ?: return@withPriority 0.0 // unexpected
             if (configGroup.enums.containsKey(enumName)) return@withPriority 80.0
             if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 50.0
             0.0 // unexpected

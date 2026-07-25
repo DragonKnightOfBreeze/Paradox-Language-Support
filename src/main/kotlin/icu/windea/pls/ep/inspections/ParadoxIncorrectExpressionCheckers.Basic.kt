@@ -8,8 +8,6 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.expandConfigExpression
-import icu.windea.pls.config.configExpression.floatRange
-import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -41,7 +39,7 @@ class ParadoxRangedIntFieldChecker : ParadoxIncorrectExpressionChecker {
         val configExpression = config.expandConfigExpression().find { it.type in CwtDataTypeSets.IntField }
         if (configExpression == null) return true
 
-        val intRange = configExpression.intRange ?: return true
+        val intRange = configExpression.metadata.intRange ?: return true
         val intValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.intValue()
             else -> element.value.toIntOrNull()
@@ -64,7 +62,7 @@ class ParadoxRangedFloatFieldChecker : ParadoxIncorrectExpressionChecker {
         val configExpression = config.expandConfigExpression().find { it.type in CwtDataTypeSets.FloatField }
         if (configExpression == null) return true
 
-        val floatRange = configExpression.floatRange ?: return true
+        val floatRange = configExpression.metadata.floatRange ?: return true
         val floatValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()
             else -> element.value.toFloatOrNull()
@@ -87,7 +85,7 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
         val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.ColorField }
         if (configExpression == null) return true
 
-        val expectedColorType = configExpression.value ?: return true
+        val expectedColorType = configExpression.metadata.value ?: return true
         val colorType = element.colorType
         if (colorType == expectedColorType) return true
         val description = ChronicleEpBundle.message("incorrectExpression.colorType.desc", expectedColorType, colorType)
@@ -106,7 +104,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.Scope }
         if (configExpression == null) return true
 
-        val expectedScope = configExpression.value ?: return true
+        val expectedScope = configExpression.metadata.value ?: return true
         val value = element.value
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, context.configGroup) ?: return true
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return true
@@ -129,7 +127,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.ScopeGroup }
         if (configExpression == null) return true
 
-        val expectedScopeGroup = configExpression.value ?: return true
+        val expectedScopeGroup = configExpression.metadata.value ?: return true
         val value = element.value
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return true
@@ -156,7 +154,7 @@ class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
 
         val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return true
         val intValue = evaluated.intValue()
-        val intRange = configExpression.intRange
+        val intRange = configExpression.metadata.intRange
         if (intValue == null) {
             val description = ChronicleEpBundle.message("incorrectExpression.intValueField.desc", evaluated.expression)
             context.holder.registerProblem(element, description)
@@ -184,7 +182,7 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
 
         val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return true
         val floatValue = evaluated.floatValue()
-        val floatRange = configExpression.floatRange
+        val floatRange = configExpression.metadata.floatRange
         if (floatValue == null && floatRange != null) { // NOTE 2.2.0 may not be a number after evaluation, if range is not specified
             val description = ChronicleEpBundle.message("incorrectExpression.floatValueField.desc", evaluated.expression)
             context.holder.registerProblem(element, description)

@@ -13,16 +13,13 @@ class KeyAccessorsTest {
         val defaultKey by registerNamedKey(this, "KeyAccessorsTest.defaultKey", "d")
 
         val contextDefaultKey by registerNamedKey(this, "KeyAccessorsTest.contextDefaultKey", "cd")
-        val contextFactoryKey by registerNamedKey<String, ProcessingContext>(this, "KeyAccessorsTest.contextFactoryKey") { "cf" }
-        val contextNullableFactoryKey by registerNamedKey<String?, ProcessingContext>(this, "KeyAccessorsTest.contextNullableFactoryKey") { null }
+        val contextFactoryKey by registerNamedKeyWithThis<String, ProcessingContext>(this, "KeyAccessorsTest.contextFactoryKey") { "cf" }
+        val contextNullableFactoryKey by registerNamedKeyWithThis<String?, ProcessingContext>(this, "KeyAccessorsTest.contextNullableFactoryKey") { null }
     }
 
     private var ProcessingContext.defaultValue: String by Keys.defaultKey
-
     private var ProcessingContext.contextDefaultValue: String by Keys.contextDefaultKey
-
     private var ProcessingContext.contextFactoryValue: String by Keys.contextFactoryKey
-
     private var ProcessingContext.contextNullableFactoryValue: String? by Keys.contextNullableFactoryKey
 
 
@@ -57,9 +54,32 @@ class KeyAccessorsTest {
     }
 
     @Test
+    fun testGetOrPutUserData_KeyWithProducer_valueCached() {
+        val registry = object : KeyRegistry() {}
+        val key = registerNamedKey(registry, "k") { "v" }.getKey()
+
+        val obj = Obj()
+        Assert.assertEquals("v", obj.getOrPutUserData(key))
+        Assert.assertEquals("v", obj.getOrPutUserData(key))
+        Assert.assertEquals("v", obj.getUserData(key))
+    }
+
+    @Test
+    fun testGetOrPutUserData_KeyWithProducer_nullValueCachedWithEmptyObject() {
+        val registry = object : KeyRegistry() {}
+        val key = registerNamedKey<String?>(registry, "k") { null }.getKey()
+
+        val obj = Obj()
+        Assert.assertEquals(null, obj.getOrPutUserData(key))
+        Assert.assertSame(icu.windea.pls.core.EMPTY_OBJECT, obj.getUserData(key))
+        Assert.assertEquals(null, obj.getOrPutUserData(key))
+        Assert.assertSame(icu.windea.pls.core.EMPTY_OBJECT, obj.getUserData(key))
+    }
+
+    @Test
     fun testGetOrPutUserData_KeyWithFactory_valueCached() {
         val registry = object : KeyRegistry() {}
-        val key = registerNamedKey<String, Obj>(registry, "k") { "v" }.getKey()
+        val key = registerNamedKeyWithThis<String, Obj>(registry, "k") { "v" }.getKey()
 
         val obj = Obj()
         Assert.assertEquals("v", obj.getOrPutUserData(key))
@@ -70,7 +90,7 @@ class KeyAccessorsTest {
     @Test
     fun testGetOrPutUserData_KeyWithFactory_nullValueCachedWithEmptyObject() {
         val registry = object : KeyRegistry() {}
-        val key = registerNamedKey<String?, Obj>(registry, "k") { null }.getKey()
+        val key = registerNamedKeyWithThis<String?, Obj>(registry, "k") { null }.getKey()
 
         val obj = Obj()
         Assert.assertEquals(null, obj.getOrPutUserData(key))
@@ -100,9 +120,24 @@ class KeyAccessorsTest {
     }
 
     @Test
+    fun testKeyWithProducer_propertyDelegateReadOnUserDataHolder() {
+        val registry = object : KeyRegistry() {}
+        val key = registerNamedKey(registry, "k") { "v" }.getKey()
+
+        class Holder : UserDataHolderBase() {
+            val value: String by key
+        }
+
+        val h = Holder()
+        Assert.assertEquals("v", h.value)
+        Assert.assertEquals("v", h.value)
+        Assert.assertEquals("v", h.getUserData(key))
+    }
+
+    @Test
     fun testKeyWithFactory_propertyDelegateReadOnUserDataHolder() {
         val registry = object : KeyRegistry() {}
-        val key = registerNamedKey<String, UserDataHolderBase>(registry, "k") { "v" }.getKey()
+        val key = registerNamedKeyWithThis<String, UserDataHolderBase>(registry, "k") { "v" }.getKey()
 
         class Holder : UserDataHolderBase() {
             val value: String by key
@@ -167,8 +202,8 @@ class KeyAccessorsTest {
     fun testProcessingContext_getOrPut_KeyAndFactoryAndNullCaching() {
         val registry = object : KeyRegistry() {}
         val key1 = registerNamedKey<String?>(registry, "k1").getKey()
-        val key2 = registerNamedKey<String, ProcessingContext>(registry, "k2") { "v" }.getKey()
-        val key3 = registerNamedKey<String?, ProcessingContext>(registry, "k3") { null }.getKey()
+        val key2 = registerNamedKeyWithThis<String, ProcessingContext>(registry, "k2") { "v" }.getKey()
+        val key3 = registerNamedKeyWithThis<String?, ProcessingContext>(registry, "k3") { null }.getKey()
 
         val context = ProcessingContext()
         Assert.assertNull(context.getOrPut(key1))
@@ -227,59 +262,67 @@ class KeyAccessorsTest {
 
     @Test
     fun testPropertyDelegates_commonUsages_comprehensive() {
-        class RegistrySynced : KeyRegistry() {
+        class Registry : KeyRegistry() {
             val nullableKey by registerKey<String?>(this)
             val defaultKey by registerKey(this, "d")
-            val factoryKey by registerKey<Int, UserDataHolderBase>(this) { 42 }
+            val producerKey by registerKey(this) { 42 }
+            val factoryKey by registerKeyWithThis<Int, UserDataHolderBase>(this) { 42 }
             val namedKey by registerNamedKey<String?>(this, "KeyAccessorsTest.namedKey")
             val namedDefaultKey by registerNamedKey(this, "KeyAccessorsTest.namedDefaultKey", "nd")
-            val namedFactoryKey by registerNamedKey<String, UserDataHolderBase>(this, "KeyAccessorsTest.namedFactoryKey") { "nf" }
+            val namedProducerKey by registerNamedKey(this, "KeyAccessorsTest.namedProducerKey") { "np" }
+            val namedFactoryKey by registerNamedKeyWithThis<String, UserDataHolderBase>(this, "KeyAccessorsTest.namedFactoryKey") { "nf" }
         }
 
-        val registry = RegistrySynced()
+        val registry = Registry()
 
         class Holder : UserDataHolderBase() {
-            var a: String? by registry.nullableKey
-            var b: String by registry.defaultKey
-            val c: Int by registry.factoryKey
-            var d: String? by registry.namedKey
-            var e: String by registry.namedDefaultKey
-            val f: String by registry.namedFactoryKey
+            var nullable: String? by registry.nullableKey
+            var default: String by registry.defaultKey
+            val producer: Int by registry.producerKey
+            val factory: Int by registry.factoryKey
+            var named: String? by registry.namedKey
+            var namedDefault: String by registry.namedDefaultKey
+            val namedProducer: String by registry.namedProducerKey
+            val namedFactory: String by registry.namedFactoryKey
         }
 
         val h = Holder()
 
         // UserDataHolder 成员属性委托：默认值/工厂/可空
-        Assert.assertNull(h.a)
-        Assert.assertEquals("d", h.b)
-        Assert.assertEquals(42, h.c)
-        Assert.assertNull(h.d)
-        Assert.assertEquals("nd", h.e)
-        Assert.assertEquals("nf", h.f)
+        Assert.assertNull(h.nullable)
+        Assert.assertEquals("d", h.default)
+        Assert.assertEquals(42, h.producer)
+        Assert.assertEquals(42, h.factory)
+        Assert.assertNull(h.named)
+        Assert.assertEquals("nd", h.namedDefault)
+        Assert.assertEquals("np", h.namedProducer)
+        Assert.assertEquals("nf", h.namedFactory)
 
         // 默认值 key 不会写入 userData；工厂 key 会缓存
         Assert.assertNull(h.getUserData(registry.defaultKey))
         Assert.assertNull(h.getUserData(registry.namedDefaultKey))
+        Assert.assertEquals(42, h.getUserData(registry.producerKey))
+        Assert.assertEquals("np", h.getUserData(registry.namedProducerKey))
         Assert.assertEquals(42, h.getUserData(registry.factoryKey))
         Assert.assertEquals("nf", h.getUserData(registry.namedFactoryKey))
 
-        h.a = "a1"
-        h.b = "b1"
-        h.d = "d1"
-        h.e = "e1"
+        h.nullable = "a1"
+        h.default = "b1"
+        h.named = "d1"
+        h.namedDefault = "e1"
 
-        Assert.assertEquals("a1", h.a)
-        Assert.assertEquals("b1", h.b)
-        Assert.assertEquals("d1", h.d)
-        Assert.assertEquals("e1", h.e)
+        Assert.assertEquals("a1", h.nullable)
+        Assert.assertEquals("b1", h.default)
+        Assert.assertEquals("d1", h.named)
+        Assert.assertEquals("e1", h.namedDefault)
 
-        h.a = null
-        Assert.assertNull(h.a)
+        h.nullable = null
+        Assert.assertNull(h.nullable)
         Assert.assertNull(h.getUserData(registry.nullableKey))
 
         @Suppress("UNCHECKED_CAST")
         h.putUserData(registry.defaultKey as Key<Any>, icu.windea.pls.core.EMPTY_OBJECT)
-        Assert.assertEquals("d", h.b)
+        Assert.assertEquals("d", h.default)
 
         // ProcessingContext 扩展属性委托：默认值/工厂/可空
         val context = ProcessingContext()

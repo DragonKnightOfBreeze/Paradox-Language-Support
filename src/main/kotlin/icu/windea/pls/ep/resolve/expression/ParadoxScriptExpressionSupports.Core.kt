@@ -13,7 +13,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.resolved
-import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -70,7 +69,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.configExpression?.value ?: return null
+        val typeExpression = config.configExpression?.metadata?.value ?: return null
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         return ParadoxDefinitionSearch.searchElement(name, type, selector).find()
@@ -80,7 +79,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
         val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.configExpression?.value ?: return emptyList()
+        val typeExpression = config.configExpression?.metadata?.value ?: return emptyList()
         val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         return fullNames.flatMap { fullName ->
             val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
@@ -89,7 +88,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
+        if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
         ParadoxExpressionCompletionManager.completeDefinition(context, result)
     }
@@ -135,7 +134,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
+        if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
         ParadoxExpressionCompletionManager.completeLocalisation(context, result)
     }
@@ -181,7 +180,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
+        if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
         if (context.keyword.isParameterized()) return // 排除可能带参数的情况
         ParadoxExpressionCompletionManager.completeSyncedLocalisation(context, result)
     }
@@ -261,7 +260,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
-        val enumName = config.configExpression?.value ?: return
+        val enumName = config.configExpression?.metadata?.value ?: return
         val attributesKey = when {
             configGroup.enums[enumName] != null -> ParadoxScriptHighlighterColors.ENUM_VALUE
             configGroup.complexEnums[enumName] != null -> ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE
@@ -292,7 +291,7 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.value ?: return
+        val unionName = config.configExpression?.metadata?.value ?: return
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return
@@ -301,7 +300,7 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.value ?: return null
+        val unionName = config.configExpression?.metadata?.value ?: return null
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return null
@@ -310,7 +309,7 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.value ?: return emptyList()
+        val unionName = config.configExpression?.metadata?.value ?: return emptyList()
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
@@ -335,7 +334,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val configExpression = config.configExpression
-        val aliasName = configExpression?.value ?: return
+        val aliasName = configExpression?.metadata?.value ?: return
         val aliasGroup = configGroup.aliasGroups.get(aliasName) ?: return
         val quoted = element.text.isLeftQuoted()
         val aliasExpression = ParadoxExpression.resolve(text, quoted)
@@ -345,7 +344,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        val aliasName = config.configExpression?.value ?: return null
+        val aliasName = config.configExpression?.metadata?.value ?: return null
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
         val quoted = element.text.isLeftQuoted()
@@ -356,7 +355,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-        val aliasName = config.configExpression?.value ?: return emptyList()
+        val aliasName = config.configExpression?.metadata?.value ?: return emptyList()
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
         val quoted = element.text.isLeftQuoted()

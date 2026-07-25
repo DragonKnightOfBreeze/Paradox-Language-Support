@@ -18,24 +18,24 @@ object CwtConfigVisitorManager {
         return when (valueExpression.type) {
             CwtDataTypes.UnionValue -> {
                 if (!forUnion) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForUnion(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasKeysField -> {
                 if (!forAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasMatchLeft -> {
                 if (!forAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 val keyExpression = config.keyExpression
-                if (keyExpression.type != CwtDataTypes.AliasName || keyExpression.value != name) return true // invalid
+                if (keyExpression.type != CwtDataTypes.AliasName || keyExpression.metadata.value != name) return true // invalid
                 visitExpandedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.SingleAliasRight -> {
                 if (!forSingleAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForSingleAlias(name, config.configGroup, visitor)
             }
             else -> true
@@ -47,12 +47,12 @@ object CwtConfigVisitorManager {
         return when (valueExpression.type) {
             CwtDataTypes.UnionValue -> {
                 if (!forUnion) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForUnion(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasKeysField -> {
                 if (!forAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasMatchLeft -> {
@@ -60,7 +60,7 @@ object CwtConfigVisitorManager {
             }
             CwtDataTypes.SingleAliasRight -> {
                 if (!forSingleAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForSingleAlias(name, config.configGroup, visitor)
             }
             else -> true

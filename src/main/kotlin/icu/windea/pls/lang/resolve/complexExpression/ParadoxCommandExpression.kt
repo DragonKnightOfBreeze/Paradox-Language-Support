@@ -41,7 +41,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
- * ```
+ * ```text
  * Root.GetName
  * Root.Owner.event_target:some_event_target.var
  * ```

@@ -26,7 +26,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertEquals("", ek.expressionString)
         assertTrue(ek.isKey)
         assertEquals(CwtDataTypes.Constant, ek.type)
-        assertEquals("", ek.value)
+        assertEquals("", ek.metadata.value)
         assertEquals(ek, CwtDataExpression.resolve("", true))
         assertSame(ek, CwtDataExpression.resolveEmpty(true))
 
@@ -34,7 +34,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertEquals("", ev.expressionString)
         assertFalse(ev.isKey)
         assertEquals(CwtDataTypes.Constant, ev.type)
-        assertEquals("", ev.value)
+        assertEquals("", ev.metadata.value)
         assertEquals(ev, CwtDataExpression.resolve("", false))
         assertSame(ev, CwtDataExpression.resolveEmpty(false))
 
@@ -58,12 +58,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         val s = "hello"
         val ek = CwtDataExpression.resolve(s, true)
         assertEquals(CwtDataTypes.Constant, ek.type)
-        assertEquals(s, ek.value)
+        assertEquals(s, ek.metadata.value)
         assertTrue(ek.isKey)
 
         val ev = CwtDataExpression.resolve(s, false)
         assertEquals(CwtDataTypes.Constant, ev.type)
-        assertEquals(s, ev.value)
+        assertEquals(s, ev.metadata.value)
         assertFalse(ev.isKey)
 
         // equals by expressionString only, but instances differ by cache bucket (key/value)
@@ -78,12 +78,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("int", false)
             assertEquals(CwtDataTypes.Int, e.type)
-            assertNull(e.intRange)
+            assertNull(e.metadata.intRange)
         }
         run {
             val e = CwtDataExpression.resolve("int[1..10]", false)
             assertEquals(CwtDataTypes.Int, e.type)
-            val r = e.intRange
+            val r = e.metadata.intRange
             assertNotNull(r)
             r!!
             assertEquals(1, r.start)
@@ -96,12 +96,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("float", false)
             assertEquals(CwtDataTypes.Float, e.type)
-            assertNull(e.floatRange)
+            assertNull(e.metadata.floatRange)
         }
         run {
             val e = CwtDataExpression.resolve("float(1.5..2.0]", false)
             assertEquals(CwtDataTypes.Float, e.type)
-            val r = e.floatRange
+            val r = e.metadata.floatRange
             assertNotNull(r)
             r!!
             assertEquals(1.5f, r.start!!, 0.0001f)
@@ -114,12 +114,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("scalar", false)
             assertEquals(CwtDataTypes.Scalar, e.type)
-            assertFalse(e.wildcard)
+            assertFalse(e.metadata.wildcard)
         }
         run {
             val e = CwtDataExpression.resolve("wildcard_scalar", false)
             assertEquals(CwtDataTypes.Scalar, e.type)
-            assertTrue(e.wildcard)
+            assertTrue(e.metadata.wildcard)
         }
 
         // color field variants
@@ -130,7 +130,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("colour[255,0,0]", false)
             assertEquals(CwtDataTypes.ColorField, e.type)
-            assertEquals("255,0,0", e.value)
+            assertEquals("255,0,0", e.metadata.value)
         }
         run {
             val e = CwtDataExpression.resolve("color_field", false)
@@ -139,7 +139,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("color[0,255,0]", false)
             assertEquals(CwtDataTypes.ColorField, e.type)
-            assertEquals("0,255,0", e.value)
+            assertEquals("0,255,0", e.metadata.value)
         }
 
         // bool
@@ -170,7 +170,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("date_field[2020.1.1]", false)
             assertEquals(CwtDataTypes.DateField, e.type)
-            assertEquals("2020.1.1", e.value)
+            assertEquals("2020.1.1", e.metadata.value)
         }
         // localisation types
         run {
@@ -187,7 +187,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("filename[foo.txt]", false)
             assertEquals(CwtDataTypes.FileName, e.type)
-            assertEquals("foo.txt", e.value)
+            assertEquals("foo.txt", e.metadata.value)
         }
         run {
             val e = CwtDataExpression.resolve("filepath", false)
@@ -196,39 +196,39 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("filepath[game/common/test]", false)
             assertEquals(CwtDataTypes.FilePath, e.type)
-            assertEquals("common/test", e.value)
+            assertEquals("common/test", e.metadata.value)
         }
         run {
             val e = CwtDataExpression.resolve("icon[game/gfx/icons/i.png]", false)
             assertEquals(CwtDataTypes.Icon, e.type)
-            assertEquals("gfx/icons/i.png", e.value)
+            assertEquals("gfx/icons/i.png", e.metadata.value)
         }
 
         // definition and values
         run {
             val e = CwtDataExpression.resolve("<my_def>", false)
             assertEquals(CwtDataTypes.Definition, e.type)
-            assertEquals("my_def", e.value)
+            assertEquals("my_def", e.metadata.value)
         }
 
         run {
-            assertEquals("blue", CwtDataExpression.resolve("enum[blue]", false).value)
+            assertEquals("blue", CwtDataExpression.resolve("enum[blue]", false).metadata.value)
         }
 
         run {
             val e = CwtDataExpression.resolve("union[loc_or_text]", false)
             assertEquals(CwtDataTypes.UnionValue, e.type)
-            assertEquals("loc_or_text", e.value)
+            assertEquals("loc_or_text", e.metadata.value)
         }
 
         run {
-            assertEquals("foo", CwtDataExpression.resolve("value[foo]", false).value)
+            assertEquals("foo", CwtDataExpression.resolve("value[foo]", false).metadata.value)
         }
         run {
-            assertEquals("foo", CwtDataExpression.resolve("value_set[foo]", false).value)
+            assertEquals("foo", CwtDataExpression.resolve("value_set[foo]", false).metadata.value)
         }
         run {
-            assertEquals("foo", CwtDataExpression.resolve("dynamic_value[foo]", false).value)
+            assertEquals("foo", CwtDataExpression.resolve("dynamic_value[foo]", false).metadata.value)
         }
 
         // scope / scope_group
@@ -236,17 +236,17 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("scope[any]", false)
             assertEquals(CwtDataTypes.Scope, e.type)
-            assertNull(e.value)
+            assertNull(e.metadata.value)
         }
         run {
             val e = CwtDataExpression.resolve("scope[planet]", false)
             assertEquals(CwtDataTypes.Scope, e.type)
-            assertEquals("planet", e.value)
+            assertEquals("planet", e.metadata.value)
         }
         run {
             val e = CwtDataExpression.resolve("scope_group[g1]", false)
             assertEquals(CwtDataTypes.ScopeGroup, e.type)
-            assertEquals("g1", e.value)
+            assertEquals("g1", e.metadata.value)
         }
 
         // value field / int value field
@@ -256,7 +256,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("value_field[0.0..1.0]", false)
             assertEquals(CwtDataTypes.ValueField, e.type)
-            assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.floatRange)
+            assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.metadata.floatRange)
         }
         run {
             assertEquals(CwtDataTypes.IntValueField, CwtDataExpression.resolve("int_value_field", false).type)
@@ -264,7 +264,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("int_value_field(0..1)", false)
             assertEquals(CwtDataTypes.IntValueField, e.type)
-            assertEquals(IntRangeInfo.from("(0..1)"), e.intRange)
+            assertEquals(IntRangeInfo.from("(0..1)"), e.metadata.intRange)
         }
 
         // variable field variants
@@ -274,12 +274,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("variable_field[0.0..1.0]", false)
             assertEquals(CwtDataTypes.VariableField, e.type)
-            assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.floatRange)
+            assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.metadata.floatRange)
         }
         run {
             val e = CwtDataExpression.resolve("variable_field_32(0.0..1.0]", false)
             assertEquals(CwtDataTypes.VariableField, e.type)
-            assertEquals(FloatRangeInfo.from("(0.0..1.0]"), e.floatRange)
+            assertEquals(FloatRangeInfo.from("(0.0..1.0]"), e.metadata.floatRange)
         }
         run {
             assertEquals(CwtDataTypes.IntVariableField, CwtDataExpression.resolve("int_variable_field", false).type)
@@ -287,26 +287,26 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("int_variable_field(0..1)", false)
             assertEquals(CwtDataTypes.IntVariableField, e.type)
-            assertEquals(IntRangeInfo.from("(0..1)"), e.intRange)
+            assertEquals(IntRangeInfo.from("(0..1)"), e.metadata.intRange)
         }
         run {
             val e = CwtDataExpression.resolve("int_variable_field(0..1]", false)
             assertEquals(CwtDataTypes.IntVariableField, e.type)
-            assertEquals(IntRangeInfo.from("(0..1]"), e.intRange)
+            assertEquals(IntRangeInfo.from("(0..1]"), e.metadata.intRange)
         }
 
         // alias related
         run {
-            assertEquals("right", CwtDataExpression.resolve("single_alias_right[right]", false).value)
+            assertEquals("right", CwtDataExpression.resolve("single_alias_right[right]", false).metadata.value)
         }
         run {
-            assertEquals("name", CwtDataExpression.resolve("alias_name[name]", false).value)
+            assertEquals("name", CwtDataExpression.resolve("alias_name[name]", false).metadata.value)
         }
         run {
-            assertEquals("left", CwtDataExpression.resolve("alias_match_left[left]", false).value)
+            assertEquals("left", CwtDataExpression.resolve("alias_match_left[left]", false).metadata.value)
         }
         run {
-            assertEquals("keys", CwtDataExpression.resolve("alias_keys_field[keys]", false).value)
+            assertEquals("keys", CwtDataExpression.resolve("alias_keys_field[keys]", false).metadata.value)
         }
 
         // any, parameter-like, stellaris name format
@@ -326,7 +326,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("\$tags[some_tag]", false)
             assertEquals(CwtDataTypes.Tags, e.type)
-            assertEquals("some_tag", e.value)
+            assertEquals("some_tag", e.metadata.value)
         }
         run {
             assertEquals(CwtDataTypes.DatabaseObject, CwtDataExpression.resolve("\$database_object", false).type)
@@ -334,7 +334,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("name_format[format_x]", false)
             assertEquals(CwtDataTypes.NameFormat, e.type)
-            assertEquals("format_x", e.value)
+            assertEquals("format_x", e.metadata.value)
         }
 
         run {
@@ -361,7 +361,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             return
         }
         assertEquals(CwtDataTypes.TemplateExpression, e.type)
-        assertEquals(s, e.value)
+        assertEquals(s, e.metadata.value)
         assertEquals(e, CwtDataExpression.resolve(s, false))
     }
 
@@ -371,12 +371,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolveTemplate("value[bar]")
             assertEquals(CwtDataTypes.Value, e.type)
-            assertEquals("bar", e.value)
+            assertEquals("bar", e.metadata.value)
         }
         run {
             val e = CwtDataExpression.resolveTemplate("abc")
             assertEquals(CwtDataTypes.Constant, e.type)
-            assertEquals("abc", e.value)
+            assertEquals("abc", e.metadata.value)
         }
     }
 
@@ -386,50 +386,50 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("glob:fo*", false)
             assertEquals(CwtDataTypes.Glob, e.type)
-            assertEquals("fo*", e.value)
-            assertFalse(e.ignoreCase)
+            assertEquals("fo*", e.metadata.value)
+            assertFalse(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("glob.i:fo*", false)
             assertEquals(CwtDataTypes.Glob, e.type)
-            assertEquals("fo*", e.value)
-            assertTrue(e.ignoreCase)
+            assertEquals("fo*", e.metadata.value)
+            assertTrue(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("ant:foo/*", false)
             assertEquals(CwtDataTypes.Ant, e.type)
-            assertEquals("foo/*", e.value)
-            assertFalse(e.ignoreCase)
+            assertEquals("foo/*", e.metadata.value)
+            assertFalse(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("ant.i:foo/*", false)
             assertEquals(CwtDataTypes.Ant, e.type)
-            assertEquals("foo/*", e.value)
-            assertTrue(e.ignoreCase)
+            assertEquals("foo/*", e.metadata.value)
+            assertTrue(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("re:foo.*bar", false)
             assertEquals(CwtDataTypes.Regex, e.type)
-            assertEquals("foo.*bar", e.value)
-            assertFalse(e.ignoreCase)
+            assertEquals("foo.*bar", e.metadata.value)
+            assertFalse(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("re.i:foo.*bar", false)
             assertEquals(CwtDataTypes.Regex, e.type)
-            assertEquals("foo.*bar", e.value)
-            assertTrue(e.ignoreCase)
+            assertEquals("foo.*bar", e.metadata.value)
+            assertTrue(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("regex:foo.*bar", false)
             assertEquals(CwtDataTypes.Regex, e.type)
-            assertEquals("foo.*bar", e.value)
-            assertFalse(e.ignoreCase)
+            assertEquals("foo.*bar", e.metadata.value)
+            assertFalse(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("regex.i:foo.*bar", false)
             assertEquals(CwtDataTypes.Regex, e.type)
-            assertEquals("foo.*bar", e.value)
-            assertTrue(e.ignoreCase)
+            assertEquals("foo.*bar", e.metadata.value)
+            assertTrue(e.metadata.ignoreCase)
         }
     }
 
@@ -439,14 +439,14 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("glob:", false)
             assertEquals(CwtDataTypes.Glob, e.type)
-            assertEquals("", e.value)
-            assertFalse(e.ignoreCase)
+            assertEquals("", e.metadata.value)
+            assertFalse(e.metadata.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("glob.i:", false)
             assertEquals(CwtDataTypes.Glob, e.type)
-            assertEquals("", e.value)
-            assertTrue(e.ignoreCase)
+            assertEquals("", e.metadata.value)
+            assertTrue(e.metadata.ignoreCase)
         }
     }
 }

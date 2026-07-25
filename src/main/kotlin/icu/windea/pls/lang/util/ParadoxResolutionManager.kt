@@ -32,7 +32,7 @@ object ParadoxResolutionManager {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type != CwtDataTypes.EnumValue) return null
         val name = expression
-        val enumName = dataExpression.value ?: return null
+        val enumName = dataExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
@@ -44,7 +44,7 @@ object ParadoxResolutionManager {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type != CwtDataTypes.EnumValue) return null
         val name = expression
-        val enumName = dataExpression.value ?: return null
+        val enumName = dataExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return null
         val project = configGroup.project

@@ -80,7 +80,7 @@ class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchDataField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val datePattern = context.configExpression.value
+        val datePattern = context.configExpression.metadata.value
         val r = ParadoxMatchProvider.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
     }
@@ -107,7 +107,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchEnumValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val name = context.expression.value
-        val enumName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val enumName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         // match simple enums
         val enumConfig = context.configGroup.enums[enumName]
         if (enumConfig != null) {
@@ -123,7 +123,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     }
 
     private fun matchUnionValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        val unionName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        val unionName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
         unionConfig.processUnionCandidates { valueConfig ->
             val nextContext = context.copy(configExpression = valueConfig.configExpression)
@@ -137,7 +137,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     private fun matchDynamicValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val name = context.expression.value
         if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
-        val dynamicValueType = context.configExpression.value
+        val dynamicValueType = context.configExpression.metadata.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch
     }

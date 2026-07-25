@@ -150,7 +150,7 @@ object ParadoxConfigManager {
         val configGroup = config.configGroup
         val configExpression = config.configExpression
         if (configExpression.type in CwtDataTypeSets.DefinitionAware) {
-            val definitionType = configExpression.value ?: return false
+            val definitionType = configExpression.metadata.value ?: return false
             val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
             val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
             if (config != null) return true

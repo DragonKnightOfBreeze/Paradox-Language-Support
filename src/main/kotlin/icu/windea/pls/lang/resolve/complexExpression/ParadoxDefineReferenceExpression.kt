@@ -27,7 +27,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - [ParadoxMarkerNode] - 对应其中的 `|`。
  *
  * 示例：
- * ```
+ * ```text
  * Namespace|Name
  * ```
  *

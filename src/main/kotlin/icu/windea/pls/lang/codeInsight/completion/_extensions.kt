@@ -136,7 +136,7 @@ fun LookupElementBuilder.forExpression(context: ParadoxCompletionContext): Looku
         else -> lookupString.quoteIfNeeded() // #369 should be quoted if is blank or contains blank
     }
     val constantValue = when {
-        completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
+        completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.metadata?.value
         else -> null
     }
     val insertCurlyBraces = when {

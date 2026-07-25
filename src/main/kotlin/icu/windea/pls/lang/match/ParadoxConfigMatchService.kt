@@ -31,7 +31,7 @@ import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
@@ -62,17 +62,17 @@ import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
 
 object ParadoxConfigMatchService {
-    private val CwtConfigGroup.typeConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.typeConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.rowConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.rowConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtRowConfig>> { path ->
             rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
@@ -392,7 +392,7 @@ object ParadoxConfigMatchService {
 
     private fun matchesSingleAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {
         val configGroup = propertyConfig.configGroup
-        val singleAliasName = propertyConfig.valueExpression.value ?: return false
+        val singleAliasName = propertyConfig.valueExpression.metadata.value ?: return false
         val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
         return matchesPropertyForSubtype(context, definition, property, singleAlias.config)
     }
@@ -400,7 +400,7 @@ object ParadoxConfigMatchService {
     private fun matchesAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {
         // aliasName 和 aliasSubName 需要匹配
         val configGroup = propertyConfig.configGroup
-        val aliasName = propertyConfig.keyExpression.value ?: return false
+        val aliasName = propertyConfig.keyExpression.metadata.value ?: return false
         val propertyKey = property.propertyKey
         val aliasExpression = ParadoxExpression.resolve(propertyKey, context.options)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, context.options) ?: return false

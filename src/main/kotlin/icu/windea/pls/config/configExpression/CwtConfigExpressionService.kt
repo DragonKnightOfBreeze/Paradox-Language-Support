@@ -53,17 +53,17 @@ object CwtConfigExpressionService {
                 result += "no"
             }
             CwtDataTypes.Constant -> {
-                val v = configExpression.value ?: return
+                val v = configExpression.metadata.value ?: return
                 result += v
             }
             CwtDataTypes.EnumValue -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val nextConfig = configGroup.enums[name] ?: return
                 val values = nextConfig.values
                 result += values
             }
             CwtDataTypes.UnionValue -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val unionConfig = configGroup.unions[name] ?: return
                 unionConfig.processUnionCandidates { valueConfig ->
                     val e = valueConfig.configExpression
@@ -72,7 +72,7 @@ object CwtConfigExpressionService {
                 }
             }
             CwtDataTypes.AliasKeysField, CwtDataTypes.AliasName -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
                 withRecursionGuard { // 这里需要防止递归
                     for (aliasConfigs in aliasConfigGroup.values) {
@@ -84,7 +84,7 @@ object CwtConfigExpressionService {
                 }
             }
             CwtDataTypes.SingleAliasRight -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val singleAliasConfig = configGroup.singleAliases[name] ?: return
                 withRecursionGuard { // 这里需要防止递归
                     val e = singleAliasConfig.config.valueExpression

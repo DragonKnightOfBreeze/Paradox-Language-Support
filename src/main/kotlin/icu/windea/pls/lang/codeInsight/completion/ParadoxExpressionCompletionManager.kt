@@ -146,7 +146,7 @@ object ParadoxExpressionCompletionManager {
     fun completeDefinition(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val scopeContext = context.scopeContext
-        val typeExpression = config.configExpression?.value ?: return
+        val typeExpression = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
         val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
@@ -227,7 +227,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val config = context.config ?: return
-        val enumName = config.configExpression?.value ?: return
+        val enumName = config.configExpression?.metadata?.value ?: return
         val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val enumConfig = configGroup.enums[enumName] ?: return
         val enumValueConfigs = enumConfig.valueConfigMap.values
@@ -251,7 +251,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val config = context.config ?: return
-        val enumName = config.configExpression?.value ?: return
+        val enumName = config.configExpression?.metadata?.value ?: return
         val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
@@ -279,7 +279,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val config = context.config ?: return
-        val unionName = config.configExpression?.value ?: return
+        val unionName = config.configExpression?.metadata?.value ?: return
         val unionConfig = configGroup.unions[unionName] ?: return
         unionConfig.processUnionCandidates { valueConfig ->
             val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
@@ -292,7 +292,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val config = context.config ?: return
-        val unionName = config.configExpression?.value ?: return
+        val unionName = config.configExpression?.metadata?.value ?: return
         val unionConfig = configGroup.unions[unionName] ?: return
         unionConfig.processUnionCandidates { valueConfig ->
             val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
@@ -317,7 +317,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val configExpression = config.configExpression ?: return
-        val dynamicValueType = configExpression.value ?: return
+        val dynamicValueType = configExpression.metadata.value ?: return
         if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return
         val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
         val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
@@ -339,7 +339,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val configExpression = config.configExpression ?: return
-        val dynamicValueType = configExpression.value ?: return
+        val dynamicValueType = configExpression.metadata.value ?: return
         val tailText = " by $configExpression"
         val selector = ParadoxDynamicValueSearch.selector(configGroup.project, context.contextElement).distinct()
         ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
@@ -361,7 +361,7 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val config = context.config ?: return
-        val aliasName = config.configExpression?.value ?: return
+        val aliasName = config.configExpression?.metadata?.value ?: return
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
         for (aliasConfigs in aliasGroup.values) {
             val context = context.copy(config = aliasConfigs.first(), configs = aliasConfigs)
@@ -377,7 +377,7 @@ object ParadoxExpressionCompletionManager {
             configExpression.isKey -> ChronicleIcons.Nodes.Property
             else -> ChronicleIcons.Nodes.Value
         }
-        val name = configExpression.value ?: return
+        val name = configExpression.metadata.value ?: return
         if (!configExpression.isKey) {
             // 常量的值也可能是yes/no
             if (name == "yes") {

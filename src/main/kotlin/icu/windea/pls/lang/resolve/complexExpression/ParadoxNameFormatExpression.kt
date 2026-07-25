@@ -20,7 +20,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - 用于解析 Stellaris 中以花括号包围的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  *
  * 示例：
- * ```
+ * ```text
  * {<eater_adj> {<patron_noun>}}
  * {AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}
  * {alpha}
@@ -81,7 +81,7 @@ private object ParadoxNameFormatExpressionResolver {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        val formatName = configExpression.value
+        val formatName = configExpression.metadata.value
         val definitionType = formatName?.let { "${it}_name_parts_list" }
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()

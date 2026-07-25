@@ -1,6 +1,5 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.config.CwtDataType.Companion.entries
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
@@ -8,6 +7,7 @@ import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.type.ParadoxExpressionType
 
 /**
  * 数据类型。
@@ -51,6 +51,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @see CwtDataExpression
  * @see CwtDataExpressionSupport
  * @see ParadoxExpression
+ * @see ParadoxExpressionType
  */
 class CwtDataType private constructor(
     val id: String,

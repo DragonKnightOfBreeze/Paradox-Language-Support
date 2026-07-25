@@ -1,6 +1,5 @@
 package icu.windea.pls.inject.support
 
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -24,7 +23,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     @Suppress("unused")
     class Model : UserDataHolderBase() {
         object Keys : KeyRegistry() {
-            val name by registerKey<String, UserDataHolder>(this) { "" }
+            val name by registerKey(this) { "" }
             val value by registerKey<Int>(this)
         }
 
@@ -37,8 +36,8 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     @Suppress("unused")
     class Model2 : UserDataHolderBase() {
         object Keys : KeyRegistry() {
-            val name by registerKey<String, UserDataHolder>(this) { "" }
-            val value by registerKey<Int, UserDataHolder>(this) { 0 }
+            val name by registerKey(this) { "" }
+            val value by registerKey(this) { 0 }
         }
 
         // This model has multiple delegated properties so we can test `@InlinedDelegateFields` (inline-all mode).
@@ -49,7 +48,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     @Suppress("unused")
     class ModelFail : UserDataHolderBase() {
         object Keys : KeyRegistry() {
-            val name by registerKey<String, UserDataHolder>(this) { "" }
+            val name by registerKey(this) { "" }
         }
 
         private fun nameDelegate() = Keys.name

@@ -15,6 +15,7 @@ import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
+/** @see icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors.CwtOptionDataHolderBase */
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
     object Keys : KeyRegistry() {
         val optionConfigs by registerKey<List<CwtOptionMemberConfig<*>>>(this, emptyList())

@@ -10,7 +10,6 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.prefixFromArgument
-import icu.windea.pls.config.configExpression.condition
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -349,7 +348,7 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForDynamicValueNode(context, result, node, offset)
                 }
                 is ParadoxNegatedDynamicValueNode -> {
-                    val condition = expression.config.configExpression?.condition ?: false
+                    val condition = expression.config.configExpression?.metadata?.condition ?: false
                     if (!condition) continue // skip if is not a condition variant
                     for (node in node.nodes) {
                         ProgressManager.checkCanceled()
@@ -392,7 +391,7 @@ object ParadoxComplexExpressionCompletionManager {
 
         val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return
         val config = context.config ?: return
-        val formatName = config.configExpression?.value ?: return
+        val formatName = config.configExpression?.metadata?.value ?: return
         val type = "${formatName}_name_parts_list"
 
         // caret position inside expression
@@ -710,7 +709,7 @@ object ParadoxComplexExpressionCompletionManager {
         if (!ChronicleSettings.getInstance().state.inference.configContextForParameters) return
 
         val expression = node.parent as? ParadoxScriptValueReferenceExpression ?: return // unexpected
-        if (!expression.scriptValueNode.text.isNotEmpty()) return
+        if (expression.scriptValueNode.text.isEmpty()) return
 
         // 尝试提示传入参数的值
         val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)

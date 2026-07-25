@@ -11,9 +11,6 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.floatRange
-import icu.windea.pls.config.configExpression.intRange
-import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.NestedCache
@@ -26,7 +23,7 @@ import icu.windea.pls.core.util.KeyWithFactory
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
@@ -64,7 +61,7 @@ object ParadoxMatchResultProvider {
         val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
         val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
 
-        private fun createKeyForCache(vararg dependencies: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
+        private fun createKeyForCache(vararg dependencies: Any) = registerKeyWithThis<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult
             createCachedValue(project) {
                 createNestedCache<VirtualFile, _, _> {
@@ -75,14 +72,14 @@ object ParadoxMatchResultProvider {
     }
 
     fun forRangedInt(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
-        val intRange = configExpression.intRange ?: return null
+        val intRange = configExpression.metadata.intRange ?: return null
         val intValue = expression.value.toIntOrNull() ?: return null
         val r = intValue in intRange
         return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
 
     fun forRangedFloat(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
-        val floatRange = configExpression.floatRange ?: return null
+        val floatRange = configExpression.metadata.floatRange ?: return null
         val floatValue = expression.value.toFloatOrNull() ?: return null
         val r = floatValue in floatRange
         return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
@@ -115,8 +112,8 @@ object ParadoxMatchResultProvider {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        val typeExpression = configExpression.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
-        val suffixes = configExpression.suffixes.orEmpty()
+        val typeExpression = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
+        val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = Keys.cacheForDefinitions
         val cacheKey = when {
             suffixes.isEmpty() -> "${typeExpression}#${expression}"
@@ -136,7 +133,7 @@ object ParadoxMatchResultProvider {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        val suffixes = configExpression.suffixes.orEmpty()
+        val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = Keys.cacheForLocalisations
         val cacheKey = when {
             suffixes.isEmpty() -> expression
@@ -156,7 +153,7 @@ object ParadoxMatchResultProvider {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        val suffixes = configExpression.suffixes.orEmpty()
+        val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = Keys.cacheForSyncedLocalisations
         val cacheKey = when {
             suffixes.isEmpty() -> expression
@@ -245,14 +242,14 @@ object ParadoxMatchResultProvider {
         return when (configExpression.type) {
             CwtDataTypes.ScopeField -> forComplexExpressionFromAttributes(scopeFieldExpression)
             CwtDataTypes.Scope -> {
-                val expectedScope = configExpression.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
+                val expectedScope = configExpression.metadata.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
                 }
             }
             CwtDataTypes.ScopeGroup -> {
-                val expectedScopeGroup = configExpression.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
+                val expectedScopeGroup = configExpression.metadata.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)

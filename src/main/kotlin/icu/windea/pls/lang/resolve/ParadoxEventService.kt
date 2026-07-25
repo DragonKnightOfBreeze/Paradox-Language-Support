@@ -50,7 +50,7 @@ object ParadoxEventService {
 
             private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
                 return config.configExpression.type == CwtDataTypes.Definition
-                    && config.configExpression.value?.substringBefore('.') == ParadoxDefinitionTypes.event
+                    && config.configExpression.metadata.value?.substringBefore('.') == ParadoxDefinitionTypes.event
             }
         })
         return result

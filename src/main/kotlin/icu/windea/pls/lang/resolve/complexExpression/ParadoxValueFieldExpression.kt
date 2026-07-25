@@ -42,7 +42,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
- * ```
+ * ```text
  * trigger:some_trigger
  * value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
  * relations(root)

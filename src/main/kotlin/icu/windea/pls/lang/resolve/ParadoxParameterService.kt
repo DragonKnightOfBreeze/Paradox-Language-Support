@@ -10,7 +10,6 @@ import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configExpression.wildcard
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
@@ -244,7 +243,7 @@ object ParadoxParameterService {
         val v = result.get()
         if (v.isNullOrEmpty()) return false // empty -> not available
         val c = v.singleOrNull()?.configs?.singleOrNull()
-        if (c is CwtValueConfig && c.configExpression.wildcard) return false // wildcard (e.g., from condition parameter) -> not available
+        if (c is CwtValueConfig && c.configExpression.metadata.wildcard) return false // wildcard (e.g., from condition parameter) -> not available
         return true
     }
 

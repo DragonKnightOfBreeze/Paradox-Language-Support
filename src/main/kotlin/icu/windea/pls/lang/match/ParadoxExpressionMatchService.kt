@@ -48,12 +48,12 @@ object ParadoxExpressionMatchService {
         return when (configExpression.type) {
             CwtDataTypes.Constant -> true
             CwtDataTypes.EnumValue -> {
-                val enumName = configExpression.value ?: return false
+                val enumName = configExpression.metadata.value ?: return false
                 val enumConfig = configGroup.enums[enumName] ?: return false
                 enumConfig.values.contains(expression.value)
             }
             CwtDataTypes.UnionValue -> {
-                val unionName = configExpression.value ?: return false
+                val unionName = configExpression.metadata.value ?: return false
                 val unionConfig = configGroup.unions[unionName] ?: return false
                 unionConfig.processUnionCandidates { valueConfig ->
                     if (matchesConstant(expression, valueConfig.configExpression, configGroup)) return true
@@ -62,7 +62,7 @@ object ParadoxExpressionMatchService {
                 false
             }
             CwtDataTypes.Value, CwtDataTypes.DynamicValue -> {
-                val type = configExpression.value ?: return false
+                val type = configExpression.metadata.value ?: return false
                 val dynamicValueConfig = configGroup.dynamicValueTypes[type] ?: return false
                 dynamicValueConfig.values.contains(expression.value)
             }

@@ -45,7 +45,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
         if (config == null) return
 
         val definitionName = element.value
-        val typeExpression = config.configExpression.value ?: return
+        val typeExpression = config.configExpression.metadata.value ?: return
         val gameType = config.configGroup.gameType
         val info = ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, gameType)
         addToFileData(info, fileData)
@@ -88,7 +88,7 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
         if (config == null) return
 
         val eventName = element.value
-        val typeExpression = config.configExpression.value ?: return
+        val typeExpression = config.configExpression.metadata.value ?: return
         val containingOnActionName = info.name
         val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, info.gameType)
         addToFileData(info, fileData)

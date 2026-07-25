@@ -33,7 +33,7 @@ data class ParadoxParameterInfo(
     val modificationTracker by lazy { support?.getModificationTracker(this) }
 
     companion object {
-        val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, ParadoxGameType.Core, getDefaultProject())
+        @JvmField val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, ParadoxGameType.Core, getDefaultProject())
     }
 }
 

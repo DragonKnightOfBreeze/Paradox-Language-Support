@@ -37,7 +37,7 @@ import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
@@ -71,7 +71,7 @@ import kotlin.concurrent.getOrSet
 
 object ParadoxConfigService {
     @Optimized
-    private val CwtConfigGroup.configsCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.configsCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // rootFile -> cacheKey -> configs
             // use soft values to optimize memory
@@ -82,7 +82,7 @@ object ParadoxConfigService {
     }
 
     @Optimized
-    private val CwtConfigGroup.declarationConfigCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.declarationConfigCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // cacheKey -> declarationConfig
             // use soft values to optimize memory

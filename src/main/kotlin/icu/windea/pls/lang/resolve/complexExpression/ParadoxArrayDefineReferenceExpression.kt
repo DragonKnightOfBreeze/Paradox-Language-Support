@@ -32,7 +32,7 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * - [ParadoxNumberLiteralNode] - 对应其中作为索引的数字字面量。应当是一个正整数。
  *
  * 示例：
- * ```
+ * ```text
  * Namespace|Name|0
  * ```
  *

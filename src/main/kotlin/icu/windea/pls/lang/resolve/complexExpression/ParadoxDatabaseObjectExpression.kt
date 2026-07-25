@@ -27,7 +27,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * - [ParadoxMarkerNode] - 对应其中的 `:`。
  *
  * 示例：
- * ```
+ * ```text
  * civic:some_civic # definition
  * civic:some_civic:some_swapped_civic # definition + swapped definition
  * job:job_soldier # localisation
