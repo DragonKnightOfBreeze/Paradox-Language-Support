@@ -130,16 +130,16 @@ abstract class ContainerBasedMover : LineMover() {
     ): Tuple2<PsiElement, PsiElement>? {
         val startMember0 = when {
             startElement == containerElement -> startElement.firstChild
-            else -> startElement.parents(withSelf = true).takeWhile { it != containerElement }.lastOrNull()
+            else -> startElement.parents(withSelf = true).takeWhile { it !== containerElement }.lastOrNull()
         }
         if (startMember0 == null) return null
         val endMember0 = when {
             endElement == containerElement -> endElement.lastChild
-            else -> endElement.parents(withSelf = true).takeWhile { it != containerElement }.lastOrNull()
+            else -> endElement.parents(withSelf = true).takeWhile { it !== containerElement }.lastOrNull()
         }
         if (endMember0 == null) return null
         val members0 = containerElement.children()
-            .dropWhile { it != startMember0 }.takeWhileInclusive { it != endMember0 }
+            .dropWhile { it != startMember0 }.takeWhileInclusive { it !== endMember0 }
             .filter { it !is PsiWhiteSpace }
             .toList()
         if (members0.isEmpty()) return null

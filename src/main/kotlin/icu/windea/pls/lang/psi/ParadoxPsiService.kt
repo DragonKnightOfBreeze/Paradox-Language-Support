@@ -43,7 +43,6 @@ import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
@@ -111,14 +110,16 @@ object ParadoxPsiService {
     fun findMemberElementsToInline(element: ParadoxScriptMemberContainer): Tuple2<PsiElement?, PsiElement?> {
         return when (element) {
             is ParadoxScriptBoundMemberContainer -> {
-                val e1 = element.leftBound?.siblings(forward = true, withSelf = false)?.find { it.elementType != TokenType.WHITE_SPACE }
-                val e2 = element.rightBound?.siblings(forward = false, withSelf = false)?.find { it.elementType != TokenType.WHITE_SPACE }
-                e1 to e2
+                val leftBound = element.leftBound
+                val rightBound = element.rightBound
+                val first = leftBound?.siblings(forward = true, withSelf = false)?.takeWhile { it !== rightBound }?.find { it.elementType != TokenType.WHITE_SPACE }
+                val last = rightBound?.siblings(forward = false, withSelf = false)?.takeWhile { it !== leftBound }?.find { it.elementType != TokenType.WHITE_SPACE }
+                first to last
             }
             else -> {
-                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
-                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
-                e1 to e2
+                val first = element.firstChild?.siblings(forward = true, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
+                val last = element.lastChild?.siblings(forward = false, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
+                first to last
             }
         }
     }
@@ -126,15 +127,15 @@ object ParadoxPsiService {
     fun findRichTextElementsToInline(element: ParadoxLocalisationRichTextContainer): Tuple2<PsiElement?, PsiElement?> {
         return when (element) {
             is ParadoxLocalisationPropertyValue -> {
-                val tokenElement = element.findChild { it.elementType == ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN }
-                val e1 = tokenElement?.firstChild
-                val e2 = tokenElement?.lastChild
-                e1 to e2
+                val tokenElement = element.tokenElement
+                val first = tokenElement?.firstChild
+                val last = tokenElement?.lastChild
+                first to last
             }
             else -> {
-                val e1 = element.firstChild
-                val e2 = element.lastChild
-                e1 to e2
+                val first = element.firstChild
+                val last = element.lastChild
+                first to last
             }
         }
     }

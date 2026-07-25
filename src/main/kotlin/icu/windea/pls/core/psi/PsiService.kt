@@ -41,7 +41,7 @@ object PsiService {
     }
 
     /**
-     * 收集 [element] 的左边界与右边界之间的所有子节点。通过 [forward] 指定遍历方向，默认向后遍历。如果任意边界不存在，则返回 `null`。
+     * 收集 [element] 的左边界与右边界之间的所有子节点。通过 [forward] 指定遍历方向，默认向后遍历。如果任意边界不存在，则直接返回 `null`。
      */
     fun collectBetweenBounds(element: PsiBoundElement, forward: Boolean = true): Sequence<PsiElement>? {
         val leftBound = element.leftBound ?: return null
