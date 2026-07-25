@@ -269,6 +269,15 @@ class StdlibExtensionsTest {
     }
 
     @Test
+    fun convertPath_test() {
+        Assert.assertEquals("foo/bar.after.txt", "foo/bar.txt".convertPath { b,e -> "$b.after$e" })
+        Assert.assertEquals("foo/bar.after.test.txt", "foo/bar.test.txt".convertPath { b,e -> "$b.after$e" })
+        Assert.assertEquals("foo/bar.after", "foo/bar".convertPath { b,e -> "$b.after$e" })
+        Assert.assertEquals("bar.after", "bar".convertPath { b,e -> "$b.after$e" })
+        Assert.assertEquals(".after", "".convertPath { b,e -> "$b.after$e" })
+    }
+
+    @Test
     fun regex_and_ant_wrappers_test() {
         Assert.assertTrue("foo/bar".matchesAntPattern("foo/**"))
         Assert.assertTrue("abc".matchesRegex("[a-z]+"))

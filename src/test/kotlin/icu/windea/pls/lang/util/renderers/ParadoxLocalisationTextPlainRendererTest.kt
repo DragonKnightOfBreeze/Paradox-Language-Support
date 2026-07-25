@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
@@ -59,7 +60,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
 
     @Test
     fun text_withSv() {
-        configureFile("common/scripted_variables/global.test.txt")
+        configureMarkedFile("features/renderers/common/scripted_variables/global.test.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -69,7 +70,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
 
     @Test
     fun colorfulText() {
-        configureFile("interface/fonts.gfx")
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -89,8 +90,8 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
 
     @Test
     fun parameter() {
-        configureFile("interface/fonts.gfx")
-        configureFile("localisation/main.test.yml")
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
+        configureMarkedFile("features/renderers/localisation/main.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -119,8 +120,8 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
 
     @Test
     fun conceptCommand_simple() {
-        configureFile("common/game_concepts/game_concepts.test.txt")
-        configureFile("localisation/game_concepts.test.yml")
+        configureMarkedFile("features/renderers/common/game_concepts/game_concepts.test.txt")
+        configureMarkedFile("features/renderers/localisation/game_concepts.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -130,8 +131,8 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
 
     @Test
     fun conceptCommand_alias_simple() {
-        configureFile("common/game_concepts/game_concepts_alias.test.txt")
-        configureFile("localisation/game_concepts.test.yml")
+        configureMarkedFile("features/renderers/common/game_concepts/game_concepts_alias.test.txt")
+        configureMarkedFile("features/renderers/localisation/game_concepts.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -151,8 +152,8 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
 
     @Test
     fun conceptCommand_tooltipOverride_simple() {
-        configureFile("common/game_concepts/game_concepts_override.test.txt")
-        configureFile("localisation/game_concepts_override.test.yml")
+        configureMarkedFile("features/renderers/common/game_concepts/game_concepts_override.test.txt")
+        configureMarkedFile("features/renderers/localisation/game_concepts_override.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -160,9 +161,10 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase(), Chronic
         Assert.assertTrue(r.contains("Tooltip Text"))
     }
 
-    private fun configureFile(path: String) {
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/renderers/")): String {
         markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/renderers/$path", path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
     }
 
     private fun render(input: String, configure: ParadoxLocalisationTextPlainRenderSettings.() -> Unit = {}): String {

@@ -30,16 +30,11 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Basic
 
     @Test
     fun test_Basic() {
-        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
+        configureMarkedFile("features/index/common/test/local_vars.test.txt")
 
         val path = "common/test/local_vars.test.txt"
         val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.FilePath, project)
@@ -49,7 +44,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_Localisation() {
         // 本地化文件应当被索引
-        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val path = "localisation/ui/ui_l_english.test.yml"
         val allKeys = FileBasedIndex.getInstance().getAllKeys(ChronicleIndexKeys.FilePath, project)
@@ -57,4 +52,9 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, relPath)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

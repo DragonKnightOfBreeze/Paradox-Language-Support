@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
@@ -37,17 +36,13 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Basic Property Definition
 
     @Test
     fun test_BasicProperty() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/starships/00_starships.txt")
+        configureMarkedFile("features/index/common/starships/00_starships.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -78,7 +73,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_BasicProperty_ElementOffset() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/starships/00_starships.txt")
+        configureMarkedFile("features/index/common/starships/00_starships.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -97,7 +93,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypePerFile() {
         // Arrange & Act: ocean_world
-        val oceanFile = markAndConfigureByFile("features/index/common/planet_classes/ocean_world.txt")
+        configureMarkedFile("features/index/common/planet_classes/ocean_world.txt")
+        val oceanFile = myFixture.file
 
         val oceanData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, oceanFile.virtualFile, project)
 
@@ -120,8 +117,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypePerFile_MultipleFiles() {
         // Arrange
-        markAndConfigureByFile("features/index/common/planet_classes/ocean_world.txt")
-        markAndConfigureByFile("features/index/common/planet_classes/desert_world.txt")
+        configureMarkedFile("features/index/common/planet_classes/ocean_world.txt")
+        configureMarkedFile("features/index/common/planet_classes/desert_world.txt")
 
         // Act
         val scope = GlobalSearchScope.projectScope(project)
@@ -141,7 +138,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_NameField() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/alien_species/00_species.txt")
+        configureMarkedFile("features/index/common/alien_species/00_species.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -174,7 +172,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_AnonymousNameField() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/star_systems/00_systems.txt")
+        configureMarkedFile("features/index/common/star_systems/00_systems.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -200,7 +199,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_SkipRootKey() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/space_stations/00_stations.txt")
+        configureMarkedFile("features/index/common/space_stations/00_stations.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -227,7 +227,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypeKeyFilter_Inclusion() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/drives/00_drives.txt")
+        configureMarkedFile("features/index/common/drives/00_drives.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -241,7 +242,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypeKeyFilter_Exclusion() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/drives/00_drives.txt")
+        configureMarkedFile("features/index/common/drives/00_drives.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -255,7 +257,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypeKeyFilter_AllDefinitionsPresent() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/drives/00_drives.txt")
+        configureMarkedFile("features/index/common/drives/00_drives.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -273,7 +276,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_StartsWith() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/districts/00_districts.txt")
+        configureMarkedFile("features/index/common/districts/00_districts.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -302,7 +306,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     fun test_StartsWith_PrefixMismatch() {
         // Arrange: districts 路径但包含不以 "d_" 开头的属性键
         // 由于 starts_with 要求 typeKey 匹配该前缀，不匹配前缀的属性不应被索引
-        val psiFile = markAndConfigureByFile("features/index/common/districts/00_districts.txt")
+        configureMarkedFile("features/index/common/districts/00_districts.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -319,7 +324,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypeKeyRegex() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/fleets/00_fleets.txt")
+        configureMarkedFile("features/index/common/fleets/00_fleets.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -341,7 +347,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_SkipRootKey_Alternatives() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/garrisons/00_garrisons.txt")
+        configureMarkedFile("features/index/common/garrisons/00_garrisons.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -366,7 +373,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_NameFieldDash() {
         // Arrange
-        val psiFile = markAndConfigureByFile("features/index/common/anomalies/00_anomalies.txt")
+        configureMarkedFile("features/index/common/anomalies/00_anomalies.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -397,8 +405,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_CrossFileAggregation_ByType() {
         // Arrange: 多个文件的同类型定义
-        markAndConfigureByFile("features/index/common/planet_classes/ocean_world.txt")
-        markAndConfigureByFile("features/index/common/planet_classes/desert_world.txt")
+        configureMarkedFile("features/index/common/planet_classes/ocean_world.txt")
+        configureMarkedFile("features/index/common/planet_classes/desert_world.txt")
 
         // Act
         val scope = GlobalSearchScope.projectScope(project)
@@ -414,8 +422,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_CrossFileAggregation_ByName() {
         // Arrange: 跨文件按 name key 聚合
-        markAndConfigureByFile("features/index/common/starships/00_starships.txt")
-        markAndConfigureByFile("features/index/common/drives/00_drives.txt")
+        configureMarkedFile("features/index/common/starships/00_starships.txt")
+        configureMarkedFile("features/index/common/drives/00_drives.txt")
 
         // Act
         val scope = GlobalSearchScope.projectScope(project)
@@ -431,9 +439,9 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_CrossFileAggregation_MultipleTypes() {
         // Arrange: 加载不同类型的多个文件
-        markAndConfigureByFile("features/index/common/starships/00_starships.txt")
-        markAndConfigureByFile("features/index/common/districts/00_districts.txt")
-        markAndConfigureByFile("features/index/common/anomalies/00_anomalies.txt")
+        configureMarkedFile("features/index/common/starships/00_starships.txt")
+        configureMarkedFile("features/index/common/districts/00_districts.txt")
+        configureMarkedFile("features/index/common/anomalies/00_anomalies.txt")
 
         // Act
         val scope = GlobalSearchScope.projectScope(project)
@@ -452,7 +460,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_EmptyFile() {
         // Arrange: 文件仅含注释，无任何属性
-        val psiFile = markAndConfigureByFile("features/index/common/starships/02_empty.txt")
+        configureMarkedFile("features/index/common/starships/02_empty.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -464,7 +473,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_NoMatchedType() {
         // Arrange: 路径无匹配的类型规则
-        val psiFile = markAndConfigureByFile("features/index/common/no_rule/01_inject.txt")
+        configureMarkedFile("features/index/common/no_rule/01_inject.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -476,7 +486,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_TypePerFile_ElementOffset() {
         // Arrange: 文件级定义的 elementOffset 应为 0
-        val psiFile = markAndConfigureByFile("features/index/common/planet_classes/ocean_world.txt")
+        configureMarkedFile("features/index/common/planet_classes/ocean_world.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -490,8 +501,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_NameTypeKey_CrossTypeIsolation() {
         // Arrange: 加载不同类型的文件，验证 nameTypeKey 的类型隔离性
-        markAndConfigureByFile("features/index/common/starships/00_starships.txt")
-        markAndConfigureByFile("features/index/common/drives/00_drives.txt")
+        configureMarkedFile("features/index/common/starships/00_starships.txt")
+        configureMarkedFile("features/index/common/drives/00_drives.txt")
 
         // Act
         val scope = GlobalSearchScope.projectScope(project)
@@ -516,7 +527,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_DefinitionInjection_ReplaceOrCreate() {
         // Arrange: REPLACE_OR_CREATE 模式的定义注入应被索引为定义
-        val psiFile = markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -541,7 +553,8 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun test_DefinitionInjection_NonDefinitionModes_NotIndexed() {
         // Arrange: INJECT/REPLACE/TRY_INJECT 等非 create_mode 不应被索引为定义
-        val psiFile = markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
+        val psiFile = myFixture.file
 
         // Act
         val fileData = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.Definition, psiFile.virtualFile, project)
@@ -560,4 +573,10 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): String {
+        markFileInfo(gameType, path)
+        myFixture.configureByFile(testDataPath)
+        return path
+    }
 }

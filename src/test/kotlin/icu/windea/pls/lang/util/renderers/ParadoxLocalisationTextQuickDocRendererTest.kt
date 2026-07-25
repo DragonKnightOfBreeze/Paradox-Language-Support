@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.ui.ColorUtil
@@ -74,7 +75,7 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun text_withSv() {
-        configureFile("common/scripted_variables/global.test.txt")
+        configureMarkedFile("features/renderers/common/scripted_variables/global.test.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -103,11 +104,11 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun colorfulText_withColorful_true() {
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         withColorful(true) {
-            configureFile("interface/fonts.gfx")
-
-            IndexingTestUtil.waitUntilIndexesAreReady(project)
-
             val redColor = Color(252, 86, 70)
             val redHex = ColorUtil.toHex(redColor, true)
             assertResult("Colorful text: <span style=\"color: #$redHex\">Red text</span>", "Colorful text: §RRed text§!")
@@ -117,22 +118,22 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun colorfulText_withColorful_false() {
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         withColorful(false) {
-            configureFile("interface/fonts.gfx")
-
-            IndexingTestUtil.waitUntilIndexesAreReady(project)
-
             assertResult("Colorful text: Red text", "Colorful text: §RRed text§!")
         }
     }
 
     @Test
     fun colorfulText_unknownColorId() {
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         withColorful(true) {
-            configureFile("interface/fonts.gfx")
-
-            IndexingTestUtil.waitUntilIndexesAreReady(project)
-
             // `X` is not defined in fonts.gfx -> should not apply any span, but should strip markers
             assertResult("Colorful text: Unknown", "Colorful text: §XUnknown§!")
         }
@@ -147,12 +148,12 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun parameter_withColorful_true() {
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
+        configureMarkedFile("features/renderers/localisation/main.test.yml")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         withColorful(true) {
-            configureFile("interface/fonts.gfx")
-            configureFile("localisation/main.test.yml")
-
-            IndexingTestUtil.waitUntilIndexesAreReady(project)
-
             assertResult("Parameter: <code>\$KEY$</code> and <code>\$KEY|Y$</code>", "Parameter: \$KEY$ and \$KEY|Y$")
             assertResult("Unresolved: <code>\$unresolved$</code>", "Unresolved: \$unresolved$")
 
@@ -172,12 +173,12 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun parameter_withColorful_false() {
+        configureMarkedFile("features/renderers/interface/fonts.gfx")
+        configureMarkedFile("features/renderers/localisation/main.test.yml")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         withColorful(false) {
-            configureFile("interface/fonts.gfx")
-            configureFile("localisation/main.test.yml")
-
-            IndexingTestUtil.waitUntilIndexesAreReady(project)
-
             assertResult("Windea The Unfading", "\$name_windea$ \$title_windea|B$")
         }
     }
@@ -195,8 +196,8 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
     @Test
     fun conceptCommand_simple() {
         // 注入一个 game_concept 定义：concept_foo
-        configureFile("common/game_concepts/game_concepts.test.txt")
-        configureFile("localisation/game_concepts.test.yml")
+        configureMarkedFile("features/renderers/common/game_concepts/game_concepts.test.txt")
+        configureMarkedFile("features/renderers/localisation/game_concepts.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -209,8 +210,8 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun conceptCommand_alias_simple() {
-        configureFile("common/game_concepts/game_concepts_alias.test.txt")
-        configureFile("localisation/game_concepts.test.yml")
+        configureMarkedFile("features/renderers/common/game_concepts/game_concepts_alias.test.txt")
+        configureMarkedFile("features/renderers/localisation/game_concepts.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -223,8 +224,8 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
 
     @Test
     fun conceptCommand_tooltipOverride_simple() {
-        configureFile("common/game_concepts/game_concepts_override.test.txt")
-        configureFile("localisation/game_concepts_override.test.yml")
+        configureMarkedFile("features/renderers/common/game_concepts/game_concepts_override.test.txt")
+        configureMarkedFile("features/renderers/localisation/game_concepts_override.test.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -237,9 +238,10 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase(), Chro
         Assert.assertFalse(r.contains("file:///"))
     }
 
-    private fun configureFile(path: String) {
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/renderers/")): String {
         markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/renderers/$path", path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
     }
 
     private fun <R> withColorful(value: Boolean, action: () -> R) {

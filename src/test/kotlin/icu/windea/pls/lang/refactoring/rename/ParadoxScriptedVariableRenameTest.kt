@@ -3,8 +3,10 @@ package icu.windea.pls.lang.refactoring.rename
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.convertPath
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -36,20 +38,11 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase(), ChronicleTestS
         FileDocumentManager.getInstance().saveAllDocuments()
     }
 
-    private fun configureFile(path: String): String {
-        markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/refactoring/$path", path)
-        return path
-    }
-
     @Test
     fun testRename_ScriptedVariable_Overrides() {
-        val mainPath = "common/scripted_variables/neuro_vars_1.test.txt"
-        val otherPath = "common/scripted_variables/neuro_vars_2.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/scripted_variables/neuro_vars_1.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/scripted_variables/neuro_vars_2.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -60,20 +53,16 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/scripted_variables/neuro_vars_1.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/scripted_variables/neuro_vars_2.after.test.txt", true)
+        checkMarkedResult(mainPath)
+        checkMarkedResult(otherPath)
     }
 
     @Test
     fun testRename_ScriptedVariable_RelatedLocalisations() {
-        val mainPath = "common/scripted_variables/neuro_vars_1.test.txt"
-        val localisationEnglishPath = "localisation/scripted_variables_l_english.test.yml"
-        val localisationChinesePath = "localisation/scripted_variables_l_simp_chinese.test.yml"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
+        val mainPath = configureMarkedFile("features/refactoring/common/scripted_variables/neuro_vars_1.test.txt")
+        val localisationEnglishPath = configureMarkedFile("features/refactoring/localisation/scripted_variables_l_english.test.yml")
+        val localisationChinesePath = configureMarkedFile("features/refactoring/localisation/scripted_variables_l_simp_chinese.test.yml")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -84,8 +73,19 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/scripted_variables/neuro_vars_1.after.test.txt", true)
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/scripted_variables_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/scripted_variables_l_simp_chinese.after.test.yml", true)
+        checkMarkedResult(mainPath)
+        checkMarkedResult(localisationEnglishPath)
+        checkMarkedResult(localisationChinesePath)
+    }
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
+        markFileInfo(gameType, path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
+    }
+
+    private fun checkMarkedResult(@TestDataFile testDataPath: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.after$e" }
+        myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

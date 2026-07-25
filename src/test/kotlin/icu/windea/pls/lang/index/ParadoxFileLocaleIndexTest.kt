@@ -30,16 +30,11 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Basic
 
     @Test
     fun test_English() {
-        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val data = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
@@ -48,7 +43,7 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun test_SimpChinese() {
-        markAndConfigureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
+        configureMarkedFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
 
         val data = FileBasedIndex.getInstance().getFileData(ChronicleIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
@@ -56,4 +51,9 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

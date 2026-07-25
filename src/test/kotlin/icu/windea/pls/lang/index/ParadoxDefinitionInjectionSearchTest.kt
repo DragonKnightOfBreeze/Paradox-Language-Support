@@ -37,20 +37,15 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Search All
 
     @Test
     fun test_All() {
         // Arrange: 加载所有注入文件
-        markAndConfigureByFile("features/index/common/ai_strategies/00_default.txt")
-        markAndConfigureByFile("features/index/common/ai_strategies/01_inject.txt")
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
-        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
+        configureMarkedFile("features/index/common/ai_strategies/00_default.txt")
+        configureMarkedFile("features/index/common/ai_strategies/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -74,7 +69,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByTarget() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -91,8 +86,8 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByTarget_AcrossTypes() {
         // Arrange: 同一 target 出现在不同类型中
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
-        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -106,7 +101,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByTarget_NotFound() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act: 搜索不存在的 target
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -123,7 +118,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByType() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -145,7 +140,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByTargetAndType() {
         // Arrange
-        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
+        configureMarkedFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -162,7 +157,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByTargetAndType_Mismatch() {
         // Arrange: target 存在但类型不匹配
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -179,7 +174,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByMode_CaseInsensitive() {
         // Arrange: mode 参数大小写不敏感
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -193,7 +188,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_ByMode_FilterResults() {
         // Arrange: 同一类型中不同 mode 的结果应被过滤
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act: 仅搜索 INJECT 模式
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -212,7 +207,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_SearchElement() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -226,7 +221,7 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_SearchElement_Replace() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act: 搜索 REPLACE 模式的元素
         val selector = ParadoxDefinitionInjectionSearch.selector(project, myFixture.file).withSearchScope(GlobalSearchScope.projectScope(project))
@@ -244,9 +239,9 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_WithFileScope() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
         val arcaneFile = myFixture.file.virtualFile
-        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
+        configureMarkedFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act: 仅搜索 arcane_tomes 文件
         val searchScope = GlobalSearchScope.fileScope(project, arcaneFile)
@@ -261,11 +256,11 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun test_WithFileScope_MultiFile() {
         // Arrange
-        markAndConfigureByFile("features/index/common/arcane_tomes/01_inject.txt")
+        configureMarkedFile("features/index/common/arcane_tomes/01_inject.txt")
         val arcaneFile = myFixture.file.virtualFile
-        markAndConfigureByFile("features/index/common/academy_spells/01_inject.txt")
+        configureMarkedFile("features/index/common/academy_spells/01_inject.txt")
         val spellsFile = myFixture.file.virtualFile
-        markAndConfigureByFile("features/index/common/ai_strategies/01_inject.txt")
+        configureMarkedFile("features/index/common/ai_strategies/01_inject.txt")
 
         // Act: 仅搜索 arcane_tomes + academy_spells 两个文件
         val searchScope = GlobalSearchScope.filesScope(project, listOf(arcaneFile, spellsFile))
@@ -278,4 +273,9 @@ class ParadoxDefinitionInjectionSearchTest : BasePlatformTestCase(), ChronicleTe
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

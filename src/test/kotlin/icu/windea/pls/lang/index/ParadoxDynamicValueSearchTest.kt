@@ -38,16 +38,11 @@ class ParadoxDynamicValueSearchTest : BasePlatformTestCase(), ChronicleTestScope
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Grimoires
 
     @Test
     fun testGrimoires_InDefinition() {
-        markAndConfigureByFile("features/index/common/grimoires/00_grimoires.txt")
+        configureMarkedFile("features/index/common/grimoires/00_grimoires.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -61,7 +56,7 @@ class ParadoxDynamicValueSearchTest : BasePlatformTestCase(), ChronicleTestScope
 
     @Test
     fun testGrimoires_InDefinition_FindAll() {
-        markAndConfigureByFile("features/index/common/grimoires/00_grimoires.txt")
+        configureMarkedFile("features/index/common/grimoires/00_grimoires.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -81,7 +76,7 @@ class ParadoxDynamicValueSearchTest : BasePlatformTestCase(), ChronicleTestScope
 
     @Test
     fun testGrimoires_FromColumn() {
-        markAndConfigureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
+        configureMarkedFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -95,7 +90,7 @@ class ParadoxDynamicValueSearchTest : BasePlatformTestCase(), ChronicleTestScope
 
     @Test
     fun testGrimoires_FromColumn_FindAll() {
-        markAndConfigureByFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
+        configureMarkedFile("features/index/common/grimoire_tocs/00_grimoire_tocs.csv")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
@@ -117,4 +112,9 @@ class ParadoxDynamicValueSearchTest : BasePlatformTestCase(), ChronicleTestScope
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

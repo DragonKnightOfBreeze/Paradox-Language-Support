@@ -31,16 +31,11 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase(), ChronicleTestScope
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Normal Localisation
 
     @Test
     fun testNormalLocalisation_byName() {
-        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
@@ -53,7 +48,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase(), ChronicleTestScope
 
     @Test
     fun testNormalLocalisation_notFound() {
-        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
@@ -70,7 +65,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase(), ChronicleTestScope
 
     @Test
     fun testSyncedLocalisation_byName() {
-        markAndConfigureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
 
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
@@ -83,7 +78,7 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase(), ChronicleTestScope
 
     @Test
     fun testSyncedLocalisation_notFound() {
-        markAndConfigureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
 
         val selector = ParadoxLocalisationSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
@@ -95,4 +90,9 @@ class ParadoxLocalisationSearchTest : BasePlatformTestCase(), ChronicleTestScope
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }
