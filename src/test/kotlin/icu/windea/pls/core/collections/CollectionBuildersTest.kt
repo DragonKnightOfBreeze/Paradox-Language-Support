@@ -4,10 +4,9 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
 
-/** @see CollectionBuilders */
 class CollectionBuildersTest {
     @Test
-    fun mutableSet_without_comparator() {
+    fun test_mutableSet_without_comparator() {
         val s = MutableSet<Int>()
         s.addAll(listOf(3, 1, 2, 2))
         // uniqueness
@@ -15,7 +14,7 @@ class CollectionBuildersTest {
     }
 
     @Test
-    fun mutableSet_with_comparator_tree_order() {
+    fun test_mutableSet_with_comparator_tree_order() {
         val s = MutableSet(Comparator.naturalOrder<Int>())
         s.addAll(listOf(3, 1, 2))
         // Should be TreeSet when comparator is provided
@@ -24,7 +23,7 @@ class CollectionBuildersTest {
     }
 
     @Test
-    fun merge_and_mergeTo_skip_null_or_empty() {
+    fun test_merge_and_mergeTo_skip_null_or_empty() {
         val a = listOf(1, 2)
         val b = emptyList<Int>()
         val c: List<Int>? = null

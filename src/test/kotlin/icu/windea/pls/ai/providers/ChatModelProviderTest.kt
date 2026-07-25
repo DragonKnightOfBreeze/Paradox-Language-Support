@@ -9,7 +9,9 @@ import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
 
-/** @see ChatModelProvider */
+/**
+ * @see ChatModelProvider
+ */
 class ChatModelProviderTest {
     @Before
     fun doSetUp() = ChronicleAssume.includeAi()

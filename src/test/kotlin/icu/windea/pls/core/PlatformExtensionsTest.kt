@@ -5,10 +5,9 @@ import icu.windea.pls.core.util.tupleOf
 import org.junit.Assert
 import org.junit.Test
 
-/** @see PlatformExtensions */
 class PlatformExtensionsTest {
     @Test
-    fun unquoteTest() {
+    fun test_unquote() {
         // 空字符串 -> 空
         run {
             Assert.assertEquals("", "".unquote())
@@ -52,7 +51,7 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun replaceAndQuoteIfNecessaryTest() {
+    fun test_replaceAndQuoteIfNeeded() {
         // 覆盖全长替换 -> 直接按需要包围引号
         run {
             Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNeeded("abc", "def"))
@@ -74,7 +73,7 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun findKeywordsWithRangesTest() {
+    fun test_findKeywordsWithTextRanges() {
         // 单一关键字
         run {
             val expected = listOf(tupleOf("foo", TextRange.create(0, 3)))
@@ -114,7 +113,7 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun mergeTextRangesTest() {
+    fun test_mergeTextRanges() {
         // 空输入
         run {
             val expected = emptyList<TextRange>()

@@ -10,9 +10,9 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时，自动重命名由其生成的修正的作为（显示）名称和描述的本地化（如果存在）。
+ * 用于在重命名定义时，自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
  */
-class AutomaticDefinitionGeneratedModifiersNameDescRenamerFactory : AutomaticRenamerFactory {
+class ParadoxDefinitionGeneratedModifiersIconAutomaticRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
@@ -20,18 +20,18 @@ class AutomaticDefinitionGeneratedModifiersNameDescRenamerFactory : AutomaticRen
     }
 
     override fun getOptionName(): String {
-        return ChronicleBundle.message("rename.definition.generatedModifiersNameDesc")
+        return ChronicleBundle.message("rename.definition.generatedModifiersIcon")
     }
 
     override fun isEnabled(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().renameGeneratedModifierNameDescForDefinitions
+        return ParadoxRefactoringSettings.getInstance().renameGeneratedModifierIconForDefinitions
     }
 
     override fun setEnabled(enabled: Boolean) {
-        ParadoxRefactoringSettings.getInstance().renameGeneratedModifierNameDescForDefinitions = enabled
+        ParadoxRefactoringSettings.getInstance().renameGeneratedModifierIconForDefinitions = enabled
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticDefinitionGeneratedModifiersNameDescRenamer(element, newName)
+        return ParadoxDefinitionGeneratedModifiersIconAutomaticRenamer(element, newName)
     }
 }

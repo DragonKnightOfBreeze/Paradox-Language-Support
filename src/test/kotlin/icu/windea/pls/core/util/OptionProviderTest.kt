@@ -13,7 +13,7 @@ import org.junit.Test
  *
  * @see OptionProvider
  */
-class OptionProviderPureTest {
+class OptionProviderTest {
     private fun nonExistingEnvKey(): String = "NON_EXISTING_ENV_KEY_" + System.nanoTime()
 
     // fromEnv = false：优先返回非空 value

@@ -3,7 +3,9 @@ package icu.windea.pls.core.match.similarity
 import org.junit.Assert
 import org.junit.Test
 
-/** @see SimilarityMatchService */
+/**
+ * @see SimilarityMatchService
+ */
 class SimilarityMatchServiceTest {
     @Test
     fun service_pipeline_order_prefix_snippet_typo() {

@@ -12,7 +12,7 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
-class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
+class ParadoxDefinitionsAutomaticRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxScriptProperty) return false
         val definitionInfo = element.definitionInfo ?: return false
@@ -38,6 +38,6 @@ class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticDefinitionsRenamer(element, newName)
+        return ParadoxDefinitionsAutomaticRenamer(element, newName)
     }
 }

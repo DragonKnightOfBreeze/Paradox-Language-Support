@@ -9,7 +9,9 @@ import java.nio.file.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
-/** @see SpecialPathService */
+/**
+ * @see SpecialPathService
+ */
 @RunWith(ParallelMethodRunner::class)
 class SpecialPathServiceTest {
     private val service = SpecialPathServiceImpl()

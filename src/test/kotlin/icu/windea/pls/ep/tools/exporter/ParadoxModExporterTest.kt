@@ -34,9 +34,11 @@ import java.util.*
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
+/**
+ * @see ParadoxModExporter
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-/** @see ParadoxModExporter @see ParadoxLauncherJsonExporter */
 class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 

@@ -6,7 +6,6 @@ import com.intellij.util.ProcessingContext
 import org.junit.Assert
 import org.junit.Test
 
-/** @see KeyAccessors */
 class KeyAccessorsTest {
     private class Obj : UserDataHolderBase()
 

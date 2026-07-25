@@ -6,14 +6,14 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
- * 用于在重命名复杂枚举值时，自动重命名相关本地化（如果存在且需要）。
+ * 用于在重命名封装变量时，自动重命名相关本地化（如果存在且需要）。
  */
-class AutomaticComplexEnumValueRelatedLocalisationsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxScriptedVariableRelatedLocalisationsAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
@@ -28,20 +28,21 @@ class AutomaticComplexEnumValueRelatedLocalisationsRenamer(element: PsiElement, 
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = ChronicleBundle.message("rename.complexEnumValue.relatedLocalisations.title")
+    override fun getDialogTitle() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations.title")
 
-    override fun getDialogDescription() = ChronicleBundle.message("rename.complexEnumValue.relatedLocalisations.desc")
+    override fun getDialogDescription() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations.desc")
 
-    override fun entityName() = ChronicleBundle.message("rename.complexEnumValue.relatedLocalisations.entityName")
+    override fun entityName() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
-        if (element !is ParadoxComplexEnumValueLightElement) return
-        val name = element.name.orNull() ?: return
+        if (element !is ParadoxScriptScriptedVariable) return
+        val name = element.name?.orNull() ?: return
         ProgressManager.checkCanceled()
         val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
         val targets = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         for (target in targets) {
             ProgressManager.checkCanceled()
+            if (target == element) continue
             allRenames[target] = newName
         }
     }

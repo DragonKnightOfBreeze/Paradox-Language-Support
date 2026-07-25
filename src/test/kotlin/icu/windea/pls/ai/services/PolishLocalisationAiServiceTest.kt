@@ -11,6 +11,7 @@ import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.test.ChronicleAssume
+import icu.windea.pls.test.ChronicleTestScope
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -18,19 +19,23 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see PolishLocalisationAiService
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-/** @see PolishLocalisationAiService */
-class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
+class PolishLocalisationAiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun doSetUp() {
+        markIntegrationTest()
         ChronicleAssume.includeAi()
     }
 
     @After
     fun doTearDown() {
+        clearIntegrationTest()
         System.clearProperty("chronicle.ai.providerType")
     }
 

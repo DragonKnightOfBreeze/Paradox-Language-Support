@@ -10,7 +10,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-class AutomaticDefinitionsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxDefinitionsAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)

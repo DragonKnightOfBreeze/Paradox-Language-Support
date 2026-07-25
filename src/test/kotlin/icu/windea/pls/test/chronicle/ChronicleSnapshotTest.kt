@@ -10,7 +10,6 @@ import kotlin.io.path.walk
 
 /**
  * 快照测试的基类。
- * @see ChronicleSnapshotService
  */
 abstract class ChronicleSnapshotTest : BasePlatformTestCase(), ChronicleTestScope {
     protected val rootPath = "src/test/testData".toPath()

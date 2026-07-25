@@ -3,7 +3,9 @@ package icu.windea.pls.core.match
 import org.junit.Assert
 import org.junit.Test
 
-/** @see PathMatcher */
+/**
+ * @see PathMatcher
+ */
 class PathMatcherTest {
     // matches(String, String)
 

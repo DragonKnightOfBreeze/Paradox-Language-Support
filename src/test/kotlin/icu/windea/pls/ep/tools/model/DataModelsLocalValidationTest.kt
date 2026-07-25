@@ -15,7 +15,6 @@ import org.ktorm.entity.toList
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 
-/** @see DataModels */
 class DataModelsLocalValidationTest {
     private val gameDataDir = SpecialPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris)
 

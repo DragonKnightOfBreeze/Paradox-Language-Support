@@ -18,7 +18,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/** @see CwtConfigSelectDsl */
+/**
+ * @see CwtConfigSelectDsl
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {

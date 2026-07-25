@@ -8,6 +8,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
+import icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -16,7 +18,10 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** @see CwtInjectedConfigProvider @see CwtConfigManipulationService */
+/**
+ * @see CwtConfigPostProcessor
+ * @see CwtInjectConfigPostProcessor
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigInjectionTest : BasePlatformTestCase() {

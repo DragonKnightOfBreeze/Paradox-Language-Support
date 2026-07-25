@@ -33,15 +33,15 @@ class ParadoxLocalisationFileManipulationServiceTest : BasePlatformTestCase(), C
         val file = myFixture.file as ParadoxLocalisationFile
         run {
             val sequence = ParadoxLocalisationFileManipulationService.localisations(file)
-            Assert.assertEquals(sequence.toList().size, 5)
+            Assert.assertEquals(5, sequence.toList().size)
         }
         run {
             val sequence = ParadoxLocalisationFileManipulationService.localisations(file.propertyLists[0])
-            Assert.assertEquals(sequence.toList().size, 2)
+            Assert.assertEquals(2, sequence.toList().size)
         }
         run {
             val sequence = ParadoxLocalisationFileManipulationService.localisations(file.propertyLists[1])
-            Assert.assertEquals(sequence.toList().size, 3)
+            Assert.assertEquals(3, sequence.toList().size)
         }
     }
 

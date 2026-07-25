@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.test
 
 import com.intellij.openapi.application.PathManager
@@ -26,6 +24,7 @@ import java.nio.file.Path
  *
  * 适用于平台测试，尤其是需要注入上下文信息（如文件信息）或需要基于规则数据的场合。
  */
+@Suppress("unused")
 interface ChronicleTestScope {
     // region Common Methods
 

@@ -9,7 +9,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/** @see ParadoxScriptParserDefinition */
+/**
+ * @see ParadoxScriptParserDefinition
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()), ChronicleTestScope {

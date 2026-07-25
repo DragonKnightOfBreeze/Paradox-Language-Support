@@ -11,7 +11,7 @@ open class FilterTestRule(
     private val message: String,
     private val predicate: () -> Boolean
 ) : TestRule {
-    override fun apply(base: Statement, description: Description?): Statement {
+    override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             override fun evaluate() {
                 Assume.assumeTrue(message, predicate())

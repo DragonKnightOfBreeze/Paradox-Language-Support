@@ -6,11 +6,11 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxScriptedVariablesAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
@@ -25,19 +25,20 @@ class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : Auto
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = ChronicleBundle.message("rename.localisation.overrides.title")
+    override fun getDialogTitle() = ChronicleBundle.message("rename.scriptedVariable.overrides.title")
 
-    override fun getDialogDescription() = ChronicleBundle.message("rename.localisation.overrides.desc")
+    override fun getDialogDescription() = ChronicleBundle.message("rename.scriptedVariable.overrides.desc")
 
-    override fun entityName() = ChronicleBundle.message("rename.localisation.overrides.entityName")
+    override fun entityName() = ChronicleBundle.message("rename.scriptedVariable.overrides.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
-        if (element !is ParadoxLocalisationProperty) return
-        val name = element.name.orNull() ?: return
-        val type = element.type ?: return
+        if (element !is ParadoxScriptScriptedVariable) return
+        val name = element.name?.orNull() ?: return
         ProgressManager.checkCanceled()
-        val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
-        val targets = ParadoxLocalisationSearch.search(name, type, selector).findAll()
+        val selector = ParadoxScriptedVariableSearch.selector(element.project, element).contextSensitive()
+        val targets = mutableSetOf<ParadoxScriptScriptedVariable>()
+        ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets.addAll(it) }
+        ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }
         for (target in targets) {
             ProgressManager.checkCanceled()
             if (target == element) continue

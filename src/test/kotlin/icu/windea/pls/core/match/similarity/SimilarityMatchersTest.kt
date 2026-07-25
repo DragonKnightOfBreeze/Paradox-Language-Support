@@ -3,7 +3,9 @@ package icu.windea.pls.core.match.similarity
 import org.junit.Assert
 import org.junit.Test
 
-/** @see SimilarityMatchers */
+/**
+ * @see SimilarityMatcher
+ */
 class SimilarityMatchersTest {
     // PrefixSimilarityMatcher
     @Test

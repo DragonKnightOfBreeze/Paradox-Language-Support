@@ -12,7 +12,6 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324)
- * @see Assert
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

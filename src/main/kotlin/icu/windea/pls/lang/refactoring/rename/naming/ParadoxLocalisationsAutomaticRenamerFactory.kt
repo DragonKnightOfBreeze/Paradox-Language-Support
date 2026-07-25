@@ -12,7 +12,7 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
-class AutomaticLocalisationsRenamerFactory : AutomaticRenamerFactory {
+class ParadoxLocalisationsAutomaticRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxLocalisationProperty) return false
         val name = element.name.orNull() ?: return false
@@ -36,6 +36,6 @@ class AutomaticLocalisationsRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticLocalisationsRenamer(element, newName)
+        return ParadoxLocalisationsAutomaticRenamer(element, newName)
     }
 }
